@@ -30,7 +30,6 @@ This module deploys a Storage Account File Share Service.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`name`](#parameter-name) | string | The name of the file service. |
 | [`protocolSettings`](#parameter-protocolsettings) | object | Protocol settings for file service. |
 | [`shareDeleteRetentionPolicy`](#parameter-sharedeleteretentionpolicy) | object | The service properties for soft delete. |
@@ -134,14 +133,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
-
 ### Parameter: `name`
 
 The name of the file service.
@@ -178,7 +169,6 @@ File shares to create.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 
 ## Outputs

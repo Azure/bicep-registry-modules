@@ -29,12 +29,6 @@ This module deploys a Storage Account Table.
 | :-- | :-- | :-- |
 | [`storageAccountName`](#parameter-storageaccountname) | string | The name of the parent Storage Account. Required if the template is used in a standalone deployment. |
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
-
 ### Parameter: `name`
 
 Name of the table.
@@ -48,14 +42,6 @@ The name of the parent Storage Account. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 
 ## Outputs

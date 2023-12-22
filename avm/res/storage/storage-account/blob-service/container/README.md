@@ -37,7 +37,6 @@ This module deploys a Storage Account Blob Container.
 | :-- | :-- | :-- |
 | [`defaultEncryptionScope`](#parameter-defaultencryptionscope) | string | Default the container to use specified encryption scope for all writes. |
 | [`denyEncryptionScopeOverride`](#parameter-denyencryptionscopeoverride) | bool | Block override of encryption scope from the container default. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`enableNfsV3AllSquash`](#parameter-enablenfsv3allsquash) | bool | Enable NFSv3 all squash on blob container. |
 | [`enableNfsV3RootSquash`](#parameter-enablenfsv3rootsquash) | bool | Enable NFSv3 root squash on blob container. |
 | [`immutabilityPolicyName`](#parameter-immutabilitypolicyname) | string | Name of the immutable policy. |
@@ -77,14 +76,6 @@ Block override of encryption scope from the container default.
 - Type: bool
 - Default: `False`
 
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
-
 ### Parameter: `enableNfsV3AllSquash`
 
 Enable NFSv3 all squash on blob container.
@@ -115,7 +106,6 @@ Configure immutability policy.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `immutableStorageWithVersioningEnabled`
 
@@ -167,7 +157,7 @@ Array of role assignments to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
@@ -189,7 +179,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 ### Parameter: `roleAssignments.condition`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string

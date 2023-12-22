@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "5919540891902254282"
+      "templateHash": "16125389485406033385"
     },
     "name": "Storage Account File Share Services",
     "description": "This module deploys a Storage Account File Share Service.",
@@ -160,37 +160,13 @@
     },
     "shares": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. File shares to create."
       }
-    },
-    "enableDefaultTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-      }
     }
   },
-  "variables": {
-    "enableReferencedModulesTelemetry": false
-  },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
-    },
     "storageAccount": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
@@ -235,7 +211,7 @@
     "fileServices_shares": {
       "copy": {
         "name": "fileServices_shares",
-        "count": "[length(parameters('shares'))]"
+        "count": "[length(coalesce(parameters('shares'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -253,15 +229,22 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('shares')[copyIndex()].name]"
+            "value": "[coalesce(parameters('shares'), createArray())[copyIndex()].name]"
           },
-          "accessTier": "[if(contains(parameters('shares')[copyIndex()], 'accessTier'), createObject('value', parameters('shares')[copyIndex()].accessTier), if(equals(reference('storageAccount', '2021-09-01', 'full').kind, 'FileStorage'), createObject('value', 'Premium'), createObject('value', 'TransactionOptimized')))]",
-          "enabledProtocols": "[if(contains(parameters('shares')[copyIndex()], 'enabledProtocols'), createObject('value', parameters('shares')[copyIndex()].enabledProtocols), createObject('value', 'SMB'))]",
-          "rootSquash": "[if(contains(parameters('shares')[copyIndex()], 'rootSquash'), createObject('value', parameters('shares')[copyIndex()].rootSquash), createObject('value', 'NoRootSquash'))]",
-          "shareQuota": "[if(contains(parameters('shares')[copyIndex()], 'shareQuota'), createObject('value', parameters('shares')[copyIndex()].shareQuota), createObject('value', 5120))]",
-          "roleAssignments": "[if(contains(parameters('shares')[copyIndex()], 'roleAssignments'), createObject('value', parameters('shares')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+          "accessTier": {
+            "value": "[coalesce(tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'accessTier'), if(equals(reference('storageAccount', '2021-09-01', 'full').kind, 'FileStorage'), 'Premium', 'TransactionOptimized'))]"
+          },
+          "enabledProtocols": {
+            "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'enabledProtocols')]"
+          },
+          "rootSquash": {
+            "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'rootSquash')]"
+          },
+          "shareQuota": {
+            "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'shareQuota')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'roleAssignments')]"
           }
         },
         "template": {
@@ -272,7 +255,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "3643709768620634256"
+              "templateHash": "11759339361995782717"
             },
             "name": "Storage Account File Shares",
             "description": "This module deploys a Storage Account File Share.",
@@ -321,7 +304,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -415,13 +398,6 @@
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": {
@@ -433,20 +409,6 @@
               "dependsOn": [
                 "storageAccount"
               ]
-            },
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
             },
             "storageAccount": {
               "existing": true,

@@ -7,15 +7,13 @@ metadata owner = 'Azure/module-maintainers'
 param storageAccountName string
 
 @description('Optional. Queues to create.')
-param queues array = []
+param queues array?
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
 // The name of the blob services
 var name = 'default'
-
-var enableReferencedModulesTelemetry = false
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
   name: storageAccountName
@@ -53,13 +51,13 @@ resource queueServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings
   scope: queueServices
 }]
 
-module queueServices_queues 'queue/main.bicep' = [for (queue, index) in queues: {
+module queueServices_queues 'queue/main.bicep' = [for (queue, index) in (queues ?? []): {
   name: '${deployment().name}-Queue-${index}'
   params: {
     storageAccountName: storageAccount.name
     name: queue.name
-    metadata: contains(queue, 'metadata') ? queue.metadata : {}
-    roleAssignments: contains(queue, 'roleAssignments') ? queue.roleAssignments : []
+    metadata: queue.?metadata
+    roleAssignments: queue.?roleAssignments
   }
 }]
 
@@ -71,6 +69,7 @@ output resourceId string = queueServices.id
 
 @description('The resource group of the deployed file share service.')
 output resourceGroupName string = resourceGroup().name
+
 // =============== //
 //   Definitions   //
 // =============== //

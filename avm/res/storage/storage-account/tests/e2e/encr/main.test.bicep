@@ -18,7 +18,7 @@ param serviceShort string = 'ssaencr'
 param baseTime string = utcNow('u')
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -35,6 +35,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
+    location: location
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
@@ -51,7 +52,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    enableDefaultTelemetry: enableDefaultTelemetry
+    location: location
     name: '${namePrefix}${serviceShort}001'
     skuName: 'Standard_LRS'
     allowBlobPublicAccess: false
@@ -63,11 +64,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
       }
     ]
     blobServices: {
@@ -77,35 +73,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           publicAccess: 'None'
         }
       ]
-      automaticSnapshotPolicyEnabled: true
-      changeFeedEnabled: true
-      changeFeedRetentionInDays: 10
-      containerDeleteRetentionPolicyEnabled: true
-      containerDeleteRetentionPolicyDays: 10
-      containerDeleteRetentionPolicyAllowPermanentDelete: true
-      defaultServiceVersion: '2008-10-27'
-      deleteRetentionPolicyEnabled: true
-      deleteRetentionPolicyDays: 9
-      isVersioningEnabled: true
-      lastAccessTimeTrackingPolicyEnable: true
-      restorePolicyEnabled: true
-      restorePolicyDays: 8
-    }
-    managedIdentities: {
-      systemAssigned: false
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
     }
     customerManagedKey: {
       keyName: nestedDependencies.outputs.keyName
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-    }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
 }]

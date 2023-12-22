@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "488727166620230076"
+      "templateHash": "7151166956801272958"
     },
     "name": "Storage Account Queue Services",
     "description": "This module deploys a Storage Account Queue Service.",
@@ -130,7 +130,7 @@
     },
     "queues": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Queues to create."
       }
@@ -140,34 +140,12 @@
       "metadata": {
         "description": "Optional. The diagnostic settings of the service."
       }
-    },
-    "enableDefaultTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-      }
     }
   },
   "variables": {
-    "name": "default",
-    "enableReferencedModulesTelemetry": false
+    "name": "default"
   },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
-    },
     "storageAccount": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
@@ -209,7 +187,7 @@
     "queueServices_queues": {
       "copy": {
         "name": "queueServices_queues",
-        "count": "[length(parameters('queues'))]"
+        "count": "[length(coalesce(parameters('queues'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -224,12 +202,13 @@
             "value": "[parameters('storageAccountName')]"
           },
           "name": {
-            "value": "[parameters('queues')[copyIndex()].name]"
+            "value": "[coalesce(parameters('queues'), createArray())[copyIndex()].name]"
           },
-          "metadata": "[if(contains(parameters('queues')[copyIndex()], 'metadata'), createObject('value', parameters('queues')[copyIndex()].metadata), createObject('value', createObject()))]",
-          "roleAssignments": "[if(contains(parameters('queues')[copyIndex()], 'roleAssignments'), createObject('value', parameters('queues')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+          "metadata": {
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'metadata')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'roleAssignments')]"
           }
         },
         "template": {
@@ -240,7 +219,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "100286929116341954"
+              "templateHash": "14266397145588412865"
             },
             "name": "Storage Account Queues",
             "description": "This module deploys a Storage Account Queue.",
@@ -289,7 +268,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -340,13 +319,6 @@
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "variables": {
@@ -384,20 +356,6 @@
               "dependsOn": [
                 "storageAccount"
               ]
-            },
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
             },
             "storageAccount": {
               "existing": true,

@@ -15,7 +15,7 @@ param location string = deployment().location
 param serviceShort string = 'ssav1'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -37,14 +37,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    enableDefaultTelemetry: enableDefaultTelemetry
+    location: location
     name: '${namePrefix}${serviceShort}001'
     kind: 'Storage'
     allowBlobPublicAccess: false
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
   }
 }]

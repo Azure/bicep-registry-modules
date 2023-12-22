@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "15895331301993414988"
+      "templateHash": "9630791844906045926"
     },
     "name": "Storage Account blob Services",
     "description": "This module deploys a Storage Account Blob Service.",
@@ -242,7 +242,7 @@
     },
     "containers": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Blob containers to create."
       }
@@ -252,34 +252,12 @@
       "metadata": {
         "description": "Optional. The diagnostic settings of the service."
       }
-    },
-    "enableDefaultTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-      }
     }
   },
   "variables": {
-    "name": "default",
-    "enableReferencedModulesTelemetry": false
+    "name": "default"
   },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
-    },
     "storageAccount": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
@@ -345,7 +323,7 @@
     "blobServices_container": {
       "copy": {
         "name": "blobServices_container",
-        "count": "[length(parameters('containers'))]"
+        "count": "[length(coalesce(parameters('containers'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -360,19 +338,34 @@
             "value": "[parameters('storageAccountName')]"
           },
           "name": {
-            "value": "[parameters('containers')[copyIndex()].name]"
+            "value": "[coalesce(parameters('containers'), createArray())[copyIndex()].name]"
           },
-          "defaultEncryptionScope": "[if(contains(parameters('containers')[copyIndex()], 'defaultEncryptionScope'), createObject('value', parameters('containers')[copyIndex()].defaultEncryptionScope), createObject('value', ''))]",
-          "denyEncryptionScopeOverride": "[if(contains(parameters('containers')[copyIndex()], 'denyEncryptionScopeOverride'), createObject('value', parameters('containers')[copyIndex()].denyEncryptionScopeOverride), createObject('value', false()))]",
-          "enableNfsV3AllSquash": "[if(contains(parameters('containers')[copyIndex()], 'enableNfsV3AllSquash'), createObject('value', parameters('containers')[copyIndex()].enableNfsV3AllSquash), createObject('value', false()))]",
-          "enableNfsV3RootSquash": "[if(contains(parameters('containers')[copyIndex()], 'enableNfsV3RootSquash'), createObject('value', parameters('containers')[copyIndex()].enableNfsV3RootSquash), createObject('value', false()))]",
-          "immutableStorageWithVersioningEnabled": "[if(contains(parameters('containers')[copyIndex()], 'immutableStorageWithVersioningEnabled'), createObject('value', parameters('containers')[copyIndex()].immutableStorageWithVersioningEnabled), createObject('value', false()))]",
-          "metadata": "[if(contains(parameters('containers')[copyIndex()], 'metadata'), createObject('value', parameters('containers')[copyIndex()].metadata), createObject('value', createObject()))]",
-          "publicAccess": "[if(contains(parameters('containers')[copyIndex()], 'publicAccess'), createObject('value', parameters('containers')[copyIndex()].publicAccess), createObject('value', 'None'))]",
-          "roleAssignments": "[if(contains(parameters('containers')[copyIndex()], 'roleAssignments'), createObject('value', parameters('containers')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "immutabilityPolicyProperties": "[if(contains(parameters('containers')[copyIndex()], 'immutabilityPolicyProperties'), createObject('value', parameters('containers')[copyIndex()].immutabilityPolicyProperties), createObject('value', createObject()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+          "defaultEncryptionScope": {
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'defaultEncryptionScope')]"
+          },
+          "denyEncryptionScopeOverride": {
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'denyEncryptionScopeOverride')]"
+          },
+          "enableNfsV3AllSquash": {
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'enableNfsV3AllSquash')]"
+          },
+          "enableNfsV3RootSquash": {
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'enableNfsV3RootSquash')]"
+          },
+          "immutableStorageWithVersioningEnabled": {
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'immutableStorageWithVersioningEnabled')]"
+          },
+          "metadata": {
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'metadata')]"
+          },
+          "publicAccess": {
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'publicAccess')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
+          "immutabilityPolicyProperties": {
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'immutabilityPolicyProperties')]"
           }
         },
         "template": {
@@ -383,7 +376,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "12877248389226548296"
+              "templateHash": "4036653635771798033"
             },
             "name": "Storage Account Blob Containers",
             "description": "This module deploys a Storage Account Blob Container.",
@@ -432,7 +425,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -515,7 +508,7 @@
             },
             "immutabilityPolicyProperties": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Configure immutability policy."
               }
@@ -544,17 +537,9 @@
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "variables": {
-            "enableReferencedModulesTelemetry": false,
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -589,20 +574,6 @@
               "dependsOn": [
                 "storageAccount"
               ]
-            },
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
             },
             "storageAccount": {
               "existing": true,
@@ -650,7 +621,7 @@
               ]
             },
             "immutabilityPolicy": {
-              "condition": "[not(empty(parameters('immutabilityPolicyProperties')))]",
+              "condition": "[not(empty(coalesce(parameters('immutabilityPolicyProperties'), createObject())))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[parameters('immutabilityPolicyName')]",
@@ -666,11 +637,14 @@
                   "containerName": {
                     "value": "[parameters('name')]"
                   },
-                  "immutabilityPeriodSinceCreationInDays": "[if(contains(parameters('immutabilityPolicyProperties'), 'immutabilityPeriodSinceCreationInDays'), createObject('value', parameters('immutabilityPolicyProperties').immutabilityPeriodSinceCreationInDays), createObject('value', 365))]",
-                  "allowProtectedAppendWrites": "[if(contains(parameters('immutabilityPolicyProperties'), 'allowProtectedAppendWrites'), createObject('value', parameters('immutabilityPolicyProperties').allowProtectedAppendWrites), createObject('value', true()))]",
-                  "allowProtectedAppendWritesAll": "[if(contains(parameters('immutabilityPolicyProperties'), 'allowProtectedAppendWritesAll'), createObject('value', parameters('immutabilityPolicyProperties').allowProtectedAppendWritesAll), createObject('value', true()))]",
-                  "enableDefaultTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  "immutabilityPeriodSinceCreationInDays": {
+                    "value": "[tryGet(parameters('immutabilityPolicyProperties'), 'immutabilityPeriodSinceCreationInDays')]"
+                  },
+                  "allowProtectedAppendWrites": {
+                    "value": "[tryGet(parameters('immutabilityPolicyProperties'), 'allowProtectedAppendWrites')]"
+                  },
+                  "allowProtectedAppendWritesAll": {
+                    "value": "[tryGet(parameters('immutabilityPolicyProperties'), 'allowProtectedAppendWritesAll')]"
                   }
                 },
                 "template": {
@@ -680,7 +654,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.24.24.22086",
-                      "templateHash": "4658218767079659572"
+                      "templateHash": "15441426428461937893"
                     },
                     "name": "Storage Account Blob Container Immutability Policies",
                     "description": "This module deploys a Storage Account Blob Container Immutability Policy.",
@@ -720,30 +694,9 @@
                       "metadata": {
                         "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both \"Append and Block Blobs\" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The \"allowProtectedAppendWrites\" and \"allowProtectedAppendWritesAll\" properties are mutually exclusive."
                       }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-                      }
                     }
                   },
                   "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
-                    },
                     {
                       "type": "Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies",
                       "apiVersion": "2022-09-01",

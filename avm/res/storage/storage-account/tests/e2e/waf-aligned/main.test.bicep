@@ -18,7 +18,7 @@ param location string = deployment().location
 param serviceShort string = 'ssawaf'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -35,6 +35,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
+    location: location
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
@@ -63,7 +64,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    enableDefaultTelemetry: enableDefaultTelemetry
+    location: location
     name: '${namePrefix}${serviceShort}001'
     skuName: 'Standard_LRS'
     allowBlobPublicAccess: false
@@ -145,13 +146,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           enableNfsV3AllSquash: true
           enableNfsV3RootSquash: true
           publicAccess: 'None'
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Reader'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
         }
         {
           name: 'archivecontainer'
@@ -190,13 +184,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           name: 'avdprofiles'
           accessTier: 'Hot'
           shareQuota: 5120
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Reader'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
         }
         {
           name: 'avdprofiles2'
@@ -246,13 +233,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             key1: 'value1'
             key2: 'value2'
           }
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Reader'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
         }
         {
           name: 'queue2'

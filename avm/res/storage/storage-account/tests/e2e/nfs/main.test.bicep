@@ -15,7 +15,7 @@ param location string = deployment().location
 param serviceShort string = 'ssanfs'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -28,28 +28,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
 }
 
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
-  params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-  }
-}
-
-// Diagnostics
-// ===========
-module diagnosticDependencies '../../../../../.shared/.templates/diagnostic.dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-diagnosticDependencies'
-  params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: location
-  }
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -59,16 +37,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    enableDefaultTelemetry: enableDefaultTelemetry
+    location: location
     name: '${namePrefix}${serviceShort}001'
     skuName: 'Premium_LRS'
     kind: 'FileStorage'
     allowBlobPublicAccess: false
     supportsHttpsTrafficOnly: false
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     fileServices: {
       shares: [
         {
@@ -76,48 +50,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           enabledProtocols: 'NFS'
         }
       ]
-    }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
 }]

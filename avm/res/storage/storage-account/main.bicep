@@ -66,7 +66,7 @@ param allowSharedKeyAccess bool = true
 param privateEndpoints privateEndpointType
 
 @description('Optional. The Storage Account ManagementPolicies Rules.')
-param managementPolicyRules array = []
+param managementPolicyRules array?
 
 @description('Optional. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. For security reasons, it is recommended to set the DefaultAction Deny.')
 param networkAcls object = {}
@@ -291,10 +291,10 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     largeFileSharesState: (skuName == 'Standard_LRS') || (skuName == 'Standard_ZRS') ? largeFileSharesState : null
     minimumTlsVersion: minimumTlsVersion
     networkAcls: !empty(networkAcls) ? {
-      bypass: contains(networkAcls, 'bypass') ? networkAcls.bypass : null
-      defaultAction: contains(networkAcls, 'defaultAction') ? networkAcls.defaultAction : null
-      virtualNetworkRules: contains(networkAcls, 'virtualNetworkRules') ? networkAcls.virtualNetworkRules : []
-      ipRules: contains(networkAcls, 'ipRules') ? networkAcls.ipRules : []
+      bypass: networkAcls.?bypass
+      defaultAction: networkAcls.?defaultAction
+      virtualNetworkRules: networkAcls.?virtualNetworkRules
+      ipRules: networkAcls.?ipRules
     } : null
     allowBlobPublicAccess: allowBlobPublicAccess
     publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(privateEndpoints) && empty(networkAcls) ? 'Disabled' : null)
@@ -377,11 +377,11 @@ module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3
 }]
 
 // Lifecycle Policy
-module storageAccount_managementPolicies 'management-policy/main.bicep' = if (!empty(managementPolicyRules)) {
+module storageAccount_managementPolicies 'management-policy/main.bicep' = if (!empty(managementPolicyRules ?? [])) {
   name: '${uniqueString(deployment().name, location)}-Storage-ManagementPolicies'
   params: {
     storageAccountName: storageAccount.name
-    rules: managementPolicyRules
+    rules: managementPolicyRules ?? []
   }
   dependsOn: [
     storageAccount_blobServices // To ensure the lastAccessTimeTrackingPolicy is set first (if used in rule)
@@ -397,9 +397,9 @@ module storageAccount_localUsers 'local-user/main.bicep' = [for (localUser, inde
     hasSshKey: localUser.hasSshKey
     hasSshPassword: localUser.hasSshPassword
     permissionScopes: localUser.permissionScopes
-    hasSharedKey: contains(localUser, 'hasSharedKey') ? localUser.hasSharedKey : false
-    homeDirectory: contains(localUser, 'homeDirectory') ? localUser.homeDirectory : ''
-    sshAuthorizedKeys: contains(localUser, 'sshAuthorizedKeys') ? localUser.sshAuthorizedKeys : []
+    hasSharedKey: localUser.?hasSharedKey
+    homeDirectory: localUser.?homeDirectory
+    sshAuthorizedKeys: localUser.?sshAuthorizedKeys
   }
 }]
 
@@ -408,21 +408,21 @@ module storageAccount_blobServices 'blob-service/main.bicep' = if (!empty(blobSe
   name: '${uniqueString(deployment().name, location)}-Storage-BlobServices'
   params: {
     storageAccountName: storageAccount.name
-    containers: contains(blobServices, 'containers') ? blobServices.containers : []
-    automaticSnapshotPolicyEnabled: contains(blobServices, 'automaticSnapshotPolicyEnabled') ? blobServices.automaticSnapshotPolicyEnabled : false
-    changeFeedEnabled: contains(blobServices, 'changeFeedEnabled') ? blobServices.changeFeedEnabled : false
+    containers: blobServices.?containers
+    automaticSnapshotPolicyEnabled: blobServices.?automaticSnapshotPolicyEnabled
+    changeFeedEnabled: blobServices.?changeFeedEnabled
     changeFeedRetentionInDays: blobServices.?changeFeedRetentionInDays
-    containerDeleteRetentionPolicyEnabled: contains(blobServices, 'containerDeleteRetentionPolicyEnabled') ? blobServices.containerDeleteRetentionPolicyEnabled : false
+    containerDeleteRetentionPolicyEnabled: blobServices.?containerDeleteRetentionPolicyEnabled
     containerDeleteRetentionPolicyDays: blobServices.?containerDeleteRetentionPolicyDays
-    containerDeleteRetentionPolicyAllowPermanentDelete: contains(blobServices, 'containerDeleteRetentionPolicyAllowPermanentDelete') ? blobServices.containerDeleteRetentionPolicyAllowPermanentDelete : false
-    corsRules: contains(blobServices, 'corsRules') ? blobServices.corsRules : []
-    defaultServiceVersion: contains(blobServices, 'defaultServiceVersion') ? blobServices.defaultServiceVersion : ''
-    deleteRetentionPolicyAllowPermanentDelete: contains(blobServices, 'deleteRetentionPolicyAllowPermanentDelete') ? blobServices.deleteRetentionPolicyAllowPermanentDelete : false
-    deleteRetentionPolicyEnabled: contains(blobServices, 'deleteRetentionPolicyEnabled') ? blobServices.deleteRetentionPolicyEnabled : false
+    containerDeleteRetentionPolicyAllowPermanentDelete: blobServices.?containerDeleteRetentionPolicyAllowPermanentDelete
+    corsRules: blobServices.?corsRules
+    defaultServiceVersion: blobServices.?defaultServiceVersion
+    deleteRetentionPolicyAllowPermanentDelete: blobServices.?deleteRetentionPolicyAllowPermanentDelete
+    deleteRetentionPolicyEnabled: blobServices.?deleteRetentionPolicyEnabled
     deleteRetentionPolicyDays: blobServices.?deleteRetentionPolicyDays
-    isVersioningEnabled: contains(blobServices, 'isVersioningEnabled') ? blobServices.isVersioningEnabled : false
-    lastAccessTimeTrackingPolicyEnabled: contains(blobServices, 'lastAccessTimeTrackingPolicyEnabled') ? blobServices.lastAccessTimeTrackingPolicyEnabled : false
-    restorePolicyEnabled: contains(blobServices, 'restorePolicyEnabled') ? blobServices.restorePolicyEnabled : false
+    isVersioningEnabled: blobServices.?isVersioningEnabled
+    lastAccessTimeTrackingPolicyEnabled: blobServices.?lastAccessTimeTrackingPolicyEnabled
+    restorePolicyEnabled: blobServices.?restorePolicyEnabled
     restorePolicyDays: blobServices.?restorePolicyDays
     diagnosticSettings: blobServices.?diagnosticSettings
   }
@@ -434,12 +434,9 @@ module storageAccount_fileServices 'file-service/main.bicep' = if (!empty(fileSe
   params: {
     storageAccountName: storageAccount.name
     diagnosticSettings: blobServices.?diagnosticSettings
-    protocolSettings: contains(fileServices, 'protocolSettings') ? fileServices.protocolSettings : {}
-    shareDeleteRetentionPolicy: contains(fileServices, 'shareDeleteRetentionPolicy') ? fileServices.shareDeleteRetentionPolicy : {
-      enabled: true
-      days: 7
-    }
-    shares: contains(fileServices, 'shares') ? fileServices.shares : []
+    protocolSettings: fileServices.?protocolSettings
+    shareDeleteRetentionPolicy: fileServices.?shareDeleteRetentionPolicy
+    shares: fileServices.?shares
   }
 }
 
@@ -449,7 +446,7 @@ module storageAccount_queueServices 'queue-service/main.bicep' = if (!empty(queu
   params: {
     storageAccountName: storageAccount.name
     diagnosticSettings: blobServices.?diagnosticSettings
-    queues: contains(queueServices, 'queues') ? queueServices.queues : []
+    queues: queueServices.?queues
   }
 }
 
@@ -459,7 +456,7 @@ module storageAccount_tableServices 'table-service/main.bicep' = if (!empty(tabl
   params: {
     storageAccountName: storageAccount.name
     diagnosticSettings: blobServices.?diagnosticSettings
-    tables: contains(tableServices, 'tables') ? tableServices.tables : []
+    tables: tableServices.?tables
   }
 }
 
@@ -476,7 +473,7 @@ output resourceGroupName string = resourceGroup().name
 output primaryBlobEndpoint string = !empty(blobServices) && contains(blobServices, 'containers') ? reference('Microsoft.Storage/storageAccounts/${storageAccount.name}', '2019-04-01').primaryEndpoints.blob : ''
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(storageAccount.identity, 'principalId') ? storageAccount.identity.principalId : ''
+output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) ? storageAccount.identity.?principalId : ''
 
 @description('The location the resource was deployed into.')
 output location string = storageAccount.location

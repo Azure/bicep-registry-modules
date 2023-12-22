@@ -44,7 +44,6 @@ This module deploys a Storage Account Blob Service.
 | [`deleteRetentionPolicyDays`](#parameter-deleteretentionpolicydays) | int | Indicates the number of days that the deleted blob should be retained. |
 | [`deleteRetentionPolicyEnabled`](#parameter-deleteretentionpolicyenabled) | bool | The blob service properties for blob soft delete. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`isVersioningEnabled`](#parameter-isversioningenabled) | bool | Use versioning to automatically maintain previous versions of your blobs. |
 | [`lastAccessTimeTrackingPolicyEnabled`](#parameter-lastaccesstimetrackingpolicyenabled) | bool | The blob service property to configure last access time based tracking policy. When set to true last access time based tracking is enabled. |
 | [`restorePolicyDays`](#parameter-restorepolicydays) | int | How long this blob can be restored. It should be less than DeleteRetentionPolicy days. |
@@ -109,7 +108,6 @@ Blob containers to create.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `corsRules`
 
@@ -240,14 +238,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `isVersioningEnabled`
 

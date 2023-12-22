@@ -36,7 +36,6 @@ This module deploys a Storage Account Local User, which is used for SFTP authent
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`hasSharedKey`](#parameter-hassharedkey) | bool | Indicates whether shared key exists. Set it to false to remove existing shared key. |
 | [`homeDirectory`](#parameter-homedirectory) | string | The local user home directory. |
 | [`sshAuthorizedKeys`](#parameter-sshauthorizedkeys) | array | The local user SSH authorized keys for SFTP. |
@@ -76,14 +75,6 @@ The name of the parent Storage Account. Required if the template is used in a st
 - Required: Yes
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
-
 ### Parameter: `hasSharedKey`
 
 Indicates whether shared key exists. Set it to false to remove existing shared key.
@@ -106,7 +97,6 @@ The local user SSH authorized keys for SFTP.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 
 ## Outputs

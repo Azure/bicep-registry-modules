@@ -39,7 +39,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/storage.storage-account:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/storage/storage-account:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Encr](#example-2-encr)
@@ -58,14 +58,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-ssamin'
   params: {
     // Required parameters
     name: 'ssamin001'
     // Non-required parameters
     allowBlobPublicAccess: false
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
   }
 }
 ```
@@ -89,9 +88,6 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
     // Non-required parameters
     "allowBlobPublicAccess": {
       "value": false
-    },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
     }
   }
 }
@@ -107,7 +103,7 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-ssaencr'
   params: {
     // Required parameters
@@ -115,38 +111,19 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
     // Non-required parameters
     allowBlobPublicAccess: false
     blobServices: {
-      automaticSnapshotPolicyEnabled: true
-      changeFeedEnabled: true
-      changeFeedRetentionInDays: 10
-      containerDeleteRetentionPolicyAllowPermanentDelete: true
-      containerDeleteRetentionPolicyDays: 10
-      containerDeleteRetentionPolicyEnabled: true
       containers: [
         {
           name: 'container'
           publicAccess: 'None'
         }
       ]
-      defaultServiceVersion: '2008-10-27'
-      deleteRetentionPolicyDays: 9
-      deleteRetentionPolicyEnabled: true
-      isVersioningEnabled: true
-      lastAccessTimeTrackingPolicyEnable: true
-      restorePolicyDays: 8
-      restorePolicyEnabled: true
     }
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
-    managedIdentities: {
-      systemAssigned: false
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
+    location: '<location>'
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -154,20 +131,10 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
         ]
         service: 'blob'
         subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
       }
     ]
     requireInfrastructureEncryption: true
     skuName: 'Standard_LRS'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -194,25 +161,12 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
     },
     "blobServices": {
       "value": {
-        "automaticSnapshotPolicyEnabled": true,
-        "changeFeedEnabled": true,
-        "changeFeedRetentionInDays": 10,
-        "containerDeleteRetentionPolicyAllowPermanentDelete": true,
-        "containerDeleteRetentionPolicyDays": 10,
-        "containerDeleteRetentionPolicyEnabled": true,
         "containers": [
           {
             "name": "container",
             "publicAccess": "None"
           }
-        ],
-        "defaultServiceVersion": "2008-10-27",
-        "deleteRetentionPolicyDays": 9,
-        "deleteRetentionPolicyEnabled": true,
-        "isVersioningEnabled": true,
-        "lastAccessTimeTrackingPolicyEnable": true,
-        "restorePolicyDays": 8,
-        "restorePolicyEnabled": true
+        ]
       }
     },
     "customerManagedKey": {
@@ -222,16 +176,8 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": false,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
+    "location": {
+      "value": "<location>"
     },
     "privateEndpoints": {
       "value": [
@@ -240,12 +186,7 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
             "<privateDNSZoneResourceId>"
           ],
           "service": "blob",
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -254,13 +195,6 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
     },
     "skuName": {
       "value": "Standard_LRS"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -279,7 +213,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-ssamax'
   params: {
     // Required parameters
@@ -357,7 +291,6 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     enableHierarchicalNamespace: true
     enableNfsV3: true
     enableSftp: true
@@ -423,6 +356,7 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
         storageAccountName: 'ssamax001'
       }
     ]
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -687,9 +621,6 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "enableHierarchicalNamespace": {
       "value": true
     },
@@ -766,6 +697,9 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
           "storageAccountName": "ssamax001"
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -970,28 +904,13 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-ssanfs'
   params: {
     // Required parameters
     name: 'ssanfs001'
     // Non-required parameters
     allowBlobPublicAccess: false
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     fileServices: {
       shares: [
         {
@@ -1001,40 +920,9 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
       ]
     }
     kind: 'FileStorage'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
+    location: '<location>'
     skuName: 'Premium_LRS'
     supportsHttpsTrafficOnly: false
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -1059,25 +947,6 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
     "allowBlobPublicAccess": {
       "value": false
     },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "fileServices": {
       "value": {
         "shares": [
@@ -1091,51 +960,14 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
     "kind": {
       "value": "FileStorage"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
+    "location": {
+      "value": "<location>"
     },
     "skuName": {
       "value": "Premium_LRS"
     },
     "supportsHttpsTrafficOnly": {
       "value": false
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -1151,20 +983,15 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-ssav1'
   params: {
     // Required parameters
     name: 'ssav1001'
     // Non-required parameters
     allowBlobPublicAccess: false
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     kind: 'Storage'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
+    location: '<location>'
   }
 }
 ```
@@ -1189,18 +1016,11 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
     "allowBlobPublicAccess": {
       "value": false
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "kind": {
       "value": "Storage"
     },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -1219,7 +1039,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-ssawaf'
   params: {
     // Required parameters
@@ -1236,13 +1056,6 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
           enableNfsV3RootSquash: true
           name: 'avdscripts'
           publicAccess: 'None'
-          roleAssignments: [
-            {
-              principalId: '<principalId>'
-              principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Reader'
-            }
-          ]
         }
         {
           allowProtectedAppendWrites: false
@@ -1287,7 +1100,6 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     enableHierarchicalNamespace: true
     enableNfsV3: true
     enableSftp: true
@@ -1310,13 +1122,6 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
         {
           accessTier: 'Hot'
           name: 'avdprofiles'
-          roleAssignments: [
-            {
-              principalId: '<principalId>'
-              principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Reader'
-            }
-          ]
           shareQuota: 5120
         }
         {
@@ -1343,6 +1148,7 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
         storageAccountName: 'ssawaf001'
       }
     ]
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -1439,13 +1245,6 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
             key2: 'value2'
           }
           name: 'queue1'
-          roleAssignments: [
-            {
-              principalId: '<principalId>'
-              principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Reader'
-            }
-          ]
         }
         {
           metadata: {}
@@ -1515,14 +1314,7 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
             "enableNfsV3AllSquash": true,
             "enableNfsV3RootSquash": true,
             "name": "avdscripts",
-            "publicAccess": "None",
-            "roleAssignments": [
-              {
-                "principalId": "<principalId>",
-                "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "Reader"
-              }
-            ]
+            "publicAccess": "None"
           },
           {
             "allowProtectedAppendWrites": false,
@@ -1570,9 +1362,6 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "enableHierarchicalNamespace": {
       "value": true
     },
@@ -1602,13 +1391,6 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
           {
             "accessTier": "Hot",
             "name": "avdprofiles",
-            "roleAssignments": [
-              {
-                "principalId": "<principalId>",
-                "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "Reader"
-              }
-            ],
             "shareQuota": 5120
           },
           {
@@ -1639,6 +1421,9 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
           "storageAccountName": "ssawaf001"
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -1746,14 +1531,7 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
               "key1": "value1",
               "key2": "value2"
             },
-            "name": "queue1",
-            "roleAssignments": [
-              {
-                "principalId": "<principalId>",
-                "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "Reader"
-              }
-            ]
+            "name": "queue1"
           },
           {
             "metadata": {},
@@ -1839,9 +1617,9 @@ module storageAccount 'br:bicep/modules/storage.storage-account:1.0.0' = {
 | [`defaultToOAuthAuthentication`](#parameter-defaulttooauthauthentication) | bool | A boolean flag which indicates whether the default authentication is OAuth or not. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`dnsEndpointType`](#parameter-dnsendpointtype) | string | Allows you to specify the type of endpoint. Set this to AzureDNSZone to create a large number of accounts in a single subscription, which creates accounts in an Azure DNS Zone and the endpoint URL will have an alphanumeric DNS Zone identifier. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`enableNfsV3`](#parameter-enablenfsv3) | bool | If true, enables NFS 3.0 support for the storage account. Requires enableHierarchicalNamespace to be true. |
 | [`enableSftp`](#parameter-enablesftp) | bool | If true, enables Secure File Transfer Protocol for the storage account. Requires enableHierarchicalNamespace to be true. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`fileServices`](#parameter-fileservices) | object | File service and shares to deploy. |
 | [`isLocalUserEnabled`](#parameter-islocaluserenabled) | bool | Enables local users feature, if set to true. |
 | [`kind`](#parameter-kind) | string | Type of Storage Account to create. |
@@ -2123,14 +1901,6 @@ Allows you to specify the type of endpoint. Set this to AzureDNSZone to create a
   ]
   ```
 
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
-
 ### Parameter: `enableNfsV3`
 
 If true, enables NFS 3.0 support for the storage account. Requires enableHierarchicalNamespace to be true.
@@ -2146,6 +1916,14 @@ If true, enables Secure File Transfer Protocol for the storage account. Requires
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `fileServices`
 
@@ -2282,7 +2060,6 @@ The Storage Account ManagementPolicies Rules.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `minimumTlsVersion`
 
@@ -2478,7 +2255,7 @@ Array of role assignments to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-privateendpointsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`condition`](#parameter-privateendpointsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
 | [`conditionVersion`](#parameter-privateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-privateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-privateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
@@ -2500,7 +2277,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 ### Parameter: `privateEndpoints.roleAssignments.condition`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
@@ -2606,7 +2383,7 @@ Array of role assignments to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
@@ -2628,7 +2405,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 ### Parameter: `roleAssignments.condition`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
@@ -2747,7 +2524,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `modules/network/private-endpoint` | Local reference |
+| `br/public:avm/res/network/private-endpoint:0.3.1` | Remote reference |
 
 ## Notes
 

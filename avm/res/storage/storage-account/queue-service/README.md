@@ -31,7 +31,6 @@ This module deploys a Storage Account Queue Service.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`queues`](#parameter-queues) | array | Queues to create. |
 
 ### Parameter: `storageAccountName`
@@ -132,21 +131,12 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
-
 ### Parameter: `queues`
 
 Queues to create.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 
 ## Outputs

@@ -14,7 +14,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing 
 }
 
 // lifecycle policy
-resource managementPolicy 'Microsoft.Storage/storageAccounts/managementPolicies@2023-01-01' = if (!empty(rules)) {
+resource managementPolicy 'Microsoft.Storage/storageAccounts/managementPolicies@2023-01-01' = {
   name: 'default'
   parent: storageAccount
   properties: {

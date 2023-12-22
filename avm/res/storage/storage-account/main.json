@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "18392898268305996931"
+      "templateHash": "10807219580738158388"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -103,7 +103,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
             }
           },
           "conditionVersion": {
@@ -524,7 +524,7 @@
     },
     "managementPolicyRules": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The Storage Account ManagementPolicies Rules."
       }
@@ -677,11 +677,11 @@
         "description": "Optional. Tags of the resource."
       }
     },
-    "enableDefaultTelemetry": {
+    "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "allowedCopyScope": {
@@ -734,7 +734,6 @@
     "supportsFileService": "[or(or(equals(parameters('kind'), 'FileStorage'), equals(parameters('kind'), 'StorageV2')), equals(parameters('kind'), 'Storage'))]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-    "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -773,17 +772,23 @@
         "cMKKeyVault"
       ]
     },
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
-          "resources": []
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
         }
       }
     },
@@ -851,7 +856,7 @@
         "isNfsV3Enabled": "[if(parameters('enableNfsV3'), parameters('enableNfsV3'), '')]",
         "largeFileSharesState": "[if(or(equals(parameters('skuName'), 'Standard_LRS'), equals(parameters('skuName'), 'Standard_ZRS')), parameters('largeFileSharesState'), null())]",
         "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
-        "networkAcls": "[if(not(empty(parameters('networkAcls'))), createObject('bypass', if(contains(parameters('networkAcls'), 'bypass'), parameters('networkAcls').bypass, null()), 'defaultAction', if(contains(parameters('networkAcls'), 'defaultAction'), parameters('networkAcls').defaultAction, null()), 'virtualNetworkRules', if(contains(parameters('networkAcls'), 'virtualNetworkRules'), parameters('networkAcls').virtualNetworkRules, createArray()), 'ipRules', if(contains(parameters('networkAcls'), 'ipRules'), parameters('networkAcls').ipRules, createArray())), null())]",
+        "networkAcls": "[if(not(empty(parameters('networkAcls'))), createObject('bypass', tryGet(parameters('networkAcls'), 'bypass'), 'defaultAction', tryGet(parameters('networkAcls'), 'defaultAction'), 'virtualNetworkRules', tryGet(parameters('networkAcls'), 'virtualNetworkRules'), 'ipRules', tryGet(parameters('networkAcls'), 'ipRules')), null())]",
         "allowBlobPublicAccess": "[parameters('allowBlobPublicAccess')]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkAcls'))), 'Disabled', null()))]",
         "azureFilesIdentityBasedAuthentication": "[if(not(empty(parameters('azureFilesIdentityBasedAuthentication'))), parameters('azureFilesIdentityBasedAuthentication'), null())]"
@@ -919,36 +924,41 @@
         "storageAccount"
       ]
     },
-    "storageAccount_privateEndpoints": {
+    "keyVault_privateEndpoints": {
       "copy": {
-        "name": "storageAccount_privateEndpoints",
+        "name": "keyVault_privateEndpoints",
         "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-storageAccount-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-StorageAccount-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
-          "groupIds": {
+          "privateLinkServiceConnections": {
             "value": [
-              "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service]"
+              {
+                "name": "[parameters('name')]",
+                "properties": {
+                  "privateLinkServiceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('name'))]",
+                  "groupIds": [
+                    "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service]"
+                  ]
+                }
+              }
             ]
           },
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service), copyIndex()))]"
-          },
-          "serviceResourceId": {
-            "value": "[resourceId('Microsoft.Storage/storageAccounts', parameters('name'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'vault'), copyIndex()))]"
           },
           "subnetResourceId": {
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
-          "enableDefaultTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableDefaultTelemetry'), variables('enableReferencedModulesTelemetry'))]"
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
@@ -991,8 +1001,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "11154909986774213690"
+              "version": "0.23.1.45101",
+              "templateHash": "2821141217598568122"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -1007,7 +1017,7 @@
                   "roleDefinitionIdOrName": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                     }
                   },
                   "principalId": {
@@ -1131,6 +1141,89 @@
               },
               "nullable": true
             },
+            "manualPrivateLinkServiceConnectionsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the private link service connection."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "groupIds": {
+                        "type": "array",
+                        "metadata": {
+                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "privateLinkServiceId": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The resource id of private link service."
+                        }
+                      },
+                      "requestMessage": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of private link service connection."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "privateLinkServiceConnectionsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the private link service connection."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "groupIds": {
+                        "type": "array",
+                        "metadata": {
+                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "privateLinkServiceId": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The resource id of private link service."
+                        }
+                      },
+                      "requestMessage": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of private link service connection."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
             "customDnsConfigType": {
               "type": "array",
               "items": {
@@ -1169,12 +1262,6 @@
                 "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
               }
             },
-            "serviceResourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. Resource ID of the resource that needs to be connected to the network."
-              }
-            },
             "applicationSecurityGroupResourceIds": {
               "type": "array",
               "nullable": true,
@@ -1191,15 +1278,8 @@
             },
             "ipConfigurations": {
               "$ref": "#/definitions/ipConfigurationsType",
-              "nullable": true,
               "metadata": {
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-              }
-            },
-            "groupIds": {
-              "type": "array",
-              "metadata": {
-                "description": "Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to."
               }
             },
             "privateDnsZoneGroupName": {
@@ -1232,7 +1312,7 @@
             "roleAssignments": {
               "$ref": "#/definitions/roleAssignmentType",
               "metadata": {
-                "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                "description": "Optional. Array of role assignments to create."
               }
             },
             "tags": {
@@ -1244,19 +1324,23 @@
             },
             "customDnsConfigs": {
               "$ref": "#/definitions/customDnsConfigType",
-              "nullable": true,
               "metadata": {
                 "description": "Optional. Custom DNS configurations."
               }
             },
             "manualPrivateLinkServiceConnections": {
-              "type": "array",
-              "nullable": true,
+              "$ref": "#/definitions/manualPrivateLinkServiceConnectionsType",
               "metadata": {
-                "description": "Optional. Manual PrivateLink Service Connections."
+                "description": "Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
               }
             },
-            "enableDefaultTelemetry": {
+            "privateLinkServiceConnections": {
+              "$ref": "#/definitions/privateLinkServiceConnectionsType",
+              "metadata": {
+                "description": "Optional. A grouping of information about the connection to the remote resource."
+              }
+            },
+            "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
               "metadata": {
@@ -1265,7 +1349,6 @@
             }
           },
           "variables": {
-            "enableReferencedModulesTelemetry": false,
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
@@ -1280,17 +1363,23 @@
             }
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+              "apiVersion": "2023-07-01",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
-                  "resources": []
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
                 }
               }
             },
@@ -1310,19 +1399,11 @@
                     }
                   }
                 ],
-                "customDnsConfigs": "[parameters('customDnsConfigs')]",
+                "customDnsConfigs": "[coalesce(parameters('customDnsConfigs'), createArray())]",
                 "customNetworkInterfaceName": "[coalesce(parameters('customNetworkInterfaceName'), '')]",
                 "ipConfigurations": "[coalesce(parameters('ipConfigurations'), createArray())]",
                 "manualPrivateLinkServiceConnections": "[coalesce(parameters('manualPrivateLinkServiceConnections'), createArray())]",
-                "privateLinkServiceConnections": [
-                  {
-                    "name": "[parameters('name')]",
-                    "properties": {
-                      "privateLinkServiceId": "[parameters('serviceResourceId')]",
-                      "groupIds": "[parameters('groupIds')]"
-                    }
-                  }
-                ],
+                "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
                 "subnet": {
                   "id": "[parameters('subnetResourceId')]"
                 }
@@ -1352,7 +1433,7 @@
               "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
               "name": "[guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
               "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
                 "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
                 "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
                 "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
@@ -1383,9 +1464,6 @@
                   },
                   "privateEndpointName": {
                     "value": "[parameters('name')]"
-                  },
-                  "enableDefaultTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -1394,8 +1472,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "6129461321051281170"
+                      "version": "0.23.1.45101",
+                      "templateHash": "18168683629401652671"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -1422,13 +1500,6 @@
                       "metadata": {
                         "description": "Optional. The name of the private DNS zone group."
                       }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable/Disable usage telemetry for module."
-                      }
                     }
                   },
                   "variables": {
@@ -1446,20 +1517,6 @@
                     ]
                   },
                   "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
-                    },
                     {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
                       "apiVersion": "2023-04-01",
@@ -1536,7 +1593,7 @@
       ]
     },
     "storageAccount_managementPolicies": {
-      "condition": "[not(empty(parameters('managementPolicyRules')))]",
+      "condition": "[not(empty(coalesce(parameters('managementPolicyRules'), createArray())))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Storage-ManagementPolicies', uniqueString(deployment().name, parameters('location')))]",
@@ -1550,10 +1607,7 @@
             "value": "[parameters('name')]"
           },
           "rules": {
-            "value": "[parameters('managementPolicyRules')]"
-          },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+            "value": "[coalesce(parameters('managementPolicyRules'), createArray())]"
           }
         },
         "template": {
@@ -1563,7 +1617,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "17367295274678732206"
+              "templateHash": "17360500138014235250"
             },
             "name": "Storage Account Management Policies",
             "description": "This module deploys a Storage Account Management Policy.",
@@ -1582,32 +1636,10 @@
               "metadata": {
                 "description": "Required. The Storage Account ManagementPolicies Rules."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
             {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
-            {
-              "condition": "[not(empty(parameters('rules')))]",
               "type": "Microsoft.Storage/storageAccounts/managementPolicies",
               "apiVersion": "2023-01-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]",
@@ -1677,21 +1709,25 @@
           "permissionScopes": {
             "value": "[parameters('localUsers')[copyIndex()].permissionScopes]"
           },
-          "hasSharedKey": "[if(contains(parameters('localUsers')[copyIndex()], 'hasSharedKey'), createObject('value', parameters('localUsers')[copyIndex()].hasSharedKey), createObject('value', false()))]",
-          "homeDirectory": "[if(contains(parameters('localUsers')[copyIndex()], 'homeDirectory'), createObject('value', parameters('localUsers')[copyIndex()].homeDirectory), createObject('value', ''))]",
-          "sshAuthorizedKeys": "[if(contains(parameters('localUsers')[copyIndex()], 'sshAuthorizedKeys'), createObject('value', parameters('localUsers')[copyIndex()].sshAuthorizedKeys), createObject('value', createArray()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+          "hasSharedKey": {
+            "value": "[tryGet(parameters('localUsers')[copyIndex()], 'hasSharedKey')]"
+          },
+          "homeDirectory": {
+            "value": "[tryGet(parameters('localUsers')[copyIndex()], 'homeDirectory')]"
+          },
+          "sshAuthorizedKeys": {
+            "value": "[tryGet(parameters('localUsers')[copyIndex()], 'sshAuthorizedKeys')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "9451599245128557073"
+              "templateHash": "5221153317857160240"
             },
             "name": "Storage Account Local Users",
             "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication.",
@@ -1745,35 +1781,20 @@
             },
             "sshAuthorizedKeys": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The local user SSH authorized keys for SFTP."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
-          "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
+          "resources": {
+            "storageAccount": {
+              "existing": true,
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2021-09-01",
+              "name": "[parameters('storageAccountName')]"
             },
-            {
+            "localUsers": {
               "type": "Microsoft.Storage/storageAccounts/localUsers",
               "apiVersion": "2022-05-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('name'))]",
@@ -1783,10 +1804,13 @@
                 "hasSshPassword": "[parameters('hasSshPassword')]",
                 "homeDirectory": "[parameters('homeDirectory')]",
                 "permissionScopes": "[parameters('permissionScopes')]",
-                "sshAuthorizedKeys": "[if(not(empty(parameters('sshAuthorizedKeys'))), parameters('sshAuthorizedKeys'), null())]"
-              }
+                "sshAuthorizedKeys": "[parameters('sshAuthorizedKeys')]"
+              },
+              "dependsOn": [
+                "storageAccount"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -1830,35 +1854,56 @@
           "storageAccountName": {
             "value": "[parameters('name')]"
           },
-          "containers": "[if(contains(parameters('blobServices'), 'containers'), createObject('value', parameters('blobServices').containers), createObject('value', createArray()))]",
-          "automaticSnapshotPolicyEnabled": "[if(contains(parameters('blobServices'), 'automaticSnapshotPolicyEnabled'), createObject('value', parameters('blobServices').automaticSnapshotPolicyEnabled), createObject('value', false()))]",
-          "changeFeedEnabled": "[if(contains(parameters('blobServices'), 'changeFeedEnabled'), createObject('value', parameters('blobServices').changeFeedEnabled), createObject('value', false()))]",
+          "containers": {
+            "value": "[tryGet(parameters('blobServices'), 'containers')]"
+          },
+          "automaticSnapshotPolicyEnabled": {
+            "value": "[tryGet(parameters('blobServices'), 'automaticSnapshotPolicyEnabled')]"
+          },
+          "changeFeedEnabled": {
+            "value": "[tryGet(parameters('blobServices'), 'changeFeedEnabled')]"
+          },
           "changeFeedRetentionInDays": {
             "value": "[tryGet(parameters('blobServices'), 'changeFeedRetentionInDays')]"
           },
-          "containerDeleteRetentionPolicyEnabled": "[if(contains(parameters('blobServices'), 'containerDeleteRetentionPolicyEnabled'), createObject('value', parameters('blobServices').containerDeleteRetentionPolicyEnabled), createObject('value', false()))]",
+          "containerDeleteRetentionPolicyEnabled": {
+            "value": "[tryGet(parameters('blobServices'), 'containerDeleteRetentionPolicyEnabled')]"
+          },
           "containerDeleteRetentionPolicyDays": {
             "value": "[tryGet(parameters('blobServices'), 'containerDeleteRetentionPolicyDays')]"
           },
-          "containerDeleteRetentionPolicyAllowPermanentDelete": "[if(contains(parameters('blobServices'), 'containerDeleteRetentionPolicyAllowPermanentDelete'), createObject('value', parameters('blobServices').containerDeleteRetentionPolicyAllowPermanentDelete), createObject('value', false()))]",
-          "corsRules": "[if(contains(parameters('blobServices'), 'corsRules'), createObject('value', parameters('blobServices').corsRules), createObject('value', createArray()))]",
-          "defaultServiceVersion": "[if(contains(parameters('blobServices'), 'defaultServiceVersion'), createObject('value', parameters('blobServices').defaultServiceVersion), createObject('value', ''))]",
-          "deleteRetentionPolicyAllowPermanentDelete": "[if(contains(parameters('blobServices'), 'deleteRetentionPolicyAllowPermanentDelete'), createObject('value', parameters('blobServices').deleteRetentionPolicyAllowPermanentDelete), createObject('value', false()))]",
-          "deleteRetentionPolicyEnabled": "[if(contains(parameters('blobServices'), 'deleteRetentionPolicyEnabled'), createObject('value', parameters('blobServices').deleteRetentionPolicyEnabled), createObject('value', false()))]",
+          "containerDeleteRetentionPolicyAllowPermanentDelete": {
+            "value": "[tryGet(parameters('blobServices'), 'containerDeleteRetentionPolicyAllowPermanentDelete')]"
+          },
+          "corsRules": {
+            "value": "[tryGet(parameters('blobServices'), 'corsRules')]"
+          },
+          "defaultServiceVersion": {
+            "value": "[tryGet(parameters('blobServices'), 'defaultServiceVersion')]"
+          },
+          "deleteRetentionPolicyAllowPermanentDelete": {
+            "value": "[tryGet(parameters('blobServices'), 'deleteRetentionPolicyAllowPermanentDelete')]"
+          },
+          "deleteRetentionPolicyEnabled": {
+            "value": "[tryGet(parameters('blobServices'), 'deleteRetentionPolicyEnabled')]"
+          },
           "deleteRetentionPolicyDays": {
             "value": "[tryGet(parameters('blobServices'), 'deleteRetentionPolicyDays')]"
           },
-          "isVersioningEnabled": "[if(contains(parameters('blobServices'), 'isVersioningEnabled'), createObject('value', parameters('blobServices').isVersioningEnabled), createObject('value', false()))]",
-          "lastAccessTimeTrackingPolicyEnabled": "[if(contains(parameters('blobServices'), 'lastAccessTimeTrackingPolicyEnabled'), createObject('value', parameters('blobServices').lastAccessTimeTrackingPolicyEnabled), createObject('value', false()))]",
-          "restorePolicyEnabled": "[if(contains(parameters('blobServices'), 'restorePolicyEnabled'), createObject('value', parameters('blobServices').restorePolicyEnabled), createObject('value', false()))]",
+          "isVersioningEnabled": {
+            "value": "[tryGet(parameters('blobServices'), 'isVersioningEnabled')]"
+          },
+          "lastAccessTimeTrackingPolicyEnabled": {
+            "value": "[tryGet(parameters('blobServices'), 'lastAccessTimeTrackingPolicyEnabled')]"
+          },
+          "restorePolicyEnabled": {
+            "value": "[tryGet(parameters('blobServices'), 'restorePolicyEnabled')]"
+          },
           "restorePolicyDays": {
             "value": "[tryGet(parameters('blobServices'), 'restorePolicyDays')]"
           },
           "diagnosticSettings": {
             "value": "[tryGet(parameters('blobServices'), 'diagnosticSettings')]"
-          },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1869,7 +1914,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "15895331301993414988"
+              "templateHash": "9630791844906045926"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service.",
@@ -2105,7 +2150,7 @@
             },
             "containers": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Blob containers to create."
               }
@@ -2115,34 +2160,12 @@
               "metadata": {
                 "description": "Optional. The diagnostic settings of the service."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "variables": {
-            "name": "default",
-            "enableReferencedModulesTelemetry": false
+            "name": "default"
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             "storageAccount": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
@@ -2208,7 +2231,7 @@
             "blobServices_container": {
               "copy": {
                 "name": "blobServices_container",
-                "count": "[length(parameters('containers'))]"
+                "count": "[length(coalesce(parameters('containers'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -2223,19 +2246,34 @@
                     "value": "[parameters('storageAccountName')]"
                   },
                   "name": {
-                    "value": "[parameters('containers')[copyIndex()].name]"
+                    "value": "[coalesce(parameters('containers'), createArray())[copyIndex()].name]"
                   },
-                  "defaultEncryptionScope": "[if(contains(parameters('containers')[copyIndex()], 'defaultEncryptionScope'), createObject('value', parameters('containers')[copyIndex()].defaultEncryptionScope), createObject('value', ''))]",
-                  "denyEncryptionScopeOverride": "[if(contains(parameters('containers')[copyIndex()], 'denyEncryptionScopeOverride'), createObject('value', parameters('containers')[copyIndex()].denyEncryptionScopeOverride), createObject('value', false()))]",
-                  "enableNfsV3AllSquash": "[if(contains(parameters('containers')[copyIndex()], 'enableNfsV3AllSquash'), createObject('value', parameters('containers')[copyIndex()].enableNfsV3AllSquash), createObject('value', false()))]",
-                  "enableNfsV3RootSquash": "[if(contains(parameters('containers')[copyIndex()], 'enableNfsV3RootSquash'), createObject('value', parameters('containers')[copyIndex()].enableNfsV3RootSquash), createObject('value', false()))]",
-                  "immutableStorageWithVersioningEnabled": "[if(contains(parameters('containers')[copyIndex()], 'immutableStorageWithVersioningEnabled'), createObject('value', parameters('containers')[copyIndex()].immutableStorageWithVersioningEnabled), createObject('value', false()))]",
-                  "metadata": "[if(contains(parameters('containers')[copyIndex()], 'metadata'), createObject('value', parameters('containers')[copyIndex()].metadata), createObject('value', createObject()))]",
-                  "publicAccess": "[if(contains(parameters('containers')[copyIndex()], 'publicAccess'), createObject('value', parameters('containers')[copyIndex()].publicAccess), createObject('value', 'None'))]",
-                  "roleAssignments": "[if(contains(parameters('containers')[copyIndex()], 'roleAssignments'), createObject('value', parameters('containers')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-                  "immutabilityPolicyProperties": "[if(contains(parameters('containers')[copyIndex()], 'immutabilityPolicyProperties'), createObject('value', parameters('containers')[copyIndex()].immutabilityPolicyProperties), createObject('value', createObject()))]",
-                  "enableDefaultTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  "defaultEncryptionScope": {
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'defaultEncryptionScope')]"
+                  },
+                  "denyEncryptionScopeOverride": {
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'denyEncryptionScopeOverride')]"
+                  },
+                  "enableNfsV3AllSquash": {
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'enableNfsV3AllSquash')]"
+                  },
+                  "enableNfsV3RootSquash": {
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'enableNfsV3RootSquash')]"
+                  },
+                  "immutableStorageWithVersioningEnabled": {
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'immutableStorageWithVersioningEnabled')]"
+                  },
+                  "metadata": {
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'metadata')]"
+                  },
+                  "publicAccess": {
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'publicAccess')]"
+                  },
+                  "roleAssignments": {
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "immutabilityPolicyProperties": {
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'immutabilityPolicyProperties')]"
                   }
                 },
                 "template": {
@@ -2246,7 +2284,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.24.24.22086",
-                      "templateHash": "12877248389226548296"
+                      "templateHash": "4036653635771798033"
                     },
                     "name": "Storage Account Blob Containers",
                     "description": "This module deploys a Storage Account Blob Container.",
@@ -2295,7 +2333,7 @@
                             "type": "string",
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                             }
                           },
                           "conditionVersion": {
@@ -2378,7 +2416,7 @@
                     },
                     "immutabilityPolicyProperties": {
                       "type": "object",
-                      "defaultValue": {},
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Configure immutability policy."
                       }
@@ -2407,17 +2445,9 @@
                       "metadata": {
                         "description": "Optional. Array of role assignments to create."
                       }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-                      }
                     }
                   },
                   "variables": {
-                    "enableReferencedModulesTelemetry": false,
                     "builtInRoleNames": {
                       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -2452,20 +2482,6 @@
                       "dependsOn": [
                         "storageAccount"
                       ]
-                    },
-                    "defaultTelemetry": {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
                     },
                     "storageAccount": {
                       "existing": true,
@@ -2513,7 +2529,7 @@
                       ]
                     },
                     "immutabilityPolicy": {
-                      "condition": "[not(empty(parameters('immutabilityPolicyProperties')))]",
+                      "condition": "[not(empty(coalesce(parameters('immutabilityPolicyProperties'), createObject())))]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[parameters('immutabilityPolicyName')]",
@@ -2529,11 +2545,14 @@
                           "containerName": {
                             "value": "[parameters('name')]"
                           },
-                          "immutabilityPeriodSinceCreationInDays": "[if(contains(parameters('immutabilityPolicyProperties'), 'immutabilityPeriodSinceCreationInDays'), createObject('value', parameters('immutabilityPolicyProperties').immutabilityPeriodSinceCreationInDays), createObject('value', 365))]",
-                          "allowProtectedAppendWrites": "[if(contains(parameters('immutabilityPolicyProperties'), 'allowProtectedAppendWrites'), createObject('value', parameters('immutabilityPolicyProperties').allowProtectedAppendWrites), createObject('value', true()))]",
-                          "allowProtectedAppendWritesAll": "[if(contains(parameters('immutabilityPolicyProperties'), 'allowProtectedAppendWritesAll'), createObject('value', parameters('immutabilityPolicyProperties').allowProtectedAppendWritesAll), createObject('value', true()))]",
-                          "enableDefaultTelemetry": {
-                            "value": "[variables('enableReferencedModulesTelemetry')]"
+                          "immutabilityPeriodSinceCreationInDays": {
+                            "value": "[tryGet(parameters('immutabilityPolicyProperties'), 'immutabilityPeriodSinceCreationInDays')]"
+                          },
+                          "allowProtectedAppendWrites": {
+                            "value": "[tryGet(parameters('immutabilityPolicyProperties'), 'allowProtectedAppendWrites')]"
+                          },
+                          "allowProtectedAppendWritesAll": {
+                            "value": "[tryGet(parameters('immutabilityPolicyProperties'), 'allowProtectedAppendWritesAll')]"
                           }
                         },
                         "template": {
@@ -2543,7 +2562,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.24.24.22086",
-                              "templateHash": "4658218767079659572"
+                              "templateHash": "15441426428461937893"
                             },
                             "name": "Storage Account Blob Container Immutability Policies",
                             "description": "This module deploys a Storage Account Blob Container Immutability Policy.",
@@ -2583,30 +2602,9 @@
                               "metadata": {
                                 "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both \"Append and Block Blobs\" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The \"allowProtectedAppendWrites\" and \"allowProtectedAppendWritesAll\" properties are mutually exclusive."
                               }
-                            },
-                            "enableDefaultTelemetry": {
-                              "type": "bool",
-                              "defaultValue": true,
-                              "metadata": {
-                                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-                              }
                             }
                           },
                           "resources": [
-                            {
-                              "condition": "[parameters('enableDefaultTelemetry')]",
-                              "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2021-04-01",
-                              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                              "properties": {
-                                "mode": "Incremental",
-                                "template": {
-                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                                  "contentVersion": "1.0.0.0",
-                                  "resources": []
-                                }
-                              }
-                            },
                             {
                               "type": "Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies",
                               "apiVersion": "2022-09-01",
@@ -2725,11 +2723,14 @@
           "diagnosticSettings": {
             "value": "[tryGet(parameters('blobServices'), 'diagnosticSettings')]"
           },
-          "protocolSettings": "[if(contains(parameters('fileServices'), 'protocolSettings'), createObject('value', parameters('fileServices').protocolSettings), createObject('value', createObject()))]",
-          "shareDeleteRetentionPolicy": "[if(contains(parameters('fileServices'), 'shareDeleteRetentionPolicy'), createObject('value', parameters('fileServices').shareDeleteRetentionPolicy), createObject('value', createObject('enabled', true(), 'days', 7)))]",
-          "shares": "[if(contains(parameters('fileServices'), 'shares'), createObject('value', parameters('fileServices').shares), createObject('value', createArray()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+          "protocolSettings": {
+            "value": "[tryGet(parameters('fileServices'), 'protocolSettings')]"
+          },
+          "shareDeleteRetentionPolicy": {
+            "value": "[tryGet(parameters('fileServices'), 'shareDeleteRetentionPolicy')]"
+          },
+          "shares": {
+            "value": "[tryGet(parameters('fileServices'), 'shares')]"
           }
         },
         "template": {
@@ -2740,7 +2741,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "5919540891902254282"
+              "templateHash": "16125389485406033385"
             },
             "name": "Storage Account File Share Services",
             "description": "This module deploys a Storage Account File Share Service.",
@@ -2894,37 +2895,13 @@
             },
             "shares": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. File shares to create."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
-          "variables": {
-            "enableReferencedModulesTelemetry": false
-          },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             "storageAccount": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
@@ -2969,7 +2946,7 @@
             "fileServices_shares": {
               "copy": {
                 "name": "fileServices_shares",
-                "count": "[length(parameters('shares'))]"
+                "count": "[length(coalesce(parameters('shares'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -2987,15 +2964,22 @@
                     "value": "[parameters('name')]"
                   },
                   "name": {
-                    "value": "[parameters('shares')[copyIndex()].name]"
+                    "value": "[coalesce(parameters('shares'), createArray())[copyIndex()].name]"
                   },
-                  "accessTier": "[if(contains(parameters('shares')[copyIndex()], 'accessTier'), createObject('value', parameters('shares')[copyIndex()].accessTier), if(equals(reference('storageAccount', '2021-09-01', 'full').kind, 'FileStorage'), createObject('value', 'Premium'), createObject('value', 'TransactionOptimized')))]",
-                  "enabledProtocols": "[if(contains(parameters('shares')[copyIndex()], 'enabledProtocols'), createObject('value', parameters('shares')[copyIndex()].enabledProtocols), createObject('value', 'SMB'))]",
-                  "rootSquash": "[if(contains(parameters('shares')[copyIndex()], 'rootSquash'), createObject('value', parameters('shares')[copyIndex()].rootSquash), createObject('value', 'NoRootSquash'))]",
-                  "shareQuota": "[if(contains(parameters('shares')[copyIndex()], 'shareQuota'), createObject('value', parameters('shares')[copyIndex()].shareQuota), createObject('value', 5120))]",
-                  "roleAssignments": "[if(contains(parameters('shares')[copyIndex()], 'roleAssignments'), createObject('value', parameters('shares')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-                  "enableDefaultTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  "accessTier": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'accessTier'), if(equals(reference('storageAccount', '2021-09-01', 'full').kind, 'FileStorage'), 'Premium', 'TransactionOptimized'))]"
+                  },
+                  "enabledProtocols": {
+                    "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'enabledProtocols')]"
+                  },
+                  "rootSquash": {
+                    "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'rootSquash')]"
+                  },
+                  "shareQuota": {
+                    "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'shareQuota')]"
+                  },
+                  "roleAssignments": {
+                    "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'roleAssignments')]"
                   }
                 },
                 "template": {
@@ -3006,7 +2990,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.24.24.22086",
-                      "templateHash": "3643709768620634256"
+                      "templateHash": "11759339361995782717"
                     },
                     "name": "Storage Account File Shares",
                     "description": "This module deploys a Storage Account File Share.",
@@ -3055,7 +3039,7 @@
                             "type": "string",
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                             }
                           },
                           "conditionVersion": {
@@ -3149,13 +3133,6 @@
                       "metadata": {
                         "description": "Optional. Array of role assignments to create."
                       }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-                      }
                     }
                   },
                   "resources": {
@@ -3167,20 +3144,6 @@
                       "dependsOn": [
                         "storageAccount"
                       ]
-                    },
-                    "defaultTelemetry": {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
                     },
                     "storageAccount": {
                       "existing": true,
@@ -3494,9 +3457,8 @@
           "diagnosticSettings": {
             "value": "[tryGet(parameters('blobServices'), 'diagnosticSettings')]"
           },
-          "queues": "[if(contains(parameters('queueServices'), 'queues'), createObject('value', parameters('queueServices').queues), createObject('value', createArray()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+          "queues": {
+            "value": "[tryGet(parameters('queueServices'), 'queues')]"
           }
         },
         "template": {
@@ -3507,7 +3469,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "488727166620230076"
+              "templateHash": "7151166956801272958"
             },
             "name": "Storage Account Queue Services",
             "description": "This module deploys a Storage Account Queue Service.",
@@ -3631,7 +3593,7 @@
             },
             "queues": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Queues to create."
               }
@@ -3641,34 +3603,12 @@
               "metadata": {
                 "description": "Optional. The diagnostic settings of the service."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "variables": {
-            "name": "default",
-            "enableReferencedModulesTelemetry": false
+            "name": "default"
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             "storageAccount": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
@@ -3710,7 +3650,7 @@
             "queueServices_queues": {
               "copy": {
                 "name": "queueServices_queues",
-                "count": "[length(parameters('queues'))]"
+                "count": "[length(coalesce(parameters('queues'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -3725,12 +3665,13 @@
                     "value": "[parameters('storageAccountName')]"
                   },
                   "name": {
-                    "value": "[parameters('queues')[copyIndex()].name]"
+                    "value": "[coalesce(parameters('queues'), createArray())[copyIndex()].name]"
                   },
-                  "metadata": "[if(contains(parameters('queues')[copyIndex()], 'metadata'), createObject('value', parameters('queues')[copyIndex()].metadata), createObject('value', createObject()))]",
-                  "roleAssignments": "[if(contains(parameters('queues')[copyIndex()], 'roleAssignments'), createObject('value', parameters('queues')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-                  "enableDefaultTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  "metadata": {
+                    "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'metadata')]"
+                  },
+                  "roleAssignments": {
+                    "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'roleAssignments')]"
                   }
                 },
                 "template": {
@@ -3741,7 +3682,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.24.24.22086",
-                      "templateHash": "100286929116341954"
+                      "templateHash": "14266397145588412865"
                     },
                     "name": "Storage Account Queues",
                     "description": "This module deploys a Storage Account Queue.",
@@ -3790,7 +3731,7 @@
                             "type": "string",
                             "nullable": true,
                             "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                             }
                           },
                           "conditionVersion": {
@@ -3841,13 +3782,6 @@
                       "metadata": {
                         "description": "Optional. Array of role assignments to create."
                       }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-                      }
                     }
                   },
                   "variables": {
@@ -3885,20 +3819,6 @@
                       "dependsOn": [
                         "storageAccount"
                       ]
-                    },
-                    "defaultTelemetry": {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
                     },
                     "storageAccount": {
                       "existing": true,
@@ -4016,9 +3936,8 @@
           "diagnosticSettings": {
             "value": "[tryGet(parameters('blobServices'), 'diagnosticSettings')]"
           },
-          "tables": "[if(contains(parameters('tableServices'), 'tables'), createObject('value', parameters('tableServices').tables), createObject('value', createArray()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+          "tables": {
+            "value": "[tryGet(parameters('tableServices'), 'tables')]"
           }
         },
         "template": {
@@ -4029,7 +3948,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "4899998340898025880"
+              "templateHash": "1719326946127695217"
             },
             "name": "Storage Account Table Services",
             "description": "This module deploys a Storage Account Table Service.",
@@ -4163,34 +4082,12 @@
               "metadata": {
                 "description": "Optional. The diagnostic settings of the service."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "variables": {
-            "name": "default",
-            "enableReferencedModulesTelemetry": false
+            "name": "default"
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             "storageAccount": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
@@ -4248,9 +4145,6 @@
                   },
                   "storageAccountName": {
                     "value": "[parameters('storageAccountName')]"
-                  },
-                  "enableDefaultTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -4260,7 +4154,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.24.24.22086",
-                      "templateHash": "12296091632007980628"
+                      "templateHash": "10452227891612122598"
                     },
                     "name": "Storage Account Table",
                     "description": "This module deploys a Storage Account Table.",
@@ -4279,30 +4173,9 @@
                       "metadata": {
                         "description": "Required. Name of the table."
                       }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-                      }
                     }
                   },
                   "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
-                    },
                     {
                       "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
                       "apiVersion": "2021-09-01",
@@ -4403,7 +4276,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('storageAccount', '2022-09-01', 'full').identity, 'principalId')), reference('storageAccount', '2022-09-01', 'full').identity.principalId, '')]"
+      "value": "[if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), tryGet(reference('storageAccount', '2022-09-01', 'full').identity, 'principalId'), '')]"
     },
     "location": {
       "type": "string",

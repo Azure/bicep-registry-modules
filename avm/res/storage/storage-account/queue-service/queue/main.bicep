@@ -78,6 +78,7 @@ output resourceId string = queue.id
 
 @description('The resource group of the deployed queue.')
 output resourceGroupName string = resourceGroup().name
+
 // =============== //
 //   Definitions   //
 // =============== //

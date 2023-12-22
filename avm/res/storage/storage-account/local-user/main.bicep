@@ -25,7 +25,7 @@ param homeDirectory string = ''
 param permissionScopes array
 
 @description('Optional. The local user SSH authorized keys for SFTP.')
-param sshAuthorizedKeys array = []
+param sshAuthorizedKeys array?
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
   name: storageAccountName
@@ -40,7 +40,7 @@ resource localUsers 'Microsoft.Storage/storageAccounts/localUsers@2022-05-01' = 
     hasSshPassword: hasSshPassword
     homeDirectory: homeDirectory
     permissionScopes: permissionScopes
-    sshAuthorizedKeys: !empty(sshAuthorizedKeys) ? sshAuthorizedKeys : null
+    sshAuthorizedKeys: sshAuthorizedKeys
   }
 }
 

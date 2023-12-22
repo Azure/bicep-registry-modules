@@ -22,9 +22,7 @@ param shareDeleteRetentionPolicy object = {
 param diagnosticSettings diagnosticSettingType
 
 @description('Optional. File shares to create.')
-param shares array = []
-
-var enableReferencedModulesTelemetry = false
+param shares array?
 
 var defaultShareAccessTier = storageAccount.kind == 'FileStorage' ? 'Premium' : 'TransactionOptimized' // default share accessTier depends on the Storage Account kind: 'Premium' for 'FileStorage' kind, 'TransactionOptimized' otherwise
 
@@ -67,17 +65,17 @@ resource fileServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
   scope: fileServices
 }]
 
-module fileServices_shares 'share/main.bicep' = [for (share, index) in shares: {
+module fileServices_shares 'share/main.bicep' = [for (share, index) in (shares ?? []): {
   name: '${deployment().name}-shares-${index}'
   params: {
     storageAccountName: storageAccount.name
     fileServicesName: fileServices.name
     name: share.name
-    accessTier: contains(share, 'accessTier') ? share.accessTier : defaultShareAccessTier
-    enabledProtocols: contains(share, 'enabledProtocols') ? share.enabledProtocols : 'SMB'
-    rootSquash: contains(share, 'rootSquash') ? share.rootSquash : 'NoRootSquash'
-    shareQuota: contains(share, 'shareQuota') ? share.shareQuota : 5120
-    roleAssignments: contains(share, 'roleAssignments') ? share.roleAssignments : []
+    accessTier: share.?accessTier ?? defaultShareAccessTier
+    enabledProtocols: share.?enabledProtocols
+    rootSquash: share.?rootSquash
+    shareQuota: share.?shareQuota
+    roleAssignments: share.?roleAssignments
   }
 }]
 

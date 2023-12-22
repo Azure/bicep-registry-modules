@@ -15,8 +15,6 @@ param diagnosticSettings diagnosticSettingType
 // The name of the table service
 var name = 'default'
 
-var enableReferencedModulesTelemetry = false
-
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
   name: storageAccountName
 }
@@ -69,6 +67,7 @@ output resourceId string = tableServices.id
 
 @description('The resource group of the deployed table service.')
 output resourceGroupName string = resourceGroup().name
+
 // =============== //
 //   Definitions   //
 // =============== //

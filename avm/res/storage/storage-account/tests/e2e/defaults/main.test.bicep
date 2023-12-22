@@ -18,7 +18,7 @@ param location string = deployment().location
 param serviceShort string = 'ssamin'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -40,7 +40,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    enableDefaultTelemetry: enableDefaultTelemetry
     name: '${namePrefix}${serviceShort}001'
     allowBlobPublicAccess: false
   }

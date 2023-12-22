@@ -30,7 +30,6 @@ This module deploys a Storage Account Blob Container Immutability Policy.
 | :-- | :-- | :-- |
 | [`allowProtectedAppendWrites`](#parameter-allowprotectedappendwrites) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. |
 | [`allowProtectedAppendWritesAll`](#parameter-allowprotectedappendwritesall) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`immutabilityPeriodSinceCreationInDays`](#parameter-immutabilityperiodsincecreationindays) | int | The immutability period for the blobs in the container since the policy creation, in days. |
 
 ### Parameter: `containerName`
@@ -58,14 +57,6 @@ This property can only be changed for unlocked time-based retention policies. Wh
 ### Parameter: `allowProtectedAppendWritesAll`
 
 This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
 
 - Required: No
 - Type: bool

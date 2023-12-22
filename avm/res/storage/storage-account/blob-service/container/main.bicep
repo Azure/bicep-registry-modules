@@ -28,7 +28,7 @@ param immutableStorageWithVersioningEnabled bool = false
 param immutabilityPolicyName string = 'default'
 
 @description('Optional. Configure immutability policy.')
-param immutabilityPolicyProperties object = {}
+param immutabilityPolicyProperties object?
 
 @description('Optional. A name-value pair to associate with the container as metadata.')
 param metadata object = {}
@@ -93,7 +93,7 @@ resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@20
   }
 }
 
-module immutabilityPolicy 'immutability-policy/main.bicep' = if (!empty(immutabilityPolicyProperties)) {
+module immutabilityPolicy 'immutability-policy/main.bicep' = if (!empty((immutabilityPolicyProperties ?? {}))) {
   name: immutabilityPolicyName
   params: {
     storageAccountName: storageAccount.name
