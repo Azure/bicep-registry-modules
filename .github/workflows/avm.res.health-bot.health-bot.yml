@@ -27,14 +27,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.health-bot/health-bot.yml"
+      - ".github/workflows/avm.res.health-bot.health-bot.yml"
       - "avm/res/health-bot/health-bot/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
   modulePath: "avm/res/health-bot/health-bot"
-  workflowPath: ".github/workflows/avm.res.health-bot/health-bot.yml"
+  workflowPath: ".github/workflows/avm.res.health-bot.health-bot.yml"
 
 concurrency:
   group: ${{ github.workflow }}
