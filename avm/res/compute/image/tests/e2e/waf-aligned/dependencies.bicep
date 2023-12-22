@@ -115,7 +115,7 @@ resource triggerImageDeploymentScript 'Microsoft.Resources/deploymentScripts@202
     azPowerShellVersion: '8.0'
     retentionInterval: 'P1D'
     arguments: '-ImageTemplateName \\"${imageTemplate.name}\\" -ImageTemplateResourceGroup \\"${resourceGroup().name}\\"'
-    scriptContent: loadTextContent('../../../../../.shared/.scripts/Start-ImageTemplate.ps1')
+    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/.scripts/Start-ImageTemplate.ps1')
     cleanupPreference: 'OnSuccess'
     forceUpdateTag: baseTime
   }

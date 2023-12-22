@@ -1,9 +1,6 @@
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-@description('Required. The name of the managed identity to create.')
-param managedIdentityName string
-
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
 
@@ -44,14 +41,6 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
     }
   }
 }
-
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: managedIdentityName
-  location: location
-}
-
-@description('The resource ID of the created Managed Identity.')
-output managedIdentityResourceId string = managedIdentity.id
 
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
