@@ -31,8 +31,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Combine a generated and provided Public IP Prefix](#example-3-combine-a-generated-and-provided-public-ip-prefix)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Prefixcombined](#example-3-prefixcombined)
+- [Waf-Aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -98,7 +98,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     // Required parameters
     name: 'nngmax001'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -125,7 +124,17 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         skuTier: 'Regional'
@@ -179,9 +188,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
       "value": "nngmax001"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -213,7 +219,17 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "skuTier": "Regional",
@@ -258,10 +274,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 </details>
 <p>
 
-### Example 3: _Combine a generated and provided Public IP Prefix_
-
-This example shows how you can provide a Public IP Prefix to the module, while also generating one in the module.
-
+### Example 3: _Prefixcombined_
 
 <details>
 
@@ -274,7 +287,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     // Required parameters
     name: 'nngcprx001'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -342,9 +354,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
       "value": "nngcprx001"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -410,10 +419,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
+### Example 4: _Waf-Aligned_
 
 <details>
 
@@ -426,7 +432,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     // Required parameters
     name: 'nngwaf001'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -490,9 +495,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
       "value": "nngwaf001"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -792,5 +794,5 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `res/network/public-ip-address` | Local reference |
 | `res/network/public-ip-prefix` | Local reference |
+| `br/public:avm/res/network/public-ip-address:0.2.1` | Remote reference |

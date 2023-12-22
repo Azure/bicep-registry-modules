@@ -65,11 +65,10 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-module publicIPAddresses '../public-ip-address/main.bicep' = [for (publicIPAddressObject, index) in (publicIPAddressObjects ?? []): {
+module publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.2.1' = [for (publicIPAddressObject, index) in (publicIPAddressObjects ?? []): {
   name: '${uniqueString(deployment().name, location)}-NatGw-PIP-${index}'
   params: {
     name: contains(publicIPAddressObject, 'name') ? publicIPAddressObject.name : '${name}-pip'
-    enableTelemetry: enableReferencedModulesTelemetry
     location: location
     lock: publicIPAddressObject.?lock ?? lock
     diagnosticSettings: publicIPAddressObject.?diagnosticSettings
@@ -96,7 +95,6 @@ module publicIPPrefixes '../public-ip-prefix/main.bicep' = [for (publicIPPrefixO
   name: '${uniqueString(deployment().name, location)}-NatGw-Prefix-PIP-${index}'
   params: {
     name: contains(publicIPPrefixObject, 'name') ? publicIPPrefixObject.name : '${name}-pip'
-    enableTelemetry: enableReferencedModulesTelemetry
     location: location
     lock: publicIPPrefixObject.?lock ?? lock
     prefixLength: publicIPPrefixObject.prefixLength
