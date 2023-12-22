@@ -472,7 +472,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     computerName: 'winvm1'
     dataDisks: [
       {
-        caching: 'None'
+        caching: 'ReadOnly'
         createOption: 'Empty'
         deleteOption: 'Delete'
         diskSizeGB: '128'
@@ -481,7 +481,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
       {
-        caching: 'None'
+        caching: 'ReadOnly'
         createOption: 'Empty'
         deleteOption: 'Delete'
         diskSizeGB: '128'
@@ -767,7 +767,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "dataDisks": {
       "value": [
         {
-          "caching": "None",
+          "caching": "ReadOnly",
           "createOption": "Empty",
           "deleteOption": "Delete",
           "diskSizeGB": "128",
@@ -776,7 +776,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           }
         },
         {
-          "caching": "None",
+          "caching": "ReadOnly",
           "createOption": "Empty",
           "deleteOption": "Delete",
           "diskSizeGB": "128",

@@ -175,7 +175,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     backupVaultResourceGroup: nestedDependencies.outputs.recoveryServicesVaultResourceGroupName
     dataDisks: [
       {
-        caching: 'None'
+        caching: 'ReadOnly'
         createOption: 'Empty'
         deleteOption: 'Delete'
         diskSizeGB: '128'
@@ -184,7 +184,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         }
       }
       {
-        caching: 'None'
+        caching: 'ReadOnly'
         createOption: 'Empty'
         deleteOption: 'Delete'
         diskSizeGB: '128'
