@@ -31,14 +31,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
 }
 
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
-  params: {
-    location:location
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-  }
-}
 
 // Diagnostics
 // ===========
@@ -72,13 +64,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     publicIPAddressObjects: [
       {
         name: '${namePrefix}${serviceShort}001-pip'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
         skuTier: 'Regional'
         zones: [
           '1'

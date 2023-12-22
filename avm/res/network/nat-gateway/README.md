@@ -31,8 +31,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Prefixcombined](#example-3-prefixcombined)
-- [Waf-Aligned](#example-4-waf-aligned)
+- [Combine a generated and provided Public IP Prefix](#example-3-combine-a-generated-and-provided-public-ip-prefix)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -274,7 +274,10 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 </details>
 <p>
 
-### Example 3: _Prefixcombined_
+### Example 3: _Combine a generated and provided Public IP Prefix_
+
+This example shows how you can provide a Public IP Prefix to the module, while also generating one in the module.
+
 
 <details>
 
@@ -296,36 +299,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
       {
         name: 'nngcprx001-pippre'
         prefixLength: 30
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
         tags: {
           'hidden-title': 'CustomTag'
         }
-      }
-    ]
-    publicIPPrefixResourceIds: [
-      '<publicIpPrefixResourceId>'
-    ]
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     tags: {
@@ -368,40 +344,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
         {
           "name": "nngcprx001-pippre",
           "prefixLength": 30,
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
           "tags": {
             "hidden-title": "CustomTag"
           }
-        }
-      ]
-    },
-    "publicIPPrefixResourceIds": {
-      "value": [
-        "<publicIpPrefixResourceId>"
-      ]
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -419,7 +364,10 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 </details>
 <p>
 
-### Example 4: _Waf-Aligned_
+### Example 4: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -454,13 +402,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
           }
         ]
         name: 'nngwaf001-pip'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
         skuTier: 'Regional'
         zones: [
           '1'
@@ -522,13 +463,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
             }
           ],
           "name": "nngwaf001-pip",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
           "skuTier": "Regional",
           "zones": [
             "1",
