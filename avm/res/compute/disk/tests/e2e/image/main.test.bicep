@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using an image'
+metadata description = 'This instance deploys the module with an image reference.'
+
 // ========== //
 // Parameters //
 // ========== //

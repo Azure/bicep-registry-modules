@@ -1,5 +1,10 @@
 # Images `[Microsoft.Compute/images]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys a Compute Image.
 
 ## Navigation
@@ -26,8 +31,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/image:<version>`.
 
 - [Defaults](#example-1-defaults)
-- [Max](#example-2-max)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Defaults_
 
@@ -37,9 +42,16 @@ The following section provides usage examples for the module, which were used to
 
 ```bicep
 module image 'br/public:avm/res/compute/image:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cidef'
+  name: '${uniqueString(deployment().name, location)}-test-cimin'
   params: {
-    name: 'cidef001'
+    // Required parameters
+    name: 'cimin001'
+    osAccountType: 'Standard_LRS'
+    osDiskBlobUri: '<osDiskBlobUri>'
+    osDiskCaching: 'ReadWrite'
+    osType: 'Windows'
+    // Non-required parameters
+    location: '<location>'
   }
 }
 ```
@@ -56,8 +68,25 @@ module image 'br/public:avm/res/compute/image:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
-      "value": "cidef001"
+      "value": "cimin001"
+    },
+    "osAccountType": {
+      "value": "Standard_LRS"
+    },
+    "osDiskBlobUri": {
+      "value": "<osDiskBlobUri>"
+    },
+    "osDiskCaching": {
+      "value": "ReadWrite"
+    },
+    "osType": {
+      "value": "Windows"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -66,7 +95,10 @@ module image 'br/public:avm/res/compute/image:<version>' = {
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -106,9 +138,9 @@ module image 'br/public:avm/res/compute/image:<version>' = {
       }
     ]
     tags: {
+      Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
-      tagA: 'You\'re it'
-      tagB: 'Player'
+      Role: 'DeploymentValidation'
     }
     zoneResilient: true
   }
@@ -180,9 +212,9 @@ module image 'br/public:avm/res/compute/image:<version>' = {
     },
     "tags": {
       "value": {
+        "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
-        "tagA": "You\"re it",
-        "tagB": "Player"
+        "Role": "DeploymentValidation"
       }
     },
     "zoneResilient": {
@@ -195,7 +227,10 @@ module image 'br/public:avm/res/compute/image:<version>' = {
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -218,9 +253,9 @@ module image 'br/public:avm/res/compute/image:<version>' = {
     location: '<location>'
     osState: 'Generalized'
     tags: {
+      Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
-      tagA: 'You\'re it'
-      tagB: 'Player'
+      Role: 'DeploymentValidation'
     }
     zoneResilient: true
   }
@@ -273,9 +308,9 @@ module image 'br/public:avm/res/compute/image:<version>' = {
     },
     "tags": {
       "value": {
+        "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
-        "tagA": "You\"re it",
-        "tagB": "Player"
+        "Role": "DeploymentValidation"
       }
     },
     "zoneResilient": {
@@ -452,7 +487,7 @@ Array of role assignments to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
@@ -474,7 +509,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 ### Parameter: `roleAssignments.condition`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string

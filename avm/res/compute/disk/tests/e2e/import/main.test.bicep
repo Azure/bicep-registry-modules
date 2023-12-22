@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using an imported image'
+metadata description = 'This instance deploys the module with a custom image that is imported from a VHD in a storage account.'
+
 // ========== //
 // Parameters //
 // ========== //

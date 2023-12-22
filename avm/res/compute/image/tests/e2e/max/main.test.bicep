@@ -88,8 +88,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     diskSizeGB: 128
     tags: {
       'hidden-title': 'This is visible in the resource name'
-      tagA: 'You\'re it'
-      tagB: 'Player'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
     }
   }
 }]
