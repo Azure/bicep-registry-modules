@@ -95,11 +95,11 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01
       allowPermanentDelete: deleteRetentionPolicyEnabled && deleteRetentionPolicyAllowPermanentDelete ? true : null
     }
     isVersioningEnabled: isVersioningEnabled
-    lastAccessTimeTrackingPolicy: {
-      enable: storageAccount.kind != 'Storage' ? lastAccessTimeTrackingPolicyEnabled : false
+    lastAccessTimeTrackingPolicy: storageAccount.kind != 'Storage' ? {
+      enable: lastAccessTimeTrackingPolicyEnabled
       name: lastAccessTimeTrackingPolicyEnabled == true ? 'AccessTimeTracking' : null
       trackingGranularityInDays: lastAccessTimeTrackingPolicyEnabled == true ? 1 : null
-    }
+    } : null
     restorePolicy: restorePolicyEnabled ? {
       enabled: true
       days: restorePolicyDays
