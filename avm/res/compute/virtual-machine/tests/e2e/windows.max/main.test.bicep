@@ -158,7 +158,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       }
     ]
     osDisk: {
-      caching: 'None'
+      caching: 'ReadWrite'
       createOption: 'fromImage'
       deleteOption: 'Delete'
       diskSizeGB: '128'

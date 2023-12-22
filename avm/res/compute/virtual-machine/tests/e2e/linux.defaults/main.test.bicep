@@ -82,6 +82,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     osDisk: {
       diskSizeGB: '128'
+      caching: 'ReadWrite'
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }

@@ -257,6 +257,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     ]
     osDisk: {
+      caching: 'ReadWrite'
       diskSizeGB: '128'
       managedDisk: {
         storageAccountType: 'Premium_LRS'
@@ -320,6 +321,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "osDisk": {
       "value": {
+        "caching": "ReadWrite",
         "diskSizeGB": "128",
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
@@ -451,7 +453,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     ]
     osDisk: {
-      caching: 'None'
+      caching: 'ReadWrite'
       createOption: 'fromImage'
       deleteOption: 'Delete'
       diskSizeGB: '128'
@@ -728,7 +730,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "osDisk": {
       "value": {
-        "caching": "None",
+        "caching": "ReadWrite",
         "createOption": "fromImage",
         "deleteOption": "Delete",
         "diskSizeGB": "128",
@@ -1130,6 +1132,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     ]
     osDisk: {
+      caching: 'ReadWrite'
       diskSizeGB: '128'
       managedDisk: {
         storageAccountType: 'Premium_LRS'
@@ -1184,6 +1187,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "osDisk": {
       "value": {
+        "caching": "ReadWrite",
         "diskSizeGB": "128",
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
@@ -1307,7 +1311,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     ]
     osDisk: {
-      caching: 'None'
+      caching: 'ReadWrite'
       createOption: 'fromImage'
       deleteOption: 'Delete'
       diskSizeGB: '128'
@@ -1584,7 +1588,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "osDisk": {
       "value": {
-        "caching": "None",
+        "caching": "ReadWrite",
         "createOption": "fromImage",
         "deleteOption": "Delete",
         "diskSizeGB": "128",
