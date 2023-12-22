@@ -66,7 +66,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     location: location
-    enableTelemetry: enableTelemetry
     name: '${namePrefix}${serviceShort}001'
     lock: {
       kind: 'CanNotDelete'
