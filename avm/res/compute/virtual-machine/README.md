@@ -2002,7 +2002,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`additionalUnattendContent`](#parameter-additionalunattendcontent) | array | Specifies additional base-64 encoded XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. - AdditionalUnattendContent object. |
+| [`additionalUnattendContent`](#parameter-additionalunattendcontent) | array | Specifies additional XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. Contents are defined by setting name, component name, and the pass in which the content is applied. |
 | [`adminPassword`](#parameter-adminpassword) | securestring | When specifying a Windows Virtual Machine, this value should be passed. |
 | [`allowExtensionOperations`](#parameter-allowextensionoperations) | bool | Specifies whether extension operations should be allowed on the virtual machine. This may only be set to False when no extensions are present on the virtual machine. |
 | [`availabilitySetResourceId`](#parameter-availabilitysetresourceid) | string | Resource ID of an availability set. Cannot be used in combination with availability zone nor scale set. |
@@ -2130,7 +2130,7 @@ Specifies the size for the VMs.
 
 ### Parameter: `additionalUnattendContent`
 
-Specifies additional base-64 encoded XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. - AdditionalUnattendContent object.
+Specifies additional XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. Contents are defined by setting name, component name, and the pass in which the content is applied.
 
 - Required: No
 - Type: array
