@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "13156540248571374606"
+      "templateHash": "1151917033159788201"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -846,7 +846,9 @@
           },
           "requireInfrastructureEncryption": "[if(not(equals(parameters('kind'), 'Storage')), parameters('requireInfrastructureEncryption'), null())]",
           "keyvaultproperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('keyname', parameters('customerManagedKey').keyName, 'keyvaulturi', reference('cMKKeyVault').vaultUri, 'keyversion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), null())]",
-          "identity": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null())]"
+          "identity": {
+            "userAssignedIdentity": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))), null())]"
+          }
         },
         "accessTier": "[if(not(equals(parameters('kind'), 'Storage')), parameters('accessTier'), null())]",
         "sasPolicy": "[if(not(empty(parameters('sasExpirationPeriod'))), createObject('expirationAction', 'Log', 'sasExpirationPeriod', parameters('sasExpirationPeriod')), null())]",

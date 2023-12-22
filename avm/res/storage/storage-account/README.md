@@ -1263,10 +1263,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       }
     ]
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -1538,12 +1534,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "managedIdentities": {
       "value": {

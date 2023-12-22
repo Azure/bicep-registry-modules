@@ -275,9 +275,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
         keyvaulturi: cMKKeyVault.properties.vaultUri
         keyversion: !empty(customerManagedKey.?keyVersion ?? '') ? customerManagedKey!.keyVersion : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
       } : null
-      identity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? {
-        userAssignedIdentity: cMKUserAssignedIdentity.id
-      } : null
+      identity: {
+        userAssignedIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? cMKUserAssignedIdentity.id : null
+      }
     }
     accessTier: kind != 'Storage' ? accessTier : null
     sasPolicy: !empty(sasExpirationPeriod) ? {
