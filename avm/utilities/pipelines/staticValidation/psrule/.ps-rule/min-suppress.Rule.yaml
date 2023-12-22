@@ -23,6 +23,8 @@ spec:
     - Azure.TrafficManager.Protocol
       # Azure Load Balancer specific
     - Azure.LB.Probe
+      # App Managed Environment specific
+    - Azure.ContainerApp.PublicAccess
   if:
     name: "."
     contains:
