@@ -1,0 +1,80 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "12296091632007980628"
+    },
+    "name": "Storage Account Table",
+    "description": "This module deploys a Storage Account Table.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "storageAccountName": {
+      "type": "string",
+      "maxLength": 24,
+      "metadata": {
+        "description": "Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the table."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
+      "apiVersion": "2021-09-01",
+      "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', parameters('name'))]"
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed file share service."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed file share service."
+      },
+      "value": "[resourceId('Microsoft.Storage/storageAccounts/tableServices/tables', parameters('storageAccountName'), 'default', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed file share service."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

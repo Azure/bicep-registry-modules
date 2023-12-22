@@ -1,0 +1,127 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "9451599245128557073"
+    },
+    "name": "Storage Account Local Users",
+    "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "storageAccountName": {
+      "type": "string",
+      "maxLength": 24,
+      "metadata": {
+        "description": "Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the local user used for SFTP Authentication."
+      }
+    },
+    "hasSharedKey": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Indicates whether shared key exists. Set it to false to remove existing shared key."
+      }
+    },
+    "hasSshKey": {
+      "type": "bool",
+      "metadata": {
+        "description": "Required. Indicates whether SSH key exists. Set it to false to remove existing SSH key."
+      }
+    },
+    "hasSshPassword": {
+      "type": "bool",
+      "metadata": {
+        "description": "Required. Indicates whether SSH password exists. Set it to false to remove existing SSH password."
+      }
+    },
+    "homeDirectory": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The local user home directory."
+      }
+    },
+    "permissionScopes": {
+      "type": "array",
+      "metadata": {
+        "description": "Required. The permission scopes of the local user."
+      }
+    },
+    "sshAuthorizedKeys": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The local user SSH authorized keys for SFTP."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/localUsers",
+      "apiVersion": "2022-05-01",
+      "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('name'))]",
+      "properties": {
+        "hasSharedKey": "[parameters('hasSharedKey')]",
+        "hasSshKey": "[parameters('hasSshKey')]",
+        "hasSshPassword": "[parameters('hasSshPassword')]",
+        "homeDirectory": "[parameters('homeDirectory')]",
+        "permissionScopes": "[parameters('permissionScopes')]",
+        "sshAuthorizedKeys": "[if(not(empty(parameters('sshAuthorizedKeys'))), parameters('sshAuthorizedKeys'), null())]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed local user."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed local user."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed local user."
+      },
+      "value": "[resourceId('Microsoft.Storage/storageAccounts/localUsers', parameters('storageAccountName'), parameters('name'))]"
+    }
+  }
+}
