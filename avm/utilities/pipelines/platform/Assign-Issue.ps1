@@ -1,9 +1,10 @@
 function Get-AvmCsv {
+  
   [CmdletBinding()]
   param (
     [Parameter(Mandatory)]
     [ValidateSet('Bicep-Resource', 'Bicep-Pattern', 'Terraform-Resource', 'Terraform-Pattern')]
-    [string]$ModuleIndex
+    [string] $ModuleIndex
   )
 
   # Retrieve the CSV file
