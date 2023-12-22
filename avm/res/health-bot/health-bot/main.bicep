@@ -48,7 +48,6 @@ var builtInRoleNames = {
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.healthbot-healthbot.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  location: location
   properties: {
     mode: 'Incremental'
     template: {
