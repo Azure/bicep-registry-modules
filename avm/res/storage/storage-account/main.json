@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "1151917033159788201"
+      "templateHash": "1929423978853680137"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -531,7 +531,13 @@
     },
     "networkAcls": {
       "type": "object",
-      "defaultValue": {},
+      "defaultValue": {
+        "resourceAccessRules": [],
+        "bypass": "AzureServices",
+        "virtualNetworkRules": [],
+        "ipRules": [],
+        "defaultAction": "Deny"
+      },
       "metadata": {
         "description": "Optional. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. For security reasons, it is recommended to set the DefaultAction Deny."
       }

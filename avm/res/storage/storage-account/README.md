@@ -2187,7 +2187,16 @@ Networks ACLs, this value contains IPs to whitelist and/or Subnet information. F
 
 - Required: No
 - Type: object
-- Default: `{}`
+- Default:
+  ```Bicep
+  {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+      ipRules: []
+      resourceAccessRules: []
+      virtualNetworkRules: []
+  }
+  ```
 
 ### Parameter: `privateEndpoints`
 
