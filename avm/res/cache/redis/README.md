@@ -144,7 +144,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
         }
       }
     ]
-    publicNetworkAccess: 'Enabled'
     redisVersion: '6'
     shardCount: 1
     skuName: 'Premium'
@@ -235,9 +234,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
         }
       ]
     },
-    "publicNetworkAccess": {
-      "value": "Enabled"
-    },
     "redisVersion": {
       "value": "6"
     },
@@ -323,7 +319,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
         }
       }
     ]
-    publicNetworkAccess: 'Enabled'
     redisVersion: '6'
     shardCount: 1
     skuName: 'Premium'
@@ -410,9 +405,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
           }
         }
       ]
-    },
-    "publicNetworkAccess": {
-      "value": "Enabled"
     },
     "redisVersion": {
       "value": "6"

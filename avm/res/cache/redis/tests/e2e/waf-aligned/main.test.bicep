@@ -101,7 +101,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         }
       }
     ]
-    publicNetworkAccess: 'Enabled'
     redisVersion: '6'
     shardCount: 1
     skuName: 'Premium'
