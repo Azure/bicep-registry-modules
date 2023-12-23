@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module with most of its featur
 param resourceGroupName string = 'dep-${namePrefix}-healthbot.healthbots-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param location string = 'westeurope'
+param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'hbhbmax'
@@ -50,7 +50,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: location
+    location: resourceGroup.location
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'

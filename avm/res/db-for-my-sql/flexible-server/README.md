@@ -115,10 +115,10 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dfmsfsmax'
+  name: '${uniqueString(deployment().name, location)}-test-dfmsmax'
   params: {
     // Required parameters
-    name: 'dfmsfsmax001'
+    name: 'dfmsmax001'
     skuName: 'Standard_D2ds_v4'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -204,7 +204,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     tags: {
       'hidden-title': 'This is visible in the resource name'
       resourceType: 'MySQL Flexible Server'
-      serverName: 'dfmsfsmax001'
+      serverName: 'dfmsmax001'
     }
     version: '8.0.21'
   }
@@ -225,7 +225,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dfmsfsmax001"
+      "value": "dfmsmax001"
     },
     "skuName": {
       "value": "Standard_D2ds_v4"
@@ -355,7 +355,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": {
         "hidden-title": "This is visible in the resource name",
         "resourceType": "MySQL Flexible Server",
-        "serverName": "dfmsfsmax001"
+        "serverName": "dfmsmax001"
       }
     },
     "version": {
@@ -379,10 +379,10 @@ This instance deploys the module with connectivity mode "Private Access".
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dfmsfspvt'
+  name: '${uniqueString(deployment().name, location)}-test-dfmspvt'
   params: {
     // Required parameters
-    name: 'dfmsfspvt001'
+    name: 'dfmspvt001'
     skuName: 'Standard_D2ds_v4'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -452,7 +452,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     tags: {
       'hidden-title': 'This is visible in the resource name'
       resourceType: 'MySQL Flexible Server'
-      serverName: 'dfmsfspvt001'
+      serverName: 'dfmspvt001'
     }
   }
 }
@@ -472,7 +472,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dfmsfspvt001"
+      "value": "dfmspvt001"
     },
     "skuName": {
       "value": "Standard_D2ds_v4"
@@ -582,7 +582,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": {
         "hidden-title": "This is visible in the resource name",
         "resourceType": "MySQL Flexible Server",
-        "serverName": "dfmsfspvt001"
+        "serverName": "dfmspvt001"
       }
     }
   }
@@ -603,10 +603,10 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dfmsfswaf'
+  name: '${uniqueString(deployment().name, location)}-test-dfmswaf'
   params: {
     // Required parameters
-    name: 'dfmsfswaf001'
+    name: 'dfmswaf001'
     skuName: 'Standard_B1ms'
     tier: 'Burstable'
     // Non-required parameters
@@ -640,7 +640,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dfmsfswaf001"
+      "value": "dfmswaf001"
     },
     "skuName": {
       "value": "Standard_B1ms"
