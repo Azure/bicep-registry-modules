@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'VPN'
+metadata description = 'This instance deploys the module with the VPN set of required parameters.'
+
 // ========== //
 // Parameters //
 // ========== //

@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'ExpressRoute'
+metadata description = 'This instance deploys the module with the ExpressRoute set of required parameters.'
+
 // ========== //
 // Parameters //
 // ========== //

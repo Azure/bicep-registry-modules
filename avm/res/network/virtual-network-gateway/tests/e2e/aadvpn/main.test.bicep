@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'AAD-VPN'
+metadata description = 'This instance deploys the module with the AAD set of required parameters.'
+
 // ========== //
 // Parameters //
 // ========== //

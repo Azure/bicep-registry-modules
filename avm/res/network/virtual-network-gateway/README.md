@@ -29,14 +29,17 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/virtual-network-gateway:<version>`.
 
-- [Aadvpn](#example-1-aadvpn)
-- [Defaults](#example-2-defaults)
-- [Expressroute](#example-3-expressroute)
-- [Max](#example-4-max)
-- [Vpn](#example-5-vpn)
-- [Waf-Aligned](#example-6-waf-aligned)
+- [AAD-VPN](#example-1-aad-vpn)
+- [Using only defaults](#example-2-using-only-defaults)
+- [ExpressRoute](#example-3-expressroute)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [VPN](#example-5-vpn)
+- [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Aadvpn_
+### Example 1: _AAD-VPN_
+
+This instance deploys the module with the AAD set of required parameters.
+
 
 <details>
 
@@ -233,7 +236,10 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 2: _Defaults_
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -290,7 +296,10 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 3: _Expressroute_
+### Example 3: _ExpressRoute_
+
+This instance deploys the module with the ExpressRoute set of required parameters.
+
 
 <details>
 
@@ -437,7 +446,10 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 4: _Max_
+### Example 4: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -494,7 +506,10 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 5: _Vpn_
+### Example 5: _VPN_
+
+This instance deploys the module with the VPN set of required parameters.
+
 
 <details>
 
@@ -741,7 +756,10 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 </details>
 <p>
 
-### Example 6: _Waf-Aligned_
+### Example 6: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
