@@ -465,7 +465,87 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     skuName: 'VpnGw2AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
+    activeActive: true
+    allowRemoteVnetTraffic: true
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    disableIPSecReplayProtection: true
+    domainNameLabel: [
+      'dm-nvgmax'
+    ]
+    enableBgpRouteTranslationForNat: true
+    enablePrivateIpAddress: true
+    gatewayDefaultSiteLocalNetworkGatewayId: '<gatewayDefaultSiteLocalNetworkGatewayId>'
     location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    natRules: [
+      {
+        externalMappings: [
+          {
+            addressSpace: '192.168.0.0/24'
+            portRange: '100'
+          }
+        ]
+        internalMappings: [
+          {
+            addressSpace: '10.100.0.0/24'
+            portRange: '100'
+          }
+        ]
+        mode: 'IngressSnat'
+        name: 'nat-rule-1-static-IngressSnat'
+        type: 'Static'
+      }
+      {
+        externalMappings: [
+          {
+            addressSpace: '10.200.0.0/26'
+          }
+        ]
+        internalMappings: [
+          {
+            addressSpace: '172.16.0.0/26'
+          }
+        ]
+        mode: 'EgressSnat'
+        name: 'nat-rule-2-dynamic-EgressSnat'
+        type: 'Dynamic'
+      }
+    ]
+    publicIpZones: [
+      '1'
+      '2'
+      '3'
+    ]
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    vpnGatewayGeneration: 'Generation2'
+    vpnType: 'RouteBased'
   }
 }
 ```
@@ -496,8 +576,118 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "<vNetResourceId>"
     },
     // Non-required parameters
+    "activeActive": {
+      "value": true
+    },
+    "allowRemoteVnetTraffic": {
+      "value": true
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "disableIPSecReplayProtection": {
+      "value": true
+    },
+    "domainNameLabel": {
+      "value": [
+        "dm-nvgmax"
+      ]
+    },
+    "enableBgpRouteTranslationForNat": {
+      "value": true
+    },
+    "enablePrivateIpAddress": {
+      "value": true
+    },
+    "gatewayDefaultSiteLocalNetworkGatewayId": {
+      "value": "<gatewayDefaultSiteLocalNetworkGatewayId>"
+    },
     "location": {
       "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "natRules": {
+      "value": [
+        {
+          "externalMappings": [
+            {
+              "addressSpace": "192.168.0.0/24",
+              "portRange": "100"
+            }
+          ],
+          "internalMappings": [
+            {
+              "addressSpace": "10.100.0.0/24",
+              "portRange": "100"
+            }
+          ],
+          "mode": "IngressSnat",
+          "name": "nat-rule-1-static-IngressSnat",
+          "type": "Static"
+        },
+        {
+          "externalMappings": [
+            {
+              "addressSpace": "10.200.0.0/26"
+            }
+          ],
+          "internalMappings": [
+            {
+              "addressSpace": "172.16.0.0/26"
+            }
+          ],
+          "mode": "EgressSnat",
+          "name": "nat-rule-2-dynamic-EgressSnat",
+          "type": "Dynamic"
+        }
+      ]
+    },
+    "publicIpZones": {
+      "value": [
+        "1",
+        "2",
+        "3"
+      ]
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Reader"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "vpnGatewayGeneration": {
+      "value": "Generation2"
+    },
+    "vpnType": {
+      "value": "RouteBased"
     }
   }
 }
@@ -776,6 +966,11 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     location: '<location>'
+    publicIpZones: [
+      '1'
+      '2'
+      '3'
+    ]
   }
 }
 ```
@@ -808,6 +1003,13 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "publicIpZones": {
+      "value": [
+        "1",
+        "2",
+        "3"
+      ]
     }
   }
 }
