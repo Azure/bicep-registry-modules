@@ -83,9 +83,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
-    domainNameLabel: [
-      '${namePrefix}-dm-${serviceShort}'
-    ]
     gatewayPipName: '${namePrefix}-pip-${serviceShort}'
     roleAssignments: [
       {

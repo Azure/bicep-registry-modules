@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "16751329000404691378"
+      "templateHash": "8821896729874898567"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway.",
@@ -251,13 +251,6 @@
       "defaultValue": [],
       "metadata": {
         "description": "Optional. Specifies the zones of the Public IP address. Basic IP SKU does not support Availability Zones."
-      }
-    },
-    "domainNameLabel": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. DNS name(s) of the Public IP resource(s). If you enabled active-active configuration, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com."
       }
     },
     "gatewayType": {
@@ -632,12 +625,6 @@
           },
           "diagnosticSettings": {
             "value": "[parameters('publicIpDiagnosticSettings')]"
-          },
-          "dnsSettings": {
-            "value": {
-              "domainNameLabelScope": "",
-              "domainNameLabel": "[if(equals(length(variables('virtualGatewayPipNameVar')), length(parameters('domainNameLabel'))), parameters('domainNameLabel')[copyIndex()], '')]"
-            }
           },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
