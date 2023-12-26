@@ -56,5 +56,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     skuName: 'VpnGw2AZ'
     gatewayType: 'Vpn'
     vNetResourceId: nestedDependencies.outputs.vnetResourceId
+    publicIpZones: [
+      '1'
+      '2'
+      '3'
+    ]
   }
 }]

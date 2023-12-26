@@ -248,6 +248,11 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     location: '<location>'
+    publicIpZones: [
+      '1'
+      '2'
+      '3'
+    ]
   }
 }
 ```
@@ -280,6 +285,13 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "publicIpZones": {
+      "value": [
+        "1",
+        "2",
+        "3"
+      ]
     }
   }
 }
