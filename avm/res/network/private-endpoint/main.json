@@ -133,7 +133,7 @@
               "privateIPAddress": {
                 "type": "string",
                 "metadata": {
-                  "description": "Required. A private ip address obtained from the private endpoint's subnet."
+                  "description": "Required. A private IP address obtained from the private endpoint's subnet."
                 }
               }
             },
@@ -236,7 +236,7 @@
           "fqdn": {
             "type": "string",
             "metadata": {
-              "description": "Required. Fqdn that resolves to private endpoint ip address."
+              "description": "Required. Fqdn that resolves to private endpoint IP address."
             }
           },
           "ipAddresses": {
@@ -245,7 +245,7 @@
               "type": "string"
             },
             "metadata": {
-              "description": "Required. A list of private ip addresses of the private endpoint."
+              "description": "Required. A list of private IP addresses of the private endpoint."
             }
           }
         }
