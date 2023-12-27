@@ -103,6 +103,7 @@ module keyVaultPermissions 'modules/nested_keyVaultPermissions.bicep' = [for (us
     keyVaultResourceId: keyVaultResourceId
     userAssignedIdentityResourceId: userAssignedIdentityResourceId
     rbacAuthorizationEnabled: keyVault.properties.enableRbacAuthorization
+    location: location
   }
   scope: resourceGroup(split(keyVaultResourceId, '/')[2], split(keyVaultResourceId, '/')[4])
 }]
