@@ -110,7 +110,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource privateLinkService 'Microsoft.Network/privateLinkServices@2022-11-01' = {
+resource privateLinkService 'Microsoft.Network/privateLinkServices@2023-04-01' = {
   name: name
   location: location
   tags: tags
