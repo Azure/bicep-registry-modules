@@ -40,15 +40,15 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2022-09-01' = if (ena
   }
 }
 
-resource networkManager 'Microsoft.Network/networkManagers@2023-02-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2023-04-01' existing = {
   name: networkManagerName
 
-  resource securityAdminConfiguration 'securityAdminConfigurations@2023-02-01' existing = {
+  resource securityAdminConfiguration 'securityAdminConfigurations@2023-04-01' existing = {
     name: securityAdminConfigurationName
   }
 }
 
-resource ruleCollection 'Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections@2023-02-01' = {
+resource ruleCollection 'Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections@2023-04-01' = {
   name: name
   parent: networkManager::securityAdminConfiguration
   properties: {

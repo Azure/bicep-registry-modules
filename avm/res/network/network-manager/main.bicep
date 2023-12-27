@@ -67,7 +67,7 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2022-09-01' = if (ena
   }
 }
 
-resource networkManager 'Microsoft.Network/networkManagers@2023-02-01' = {
+resource networkManager 'Microsoft.Network/networkManagers@2023-04-01' = {
   name: name
   location: location
   tags: tags
