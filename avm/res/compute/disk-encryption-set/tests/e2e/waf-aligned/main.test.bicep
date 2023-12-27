@@ -56,10 +56,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     keyName: nestedDependencies.outputs.keyName
     keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
     managedIdentities: {

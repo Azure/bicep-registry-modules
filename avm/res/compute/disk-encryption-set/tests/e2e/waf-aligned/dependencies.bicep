@@ -44,8 +44,5 @@ output keyVaultResourceId string = keyVault.id
 @description('The name of the created encryption key.')
 output keyName string = keyVault::key.name
 
-@description('The principal ID of the created Managed Identity.')
-output managedIdentityPrincipalId string = managedIdentity.properties.principalId
-
 @description('The resource ID of the created Managed Identity.')
 output managedIdentityResourceId string = managedIdentity.id
