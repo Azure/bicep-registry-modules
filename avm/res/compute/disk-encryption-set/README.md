@@ -26,20 +26,24 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/compute.disk-encryption-set:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/disk-encryption-set:<version>`.
 
-- [Accesspolicies](#example-1-accesspolicies)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using Key Vault with the Access Policy permission model](#example-1-using-key-vault-with-the-access-policy-permission-model)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Accesspolicies_
+### Example 1: _Using Key Vault with the Access Policy permission model_
+
+This instance uses a Key Vault with the Access Policy permission model.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module diskEncryptionSet 'br:bicep/modules/compute.disk-encryption-set:1.0.0' = {
+module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cdesap'
   params: {
     // Required parameters
@@ -47,7 +51,7 @@ module diskEncryptionSet 'br:bicep/modules/compute.disk-encryption-set:1.0.0' = 
     keyVaultResourceId: '<keyVaultResourceId>'
     name: 'cdesap001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -103,8 +107,8 @@ module diskEncryptionSet 'br:bicep/modules/compute.disk-encryption-set:1.0.0' = 
       "value": "cdesap001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -147,7 +151,63 @@ module diskEncryptionSet 'br:bicep/modules/compute.disk-encryption-set:1.0.0' = 
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-cdesmin'
+  params: {
+    // Required parameters
+    keyName: '<keyName>'
+    keyVaultResourceId: '<keyVaultResourceId>'
+    name: 'cdesmin001'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "keyName": {
+      "value": "<keyName>"
+    },
+    "keyVaultResourceId": {
+      "value": "<keyVaultResourceId>"
+    },
+    "name": {
+      "value": "cdesmin001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -157,7 +217,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module diskEncryptionSet 'br:bicep/modules/compute.disk-encryption-set:1.0.0' = {
+module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cdesmax'
   params: {
     // Required parameters
@@ -165,7 +225,7 @@ module diskEncryptionSet 'br:bicep/modules/compute.disk-encryption-set:1.0.0' = 
     keyVaultResourceId: '<keyVaultResourceId>'
     name: 'cdesmax001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -224,8 +284,8 @@ module diskEncryptionSet 'br:bicep/modules/compute.disk-encryption-set:1.0.0' = 
       "value": "cdesmax001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -273,7 +333,7 @@ module diskEncryptionSet 'br:bicep/modules/compute.disk-encryption-set:1.0.0' = 
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -283,7 +343,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module diskEncryptionSet 'br:bicep/modules/compute.disk-encryption-set:1.0.0' = {
+module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cdeswaf'
   params: {
     // Required parameters
@@ -291,11 +351,7 @@ module diskEncryptionSet 'br:bicep/modules/compute.disk-encryption-set:1.0.0' = 
     keyVaultResourceId: '<keyVaultResourceId>'
     name: 'cdeswaf001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
+    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -333,14 +389,8 @@ module diskEncryptionSet 'br:bicep/modules/compute.disk-encryption-set:1.0.0' = 
       "value": "cdeswaf001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
+    "location": {
+      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -378,7 +428,7 @@ module diskEncryptionSet 'br:bicep/modules/compute.disk-encryption-set:1.0.0' = 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionType`](#parameter-encryptiontype) | string | The type of key used to encrypt the data of the disk. For security reasons, it is recommended to set encryptionType to EncryptionAtRestWithPlatformAndCustomerKeys. |
 | [`federatedClientId`](#parameter-federatedclientid) | string | Multi-tenant application client ID to access key vault in a different tenant. Setting the value to "None" will clear the property. |
 | [`keyVersion`](#parameter-keyversion) | string | The version of the customer managed key to reference for encryption. If not provided, the latest key version is used. |
@@ -410,9 +460,9 @@ The name of the disk encryption set that is being created.
 - Required: Yes
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -650,4 +700,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `modules/key-vault/vault/access-policy` | Local reference |
+| `res/key-vault/vault/access-policy` | Local reference |

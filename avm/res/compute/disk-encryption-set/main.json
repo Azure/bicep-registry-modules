@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "3002808940290583221"
+      "templateHash": "17387770627859615442"
     },
     "name": "Disk Encryption Sets",
     "description": "This module deploys a Disk Encryption Set.",
@@ -213,11 +213,11 @@
         "description": "Optional. Tags of the disk encryption resource."
       }
     },
-    "enableDefaultTelemetry": {
+    "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
@@ -249,17 +249,23 @@
         "keyVault"
       ]
     },
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.compute-diskencryptionset.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
-          "resources": []
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
         }
       }
     },
@@ -357,6 +363,9 @@
           },
           "rbacAuthorizationEnabled": {
             "value": "[reference('keyVault').enableRbacAuthorization]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           }
         },
         "template": {
@@ -366,7 +375,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "6347916704864142763"
+              "templateHash": "6241356505088150303"
             }
           },
           "parameters": {
@@ -433,6 +442,9 @@
                 "parameters": {
                   "userAssignedIdentityName": {
                     "value": "[last(split(parameters('userAssignedIdentityResourceId'), '/'))]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
                   }
                 },
                 "template": {
@@ -509,16 +521,151 @@
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.23.1.45101",
-                      "templateHash": "5636934877550105255"
+                      "templateHash": "3185669298547069044"
                     },
                     "name": "Key Vault Access Policies",
                     "description": "This module deploys a Key Vault Access Policy.",
                     "owner": "Azure/module-maintainers"
+                  },
+                  "definitions": {
+                    "accessPoliciesType": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "tenantId": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The tenant ID that is used for authenticating requests to the key vault."
+                            }
+                          },
+                          "objectId": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The object ID of a user, service principal or security group in the tenant for the vault."
+                            }
+                          },
+                          "applicationId": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. Application ID of the client making request on behalf of a principal."
+                            }
+                          },
+                          "permissions": {
+                            "type": "object",
+                            "properties": {
+                              "keys": {
+                                "type": "array",
+                                "allowedValues": [
+                                  "all",
+                                  "backup",
+                                  "create",
+                                  "decrypt",
+                                  "delete",
+                                  "encrypt",
+                                  "get",
+                                  "getrotationpolicy",
+                                  "import",
+                                  "list",
+                                  "purge",
+                                  "recover",
+                                  "release",
+                                  "restore",
+                                  "rotate",
+                                  "setrotationpolicy",
+                                  "sign",
+                                  "unwrapKey",
+                                  "update",
+                                  "verify",
+                                  "wrapKey"
+                                ],
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Permissions to keys."
+                                }
+                              },
+                              "secrets": {
+                                "type": "array",
+                                "allowedValues": [
+                                  "all",
+                                  "backup",
+                                  "delete",
+                                  "get",
+                                  "list",
+                                  "purge",
+                                  "recover",
+                                  "restore",
+                                  "set"
+                                ],
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Permissions to secrets."
+                                }
+                              },
+                              "certificates": {
+                                "type": "array",
+                                "allowedValues": [
+                                  "all",
+                                  "backup",
+                                  "create",
+                                  "delete",
+                                  "deleteissuers",
+                                  "get",
+                                  "getissuers",
+                                  "import",
+                                  "list",
+                                  "listissuers",
+                                  "managecontacts",
+                                  "manageissuers",
+                                  "purge",
+                                  "recover",
+                                  "restore",
+                                  "setissuers",
+                                  "update"
+                                ],
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Permissions to certificates."
+                                }
+                              },
+                              "storage": {
+                                "type": "array",
+                                "allowedValues": [
+                                  "all",
+                                  "backup",
+                                  "delete",
+                                  "deletesas",
+                                  "get",
+                                  "getsas",
+                                  "list",
+                                  "listsas",
+                                  "purge",
+                                  "recover",
+                                  "regeneratekey",
+                                  "restore",
+                                  "set",
+                                  "setsas",
+                                  "update"
+                                ],
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Permissions to storage accounts."
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true
+                    }
                   },
                   "parameters": {
                     "keyVaultName": {
@@ -528,17 +675,9 @@
                       }
                     },
                     "accessPolicies": {
-                      "type": "array",
-                      "defaultValue": [],
+                      "$ref": "#/definitions/accessPoliciesType",
                       "metadata": {
                         "description": "Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault's tenant ID."
-                      }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
                       }
                     }
                   },
@@ -546,40 +685,35 @@
                     "copy": [
                       {
                         "name": "formattedAccessPolicies",
-                        "count": "[length(parameters('accessPolicies'))]",
+                        "count": "[length(coalesce(parameters('accessPolicies'), createArray()))]",
                         "input": {
-                          "applicationId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'applicationId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].applicationId, '')]",
-                          "objectId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'objectId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].objectId, '')]",
-                          "permissions": "[parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].permissions]",
-                          "tenantId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'tenantId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].tenantId, tenant().tenantId)]"
+                          "applicationId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'applicationId'), '')]",
+                          "objectId": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].objectId]",
+                          "permissions": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].permissions]",
+                          "tenantId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'tenantId'), tenant().tenantId)]"
                         }
                       }
                     ]
                   },
-                  "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
+                  "resources": {
+                    "keyVault": {
+                      "existing": true,
+                      "type": "Microsoft.KeyVault/vaults",
+                      "apiVersion": "2022-07-01",
+                      "name": "[parameters('keyVaultName')]"
                     },
-                    {
+                    "policies": {
                       "type": "Microsoft.KeyVault/vaults/accessPolicies",
                       "apiVersion": "2022-07-01",
                       "name": "[format('{0}/{1}', parameters('keyVaultName'), 'add')]",
                       "properties": {
                         "accessPolicies": "[variables('formattedAccessPolicies')]"
-                      }
+                      },
+                      "dependsOn": [
+                        "keyVault"
+                      ]
                     }
-                  ],
+                  },
                   "outputs": {
                     "resourceGroupName": {
                       "type": "string",
