@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using Key Vault with the Access Policy permission model'
+metadata description = 'This instance uses a Key Vault with the Access Policy permission model.'
+
 // ========== //
 // Parameters //
 // ========== //
