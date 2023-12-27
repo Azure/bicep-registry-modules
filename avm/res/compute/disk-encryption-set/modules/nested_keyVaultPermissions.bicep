@@ -25,6 +25,7 @@ module userAssignedIdentity 'nested_managedIdentityReference.bicep' = {
   name: '${uniqueString(deployment().name, location)}-MSI-Reference'
   params: {
     userAssignedIdentityName: last(split(userAssignedIdentityResourceId, '/'))!
+    location: location
   }
   scope: resourceGroup(split(userAssignedIdentityResourceId, '/')[2], split(userAssignedIdentityResourceId, '/')[4])
 }
