@@ -70,6 +70,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    domainNameLabel: [
+      'dm-nvngavpn'
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -161,6 +164,11 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
+      ]
+    },
+    "domainNameLabel": {
+      "value": [
+        "dm-nvngavpn"
       ]
     },
     "location": {
@@ -333,6 +341,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    domainNameLabel: [
+      'dm-nvger'
+    ]
     gatewayPipName: 'pip-nvger'
     location: '<location>'
     publicIpZones: [
@@ -400,6 +411,11 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
+      ]
+    },
+    "domainNameLabel": {
+      "value": [
+        "dm-nvger"
       ]
     },
     "gatewayPipName": {
@@ -478,6 +494,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       }
     ]
     disableIPSecReplayProtection: true
+    domainNameLabel: [
+      'dm-nvgmax'
+    ]
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayId: '<gatewayDefaultSiteLocalNetworkGatewayId>'
@@ -593,6 +612,11 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "disableIPSecReplayProtection": {
       "value": true
+    },
+    "domainNameLabel": {
+      "value": [
+        "dm-nvgmax"
+      ]
     },
     "enableBgpRouteTranslationForNat": {
       "value": true
@@ -720,6 +744,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       }
     ]
     disableIPSecReplayProtection: true
+    domainNameLabel: [
+      'dm-nvgvpn'
+    ]
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayId: '<gatewayDefaultSiteLocalNetworkGatewayId>'
@@ -835,6 +862,11 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "disableIPSecReplayProtection": {
       "value": true
+    },
+    "domainNameLabel": {
+      "value": [
+        "dm-nvgvpn"
+      ]
     },
     "enableBgpRouteTranslationForNat": {
       "value": true
@@ -962,6 +994,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       }
     ]
     disableIPSecReplayProtection: true
+    domainNameLabel: [
+      'dm-nvgmwaf'
+    ]
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayId: '<gatewayDefaultSiteLocalNetworkGatewayId>'
@@ -1078,6 +1113,11 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "disableIPSecReplayProtection": {
       "value": true
     },
+    "domainNameLabel": {
+      "value": [
+        "dm-nvgmwaf"
+      ]
+    },
     "enableBgpRouteTranslationForNat": {
       "value": true
     },
@@ -1193,6 +1233,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
 | [`clientRootCertData`](#parameter-clientrootcertdata) | string | Client root certificate data used to authenticate VPN clients. Cannot be configured if vpnClientAadConfiguration is provided. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableIPSecReplayProtection`](#parameter-disableipsecreplayprotection) | bool | disableIPSecReplayProtection flag. Used for VPN Gateways. |
+| [`domainNameLabel`](#parameter-domainnamelabel) | array | DNS name(s) of the Public IP resource(s). If you enabled active-active configuration, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com. |
 | [`enableBgp`](#parameter-enablebgp) | bool | Value to specify if BGP is enabled or not. |
 | [`enableBgpRouteTranslationForNat`](#parameter-enablebgproutetranslationfornat) | bool | EnableBgpRouteTranslationForNat flag. Can only be used when "natRules" are enabled on the Virtual Network Gateway. |
 | [`enableDnsForwarding`](#parameter-enablednsforwarding) | bool | Whether DNS forwarding is enabled or not and is only supported for Express Route Gateways. The DNS forwarding feature flag must be enabled on the current subscription. |
@@ -1424,6 +1465,14 @@ disableIPSecReplayProtection flag. Used for VPN Gateways.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `domainNameLabel`
+
+DNS name(s) of the Public IP resource(s). If you enabled active-active configuration, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `enableBgp`
 

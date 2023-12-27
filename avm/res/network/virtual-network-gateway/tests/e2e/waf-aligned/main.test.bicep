@@ -87,6 +87,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
+    domainNameLabel: [
+      '${namePrefix}-dm-${serviceShort}'
+    ]
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
