@@ -35,7 +35,6 @@ This module deploys an Azure Compute Gallery Image Definition.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`description`](#parameter-description) | string | The description of this gallery Image Definition resource. This property is updatable. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`endOfLife`](#parameter-endoflife) | string | The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z. |
 | [`eula`](#parameter-eula) | string | The Eula agreement for the gallery Image Definition. Has to be a valid URL. |
 | [`excludedDiskTypes`](#parameter-excludeddisktypes) | array | List of the excluded disk types. E.g. Standard_LRS. |
@@ -82,14 +81,6 @@ The description of this gallery Image Definition resource. This property is upda
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `endOfLife`
 

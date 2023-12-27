@@ -37,7 +37,6 @@ This module deploys an Azure Compute Gallery Application.
 | :-- | :-- | :-- |
 | [`customActions`](#parameter-customactions) | array | A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application. |
 | [`description`](#parameter-description) | string | The description of this gallery Application Definition resource. This property is updatable. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`endOfLifeDate`](#parameter-endoflifedate) | string | The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z. |
 | [`eula`](#parameter-eula) | string | The Eula agreement for the gallery Application Definition. Has to be a valid URL. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -76,14 +75,6 @@ The description of this gallery Application Definition resource. This property i
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `endOfLifeDate`
 

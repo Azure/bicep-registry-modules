@@ -27,10 +27,8 @@ param roleAssignments roleAssignmentType
 @sys.description('Optional. Tags for all resources.')
 param tags object?
 
-@sys.description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
-var enableReferencedModulesTelemetry = false
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 var builtInRoleNames = {
   'Compute Gallery Sharing Admin': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1ef6a3be-d0ac-425d-8c01-acb62866290b')
@@ -41,14 +39,20 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.compute-gallery.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
       contentVersion: '1.0.0.0'
       resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
     }
   }
 }
@@ -101,7 +105,6 @@ module galleries_applications 'application/main.bicep' = [for (application, inde
     roleAssignments: contains(application, 'roleAssignments') ? application.roleAssignments : []
     customActions: contains(application, 'customActions') ? application.customActions : []
     tags: application.?tags ?? tags
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -133,7 +136,6 @@ module galleries_images 'image/main.bicep' = [for (image, index) in images: {
     excludedDiskTypes: contains(image, 'excludedDiskTypes') ? image.excludedDiskTypes : []
     roleAssignments: contains(image, 'roleAssignments') ? image.roleAssignments : []
     tags: image.?tags ?? tags
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 

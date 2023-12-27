@@ -26,7 +26,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/compute.gallery:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/gallery:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -42,13 +42,10 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
+module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cgmin'
   params: {
-    // Required parameters
     name: 'cgmin001'
-    // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
   }
 }
 ```
@@ -65,13 +62,8 @@ module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "cgmin001"
-    },
-    // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
     }
   }
 }
@@ -90,7 +82,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
+module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cgmax'
   params: {
     // Required parameters
@@ -112,7 +104,6 @@ module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
         supportedOSType: 'Windows'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     images: [
       {
         name: 'az-imgd-ws-001'
@@ -279,9 +270,6 @@ module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "images": {
       "value": [
         {
@@ -434,7 +422,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
+module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cgwaf'
   params: {
     // Required parameters
@@ -456,7 +444,6 @@ module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
         supportedOSType: 'Windows'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     images: [
       {
         name: 'az-imgd-ws-001'
@@ -606,9 +593,6 @@ module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "images": {
       "value": [
         {
@@ -747,7 +731,7 @@ module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
 | :-- | :-- | :-- |
 | [`applications`](#parameter-applications) | array | Applications to create. |
 | [`description`](#parameter-description) | string | Description of the Azure Shared Image Gallery. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`images`](#parameter-images) | array | Images to create. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -777,9 +761,9 @@ Description of the Azure Shared Image Gallery.
 - Type: string
 - Default: `''`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
