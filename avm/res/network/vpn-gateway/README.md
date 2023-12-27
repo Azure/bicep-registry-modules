@@ -43,10 +43,10 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nvgmin'
+  name: '${uniqueString(deployment().name, location)}-test-vpngmin'
   params: {
     // Required parameters
-    name: 'nvgmin001'
+    name: 'vpngmin001'
     virtualHubResourceId: '<virtualHubResourceId>'
     // Non-required parameters
     location: '<location>'
@@ -68,7 +68,7 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "nvgmin001"
+      "value": "vpngmin001"
     },
     "virtualHubResourceId": {
       "value": "<virtualHubResourceId>"
@@ -95,10 +95,10 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nvgmax'
+  name: '${uniqueString(deployment().name, location)}-test-vpngmax'
   params: {
     // Required parameters
-    name: 'nvgmax001'
+    name: 'vpngmax001'
     virtualHubResourceId: '<virtualHubResourceId>'
     // Non-required parameters
     bgpSettings: {
@@ -164,7 +164,7 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "nvgmax001"
+      "value": "vpngmax001"
     },
     "virtualHubResourceId": {
       "value": "<virtualHubResourceId>"
@@ -245,10 +245,10 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nvgwaf'
+  name: '${uniqueString(deployment().name, location)}-test-vpngwaf'
   params: {
     // Required parameters
-    name: 'nvgwaf001'
+    name: 'vpngwaf001'
     virtualHubResourceId: '<virtualHubResourceId>'
     // Non-required parameters
     bgpSettings: {
@@ -314,7 +314,7 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "nvgwaf001"
+      "value": "vpngwaf001"
     },
     "virtualHubResourceId": {
       "value": "<virtualHubResourceId>"
