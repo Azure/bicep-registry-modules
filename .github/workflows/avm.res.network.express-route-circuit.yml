@@ -61,11 +61,13 @@ jobs:
         uses: ./.github/actions/templates/avm-getModuleTestFiles
         with:
           modulePath: "${{ env.modulePath }}"
+      # - new action or integrate in workflow param
     outputs:
       workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
       moduleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
       psRuleModuleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.psRuleModuleTestFilePaths }}
       modulePath: "${{ env.modulePath }}"
+      # - new output for publishing
 
   ##############################
   #   Call reusable workflow   #
