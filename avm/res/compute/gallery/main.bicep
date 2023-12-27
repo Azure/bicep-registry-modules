@@ -95,6 +95,7 @@ module galleries_applications 'application/main.bicep' = [for (application, inde
   name: '${uniqueString(deployment().name, location)}-Gallery-Application-${index}'
   params: {
     name: application.name
+    location: location
     galleryName: gallery.name
     supportedOSType: contains(application, 'supportOSType') ? application.supportedOSType : 'Windows'
     description: contains(application, 'description') ? application.description : ''
@@ -113,6 +114,7 @@ module galleries_images 'image/main.bicep' = [for (image, index) in images: {
   name: '${uniqueString(deployment().name, location)}-Gallery-Image-${index}'
   params: {
     name: image.name
+    location: location
     galleryName: gallery.name
     osType: contains(image, 'osType') ? image.osType : 'Windows'
     osState: contains(image, 'osState') ? image.osState : 'Generalized'
