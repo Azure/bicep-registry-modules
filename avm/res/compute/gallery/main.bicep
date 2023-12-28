@@ -10,13 +10,13 @@ param name string
 param location string = resourceGroup().location
 
 @sys.description('Optional. Description of the Azure Shared Image Gallery.')
-param description string = ''
+param description string?
 
 @sys.description('Optional. Applications to create.')
-param applications array = []
+param applications array?
 
 @sys.description('Optional. Images to create.')
-param images array = []
+param images array?
 
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType
@@ -62,7 +62,7 @@ resource gallery 'Microsoft.Compute/galleries@2022-03-03' = {
   location: location
   tags: tags
   properties: {
-    description: description
+    description: description ?? ''
     identifier: {}
   }
 }
@@ -91,52 +91,54 @@ resource gallery_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-0
 }]
 
 // Applications
-module galleries_applications 'application/main.bicep' = [for (application, index) in applications: {
+module galleries_applications 'application/main.bicep' = [for (application, index) in (applications ?? []): {
   name: '${uniqueString(deployment().name, location)}-Gallery-Application-${index}'
   params: {
     name: application.name
     location: location
     galleryName: gallery.name
-    supportedOSType: contains(application, 'supportOSType') ? application.supportedOSType : 'Windows'
-    description: contains(application, 'description') ? application.description : ''
-    eula: contains(application, 'eula') ? application.eula : ''
-    privacyStatementUri: contains(application, 'privacyStatementUri') ? application.privacyStatementUri : ''
-    releaseNoteUri: contains(application, 'releaseNoteUri') ? application.releaseNoteUri : ''
-    endOfLifeDate: contains(application, 'endOfLifeDate') ? application.endOfLifeDate : ''
-    roleAssignments: contains(application, 'roleAssignments') ? application.roleAssignments : []
-    customActions: contains(application, 'customActions') ? application.customActions : []
+    supportedOSType: application.?supportedOSType
+    description: application.?description
+    eula: application.?eula
+    privacyStatementUri: application.?privacyStatementUri
+    releaseNoteUri: application.?releaseNoteUri
+    endOfLifeDate: application.?endOfLifeDate
+    roleAssignments: application.?roleAssignments
+    customActions: application.?customActions
     tags: application.?tags ?? tags
   }
 }]
 
 // Images
-module galleries_images 'image/main.bicep' = [for (image, index) in images: {
+module galleries_images 'image/main.bicep' = [for (image, index) in (images ?? []): {
   name: '${uniqueString(deployment().name, location)}-Gallery-Image-${index}'
   params: {
     name: image.name
     location: location
     galleryName: gallery.name
-    osType: contains(image, 'osType') ? image.osType : 'Windows'
-    osState: contains(image, 'osState') ? image.osState : 'Generalized'
-    publisher: contains(image, 'publisher') ? image.publisher : 'MicrosoftWindowsServer'
-    offer: contains(image, 'offer') ? image.offer : 'WindowsServer'
-    sku: contains(image, 'sku') ? image.sku : '2019-Datacenter'
-    minRecommendedvCPUs: contains(image, 'minRecommendedvCPUs') ? image.minRecommendedvCPUs : 1
-    maxRecommendedvCPUs: contains(image, 'maxRecommendedvCPUs') ? image.maxRecommendedvCPUs : 4
-    minRecommendedMemory: contains(image, 'minRecommendedMemory') ? image.minRecommendedMemory : 4
-    maxRecommendedMemory: contains(image, 'maxRecommendedMemory') ? image.maxRecommendedMemory : 16
-    hyperVGeneration: contains(image, 'hyperVGeneration') ? image.hyperVGeneration : 'V1'
-    securityType: contains(image, 'securityType') ? image.securityType : 'Standard'
-    description: contains(image, 'description') ? image.description : ''
-    eula: contains(image, 'eula') ? image.eula : ''
-    privacyStatementUri: contains(image, 'privacyStatementUri') ? image.privacyStatementUri : ''
-    releaseNoteUri: contains(image, 'releaseNoteUri') ? image.releaseNoteUri : ''
-    productName: contains(image, 'productName') ? image.productName : ''
-    planName: contains(image, 'planName') ? image.planName : ''
-    planPublisherName: contains(image, 'planPublisherName') ? image.planPublisherName : ''
-    endOfLife: contains(image, 'endOfLife') ? image.endOfLife : ''
-    excludedDiskTypes: contains(image, 'excludedDiskTypes') ? image.excludedDiskTypes : []
-    roleAssignments: contains(image, 'roleAssignments') ? image.roleAssignments : []
+    osType: image.?osType
+    osState: image.?osState
+    publisher: image.?publisher
+    offer: image.?offer
+    sku: image.?sku
+    minRecommendedvCPUs: image.?minRecommendedvCPUs
+    maxRecommendedvCPUs: image.?maxRecommendedvCPUs
+    minRecommendedMemory: image.?minRecommendedMemory
+    maxRecommendedMemory: image.?maxRecommendedMemory
+    hyperVGeneration: image.?hyperVGeneration ?? 'V1'
+    securityType: image.?securityType
+    isAcceleratedNetworkSupported: image.?isAcceleratedNetworkSupported
+    isHibernateSupported: image.?isHibernateSupported
+    description: image.?description
+    eula: image.?eula
+    privacyStatementUri: image.?privacyStatementUri
+    releaseNoteUri: image.?releaseNoteUri
+    productName: image.?productName
+    planName: image.?planName
+    planPublisherName: image.?planPublisherName
+    endOfLife: image.?endOfLife
+    excludedDiskTypes: image.?excludedDiskTypes
+    roleAssignments: image.?roleAssignments
     tags: image.?tags ?? tags
   }
 }]

@@ -80,7 +80,6 @@ The description of this gallery Image Definition resource. This property is upda
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `endOfLife`
 
@@ -88,7 +87,6 @@ The end of life date of the gallery Image Definition. This property can be used 
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `eula`
 
@@ -96,7 +94,6 @@ The Eula agreement for the gallery Image Definition. Has to be a valid URL.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `excludedDiskTypes`
 
@@ -104,7 +101,6 @@ List of the excluded disk types. E.g. Standard_LRS.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `hyperVGeneration`
 
@@ -236,7 +232,6 @@ The plan ID.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `planPublisherName`
 
@@ -244,7 +239,6 @@ The publisher ID.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `privacyStatementUri`
 
@@ -252,7 +246,6 @@ The privacy statement uri. Has to be a valid URL.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `productName`
 
@@ -260,7 +253,6 @@ The product ID.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `publisher`
 
@@ -276,7 +268,6 @@ The release note uri. Has to be a valid URL.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `roleAssignments`
 

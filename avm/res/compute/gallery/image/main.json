@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "15949977481915894981"
+      "templateHash": "1726130523166426728"
     },
     "name": "Compute Galleries Image Definitions",
     "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -229,63 +229,63 @@
     },
     "description": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The description of this gallery Image Definition resource. This property is updatable."
       }
     },
     "eula": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The Eula agreement for the gallery Image Definition. Has to be a valid URL."
       }
     },
     "privacyStatementUri": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The privacy statement uri. Has to be a valid URL."
       }
     },
     "releaseNoteUri": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The release note uri. Has to be a valid URL."
       }
     },
     "productName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The product ID."
       }
     },
     "planName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The plan ID."
       }
     },
     "planPublisherName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The publisher ID."
       }
     },
     "endOfLife": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z."
       }
     },
     "excludedDiskTypes": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of the excluded disk types. E.g. Standard_LRS."
       }
@@ -347,18 +347,18 @@
         },
         "hyperVGeneration": "[if(not(empty(parameters('hyperVGeneration'))), parameters('hyperVGeneration'), if(not(empty(parameters('securityType'))), 'V2', 'V1'))]",
         "features": "[if(and(not(empty(parameters('securityType'))), not(equals(parameters('securityType'), 'Standard'))), createArray(createObject('name', 'SecurityType', 'value', parameters('securityType')), createObject('name', 'IsAcceleratedNetworkSupported', 'value', parameters('isAcceleratedNetworkSupported')), createObject('name', 'IsHibernateSupported', 'value', parameters('isHibernateSupported'))), createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', parameters('isAcceleratedNetworkSupported')), createObject('name', 'IsHibernateSupported', 'value', parameters('isHibernateSupported'))))]",
-        "description": "[parameters('description')]",
-        "eula": "[parameters('eula')]",
-        "privacyStatementUri": "[parameters('privacyStatementUri')]",
-        "releaseNoteUri": "[parameters('releaseNoteUri')]",
+        "description": "[coalesce(parameters('description'), '')]",
+        "eula": "[coalesce(parameters('eula'), '')]",
+        "privacyStatementUri": "[coalesce(parameters('privacyStatementUri'), '')]",
+        "releaseNoteUri": "[coalesce(parameters('releaseNoteUri'), '')]",
         "purchasePlan": {
-          "product": "[if(not(empty(parameters('productName'))), parameters('productName'), null())]",
-          "name": "[if(not(empty(parameters('planName'))), parameters('planName'), null())]",
-          "publisher": "[if(not(empty(parameters('planPublisherName'))), parameters('planPublisherName'), null())]"
+          "product": "[parameters('productName')]",
+          "name": "[parameters('planName')]",
+          "publisher": "[parameters('planPublisherName')]"
         },
-        "endOfLifeDate": "[parameters('endOfLife')]",
+        "endOfLifeDate": "[coalesce(parameters('endOfLife'), '')]",
         "disallowed": {
-          "diskTypes": "[parameters('excludedDiskTypes')]"
+          "diskTypes": "[coalesce(parameters('excludedDiskTypes'), createArray())]"
         }
       },
       "dependsOn": [

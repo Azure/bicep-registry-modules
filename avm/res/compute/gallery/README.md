@@ -1,5 +1,10 @@
 # Azure Compute Galleries `[Microsoft.Compute/galleries]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).
 
 ## Navigation
@@ -45,7 +50,10 @@ This instance deploys the module with the minimum set of required parameters.
 module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cgmin'
   params: {
+    // Required parameters
     name: 'cgmin001'
+    // Non-required parameters
+    location: '<location>'
   }
 }
 ```
@@ -62,8 +70,13 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "cgmin001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -205,6 +218,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         sku: '20_04-lts-gen2'
       }
     ]
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -372,6 +386,9 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           "sku": "20_04-lts-gen2"
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -545,6 +562,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         sku: '20_04-lts-gen2'
       }
     ]
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -696,6 +714,9 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         }
       ]
     },
+    "location": {
+      "value": "<location>"
+    },
     "lock": {
       "value": {
         "kind": "CanNotDelete",
@@ -751,7 +772,6 @@ Applications to create.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `description`
 
@@ -759,7 +779,6 @@ Description of the Azure Shared Image Gallery.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `enableTelemetry`
 
@@ -775,7 +794,6 @@ Images to create.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `location`
 

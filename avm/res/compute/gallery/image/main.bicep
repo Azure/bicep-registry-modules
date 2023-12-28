@@ -87,31 +87,31 @@ param isHibernateSupported string = 'false'
 param isAcceleratedNetworkSupported string = 'false'
 
 @sys.description('Optional. The description of this gallery Image Definition resource. This property is updatable.')
-param description string = ''
+param description string?
 
 @sys.description('Optional. The Eula agreement for the gallery Image Definition. Has to be a valid URL.')
-param eula string = ''
+param eula string?
 
 @sys.description('Optional. The privacy statement uri. Has to be a valid URL.')
-param privacyStatementUri string = ''
+param privacyStatementUri string?
 
 @sys.description('Optional. The release note uri. Has to be a valid URL.')
-param releaseNoteUri string = ''
+param releaseNoteUri string?
 
 @sys.description('Optional. The product ID.')
-param productName string = ''
+param productName string?
 
 @sys.description('Optional. The plan ID.')
-param planName string = ''
+param planName string?
 
 @sys.description('Optional. The publisher ID.')
-param planPublisherName string = ''
+param planPublisherName string?
 
 @sys.description('Optional. The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z.')
-param endOfLife string = ''
+param endOfLife string?
 
 @sys.description('Optional. List of the excluded disk types. E.g. Standard_LRS.')
-param excludedDiskTypes array = []
+param excludedDiskTypes array?
 
 @sys.description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
 param roleAssignments roleAssignmentType
@@ -179,18 +179,18 @@ resource image 'Microsoft.Compute/galleries/images@2022-03-03' = {
         value: isHibernateSupported
       }
     ]
-    description: description
-    eula: eula
-    privacyStatementUri: privacyStatementUri
-    releaseNoteUri: releaseNoteUri
+    description: description ?? ''
+    eula: eula ?? ''
+    privacyStatementUri: privacyStatementUri ?? ''
+    releaseNoteUri: releaseNoteUri ?? ''
     purchasePlan: {
-      product: !empty(productName) ? productName : null
-      name: !empty(planName) ? planName : null
-      publisher: !empty(planPublisherName) ? planPublisherName : null
+      product: productName
+      name: planName
+      publisher: planPublisherName
     }
-    endOfLifeDate: endOfLife
+    endOfLifeDate: endOfLife ?? ''
     disallowed: {
-      diskTypes: excludedDiskTypes
+      diskTypes: excludedDiskTypes ?? []
     }
   }
 }

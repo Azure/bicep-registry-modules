@@ -13,16 +13,16 @@ param location string = resourceGroup().location
 param galleryName string
 
 @sys.description('Optional. The description of this gallery Application Definition resource. This property is updatable.')
-param description string = ''
+param description string?
 
 @sys.description('Optional. The Eula agreement for the gallery Application Definition. Has to be a valid URL.')
-param eula string = ''
+param eula string?
 
 @sys.description('Optional. The privacy statement uri. Has to be a valid URL.')
-param privacyStatementUri string = ''
+param privacyStatementUri string?
 
 @sys.description('Optional. The release note uri. Has to be a valid URL.')
-param releaseNoteUri string = ''
+param releaseNoteUri string?
 
 @sys.description('Optional. This property allows you to specify the supported type of the OS that application is built for.')
 @allowed([
@@ -32,7 +32,7 @@ param releaseNoteUri string = ''
 param supportedOSType string = 'Windows'
 
 @sys.description('Optional. The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z.')
-param endOfLifeDate string = ''
+param endOfLifeDate string?
 
 @sys.description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
 param roleAssignments roleAssignmentType
@@ -41,7 +41,7 @@ param roleAssignments roleAssignmentType
 param tags object?
 
 @sys.description('Optional. A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application.')
-param customActions array = []
+param customActions array?
 
 var builtInRoleNames = {
   'Compute Gallery Sharing Admin': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1ef6a3be-d0ac-425d-8c01-acb62866290b')
@@ -62,12 +62,12 @@ resource application 'Microsoft.Compute/galleries/applications@2022-03-03' = {
   location: location
   tags: tags
   properties: {
-    customActions: !empty(customActions) ? customActions : null
-    description: description
-    endOfLifeDate: endOfLifeDate
-    eula: eula
-    privacyStatementUri: privacyStatementUri
-    releaseNoteUri: releaseNoteUri
+    customActions: customActions
+    description: description ?? ''
+    endOfLifeDate: endOfLifeDate ?? ''
+    eula: eula ?? ''
+    privacyStatementUri: privacyStatementUri ?? ''
+    releaseNoteUri: releaseNoteUri ?? ''
     supportedOSType: supportedOSType
   }
 }

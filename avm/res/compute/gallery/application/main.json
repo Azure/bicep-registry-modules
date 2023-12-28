@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "12814679019646423351"
+      "templateHash": "9406373999607697824"
     },
     "name": "Compute Galleries Applications",
     "description": "This module deploys an Azure Compute Gallery Application.",
@@ -103,28 +103,28 @@
     },
     "description": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The description of this gallery Application Definition resource. This property is updatable."
       }
     },
     "eula": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The Eula agreement for the gallery Application Definition. Has to be a valid URL."
       }
     },
     "privacyStatementUri": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The privacy statement uri. Has to be a valid URL."
       }
     },
     "releaseNoteUri": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The release note uri. Has to be a valid URL."
       }
@@ -142,7 +142,7 @@
     },
     "endOfLifeDate": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z."
       }
@@ -162,7 +162,7 @@
     },
     "customActions": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application."
       }
@@ -192,12 +192,12 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "customActions": "[if(not(empty(parameters('customActions'))), parameters('customActions'), null())]",
-        "description": "[parameters('description')]",
-        "endOfLifeDate": "[parameters('endOfLifeDate')]",
-        "eula": "[parameters('eula')]",
-        "privacyStatementUri": "[parameters('privacyStatementUri')]",
-        "releaseNoteUri": "[parameters('releaseNoteUri')]",
+        "customActions": "[parameters('customActions')]",
+        "description": "[coalesce(parameters('description'), '')]",
+        "endOfLifeDate": "[coalesce(parameters('endOfLifeDate'), '')]",
+        "eula": "[coalesce(parameters('eula'), '')]",
+        "privacyStatementUri": "[coalesce(parameters('privacyStatementUri'), '')]",
+        "releaseNoteUri": "[coalesce(parameters('releaseNoteUri'), '')]",
         "supportedOSType": "[parameters('supportedOSType')]"
       },
       "dependsOn": [

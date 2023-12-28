@@ -66,7 +66,6 @@ A list of custom actions that can be performed with all of the Gallery Applicati
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `description`
 
@@ -74,7 +73,6 @@ The description of this gallery Application Definition resource. This property i
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `endOfLifeDate`
 
@@ -82,7 +80,6 @@ The end of life date of the gallery Image Definition. This property can be used 
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `eula`
 
@@ -90,7 +87,6 @@ The Eula agreement for the gallery Application Definition. Has to be a valid URL
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `location`
 
@@ -106,7 +102,6 @@ The privacy statement uri. Has to be a valid URL.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `releaseNoteUri`
 
@@ -114,7 +109,6 @@ The release note uri. Has to be a valid URL.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `roleAssignments`
 
