@@ -51,7 +51,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       {
         name: '${namePrefix}${serviceShort}001-pippre'
         prefixLength: 30
-
         tags: {
           'hidden-title': 'CustomTag'
         }
