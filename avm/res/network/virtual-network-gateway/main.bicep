@@ -283,7 +283,6 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.2.0' = [fo
   params: {
     name: virtualGatewayPublicIpName
     diagnosticSettings: publicIpDiagnosticSettings
-    enableTelemetry: enableReferencedModulesTelemetry
     location: location
     lock: lock
     publicIPAllocationMethod: gatewayPipAllocationMethod
