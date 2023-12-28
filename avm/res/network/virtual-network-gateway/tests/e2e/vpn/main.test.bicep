@@ -74,40 +74,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     gatewayDefaultSiteLocalNetworkGatewayId: nestedDependencies.outputs.localNetworkGatewayResourceId
     disableIPSecReplayProtection: true
     allowRemoteVnetTraffic: true
-    natRules: [
-      {
-        name: 'nat-rule-1-static-IngressSnat'
-        type: 'Static'
-        mode: 'IngressSnat'
-        internalMappings: [
-          {
-            addressSpace: '10.100.0.0/24'
-            portRange: '100'
-          }
-        ]
-        externalMappings: [
-          {
-            addressSpace: '192.168.0.0/24'
-            portRange: '100'
-          }
-        ]
-      }
-      {
-        name: 'nat-rule-2-dynamic-EgressSnat'
-        type: 'Dynamic'
-        mode: 'EgressSnat'
-        internalMappings: [
-          {
-            addressSpace: '172.16.0.0/26'
-          }
-        ]
-        externalMappings: [
-          {
-            addressSpace: '10.200.0.0/26'
-          }
-        ]
-      }
-    ]
     enableBgpRouteTranslationForNat: true
   }
 }]
