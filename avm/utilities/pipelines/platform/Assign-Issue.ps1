@@ -1,5 +1,5 @@
 function Get-AvmCsv {
-  
+
   [CmdletBinding()]
   param (
     [Parameter(Mandatory)]
@@ -89,7 +89,7 @@ A member of the @azure/$($module.ModuleOwnersGHTeam) or @azure/$($module.ModuleC
   if ($PSCmdlet.ShouldProcess("class label to issue [$issue.title]", 'Add')) {
     gh issue edit $issue.url --add-label ($moduleIndex -eq "Bicep-Resource" ? "Class: Resource Module :package:" : "Class: Pattern Module :package:") --repo $Repo
   }
-  
+
   if ($PSCmdlet.ShouldProcess("reply comment to issue [$issue.title]", 'Add')) {
     # write comment
     gh issue comment $issue.url --body $reply --repo $Repo
@@ -99,7 +99,7 @@ A member of the @azure/$($module.ModuleOwnersGHTeam) or @azure/$($module.ModuleC
     # assign owner
     $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
   }
-  
+
   if ([String]::IsNullOrEmpty($assign)) {
     $reply = "This issue couldn't be assigend to $($module.PrimaryModuleOwnerGHHandle), because no such users exists."
     if ($PSCmdlet.ShouldProcess("missing user comment to issue [$issue.title]", 'Add')) {
