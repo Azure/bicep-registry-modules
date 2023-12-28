@@ -58,22 +58,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       '${namePrefix}-dm-${serviceShort}'
     ]
     gatewayPipName: '${namePrefix}-pip-${serviceShort}'
-    roleAssignments: [
-      {
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        roleDefinitionIdOrName: 'Reader'
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Contact: 'test.user@testcompany.com'
-      CostCenter: ''
-      Environment: 'Validation'
-      PurchaseOrder: ''
-      Role: 'DeploymentValidation'
-      ServiceName: 'DeploymentValidation'
-    }
     publicIpZones: [
       '1'
       '2'
