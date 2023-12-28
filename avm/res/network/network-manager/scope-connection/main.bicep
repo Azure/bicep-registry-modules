@@ -20,21 +20,6 @@ param resourceId string
 @sys.description('Required. Tenant ID of the subscription or management group that you want to manage.')
 param tenantId string
 
-@sys.description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2022-09-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
-}
-
 resource networkManager 'Microsoft.Network/networkManagers@2023-04-01' existing = {
   name: networkManagerName
 }

@@ -25,23 +25,6 @@ param applyOnNetworkIntentPolicyBasedServices array = [ 'None' ]
 @sys.description('Optional. A security admin configuration contains a set of rule collections that are applied to network groups. Each rule collection contains one or more security admin rules.')
 param ruleCollections array = []
 
-@sys.description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
-var enableReferencedModulesTelemetry = false
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2022-09-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
-}
-
 resource networkManager 'Microsoft.Network/networkManagers@2023-04-01' existing = {
   name: networkManagerName
 }
@@ -63,7 +46,6 @@ module securityAdminConfigurations_ruleCollections 'rule-collection/main.bicep' 
     name: ruleCollection.name
     appliesToGroups: ruleCollection.appliesToGroups
     rules: contains(ruleCollection, 'rules') ? ruleCollection.rules : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 

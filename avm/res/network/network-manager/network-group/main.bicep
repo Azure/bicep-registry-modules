@@ -17,23 +17,6 @@ param description string = ''
 @sys.description('Optional. Static Members to create for the network group. Contains virtual networks to add to the network group.')
 param staticMembers array = []
 
-@sys.description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
-var enableReferencedModulesTelemetry = false
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2022-09-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
-}
-
 resource networkManager 'Microsoft.Network/networkManagers@2023-04-01' existing = {
   name: networkManagerName
 }
@@ -53,7 +36,6 @@ module networkGroup_staticMembers 'static-member/main.bicep' = [for (staticMembe
     networkGroupName: networkGroup.name
     name: staticMember.name
     resourceId: staticMember.resourceId
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 

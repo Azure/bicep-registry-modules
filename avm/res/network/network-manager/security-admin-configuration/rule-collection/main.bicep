@@ -23,23 +23,6 @@ param appliesToGroups array
 @sys.description('Optional. List of rules for the admin rules collection. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.')
 param rules array
 
-@sys.description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
-var enableReferencedModulesTelemetry = false
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2022-09-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
-}
-
 resource networkManager 'Microsoft.Network/networkManagers@2023-04-01' existing = {
   name: networkManagerName
 
@@ -73,7 +56,6 @@ module securityAdminConfigurations_rules 'rule/main.bicep' = [for (rule, index) 
     protocol: rule.protocol
     sourcePortRanges: contains(rule, 'sourcePortRanges') ? rule.sourcePortRanges : []
     sources: contains(rule, 'sources') ? rule.sources : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
