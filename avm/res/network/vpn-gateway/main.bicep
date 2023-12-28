@@ -113,7 +113,6 @@ module vpnGateway_natRules 'nat-rule/main.bicep' = [for (natRule, index) in natR
     ipConfigurationId: contains(natRule, 'ipConfigurationId') ? natRule.ipConfigurationId : ''
     mode: contains(natRule, 'mode') ? natRule.mode : ''
     type: contains(natRule, 'type') ? natRule.type : ''
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
