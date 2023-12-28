@@ -70,11 +70,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       '3'
     ]
     vpnType: 'RouteBased'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayId: nestedDependencies.outputs.localNetworkGatewayResourceId
     disableIPSecReplayProtection: true
