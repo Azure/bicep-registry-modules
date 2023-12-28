@@ -56,55 +56,15 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
     activeActive: false
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
     domainNameLabel: [
       'dm-nvngavpn'
     ]
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     publicIpZones: [
       '1'
       '2'
       '3'
     ]
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
     vpnClientAadConfiguration: {
       aadAudience: '41b23e61-6c1e-4545-b367-cd054e0ed4b4'
       aadIssuer: '<aadIssuer>'
@@ -150,22 +110,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "activeActive": {
       "value": false
     },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
     "domainNameLabel": {
       "value": [
         "dm-nvngavpn"
@@ -174,44 +118,12 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "publicIpZones": {
       "value": [
         "1",
         "2",
         "3"
       ]
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     },
     "vpnClientAadConfiguration": {
       "value": {
@@ -327,20 +239,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     skuName: 'ErGw1AZ'
     vNetResourceId: '<vNetResourceId>'
     // Non-required parameters
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
     domainNameLabel: [
       'dm-nvger'
     ]
@@ -351,22 +249,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       '2'
       '3'
     ]
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
-    tags: {
-      Contact: 'test.user@testcompany.com'
-      CostCenter: ''
-      Environment: 'Validation'
-      'hidden-title': 'This is visible in the resource name'
-      PurchaseOrder: ''
-      Role: 'DeploymentValidation'
-      ServiceName: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -397,22 +279,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "<vNetResourceId>"
     },
     // Non-required parameters
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
     "domainNameLabel": {
       "value": [
         "dm-nvger"
@@ -430,26 +296,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         "2",
         "3"
       ]
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
-    },
-    "tags": {
-      "value": {
-        "Contact": "test.user@testcompany.com",
-        "CostCenter": "",
-        "Environment": "Validation",
-        "hidden-title": "This is visible in the resource name",
-        "PurchaseOrder": "",
-        "Role": "DeploymentValidation",
-        "ServiceName": "DeploymentValidation"
-      }
     }
   }
 }
@@ -548,7 +394,17 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     tags: {
@@ -684,7 +540,17 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -729,20 +595,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     // Non-required parameters
     activeActive: true
     allowRemoteVnetTraffic: true
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
     disableIPSecReplayProtection: true
     domainNameLabel: [
       'dm-nvgvpn'
@@ -755,57 +607,11 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    natRules: [
-      {
-        externalMappings: [
-          {
-            addressSpace: '192.168.0.0/24'
-            portRange: '100'
-          }
-        ]
-        internalMappings: [
-          {
-            addressSpace: '10.100.0.0/24'
-            portRange: '100'
-          }
-        ]
-        mode: 'IngressSnat'
-        name: 'nat-rule-1-static-IngressSnat'
-        type: 'Static'
-      }
-      {
-        externalMappings: [
-          {
-            addressSpace: '10.200.0.0/26'
-          }
-        ]
-        internalMappings: [
-          {
-            addressSpace: '172.16.0.0/26'
-          }
-        ]
-        mode: 'EgressSnat'
-        name: 'nat-rule-2-dynamic-EgressSnat'
-        type: 'Dynamic'
-      }
-    ]
     publicIpZones: [
       '1'
       '2'
       '3'
     ]
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
     vpnGatewayGeneration: 'Generation2'
     vpnType: 'RouteBased'
   }
@@ -844,22 +650,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "allowRemoteVnetTraffic": {
       "value": true
     },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
     "disableIPSecReplayProtection": {
       "value": true
     },
@@ -886,64 +676,12 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         "name": "myCustomLockName"
       }
     },
-    "natRules": {
-      "value": [
-        {
-          "externalMappings": [
-            {
-              "addressSpace": "192.168.0.0/24",
-              "portRange": "100"
-            }
-          ],
-          "internalMappings": [
-            {
-              "addressSpace": "10.100.0.0/24",
-              "portRange": "100"
-            }
-          ],
-          "mode": "IngressSnat",
-          "name": "nat-rule-1-static-IngressSnat",
-          "type": "Static"
-        },
-        {
-          "externalMappings": [
-            {
-              "addressSpace": "10.200.0.0/26"
-            }
-          ],
-          "internalMappings": [
-            {
-              "addressSpace": "172.16.0.0/26"
-            }
-          ],
-          "mode": "EgressSnat",
-          "name": "nat-rule-2-dynamic-EgressSnat",
-          "type": "Dynamic"
-        }
-      ]
-    },
     "publicIpZones": {
       "value": [
         "1",
         "2",
         "3"
       ]
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     },
     "vpnGatewayGeneration": {
       "value": "Generation2"
@@ -1043,13 +781,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       '1'
       '2'
       '3'
-    ]
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
     ]
     tags: {
       Environment: 'Non-Prod'
@@ -1177,15 +908,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         "1",
         "2",
         "3"
-      ]
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
       ]
     },
     "tags": {
@@ -1383,7 +1105,7 @@ The diagnostic settings of the service.
 | [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
+| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to '' to disable metric collection. |
 | [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
@@ -1432,7 +1154,7 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
-The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to '' to disable metric collection.
 
 - Required: No
 - Type: array
@@ -1598,7 +1320,7 @@ The diagnostic settings of the Public IP.
 | [`logAnalyticsDestinationType`](#parameter-publicipdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
 | [`logCategoriesAndGroups`](#parameter-publicipdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-publicipdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-publicipdiagnosticsettingsmetriccategories) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
+| [`metricCategories`](#parameter-publicipdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to '' to disable metric collection. |
 | [`name`](#parameter-publicipdiagnosticsettingsname) | string | The name of diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-publicipdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-publicipdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
@@ -1647,7 +1369,7 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 ### Parameter: `publicIpDiagnosticSettings.metricCategories`
 
-The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to '' to disable metric collection.
 
 - Required: No
 - Type: array

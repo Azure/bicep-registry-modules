@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "1083305690403822497"
+      "templateHash": "13396048573854621912"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway.",
@@ -157,7 +157,7 @@
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to '' to disable metric collection."
             }
           },
           "logAnalyticsDestinationType": {
@@ -490,7 +490,6 @@
     },
     "ipConfiguration": "[if(variables('isActiveActiveValid'), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName')))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', if(variables('isActiveActiveValid'), resourceId('Microsoft.Network/publicIPAddresses', parameters('activeGatewayPipName')), resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName'))))), 'name', 'vNetGatewayConfig2')), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('vNetResourceId'))), 'publicIPAddress', createObject('id', resourceId('Microsoft.Network/publicIPAddresses', parameters('gatewayPipName')))), 'name', 'vNetGatewayConfig1')))]",
     "vpnClientConfiguration": "[if(not(empty(parameters('clientRootCertData'))), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'vpnClientRootCertificates', createArray(createObject('name', 'RootCert1', 'properties', createObject('PublicCertData', parameters('clientRootCertData')))), 'vpnClientRevokedCertificates', if(not(empty(parameters('clientRevokedCertThumbprint'))), createArray(createObject('name', 'RevokedCert1', 'properties', createObject('Thumbprint', parameters('clientRevokedCertThumbprint')))), null())), if(not(empty(parameters('vpnClientAadConfiguration'))), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'aadTenant', parameters('vpnClientAadConfiguration').aadTenant, 'aadAudience', parameters('vpnClientAadConfiguration').aadAudience, 'aadIssuer', parameters('vpnClientAadConfiguration').aadIssuer, 'vpnAuthenticationTypes', parameters('vpnClientAadConfiguration').vpnAuthenticationTypes, 'vpnClientProtocols', parameters('vpnClientAadConfiguration').vpnClientProtocols), null()))]",
-    "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
@@ -632,9 +631,6 @@
           },
           "diagnosticSettings": {
             "value": "[parameters('publicIpDiagnosticSettings')]"
-          },
-          "enableTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -1242,10 +1238,7 @@
           "internalMappings": "[if(contains(parameters('natRules')[copyIndex()], 'internalMappings'), createObject('value', parameters('natRules')[copyIndex()].internalMappings), createObject('value', createArray()))]",
           "ipConfigurationId": "[if(contains(parameters('natRules')[copyIndex()], 'ipConfigurationId'), createObject('value', parameters('natRules')[copyIndex()].ipConfigurationId), createObject('value', ''))]",
           "mode": "[if(contains(parameters('natRules')[copyIndex()], 'mode'), createObject('value', parameters('natRules')[copyIndex()].mode), createObject('value', ''))]",
-          "type": "[if(contains(parameters('natRules')[copyIndex()], 'type'), createObject('value', parameters('natRules')[copyIndex()].type), createObject('value', ''))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "type": "[if(contains(parameters('natRules')[copyIndex()], 'type'), createObject('value', parameters('natRules')[copyIndex()].type), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1254,7 +1247,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "10871428827476692387"
+              "templateHash": "3164103777824557279"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a Virtual Network Gateway NAT Rule.",
@@ -1317,30 +1310,9 @@
               "metadata": {
                 "description": "Optional. The type of NAT rule for Virtual Network NAT. Static one-to-one NAT establishes a one-to-one relationship between an internal address and an external address while Dynamic NAT assigns an IP and port based on availability."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.Network/virtualNetworkGateways/natRules",
               "apiVersion": "2023-04-01",
