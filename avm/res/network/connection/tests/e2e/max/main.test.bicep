@@ -64,6 +64,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       id: nestedDependencies.outputs.primaryVNETGatewayResourceID
     }
     enableBgp: false
+    usePolicyBasedTrafficSelectors: false
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'

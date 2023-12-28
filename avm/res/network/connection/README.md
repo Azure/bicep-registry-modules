@@ -118,6 +118,7 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    usePolicyBasedTrafficSelectors: false
     virtualNetworkGateway2: {
       id: '<id>'
     }
@@ -170,6 +171,9 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
         "Role": "DeploymentValidation"
       }
     },
+    "usePolicyBasedTrafficSelectors": {
+      "value": false
+    },
     "virtualNetworkGateway2": {
       "value": {
         "id": "<id>"
@@ -207,15 +211,6 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     connectionType: 'Vnet2Vnet'
     enableBgp: false
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
     virtualNetworkGateway2: {
       id: '<id>'
     }
@@ -254,19 +249,6 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     },
     "virtualNetworkGateway2": {
       "value": {

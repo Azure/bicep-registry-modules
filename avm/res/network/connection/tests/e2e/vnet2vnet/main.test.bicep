@@ -64,20 +64,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       id: nestedDependencies.outputs.primaryVNETGatewayResourceID
     }
     enableBgp: false
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     virtualNetworkGateway2: {
       id: nestedDependencies.outputs.secondaryVNETGatewayResourceID
     }
     connectionType: 'Vnet2Vnet'
     vpnSharedKey: password
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
   }
 }]
 
