@@ -59,10 +59,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     domainNameLabel: [
       '${namePrefix}-dm-${serviceShort}'
     ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     publicIpZones: [
       '1'
       '2'
