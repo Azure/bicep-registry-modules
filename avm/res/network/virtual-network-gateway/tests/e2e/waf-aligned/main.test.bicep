@@ -98,13 +98,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       '2'
       '3'
     ]
-    roleAssignments: [
-      {
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        roleDefinitionIdOrName: 'Reader'
-        principalType: 'ServicePrincipal'
-      }
-    ]
     vpnType: 'RouteBased'
     tags: {
       'hidden-title': 'This is visible in the resource name'
