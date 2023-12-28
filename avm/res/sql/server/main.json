@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "13096721785574325751"
+      "templateHash": "14875046246736417656"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -634,7 +634,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "5764910349813920300"
+              "templateHash": "6114696968407769405"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database.",
@@ -694,7 +694,7 @@
                     },
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The name of logs that will be streamed. \"allMetrics\" includes all possible logs for the resource. Set to '' to disable log collection."
+                      "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to '' to disable metric collection."
                     }
                   },
                   "logAnalyticsDestinationType": {
