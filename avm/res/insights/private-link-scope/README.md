@@ -48,7 +48,7 @@ This instance deploys the module with the minimum set of required parameters.
     // Required parameters
     name: 'iplsmin001'
     // Non-required parameters
-    location: '<location>'
+    location: 'global'
   }
 }
 ```
@@ -71,7 +71,7 @@ This instance deploys the module with the minimum set of required parameters.
     },
     // Non-required parameters
     "location": {
-      "value": "<location>"
+      "value": "global"
     }
   }
 }
@@ -95,7 +95,7 @@ This instance deploys the module with most of its features enabled.
     // Required parameters
     name: 'iplsmax001'
     // Non-required parameters
-    location: '<location>'
+    location: 'global'
     privateEndpoints: [
       {
         customDnsConfigs: [
@@ -184,7 +184,7 @@ This instance deploys the module with most of its features enabled.
     },
     // Non-required parameters
     "location": {
-      "value": "<location>"
+      "value": "global"
     },
     "privateEndpoints": {
       "value": [
@@ -282,7 +282,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
     // Required parameters
     name: 'iplswaf001'
     // Non-required parameters
-    location: '<location>'
+    location: 'global'
     privateEndpoints: [
       {
         customDnsConfigs: [
@@ -354,7 +354,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
     },
     // Non-required parameters
     "location": {
-      "value": "<location>"
+      "value": "global"
     },
     "privateEndpoints": {
       "value": [
