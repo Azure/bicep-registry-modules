@@ -135,6 +135,7 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     }
     // Non-required parameters
     connectionType: 'Vnet2Vnet'
+    dpdTimeoutSeconds: 45
     enableBgp: false
     location: '<location>'
     lock: {
@@ -179,6 +180,9 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     // Non-required parameters
     "connectionType": {
       "value": "Vnet2Vnet"
+    },
+    "dpdTimeoutSeconds": {
+      "value": 45
     },
     "enableBgp": {
       "value": false
