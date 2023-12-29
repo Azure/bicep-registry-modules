@@ -31,15 +31,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
 }
 
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
-  params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: location
-  }
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -62,13 +53,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       {
         name: '${namePrefix}-${serviceShort}-appd-002'
         supportedOSType: 'Windows'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
       }
     ]
     images: [
@@ -86,13 +70,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         osState: 'Generalized'
         osType: 'Windows'
         publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
         sku: '2022-datacenter-azure-edition'
       }
       {
@@ -107,13 +84,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         osState: 'Generalized'
         osType: 'Windows'
         publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
         sku: '2022-datacenter-azure-edition-hibernate'
       }
       {
@@ -128,13 +98,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         osState: 'Generalized'
         osType: 'Windows'
         publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
         sku: '2022-datacenter-azure-edition-accnet'
       }
       {
@@ -149,13 +112,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         osState: 'Generalized'
         osType: 'Windows'
         publisher: 'MicrosoftWindowsDesktop'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
         sku: 'Win11-21H2'
       }
       {
