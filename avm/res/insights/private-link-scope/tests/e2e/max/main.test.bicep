@@ -46,6 +46,8 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
+var locationUpdated = toLower(replace(location, ' ', ''))
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
@@ -79,11 +81,91 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ]
         ipConfigurations: [
           {
-            name: 'myIPconfig'
+            name: 'api'
             properties: {
               groupId: 'azuremonitor'
-              memberName: 'azuremonitor'
-              privateIPAddress: '10.0.0.10'
+              memberName: 'api'
+              privateIPAddress: '10.0.0.11'
+            }
+          }
+          {
+            name: 'globalinai'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'global.in.ai'
+              privateIPAddress: '10.0.0.12'
+            }
+          }
+          {
+            name: 'profiler'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'profiler'
+              privateIPAddress: '10.0.0.13'
+            }
+          }
+          {
+            name: 'live'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'live'
+              privateIPAddress: '10.0.0.14'
+            }
+          }
+          {
+            name: 'diagservicesquery'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'diagservicesquery'
+              privateIPAddress: '10.0.0.15'
+            }
+          }
+          {
+            name: 'snapshot'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'snapshot'
+              privateIPAddress: '10.0.0.16'
+            }
+          }
+          {
+            name: 'agentsolutionpackstore'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'agentsolutionpackstore'
+              privateIPAddress: '10.0.0.17'
+            }
+          }
+          {
+            name: 'dce-global'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'dce-global'
+              privateIPAddress: '10.0.0.18'
+            }
+          }
+          {
+            name: 'oms-${locationUpdated}'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'oms-${locationUpdated}'
+              privateIPAddress: '10.0.0.19'
+            }
+          }
+          {
+            name: 'ods-${locationUpdated}'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'ods-${locationUpdated}'
+              privateIPAddress: '10.0.0.20'
+            }
+          }
+          {
+            name: 'agent-${locationUpdated}'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'agent-${locationUpdated}'
+              privateIPAddress: '10.0.0.21'
             }
           }
         ]
@@ -118,6 +200,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
+    }
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
     }
   }
 }]

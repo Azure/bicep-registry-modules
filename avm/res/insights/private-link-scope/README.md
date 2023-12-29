@@ -96,6 +96,10 @@ This instance deploys the module with most of its features enabled.
     name: 'iplsmax001'
     // Non-required parameters
     location: 'global'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     privateEndpoints: [
       {
         customDnsConfigs: [
@@ -108,11 +112,91 @@ This instance deploys the module with most of its features enabled.
         ]
         ipConfigurations: [
           {
-            name: 'myIPconfig'
+            name: 'api'
             properties: {
               groupId: 'azuremonitor'
-              memberName: 'azuremonitor'
-              privateIPAddress: '10.0.0.10'
+              memberName: 'api'
+              privateIPAddress: '10.0.0.11'
+            }
+          }
+          {
+            name: 'globalinai'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'global.in.ai'
+              privateIPAddress: '10.0.0.12'
+            }
+          }
+          {
+            name: 'profiler'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'profiler'
+              privateIPAddress: '10.0.0.13'
+            }
+          }
+          {
+            name: 'live'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'live'
+              privateIPAddress: '10.0.0.14'
+            }
+          }
+          {
+            name: 'diagservicesquery'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'diagservicesquery'
+              privateIPAddress: '10.0.0.15'
+            }
+          }
+          {
+            name: 'snapshot'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'snapshot'
+              privateIPAddress: '10.0.0.16'
+            }
+          }
+          {
+            name: 'agentsolutionpackstore'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'agentsolutionpackstore'
+              privateIPAddress: '10.0.0.17'
+            }
+          }
+          {
+            name: 'dce-global'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'dce-global'
+              privateIPAddress: '10.0.0.18'
+            }
+          }
+          {
+            name: '<name>'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: '<memberName>'
+              privateIPAddress: '10.0.0.19'
+            }
+          }
+          {
+            name: '<name>'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: '<memberName>'
+              privateIPAddress: '10.0.0.20'
+            }
+          }
+          {
+            name: '<name>'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: '<memberName>'
+              privateIPAddress: '10.0.0.21'
             }
           }
         ]
@@ -186,6 +270,12 @@ This instance deploys the module with most of its features enabled.
     "location": {
       "value": "global"
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
     "privateEndpoints": {
       "value": [
         {
@@ -199,11 +289,91 @@ This instance deploys the module with most of its features enabled.
           ],
           "ipConfigurations": [
             {
-              "name": "myIPconfig",
+              "name": "api",
               "properties": {
                 "groupId": "azuremonitor",
-                "memberName": "azuremonitor",
-                "privateIPAddress": "10.0.0.10"
+                "memberName": "api",
+                "privateIPAddress": "10.0.0.11"
+              }
+            },
+            {
+              "name": "globalinai",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "global.in.ai",
+                "privateIPAddress": "10.0.0.12"
+              }
+            },
+            {
+              "name": "profiler",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "profiler",
+                "privateIPAddress": "10.0.0.13"
+              }
+            },
+            {
+              "name": "live",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "live",
+                "privateIPAddress": "10.0.0.14"
+              }
+            },
+            {
+              "name": "diagservicesquery",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "diagservicesquery",
+                "privateIPAddress": "10.0.0.15"
+              }
+            },
+            {
+              "name": "snapshot",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "snapshot",
+                "privateIPAddress": "10.0.0.16"
+              }
+            },
+            {
+              "name": "agentsolutionpackstore",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "agentsolutionpackstore",
+                "privateIPAddress": "10.0.0.17"
+              }
+            },
+            {
+              "name": "dce-global",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "dce-global",
+                "privateIPAddress": "10.0.0.18"
+              }
+            },
+            {
+              "name": "<name>",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "<memberName>",
+                "privateIPAddress": "10.0.0.19"
+              }
+            },
+            {
+              "name": "<name>",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "<memberName>",
+                "privateIPAddress": "10.0.0.20"
+              }
+            },
+            {
+              "name": "<name>",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "<memberName>",
+                "privateIPAddress": "10.0.0.21"
               }
             }
           ],
@@ -283,6 +453,10 @@ This instance deploys the module in alignment with the best-practices of the Azu
     name: 'iplswaf001'
     // Non-required parameters
     location: 'global'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     privateEndpoints: [
       {
         customDnsConfigs: [
@@ -295,11 +469,91 @@ This instance deploys the module in alignment with the best-practices of the Azu
         ]
         ipConfigurations: [
           {
-            name: 'myIPconfig'
+            name: 'api'
             properties: {
               groupId: 'azuremonitor'
-              memberName: 'azuremonitor'
-              privateIPAddress: '10.0.0.10'
+              memberName: 'api'
+              privateIPAddress: '10.0.0.11'
+            }
+          }
+          {
+            name: 'globalinai'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'global.in.ai'
+              privateIPAddress: '10.0.0.12'
+            }
+          }
+          {
+            name: 'profiler'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'profiler'
+              privateIPAddress: '10.0.0.13'
+            }
+          }
+          {
+            name: 'live'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'live'
+              privateIPAddress: '10.0.0.14'
+            }
+          }
+          {
+            name: 'diagservicesquery'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'diagservicesquery'
+              privateIPAddress: '10.0.0.15'
+            }
+          }
+          {
+            name: 'snapshot'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'snapshot'
+              privateIPAddress: '10.0.0.16'
+            }
+          }
+          {
+            name: 'agentsolutionpackstore'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'agentsolutionpackstore'
+              privateIPAddress: '10.0.0.17'
+            }
+          }
+          {
+            name: 'dce-global'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: 'dce-global'
+              privateIPAddress: '10.0.0.18'
+            }
+          }
+          {
+            name: '<name>'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: '<memberName>'
+              privateIPAddress: '10.0.0.19'
+            }
+          }
+          {
+            name: '<name>'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: '<memberName>'
+              privateIPAddress: '10.0.0.20'
+            }
+          }
+          {
+            name: '<name>'
+            properties: {
+              groupId: 'azuremonitor'
+              memberName: '<memberName>'
+              privateIPAddress: '10.0.0.21'
             }
           }
         ]
@@ -319,6 +573,23 @@ This instance deploys the module in alignment with the best-practices of the Azu
           'hidden-title': 'This is visible in the resource name'
           Role: 'DeploymentValidation'
         }
+      }
+    ]
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     scopedResources: [
@@ -356,6 +627,12 @@ This instance deploys the module in alignment with the best-practices of the Azu
     "location": {
       "value": "global"
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
     "privateEndpoints": {
       "value": [
         {
@@ -369,11 +646,91 @@ This instance deploys the module in alignment with the best-practices of the Azu
           ],
           "ipConfigurations": [
             {
-              "name": "myIPconfig",
+              "name": "api",
               "properties": {
                 "groupId": "azuremonitor",
-                "memberName": "azuremonitor",
-                "privateIPAddress": "10.0.0.10"
+                "memberName": "api",
+                "privateIPAddress": "10.0.0.11"
+              }
+            },
+            {
+              "name": "globalinai",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "global.in.ai",
+                "privateIPAddress": "10.0.0.12"
+              }
+            },
+            {
+              "name": "profiler",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "profiler",
+                "privateIPAddress": "10.0.0.13"
+              }
+            },
+            {
+              "name": "live",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "live",
+                "privateIPAddress": "10.0.0.14"
+              }
+            },
+            {
+              "name": "diagservicesquery",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "diagservicesquery",
+                "privateIPAddress": "10.0.0.15"
+              }
+            },
+            {
+              "name": "snapshot",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "snapshot",
+                "privateIPAddress": "10.0.0.16"
+              }
+            },
+            {
+              "name": "agentsolutionpackstore",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "agentsolutionpackstore",
+                "privateIPAddress": "10.0.0.17"
+              }
+            },
+            {
+              "name": "dce-global",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "dce-global",
+                "privateIPAddress": "10.0.0.18"
+              }
+            },
+            {
+              "name": "<name>",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "<memberName>",
+                "privateIPAddress": "10.0.0.19"
+              }
+            },
+            {
+              "name": "<name>",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "<memberName>",
+                "privateIPAddress": "10.0.0.20"
+              }
+            },
+            {
+              "name": "<name>",
+              "properties": {
+                "groupId": "azuremonitor",
+                "memberName": "<memberName>",
+                "privateIPAddress": "10.0.0.21"
               }
             }
           ],
@@ -393,6 +750,25 @@ This instance deploys the module in alignment with the best-practices of the Azu
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           }
+        }
+      ]
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
