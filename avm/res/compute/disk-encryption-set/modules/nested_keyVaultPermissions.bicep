@@ -34,7 +34,7 @@ module userAssignedIdentity 'nested_managedIdentityReference.bicep' = {
 // Role Assignment //
 // =============== //
 
-resource keyVaultKeyRBAC 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (rbacAuthorizationEnabled == true) {
+resource keyVaultKeyRBAC 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (keyVault.properties.enableRbacAuthorization == true) {
   name: guid('msi-${keyVault::key.id}-${location}-${userAssignedIdentityResourceId}-Key-Reader-RoleAssignment')
   scope: keyVault::key
   properties: {
