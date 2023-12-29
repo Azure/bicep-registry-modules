@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "1726130523166426728"
+      "templateHash": "14441578962181885339"
     },
     "name": "Compute Galleries Image Definitions",
     "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -103,7 +103,7 @@
     },
     "osType": {
       "type": "string",
-      "defaultValue": "Windows",
+      "defaultValue": "Linux",
       "allowedValues": [
         "Windows",
         "Linux"
@@ -125,21 +125,21 @@
     },
     "publisher": {
       "type": "string",
-      "defaultValue": "MicrosoftWindowsServer",
+      "defaultValue": "canonical",
       "metadata": {
         "description": "Optional. The name of the gallery Image Definition publisher."
       }
     },
     "offer": {
       "type": "string",
-      "defaultValue": "WindowsServer",
+      "defaultValue": "0001-com-ubuntu-server-jammy",
       "metadata": {
         "description": "Optional. The name of the gallery Image Definition offer."
       }
     },
     "sku": {
       "type": "string",
-      "defaultValue": "2019-Datacenter",
+      "defaultValue": "22_04-lts-gen2",
       "metadata": {
         "description": "Optional. The name of the gallery Image Definition SKU."
       }

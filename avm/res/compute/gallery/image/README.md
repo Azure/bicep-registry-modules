@@ -194,7 +194,7 @@ The name of the gallery Image Definition offer.
 
 - Required: No
 - Type: string
-- Default: `'WindowsServer'`
+- Default: `'0001-com-ubuntu-server-jammy'`
 
 ### Parameter: `osState`
 
@@ -217,7 +217,7 @@ OS type of the image to be created.
 
 - Required: No
 - Type: string
-- Default: `'Windows'`
+- Default: `'Linux'`
 - Allowed:
   ```Bicep
   [
@@ -260,7 +260,7 @@ The name of the gallery Image Definition publisher.
 
 - Required: No
 - Type: string
-- Default: `'MicrosoftWindowsServer'`
+- Default: `'canonical'`
 
 ### Parameter: `releaseNoteUri`
 
@@ -381,7 +381,7 @@ The name of the gallery Image Definition SKU.
 
 - Required: No
 - Type: string
-- Default: `'2019-Datacenter'`
+- Default: `'22_04-lts-gen2'`
 
 ### Parameter: `tags`
 

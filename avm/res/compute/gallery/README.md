@@ -451,13 +451,6 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
       }
       {
         name: 'cgwaf-appd-002'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
         supportedOSType: 'Windows'
       }
     ]
@@ -476,13 +469,6 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         osState: 'Generalized'
         osType: 'Windows'
         publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
         sku: '2022-datacenter-azure-edition'
       }
       {
@@ -497,13 +483,6 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         osState: 'Generalized'
         osType: 'Windows'
         publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
         sku: '2022-datacenter-azure-edition-hibernate'
       }
       {
@@ -518,13 +497,6 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         osState: 'Generalized'
         osType: 'Windows'
         publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
         sku: '2022-datacenter-azure-edition-accnet'
       }
       {
@@ -538,13 +510,6 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         osState: 'Generalized'
         osType: 'Windows'
         publisher: 'MicrosoftWindowsDesktop'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
         securityType: 'TrustedLaunch'
         sku: 'Win11-21H2'
       }
@@ -600,13 +565,6 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         },
         {
           "name": "cgwaf-appd-002",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
           "supportedOSType": "Windows"
         }
       ]
@@ -627,13 +585,6 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           "osState": "Generalized",
           "osType": "Windows",
           "publisher": "MicrosoftWindowsServer",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
           "sku": "2022-datacenter-azure-edition"
         },
         {
@@ -648,13 +599,6 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           "osState": "Generalized",
           "osType": "Windows",
           "publisher": "MicrosoftWindowsServer",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
           "sku": "2022-datacenter-azure-edition-hibernate"
         },
         {
@@ -669,13 +613,6 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           "osState": "Generalized",
           "osType": "Windows",
           "publisher": "MicrosoftWindowsServer",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
           "sku": "2022-datacenter-azure-edition-accnet"
         },
         {
@@ -689,13 +626,6 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           "osState": "Generalized",
           "osType": "Windows",
           "publisher": "MicrosoftWindowsDesktop",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
           "securityType": "TrustedLaunch",
           "sku": "Win11-21H2"
         },
