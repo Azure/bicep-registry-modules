@@ -17,7 +17,7 @@ param location string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ncvtv'
 
-@description('Optional. The password to leverage for the login.')
+@description('Optional. The password to leverage for the shared key.')
 @secure()
 param password string = newGuid()
 

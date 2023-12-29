@@ -17,6 +17,10 @@ param location string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ncmin'
 
+@description('Optional. The password to leverage for the shared key.')
+@secure()
+param password string = newGuid()
+
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -39,6 +43,9 @@ module nestedDependencies 'dependencies.bicep' = {
     primaryPublicIPName: 'dep-${namePrefix}-pip-${serviceShort}-1'
     primaryVirtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}-1'
     primaryVirtualNetworkGatewayName: 'dep-${namePrefix}-vpn-gw-${serviceShort}-1'
+    secondaryPublicIPName: 'dep-${namePrefix}-pip-${serviceShort}-2'
+    secondaryVirtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}-2'
+    secondaryVirtualNetworkGatewayName: 'dep-${namePrefix}-vpn-gw-${serviceShort}-2'
   }
 }
 
@@ -56,6 +63,16 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     virtualNetworkGateway1: {
       id: nestedDependencies.outputs.primaryVNETGatewayResourceID
     }
+    virtualNetworkGateway2: {
+      id: nestedDependencies.outputs.secondaryVNETGatewayResourceID
+    }
+    connectionType: 'Vnet2Vnet'
+    vpnSharedKey: password
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }    
   }
 }]
 

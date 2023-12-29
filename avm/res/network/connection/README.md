@@ -50,7 +50,17 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
       id: '<id>'
     }
     // Non-required parameters
+    connectionType: 'Vnet2Vnet'
     location: '<location>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    virtualNetworkGateway2: {
+      id: '<id>'
+    }
+    vpnSharedKey: '<vpnSharedKey>'
   }
 }
 ```
@@ -77,8 +87,26 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
       }
     },
     // Non-required parameters
+    "connectionType": {
+      "value": "Vnet2Vnet"
+    },
     "location": {
       "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "virtualNetworkGateway2": {
+      "value": {
+        "id": "<id>"
+      }
+    },
+    "vpnSharedKey": {
+      "value": "<vpnSharedKey>"
     }
   }
 }
