@@ -17,7 +17,7 @@ param galleryName string
   'Windows'
   'Linux'
 ])
-param osType string = 'Windows'
+param osType string = 'Linux'
 
 @sys.description('Optional. This property allows the user to specify whether the virtual machines created under this image are \'Generalized\' or \'Specialized\'.')
 @allowed([
@@ -27,13 +27,13 @@ param osType string = 'Windows'
 param osState string = 'Generalized'
 
 @sys.description('Optional. The name of the gallery Image Definition publisher.')
-param publisher string = 'MicrosoftWindowsServer'
+param publisher string = 'canonical'
 
 @sys.description('Optional. The name of the gallery Image Definition offer.')
-param offer string = 'WindowsServer'
+param offer string = '0001-com-ubuntu-server-jammy'
 
 @sys.description('Optional. The name of the gallery Image Definition SKU.')
-param sku string = '2019-Datacenter'
+param sku string = '22_04-lts-gen2'
 
 @sys.description('Optional. The minimum number of the CPU cores recommended for this image.')
 @minValue(1)
