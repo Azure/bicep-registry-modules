@@ -52,11 +52,6 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     // Non-required parameters
     connectionType: 'Vnet2Vnet'
     location: '<location>'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
     virtualNetworkGateway2: {
       id: '<id>'
     }
@@ -92,13 +87,6 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     },
     "virtualNetworkGateway2": {
       "value": {
@@ -317,7 +305,6 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     }
     // Non-required parameters
     connectionType: 'Vnet2Vnet'
-    enableBgp: false
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -360,9 +347,6 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     // Non-required parameters
     "connectionType": {
       "value": "Vnet2Vnet"
-    },
-    "enableBgp": {
-      "value": false
     },
     "location": {
       "value": "<location>"

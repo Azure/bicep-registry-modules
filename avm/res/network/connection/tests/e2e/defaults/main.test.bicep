@@ -67,12 +67,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       id: nestedDependencies.outputs.secondaryVNETGatewayResourceID
     }
     connectionType: 'Vnet2Vnet'
-    vpnSharedKey: password
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }    
+    vpnSharedKey: password  
   }
 }]
 
