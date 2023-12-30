@@ -69,7 +69,7 @@ param customIPSecPolicy object = {
 }
 
 @description('Optional. The weight added to routes learned from this BGP speaker.')
-param routingWeight int = -1
+param routingWeight int?
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -144,7 +144,7 @@ resource connection 'Microsoft.Network/connections@2023-04-01' = {
         pfsGroup: customIPSecPolicy.pfsGroup
       }
     ] : customIPSecPolicy.ipsecEncryption
-    routingWeight: routingWeight != -1 ? routingWeight : null
+    routingWeight: routingWeight
     enableBgp: enableBgp
     useLocalAzureIpAddress: connectionType == 'IPsec' ? useLocalAzureIpAddress : null
   }
