@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "5230619064436054551"
+      "templateHash": "15709311136731868568"
     },
     "name": "Virtual Network Gateway Connections",
     "description": "This module deploys a Virtual Network Gateway Connection.",
@@ -158,7 +158,7 @@
     },
     "routingWeight": {
       "type": "int",
-      "defaultValue": -1,
+      "nullable": true,
       "metadata": {
         "description": "Optional. The weight added to routes learned from this BGP speaker."
       }
@@ -260,7 +260,7 @@
         "sharedKey": "[if(not(equals(parameters('connectionType'), 'ExpressRoute')), parameters('vpnSharedKey'), null())]",
         "usePolicyBasedTrafficSelectors": "[parameters('usePolicyBasedTrafficSelectors')]",
         "ipsecPolicies": "[if(not(empty(parameters('customIPSecPolicy').ipsecEncryption)), createArray(createObject('saLifeTimeSeconds', parameters('customIPSecPolicy').saLifeTimeSeconds, 'saDataSizeKilobytes', parameters('customIPSecPolicy').saDataSizeKilobytes, 'ipsecEncryption', parameters('customIPSecPolicy').ipsecEncryption, 'ipsecIntegrity', parameters('customIPSecPolicy').ipsecIntegrity, 'ikeEncryption', parameters('customIPSecPolicy').ikeEncryption, 'ikeIntegrity', parameters('customIPSecPolicy').ikeIntegrity, 'dhGroup', parameters('customIPSecPolicy').dhGroup, 'pfsGroup', parameters('customIPSecPolicy').pfsGroup)), parameters('customIPSecPolicy').ipsecEncryption)]",
-        "routingWeight": "[if(not(equals(parameters('routingWeight'), -1)), parameters('routingWeight'), null())]",
+        "routingWeight": "[parameters('routingWeight')]",
         "enableBgp": "[parameters('enableBgp')]",
         "useLocalAzureIpAddress": "[if(equals(parameters('connectionType'), 'IPsec'), parameters('useLocalAzureIpAddress'), null())]"
       }

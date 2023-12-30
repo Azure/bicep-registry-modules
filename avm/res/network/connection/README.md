@@ -610,7 +610,6 @@ The weight added to routes learned from this BGP speaker.
 
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `tags`
 
