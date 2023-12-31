@@ -291,10 +291,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     name: 'nngcprx001'
     // Non-required parameters
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     publicIPPrefixObjects: [
       {
         name: 'nngcprx001-pippre'
@@ -304,11 +300,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
         }
       }
     ]
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -333,12 +324,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "publicIPPrefixObjects": {
       "value": [
         {
@@ -349,13 +334,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
           }
         }
       ]
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
