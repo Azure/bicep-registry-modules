@@ -130,7 +130,6 @@ module vpnGateway_vpnConnections 'vpn-connection/main.bicep' = [for (connection,
     useLocalAzureIpAddress: connection.?useLocalAzureIpAddress
     usePolicyBasedTrafficSelectors: connection.?usePolicyBasedTrafficSelectors
     vpnConnectionProtocolType: connection.?vpnConnectionProtocolType
-    enableDefaultTelemetry: connection.?ipsecPolicies
     trafficSelectorPolicies: connection.?trafficSelectorPolicies
     vpnLinkConnections: connection.?vpnLinkConnections
   }
