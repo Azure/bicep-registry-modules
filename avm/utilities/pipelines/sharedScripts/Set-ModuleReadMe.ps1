@@ -1017,12 +1017,15 @@ function ConvertTo-FormattedBicep {
     # [2/5] Remove any JSON specific formatting
     $templateParameterObject = $orderedJSONParameters | ConvertTo-Json -Depth 99
     if ($templateParameterObject -ne '{}') {
-        $contentInBicepFormat = $templateParameterObject -replace "'", "\'" # Update any [ "field": "[[concat('tags[', parameters('tagName'), ']')]"] to [ "field": "[[concat(\'tags[\', parameters(\'tagName\'), \']\')]"]
-        $contentInBicepFormat = $contentInBicepFormat -replace '"', "'" # Update any [xyz: "xyz"] to [xyz: 'xyz']
-        $contentInBicepFormat = $contentInBicepFormat -replace ',', '' # Update any [xyz: xyz,] to [xyz: xyz]
-        $contentInBicepFormat = $contentInBicepFormat -replace "'(\w+)':", '$1:' # Update any  ['xyz': xyz] to [xyz: xyz]
-        $contentInBicepFormat = $contentInBicepFormat -replace "'(.+.getSecret\('.+'\))'", '$1' # Update any  [xyz: 'xyz.GetSecret()'] to [xyz: xyz.GetSecret()]
-        $bicepParamsArray = $contentInBicepFormat -split '\n'
+        $bicepParamsArray = $templateParameterObject -split '\r?\n' | ForEach-Object {
+            $line = $_
+            $line = $line -replace "'", "\'" # Update any [ "field": "[[concat('tags[', parameters('tagName'), ']')]"] to [ "field": "[[concat(\'tags[\', parameters(\'tagName\'), \']\')]"]
+            $line = $line -replace '"', "'" # Update any [xyz: "xyz"] to [xyz: 'xyz']
+            $line = $line -replace ',$', '' # Update any [xyz: abc,xyz,] to [xyz: abc,xyz]
+            $line = $line -replace "'(\w+)':", '$1:' # Update any  ['xyz': xyz] to [xyz: xyz]
+            $line = $line -replace "'(.+.getSecret\('.+'\))'", '$1' # Update any  [xyz: 'xyz.GetSecret()'] to [xyz: xyz.GetSecret()]
+            $line
+        }
         $bicepParamsArray = $bicepParamsArray[1..($bicepParamsArray.count - 2)]
 
         # [3/5] Format 'getSecret' references
@@ -1155,11 +1158,17 @@ function Set-UsageExamplesSection {
     # Prepare data (using thread-safe multithreading) to consume later
     $buildTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
     $testFilePaths | ForEach-Object -Parallel {
-        $folderName = Split-Path (Split-Path -Path $_) -Leaf
-        $buildTemplate = bicep build $_ --stdout | ConvertFrom-Json -AsHashtable
-
         $dict = $using:buildTestFileMap
-        $null = $dict.TryAdd($folderName, $buildTemplate)
+
+        $folderName = Split-Path (Split-Path -Path $_) -Leaf
+        $builtTemplate = (bicep build $_ --stdout 2>$null) | Out-String
+
+        if ([String]::IsNullOrEmpty($builtTemplate)) {
+            throw "Failed to build template [$_]. Try running the command ``bicep build $_ --stdout`` locally for troubleshooting. Make sure you have the latest Bicep CLI installed."
+        }
+        $templateHashTable = ConvertFrom-Json $builtTemplate -AsHashtable
+
+        $null = $dict.TryAdd($folderName, $templateHashTable)
     }
 
     # Process data
