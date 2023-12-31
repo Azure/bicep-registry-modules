@@ -28,8 +28,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using VNet-to-VNet parameter set](#example-3-using-vnet-to-vnet-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -209,83 +208,7 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using VNet-to-VNet parameter set_
-
-This instance deploys the module with the VNet-to-VNet set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module connection 'br/public:avm/res/network/connection:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ncvtv'
-  params: {
-    // Required parameters
-    name: 'ncvtv001'
-    virtualNetworkGateway1: {
-      id: '<id>'
-    }
-    // Non-required parameters
-    connectionType: 'Vnet2Vnet'
-    enableBgp: false
-    location: '<location>'
-    virtualNetworkGateway2: {
-      id: '<id>'
-    }
-    vpnSharedKey: '<vpnSharedKey>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "ncvtv001"
-    },
-    "virtualNetworkGateway1": {
-      "value": {
-        "id": "<id>"
-      }
-    },
-    // Non-required parameters
-    "connectionType": {
-      "value": "Vnet2Vnet"
-    },
-    "enableBgp": {
-      "value": false
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "virtualNetworkGateway2": {
-      "value": {
-        "id": "<id>"
-      }
-    },
-    "vpnSharedKey": {
-      "value": "<vpnSharedKey>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 4: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
