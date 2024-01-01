@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "12740962024568335294"
+      "templateHash": "13460011573134112667"
     },
     "name": "Virtual Machine Image Templates",
     "description": "This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB).",
@@ -396,7 +396,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.\r\nBe aware, the user assigned identities specified in the \\'managedIdentities\\' parameter must have the \\'Managed Identity Operator\\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.\r\n"
+        "description": "Optional. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.\nBe aware, the user assigned identities specified in the \\'managedIdentities\\' parameter must have the \\'Managed Identity Operator\\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.\n"
       }
     },
     "managedIdentities": {
