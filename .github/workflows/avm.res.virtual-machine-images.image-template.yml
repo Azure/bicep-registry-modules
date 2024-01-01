@@ -1,4 +1,4 @@
-name: "avm.res.resource-graph.query"
+name: "avm.res.virtual-machine-images.image-template"
 
 on:
   schedule:
