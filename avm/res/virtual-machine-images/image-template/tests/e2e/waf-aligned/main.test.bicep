@@ -39,7 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     sigImageDefinitionName: 'dep-${namePrefix}-imgd-${serviceShort}'
     galleryName: 'dep${namePrefix}sig${serviceShort}'
-    virtualNetworkName: 'dep${namePrefix}-vnet-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
 
