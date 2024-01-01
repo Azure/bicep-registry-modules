@@ -78,7 +78,7 @@ function Initialize-DeploymentRemoval {
             'Microsoft.MachineLearningServices/workspaces',
             'Microsoft.Resources/resourceGroups',
             'Microsoft.Compute/virtualMachines',
-            'Microsoft.ManagedIdentity/userAssignedIdentities'
+            'Microsoft.VirtualMachineImages/imageTemplates'
         )
 
         Write-Verbose ('Handling resource removal with deployment names [{0}]' -f ($deploymentNames -join ', ')) -Verbose
