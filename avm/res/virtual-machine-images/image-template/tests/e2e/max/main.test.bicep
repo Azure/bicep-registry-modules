@@ -20,14 +20,8 @@ param serviceShort string = 'vmiitmax'
 @description('Optional. The version of the Azure Compute Gallery Image Definition to be added.')
 param sigImageVersion string = utcNow('yyyy.MM.dd')
 
-@description('Optional. The staging resource group name in the same location and subscription as the image template. Must not exist.')
-param stagingResourceGroupName string = 'ms.virtualmachineimages.imagetemplates-${serviceShort}-staging-rg'
-
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -44,6 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
+    location: location
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     sigImageDefinitionName: 'dep-${namePrefix}-imgd-${serviceShort}'
     galleryName: 'dep${namePrefix}sig${serviceShort}'
@@ -69,8 +64,9 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
-    enableDefaultTelemetry: enableDefaultTelemetry
     name: '${namePrefix}${serviceShort}001'
+    location: location
+    stagingResourceGroup: '${subscription().id}/resourcegroups/${resourceGroupName}-staging'
     customizationSteps: [
       {
         restartTimeout: '10m'
@@ -85,13 +81,39 @@ module testDeployment '../../../main.bicep' = {
       version: 'latest'
     }
     buildTimeoutInMinutes: 60
-    imageReplicationRegions: []
+    subnetResourceId: nestedDependencies.outputs.subnetResourceId
+    osDiskSizeGB: 127
+    vmSize: 'Standard_D2s_v3'
+    distributions: [
+      {
+        type: 'ManagedImage'
+        imageName: '${namePrefix}-mi-${serviceShort}-001'
+      }
+      {
+        type: 'VHD'
+        imageName: '${namePrefix}-umi-${serviceShort}-001'
+      }
+      {
+        type: 'SharedImage'
+        sharedImageGalleryImageDefinitionResourceId: nestedDependencies.outputs.sigImageDefinitionId
+        sharedImageGalleryImageDefinitionTargetVersion: sigImageVersion
+        replicationRegions: [
+          location
+        ]
+      }
+    ]
+    managedIdentities: {
+      userAssignedResourceIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
+    }
+    vmUserAssignedIdentities: [
+      nestedDependencies.outputs.managedIdentityResourceId
+    ]
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    managedImageName: '${namePrefix}-mi-${serviceShort}-001'
-    osDiskSizeGB: 127
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Owner'
@@ -109,17 +131,6 @@ module testDeployment '../../../main.bicep' = {
         principalType: 'ServicePrincipal'
       }
     ]
-    sigImageDefinitionId: nestedDependencies.outputs.sigImageDefinitionId
-    sigImageVersion: sigImageVersion
-    subnetId: nestedDependencies.outputs.subnetId
-    stagingResourceGroup: '${subscription().id}/resourcegroups/${stagingResourceGroupName}'
-    unManagedImageName: '${namePrefix}-umi-${serviceShort}-001'
-    userAssignedIdentities: [
-      nestedDependencies.outputs.managedIdentityResourceId
-    ]
-    userMsiName: nestedDependencies.outputs.managedIdentityName
-    userMsiResourceGroup: resourceGroupName
-    vmSize: 'Standard_D2s_v3'
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "10277577540639461484"
+      "version": "0.24.24.22086",
+      "templateHash": "12740962024568335294"
     },
     "name": "Virtual Machine Image Templates",
     "description": "This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB).",
@@ -103,6 +103,188 @@
         }
       },
       "nullable": true
+    },
+    "managedIdentitiesType": {
+      "type": "object",
+      "properties": {
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      }
+    },
+    "distributionType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "type",
+        "mapping": {
+          "SharedImage": {
+            "$ref": "#/definitions/sharedImageDistributionType"
+          },
+          "ManagedImage": {
+            "$ref": "#/definitions/managedImageDistributionType"
+          },
+          "VHD": {
+            "$ref": "#/definitions/unManagedDistributionType"
+          }
+        }
+      }
+    },
+    "sharedImageDistributionType": {
+      "type": "object",
+      "properties": {
+        "runOutputName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name to be used for the associated RunOutput. If not provided, a name will be calculated."
+          }
+        },
+        "artifactTags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source."
+          }
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "SharedImage"
+          ],
+          "metadata": {
+            "description": "Required. The type of distribution."
+          }
+        },
+        "sharedImageGalleryImageDefinitionResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Conditional. Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>."
+          }
+        },
+        "sharedImageGalleryImageDefinitionTargetVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the Compute Gallery Image. Supports the following Version Syntax: Major.Minor.Build (i.e., '1.1.1' or '10.1.2'). If not provided, a version will be calculated."
+          }
+        },
+        "excludeFromLatest": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The exclude from latest flag of the image. Defaults to [false]."
+          }
+        },
+        "replicationRegions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The replication regions of the image. Defaults to the value of the 'location' parameter."
+          }
+        },
+        "storageAccountType": {
+          "type": "string",
+          "allowedValues": [
+            "Standard_LRS",
+            "Standard_ZRS"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The storage account type of the image. Defaults to [Standard_LRS]."
+          }
+        }
+      }
+    },
+    "unManagedDistributionType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "VHD"
+          ],
+          "metadata": {
+            "description": "Required. The type of distribution."
+          }
+        },
+        "runOutputName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name to be used for the associated RunOutput. If not provided, a name will be calculated."
+          }
+        },
+        "artifactTags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source."
+          }
+        },
+        "imageName": {
+          "type": "string",
+          "metadata": {
+            "description": "Conditional. Name of the managed or unmanaged image that will be created."
+          }
+        }
+      }
+    },
+    "managedImageDistributionType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "ManagedImage"
+          ],
+          "metadata": {
+            "description": "Required. The type of distribution."
+          }
+        },
+        "runOutputName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name to be used for the associated RunOutput. If not provided, a name will be calculated."
+          }
+        },
+        "artifactTags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Azure location for the image, should match if image already exists. Defaults to the value of the 'location' parameter."
+          }
+        },
+        "imageResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Required. The resource ID of the managed image. Defaults to a compute image with name 'imageName-baseTime' in the current resource group."
+          }
+        },
+        "imageName": {
+          "type": "string",
+          "metadata": {
+            "description": "Conditional. Name of the managed or unmanaged image that will be created.."
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -110,19 +292,6 @@
       "type": "string",
       "metadata": {
         "description": "Required. Name prefix of the Image Template to be built by the Azure Image Builder service."
-      }
-    },
-    "userMsiName": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. Name of the User Assigned Identity to be used to deploy Image Templates in Azure Image Builder."
-      }
-    },
-    "userMsiResourceGroup": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().name]",
-      "metadata": {
-        "description": "Optional. Resource group of the user assigned identity."
       }
     },
     "location": {
@@ -138,7 +307,7 @@
       "minValue": 0,
       "maxValue": 960,
       "metadata": {
-        "description": "Optional. Image build timeout in minutes. Allowed values: 0-960. 0 means the default 240 minutes."
+        "description": "Optional. Image build timeout in minutes. 0 means the default 240 minutes."
       }
     },
     "vmSize": {
@@ -155,18 +324,11 @@
         "description": "Optional. Specifies the size of OS disk."
       }
     },
-    "subnetId": {
+    "subnetResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>.</p>If no value is provided, a new temporary VNET and subnet will be created in the staging resource group and will be deleted along with the remaining temporary resources."
-      }
-    },
-    "userAssignedIdentities": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.</p>Be aware, the user assigned identity specified in the 'userMsiName' parameter must have the 'Managed Identity Operator' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM."
       }
     },
     "imageSource": {
@@ -181,62 +343,9 @@
         "description": "Required. Customization steps to be run when building the VM image."
       }
     },
-    "managedImageName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Name of the managed image that will be created in the AIB resourcegroup."
-      }
-    },
-    "unManagedImageName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Name of the unmanaged image that will be created in the AIB resourcegroup."
-      }
-    },
-    "sigImageDefinitionId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Resource ID of Shared Image Gallery to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>."
-      }
-    },
-    "sigImageVersion": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Version of the Shared Image Gallery Image. Supports the following Version Syntax: Major.Minor.Build (i.e., '1.1.1' or '10.1.2')."
-      }
-    },
-    "excludeFromLatest": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Exclude the created Azure Compute Gallery image version from the latest."
-      }
-    },
-    "imageReplicationRegions": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. List of the regions the image produced by this solution should be stored in the Shared Image Gallery. When left empty, the deployment's location will be taken as a default value."
-      }
-    },
-    "storageAccountType": {
-      "type": "string",
-      "defaultValue": "Standard_LRS",
-      "allowedValues": [
-        "Standard_LRS",
-        "Standard_ZRS"
-      ],
-      "metadata": {
-        "description": "Optional. Storage account type to be used to store the image in the Azure Compute Gallery."
-      }
-    },
     "stagingResourceGroup": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Resource ID of the staging resource group in the same subscription and location as the image template that will be used to build the image.</p>If this field is empty, a resource group with a random name will be created.</p>If the resource group specified in this field doesn't exist, it will be created with the same name.</p>If the resource group specified exists, it must be empty and in the same region as the image template.</p>The resource group created will be deleted during template deletion if this field is empty or the resource group specified doesn't exist,</p>but if the resource group specified exists the resources created in the resource group will be deleted during template deletion and the resource group itself will remain."
       }
@@ -261,11 +370,11 @@
         "description": "Generated. Do not provide a value! This date value is used to generate a unique image template name."
       }
     },
-    "enableDefaultTelemetry": {
+    "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "roleAssignments": {
@@ -273,66 +382,34 @@
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
+    },
+    "distributions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/distributionType"
+      },
+      "metadata": {
+        "description": "Required. The distribution targets where the image output needs to go to."
+      }
+    },
+    "vmUserAssignedIdentities": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.\r\nBe aware, the user assigned identities specified in the \\'managedIdentities\\' parameter must have the \\'Managed Identity Operator\\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.\r\n"
+      }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentitiesType",
+      "metadata": {
+        "description": "Required. The managed identity definition for this resource."
+      }
     }
   },
   "variables": {
-    "managedImageNameVar": "[format('{0}-{1}', parameters('managedImageName'), parameters('baseTime'))]",
-    "managedImageId": "[format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Compute/images/{2}', subscription().subscriptionId, resourceGroup().name, variables('managedImageNameVar'))]",
-    "imageReplicationRegionsVar": "[if(empty(parameters('imageReplicationRegions')), array(parameters('location')), parameters('imageReplicationRegions'))]",
-    "managedImage": {
-      "type": "ManagedImage",
-      "imageId": "[variables('managedImageId')]",
-      "location": "[parameters('location')]",
-      "runOutputName": "[format('{0}-ManagedImage', variables('managedImageNameVar'))]",
-      "artifactTags": {
-        "sourceType": "[parameters('imageSource').type]",
-        "sourcePublisher": "[if(contains(parameters('imageSource'), 'publisher'), parameters('imageSource').publisher, null())]",
-        "sourceOffer": "[if(contains(parameters('imageSource'), 'offer'), parameters('imageSource').offer, null())]",
-        "sourceSku": "[if(contains(parameters('imageSource'), 'sku'), parameters('imageSource').sku, null())]",
-        "sourceVersion": "[if(contains(parameters('imageSource'), 'version'), parameters('imageSource').version, null())]",
-        "sourceImageId": "[if(contains(parameters('imageSource'), 'imageId'), parameters('imageSource').imageId, null())]",
-        "sourceImageVersionID": "[if(contains(parameters('imageSource'), 'imageVersionID'), parameters('imageSource').imageVersionID, null())]",
-        "creationTime": "[parameters('baseTime')]"
-      }
-    },
-    "conditionalManagedImage": "[if(empty(parameters('managedImageName')), createArray(), array(variables('managedImage')))]",
-    "sharedImage": {
-      "type": "SharedImage",
-      "galleryImageId": "[if(empty(parameters('sigImageVersion')), parameters('sigImageDefinitionId'), format('{0}/versions/{1}', parameters('sigImageDefinitionId'), parameters('sigImageVersion')))]",
-      "excludeFromLatest": "[parameters('excludeFromLatest')]",
-      "replicationRegions": "[variables('imageReplicationRegionsVar')]",
-      "storageAccountType": "[parameters('storageAccountType')]",
-      "runOutputName": "[if(not(empty(parameters('sigImageDefinitionId'))), format('{0}-SharedImage', last(split(parameters('sigImageDefinitionId'), '/'))), 'SharedImage')]",
-      "artifactTags": {
-        "sourceType": "[parameters('imageSource').type]",
-        "sourcePublisher": "[if(contains(parameters('imageSource'), 'publisher'), parameters('imageSource').publisher, null())]",
-        "sourceOffer": "[if(contains(parameters('imageSource'), 'offer'), parameters('imageSource').offer, null())]",
-        "sourceSku": "[if(contains(parameters('imageSource'), 'sku'), parameters('imageSource').sku, null())]",
-        "sourceVersion": "[if(contains(parameters('imageSource'), 'version'), parameters('imageSource').version, null())]",
-        "sourceImageId": "[if(contains(parameters('imageSource'), 'imageId'), parameters('imageSource').imageId, null())]",
-        "sourceImageVersionID": "[if(contains(parameters('imageSource'), 'imageVersionID'), parameters('imageSource').imageVersionID, null())]",
-        "creationTime": "[parameters('baseTime')]"
-      }
-    },
-    "conditionalSharedImage": "[if(empty(parameters('sigImageDefinitionId')), createArray(), array(variables('sharedImage')))]",
-    "unManagedImage": {
-      "type": "VHD",
-      "runOutputName": "[format('{0}-VHD', parameters('unManagedImageName'))]",
-      "artifactTags": {
-        "sourceType": "[parameters('imageSource').type]",
-        "sourcePublisher": "[if(contains(parameters('imageSource'), 'publisher'), parameters('imageSource').publisher, null())]",
-        "sourceOffer": "[if(contains(parameters('imageSource'), 'offer'), parameters('imageSource').offer, null())]",
-        "sourceSku": "[if(contains(parameters('imageSource'), 'sku'), parameters('imageSource').sku, null())]",
-        "sourceVersion": "[if(contains(parameters('imageSource'), 'version'), parameters('imageSource').version, null())]",
-        "sourceImageId": "[if(contains(parameters('imageSource'), 'imageId'), parameters('imageSource').imageId, null())]",
-        "sourceImageVersionID": "[if(contains(parameters('imageSource'), 'imageVersionID'), parameters('imageSource').imageVersionID, null())]",
-        "creationTime": "[parameters('baseTime')]"
-      }
-    },
-    "conditionalUnManagedImage": "[if(empty(parameters('unManagedImageName')), createArray(), array(variables('unManagedImage')))]",
-    "distribute": "[concat(variables('conditionalManagedImage'), variables('conditionalSharedImage'), variables('conditionalUnManagedImage'))]",
-    "vnetConfig": {
-      "subnetId": "[parameters('subnetId')]"
+    "identity": {
+      "type": "UserAssigned",
+      "userAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]"
     },
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -343,17 +420,23 @@
     }
   },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.virtualmachineimages-imagetemplate.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
-          "resources": []
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
         }
       }
     },
@@ -363,23 +446,24 @@
       "name": "[format('{0}-{1}', parameters('name'), parameters('baseTime'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
-      "identity": {
-        "type": "UserAssigned",
-        "userAssignedIdentities": {
-          "[format('{0}', resourceId(parameters('userMsiResourceGroup'), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userMsiName')))]": {}
-        }
-      },
+      "identity": "[variables('identity')]",
       "properties": {
+        "copy": [
+          {
+            "name": "distribute",
+            "count": "[length(parameters('distributions'))]",
+            "input": "[union(createObject('type', parameters('distributions')[copyIndex('distribute')].type, 'artifactTags', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'artifactTags'), createObject('sourceType', parameters('imageSource').type, 'sourcePublisher', tryGet(parameters('imageSource'), 'publisher'), 'sourceOffer', tryGet(parameters('imageSource'), 'offer'), 'sourceSku', tryGet(parameters('imageSource'), 'sku'), 'sourceVersion', tryGet(parameters('imageSource'), 'version'), 'sourceImageId', tryGet(parameters('imageSource'), 'imageId'), 'sourceImageVersionID', tryGet(parameters('imageSource'), 'imageVersionID'), 'creationTime', parameters('baseTime')))), if(equals(parameters('distributions')[copyIndex('distribute')].type, 'ManagedImage'), createObject('runOutputName', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'runOutputName'), format('{0}-{1}-ManagedImage', parameters('distributions')[copyIndex('distribute')].imageName, parameters('baseTime'))), 'location', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'location'), parameters('location')), 'imageId', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'imageResourceId'), format('{0}/resourceGroups/{1}/providers/Microsoft.Compute/images/{2}-{3}', subscription().id, resourceGroup().name, parameters('distributions')[copyIndex('distribute')].imageName, parameters('baseTime')))), createObject()), if(equals(parameters('distributions')[copyIndex('distribute')].type, 'SharedImage'), createObject('runOutputName', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'runOutputName'), if(not(empty(tryGet(parameters('distributions')[copyIndex('distribute')], 'sharedImageGalleryImageDefinitionResourceId'))), format('{0}-SharedImage', last(split(coalesce(parameters('distributions')[copyIndex('distribute')].sharedImageGalleryImageDefinitionResourceId, '/'), '/'))), 'SharedImage')), 'galleryImageId', if(not(empty(tryGet(parameters('distributions')[copyIndex('distribute')], 'sharedImageGalleryImageDefinitionTargetVersion'))), format('{0}/versions/{1}', parameters('distributions')[copyIndex('distribute')].sharedImageGalleryImageDefinitionResourceId, parameters('distributions')[copyIndex('distribute')].sharedImageGalleryImageDefinitionTargetVersion), parameters('distributions')[copyIndex('distribute')].sharedImageGalleryImageDefinitionResourceId), 'excludeFromLatest', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'excludeFromLatest'), false()), 'replicationRegions', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'replicationRegions'), createArray(parameters('location'))), 'storageAccountType', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'storageAccountType'), 'Standard_LRS')), createObject()), if(equals(parameters('distributions')[copyIndex('distribute')].type, 'VHD'), createObject('runOutputName', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'runOutputName'), format('{0}-VHD', parameters('distributions')[copyIndex('distribute')].imageName))), createObject()))]"
+          }
+        ],
         "buildTimeoutInMinutes": "[parameters('buildTimeoutInMinutes')]",
         "vmProfile": {
           "vmSize": "[parameters('vmSize')]",
           "osDiskSizeGB": "[parameters('osDiskSizeGB')]",
-          "userAssignedIdentities": "[parameters('userAssignedIdentities')]",
-          "vnetConfig": "[if(not(empty(parameters('subnetId'))), variables('vnetConfig'), null())]"
+          "userAssignedIdentities": "[parameters('vmUserAssignedIdentities')]",
+          "vnetConfig": "[if(not(empty(parameters('subnetResourceId'))), createObject('subnetId', parameters('subnetResourceId')), null())]"
         },
         "source": "[parameters('imageSource')]",
         "customize": "[parameters('customizationSteps')]",
-        "distribute": "[variables('distribute')]",
         "stagingResourceGroup": "[parameters('stagingResourceGroup')]"
       }
     },

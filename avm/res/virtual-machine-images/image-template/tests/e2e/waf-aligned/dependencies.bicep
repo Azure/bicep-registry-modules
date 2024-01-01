@@ -54,7 +54,7 @@ resource galleryImageDefinition 'Microsoft.Compute/galleries/images@2022-03-03' 
 }
 
 resource msi_contibutorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().id, 'Contributor', '[[namePrefix]]')
+  name: guid(resourceGroup().id, 'Contributor', managedIdentityName)
   properties: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c') // Contributor
     principalId: managedIdentity.properties.principalId
@@ -96,4 +96,4 @@ output managedIdentityName string = managedIdentity.name
 output sigImageDefinitionId string = galleryImageDefinition.id
 
 @description('The subnet resource id of the defaultSubnet of the created Virtual Network.')
-output subnetId string = '${virtualNetwork.id}/subnets/defaultSubnet'
+output subnetResourceId string = virtualNetwork.properties.subnets[0].id

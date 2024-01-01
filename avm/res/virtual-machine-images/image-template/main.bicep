@@ -5,12 +5,6 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. Name prefix of the Image Template to be built by the Azure Image Builder service.')
 param name string
 
-@description('Required. Name of the User Assigned Identity to be used to deploy Image Templates in Azure Image Builder.')
-param userMsiName string
-
-@description('Optional. Resource group of the user assigned identity.')
-param userMsiResourceGroup string = resourceGroup().name
-
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
@@ -27,9 +21,6 @@ param osDiskSizeGB int = 128
 
 @description('Optional. Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>.</p>If no value is provided, a new temporary VNET and subnet will be created in the staging resource group and will be deleted along with the remaining temporary resources.')
 param subnetResourceId string?
-
-@description('Required. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.</p>Be aware, the user assigned identity specified in the \'userMsiName\' parameter must have the \'Managed Identity Operator\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.')
-param userAssignedIdentities array
 
 @description('Required. Image source definition in object format.')
 param imageSource object
@@ -55,8 +46,22 @@ param enableTelemetry bool = true
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@description('The distribution targets where the image output needs to go to.')
+@description('Required. The distribution targets where the image output needs to go to.')
 param distributions distributionType[]
+
+@description('''
+Optional. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.
+Be aware, the user assigned identities specified in the \'managedIdentities\' parameter must have the \'Managed Identity Operator\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.
+''')
+param vmUserAssignedIdentities array = []
+
+@description('Required. The managed identity definition for this resource.')
+param managedIdentities managedIdentitiesType
+
+var identity = {
+  type: 'UserAssigned'
+  userAssignedIdentities: reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+}
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -89,18 +94,13 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2022-02-14
   name: '${name}-${baseTime}'
   location: location
   tags: tags
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${az.resourceId(userMsiResourceGroup, 'Microsoft.ManagedIdentity/userAssignedIdentities', userMsiName)}': {}
-    }
-  }
+  identity: identity
   properties: {
     buildTimeoutInMinutes: buildTimeoutInMinutes
     vmProfile: {
       vmSize: vmSize
       osDiskSizeGB: osDiskSizeGB
-      userAssignedIdentities: userAssignedIdentities
+      userAssignedIdentities: vmUserAssignedIdentities
       vnetConfig: !empty(subnetResourceId) ? {
         subnetId: subnetResourceId
       } : null
@@ -122,20 +122,20 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2022-02-14
         }
       },
       (distribution.type == 'ManagedImage' ? {
-        runOutputName: '${'${distribution.imageName}-${baseTime}'}-ManagedImage'
-        location: location
+        runOutputName: distribution.?runOutputName ?? '${distribution.imageName}-${baseTime}-ManagedImage'
+        location: distribution.?location ?? location
         #disable-next-line use-resource-id-functions // Disabling rule as this is an input parameter that is used inside an array.
-        imageId: distribution.imageResourceId
+        imageId: distribution.?imageResourceId ?? '${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Compute/images/${distribution.imageName}-${baseTime}'
       } : {}),
       (distribution.type == 'SharedImage' ? {
-        runOutputName: !empty(distribution.?sharedImageGalleryImageDefinitionResourceId) ? '${last(split((distribution.sharedImageGalleryImageDefinitionResourceId ?? '/'), '/'))}-SharedImage' : 'SharedImage'
+        runOutputName: distribution.?runOutputName ?? (!empty(distribution.?sharedImageGalleryImageDefinitionResourceId) ? '${last(split((distribution.sharedImageGalleryImageDefinitionResourceId ?? '/'), '/'))}-SharedImage' : 'SharedImage')
         galleryImageId: !empty(distribution.?sharedImageGalleryImageDefinitionTargetVersion) ? '${distribution.sharedImageGalleryImageDefinitionResourceId}/versions/${distribution.sharedImageGalleryImageDefinitionTargetVersion}' : distribution.sharedImageGalleryImageDefinitionResourceId
         excludeFromLatest: distribution.?excludeFromLatest ?? false
         replicationRegions: distribution.?replicationRegions ?? [ location ]
         storageAccountType: distribution.?storageAccountType ?? 'Standard_LRS'
       } : {}),
       (distribution.type == 'VHD' ? {
-        runOutputName: '${distribution.imageName}-VHD'
+        runOutputName: distribution.?runOutputName ?? '${distribution.imageName}-VHD'
       } : {})
     )]
   }
@@ -217,10 +217,15 @@ type roleAssignmentType = {
   delegatedManagedIdentityResourceId: string?
 }[]?
 
-type distributionType = {
+type managedIdentitiesType = {
+  @description('Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.')
+  userAssignedResourceIds: string[]
+}
 
-  @description('Required. The type of distribution.')
-  type: ('ManagedImage' | 'SharedImage' | 'VHD')
+@discriminator('type')
+type distributionType = sharedImageDistributionType | managedImageDistributionType | unManagedDistributionType
+
+type sharedImageDistributionType = {
 
   @description('Optional. The name to be used for the associated RunOutput. If not provided, a name will be calculated.')
   runOutputName: string?
@@ -228,27 +233,57 @@ type distributionType = {
   @description('Optional. Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source.')
   artifactTags: object?
 
-  @description('Optional. The location of the image. Relevant if \'type\' is \'ManagedImage\'')
-  location: string?
+  @description('Required. The type of distribution.')
+  type: 'SharedImage'
 
-  @description('Optional. The resource ID of the managed image. Relevant if \'type\' is \'ManagedImage\'')
-  imageResourceId: string?
+  @description('Conditional. Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>.')
+  sharedImageGalleryImageDefinitionResourceId: string
 
-  @description('Conditional. Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>. Required if \'type\' is \'SharedImage\'.')
-  sharedImageGalleryImageDefinitionResourceId: string?
-
-  @description('Optional. Version of the Compute Gallery Image. Supports the following Version Syntax: Major.Minor.Build (i.e., \'1.1.1\' or \'10.1.2\'). If not provided, a version will be calculated. Relevant if \'type\' is \'SharedImage\'.')
+  @description('Optional. Version of the Compute Gallery Image. Supports the following Version Syntax: Major.Minor.Build (i.e., \'1.1.1\' or \'10.1.2\'). If not provided, a version will be calculated.')
   sharedImageGalleryImageDefinitionTargetVersion: string?
 
-  @description('Optional. The exclude from latest flag of the image. Defaults to [false]. Relevant if \'type\' is \'SharedImage\'.')
+  @description('Optional. The exclude from latest flag of the image. Defaults to [false].')
   excludeFromLatest: bool?
 
-  @description('Optional. The replication regions of the image. Defaults to the value of the location parameter. Relevant if \'type\' is \'SharedImage\'.')
+  @description('Optional. The replication regions of the image. Defaults to the value of the \'location\' parameter.')
   replicationRegions: string[]?
 
-  @description('Optional. The storage account type of the image. Defaults to [Standard_LRS]. Relevant if \'type\' is \'SharedImage\'.')
-  storageAccountType: ('Standard_LRS' | 'Standard_ZRS')
+  @description('Optional. The storage account type of the image. Defaults to [Standard_LRS].')
+  storageAccountType: ('Standard_LRS' | 'Standard_ZRS')?
+}
 
-  @description('Conditional. Name of the managed or unmanaged image that will be created. Required if \'type\' is \'ManagedImage\' or \'VHD\'.')
-  imageName: string?
+type unManagedDistributionType = {
+
+  @description('Required. The type of distribution.')
+  type: 'VHD'
+
+  @description('Optional. The name to be used for the associated RunOutput. If not provided, a name will be calculated.')
+  runOutputName: string?
+
+  @description('Optional. Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source.')
+  artifactTags: object?
+
+  @description('Conditional. Name of the managed or unmanaged image that will be created.')
+  imageName: string
+}
+
+type managedImageDistributionType = {
+
+  @description('Required. The type of distribution.')
+  type: 'ManagedImage'
+
+  @description('Optional. The name to be used for the associated RunOutput. If not provided, a name will be calculated.')
+  runOutputName: string?
+
+  @description('Optional. Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source.')
+  artifactTags: object?
+
+  @description('Optional. Azure location for the image, should match if image already exists. Defaults to the value of the \'location\' parameter.')
+  location: string?
+
+  @description('Required. The resource ID of the managed image. Defaults to a compute image with name \'imageName-baseTime\' in the current resource group.')
+  imageResourceId: string?
+
+  @description('Conditional. Name of the managed or unmanaged image that will be created..')
+  imageName: string
 }

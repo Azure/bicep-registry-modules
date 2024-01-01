@@ -25,7 +25,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/virtual-machine-images.image-template:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/virtual-machine-images/image-template:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -41,7 +41,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0.0' = {
+module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-vmiitmin'
   params: {
     // Required parameters
@@ -51,6 +51,12 @@ module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0
         type: 'WindowsRestart'
       }
     ]
+    distributions: [
+      {
+        imageName: 'mi-vmiitmin-001'
+        type: 'ManagedImage'
+      }
+    ]
     imageSource: {
       offer: 'Windows-10'
       publisher: 'MicrosoftWindowsDesktop'
@@ -58,12 +64,14 @@ module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0
       type: 'PlatformImage'
       version: 'latest'
     }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     name: 'vmiitmin001'
-    userMsiName: '<userMsiName>'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
-    managedImageName: 'mi-vmiitmin-001'
-    userMsiResourceGroup: '<userMsiResourceGroup>'
+    location: '<location>'
   }
 }
 ```
@@ -89,6 +97,14 @@ module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0
         }
       ]
     },
+    "distributions": {
+      "value": [
+        {
+          "imageName": "mi-vmiitmin-001",
+          "type": "ManagedImage"
+        }
+      ]
+    },
     "imageSource": {
       "value": {
         "offer": "Windows-10",
@@ -98,21 +114,19 @@ module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0
         "version": "latest"
       }
     },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
     "name": {
       "value": "vmiitmin001"
     },
-    "userMsiName": {
-      "value": "<userMsiName>"
-    },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
-    "managedImageName": {
-      "value": "mi-vmiitmin-001"
-    },
-    "userMsiResourceGroup": {
-      "value": "<userMsiResourceGroup>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -131,7 +145,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0.0' = {
+module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-vmiitmax'
   params: {
     // Required parameters
@@ -141,6 +155,24 @@ module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0
         type: 'WindowsRestart'
       }
     ]
+    distributions: [
+      {
+        imageName: 'mi-vmiitmax-001'
+        type: 'ManagedImage'
+      }
+      {
+        imageName: 'umi-vmiitmax-001'
+        type: 'VHD'
+      }
+      {
+        replicationRegions: [
+          '<location>'
+        ]
+        sharedImageGalleryImageDefinitionResourceId: '<sharedImageGalleryImageDefinitionResourceId>'
+        sharedImageGalleryImageDefinitionTargetVersion: '<sharedImageGalleryImageDefinitionTargetVersion>'
+        type: 'SharedImage'
+      }
+    ]
     imageSource: {
       offer: 'Windows-11'
       publisher: 'MicrosoftWindowsDesktop'
@@ -148,17 +180,19 @@ module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0
       type: 'PlatformImage'
       version: 'latest'
     }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     name: 'vmiitmax001'
-    userMsiName: '<userMsiName>'
     // Non-required parameters
     buildTimeoutInMinutes: 60
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
-    imageReplicationRegions: []
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    managedImageName: 'mi-vmiitmax-001'
     osDiskSizeGB: 127
     roleAssignments: [
       {
@@ -177,21 +211,17 @@ module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    sigImageDefinitionId: '<sigImageDefinitionId>'
-    sigImageVersion: '<sigImageVersion>'
     stagingResourceGroup: '<stagingResourceGroup>'
-    subnetId: '<subnetId>'
+    subnetResourceId: '<subnetResourceId>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    unManagedImageName: 'umi-vmiitmax-001'
-    userAssignedIdentities: [
+    vmSize: 'Standard_D2s_v3'
+    vmUserAssignedIdentities: [
       '<managedIdentityResourceId>'
     ]
-    userMsiResourceGroup: '<userMsiResourceGroup>'
-    vmSize: 'Standard_D2s_v3'
   }
 }
 ```
@@ -217,6 +247,26 @@ module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0
         }
       ]
     },
+    "distributions": {
+      "value": [
+        {
+          "imageName": "mi-vmiitmax-001",
+          "type": "ManagedImage"
+        },
+        {
+          "imageName": "umi-vmiitmax-001",
+          "type": "VHD"
+        },
+        {
+          "replicationRegions": [
+            "<location>"
+          ],
+          "sharedImageGalleryImageDefinitionResourceId": "<sharedImageGalleryImageDefinitionResourceId>",
+          "sharedImageGalleryImageDefinitionTargetVersion": "<sharedImageGalleryImageDefinitionTargetVersion>",
+          "type": "SharedImage"
+        }
+      ]
+    },
     "imageSource": {
       "value": {
         "offer": "Windows-11",
@@ -226,30 +276,28 @@ module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0
         "version": "latest"
       }
     },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
     "name": {
       "value": "vmiitmax001"
-    },
-    "userMsiName": {
-      "value": "<userMsiName>"
     },
     // Non-required parameters
     "buildTimeoutInMinutes": {
       "value": 60
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
-    "imageReplicationRegions": {
-      "value": []
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "managedImageName": {
-      "value": "mi-vmiitmax-001"
     },
     "osDiskSizeGB": {
       "value": 127
@@ -273,17 +321,11 @@ module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0
         }
       ]
     },
-    "sigImageDefinitionId": {
-      "value": "<sigImageDefinitionId>"
-    },
-    "sigImageVersion": {
-      "value": "<sigImageVersion>"
-    },
     "stagingResourceGroup": {
       "value": "<stagingResourceGroup>"
     },
-    "subnetId": {
-      "value": "<subnetId>"
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
     },
     "tags": {
       "value": {
@@ -292,19 +334,13 @@ module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0
         "Role": "DeploymentValidation"
       }
     },
-    "unManagedImageName": {
-      "value": "umi-vmiitmax-001"
+    "vmSize": {
+      "value": "Standard_D2s_v3"
     },
-    "userAssignedIdentities": {
+    "vmUserAssignedIdentities": {
       "value": [
         "<managedIdentityResourceId>"
       ]
-    },
-    "userMsiResourceGroup": {
-      "value": "<userMsiResourceGroup>"
-    },
-    "vmSize": {
-      "value": "Standard_D2s_v3"
     }
   }
 }
@@ -323,7 +359,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0.0' = {
+module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-vmiitwaf'
   params: {
     // Required parameters
@@ -333,6 +369,12 @@ module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0
         type: 'WindowsRestart'
       }
     ]
+    distributions: [
+      {
+        sharedImageGalleryImageDefinitionResourceId: '<sharedImageGalleryImageDefinitionResourceId>'
+        type: 'SharedImage'
+      }
+    ]
     imageSource: {
       offer: 'Windows-11'
       publisher: 'MicrosoftWindowsDesktop'
@@ -340,33 +382,20 @@ module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0
       type: 'PlatformImage'
       version: 'latest'
     }
-    name: 'vmiitwaf001'
-    userMsiName: '<userMsiName>'
-    // Non-required parameters
-    buildTimeoutInMinutes: 60
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
-    imageReplicationRegions: []
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
-    managedImageName: 'mi-vmiitwaf-001'
-    osDiskSizeGB: 127
-    sigImageDefinitionId: '<sigImageDefinitionId>'
-    sigImageVersion: '<sigImageVersion>'
-    stagingResourceGroup: '<stagingResourceGroup>'
-    subnetId: '<subnetId>'
+    name: 'vmiitwaf001'
+    // Non-required parameters
+    location: '<location>'
+    subnetResourceId: '<subnetResourceId>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    unManagedImageName: 'umi-vmiitwaf-001'
-    userAssignedIdentities: [
-      '<managedIdentityResourceId>'
-    ]
-    userMsiResourceGroup: '<userMsiResourceGroup>'
-    vmSize: 'Standard_D2s_v3'
   }
 }
 ```
@@ -392,6 +421,14 @@ module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0
         }
       ]
     },
+    "distributions": {
+      "value": [
+        {
+          "sharedImageGalleryImageDefinitionResourceId": "<sharedImageGalleryImageDefinitionResourceId>",
+          "type": "SharedImage"
+        }
+      ]
+    },
     "imageSource": {
       "value": {
         "offer": "Windows-11",
@@ -401,45 +438,22 @@ module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0
         "version": "latest"
       }
     },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
     "name": {
       "value": "vmiitwaf001"
     },
-    "userMsiName": {
-      "value": "<userMsiName>"
-    },
     // Non-required parameters
-    "buildTimeoutInMinutes": {
-      "value": 60
+    "location": {
+      "value": "<location>"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
-    "imageReplicationRegions": {
-      "value": []
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "managedImageName": {
-      "value": "mi-vmiitwaf-001"
-    },
-    "osDiskSizeGB": {
-      "value": 127
-    },
-    "sigImageDefinitionId": {
-      "value": "<sigImageDefinitionId>"
-    },
-    "sigImageVersion": {
-      "value": "<sigImageVersion>"
-    },
-    "stagingResourceGroup": {
-      "value": "<stagingResourceGroup>"
-    },
-    "subnetId": {
-      "value": "<subnetId>"
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
     },
     "tags": {
       "value": {
@@ -447,20 +461,6 @@ module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "unManagedImageName": {
-      "value": "umi-vmiitwaf-001"
-    },
-    "userAssignedIdentities": {
-      "value": [
-        "<managedIdentityResourceId>"
-      ]
-    },
-    "userMsiResourceGroup": {
-      "value": "<userMsiResourceGroup>"
-    },
-    "vmSize": {
-      "value": "Standard_D2s_v3"
     }
   }
 }
@@ -477,33 +477,28 @@ module imageTemplate 'br:bicep/modules/virtual-machine-images.image-template:1.0
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`customizationSteps`](#parameter-customizationsteps) | array | Customization steps to be run when building the VM image. |
+| [`distributions`](#parameter-distributions) | array | The distribution targets where the image output needs to go to. |
 | [`imageSource`](#parameter-imagesource) | object | Image source definition in object format. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`name`](#parameter-name) | string | Name prefix of the Image Template to be built by the Azure Image Builder service. |
-| [`userMsiName`](#parameter-usermsiname) | string | Name of the User Assigned Identity to be used to deploy Image Templates in Azure Image Builder. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`buildTimeoutInMinutes`](#parameter-buildtimeoutinminutes) | int | Image build timeout in minutes. Allowed values: 0-960. 0 means the default 240 minutes. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
-| [`excludeFromLatest`](#parameter-excludefromlatest) | bool | Exclude the created Azure Compute Gallery image version from the latest. |
-| [`imageReplicationRegions`](#parameter-imagereplicationregions) | array | List of the regions the image produced by this solution should be stored in the Shared Image Gallery. When left empty, the deployment's location will be taken as a default value. |
+| [`buildTimeoutInMinutes`](#parameter-buildtimeoutinminutes) | int | Image build timeout in minutes. 0 means the default 240 minutes. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`managedImageName`](#parameter-managedimagename) | string | Name of the managed image that will be created in the AIB resourcegroup. |
 | [`osDiskSizeGB`](#parameter-osdisksizegb) | int | Specifies the size of OS disk. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`sigImageDefinitionId`](#parameter-sigimagedefinitionid) | string | Resource ID of Shared Image Gallery to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>. |
-| [`sigImageVersion`](#parameter-sigimageversion) | string | Version of the Shared Image Gallery Image. Supports the following Version Syntax: Major.Minor.Build (i.e., '1.1.1' or '10.1.2'). |
 | [`stagingResourceGroup`](#parameter-stagingresourcegroup) | string | Resource ID of the staging resource group in the same subscription and location as the image template that will be used to build the image.</p>If this field is empty, a resource group with a random name will be created.</p>If the resource group specified in this field doesn't exist, it will be created with the same name.</p>If the resource group specified exists, it must be empty and in the same region as the image template.</p>The resource group created will be deleted during template deletion if this field is empty or the resource group specified doesn't exist,</p>but if the resource group specified exists the resources created in the resource group will be deleted during template deletion and the resource group itself will remain. |
-| [`storageAccountType`](#parameter-storageaccounttype) | string | Storage account type to be used to store the image in the Azure Compute Gallery. |
-| [`subnetId`](#parameter-subnetid) | string | Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>.</p>If no value is provided, a new temporary VNET and subnet will be created in the staging resource group and will be deleted along with the remaining temporary resources. |
+| [`subnetResourceId`](#parameter-subnetresourceid) | string | Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>.</p>If no value is provided, a new temporary VNET and subnet will be created in the staging resource group and will be deleted along with the remaining temporary resources. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`unManagedImageName`](#parameter-unmanagedimagename) | string | Name of the unmanaged image that will be created in the AIB resourcegroup. |
-| [`userAssignedIdentities`](#parameter-userassignedidentities) | array | List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.</p>Be aware, the user assigned identity specified in the 'userMsiName' parameter must have the 'Managed Identity Operator' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM. |
-| [`userMsiResourceGroup`](#parameter-usermsiresourcegroup) | string | Resource group of the user assigned identity. |
 | [`vmSize`](#parameter-vmsize) | string | Specifies the size for the VM. |
+| [`vmUserAssignedIdentities`](#parameter-vmuserassignedidentities) | array | List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.
+Be aware, the user assigned identities specified in the \'managedIdentities\' parameter must have the \'Managed Identity Operator\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.
+ |
 
 **Generated parameters**
 
@@ -518,12 +513,39 @@ Customization steps to be run when building the VM image.
 - Required: Yes
 - Type: array
 
+### Parameter: `distributions`
+
+The distribution targets where the image output needs to go to.
+
+- Required: Yes
+- Type: array
+
 ### Parameter: `imageSource`
 
 Image source definition in object format.
 
 - Required: Yes
 - Type: object
+
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource.
+
+- Required: Yes
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: Yes
+- Type: array
 
 ### Parameter: `name`
 
@@ -532,44 +554,21 @@ Name prefix of the Image Template to be built by the Azure Image Builder service
 - Required: Yes
 - Type: string
 
-### Parameter: `userMsiName`
-
-Name of the User Assigned Identity to be used to deploy Image Templates in Azure Image Builder.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `buildTimeoutInMinutes`
 
-Image build timeout in minutes. Allowed values: 0-960. 0 means the default 240 minutes.
+Image build timeout in minutes. 0 means the default 240 minutes.
 
 - Required: No
 - Type: int
 - Default: `0`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `excludeFromLatest`
-
-Exclude the created Azure Compute Gallery image version from the latest.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `imageReplicationRegions`
-
-List of the regions the image produced by this solution should be stored in the Shared Image Gallery. When left empty, the deployment's location will be taken as a default value.
-
-- Required: No
-- Type: array
-- Default: `[]`
 
 ### Parameter: `location`
 
@@ -614,14 +613,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-
-### Parameter: `managedImageName`
-
-Name of the managed image that will be created in the AIB resourcegroup.
-
-- Required: No
-- Type: string
-- Default: `''`
 
 ### Parameter: `osDiskSizeGB`
 
@@ -720,52 +711,19 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `sigImageDefinitionId`
-
-Resource ID of Shared Image Gallery to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `sigImageVersion`
-
-Version of the Shared Image Gallery Image. Supports the following Version Syntax: Major.Minor.Build (i.e., '1.1.1' or '10.1.2').
-
-- Required: No
-- Type: string
-- Default: `''`
-
 ### Parameter: `stagingResourceGroup`
 
 Resource ID of the staging resource group in the same subscription and location as the image template that will be used to build the image.</p>If this field is empty, a resource group with a random name will be created.</p>If the resource group specified in this field doesn't exist, it will be created with the same name.</p>If the resource group specified exists, it must be empty and in the same region as the image template.</p>The resource group created will be deleted during template deletion if this field is empty or the resource group specified doesn't exist,</p>but if the resource group specified exists the resources created in the resource group will be deleted during template deletion and the resource group itself will remain.
 
 - Required: No
 - Type: string
-- Default: `''`
 
-### Parameter: `storageAccountType`
-
-Storage account type to be used to store the image in the Azure Compute Gallery.
-
-- Required: No
-- Type: string
-- Default: `'Standard_LRS'`
-- Allowed:
-  ```Bicep
-  [
-    'Standard_LRS'
-    'Standard_ZRS'
-  ]
-  ```
-
-### Parameter: `subnetId`
+### Parameter: `subnetResourceId`
 
 Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>.</p>If no value is provided, a new temporary VNET and subnet will be created in the staging resource group and will be deleted along with the remaining temporary resources.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `tags`
 
@@ -774,30 +732,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-### Parameter: `unManagedImageName`
-
-Name of the unmanaged image that will be created in the AIB resourcegroup.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `userAssignedIdentities`
-
-List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.</p>Be aware, the user assigned identity specified in the 'userMsiName' parameter must have the 'Managed Identity Operator' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-### Parameter: `userMsiResourceGroup`
-
-Resource group of the user assigned identity.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().name]`
-
 ### Parameter: `vmSize`
 
 Specifies the size for the VM.
@@ -805,6 +739,16 @@ Specifies the size for the VM.
 - Required: No
 - Type: string
 - Default: `'Standard_D2s_v3'`
+
+### Parameter: `vmUserAssignedIdentities`
+
+List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.
+Be aware, the user assigned identities specified in the \'managedIdentities\' parameter must have the \'Managed Identity Operator\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.
+
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `baseTime`
 
