@@ -13,7 +13,18 @@ param managedIdentityName string
 @description('Optional. The name of the Virtual Network to create.')
 param virtualNetworkName string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+// Roles
+resource contributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  name: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
+  scope: tenant()
+}
+resource managedIdentityOperatorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  name: 'f1a07417-d97a-45cb-824c-7a7467783830' // Managed Identity Operator
+  scope: tenant()
+}
+
+// Resources
+resource imageManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
   location: location
 }
@@ -53,11 +64,22 @@ resource galleryImageDefinition 'Microsoft.Compute/galleries/images@2022-03-03' 
   }
 }
 
-resource msi_contibutorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().id, 'Contributor', managedIdentityName)
+// Assign permissions to MSI to be allowed to distribute images. Ref: https://learn.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-permissions-cli#allow-vm-image-builder-to-distribute-images
+resource imageContributorRbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(resourceGroup().id, contributorRole.id, imageManagedIdentity.id)
   properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c') // Contributor
-    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: contributorRole.id
+    principalId: imageManagedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Assign permission to allow AIB to assign the list of User Assigned Identities to the Build VM.
+resource imageManagedIdentityOperatorRbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(resourceGroup().id, managedIdentityOperatorRole.id, imageManagedIdentity.id)
+  properties: {
+    roleDefinitionId: managedIdentityOperatorRole.id
+    principalId: imageManagedIdentity.properties.principalId
     principalType: 'ServicePrincipal'
   }
 }
@@ -84,13 +106,13 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
 }
 
 @description('The principal ID of the created Managed Identity.')
-output managedIdentityResourceId string = managedIdentity.id
+output managedIdentityResourceId string = imageManagedIdentity.id
 
 @description('The principal ID of the created Managed Identity.')
-output managedIdentityPrincipalId string = managedIdentity.properties.principalId
+output managedIdentityPrincipalId string = imageManagedIdentity.properties.principalId
 
 @description('The name of the created Managed Identity.')
-output managedIdentityName string = managedIdentity.name
+output managedIdentityName string = imageManagedIdentity.name
 
 @description('The resource ID of the created Image Definition.')
 output sigImageDefinitionId string = galleryImageDefinition.id

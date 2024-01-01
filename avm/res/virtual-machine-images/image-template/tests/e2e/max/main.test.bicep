@@ -39,20 +39,14 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     location: location
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    imageManagedIdentityName: 'dep-${namePrefix}-imsi-${serviceShort}'
+    deploymentScriptManagedIdentityName: 'dep-${namePrefix}-dmsi-${serviceShort}'
     sigImageDefinitionName: 'dep-${namePrefix}-imgd-${serviceShort}'
     galleryName: 'dep${namePrefix}sig${serviceShort}'
-    virtualNetworkName: 'dep${namePrefix}-vnet-${serviceShort}'
-  }
-}
-
-// required for the Azure Image Builder service to assign the list of User Assigned Identities to the Build VM.
-resource msi_managedIdentityOperatorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(subscription().id, 'ManagedIdentityContributor', '${namePrefix}')
-  properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f1a07417-d97a-45cb-824c-7a7467783830') // Managed Identity Operator
-    principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-    principalType: 'ServicePrincipal'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    assetStorageAccountkName: 'dep${namePrefix}ast${serviceShort}'
+    deploymentScriptStorageAccountkName: 'dep${namePrefix}dst${serviceShort}'
+    storageDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
   }
 }
 
@@ -69,15 +63,29 @@ module testDeployment '../../../main.bicep' = {
     stagingResourceGroup: '${subscription().id}/resourcegroups/${resourceGroupName}-staging'
     customizationSteps: [
       {
-        restartTimeout: '10m'
-        type: 'WindowsRestart'
+        type: 'Shell'
+        name: 'PowerShell installation'
+        scriptUri: '${nestedDependencies.outputs.assetsStorageAccountNameBlobEndpoint}${nestedDependencies.outputs.assetsStorageAccountContainerName}/Install-LinuxPowerShell.sh'
+      }
+      {
+        type: 'File'
+        name: 'Initialize-LinuxSoftware'
+        sourceUri: '${nestedDependencies.outputs.assetsStorageAccountNameBlobEndpoint}${nestedDependencies.outputs.assetsStorageAccountContainerName}/Initialize-LinuxSoftware.ps1'
+        destination: 'Initialize-LinuxSoftware.ps1'
+      }
+      {
+        type: 'Shell'
+        name: 'Software installation'
+        inline: [
+          'pwsh \'Initialize-LinuxSoftware.ps1\''
+        ]
       }
     ]
     imageSource: {
-      offer: 'Windows-11'
-      publisher: 'MicrosoftWindowsDesktop'
-      sku: 'win11-22h2-avd'
       type: 'PlatformImage'
+      publisher: 'canonical'
+      offer: '0001-com-ubuntu-server-lunar'
+      sku: '23_04-gen2'
       version: 'latest'
     }
     buildTimeoutInMinutes: 60
@@ -138,3 +146,6 @@ module testDeployment '../../../main.bicep' = {
     }
   }
 }
+
+@description('The generated name of the image template.')
+output imageTemplateName string = testDeployment.outputs.name

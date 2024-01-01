@@ -151,8 +151,22 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     // Required parameters
     customizationSteps: [
       {
-        restartTimeout: '10m'
-        type: 'WindowsRestart'
+        name: 'PowerShell installation'
+        scriptUri: '<scriptUri>'
+        type: 'Shell'
+      }
+      {
+        destination: 'Initialize-LinuxSoftware.ps1'
+        name: 'Initialize-LinuxSoftware'
+        sourceUri: '<sourceUri>'
+        type: 'File'
+      }
+      {
+        inline: [
+          'pwsh \'Initialize-LinuxSoftware.ps1\''
+        ]
+        name: 'Software installation'
+        type: 'Shell'
       }
     ]
     distributions: [
@@ -174,9 +188,9 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       }
     ]
     imageSource: {
-      offer: 'Windows-11'
-      publisher: 'MicrosoftWindowsDesktop'
-      sku: 'win11-22h2-avd'
+      offer: '0001-com-ubuntu-server-lunar'
+      publisher: 'canonical'
+      sku: '23_04-gen2'
       type: 'PlatformImage'
       version: 'latest'
     }
@@ -242,8 +256,22 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     "customizationSteps": {
       "value": [
         {
-          "restartTimeout": "10m",
-          "type": "WindowsRestart"
+          "name": "PowerShell installation",
+          "scriptUri": "<scriptUri>",
+          "type": "Shell"
+        },
+        {
+          "destination": "Initialize-LinuxSoftware.ps1",
+          "name": "Initialize-LinuxSoftware",
+          "sourceUri": "<sourceUri>",
+          "type": "File"
+        },
+        {
+          "inline": [
+            "pwsh \"Initialize-LinuxSoftware.ps1\""
+          ],
+          "name": "Software installation",
+          "type": "Shell"
         }
       ]
     },
@@ -269,9 +297,9 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     },
     "imageSource": {
       "value": {
-        "offer": "Windows-11",
-        "publisher": "MicrosoftWindowsDesktop",
-        "sku": "win11-22h2-avd",
+        "offer": "0001-com-ubuntu-server-lunar",
+        "publisher": "canonical",
+        "sku": "23_04-gen2",
         "type": "PlatformImage",
         "version": "latest"
       }
