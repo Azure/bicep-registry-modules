@@ -104,6 +104,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     applications: [
       {
         name: 'cgmax-appd-001'
+        supportedOSType: 'Linux'
       }
       {
         name: 'cgmax-appd-002'
@@ -120,6 +121,10 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     images: [
       {
         name: 'az-imgd-ws-001'
+        offer: 'WindowsServer'
+        osType: 'Windows'
+        publisher: 'MicrosoftWindowsServer'
+        sku: '2022-datacenter-azure-edition'
       }
       {
         hyperVGeneration: 'V1'
@@ -161,27 +166,6 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           }
         ]
         sku: '2022-datacenter-azure-edition-hibernate'
-      }
-      {
-        hyperVGeneration: 'V2'
-        isAcceleratedNetworkSupported: true
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 8
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: 'az-imgd-ws-004'
-        offer: 'WindowsServer'
-        osState: 'Generalized'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        sku: '2022-datacenter-azure-edition-accnet'
       }
       {
         hyperVGeneration: 'V2'
@@ -269,7 +253,8 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     "applications": {
       "value": [
         {
-          "name": "cgmax-appd-001"
+          "name": "cgmax-appd-001",
+          "supportedOSType": "Linux"
         },
         {
           "name": "cgmax-appd-002",
@@ -287,7 +272,11 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     "images": {
       "value": [
         {
-          "name": "az-imgd-ws-001"
+          "name": "az-imgd-ws-001",
+          "offer": "WindowsServer",
+          "osType": "Windows",
+          "publisher": "MicrosoftWindowsServer",
+          "sku": "2022-datacenter-azure-edition"
         },
         {
           "hyperVGeneration": "V1",
@@ -329,27 +318,6 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
             }
           ],
           "sku": "2022-datacenter-azure-edition-hibernate"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "isAcceleratedNetworkSupported": true,
-          "maxRecommendedMemory": 16,
-          "maxRecommendedvCPUs": 8,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 2,
-          "name": "az-imgd-ws-004",
-          "offer": "WindowsServer",
-          "osState": "Generalized",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsServer",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "sku": "2022-datacenter-azure-edition-accnet"
         },
         {
           "hyperVGeneration": "V2",
@@ -448,17 +416,13 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     applications: [
       {
         name: 'cgwaf-appd-001'
+        supportedOSType: 'Windows'
       }
     ]
     images: [
       {
         name: 'az-imgd-ws-001'
-      }
-      {
-        hyperVGeneration: 'V1'
-        name: 'az-imgd-ws-001'
         offer: 'WindowsServer'
-        osState: 'Generalized'
         osType: 'Windows'
         publisher: 'MicrosoftWindowsServer'
         sku: '2022-datacenter-azure-edition'
@@ -494,20 +458,16 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     "applications": {
       "value": [
         {
-          "name": "cgwaf-appd-001"
+          "name": "cgwaf-appd-001",
+          "supportedOSType": "Windows"
         }
       ]
     },
     "images": {
       "value": [
         {
-          "name": "az-imgd-ws-001"
-        },
-        {
-          "hyperVGeneration": "V1",
           "name": "az-imgd-ws-001",
           "offer": "WindowsServer",
-          "osState": "Generalized",
           "osType": "Windows",
           "publisher": "MicrosoftWindowsServer",
           "sku": "2022-datacenter-azure-edition"

@@ -45,17 +45,13 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     applications: [
       {
         name: '${namePrefix}-${serviceShort}-appd-001'
+        supportedOSType: 'Windows'
       }
     ]
     images: [
       {
         name: '${namePrefix}-az-imgd-ws-001'
-      }
-      {
-        hyperVGeneration: 'V1'
-        name: '${namePrefix}-az-imgd-ws-001'
         offer: 'WindowsServer'
-        osState: 'Generalized'
         osType: 'Windows'
         publisher: 'MicrosoftWindowsServer'
         sku: '2022-datacenter-azure-edition'

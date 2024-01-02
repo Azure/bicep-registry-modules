@@ -58,6 +58,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     applications: [
       {
         name: '${namePrefix}-${serviceShort}-appd-001'
+        supportedOSType: 'Linux'
       }
       {
         name: '${namePrefix}-${serviceShort}-appd-002'
@@ -74,6 +75,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     images: [
       {
         name: '${namePrefix}-az-imgd-ws-001'
+        offer: 'WindowsServer'
+        osType: 'Windows'
+        publisher: 'MicrosoftWindowsServer'
+        sku: '2022-datacenter-azure-edition'
       }
       {
         hyperVGeneration: 'V1'
@@ -115,27 +120,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           }
         ]
         sku: '2022-datacenter-azure-edition-hibernate'
-      }
-      {
-        hyperVGeneration: 'V2'
-        isAcceleratedNetworkSupported: true
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 8
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: '${namePrefix}-az-imgd-ws-004'
-        offer: 'WindowsServer'
-        osState: 'Generalized'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
-        sku: '2022-datacenter-azure-edition-accnet'
       }
       {
         hyperVGeneration: 'V2'
