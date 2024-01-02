@@ -74,23 +74,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     images: [
       {
+        hyperVGeneration: 'V1'
         name: '${namePrefix}-az-imgd-ws-001'
         offer: 'WindowsServer'
         osType: 'Windows'
         publisher: 'MicrosoftWindowsServer'
         sku: '2022-datacenter-azure-edition'
-      }
-      {
-        hyperVGeneration: 'V1'
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 8
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: '${namePrefix}-az-imgd-ws-002'
-        offer: 'WindowsServer'
-        osState: 'Generalized'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
         roleAssignments: [
           {
             roleDefinitionIdOrName: 'Reader'
@@ -98,7 +87,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             principalType: 'ServicePrincipal'
           }
         ]
-        sku: '2022-datacenter-azure-edition'
       }
       {
         hyperVGeneration: 'V2'
@@ -107,7 +95,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         maxRecommendedvCPUs: 8
         minRecommendedMemory: 4
         minRecommendedvCPUs: 2
-        name: '${namePrefix}-az-imgd-ws-003'
+        name: '${namePrefix}-az-imgd-ws-002'
         offer: 'WindowsServer'
         osState: 'Generalized'
         osType: 'Windows'
@@ -128,7 +116,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         maxRecommendedvCPUs: 4
         minRecommendedMemory: 4
         minRecommendedvCPUs: 2
-        name: '${namePrefix}-az-imgd-wdtl-002'
+        name: '${namePrefix}-az-imgd-wdtl-001'
         offer: 'WindowsDesktop'
         osState: 'Generalized'
         osType: 'Windows'

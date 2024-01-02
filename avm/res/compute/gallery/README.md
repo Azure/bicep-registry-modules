@@ -120,21 +120,9 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     ]
     images: [
       {
+        hyperVGeneration: 'V1'
         name: 'az-imgd-ws-001'
         offer: 'WindowsServer'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        sku: '2022-datacenter-azure-edition'
-      }
-      {
-        hyperVGeneration: 'V1'
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 8
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: 'az-imgd-ws-002'
-        offer: 'WindowsServer'
-        osState: 'Generalized'
         osType: 'Windows'
         publisher: 'MicrosoftWindowsServer'
         roleAssignments: [
@@ -153,7 +141,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         maxRecommendedvCPUs: 8
         minRecommendedMemory: 4
         minRecommendedvCPUs: 2
-        name: 'az-imgd-ws-003'
+        name: 'az-imgd-ws-002'
         offer: 'WindowsServer'
         osState: 'Generalized'
         osType: 'Windows'
@@ -173,7 +161,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         maxRecommendedvCPUs: 4
         minRecommendedMemory: 4
         minRecommendedvCPUs: 2
-        name: 'az-imgd-wdtl-002'
+        name: 'az-imgd-wdtl-001'
         offer: 'WindowsDesktop'
         osState: 'Generalized'
         osType: 'Windows'
@@ -272,21 +260,9 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     "images": {
       "value": [
         {
+          "hyperVGeneration": "V1",
           "name": "az-imgd-ws-001",
           "offer": "WindowsServer",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsServer",
-          "sku": "2022-datacenter-azure-edition"
-        },
-        {
-          "hyperVGeneration": "V1",
-          "maxRecommendedMemory": 16,
-          "maxRecommendedvCPUs": 8,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 2,
-          "name": "az-imgd-ws-002",
-          "offer": "WindowsServer",
-          "osState": "Generalized",
           "osType": "Windows",
           "publisher": "MicrosoftWindowsServer",
           "roleAssignments": [
@@ -305,7 +281,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           "maxRecommendedvCPUs": 8,
           "minRecommendedMemory": 4,
           "minRecommendedvCPUs": 2,
-          "name": "az-imgd-ws-003",
+          "name": "az-imgd-ws-002",
           "offer": "WindowsServer",
           "osState": "Generalized",
           "osType": "Windows",
@@ -325,7 +301,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           "maxRecommendedvCPUs": 4,
           "minRecommendedMemory": 4,
           "minRecommendedvCPUs": 2,
-          "name": "az-imgd-wdtl-002",
+          "name": "az-imgd-wdtl-001",
           "offer": "WindowsDesktop",
           "osState": "Generalized",
           "osType": "Windows",
