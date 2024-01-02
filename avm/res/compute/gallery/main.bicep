@@ -104,7 +104,7 @@ module galleries_applications 'application/main.bicep' = [for (application, inde
     location: location
     name: application.name
     galleryName: gallery.name
-    supportedOSType: application.supportOSType
+    supportedOSType: application.supportedOSType
     description: application.?description
     eula: application.?eula
     privacyStatementUri: application.?privacyStatementUri

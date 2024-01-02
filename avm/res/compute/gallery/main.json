@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "17567068059906840347"
+      "templateHash": "8190034021242591765"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -285,7 +285,7 @@
             "value": "[parameters('name')]"
           },
           "supportedOSType": {
-            "value": "[coalesce(parameters('applications'), createArray())[copyIndex()].supportOSType]"
+            "value": "[coalesce(parameters('applications'), createArray())[copyIndex()].supportedOSType]"
           },
           "description": {
             "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'description')]"
