@@ -97,7 +97,6 @@ output name string = application.name
 
 @sys.description('The location the resource was deployed into.')
 output location string = application.location
-
 // =============== //
 //   Definitions   //
 // =============== //

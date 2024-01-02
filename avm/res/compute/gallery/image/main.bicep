@@ -210,7 +210,6 @@ output name string = image.name
 
 @sys.description('The location the resource was deployed into.')
 output location string = image.location
-
 // =============== //
 //   Definitions   //
 // =============== //
