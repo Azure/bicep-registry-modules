@@ -1106,7 +1106,6 @@ Describe 'Module tests' -Tag 'Module' {
             $expectedSchema = $expectedSchema | ForEach-Object { $_ -replace '@([a-zA-Z]+)\(', '@sys.$1(' }
           }
 
-          # Default diff
           $formattedDiff = @()
           foreach ($finding in (Compare-Object $implementedSchema $expectedSchema)) {
             if ($finding.SideIndicator -eq '=>') {
