@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "15313131097423380423"
+      "version": "0.24.24.22086",
+      "templateHash": "9874764866811843766"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -80,7 +80,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
             }
           },
           "conditionVersion": {
@@ -122,21 +122,21 @@
     },
     "description": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Description of the Azure Shared Image Gallery."
       }
     },
     "applications": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Applications to create."
       }
     },
     "images": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Images to create."
       }
@@ -160,16 +160,29 @@
         "description": "Optional. Tags for all resources."
       }
     },
-    "enableDefaultTelemetry": {
+    "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "sharingProfile": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Profile for gallery sharing to subscription or tenant."
+      }
+    },
+    "softDeletePolicy": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Soft deletion policy of the gallery."
       }
     }
   },
   "variables": {
-    "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Compute Gallery Sharing Admin": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1ef6a3be-d0ac-425d-8c01-acb62866290b')]",
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -180,17 +193,23 @@
     }
   },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.compute-gallery.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
-          "resources": []
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
         }
       }
     },
@@ -202,7 +221,8 @@
       "tags": "[parameters('tags')]",
       "properties": {
         "description": "[parameters('description')]",
-        "identifier": {}
+        "sharingProfile": "[parameters('sharingProfile')]",
+        "softDeletePolicy": "[parameters('softDeletePolicy')]"
       }
     },
     "gallery_lock": {
@@ -244,7 +264,7 @@
     "galleries_applications": {
       "copy": {
         "name": "galleries_applications",
-        "count": "[length(parameters('applications'))]"
+        "count": "[length(coalesce(parameters('applications'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -255,25 +275,41 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
           "name": {
-            "value": "[parameters('applications')[copyIndex()].name]"
+            "value": "[coalesce(parameters('applications'), createArray())[copyIndex()].name]"
           },
           "galleryName": {
             "value": "[parameters('name')]"
           },
-          "supportedOSType": "[if(contains(parameters('applications')[copyIndex()], 'supportOSType'), createObject('value', parameters('applications')[copyIndex()].supportedOSType), createObject('value', 'Windows'))]",
-          "description": "[if(contains(parameters('applications')[copyIndex()], 'description'), createObject('value', parameters('applications')[copyIndex()].description), createObject('value', ''))]",
-          "eula": "[if(contains(parameters('applications')[copyIndex()], 'eula'), createObject('value', parameters('applications')[copyIndex()].eula), createObject('value', ''))]",
-          "privacyStatementUri": "[if(contains(parameters('applications')[copyIndex()], 'privacyStatementUri'), createObject('value', parameters('applications')[copyIndex()].privacyStatementUri), createObject('value', ''))]",
-          "releaseNoteUri": "[if(contains(parameters('applications')[copyIndex()], 'releaseNoteUri'), createObject('value', parameters('applications')[copyIndex()].releaseNoteUri), createObject('value', ''))]",
-          "endOfLifeDate": "[if(contains(parameters('applications')[copyIndex()], 'endOfLifeDate'), createObject('value', parameters('applications')[copyIndex()].endOfLifeDate), createObject('value', ''))]",
-          "roleAssignments": "[if(contains(parameters('applications')[copyIndex()], 'roleAssignments'), createObject('value', parameters('applications')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "customActions": "[if(contains(parameters('applications')[copyIndex()], 'customActions'), createObject('value', parameters('applications')[copyIndex()].customActions), createObject('value', createArray()))]",
-          "tags": {
-            "value": "[coalesce(tryGet(parameters('applications')[copyIndex()], 'tags'), parameters('tags'))]"
+          "supportedOSType": {
+            "value": "[coalesce(parameters('applications'), createArray())[copyIndex()].supportOSType]"
           },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+          "description": {
+            "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'description')]"
+          },
+          "eula": {
+            "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'eula')]"
+          },
+          "privacyStatementUri": {
+            "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'privacyStatementUri')]"
+          },
+          "releaseNoteUri": {
+            "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'releaseNoteUri')]"
+          },
+          "endOfLifeDate": {
+            "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'endOfLifeDate')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
+          "customActions": {
+            "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'customActions')]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           }
         },
         "template": {
@@ -283,8 +319,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "13733131047823769084"
+              "version": "0.24.24.22086",
+              "templateHash": "18360783387628242742"
             },
             "name": "Compute Galleries Applications",
             "description": "This module deploys an Azure Compute Gallery Application.",
@@ -333,7 +369,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -365,13 +401,6 @@
                 "description": "Required. Name of the application definition."
               }
             },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
-            },
             "location": {
               "type": "string",
               "defaultValue": "[resourceGroup().location]",
@@ -388,46 +417,45 @@
             },
             "description": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The description of this gallery Application Definition resource. This property is updatable."
               }
             },
             "eula": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The Eula agreement for the gallery Application Definition. Has to be a valid URL."
               }
             },
             "privacyStatementUri": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The privacy statement uri. Has to be a valid URL."
               }
             },
             "releaseNoteUri": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The release note uri. Has to be a valid URL."
               }
             },
             "supportedOSType": {
               "type": "string",
-              "defaultValue": "Windows",
               "allowedValues": [
                 "Windows",
                 "Linux"
               ],
               "metadata": {
-                "description": "Optional. This property allows you to specify the supported type of the OS that application is built for."
+                "description": "Required. This property allows you to specify the supported type of the OS that application is built for."
               }
             },
             "endOfLifeDate": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z."
               }
@@ -447,7 +475,7 @@
             },
             "customActions": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application."
               }
@@ -464,20 +492,6 @@
             }
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             "gallery": {
               "existing": true,
               "type": "Microsoft.Compute/galleries",
@@ -491,7 +505,7 @@
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
               "properties": {
-                "customActions": "[if(not(empty(parameters('customActions'))), parameters('customActions'), null())]",
+                "customActions": "[parameters('customActions')]",
                 "description": "[parameters('description')]",
                 "endOfLifeDate": "[parameters('endOfLifeDate')]",
                 "eula": "[parameters('eula')]",
@@ -565,7 +579,7 @@
     "galleries_images": {
       "copy": {
         "name": "galleries_images",
-        "count": "[length(parameters('images'))]"
+        "count": "[length(coalesce(parameters('images'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -576,38 +590,80 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
           "name": {
-            "value": "[parameters('images')[copyIndex()].name]"
+            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].name]"
           },
           "galleryName": {
             "value": "[parameters('name')]"
           },
-          "osType": "[if(contains(parameters('images')[copyIndex()], 'osType'), createObject('value', parameters('images')[copyIndex()].osType), createObject('value', 'Windows'))]",
-          "osState": "[if(contains(parameters('images')[copyIndex()], 'osState'), createObject('value', parameters('images')[copyIndex()].osState), createObject('value', 'Generalized'))]",
-          "publisher": "[if(contains(parameters('images')[copyIndex()], 'publisher'), createObject('value', parameters('images')[copyIndex()].publisher), createObject('value', 'MicrosoftWindowsServer'))]",
-          "offer": "[if(contains(parameters('images')[copyIndex()], 'offer'), createObject('value', parameters('images')[copyIndex()].offer), createObject('value', 'WindowsServer'))]",
-          "sku": "[if(contains(parameters('images')[copyIndex()], 'sku'), createObject('value', parameters('images')[copyIndex()].sku), createObject('value', '2019-Datacenter'))]",
-          "minRecommendedvCPUs": "[if(contains(parameters('images')[copyIndex()], 'minRecommendedvCPUs'), createObject('value', parameters('images')[copyIndex()].minRecommendedvCPUs), createObject('value', 1))]",
-          "maxRecommendedvCPUs": "[if(contains(parameters('images')[copyIndex()], 'maxRecommendedvCPUs'), createObject('value', parameters('images')[copyIndex()].maxRecommendedvCPUs), createObject('value', 4))]",
-          "minRecommendedMemory": "[if(contains(parameters('images')[copyIndex()], 'minRecommendedMemory'), createObject('value', parameters('images')[copyIndex()].minRecommendedMemory), createObject('value', 4))]",
-          "maxRecommendedMemory": "[if(contains(parameters('images')[copyIndex()], 'maxRecommendedMemory'), createObject('value', parameters('images')[copyIndex()].maxRecommendedMemory), createObject('value', 16))]",
-          "hyperVGeneration": "[if(contains(parameters('images')[copyIndex()], 'hyperVGeneration'), createObject('value', parameters('images')[copyIndex()].hyperVGeneration), createObject('value', 'V1'))]",
-          "securityType": "[if(contains(parameters('images')[copyIndex()], 'securityType'), createObject('value', parameters('images')[copyIndex()].securityType), createObject('value', 'Standard'))]",
-          "description": "[if(contains(parameters('images')[copyIndex()], 'description'), createObject('value', parameters('images')[copyIndex()].description), createObject('value', ''))]",
-          "eula": "[if(contains(parameters('images')[copyIndex()], 'eula'), createObject('value', parameters('images')[copyIndex()].eula), createObject('value', ''))]",
-          "privacyStatementUri": "[if(contains(parameters('images')[copyIndex()], 'privacyStatementUri'), createObject('value', parameters('images')[copyIndex()].privacyStatementUri), createObject('value', ''))]",
-          "releaseNoteUri": "[if(contains(parameters('images')[copyIndex()], 'releaseNoteUri'), createObject('value', parameters('images')[copyIndex()].releaseNoteUri), createObject('value', ''))]",
-          "productName": "[if(contains(parameters('images')[copyIndex()], 'productName'), createObject('value', parameters('images')[copyIndex()].productName), createObject('value', ''))]",
-          "planName": "[if(contains(parameters('images')[copyIndex()], 'planName'), createObject('value', parameters('images')[copyIndex()].planName), createObject('value', ''))]",
-          "planPublisherName": "[if(contains(parameters('images')[copyIndex()], 'planPublisherName'), createObject('value', parameters('images')[copyIndex()].planPublisherName), createObject('value', ''))]",
-          "endOfLife": "[if(contains(parameters('images')[copyIndex()], 'endOfLife'), createObject('value', parameters('images')[copyIndex()].endOfLife), createObject('value', ''))]",
-          "excludedDiskTypes": "[if(contains(parameters('images')[copyIndex()], 'excludedDiskTypes'), createObject('value', parameters('images')[copyIndex()].excludedDiskTypes), createObject('value', createArray()))]",
-          "roleAssignments": "[if(contains(parameters('images')[copyIndex()], 'roleAssignments'), createObject('value', parameters('images')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "tags": {
-            "value": "[coalesce(tryGet(parameters('images')[copyIndex()], 'tags'), parameters('tags'))]"
+          "osType": {
+            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].osType]"
           },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+          "osState": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'osState')]"
+          },
+          "publisher": {
+            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].publisher]"
+          },
+          "offer": {
+            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].offer]"
+          },
+          "sku": {
+            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].sku]"
+          },
+          "minRecommendedvCPUs": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'minRecommendedvCPUs')]"
+          },
+          "maxRecommendedvCPUs": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'maxRecommendedvCPUs')]"
+          },
+          "minRecommendedMemory": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'minRecommendedMemory')]"
+          },
+          "maxRecommendedMemory": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'maxRecommendedMemory')]"
+          },
+          "hyperVGeneration": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'hyperVGeneration')]"
+          },
+          "securityType": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'securityType')]"
+          },
+          "description": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'description')]"
+          },
+          "eula": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'eula')]"
+          },
+          "privacyStatementUri": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'privacyStatementUri')]"
+          },
+          "releaseNoteUri": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'releaseNoteUri')]"
+          },
+          "productName": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'productName')]"
+          },
+          "planName": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'planName')]"
+          },
+          "planPublisherName": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'planPublisherName')]"
+          },
+          "endOfLife": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'endOfLife')]"
+          },
+          "excludedDiskTypes": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'excludedDiskTypes')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           }
         },
         "template": {
@@ -617,8 +673,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "17846161223611480196"
+              "version": "0.24.24.22086",
+              "templateHash": "9430360929353806598"
             },
             "name": "Compute Galleries Image Definitions",
             "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -667,7 +723,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -699,13 +755,6 @@
                 "description": "Required. Name of the image definition."
               }
             },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
-            },
             "location": {
               "type": "string",
               "defaultValue": "[resourceGroup().location]",
@@ -722,13 +771,12 @@
             },
             "osType": {
               "type": "string",
-              "defaultValue": "Windows",
               "allowedValues": [
                 "Windows",
                 "Linux"
               ],
               "metadata": {
-                "description": "Optional. OS type of the image to be created."
+                "description": "Required. OS type of the image to be created."
               }
             },
             "osState": {
@@ -744,23 +792,20 @@
             },
             "publisher": {
               "type": "string",
-              "defaultValue": "MicrosoftWindowsServer",
               "metadata": {
-                "description": "Optional. The name of the gallery Image Definition publisher."
+                "description": "Required. The name of the gallery Image Definition publisher."
               }
             },
             "offer": {
               "type": "string",
-              "defaultValue": "WindowsServer",
               "metadata": {
-                "description": "Optional. The name of the gallery Image Definition offer."
+                "description": "Required. The name of the gallery Image Definition offer."
               }
             },
             "sku": {
               "type": "string",
-              "defaultValue": "2019-Datacenter",
               "metadata": {
-                "description": "Optional. The name of the gallery Image Definition SKU."
+                "description": "Required. The name of the gallery Image Definition SKU."
               }
             },
             "minRecommendedvCPUs": {
@@ -801,14 +846,13 @@
             },
             "hyperVGeneration": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "allowedValues": [
-                "",
                 "V1",
                 "V2"
               ],
               "metadata": {
-                "description": "Optional. The hypervisor generation of the Virtual Machine.</p>- If this value is not specified, then it is determined by the securityType parameter.</p>- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1."
+                "description": "Optional. The hypervisor generation of the Virtual Machine.\r\n- If this value is not specified, then it is determined by the securityType parameter.\r\n- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\r\n"
               }
             },
             "securityType": {
@@ -825,72 +869,64 @@
               }
             },
             "isHibernateSupported": {
-              "type": "string",
-              "defaultValue": "false",
-              "allowedValues": [
-                "true",
-                "false"
-              ],
+              "type": "bool",
+              "defaultValue": false,
               "metadata": {
-                "description": "Optional. The image will support hibernation."
+                "description": "Optional. Specifiy if the image supports hibernation."
               }
             },
             "isAcceleratedNetworkSupported": {
-              "type": "string",
-              "defaultValue": "false",
-              "allowedValues": [
-                "true",
-                "false"
-              ],
+              "type": "bool",
+              "defaultValue": false,
               "metadata": {
-                "description": "Optional. The image supports accelerated networking.</p>Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.</p>This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types."
+                "description": "Optional. Specify if the image supports accelerated networking.\r\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\r\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.\r\n"
               }
             },
             "description": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The description of this gallery Image Definition resource. This property is updatable."
               }
             },
             "eula": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The Eula agreement for the gallery Image Definition. Has to be a valid URL."
               }
             },
             "privacyStatementUri": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The privacy statement uri. Has to be a valid URL."
               }
             },
             "releaseNoteUri": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The release note uri. Has to be a valid URL."
               }
             },
             "productName": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The product ID."
               }
             },
             "planName": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The plan ID."
               }
             },
             "planPublisherName": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The publisher ID."
               }
@@ -906,7 +942,7 @@
               "type": "array",
               "defaultValue": [],
               "metadata": {
-                "description": "Optional. List of the excluded disk types. E.g. Standard_LRS."
+                "description": "Optional. List of the excluded disk types (e.g., Standard_LRS)."
               }
             },
             "roleAssignments": {
@@ -934,20 +970,6 @@
             }
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             "gallery": {
               "existing": true,
               "type": "Microsoft.Compute/galleries",
@@ -978,16 +1000,16 @@
                     "max": "[parameters('maxRecommendedMemory')]"
                   }
                 },
-                "hyperVGeneration": "[if(not(empty(parameters('hyperVGeneration'))), parameters('hyperVGeneration'), if(not(empty(parameters('securityType'))), 'V2', 'V1'))]",
-                "features": "[if(and(not(empty(parameters('securityType'))), not(equals(parameters('securityType'), 'Standard'))), createArray(createObject('name', 'SecurityType', 'value', parameters('securityType')), createObject('name', 'IsAcceleratedNetworkSupported', 'value', parameters('isAcceleratedNetworkSupported')), createObject('name', 'IsHibernateSupported', 'value', parameters('isHibernateSupported'))), createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', parameters('isAcceleratedNetworkSupported')), createObject('name', 'IsHibernateSupported', 'value', parameters('isHibernateSupported'))))]",
+                "hyperVGeneration": "[coalesce(parameters('hyperVGeneration'), if(not(empty(parameters('securityType'))), 'V2', 'V1'))]",
+                "features": "[union(createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', format('{0}', parameters('isAcceleratedNetworkSupported'))), createObject('name', 'IsHibernateSupported', 'value', format('{0}', parameters('isHibernateSupported')))), if(not(equals(parameters('securityType'), 'Standard')), createArray(createObject('name', 'SecurityType', 'value', parameters('securityType'))), createArray()))]",
                 "description": "[parameters('description')]",
                 "eula": "[parameters('eula')]",
                 "privacyStatementUri": "[parameters('privacyStatementUri')]",
                 "releaseNoteUri": "[parameters('releaseNoteUri')]",
                 "purchasePlan": {
-                  "product": "[if(not(empty(parameters('productName'))), parameters('productName'), null())]",
-                  "name": "[if(not(empty(parameters('planName'))), parameters('planName'), null())]",
-                  "publisher": "[if(not(empty(parameters('planPublisherName'))), parameters('planPublisherName'), null())]"
+                  "product": "[parameters('productName')]",
+                  "name": "[parameters('planName')]",
+                  "publisher": "[parameters('planPublisherName')]"
                 },
                 "endOfLifeDate": "[parameters('endOfLife')]",
                 "disallowed": {

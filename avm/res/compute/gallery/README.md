@@ -26,7 +26,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/compute.gallery:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/gallery:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -42,13 +42,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
+module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cgmin'
   params: {
     // Required parameters
     name: 'cgmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -70,8 +70,8 @@ module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
       "value": "cgmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -90,7 +90,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
+module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cgmax'
   params: {
     // Required parameters
@@ -112,7 +112,6 @@ module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
         supportedOSType: 'Windows'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     images: [
       {
         name: 'az-imgd-ws-001'
@@ -139,7 +138,7 @@ module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
       }
       {
         hyperVGeneration: 'V2'
-        isHibernateSupported: 'true'
+        isHibernateSupported: true
         maxRecommendedMemory: 16
         maxRecommendedvCPUs: 8
         minRecommendedMemory: 4
@@ -160,7 +159,7 @@ module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
       }
       {
         hyperVGeneration: 'V2'
-        isAcceleratedNetworkSupported: 'true'
+        isAcceleratedNetworkSupported: true
         maxRecommendedMemory: 16
         maxRecommendedvCPUs: 8
         minRecommendedMemory: 4
@@ -214,6 +213,7 @@ module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
         sku: '20_04-lts-gen2'
       }
     ]
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -279,9 +279,6 @@ module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "images": {
       "value": [
         {
@@ -309,7 +306,7 @@ module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
         },
         {
           "hyperVGeneration": "V2",
-          "isHibernateSupported": "true",
+          "isHibernateSupported": true,
           "maxRecommendedMemory": 16,
           "maxRecommendedvCPUs": 8,
           "minRecommendedMemory": 4,
@@ -330,7 +327,7 @@ module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
         },
         {
           "hyperVGeneration": "V2",
-          "isAcceleratedNetworkSupported": "true",
+          "isAcceleratedNetworkSupported": true,
           "maxRecommendedMemory": 16,
           "maxRecommendedvCPUs": 8,
           "minRecommendedMemory": 4,
@@ -384,6 +381,9 @@ module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
           "sku": "20_04-lts-gen2"
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -434,7 +434,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
+module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cgwaf'
   params: {
     // Required parameters
@@ -444,124 +444,22 @@ module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
       {
         name: 'cgwaf-appd-001'
       }
-      {
-        name: 'cgwaf-appd-002'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        supportedOSType: 'Windows'
-      }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     images: [
       {
         name: 'az-imgd-ws-001'
       }
       {
         hyperVGeneration: 'V1'
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 8
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: 'az-imgd-ws-002'
+        name: 'az-imgd-ws-001'
         offer: 'WindowsServer'
         osState: 'Generalized'
         osType: 'Windows'
         publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
         sku: '2022-datacenter-azure-edition'
       }
-      {
-        hyperVGeneration: 'V2'
-        isHibernateSupported: 'true'
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 8
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: 'az-imgd-ws-003'
-        offer: 'WindowsServer'
-        osState: 'Generalized'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        sku: '2022-datacenter-azure-edition-hibernate'
-      }
-      {
-        hyperVGeneration: 'V2'
-        isAcceleratedNetworkSupported: 'true'
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 8
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: 'az-imgd-ws-004'
-        offer: 'WindowsServer'
-        osState: 'Generalized'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        sku: '2022-datacenter-azure-edition-accnet'
-      }
-      {
-        hyperVGeneration: 'V2'
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 4
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: 'az-imgd-wdtl-002'
-        offer: 'WindowsDesktop'
-        osState: 'Generalized'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsDesktop'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        securityType: 'TrustedLaunch'
-        sku: 'Win11-21H2'
-      }
-      {
-        hyperVGeneration: 'V2'
-        maxRecommendedMemory: 32
-        maxRecommendedvCPUs: 4
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 1
-        name: 'az-imgd-us-001'
-        offer: '0001-com-ubuntu-server-focal'
-        osState: 'Generalized'
-        osType: 'Linux'
-        publisher: 'canonical'
-        sku: '20_04-lts-gen2'
-      }
     ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
+    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -592,22 +490,8 @@ module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
       "value": [
         {
           "name": "cgwaf-appd-001"
-        },
-        {
-          "name": "cgwaf-appd-002",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "supportedOSType": "Windows"
         }
       ]
-    },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
     },
     "images": {
       "value": [
@@ -616,107 +500,17 @@ module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
         },
         {
           "hyperVGeneration": "V1",
-          "maxRecommendedMemory": 16,
-          "maxRecommendedvCPUs": 8,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 2,
-          "name": "az-imgd-ws-002",
+          "name": "az-imgd-ws-001",
           "offer": "WindowsServer",
           "osState": "Generalized",
           "osType": "Windows",
           "publisher": "MicrosoftWindowsServer",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
           "sku": "2022-datacenter-azure-edition"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "isHibernateSupported": "true",
-          "maxRecommendedMemory": 16,
-          "maxRecommendedvCPUs": 8,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 2,
-          "name": "az-imgd-ws-003",
-          "offer": "WindowsServer",
-          "osState": "Generalized",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsServer",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "sku": "2022-datacenter-azure-edition-hibernate"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "isAcceleratedNetworkSupported": "true",
-          "maxRecommendedMemory": 16,
-          "maxRecommendedvCPUs": 8,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 2,
-          "name": "az-imgd-ws-004",
-          "offer": "WindowsServer",
-          "osState": "Generalized",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsServer",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "sku": "2022-datacenter-azure-edition-accnet"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "maxRecommendedMemory": 16,
-          "maxRecommendedvCPUs": 4,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 2,
-          "name": "az-imgd-wdtl-002",
-          "offer": "WindowsDesktop",
-          "osState": "Generalized",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsDesktop",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "securityType": "TrustedLaunch",
-          "sku": "Win11-21H2"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "maxRecommendedMemory": 32,
-          "maxRecommendedvCPUs": 4,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 1,
-          "name": "az-imgd-us-001",
-          "offer": "0001-com-ubuntu-server-focal",
-          "osState": "Generalized",
-          "osType": "Linux",
-          "publisher": "canonical",
-          "sku": "20_04-lts-gen2"
         }
       ]
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
+    "location": {
+      "value": "<location>"
     },
     "tags": {
       "value": {
@@ -747,11 +541,13 @@ module gallery 'br:bicep/modules/compute.gallery:1.0.0' = {
 | :-- | :-- | :-- |
 | [`applications`](#parameter-applications) | array | Applications to create. |
 | [`description`](#parameter-description) | string | Description of the Azure Shared Image Gallery. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`images`](#parameter-images) | array | Images to create. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`sharingProfile`](#parameter-sharingprofile) | object | Profile for gallery sharing to subscription or tenant. |
+| [`softDeletePolicy`](#parameter-softdeletepolicy) | object | Soft deletion policy of the gallery. |
 | [`tags`](#parameter-tags) | object | Tags for all resources. |
 
 ### Parameter: `name`
@@ -767,7 +563,6 @@ Applications to create.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `description`
 
@@ -775,11 +570,10 @@ Description of the Azure Shared Image Gallery.
 
 - Required: No
 - Type: string
-- Default: `''`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -791,7 +585,6 @@ Images to create.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `location`
 
@@ -855,7 +648,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
@@ -877,7 +670,7 @@ The name of the role to assign. If it cannot be found you can specify the role d
 
 ### Parameter: `roleAssignments.condition`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
@@ -925,6 +718,20 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `sharingProfile`
+
+Profile for gallery sharing to subscription or tenant.
+
+- Required: No
+- Type: object
+
+### Parameter: `softDeletePolicy`
+
+Soft deletion policy of the gallery.
+
+- Required: No
+- Type: object
 
 ### Parameter: `tags`
 

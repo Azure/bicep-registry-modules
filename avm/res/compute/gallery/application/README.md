@@ -24,6 +24,7 @@ This module deploys an Azure Compute Gallery Application.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the application definition. |
+| [`supportedOSType`](#parameter-supportedostype) | string | This property allows you to specify the supported type of the OS that application is built for. |
 
 **Conditional parameters**
 
@@ -37,14 +38,12 @@ This module deploys an Azure Compute Gallery Application.
 | :-- | :-- | :-- |
 | [`customActions`](#parameter-customactions) | array | A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application. |
 | [`description`](#parameter-description) | string | The description of this gallery Application Definition resource. This property is updatable. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`endOfLifeDate`](#parameter-endoflifedate) | string | The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z. |
 | [`eula`](#parameter-eula) | string | The Eula agreement for the gallery Application Definition. Has to be a valid URL. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`privacyStatementUri`](#parameter-privacystatementuri) | string | The privacy statement uri. Has to be a valid URL. |
 | [`releaseNoteUri`](#parameter-releasenoteuri) | string | The release note uri. Has to be a valid URL. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`supportedOSType`](#parameter-supportedostype) | string | This property allows you to specify the supported type of the OS that application is built for. |
 | [`tags`](#parameter-tags) | object | Tags for all resources. |
 
 ### Parameter: `name`
@@ -53,6 +52,20 @@ Name of the application definition.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `supportedOSType`
+
+This property allows you to specify the supported type of the OS that application is built for.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Linux'
+    'Windows'
+  ]
+  ```
 
 ### Parameter: `galleryName`
 
@@ -67,7 +80,6 @@ A list of custom actions that can be performed with all of the Gallery Applicati
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `description`
 
@@ -75,15 +87,6 @@ The description of this gallery Application Definition resource. This property i
 
 - Required: No
 - Type: string
-- Default: `''`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `endOfLifeDate`
 
@@ -91,7 +94,6 @@ The end of life date of the gallery Image Definition. This property can be used 
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `eula`
 
@@ -99,7 +101,6 @@ The Eula agreement for the gallery Application Definition. Has to be a valid URL
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `location`
 
@@ -115,7 +116,6 @@ The privacy statement uri. Has to be a valid URL.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `releaseNoteUri`
 
@@ -123,7 +123,6 @@ The release note uri. Has to be a valid URL.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `roleAssignments`
 
@@ -143,7 +142,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
@@ -165,7 +164,7 @@ The name of the role to assign. If it cannot be found you can specify the role d
 
 ### Parameter: `roleAssignments.condition`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
@@ -211,21 +210,6 @@ The principal type of the assigned principal ID.
     'Group'
     'ServicePrincipal'
     'User'
-  ]
-  ```
-
-### Parameter: `supportedOSType`
-
-This property allows you to specify the supported type of the OS that application is built for.
-
-- Required: No
-- Type: string
-- Default: `'Windows'`
-- Allowed:
-  ```Bicep
-  [
-    'Linux'
-    'Windows'
   ]
   ```
 
