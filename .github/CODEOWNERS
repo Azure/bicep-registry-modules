@@ -110,7 +110,7 @@
 /avm/res/network/virtual-network/ @Azure/avm-res-network-virtualnetwork-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/network/virtual-network-gateway/ @Azure/avm-res-network-virtualnetworkgateway-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/network/virtual-wan/ @Azure/avm-res-network-virtualwan-module-owners-bicep @Azure/avm-core-team-technical-bicep
-/avm/res/network/vpn-gateway/ @Azure/avm-res-network-vpngateway-module-owners-bicep @Azure/avm-core-team-technical-bicep
+#/avm/res/network/vpn-gateway/ @Azure/avm-res-network-vpngateway-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/vpn-site/ @Azure/avm-res-network-vpnsite-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/operational-insights/workspace/ @Azure/avm-res-operationalinsights-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/operations-management/solution/ @Azure/avm-res-operationsmanagement-solution-module-owners-bicep @Azure/avm-core-team-technical-bicep
