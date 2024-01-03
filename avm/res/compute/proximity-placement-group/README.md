@@ -24,7 +24,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/compute.proximity-placement-group:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/proximity-placement-group:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -40,13 +40,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module proximityPlacementGroup 'br:bicep/modules/compute.proximity-placement-group:1.0.0' = {
+module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-group:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cppgmin'
   params: {
     // Required parameters
     name: 'cppgmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -68,8 +68,8 @@ module proximityPlacementGroup 'br:bicep/modules/compute.proximity-placement-gro
       "value": "cppgmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -88,7 +88,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module proximityPlacementGroup 'br:bicep/modules/compute.proximity-placement-group:1.0.0' = {
+module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-group:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cppgmax'
   params: {
     // Required parameters
@@ -100,13 +100,13 @@ module proximityPlacementGroup 'br:bicep/modules/compute.proximity-placement-gro
       level: 'Info'
       message: 'I\'m a default error message'
     }
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     intent: {
       vmSizes: [
         'Standard_B1ms'
         'Standard_B4ms'
       ]
     }
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -166,9 +166,6 @@ module proximityPlacementGroup 'br:bicep/modules/compute.proximity-placement-gro
         "message": "I\"m a default error message"
       }
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "intent": {
       "value": {
         "vmSizes": [
@@ -176,6 +173,9 @@ module proximityPlacementGroup 'br:bicep/modules/compute.proximity-placement-gro
           "Standard_B4ms"
         ]
       }
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -234,7 +234,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module proximityPlacementGroup 'br:bicep/modules/compute.proximity-placement-group:1.0.0' = {
+module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-group:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cppgwaf'
   params: {
     // Required parameters
@@ -246,17 +246,13 @@ module proximityPlacementGroup 'br:bicep/modules/compute.proximity-placement-gro
       level: 'Info'
       message: 'I\'m a default error message'
     }
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     intent: {
       vmSizes: [
         'Standard_B1ms'
         'Standard_B4ms'
       ]
     }
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
+    location: '<location>'
     tags: {
       'hidden-title': 'This is visible in the resource name'
       TagA: 'Would you kindly...'
@@ -295,9 +291,6 @@ module proximityPlacementGroup 'br:bicep/modules/compute.proximity-placement-gro
         "message": "I\"m a default error message"
       }
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "intent": {
       "value": {
         "vmSizes": [
@@ -306,11 +299,8 @@ module proximityPlacementGroup 'br:bicep/modules/compute.proximity-placement-gro
         ]
       }
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
+    "location": {
+      "value": "<location>"
     },
     "tags": {
       "value": {
@@ -348,7 +338,7 @@ module proximityPlacementGroup 'br:bicep/modules/compute.proximity-placement-gro
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`colocationStatus`](#parameter-colocationstatus) | object | Describes colocation status of the Proximity Placement Group. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`intent`](#parameter-intent) | object | Specifies the user intent of the proximity placement group. |
 | [`location`](#parameter-location) | string | Resource location. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -372,9 +362,9 @@ Describes colocation status of the Proximity Placement Group.
 - Type: object
 - Default: `{}`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
