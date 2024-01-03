@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "10344651199371334726"
+      "version": "0.21.1.54444",
+      "templateHash": "13143828735491157921"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -487,7 +487,7 @@
     "defaultTelemetry": {
       "condition": "[parameters('enableDefaultTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
+      "apiVersion": "2023-07-01",
       "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "mode": "Incremental",

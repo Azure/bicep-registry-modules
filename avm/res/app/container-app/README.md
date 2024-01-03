@@ -14,10 +14,10 @@ This module deploys a Container App.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/containerApps` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2022-10-01/containerApps) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.App/containerApps` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-05-01/containerApps) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
+| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 
 ## Usage examples
 
@@ -58,6 +58,14 @@ module containerApp 'br:public:avm/res/app/container-app:<version>' = {
     environmentId: '<environmentId>'
     name: 'acamin001'
     // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     enableDefaultTelemetry: '<enableDefaultTelemetry>'
     location: '<location>'
     tags: {
@@ -100,6 +108,16 @@ module containerApp 'br:public:avm/res/app/container-app:<version>' = {
       "value": "acamin001"
     },
     // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
     "enableDefaultTelemetry": {
       "value": "<enableDefaultTelemetry>"
     },
@@ -129,7 +147,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module containerApp 'br/public:avm/res/automation/automation-account:<version>' = {
+module containerApp 'br:public:avm/res/app/container-app:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-acamax'
   params: {
     // Required parameters
@@ -309,7 +327,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module containerApp 'br/public:avm/res/automation/automation-account:<version>' = {
+module containerApp 'br/public:AVM/bicep-registry-modules:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-acawaf'
   params: {
     // Required parameters
@@ -523,7 +541,7 @@ module containerApp 'br/public:avm/res/automation/automation-account:<version>' 
 | [`trafficRevisionName`](#parameter-trafficrevisionname) | string | Name of a revision. |
 | [`trafficWeight`](#parameter-trafficweight) | int | Traffic weight assigned to a revision. |
 | [`volumes`](#parameter-volumes) | array | List of volume definitions for the Container App. |
-| [`workloadProfileName`](#parameter-workloadProfileName) | string | Workload profile type to pin for container app execution. |
+| [`workloadProfileName`](#parameter-workloadprofilename) | string | Workload profile name to pin for container app execution. |
 
 ### Parameter: `containers`
 
@@ -1007,7 +1025,7 @@ List of volume definitions for the Container App.
 
 ### Parameter: `workloadProfileName`
 
-Workload profile type to pin for container app execution.
+Workload profile name to pin for container app execution.
 
 - Required: No
 - Type: string
