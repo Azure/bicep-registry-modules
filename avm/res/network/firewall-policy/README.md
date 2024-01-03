@@ -290,6 +290,7 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    threatIntelMode: 'Deny'
   }
 }
 ```
@@ -366,6 +367,9 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "threatIntelMode": {
+      "value": "Deny"
     }
   }
 }

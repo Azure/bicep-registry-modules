@@ -87,5 +87,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     }
     allowSqlRedirect: true
     autoLearnPrivateRanges: 'Enabled'
+    threatIntelMode: 'Deny'
   }
 }]
