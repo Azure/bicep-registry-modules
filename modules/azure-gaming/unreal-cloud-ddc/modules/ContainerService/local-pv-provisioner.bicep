@@ -1,6 +1,6 @@
-var helmChart = 'oci://tchordestoragecontainerregistry.azurecr.io/helm/tc-local-pv-provisioner'
-var helmName = 'tcpvprovisioner'
-var helmNamespace = 'tc-pv-provisioner'
+var helmChart = 'oci://REPLACEWITHYOURcontainerregistry.azurecr.io/helm/local-pv-provisioner'
+var helmName = 'pvprovisioner'
+var helmNamespace = 'pv-provisioner'
 
 var helmArgs = [
   'localProvisioner.enabled=true'

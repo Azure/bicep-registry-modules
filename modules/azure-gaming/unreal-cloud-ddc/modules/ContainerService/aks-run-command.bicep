@@ -5,7 +5,7 @@ param aksName string
 param location string
 
 @description('How the deployment script should be forced to execute')
-param forceUpdateTag  string = utcNow()
+param forceUpdateTag string = utcNow()
 
 @description('An array of Azure RoleIds that are required for the DeploymentScript resource')
 param rbacRolesNeeded array = [
@@ -39,7 +39,7 @@ param initialScriptDelay string = '120s'
 @description('When the script resource is cleaned up')
 param cleanupPreference string = 'OnSuccess'
 
-@description('Set to false to deploy from as an ARM template for debugging') 
+@description('Set to false to deploy from as an ARM template for debugging')
 param isApp bool = true
 
 resource aks 'Microsoft.ContainerService/managedClusters@2022-01-02-preview' existing = {
@@ -51,7 +51,7 @@ resource newDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-1
   location: location
 }
 
-resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = if (useExistingManagedIdentity ) {
+resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = if (useExistingManagedIdentity) {
   name: managedIdentityName
   scope: resourceGroup(existingManagedIdentitySubId, existingManagedIdentityResourceGroupName)
 }

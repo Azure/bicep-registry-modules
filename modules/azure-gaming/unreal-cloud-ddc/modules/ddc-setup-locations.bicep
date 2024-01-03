@@ -10,8 +10,6 @@ param workerServicePrincipalClientID string = servicePrincipalClientID
 param hostname string
 param certificateName string
 
-param managedIdentityPrefix string = 'id-ddc-storage-'
-
 @description('Does the Managed Identity already exists, or should be created')
 param useExistingManagedIdentity bool = false
 
@@ -38,10 +36,10 @@ param helmNamespace string
 param siteName string
 param imageVersion string
 
-@description('Set to false to deploy from as an ARM template for debugging') 
+@description('Set to false to deploy from as an ARM template for debugging')
 param isApp bool = true
 
-@description('Array of ddc namespaces to replicate if there are secondary regions') 
+@description('Array of ddc namespaces to replicate if there are secondary regions')
 param namespacesToReplicate array = []
 
 module ddcSetup 'ddc-umbrella.bicep' = [for (spec, index) in locationSpecs: {
@@ -82,7 +80,6 @@ module configAKS 'ContainerService/configure-aks.bicep' = [for (spec, index) in 
     staticIP: '${publicIpName}-${spec.location}'
     azureTenantID: azureTenantID
     useExistingManagedIdentity: useExistingManagedIdentity
-    managedIdentityName: '${managedIdentityPrefix}${spec.location}'
     existingManagedIdentitySubId: existingManagedIdentitySubId
     existingManagedIdentityResourceGroupName: existingManagedIdentityResourceGroupName
     isApp: isApp

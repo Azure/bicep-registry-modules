@@ -363,13 +363,6 @@
         "description": "Name of the site"
       }
     },
-    "managedIdentityPrefix": {
-      "type": "string",
-      "defaultValue": "id-ddc-storage-",
-      "metadata": {
-        "description": "Prefix of Managed Identity used during deployment"
-      }
-    },
     "useExistingManagedIdentity": {
       "type": "bool",
       "defaultValue": false,
@@ -2013,13 +2006,6 @@
                 "description": "Does the Managed Identity already exists, or should be created"
               }
             },
-            "managedIdentityName": {
-              "type": "string",
-              "defaultValue": "[format('id-KeyVaultCertificateCreator-{0}', parameters('location'))]",
-              "metadata": {
-                "description": "Name of the Managed Identity resource"
-              }
-            },
             "existingManagedIdentitySubId": {
               "type": "string",
               "defaultValue": "[subscription().subscriptionId]",
@@ -2755,10 +2741,6 @@
             "certificateName": {
               "type": "string"
             },
-            "managedIdentityPrefix": {
-              "type": "string",
-              "defaultValue": "id-ddc-storage-"
-            },
             "useExistingManagedIdentity": {
               "type": "bool",
               "defaultValue": false,
@@ -3304,10 +3286,6 @@
                     "azureTenantID": {
                       "type": "string",
                       "defaultValue": "[subscription().tenantId]"
-                    },
-                    "managedIdentityName": {
-                      "type": "string",
-                      "defaultValue": "[format('id-ddc-storage-{0}', parameters('location'))]"
                     },
                     "useExistingManagedIdentity": {
                       "type": "bool",

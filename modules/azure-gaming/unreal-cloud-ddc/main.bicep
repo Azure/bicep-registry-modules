@@ -151,12 +151,6 @@ param helmNamespace string = 'horde-tests'
 @description('Name of the site')
 param siteName string = 'ddc-${location}'
 
-@description('Prefix of Managed Identity used during deployment')
-param managedIdentityPrefix string = 'id-ddc-storage-'
-
-@description('Does the Managed Identity already exists, or should be created')
-param useExistingManagedIdentity bool = false
-
 @description('For an existing Managed Identity, the Subscription Id it is located in')
 param existingManagedIdentitySubId string = subscription().subscriptionId
 
@@ -290,7 +284,7 @@ module allRegionalResources 'modules/resources.bicep' = [for (location, index) i
   }
 }]
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.0.1' = [for spec in locationSpecs: if (assignRole && enableCert) {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.4.2' = [for spec in locationSpecs: if (assignRole && enableCert) {
   name: 'akvCert-${spec.location}'
   dependsOn: [
     allRegionalResources
@@ -302,8 +296,6 @@ module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.0.1' = [for 
     certificateCommonNames: [ fullHostname, spec.fullLocationHostName ]
     issuerName: certificateIssuer
     issuerProvider: issuerProvider
-    useExistingManagedIdentity: useExistingManagedIdentity
-    managedIdentityName: '${managedIdentityPrefix}${spec.location}'
     rbacRolesNeededOnKV: '00482a5a-887f-4fb3-b363-3b7fe8e74483' // Key Vault Admin
     isCrossTenant: isApp
   }
@@ -373,7 +365,6 @@ module setuplocations 'modules/ddc-setup-locations.bicep' = if (assignRole && ep
     siteName: siteName
     imageVersion: imageVersion
     useExistingManagedIdentity: enableCert // If created, Reuse ID from Cert
-    managedIdentityPrefix: managedIdentityPrefix
     existingManagedIdentitySubId: existingManagedIdentitySubId
     existingManagedIdentityResourceGroupName: existingManagedIdentityResourceGroupName
     isApp: isApp
