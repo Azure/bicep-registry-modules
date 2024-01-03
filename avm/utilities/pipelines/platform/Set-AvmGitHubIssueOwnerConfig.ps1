@@ -96,7 +96,7 @@ Set-AvmGitHubIssueOwnerConfig -Repo 'Azure/bicep-registry-modules' -IssueUrl 'ht
 Will be triggered by the workflow avm.platform.assign-issue.yml
 #>
 function Set-AvmGitHubIssueOwnerConfig {
-  [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
+  [CmdletBinding(SupportsShouldProcess)]
   param (
     [Parameter(Mandatory = $true)]
     [string] $Repo,
