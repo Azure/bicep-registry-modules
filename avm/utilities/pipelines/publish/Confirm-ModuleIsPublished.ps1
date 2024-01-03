@@ -90,8 +90,7 @@ function Confirm-ModuleIsPublished {
         }
 
         if ((Get-Date) -ge $end_time) {
-            Write-Error 'Time limit reached. Failed to validate publish within the specified time.'
-            exit 1
+            throw "Time limit reached. Failed to validate published version of module in path [$PublishedModuleName] within the specified time."
         }
     }
 }
