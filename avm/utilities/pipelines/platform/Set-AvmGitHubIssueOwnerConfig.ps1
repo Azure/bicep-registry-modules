@@ -61,7 +61,7 @@ function Get-AvmCsv {
   return $filterCsvAvailableBicepModule
 }
 
-function Set-Issue {
+function Set-AvmGitHubIssueOwnerConfig {
   [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
   param (
     [Parameter(Mandatory = $true)]

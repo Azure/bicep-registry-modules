@@ -25,7 +25,7 @@ jobs:
         shell: pwsh
         run: |
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'platform' 'Assign-Issue.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'platform' 'Set-AvmGitHubIssueOwnerConfig.ps1')
 
           $functionInput = @{
             Repo = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
@@ -35,4 +35,4 @@ jobs:
           Write-Verbose "Invoke task with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Set-Issue @functionInput -Verbose # -WhatIf
+          Set-AvmGitHubIssueOwnerConfig @functionInput -Verbose # -WhatIf
