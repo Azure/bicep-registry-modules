@@ -5,9 +5,6 @@ on:
   issues:
     types: [opened]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
 jobs:
   SetAvmGitHubIssueOwnerConfig:
     name: Set-AvmGitHubIssueOwnerConfig
