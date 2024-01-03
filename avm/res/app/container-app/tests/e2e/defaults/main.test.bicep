@@ -18,7 +18,7 @@ param location string = deployment().location
 param serviceShort string = 'acadef'
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+param enableTelemetry bool = true
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -79,7 +79,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       'hidden-title': 'This is visible in the resource name'
       Env: 'test'
     }
-    enableDefaultTelemetry: enableDefaultTelemetry
+    enableTelemetry: enableTelemetry
     environmentId: nestedDependencies.outputs.managedEnvironmentResourceId
     location: location
     containers: [

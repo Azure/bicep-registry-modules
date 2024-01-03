@@ -66,7 +66,7 @@ module containerApp 'br:public:avm/res/app/container-app:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     tags: {
       Env: 'test'
@@ -118,8 +118,8 @@ module containerApp 'br:public:avm/res/app/container-app:<version>' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
@@ -189,7 +189,7 @@ module containerApp 'br:public:avm/res/app/container-app:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -275,8 +275,8 @@ module containerApp 'br:public:avm/res/app/container-app:<version>' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
@@ -369,7 +369,7 @@ module containerApp 'br/public:AVM/bicep-registry-modules:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -455,8 +455,8 @@ module containerApp 'br/public:AVM/bicep-registry-modules:<version>' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
@@ -516,7 +516,7 @@ module containerApp 'br/public:AVM/bicep-registry-modules:<version>' = {
 | [`customDomains`](#parameter-customdomains) | array | Custom domain bindings for Container App hostnames. |
 | [`dapr`](#parameter-dapr) | object | Dapr configuration for the Container App. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enableTelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`exposedPort`](#parameter-exposedport) | int | Exposed Port in containers for TCP traffic from ingress. |
 | [`ingressAllowInsecure`](#parameter-ingressallowinsecure) | bool | Bool indicating if HTTP connections to is allowed. If set to false HTTP connections are automatically redirected to HTTPS connections. |
 | [`ingressExternal`](#parameter-ingressexternal) | bool | Bool indicating if app exposes an external http endpoint. |
@@ -686,7 +686,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
 
