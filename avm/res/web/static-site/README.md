@@ -309,12 +309,7 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
+    managedIdentities: {}
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -389,12 +384,7 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
       }
     },
     "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
+      "value": {}
     },
     "privateEndpoints": {
       "value": [

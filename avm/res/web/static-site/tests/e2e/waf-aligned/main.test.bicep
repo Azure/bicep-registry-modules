@@ -36,7 +36,6 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     siteName: 'dep-${namePrefix}-fa-${serviceShort}'
     serverFarmName: 'dep-${namePrefix}-sf-${serviceShort}'
     location: location
@@ -75,12 +74,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     sku: 'Standard'
     stagingEnvironmentPolicy: 'Enabled'
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
+    managedIdentities: {}
     appSettings: {
       foo: 'bar'
       setting: 1
