@@ -21,7 +21,7 @@ param serviceShort string = 'acamin'
 param enableTelemetry bool = true
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = 'avm'
+param namePrefix string = '#_namePrefix_#'
 
 // =========== //
 // Deployments //
