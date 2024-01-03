@@ -9,8 +9,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  NotifyTeams:
-    name: Notify-Team
+  SetAvmGitHubIssueOwnerConfig:
+    name: Set-AvmGitHubIssueOwnerConfig
     runs-on: ubuntu-latest
     permissions:
       issues: write
