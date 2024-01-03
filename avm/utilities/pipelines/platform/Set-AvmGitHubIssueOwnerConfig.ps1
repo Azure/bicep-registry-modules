@@ -1,5 +1,19 @@
-function Get-AvmCsv {
+<#
+.SYNOPSIS
+Parses AVM module CSV file
 
+.DESCRIPTION
+Depending on the parameter, the correct CSV file will be parsed and returned a an object
+
+.PARAMETER ModuleIndex
+Type of CSV file, that should be parsed ('Bicep-Resource', 'Bicep-Pattern', 'Terraform-Resource', 'Terraform-Pattern')
+
+.EXAMPLE
+Next line will parse the AVM Bicep modules
+Get-AvmCsvData -ModuleIndex 'Bicep-Resource'
+
+#>
+Function Get-AvmCsvData {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory)]
@@ -49,18 +63,38 @@ function Get-AvmCsv {
   $formattedBicepFullCsv = ConvertFrom-CSV $unfilteredCSV.Content
   # Filter the CSV data where the ModuleStatus is 'Module Available :green_circle:'
   $filterCsvAvailableBicepModule = $formattedBicepFullCsv | Where-Object { $_.ModuleStatus -eq 'Module Available :green_circle:' }
+
   # Loop through each item in the filtered data
   foreach ($item in $filterCsvAvailableBicepModule) {
     # Remove '@Azure/' from the ModuleOwnersGHTeam property
-    $item.ModuleOwnersGHTeam = $item.ModuleOwnersGHTeam -replace '@Azure\/', ''
+    $item.ModuleOwnersGHTeam = $item.ModuleOwnersGHTeam -replace '@Azure/', ''
     # Remove '@Azure/' from the ModuleContributorsGHTeam property
-    $item.ModuleContributorsGHTeam = $item.ModuleContributorsGHTeam -replace '@Azure\/', ''
+    $item.ModuleContributorsGHTeam = $item.ModuleContributorsGHTeam -replace '@Azure/', ''
   }
 
   # Return the filtered and modified data
   return $filterCsvAvailableBicepModule
 }
 
+<#
+.SYNOPSIS
+Assigns issues to module owners and adds comments and labels
+
+.DESCRIPTION
+For the given issue, the module owner (according to the AVM CSV file) will be notified in a comment and assigned to the issue
+
+.PARAMETER Repo
+Repository name according to GitHub (owner/name)
+
+.PARAMETER IssueUrl
+The full GitHub URL to the issue
+
+.EXAMPLE
+Set-AvmGitHubIssueOwnerConfig -Repo 'Azure/bicep-registry-modules' -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
+
+.NOTES
+Will be triggered by the workflow avm.platform.assign-issue.yml
+#>
 function Set-AvmGitHubIssueOwnerConfig {
   [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
   param (
@@ -74,7 +108,7 @@ function Set-AvmGitHubIssueOwnerConfig {
   $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
   $moduleName = ($issue.body.Split("`n") -match "avm/(?:res|ptn)")[0].Trim().Replace(' ', '')
   $moduleIndex = $moduleName.StartsWith("avm/res") ? "Bicep-Resource" : "Bicep-Pattern"
-  $module = Get-AvmCsv -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
+  $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
   $reply = @"
 @$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!
 
