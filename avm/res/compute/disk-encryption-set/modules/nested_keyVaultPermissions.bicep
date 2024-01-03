@@ -10,7 +10,7 @@ param location string = resourceGroup().location
 @description('Required. Resource ID of the KeyVault containing the key or secret.')
 param keyVaultResourceId string
 
-@description('Required. Key URL (with version) pointing to a key or secret in KeyVault.')
+@description('Required. Name of the key to set the permissions for.')
 param keyName string
 
 resource keyVault 'Microsoft.KeyVault/vaults@2021-10-01' existing = {
