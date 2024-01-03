@@ -113,28 +113,28 @@ function Set-AvmGitHubIssueOwnerConfig {
 A member of the @azure/$($module.ModuleOwnersGHTeam) or @azure/$($module.ModuleContributorsGHTeam) team will review it soon!
 "@
 
-    if ($PSCmdlet.ShouldProcess("attention label to issue [$issue.title]", 'Add')) {
+    if ($PSCmdlet.ShouldProcess("attention label to issue [$($issue.title)]", 'Add')) {
       # add labels
       gh issue edit $issue.url --add-label "Needs: Attention :wave:" --repo $Repo
     }
 
-    if ($PSCmdlet.ShouldProcess("class label to issue [$issue.title]", 'Add')) {
+    if ($PSCmdlet.ShouldProcess("class label to issue [$($issue.title)]", 'Add')) {
       gh issue edit $issue.url --add-label ($moduleIndex -eq "Bicep-Resource" ? "Class: Resource Module :package:" : "Class: Pattern Module :package:") --repo $Repo
     }
 
-    if ($PSCmdlet.ShouldProcess("reply comment to issue [$issue.title]", 'Add')) {
+    if ($PSCmdlet.ShouldProcess("reply comment to issue [$($issue.title)]", 'Add')) {
       # write comment
       gh issue comment $issue.url --body $reply --repo $Repo
     }
 
-    if ($PSCmdlet.ShouldProcess(("owner [{0}] to issue [$issue.title]" -f $module.PrimaryModuleOwnerGHHandle), 'Assign')) {
+    if ($PSCmdlet.ShouldProcess(("owner [{0}] to issue [$($issue.title)]" -f $module.PrimaryModuleOwnerGHHandle), 'Assign')) {
       # assign owner
       $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
     }
 
     if ([String]::IsNullOrEmpty($assign)) {
       $reply = "This issue couldn't be assigend to $($module.PrimaryModuleOwnerGHHandle), because no such users exists."
-      if ($PSCmdlet.ShouldProcess("missing user comment to issue [$issue.title]", 'Add')) {
+      if ($PSCmdlet.ShouldProcess("missing user comment to issue [$($issue.title)]", 'Add')) {
         gh issue comment $issue.url --body $reply --repo $Repo
       }
     }
