@@ -93,8 +93,18 @@ function Set-AvmGitHubIssueOwnerConfig {
 
   $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
   $moduleName = ($issue.body.Split("`n") -match "avm/(?:res|ptn)")[0].Trim().Replace(' ', '')
+
+  if ([string]::IsNullOrEmpty($moduleName)) {
+    throw 'No valid module name was found in the issue.'
+  }
+
   $moduleIndex = $moduleName.StartsWith("avm/res") ? "Bicep-Resource" : "Bicep-Pattern"
   $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
+
+  if ([string]::IsNullOrEmpty($module)) {
+    throw "Module $moduleName was not found in $moduleIndex CSV file."
+  }
+
   $reply = @"
 @$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!
 
