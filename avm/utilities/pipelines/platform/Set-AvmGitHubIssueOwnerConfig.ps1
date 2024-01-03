@@ -6,7 +6,7 @@ Parses AVM module CSV file
 Depending on the parameter, the correct CSV file will be parsed and returned a an object
 
 .PARAMETER ModuleIndex
-Type of CSV file, that should be parsed ('Bicep-Resource', 'Bicep-Pattern', 'Terraform-Resource', 'Terraform-Pattern')
+Type of CSV file, that should be parsed ('Bicep-Resource', 'Bicep-Pattern')
 
 .EXAMPLE
 Next line will parse the AVM Bicep modules
@@ -17,52 +17,32 @@ Function Get-AvmCsvData {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory)]
-    [ValidateSet('Bicep-Resource', 'Bicep-Pattern', 'Terraform-Resource', 'Terraform-Pattern')]
+    [ValidateSet('Bicep-Resource', 'Bicep-Pattern')]
     [string] $ModuleIndex
   )
 
   # CSV file URLs
   $BicepResourceUrl = "https://aka.ms/avm/index/bicep/res/csv"
   $BicepPatternUrl = "https://aka.ms/avm/index/bicep/ptn/csv"
-  $TerraformResourceUrl = "https://aka.ms/avm/index/tf/res/csv"
-  $TerraformPatternUrl = "https://aka.ms/avm/index/tf/ptn/csv"
 
   # Retrieve the CSV file
-  if ($ModuleIndex -eq 'Bicep-Resource') {
-    try {
-      $unfilteredCSV = Invoke-WebRequest -Uri $BicepResourceUrl
+  switch ($ModuleIndex) {
+    'Bicep-Resource' {
+      try {
+        $unfilteredCSV = Invoke-WebRequest -Uri $BicepResourceUrl
+      }
+      catch {
+        Write-Error "Unable to retrieve CSV file - Check network connection."
+      }
     }
-    catch {
-      Write-Error "Unable to retrieve CSV file - Check network connection."
+    'Bicep-Pattern' {
+      try {
+        $unfilteredCSV = Invoke-WebRequest -Uri $BicepPatternUrl
+      }
+      catch {
+        Write-Error "Unable to retrieve CSV file - Check network connection."
+      }
     }
-  }
-  elseif ($ModuleIndex -eq 'Bicep-Pattern') {
-    try {
-      $unfilteredCSV = Invoke-WebRequest -Uri $BicepPatternUrl
-    }
-    catch {
-      Write-Error "Unable to retrieve CSV file - Check network connection."
-    }
-  }
-  elseif ($ModuleIndex -eq 'Terraform-Resource') {
-    try {
-      $unfilteredCSV = Invoke-WebRequest -Uri $TerraformResourceUrl
-    }
-    catch {
-      Write-Error "Unable to retrieve CSV file - Check network connection."
-    }
-  }
-  elseif ($ModuleIndex -eq 'Terraform-Pattern') {
-    try {
-      $unfilteredCSV = Invoke-WebRequest -Uri $TerraformPatternUrl
-    }
-    catch {
-      Write-Error "Unable to retrieve CSV file - Check network connection."
-    }
-  }
-  else {
-    Write-Error "Invalid ModuleIndex value"
-    exit 1
   }
 
   # Convert the CSV content to a PowerShell object
