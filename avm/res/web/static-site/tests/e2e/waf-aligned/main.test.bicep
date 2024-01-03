@@ -74,7 +74,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     sku: 'Standard'
     stagingEnvironmentPolicy: 'Enabled'
-    managedIdentities: {}
     appSettings: {
       foo: 'bar'
       setting: 1

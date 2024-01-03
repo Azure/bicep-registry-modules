@@ -309,7 +309,6 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    managedIdentities: {}
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -382,9 +381,6 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "managedIdentities": {
-      "value": {}
     },
     "privateEndpoints": {
       "value": [
