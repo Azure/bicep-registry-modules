@@ -99,7 +99,7 @@ The full GitHub URL to the issue
 Set-AvmGitHubIssueOwnerConfig -Repo 'Azure/bicep-registry-modules' -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
 
 .NOTES
-Will be triggered by the workflow avm.platform.assign-issue.yml
+Will be triggered by the workflow avm.platform.set-avm-github-issue-owner-config.yml
 #>
 function Set-AvmGitHubIssueOwnerConfig {
   [CmdletBinding(SupportsShouldProcess)]
