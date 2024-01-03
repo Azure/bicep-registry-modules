@@ -1,5 +1,10 @@
 # Firewall Policies `[Microsoft.Network/firewallPolicies]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys a Firewall Policy.
 
 ## Navigation
@@ -23,7 +28,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/network.firewall-policy:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/firewall-policy:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -39,13 +44,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module firewallPolicy 'br:bicep/modules/network.firewall-policy:1.0.0' = {
+module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nfpmin'
   params: {
     // Required parameters
     name: 'nfpmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -67,8 +72,8 @@ module firewallPolicy 'br:bicep/modules/network.firewall-policy:1.0.0' = {
       "value": "nfpmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -87,7 +92,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module firewallPolicy 'br:bicep/modules/network.firewall-policy:1.0.0' = {
+module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nfpmax'
   params: {
     // Required parameters
@@ -95,7 +100,7 @@ module firewallPolicy 'br:bicep/modules/network.firewall-policy:1.0.0' = {
     // Non-required parameters
     allowSqlRedirect: true
     autoLearnPrivateRanges: 'Enabled'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     ruleCollectionGroups: [
       {
         name: 'rule-001'
@@ -166,8 +171,8 @@ module firewallPolicy 'br:bicep/modules/network.firewall-policy:1.0.0' = {
     "autoLearnPrivateRanges": {
       "value": "Enabled"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "ruleCollectionGroups": {
       "value": [
@@ -233,7 +238,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module firewallPolicy 'br:bicep/modules/network.firewall-policy:1.0.0' = {
+module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nfpwaf'
   params: {
     // Required parameters
@@ -241,7 +246,7 @@ module firewallPolicy 'br:bicep/modules/network.firewall-policy:1.0.0' = {
     // Non-required parameters
     allowSqlRedirect: true
     autoLearnPrivateRanges: 'Enabled'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     ruleCollectionGroups: [
       {
         name: 'rule-001'
@@ -312,8 +317,8 @@ module firewallPolicy 'br:bicep/modules/network.firewall-policy:1.0.0' = {
     "autoLearnPrivateRanges": {
       "value": "Enabled"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "ruleCollectionGroups": {
       "value": [
@@ -388,8 +393,8 @@ module firewallPolicy 'br:bicep/modules/network.firewall-policy:1.0.0' = {
 | [`bypassTrafficSettings`](#parameter-bypasstrafficsettings) | array | List of rules for traffic to bypass. |
 | [`certificateName`](#parameter-certificatename) | string | Name of the CA certificate. |
 | [`defaultWorkspaceId`](#parameter-defaultworkspaceid) | string | Default Log Analytics Resource ID for Firewall Policy Insights. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`enableProxy`](#parameter-enableproxy) | bool | Enable DNS Proxy on Firewalls attached to the Firewall Policy. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`fqdns`](#parameter-fqdns) | array | List of FQDNs for the ThreatIntel Allowlist. |
 | [`insightsIsEnabled`](#parameter-insightsisenabled) | bool | A flag to indicate if the insights are enabled on the policy. |
 | [`ipAddresses`](#parameter-ipaddresses) | array | List of IP addresses for the ThreatIntel Allowlist. |
@@ -469,14 +474,6 @@ Default Log Analytics Resource ID for Firewall Policy Insights.
 - Type: string
 - Default: `''`
 
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
-
 ### Parameter: `enableProxy`
 
 Enable DNS Proxy on Firewalls attached to the Firewall Policy.
@@ -484,6 +481,14 @@ Enable DNS Proxy on Firewalls attached to the Firewall Policy.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `fqdns`
 

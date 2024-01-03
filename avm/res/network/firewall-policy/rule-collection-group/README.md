@@ -34,7 +34,6 @@ This module deploys a Firewall Policy Rule Collection Group.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`ruleCollections`](#parameter-rulecollections) | array | Group of Firewall Policy rule collections. |
 
 ### Parameter: `name`
@@ -57,14 +56,6 @@ The name of the parent Firewall Policy. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `ruleCollections`
 
