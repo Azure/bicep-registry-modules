@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "11648463198501003205"
+      "templateHash": "4796175974201919576"
     },
     "name": "Proximity Placement Groups",
     "description": "This module deploys a Proximity Placement Group.",
@@ -151,14 +151,14 @@
     },
     "zones": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created."
       }
     },
     "colocationStatus": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Describes colocation status of the Proximity Placement Group."
       }
@@ -172,7 +172,7 @@
     },
     "intent": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Specifies the user intent of the proximity placement group."
       }
@@ -218,7 +218,7 @@
       "properties": {
         "proximityPlacementGroupType": "[parameters('type')]",
         "colocationStatus": "[parameters('colocationStatus')]",
-        "intent": "[if(not(empty(parameters('intent'))), parameters('intent'), null())]"
+        "intent": "[parameters('intent')]"
       }
     },
     "proximityPlacementGroup_lock": {

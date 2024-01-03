@@ -365,7 +365,6 @@ Describes colocation status of the Proximity Placement Group.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `enableTelemetry`
 
@@ -381,7 +380,6 @@ Specifies the user intent of the proximity placement group.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `location`
 
@@ -544,7 +542,6 @@ Specifies the Availability Zone where virtual machine, virtual machine scale set
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 
 ## Outputs

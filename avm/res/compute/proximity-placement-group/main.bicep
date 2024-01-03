@@ -25,16 +25,16 @@ param roleAssignments roleAssignmentType
 param tags object?
 
 @description('Optional. Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created.')
-param zones array = []
+param zones array?
 
 @description('Optional. Describes colocation status of the Proximity Placement Group.')
-param colocationStatus object = {}
+param colocationStatus object?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Specifies the user intent of the proximity placement group.')
-param intent object = {}
+param intent object?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -70,7 +70,7 @@ resource proximityPlacementGroup 'Microsoft.Compute/proximityPlacementGroups@202
   properties: {
     proximityPlacementGroupType: type
     colocationStatus: colocationStatus
-    intent: !empty(intent) ? intent : null
+    intent: intent
   }
 }
 
