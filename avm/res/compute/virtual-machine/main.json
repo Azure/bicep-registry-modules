@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "12654761906125877338"
+      "templateHash": "3546053203260205642"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -981,7 +981,7 @@
             "value": "[tryGet(parameters('nicConfigurations')[copyIndex()], 'roleAssignments')]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(parameters('nicConfigurations')[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -992,7 +992,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "12547036605618417253"
+              "templateHash": "11195047658552178426"
             }
           },
           "definitions": {
@@ -1291,7 +1291,7 @@
                   },
                   "zones": "[if(contains(parameters('ipConfigurations')[copyIndex()], 'zones'), createObject('value', parameters('ipConfigurations')[copyIndex()].zones), createObject('value', createArray('1', '2', '3')))]",
                   "enableTelemetry": {
-                    "value": "[parameters('enableTelemetry')]"
+                    "value": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
                   }
                 },
                 "template": {

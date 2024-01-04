@@ -353,7 +353,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [for (nicConfiguration, index)
     tags: nicConfiguration.?tags ?? tags
     diagnosticSettings: nicConfiguration.?diagnosticSettings
     roleAssignments: nicConfiguration.?roleAssignments
-    enableTelemetry: nicConfiguration.?enableTelemetry ?? enableTelemetry
+    enableTelemetry: enableTelemetry
   }
 }]
 
