@@ -20,7 +20,7 @@ param roleAssignments roleAssignmentType
 
 var enableReferencedModulesTelemetry = false
 
-module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.2.0' = [for (ipConfiguration, index) in ipConfigurations: if (contains(ipConfiguration, 'pipconfiguration')) {
+module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.2.1' = [for (ipConfiguration, index) in ipConfigurations: if (contains(ipConfiguration, 'pipconfiguration')) {
   name: '${deployment().name}-publicIP-${index}'
   params: {
     name: '${virtualMachineName}${ipConfiguration.pipconfiguration.publicIpNameSuffix}'
