@@ -32,12 +32,10 @@ This module deploys an Event Grid System Topic Event Subscription.
 | [`deadLetterDestination`](#parameter-deadletterdestination) | object | Dead Letter Destination. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterdestination-objects for more information). |
 | [`deadLetterWithResourceIdentity`](#parameter-deadletterwithresourceidentity) | object | Dead Letter with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterwithresourceidentity-objects for more information). |
 | [`deliveryWithResourceIdentity`](#parameter-deliverywithresourceidentity) | object | Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deliverywithresourceidentity-objects for more information). |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`eventDeliverySchema`](#parameter-eventdeliveryschema) | string | The event delivery schema for the event subscription. |
 | [`expirationTimeUtc`](#parameter-expirationtimeutc) | string | The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ). |
 | [`filter`](#parameter-filter) | object | The filter for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptionfilter for more information). |
 | [`labels`](#parameter-labels) | array | The list of user defined labels. |
-| [`location`](#parameter-location) | string | Location for all Resources. |
 | [`retryPolicy`](#parameter-retrypolicy) | object | The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events. |
 
 ### Parameter: `destination`
@@ -85,14 +83,6 @@ Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/
 - Type: object
 - Default: `{}`
 
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
-
 ### Parameter: `eventDeliverySchema`
 
 The event delivery schema for the event subscription.
@@ -133,14 +123,6 @@ The list of user defined labels.
 - Required: No
 - Type: array
 - Default: `[]`
-
-### Parameter: `location`
-
-Location for all Resources.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
 
 ### Parameter: `retryPolicy`
 

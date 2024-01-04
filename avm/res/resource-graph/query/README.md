@@ -211,7 +211,6 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
     name: 'rdswaf001'
     query: 'resourcecontainers| where type == \'microsoft.resources/subscriptions\' | take 5'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
       kind: 'None'
@@ -246,9 +245,6 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
       "value": "resourcecontainers| where type == \"microsoft.resources/subscriptions\" | take 5"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -387,7 +383,7 @@ Array of role assignments to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
@@ -409,7 +405,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 ### Parameter: `roleAssignments.condition`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string

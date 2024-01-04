@@ -20,7 +20,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
 
 // required for the deployment script to create a new temporary ssh public key object
 resource msi_ContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-    name: guid(resourceGroup().id, 'ManagedIdentityContributor', '[[namePrefix]]')
+    name: guid(resourceGroup().id, 'ManagedIdentityContributor', managedIdentityName)
     properties: {
         roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c') // Contributor
         principalId: managedIdentity.properties.principalId

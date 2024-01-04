@@ -82,7 +82,7 @@ function Confirm-ModuleIsPublished {
         Write-Verbose ("Tags for module in path [$PublishedModuleName] found in MCR catalog:`n{0}" -f ($tagsContent | Out-String))
 
         if ($tagsContent -match $Version) {
-            Write-Host "Passed: Found new tag [$Version] for published module"
+            Write-Verbose "Passed: Found new tag [$Version] for published module" -Verbose
             break
         } else {
             Write-Warning "Warning: Could not find new tag [$Version] for published module. Retrying in [$retry_seconds] seconds [$index/$($time_limit_seconds/$retry_seconds)]"
@@ -90,8 +90,7 @@ function Confirm-ModuleIsPublished {
         }
 
         if ((Get-Date) -ge $end_time) {
-            Write-Host 'Time limit reached. Failed to validate publish within the specified time.'
-            exit 1
+            throw "Time limit reached. Failed to validate published version of module in path [$PublishedModuleName] within the specified time."
         }
     }
 }
