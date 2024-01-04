@@ -34,7 +34,11 @@ module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-a
     skuName: contains(ipConfiguration, 'skuName') ? ipConfiguration.skuName : 'Standard'
     skuTier: contains(ipConfiguration, 'skuTier') ? ipConfiguration.skuTier : 'Regional'
     tags: ipConfiguration.?tags ?? tags
-    zones: contains(ipConfiguration, 'zones') ? ipConfiguration.zones : []
+    zones: contains(ipConfiguration, 'zones') ? ipConfiguration.zones : [
+      '1'
+      '2'
+      '3'
+    ]
   }
 }]
 
