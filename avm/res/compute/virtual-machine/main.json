@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "3906813880748579145"
+      "templateHash": "12654761906125877338"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -180,7 +180,7 @@
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to '' to disable metric collection."
             }
           },
           "logAnalyticsDestinationType": {
@@ -992,7 +992,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "18013796946460477676"
+              "templateHash": "12547036605618417253"
             }
           },
           "definitions": {
@@ -1222,9 +1222,8 @@
             },
             "enableTelemetry": {
               "type": "bool",
-              "defaultValue": true,
               "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+                "description": "Required. Enable telemetry via a Globally Unique Identifier (GUID)."
               }
             },
             "networkSecurityGroupResourceId": {
