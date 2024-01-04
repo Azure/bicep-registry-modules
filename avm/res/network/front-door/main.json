@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "17531988759639107632"
+      "templateHash": "15287086642347422372"
     },
     "name": "Azure Front Doors",
     "description": "This module deploys an Azure Front Door.",
@@ -283,7 +283,7 @@
     },
     "friendlyName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Friendly name of the frontdoor resource."
       }
@@ -363,7 +363,7 @@
           "sendRecvTimeoutSeconds": "[parameters('sendRecvTimeoutSeconds')]"
         },
         "enabledState": "[parameters('enabledState')]",
-        "friendlyName": "[parameters('friendlyName')]",
+        "friendlyName": "[coalesce(parameters('friendlyName'), '')]",
         "frontendEndpoints": "[parameters('frontendEndpoints')]",
         "healthProbeSettings": "[parameters('healthProbeSettings')]",
         "loadBalancingSettings": "[parameters('loadBalancingSettings')]",

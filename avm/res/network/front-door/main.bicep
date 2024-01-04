@@ -36,7 +36,7 @@ param sendRecvTimeoutSeconds int = 240
 param enabledState string = 'Enabled'
 
 @description('Optional. Friendly name of the frontdoor resource.')
-param friendlyName string = ''
+param friendlyName string?
 
 @description('Required. Frontend endpoints of the frontdoor resource.')
 param frontendEndpoints array
@@ -91,7 +91,7 @@ resource frontDoor 'Microsoft.Network/frontDoors@2020-05-01' = {
       sendRecvTimeoutSeconds: sendRecvTimeoutSeconds
     }
     enabledState: enabledState
-    friendlyName: friendlyName
+    friendlyName: friendlyName ?? ''
     frontendEndpoints: frontendEndpoints
     healthProbeSettings: healthProbeSettings
     loadBalancingSettings: loadBalancingSettings

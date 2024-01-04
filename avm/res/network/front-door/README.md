@@ -1064,7 +1064,6 @@ Friendly name of the frontdoor resource.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `location`
 
