@@ -152,7 +152,9 @@ function Get-CrossReferencedModuleList {
     $resultSet = [ordered]@{}
 
     # Collect data
-    $moduleTemplatePaths = (Get-ChildItem -Path $path -Recurse -File -Filter 'main.bicep').FullName
+    $moduleTemplatePaths = (Get-ChildItem -Path $path -Recurse -File -Filter '*.bicep').FullName | Where-Object {
+        $_ -notmatch '.*[\\|\/]tools[\\|\/].*'
+    } | Sort-Object
     $templateMap = @{}
     foreach ($moduleTemplatePath in $moduleTemplatePaths) {
         $templateMap[$moduleTemplatePath] = Get-Content -Path $moduleTemplatePath
