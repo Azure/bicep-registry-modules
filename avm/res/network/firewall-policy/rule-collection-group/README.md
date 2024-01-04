@@ -63,7 +63,6 @@ Group of Firewall Policy rule collections.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 
 ## Outputs

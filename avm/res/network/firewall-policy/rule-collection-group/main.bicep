@@ -12,7 +12,7 @@ param name string
 param priority int
 
 @description('Optional. Group of Firewall Policy rule collections.')
-param ruleCollections array = []
+param ruleCollections array?
 
 resource firewallPolicy 'Microsoft.Network/firewallPolicies@2023-04-01' existing = {
   name: firewallPolicyName
@@ -23,7 +23,7 @@ resource ruleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionG
   parent: firewallPolicy
   properties: {
     priority: priority
-    ruleCollections: ruleCollections
+    ruleCollections: ruleCollections ?? []
   }
 }
 

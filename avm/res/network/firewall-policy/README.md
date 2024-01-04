@@ -452,7 +452,6 @@ Resource ID of the base policy.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `bypassTrafficSettings`
 
@@ -460,7 +459,6 @@ List of rules for traffic to bypass.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `certificateName`
 
@@ -468,7 +466,6 @@ Name of the CA certificate.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `defaultWorkspaceId`
 
@@ -476,7 +473,6 @@ Default Log Analytics Resource ID for Firewall Policy Insights.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `enableProxy`
 
@@ -500,7 +496,6 @@ List of FQDNs for the ThreatIntel Allowlist.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `insightsIsEnabled`
 
@@ -516,7 +511,6 @@ List of IP addresses for the ThreatIntel Allowlist.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `keyVaultSecretId`
 
@@ -524,7 +518,6 @@ Secret ID of (base-64 encoded unencrypted PFX) Secret or Certificate object stor
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `location`
 
@@ -592,7 +585,6 @@ Rule collection groups.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `servers`
 
@@ -600,7 +592,6 @@ List of Custom DNS Servers.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `signatureOverrides`
 
@@ -608,7 +599,6 @@ List of specific signatures states.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `tags`
 
@@ -654,7 +644,6 @@ List of workspaces for Firewall Policy Insights.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 
 ## Outputs
