@@ -18,19 +18,53 @@ async function getModuleDescription(
 
   core.info(`  Retrieving main.json at Git tag ref ${gitTagRef}`);
 
-  const response = await github.rest.repos.getContent({
+  // Get the SHA of the commit
+  const {
+    data: {
+      object: { sha: commitSha },
+    },
+  } = await github.rest.git.getRef({
     owner: context.repo.owner,
     repo: context.repo.repo,
-    path: mainJsonPath,
     ref: gitTagRef,
   });
 
-  if (response.data.type === "file") {
-    const content = Buffer.from(response.data.content, "base64").toString();
-    const json = JSON.parse(content);
+  // Get the tree data
+  const {
+    data: { tree },
+  } = await github.rest.git.getTree({
+    owner: context.repo.owner,
+    repo: context.repo.repo,
+    tree_sha: commitSha,
+    recursive: true,
+  });
+
+  // Find the file in the tree
+  const file = tree.find((f) => f.path === mainJsonPath);
+  if (!file) {
+    throw new Error(`File ${mainJsonPath} not found in repository`);
+  }
+
+  // Get the blob data
+  const {
+    data: { content },
+  } = await github.rest.git.getBlob({
+    owner: context.repo.owner,
+    repo: context.repo.repo,
+    file_sha: file.sha,
+  });
+
+  // content is base64 encoded, so decode it
+  const fileContent = Buffer.from(content, "base64").toString("utf8");
+
+  // Parse the main.json file
+  if (fileContent !== "") {
+    const json = JSON.parse(fileContent);
     return json.metadata.description;
   } else {
-    throw new Error("The specified path does not represent a file.");
+    throw new Error(
+      "The specified path does not represent a file or it is empty."
+    );
   }
 }
 

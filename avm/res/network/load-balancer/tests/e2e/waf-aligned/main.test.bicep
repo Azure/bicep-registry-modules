@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.'
+
 // ========== //
 // Parameters //
 // ========== //
@@ -152,18 +155,29 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         name: 'probe1'
         numberOfProbes: 5
         port: 80
-        protocol: 'Tcp'
+        protocol: 'Http'
+        requestPath: '/http-probe'
       }
       {
         name: 'probe2'
         port: 443
         protocol: 'Https'
-        requestPath: '/'
+        requestPath: '/https-probe'
       }
     ]
     roleAssignments: [
       {
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }

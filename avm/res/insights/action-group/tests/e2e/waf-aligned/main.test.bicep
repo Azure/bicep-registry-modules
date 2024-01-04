@@ -57,17 +57,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    // Workaround for PSRule
-    emailReceivers: null
-    smsReceivers: null
-    webhookReceivers: null
-    itsmReceivers: null
-    azureAppPushReceivers: null
-    automationRunbookReceivers: null
-    voiceReceivers: null
-    logicAppReceivers: null
-    azureFunctionReceivers: null
-    armRoleReceivers: null
-    roleAssignments: null
   }
 }]

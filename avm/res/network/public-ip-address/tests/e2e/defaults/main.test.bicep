@@ -44,14 +44,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    // Workaround for PSRule
-    ddosSettings: null
-    publicIpPrefixResourceId: null
-    lock: null
-    diagnosticSettings: null
-    roleAssignments: null
-    dnsSettings: null
-    tags: {}
-    zones: []
   }
 }]
