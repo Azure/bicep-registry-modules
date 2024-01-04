@@ -29,7 +29,7 @@ param virtualHubId string
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. The lock settings of the service.')

@@ -8,7 +8,7 @@ param name string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableDefaultTelemetry bool = true
 
 @description('Required. Name of the Event Grid System Topic.')
@@ -72,7 +72,7 @@ resource eventSubscription 'Microsoft.EventGrid/systemTopics/eventSubscriptions@
     deadLetterDestination: !empty(deadLetterDestination) ? deadLetterDestination : null
     deadLetterWithResourceIdentity: !empty(deadLetterWithResourceIdentity) ? deadLetterWithResourceIdentity : null
     deliveryWithResourceIdentity: !empty(deliveryWithResourceIdentity) ? deliveryWithResourceIdentity : null
-    destination: empty(deliveryWithResourceIdentity) ? destination: null
+    destination: empty(deliveryWithResourceIdentity) ? destination : null
     eventDeliverySchema: eventDeliverySchema
     expirationTimeUtc: !empty(expirationTimeUtc) ? expirationTimeUtc : ''
     filter: !empty(filter) ? filter : {}

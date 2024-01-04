@@ -27,7 +27,7 @@ param forwardingRules forwardingRuleType?
 @description('Optional. Array of virtual network links.')
 param vNetLinks array?
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 var builtInRoleNames = {
