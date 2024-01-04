@@ -100,7 +100,6 @@ How the extension handler should be forced to update even if the extension confi
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `location`
 
@@ -116,7 +115,6 @@ Any object that contains the extension specific protected settings.
 
 - Required: No
 - Type: secureObject
-- Default: `{}`
 
 ### Parameter: `settings`
 
@@ -124,7 +122,6 @@ Any object that contains the extension specific settings.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `supressFailures`
 
