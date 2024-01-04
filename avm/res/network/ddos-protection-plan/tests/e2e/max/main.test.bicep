@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module with most of its featur
 param resourceGroupName string = 'dep-${namePrefix}-network.ddosprotectionplans-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param location string = deployment().location
+param location string = 'westeurope'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ndppmax'
@@ -49,7 +49,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: 'westeurope'
+    location: location
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
