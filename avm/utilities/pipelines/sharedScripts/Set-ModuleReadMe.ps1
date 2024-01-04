@@ -1794,7 +1794,7 @@ function Set-ModuleReadMe {
         # Handle [DataCollection] section
         # ========================
         $inputObject = @{
-            TemplateFileContent = $templateFileContent
+            ReadMeFileContent = $readMeFileContent
         }
         $readMeFileContent = Set-DataCollectionSection @inputObject
     }
