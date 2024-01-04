@@ -26,7 +26,7 @@
 /avm/res/compute/disk-encryption-set/ @Azure/avm-res-compute-diskencryptionset-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/compute/gallery/ @Azure/avm-res-compute-gallery-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/compute/image/ @Azure/avm-res-compute-image-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/compute/proximity-placement-group/ @Azure/avm-res-compute-proximityplacementgroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/compute/proximity-placement-group/ @Azure/avm-res-compute-proximityplacementgroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/compute/ssh-public-key/ @Azure/avm-res-compute-sshpublickey-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/compute/virtual-machine/ @Azure/avm-res-compute-virtualmachine-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/compute/virtual-machine-scale-set/ @Azure/avm-res-compute-virtualmachinescaleset-module-owners-bicep @Azure/avm-core-team-technical-bicep
