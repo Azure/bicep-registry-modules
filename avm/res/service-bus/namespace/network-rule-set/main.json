@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "14004912029824569109"
+      "version": "0.24.24.22086",
+      "templateHash": "2244317530703231119"
     },
     "name": "Service Bus Namespace Network Rule Sets",
     "description": "This module deploys a ServiceBus Namespace Network Rule Set.",
