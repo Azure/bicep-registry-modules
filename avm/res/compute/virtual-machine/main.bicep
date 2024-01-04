@@ -424,7 +424,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
           deleteOption: contains(nicConfiguration, 'deleteOption') ? nicConfiguration.deleteOption : 'Delete'
           primary: index == 0 ? true : false
         }
-        #disable-next-line use-resource-id-functions
+        #disable-next-line use-resource-id-functions - Reason: It's a reference from inside a loop which makes resolving it using a resource reference particulary difficult.
         id: az.resourceId('Microsoft.Network/networkInterfaces', '${name}${nicConfiguration.nicSuffix}')
       }]
     }

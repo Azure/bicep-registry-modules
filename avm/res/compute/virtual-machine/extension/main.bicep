@@ -24,14 +24,14 @@ param typeHandlerVersion string
 param autoUpgradeMinorVersion bool
 
 @description('Optional. How the extension handler should be forced to update even if the extension configuration has not changed.')
-param forceUpdateTag string = ''
+param forceUpdateTag string?
 
 @description('Optional. Any object that contains the extension specific settings.')
-param settings object = {}
+param settings object?
 
 @description('Optional. Any object that contains the extension specific protected settings.')
 @secure()
-param protectedSettings object = {}
+param protectedSettings object?
 
 @description('Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false.')
 param supressFailures bool = false
@@ -57,9 +57,9 @@ resource extension 'Microsoft.Compute/virtualMachines/extensions@2022-11-01' = {
     typeHandlerVersion: typeHandlerVersion
     autoUpgradeMinorVersion: autoUpgradeMinorVersion
     enableAutomaticUpgrade: enableAutomaticUpgrade
-    forceUpdateTag: !empty(forceUpdateTag) ? forceUpdateTag : null
-    settings: !empty(settings) ? settings : null
-    protectedSettings: !empty(protectedSettings) ? protectedSettings : null
+    forceUpdateTag:forceUpdateTag
+    settings: settings
+    protectedSettings: protectedSettings
     suppressFailures: supressFailures
   }
 }
