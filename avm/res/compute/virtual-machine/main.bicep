@@ -338,10 +338,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-module vm_nic 'br/public:avm/res/network/network-interface:0.2.2' = [for (nicConfiguration, index) in nicConfigurations: {
+module vm_nic 'modules/nic-configuration.bicep' = [for (nicConfiguration, index) in nicConfigurations: {
   name: '${uniqueString(deployment().name, location)}-VM-Nic-${index}'
   params: {
-    name: '${name}${nicConfiguration.nicSuffix}'
+    networkInterfaceName: '${name}${nicConfiguration.nicSuffix}'
+    virtualMachineName: name
     location: location
     enableIPForwarding: contains(nicConfiguration, 'enableIPForwarding') ? (!empty(nicConfiguration.enableIPForwarding) ? nicConfiguration.enableIPForwarding : false) : false
     enableAcceleratedNetworking: contains(nicConfiguration, 'enableAcceleratedNetworking') ? nicConfiguration.enableAcceleratedNetworking : true
