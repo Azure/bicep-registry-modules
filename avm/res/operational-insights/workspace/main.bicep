@@ -286,7 +286,7 @@ module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/
     logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
     product: contains(gallerySolution, 'product') ? gallerySolution.product : 'OMSGallery'
     publisher: contains(gallerySolution, 'publisher') ? gallerySolution.publisher : 'Microsoft'
-    enableTelemetry: enableTelemetry
+    enableTelemetry: gallerySolution.?enableTelemetry ?? enableTelemetry
   }
 }]
 
