@@ -3,8 +3,8 @@ metadata description = 'This module deploys a Virtual Machine with one or multip
 metadata owner = 'Azure/module-maintainers'
 
 // Main resource
-@description('Optional. The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory. If no value is provided, a 10 character long unique string will be generated based on the Resource Group\'s name.')
-param name string = take(toLower(uniqueString(resourceGroup().name)), 10)
+@description('Required. The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory.')
+param name string
 
 @description('Optional. Can be used if the computer name needs to be different from the Azure VM resource name. If not used, the resource name will be used as computer name.')
 param computerName string = name

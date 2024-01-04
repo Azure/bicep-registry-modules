@@ -35,10 +35,9 @@ The following section provides usage examples for the module, which were used to
 - [Using automanage for the VM.](#example-1-using-automanage-for-the-vm)
 - [Using only defaults](#example-2-using-only-defaults)
 - [WAF-aligned](#example-3-waf-aligned)
-- [Using automanage for the VM.](#example-4-using-automanage-for-the-vm)
-- [Using only defaults](#example-5-using-only-defaults)
-- [Using large parameter set](#example-6-using-large-parameter-set)
-- [Using disk encryption set for the VM.](#example-7-using-disk-encryption-set-for-the-vm)
+- [Using only defaults](#example-4-using-only-defaults)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [Using disk encryption set for the VM.](#example-6-using-disk-encryption-set-for-the-vm)
 
 ### Example 1: _Using automanage for the VM._
 
@@ -61,6 +60,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '22_04-lts-gen2'
       version: 'latest'
     }
+    name: 'cvmlinatmg'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -102,7 +102,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     configurationProfile: '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
     disablePasswordAuthentication: true
     location: '<location>'
-    name: 'cvmlinatmg'
     publicKeys: [
       {
         keyData: '<keyData>'
@@ -141,6 +140,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         "sku": "22_04-lts-gen2",
         "version": "latest"
       }
+    },
+    "name": {
+      "value": "cvmlinatmg"
     },
     "nicConfigurations": {
       "value": [
@@ -197,9 +199,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "name": {
-      "value": "cvmlinatmg"
-    },
     "publicKeys": {
       "value": [
         {
@@ -243,6 +242,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '22_04-lts-gen2'
       version: 'latest'
     }
+    name: 'cvmlinmin'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -269,7 +269,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     disablePasswordAuthentication: true
     location: '<location>'
-    name: 'cvmlinmin'
     publicKeys: [
       {
         keyData: '<keyData>'
@@ -303,6 +302,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         "sku": "22_04-lts-gen2",
         "version": "latest"
       }
+    },
+    "name": {
+      "value": "cvmlinmin"
     },
     "nicConfigurations": {
       "value": [
@@ -342,9 +344,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "name": {
-      "value": "cvmlinmin"
-    },
     "publicKeys": {
       "value": [
         {
@@ -381,6 +380,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2019-datacenter'
       version: 'latest'
     }
+    name: 'cvmwinwaf'
     nicConfigurations: [
       {
         deleteOption: 'Delete'
@@ -427,13 +427,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             name: 'ipconfig01'
             pipConfiguration: {
               publicIpNameSuffix: '-pip-01'
-              roleAssignments: [
-                {
-                  principalId: '<principalId>'
-                  principalType: 'ServicePrincipal'
-                  roleDefinitionIdOrName: 'Reader'
-                }
-              ]
             }
             subnetResourceId: '<subnetResourceId>'
             zones: [
@@ -444,13 +437,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           }
         ]
         nicSuffix: '-nic-01'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
       }
     ]
     osDisk: {
@@ -596,32 +582,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    name: 'cvmwinwaf'
     patchMode: 'AutomaticByPlatform'
     proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -654,6 +616,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         "sku": "2019-datacenter",
         "version": "latest"
       }
+    },
+    "name": {
+      "value": "cvmwinwaf"
     },
     "nicConfigurations": {
       "value": [
@@ -701,14 +666,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               ],
               "name": "ipconfig01",
               "pipConfiguration": {
-                "publicIpNameSuffix": "-pip-01",
-                "roleAssignments": [
-                  {
-                    "principalId": "<principalId>",
-                    "principalType": "ServicePrincipal",
-                    "roleDefinitionIdOrName": "Reader"
-                  }
-                ]
+                "publicIpNameSuffix": "-pip-01"
               },
               "subnetResourceId": "<subnetResourceId>",
               "zones": [
@@ -718,14 +676,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               ]
             }
           ],
-          "nicSuffix": "-nic-01",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ]
+          "nicSuffix": "-nic-01"
         }
       ]
     },
@@ -918,42 +869,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         "name": "myCustomLockName"
       }
     },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "name": {
-      "value": "cvmwinwaf"
-    },
     "patchMode": {
       "value": "AutomaticByPlatform"
     },
     "proximityPlacementGroupResourceId": {
       "value": "<proximityPlacementGroupResourceId>"
     },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -968,139 +889,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using automanage for the VM._
-
-This instance deploys the module with registering to an automation account.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmwinatmg'
-  params: {
-    // Required parameters
-    adminUsername: 'localAdministrator'
-    imageReference: {
-      offer: 'WindowsServer'
-      publisher: 'MicrosoftWindowsServer'
-      sku: '2022-datacenter-azure-edition'
-      version: 'latest'
-    }
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig01'
-            subnetResourceId: '<subnetResourceId>'
-          }
-        ]
-        nicSuffix: '-nic-01'
-      }
-    ]
-    osDisk: {
-      diskSizeGB: '128'
-      managedDisk: {
-        storageAccountType: 'Premium_LRS'
-      }
-    }
-    osType: 'Windows'
-    vmSize: 'Standard_DS2_v2'
-    // Non-required parameters
-    adminPassword: '<adminPassword>'
-    configurationProfile: '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
-    location: '<location>'
-    name: 'cvmwinatmg'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "adminUsername": {
-      "value": "localAdministrator"
-    },
-    "imageReference": {
-      "value": {
-        "offer": "WindowsServer",
-        "publisher": "MicrosoftWindowsServer",
-        "sku": "2022-datacenter-azure-edition",
-        "version": "latest"
-      }
-    },
-    "nicConfigurations": {
-      "value": [
-        {
-          "ipConfigurations": [
-            {
-              "name": "ipconfig01",
-              "subnetResourceId": "<subnetResourceId>"
-            }
-          ],
-          "nicSuffix": "-nic-01"
-        }
-      ]
-    },
-    "osDisk": {
-      "value": {
-        "diskSizeGB": "128",
-        "managedDisk": {
-          "storageAccountType": "Premium_LRS"
-        }
-      }
-    },
-    "osType": {
-      "value": "Windows"
-    },
-    "vmSize": {
-      "value": "Standard_DS2_v2"
-    },
-    // Non-required parameters
-    "adminPassword": {
-      "value": "<adminPassword>"
-    },
-    "configurationProfile": {
-      "value": "/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "name": {
-      "value": "cvmwinatmg"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 5: _Using only defaults_
+### Example 4: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -1121,6 +910,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
+    name: 'cvmwinmin'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -1144,7 +934,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminPassword: '<adminPassword>'
     location: '<location>'
-    name: 'cvmwinmin'
   }
 }
 ```
@@ -1173,6 +962,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         "version": "latest"
       }
     },
+    "name": {
+      "value": "cvmwinmin"
+    },
     "nicConfigurations": {
       "value": [
         {
@@ -1207,9 +999,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "name": {
-      "value": "cvmwinmin"
     }
   }
 }
@@ -1218,7 +1007,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 6: _Using large parameter set_
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1239,6 +1028,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2019-datacenter'
       version: 'latest'
     }
+    name: 'cvmwinmax'
     nicConfigurations: [
       {
         deleteOption: 'Delete'
@@ -1460,7 +1250,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
-    name: 'cvmwinmax'
     patchMode: 'AutomaticByPlatform'
     proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
     roleAssignments: [
@@ -1512,6 +1301,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         "sku": "2019-datacenter",
         "version": "latest"
       }
+    },
+    "name": {
+      "value": "cvmwinmax"
     },
     "nicConfigurations": {
       "value": [
@@ -1784,9 +1576,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         ]
       }
     },
-    "name": {
-      "value": "cvmwinmax"
-    },
     "patchMode": {
       "value": "AutomaticByPlatform"
     },
@@ -1826,7 +1615,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 7: _Using disk encryption set for the VM._
+### Example 6: _Using disk encryption set for the VM._
 
 This instance deploys the module with disk enryption set.
 
@@ -1847,6 +1636,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2019-datacenter'
       version: 'latest'
     }
+    name: 'cvmwincmk'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -1883,12 +1673,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     ]
     location: '<location>'
-    name: 'cvmwincmk'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -1916,6 +1700,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         "sku": "2019-datacenter",
         "version": "latest"
       }
+    },
+    "name": {
+      "value": "cvmwincmk"
     },
     "nicConfigurations": {
       "value": [
@@ -1966,16 +1753,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "name": {
-      "value": "cvmwincmk"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -1994,6 +1771,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`adminUsername`](#parameter-adminusername) | securestring | Administrator username. |
 | [`configurationProfile`](#parameter-configurationprofile) | string | The configuration profile of automanage. |
 | [`imageReference`](#parameter-imagereference) | object | OS image reference. In case of marketplace images, it's the combination of the publisher, offer, sku, version attributes. In case of custom images it's the resource ID of the custom image. |
+| [`name`](#parameter-name) | string | The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory. |
 | [`nicConfigurations`](#parameter-nicconfigurations) | array | Configures NICs and PIPs. |
 | [`osDisk`](#parameter-osdisk) | object | Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object.  Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs. |
 | [`osType`](#parameter-ostype) | string | The chosen OS type. |
@@ -2040,7 +1818,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. The system-assigned managed identity will automatically be enabled if extensionAadJoinConfig.enabled = "True". |
 | [`maxPriceForLowPriorityVm`](#parameter-maxpriceforlowpriorityvm) | string | Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars. |
-| [`name`](#parameter-name) | string | The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory. If no value is provided, a 10 character long unique string will be generated based on the Resource Group's name. |
 | [`patchAssessmentMode`](#parameter-patchassessmentmode) | string | VM guest patching assessment mode. Set it to 'AutomaticByPlatform' to enable automatically check for updates every 24 hours. |
 | [`patchMode`](#parameter-patchmode) | string | VM guest patching orchestration mode. 'AutomaticByOS' & 'Manual' are for Windows only, 'ImageDefault' for Linux only. Refer to 'https://learn.microsoft.com/en-us/azure/virtual-machines/automatic-vm-guest-patching'. |
 | [`plan`](#parameter-plan) | object | Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use. |
@@ -2093,6 +1870,13 @@ OS image reference. In case of marketplace images, it's the combination of the p
 
 - Required: Yes
 - Type: object
+
+### Parameter: `name`
+
+The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `nicConfigurations`
 
@@ -2535,14 +2319,6 @@ Specifies the maximum price you are willing to pay for a low priority VM/VMSS. T
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `name`
-
-The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory. If no value is provided, a 10 character long unique string will be generated based on the Resource Group's name.
-
-- Required: No
-- Type: string
-- Default: `[take(toLower(uniqueString(resourceGroup().name)), 10)]`
 
 ### Parameter: `patchAssessmentMode`
 
