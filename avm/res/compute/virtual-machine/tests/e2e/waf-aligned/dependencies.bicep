@@ -4,9 +4,6 @@ param virtualNetworkName string
 @description('Required. The name of the Application Security Group to create.')
 param applicationSecurityGroupName string
 
-@description('Required. The name of the Managed Identity to create.')
-param managedIdentityName string
-
 @description('Required. The name of the Load Balancer to create.')
 param loadBalancerName string
 
@@ -54,21 +51,6 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
 resource applicationSecurityGroup 'Microsoft.Network/applicationSecurityGroups@2023-04-01' = {
   name: applicationSecurityGroupName
   location: location
-}
-
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: managedIdentityName
-  location: location
-}
-
-resource msiRGContrRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().id, 'Contributor', managedIdentity.id)
-  scope: resourceGroup()
-  properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c') // Contributor
-    principalType: 'ServicePrincipal'
-  }
 }
 
 resource loadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
@@ -211,16 +193,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 }
 
-resource msiKVReadRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-KeyVault-Key-Read-RoleAssignment')
-  scope: keyVault::key
-  properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424') // Key Vault Crypto User
-    principalType: 'ServicePrincipal'
-  }
-}
-
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   name: storageAccountName
   location: location
@@ -242,21 +214,12 @@ resource storageUpload 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   name: storageUploadDeploymentScriptName
   location: location
   kind: 'AzurePowerShell'
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${managedIdentity.id}': {}
-    }
-  }
   properties: {
     azPowerShellVersion: '9.0'
     retentionInterval: 'P1D'
     arguments: '-StorageAccountName "${storageAccount.name}" -ResourceGroupName "${resourceGroup().name}" -ContainerName "${storageAccount::blobService::container.name}" -FileName "${storageAccountCSEFileName}"'
     scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-BlobContent.ps1')
   }
-  dependsOn: [
-    msiRGContrRoleAssignment
-  ]
 }
 
 resource proximityPlacementGroup 'Microsoft.Compute/proximityPlacementGroups@2022-03-01' = {
@@ -269,12 +232,6 @@ output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
 @description('The resource ID of the created Application Security Group.')
 output applicationSecurityGroupResourceId string = applicationSecurityGroup.id
-
-@description('The principal ID of the created Managed Identity.')
-output managedIdentityPrincipalId string = managedIdentity.properties.principalId
-
-@description('The resource ID of the created Managed Identity.')
-output managedIdentityResourceId string = managedIdentity.id
 
 @description('The resource ID of the created Load Balancer Backend Pool.')
 output loadBalancerBackendPoolResourceId string = loadBalancer.properties.backendAddressPools[0].id
