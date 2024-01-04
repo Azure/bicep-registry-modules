@@ -533,17 +533,6 @@ function Set-DataCollectionSection {
         throw "Failed to telemetry information from [$telemetryUrl]." # Invalid url
     }
 
-    # Filter noise
-    # if ($telemetryInfoContent[0] -like '<!--*') {
-    #     $telemetryInfoContent = $telemetryInfoContent[1..($telemetryInfoContent.Length - 1)]
-    # }
-    # if ($telemetryInfoContent[0] -like '## Data Collection*') {
-    #     $telemetryInfoContent = $telemetryInfoContent[1..($telemetryInfoContent.Length - 1)]
-    # }
-    # if ($telemetryInfoContent[0] -like '') {
-    #     $telemetryInfoContent = $telemetryInfoContent[1..($telemetryInfoContent.Length - 1)]
-    # }
-
     # Build result
     if ($PSCmdlet.ShouldProcess('Original file with new output content', 'Merge')) {
         $updatedFileContent = Merge-FileWithNewContent -oldContent $ReadMeFileContent -newContent $telemetryInfoContent -SectionStartIdentifier $SectionStartIdentifier -contentType 'nextH2'
