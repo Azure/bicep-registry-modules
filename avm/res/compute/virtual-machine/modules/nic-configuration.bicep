@@ -5,6 +5,8 @@ param tags object?
 param enableIPForwarding bool = false
 param enableAcceleratedNetworking bool = false
 param dnsServers array = []
+@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+param enableTelemetry bool = true
 
 @description('Optional. The network security group (NSG) to attach to the network interface.')
 param networkSecurityGroupResourceId string = ''
@@ -17,8 +19,6 @@ param diagnosticSettings diagnosticSettingType
 
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
-
-var enableReferencedModulesTelemetry = false
 
 module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.2.1' = [for (ipConfiguration, index) in ipConfigurations: if (contains(ipConfiguration, 'pipconfiguration')) {
   name: '${deployment().name}-publicIP-${index}'
@@ -39,6 +39,7 @@ module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-a
       '2'
       '3'
     ]
+    enableTelemetry: enableTelemetry
   }
 }]
 
@@ -66,7 +67,7 @@ module networkInterface 'br/public:avm/res/network/network-interface:0.2.2' = {
     diagnosticSettings: diagnosticSettings
     dnsServers: !empty(dnsServers) ? dnsServers : []
     enableAcceleratedNetworking: enableAcceleratedNetworking
-    enableTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableTelemetry
     enableIPForwarding: enableIPForwarding
     lock: lock
     networkSecurityGroupResourceId: !empty(networkSecurityGroupResourceId) ? networkSecurityGroupResourceId : ''
