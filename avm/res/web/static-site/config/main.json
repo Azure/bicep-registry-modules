@@ -1,0 +1,69 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "12360558347482884602"
+    },
+    "name": "Static Web App Site Config",
+    "description": "This module deploys a Static Web App Site Config.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "kind": {
+      "type": "string",
+      "allowedValues": [
+        "appsettings",
+        "functionappsettings"
+      ],
+      "metadata": {
+        "description": "Required. Type of settings to apply."
+      }
+    },
+    "properties": {
+      "type": "object",
+      "metadata": {
+        "description": "Required. App settings."
+      }
+    },
+    "staticSiteName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Static Web App. Required if the template is used in a standalone deployment."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/staticSites/config",
+      "apiVersion": "2022-03-01",
+      "name": "[format('{0}/{1}', parameters('staticSiteName'), parameters('kind'))]",
+      "properties": "[parameters('properties')]"
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the config."
+      },
+      "value": "[parameters('kind')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the config."
+      },
+      "value": "[resourceId('Microsoft.Web/staticSites/config', parameters('staticSiteName'), parameters('kind'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the config was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
