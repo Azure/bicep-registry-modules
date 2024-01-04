@@ -5,8 +5,9 @@ param tags object?
 param enableIPForwarding bool = false
 param enableAcceleratedNetworking bool = false
 param dnsServers array = []
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableTelemetry bool = true
+
+@description('Required. Enable telemetry via a Globally Unique Identifier (GUID).')
+param enableTelemetry bool
 
 @description('Optional. The network security group (NSG) to attach to the network interface.')
 param networkSecurityGroupResourceId string = ''
