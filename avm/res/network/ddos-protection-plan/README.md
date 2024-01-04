@@ -46,7 +46,7 @@ module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<versi
     // Required parameters
     name: 'ndppmin001'
     // Non-required parameters
-    location: '<location>'
+    location: 'northeurope'
   }
 }
 ```
@@ -69,7 +69,7 @@ module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<versi
     },
     // Non-required parameters
     "location": {
-      "value": "<location>"
+      "value": "northeurope"
     }
   }
 }
@@ -94,7 +94,7 @@ module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<versi
     // Required parameters
     name: 'ndppmax001'
     // Non-required parameters
-    location: '<location>'
+    location: 'westeurope'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -143,7 +143,7 @@ module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<versi
     },
     // Non-required parameters
     "location": {
-      "value": "<location>"
+      "value": "westeurope"
     },
     "lock": {
       "value": {
