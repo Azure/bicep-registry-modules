@@ -40,7 +40,7 @@ module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-a
       '2'
       '3'
     ]
-    enableTelemetry: enableTelemetry
+    enableTelemetry: ipConfiguration.?enableTelemetry ?? enableTelemetry
   }
 }]
 
