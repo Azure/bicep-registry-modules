@@ -1,5 +1,10 @@
 # Azure Front Doors `[Microsoft.Network/frontDoors]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an Azure Front Door.
 
 ## Navigation
@@ -25,7 +30,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/network.front-door:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/front-door:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -41,7 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module frontDoor 'br:bicep/modules/network.front-door:1.0.0' = {
+module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nfdmin'
   params: {
     // Required parameters
@@ -126,7 +131,7 @@ module frontDoor 'br:bicep/modules/network.front-door:1.0.0' = {
       }
     ]
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -237,8 +242,8 @@ module frontDoor 'br:bicep/modules/network.front-door:1.0.0' = {
       ]
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -257,7 +262,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module frontDoor 'br:bicep/modules/network.front-door:1.0.0' = {
+module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nfdmax'
   params: {
     // Required parameters
@@ -350,8 +355,8 @@ module frontDoor 'br:bicep/modules/network.front-door:1.0.0' = {
       }
     ]
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     enforceCertificateNameCheck: 'Disabled'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -497,11 +502,11 @@ module frontDoor 'br:bicep/modules/network.front-door:1.0.0' = {
       ]
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "enforceCertificateNameCheck": {
       "value": "Disabled"
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -555,7 +560,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module frontDoor 'br:bicep/modules/network.front-door:1.0.0' = {
+module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nfdwaf'
   params: {
     // Required parameters
@@ -648,12 +653,8 @@ module frontDoor 'br:bicep/modules/network.front-door:1.0.0' = {
       }
     ]
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     enforceCertificateNameCheck: 'Disabled'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
+    location: '<location>'
     sendRecvTimeoutSeconds: 10
     tags: {
       Environment: 'Non-Prod'
@@ -778,17 +779,11 @@ module frontDoor 'br:bicep/modules/network.front-door:1.0.0' = {
       ]
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "enforceCertificateNameCheck": {
       "value": "Disabled"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
+    "location": {
+      "value": "<location>"
     },
     "sendRecvTimeoutSeconds": {
       "value": 10
@@ -826,8 +821,8 @@ module frontDoor 'br:bicep/modules/network.front-door:1.0.0' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`enabledState`](#parameter-enabledstate) | string | State of the frontdoor resource. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`enforceCertificateNameCheck`](#parameter-enforcecertificatenamecheck) | string | Enforce certificate name check of the frontdoor resource. |
 | [`friendlyName`](#parameter-friendlyname) | string | Friendly name of the frontdoor resource. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -969,14 +964,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
-
 ### Parameter: `enabledState`
 
 State of the frontdoor resource.
@@ -984,6 +971,14 @@ State of the frontdoor resource.
 - Required: No
 - Type: string
 - Default: `'Enabled'`
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `enforceCertificateNameCheck`
 
