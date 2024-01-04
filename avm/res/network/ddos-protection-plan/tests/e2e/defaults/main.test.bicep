@@ -40,6 +40,6 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: location
+    location: 'northeurope'
   }
 }
