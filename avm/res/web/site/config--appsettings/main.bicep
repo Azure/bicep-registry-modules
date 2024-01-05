@@ -27,9 +27,6 @@ param setAzureWebJobsDashboard bool = contains(kind, 'functionapp') ? true : fal
 @description('Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING.')
 param appSettingsKeyValuePairs object = {}
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
 var azureWebJobsValues = !empty(storageAccountResourceId) ? union({
     AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};'
   }, ((setAzureWebJobsDashboard == true) ? {
@@ -55,18 +52,6 @@ resource appInsight 'Microsoft.Insights/components@2020-02-02' existing = if (!e
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing = if (!empty(storageAccountResourceId)) {
   name: last(split(storageAccountResourceId, '/'))!
   scope: resourceGroup(split(storageAccountResourceId, '/')[2], split(storageAccountResourceId, '/')[4])
-}
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
 }
 
 resource appSettings 'Microsoft.Web/sites/config@2022-09-01' = {

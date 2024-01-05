@@ -18,23 +18,8 @@ param kind string
 @description('Required. The auth settings V2 configuration.')
 param authSettingV2Configuration object
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
 resource app 'Microsoft.Web/sites@2022-09-01' existing = {
   name: appName
-}
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
 }
 
 resource appSettings 'Microsoft.Web/sites/config@2022-09-01' = {
