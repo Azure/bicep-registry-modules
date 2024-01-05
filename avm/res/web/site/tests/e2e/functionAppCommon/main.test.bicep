@@ -18,7 +18,7 @@ param serviceShort string = 'wsfacom'
 param enableDefaultTelemetry bool = true
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -35,13 +35,13 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
-    virtualNetworkName: 'dep-[[namePrefix]]-vnet-${serviceShort}'
-    managedIdentityName: 'dep-[[namePrefix]]-msi-${serviceShort}'
-    serverFarmName: 'dep-[[namePrefix]]-sf-${serviceShort}'
-    storageAccountName: 'dep[[namePrefix]]st${serviceShort}'
-    applicationInsightsName: 'dep-[[namePrefix]]-appi-${serviceShort}'
-    relayNamespaceName: 'dep-[[namePrefix]]-ns-${serviceShort}'
-    hybridConnectionName: 'dep-[[namePrefix]]-hc-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    serverFarmName: 'dep-${namePrefix}-sf-${serviceShort}'
+    storageAccountName: 'dep${namePrefix}st${serviceShort}'
+    applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
+    relayNamespaceName: 'dep-${namePrefix}-ns-${serviceShort}'
+    hybridConnectionName: 'dep-${namePrefix}-hc-${serviceShort}'
   }
 }
 
