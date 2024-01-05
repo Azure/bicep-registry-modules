@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "18390989428405426226"
+      "templateHash": "6007219315806176277"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -2439,7 +2439,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "8321444505520440538"
+              "templateHash": "13562327621635125722"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -2498,7 +2498,7 @@
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
@@ -2645,7 +2645,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "8321444505520440538"
+              "templateHash": "13562327621635125722"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -2704,7 +2704,7 @@
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
@@ -2846,7 +2846,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "8321444505520440538"
+              "templateHash": "13562327621635125722"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -2905,7 +2905,7 @@
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
@@ -3042,7 +3042,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "8321444505520440538"
+              "templateHash": "13562327621635125722"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3101,7 +3101,7 @@
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
@@ -3238,7 +3238,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "8321444505520440538"
+              "templateHash": "13562327621635125722"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3297,7 +3297,7 @@
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
@@ -3434,7 +3434,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "8321444505520440538"
+              "templateHash": "13562327621635125722"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3493,7 +3493,7 @@
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
@@ -3634,7 +3634,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "8321444505520440538"
+              "templateHash": "13562327621635125722"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3693,7 +3693,7 @@
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
@@ -3842,7 +3842,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "8321444505520440538"
+              "templateHash": "13562327621635125722"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3901,7 +3901,7 @@
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
@@ -4043,7 +4043,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "8321444505520440538"
+              "templateHash": "13562327621635125722"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -4102,7 +4102,7 @@
             },
             "settings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Any object that contains the extension specific settings."
               }
