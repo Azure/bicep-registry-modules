@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Function App, using only defaults'
+metadata description = 'This instance deploys the module as Function App with the minimum set of required parameters.'
+
 // ========== //
 // Parameters //
 // ========== //

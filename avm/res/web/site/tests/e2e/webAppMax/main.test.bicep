@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Web App, using large parameter set'
+metadata description = 'This instance deploys the module as Web App with most of its features enabled.'
+
 // ========== //
 // Parameters //
 // ========== //
@@ -12,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-web.sites-${serviceShort}-rg
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'wswa'
+param serviceShort string = 'wswamax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
