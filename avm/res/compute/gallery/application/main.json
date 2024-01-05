@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "7964925859326857094"
+      "templateHash": "9951919331605340265"
     },
     "name": "Compute Galleries Applications",
     "description": "This module deploys an Azure Compute Gallery Application.",
@@ -131,13 +131,12 @@
     },
     "supportedOSType": {
       "type": "string",
-      "defaultValue": "Windows",
       "allowedValues": [
         "Windows",
         "Linux"
       ],
       "metadata": {
-        "description": "Optional. This property allows you to specify the supported type of the OS that application is built for."
+        "description": "Required. This property allows you to specify the supported type of the OS that application is built for."
       }
     },
     "endOfLifeDate": {
@@ -193,11 +192,11 @@
       "tags": "[parameters('tags')]",
       "properties": {
         "customActions": "[parameters('customActions')]",
-        "description": "[coalesce(parameters('description'), '')]",
-        "endOfLifeDate": "[coalesce(parameters('endOfLifeDate'), '')]",
-        "eula": "[coalesce(parameters('eula'), '')]",
-        "privacyStatementUri": "[coalesce(parameters('privacyStatementUri'), '')]",
-        "releaseNoteUri": "[coalesce(parameters('releaseNoteUri'), '')]",
+        "description": "[parameters('description')]",
+        "endOfLifeDate": "[parameters('endOfLifeDate')]",
+        "eula": "[parameters('eula')]",
+        "privacyStatementUri": "[parameters('privacyStatementUri')]",
+        "releaseNoteUri": "[parameters('releaseNoteUri')]",
         "supportedOSType": "[parameters('supportedOSType')]"
       },
       "dependsOn": [
