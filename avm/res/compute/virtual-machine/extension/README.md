@@ -122,6 +122,7 @@ Any object that contains the extension specific settings.
 
 - Required: No
 - Type: object
+- Default: `{}`
 
 ### Parameter: `supressFailures`
 

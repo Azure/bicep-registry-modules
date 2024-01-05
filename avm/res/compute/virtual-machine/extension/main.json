@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "13562327621635125722"
+      "templateHash": "8321444505520440538"
     },
     "name": "Virtual Machine Extensions",
     "description": "This module deploys a Virtual Machine Extension.",
@@ -65,7 +65,7 @@
     },
     "settings": {
       "type": "object",
-      "nullable": true,
+      "defaultValue": {},
       "metadata": {
         "description": "Optional. Any object that contains the extension specific settings."
       }

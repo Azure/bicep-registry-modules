@@ -27,7 +27,7 @@ param autoUpgradeMinorVersion bool
 param forceUpdateTag string?
 
 @description('Optional. Any object that contains the extension specific settings.')
-param settings object?
+param settings object = {}
 
 @description('Optional. Any object that contains the extension specific protected settings.')
 @secure()
@@ -57,7 +57,7 @@ resource extension 'Microsoft.Compute/virtualMachines/extensions@2022-11-01' = {
     typeHandlerVersion: typeHandlerVersion
     autoUpgradeMinorVersion: autoUpgradeMinorVersion
     enableAutomaticUpgrade: enableAutomaticUpgrade
-    forceUpdateTag:forceUpdateTag
+    forceUpdateTag: forceUpdateTag
     settings: settings
     protectedSettings: protectedSettings
     suppressFailures: supressFailures
