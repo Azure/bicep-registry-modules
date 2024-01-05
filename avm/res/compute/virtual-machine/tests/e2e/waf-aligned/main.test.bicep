@@ -262,14 +262,14 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         }
       }
     }
-    // extensionAadJoinConfig: {
-    //   enabled: true
-    //   tags: {
-    //     'hidden-title': 'This is visible in the resource name'
-    //     Environment: 'Non-Prod'
-    //     Role: 'DeploymentValidation'
-    //   }
-    // }
+    extensionAadJoinConfig: {
+      enabled: true
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
+    }
     extensionDSCConfig: {
       enabled: true
       tags: {

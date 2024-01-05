@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "13562327621635125722"
+      "templateHash": "10332103716678024514"
     },
     "name": "Virtual Machine Extensions",
     "description": "This module deploys a Virtual Machine Extension.",
@@ -58,21 +58,21 @@
     },
     "forceUpdateTag": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "",
       "metadata": {
         "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
       }
     },
     "settings": {
       "type": "object",
-      "nullable": true,
+      "defaultValue": {},
       "metadata": {
         "description": "Optional. Any object that contains the extension specific settings."
       }
     },
     "protectedSettings": {
       "type": "secureObject",
-      "nullable": true,
+      "defaultValue": {},
       "metadata": {
         "description": "Optional. Any object that contains the extension specific protected settings."
       }
@@ -117,9 +117,9 @@
         "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
         "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
         "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
-        "forceUpdateTag": "[parameters('forceUpdateTag')]",
-        "settings": "[parameters('settings')]",
-        "protectedSettings": "[parameters('protectedSettings')]",
+        "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
+        "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
+        "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
         "suppressFailures": "[parameters('supressFailures')]"
       },
       "dependsOn": [
