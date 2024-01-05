@@ -31,15 +31,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   location: location
 }
 
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
-  params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: location
-  }
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -51,10 +42,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     sku: 'Premium_AzureFrontDoor'
     policySettings: {
       mode: 'Prevention'
