@@ -101,6 +101,12 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
     allowSqlRedirect: true
     autoLearnPrivateRanges: 'Enabled'
     location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    mode: 'Alert'
     ruleCollectionGroups: [
       {
         name: 'rule-001'
@@ -144,6 +150,7 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    tier: 'Premium'
   }
 }
 ```
@@ -173,6 +180,16 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
     },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "mode": {
+      "value": "Alert"
     },
     "ruleCollectionGroups": {
       "value": [
@@ -220,6 +237,9 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "tier": {
+      "value": "Premium"
     }
   }
 }

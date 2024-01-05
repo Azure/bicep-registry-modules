@@ -31,6 +31,15 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
+  params: {
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    location: location
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -42,6 +51,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
+    tier: 'Premium'
+    mode: 'Alert'
     ruleCollectionGroups: [
       {
         name: '${namePrefix}-rule-001'
@@ -80,6 +91,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ]
       }
     ]
+    managedIdentities: {
+      userAssignedResourceIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
+    }
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
