@@ -1,5 +1,10 @@
 # Front Door Web Application Firewall (WAF) Policies `[Microsoft.Network/FrontDoorWebApplicationFirewallPolicies]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys a Front Door Web Application Firewall (WAF) Policy.
 
 ## Navigation
@@ -9,6 +14,7 @@ This module deploys a Front Door Web Application Firewall (WAF) Policy.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -24,7 +30,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/network.front-door-web-application-firewall-policy:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/front-door-web-application-firewall-policy:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -40,13 +46,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module frontDoorWebApplicationFirewallPolicy 'br:bicep/modules/network.front-door-web-application-firewall-policy:1.0.0' = {
+module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-door-web-application-firewall-policy:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nagwafpmin'
   params: {
     // Required parameters
     name: 'nagwafpmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -68,8 +74,8 @@ module frontDoorWebApplicationFirewallPolicy 'br:bicep/modules/network.front-doo
       "value": "nagwafpmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -88,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module frontDoorWebApplicationFirewallPolicy 'br:bicep/modules/network.front-door-web-application-firewall-policy:1.0.0' = {
+module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-door-web-application-firewall-policy:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nagwafpmax'
   params: {
     // Required parameters
@@ -142,7 +148,7 @@ module frontDoorWebApplicationFirewallPolicy 'br:bicep/modules/network.front-doo
         }
       ]
     }
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -255,8 +261,8 @@ module frontDoorWebApplicationFirewallPolicy 'br:bicep/modules/network.front-doo
         ]
       }
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -328,7 +334,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module frontDoorWebApplicationFirewallPolicy 'br:bicep/modules/network.front-door-web-application-firewall-policy:1.0.0' = {
+module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-door-web-application-firewall-policy:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nagwafpwaf'
   params: {
     // Required parameters
@@ -382,11 +388,7 @@ module frontDoorWebApplicationFirewallPolicy 'br:bicep/modules/network.front-doo
         }
       ]
     }
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
+    location: '<location>'
     managedRules: {
       managedRuleSets: [
         {
@@ -478,14 +480,8 @@ module frontDoorWebApplicationFirewallPolicy 'br:bicep/modules/network.front-doo
         ]
       }
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
+    "location": {
+      "value": "<location>"
     },
     "managedRules": {
       "value": {
@@ -536,7 +532,7 @@ module frontDoorWebApplicationFirewallPolicy 'br:bicep/modules/network.front-doo
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`customRules`](#parameter-customrules) | object | The custom rules inside the policy. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedRules`](#parameter-managedrules) | object | Describes the managedRules structure. |
@@ -583,9 +579,9 @@ The custom rules inside the policy.
   }
   ```
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -800,3 +796,7 @@ Resource tags.
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
