@@ -103,13 +103,13 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             name: 'ipconfig01'
             pipConfiguration: {
               publicIpNameSuffix: '-pip-01'
-              // roleAssignments: [
-              //   {
-              //     roleDefinitionIdOrName: 'Reader'
-              //     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              //     principalType: 'ServicePrincipal'
-              //   }
-              // ]
+              roleAssignments: [
+                {
+                  roleDefinitionIdOrName: 'Reader'
+                  principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+                  principalType: 'ServicePrincipal'
+                }
+              ]
             }
             zones: [
               '1'
@@ -134,13 +134,13 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           }
         ]
         nicSuffix: '-nic-01'
-        // roleAssignments: [
-        //   {
-        //     roleDefinitionIdOrName: 'Reader'
-        //     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        //     principalType: 'ServicePrincipal'
-        //   }
-        // ]
+        roleAssignments: [
+          {
+            roleDefinitionIdOrName: 'Reader'
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+        ]
         diagnosticSettings: [
           {
             name: 'customSetting'
@@ -299,23 +299,23 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       name: 'myCustomLockName'
     }
     proximityPlacementGroupResourceId: nestedDependencies.outputs.proximityPlacementGroupResourceId
-    // roleAssignments: [
-    //   {
-    //     roleDefinitionIdOrName: 'Owner'
-    //     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-    //     principalType: 'ServicePrincipal'
-    //   }
-    //   {
-    //     roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-    //     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-    //     principalType: 'ServicePrincipal'
-    //   }
-    //   {
-    //     roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-    //     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-    //     principalType: 'ServicePrincipal'
-    //   }
-    // ]
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Owner'
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+    ]
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
