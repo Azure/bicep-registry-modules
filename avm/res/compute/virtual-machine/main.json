@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "6007219315806176277"
+      "templateHash": "6179948266138972780"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -981,7 +981,7 @@
             "value": "[tryGet(parameters('nicConfigurations')[copyIndex()], 'roleAssignments')]"
           },
           "enableTelemetry": {
-            "value": "[parameters('enableTelemetry')]"
+            "value": "[coalesce(tryGet(parameters('nicConfigurations')[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
           }
         },
         "template": {
