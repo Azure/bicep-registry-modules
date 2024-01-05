@@ -51,7 +51,6 @@ Update the 'Resource Types' section of the given readme file
 
 .DESCRIPTION
 Update the 'Resource Types' section of the given readme file
-The section is added at the end if it does not exist
 
 .PARAMETER TemplateFileContent
 Mandatory. The template file content object to crawl data from
@@ -138,7 +137,6 @@ Update the 'parameters' section of the given readme file
 
 .DESCRIPTION
 Update the 'parameters' section of the given readme file
-The section is added at the end if it does not exist
 
 .PARAMETER TemplateFileContent
 Mandatory. The template file content object to crawl data from
@@ -436,7 +434,6 @@ Update the 'outputs' section of the given readme file
 
 .DESCRIPTION
 Update the 'outputs' section of the given readme file
-The section is added at the end if it does not exist
 
 .PARAMETER TemplateFileContent
 Mandatory. The template file content object to crawl data from
@@ -492,6 +489,55 @@ function Set-OutputsSection {
     # Build result
     if ($PSCmdlet.ShouldProcess('Original file with new output content', 'Merge')) {
         $updatedFileContent = Merge-FileWithNewContent -oldContent $ReadMeFileContent -newContent $SectionContent -SectionStartIdentifier $SectionStartIdentifier -contentType 'nextH2'
+    }
+    return $updatedFileContent
+}
+
+<#
+.SYNOPSIS
+Update the 'Data Collection' section of the given readme file
+
+.DESCRIPTION
+Update the 'Data Collection' section of the given readme file
+
+.PARAMETER ReadMeFileContent
+Mandatory. The readme file content array to update
+
+.PARAMETER SectionStartIdentifier
+Optional. The identifier of the section. Defaults to '## Data Collection'
+
+.EXAMPLE
+Set-DataCollectionSection -ReadMeFileContent @('# Title', '', '## Section 1', ...)
+
+Update the given readme file's 'Data Collection' section
+#>
+function Set-DataCollectionSection {
+
+    [CmdletBinding(SupportsShouldProcess)]
+    param (
+        [Parameter(Mandatory)]
+        [object[]] $ReadMeFileContent,
+
+        [Parameter(Mandatory = $false)]
+        [string] $SectionStartIdentifier = '## Data Collection'
+    )
+
+
+    $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
+    try {
+        $rawReponse = Invoke-WebRequest -Uri $telemetryUrl
+        if (($rawReponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
+            $telemetryInfoContent = $rawReponse.Content -split '\n'
+        } else {
+            throw "Failed to telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
+        }
+    } catch {
+        throw "Failed to telemetry information from [$telemetryUrl]." # Invalid url
+    }
+
+    # Build result
+    if ($PSCmdlet.ShouldProcess('Original file with new output content', 'Merge')) {
+        $updatedFileContent = Merge-FileWithNewContent -oldContent $ReadMeFileContent -newContent $telemetryInfoContent -SectionStartIdentifier $SectionStartIdentifier -contentType 'nextH2'
     }
     return $updatedFileContent
 }
@@ -1592,7 +1638,8 @@ function Set-ModuleReadMe {
             'Outputs',
             'CrossReferences',
             'Template references',
-            'Navigation'
+            'Navigation',
+            'DataCollection'
         )]
         [string[]] $SectionsToRefresh = @(
             'Resource Types',
@@ -1601,7 +1648,8 @@ function Set-ModuleReadMe {
             'Outputs',
             'CrossReferences',
             'Template references',
-            'Navigation'
+            'Navigation',
+            'DataCollection'
         )
     )
 
@@ -1734,11 +1782,21 @@ function Set-ModuleReadMe {
         }
         $readMeFileContent = Set-CrossReferencesSection @inputObject
     }
+
     # Handle [Notes] section
     # ========================
     if ($notes) {
         $readMeFileContent += @( '' )
         $readMeFileContent += $notes
+    }
+
+    if ($SectionsToRefresh -contains 'DataCollection') {
+        # Handle [DataCollection] section
+        # ========================
+        $inputObject = @{
+            ReadMeFileContent = $readMeFileContent
+        }
+        $readMeFileContent = Set-DataCollectionSection @inputObject
     }
 
     if ($SectionsToRefresh -contains 'Navigation') {
