@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "6088878443821644350"
+      "templateHash": "17536269376876527435"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -166,6 +166,20 @@
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
+    },
+    "sharingProfile": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Profile for gallery sharing to subscription or tenant."
+      }
+    },
+    "softDeletePolicy": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Soft deletion policy of the gallery."
+      }
     }
   },
   "variables": {
@@ -206,8 +220,9 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "description": "[coalesce(parameters('description'), '')]",
-        "identifier": {}
+        "description": "[parameters('description')]",
+        "sharingProfile": "[parameters('sharingProfile')]",
+        "softDeletePolicy": "[parameters('softDeletePolicy')]"
       }
     },
     "gallery_lock": {
@@ -260,17 +275,17 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "name": {
-            "value": "[coalesce(parameters('applications'), createArray())[copyIndex()].name]"
-          },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('applications'), createArray())[copyIndex()].name]"
           },
           "galleryName": {
             "value": "[parameters('name')]"
           },
           "supportedOSType": {
-            "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'supportedOSType')]"
+            "value": "[coalesce(parameters('applications'), createArray())[copyIndex()].supportedOSType]"
           },
           "description": {
             "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'description')]"
@@ -305,7 +320,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "7964925859326857094"
+              "templateHash": "9951919331605340265"
             },
             "name": "Compute Galleries Applications",
             "description": "This module deploys an Azure Compute Gallery Application.",
@@ -430,13 +445,12 @@
             },
             "supportedOSType": {
               "type": "string",
-              "defaultValue": "Windows",
               "allowedValues": [
                 "Windows",
                 "Linux"
               ],
               "metadata": {
-                "description": "Optional. This property allows you to specify the supported type of the OS that application is built for."
+                "description": "Required. This property allows you to specify the supported type of the OS that application is built for."
               }
             },
             "endOfLifeDate": {
@@ -492,11 +506,11 @@
               "tags": "[parameters('tags')]",
               "properties": {
                 "customActions": "[parameters('customActions')]",
-                "description": "[coalesce(parameters('description'), '')]",
-                "endOfLifeDate": "[coalesce(parameters('endOfLifeDate'), '')]",
-                "eula": "[coalesce(parameters('eula'), '')]",
-                "privacyStatementUri": "[coalesce(parameters('privacyStatementUri'), '')]",
-                "releaseNoteUri": "[coalesce(parameters('releaseNoteUri'), '')]",
+                "description": "[parameters('description')]",
+                "endOfLifeDate": "[parameters('endOfLifeDate')]",
+                "eula": "[parameters('eula')]",
+                "privacyStatementUri": "[parameters('privacyStatementUri')]",
+                "releaseNoteUri": "[parameters('releaseNoteUri')]",
                 "supportedOSType": "[parameters('supportedOSType')]"
               },
               "dependsOn": [
@@ -576,29 +590,29 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "name": {
-            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].name]"
-          },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].name]"
           },
           "galleryName": {
             "value": "[parameters('name')]"
           },
           "osType": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'osType')]"
+            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].osType]"
           },
           "osState": {
             "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'osState')]"
           },
           "publisher": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'publisher')]"
+            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].publisher]"
           },
           "offer": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'offer')]"
+            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].offer]"
           },
           "sku": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'sku')]"
+            "value": "[coalesce(parameters('images'), createArray())[copyIndex()].sku]"
           },
           "minRecommendedvCPUs": {
             "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'minRecommendedvCPUs')]"
@@ -613,16 +627,10 @@
             "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'maxRecommendedMemory')]"
           },
           "hyperVGeneration": {
-            "value": "[coalesce(tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'hyperVGeneration'), 'V1')]"
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'hyperVGeneration')]"
           },
           "securityType": {
             "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'securityType')]"
-          },
-          "isAcceleratedNetworkSupported": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'isAcceleratedNetworkSupported')]"
-          },
-          "isHibernateSupported": {
-            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'isHibernateSupported')]"
           },
           "description": {
             "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'description')]"
@@ -666,7 +674,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "8041246972502261835"
+              "templateHash": "11732013039305076688"
             },
             "name": "Compute Galleries Image Definitions",
             "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -763,13 +771,12 @@
             },
             "osType": {
               "type": "string",
-              "defaultValue": "Linux",
               "allowedValues": [
                 "Windows",
                 "Linux"
               ],
               "metadata": {
-                "description": "Optional. OS type of the image to be created."
+                "description": "Required. OS type of the image to be created."
               }
             },
             "osState": {
@@ -785,23 +792,20 @@
             },
             "publisher": {
               "type": "string",
-              "defaultValue": "canonical",
               "metadata": {
-                "description": "Optional. The name of the gallery Image Definition publisher."
+                "description": "Required. The name of the gallery Image Definition publisher."
               }
             },
             "offer": {
               "type": "string",
-              "defaultValue": "0001-com-ubuntu-server-jammy",
               "metadata": {
-                "description": "Optional. The name of the gallery Image Definition offer."
+                "description": "Required. The name of the gallery Image Definition offer."
               }
             },
             "sku": {
               "type": "string",
-              "defaultValue": "22_04-lts-gen2",
               "metadata": {
-                "description": "Optional. The name of the gallery Image Definition SKU."
+                "description": "Required. The name of the gallery Image Definition SKU."
               }
             },
             "minRecommendedvCPUs": {
@@ -842,14 +846,13 @@
             },
             "hyperVGeneration": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "allowedValues": [
-                "",
                 "V1",
                 "V2"
               ],
               "metadata": {
-                "description": "Optional. The hypervisor generation of the Virtual Machine.</p>- If this value is not specified, then it is determined by the securityType parameter.</p>- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1."
+                "description": "Optional. The hypervisor generation of the Virtual Machine.\n- If this value is not specified, then it is determined by the securityType parameter.\n- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\n"
               }
             },
             "securityType": {
@@ -866,25 +869,17 @@
               }
             },
             "isHibernateSupported": {
-              "type": "string",
-              "defaultValue": "false",
-              "allowedValues": [
-                "true",
-                "false"
-              ],
+              "type": "bool",
+              "defaultValue": false,
               "metadata": {
-                "description": "Optional. The image will support hibernation."
+                "description": "Optional. Specifiy if the image supports hibernation."
               }
             },
             "isAcceleratedNetworkSupported": {
-              "type": "string",
-              "defaultValue": "false",
-              "allowedValues": [
-                "true",
-                "false"
-              ],
+              "type": "bool",
+              "defaultValue": false,
               "metadata": {
-                "description": "Optional. The image supports accelerated networking.</p>Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.</p>This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types."
+                "description": "Optional. Specify if the image supports accelerated networking.\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.\n"
               }
             },
             "description": {
@@ -938,16 +933,16 @@
             },
             "endOfLife": {
               "type": "string",
-              "nullable": true,
+              "defaultValue": "",
               "metadata": {
                 "description": "Optional. The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z."
               }
             },
             "excludedDiskTypes": {
               "type": "array",
-              "nullable": true,
+              "defaultValue": [],
               "metadata": {
-                "description": "Optional. List of the excluded disk types. E.g. Standard_LRS."
+                "description": "Optional. List of the excluded disk types (e.g., Standard_LRS)."
               }
             },
             "roleAssignments": {
@@ -1005,20 +1000,20 @@
                     "max": "[parameters('maxRecommendedMemory')]"
                   }
                 },
-                "hyperVGeneration": "[if(not(empty(parameters('hyperVGeneration'))), parameters('hyperVGeneration'), if(not(empty(parameters('securityType'))), 'V2', 'V1'))]",
-                "features": "[if(and(not(empty(parameters('securityType'))), not(equals(parameters('securityType'), 'Standard'))), createArray(createObject('name', 'SecurityType', 'value', parameters('securityType')), createObject('name', 'IsAcceleratedNetworkSupported', 'value', parameters('isAcceleratedNetworkSupported')), createObject('name', 'IsHibernateSupported', 'value', parameters('isHibernateSupported'))), createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', parameters('isAcceleratedNetworkSupported')), createObject('name', 'IsHibernateSupported', 'value', parameters('isHibernateSupported'))))]",
-                "description": "[coalesce(parameters('description'), '')]",
-                "eula": "[coalesce(parameters('eula'), '')]",
-                "privacyStatementUri": "[coalesce(parameters('privacyStatementUri'), '')]",
-                "releaseNoteUri": "[coalesce(parameters('releaseNoteUri'), '')]",
+                "hyperVGeneration": "[coalesce(parameters('hyperVGeneration'), if(not(empty(parameters('securityType'))), 'V2', 'V1'))]",
+                "features": "[union(createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', format('{0}', parameters('isAcceleratedNetworkSupported'))), createObject('name', 'IsHibernateSupported', 'value', format('{0}', parameters('isHibernateSupported')))), if(not(equals(parameters('securityType'), 'Standard')), createArray(createObject('name', 'SecurityType', 'value', parameters('securityType'))), createArray()))]",
+                "description": "[parameters('description')]",
+                "eula": "[parameters('eula')]",
+                "privacyStatementUri": "[parameters('privacyStatementUri')]",
+                "releaseNoteUri": "[parameters('releaseNoteUri')]",
                 "purchasePlan": {
                   "product": "[parameters('productName')]",
                   "name": "[parameters('planName')]",
                   "publisher": "[parameters('planPublisherName')]"
                 },
-                "endOfLifeDate": "[coalesce(parameters('endOfLife'), '')]",
+                "endOfLifeDate": "[parameters('endOfLife')]",
                 "disallowed": {
-                  "diskTypes": "[coalesce(parameters('excludedDiskTypes'), createArray())]"
+                  "diskTypes": "[parameters('excludedDiskTypes')]"
                 }
               },
               "dependsOn": [
