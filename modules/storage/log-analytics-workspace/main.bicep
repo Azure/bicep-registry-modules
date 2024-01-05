@@ -2,13 +2,16 @@ metadata name = 'Log Analytics Workspace'
 metadata description = 'This module deploys Log Analytics workspace and optionally available integrations.'
 metadata owner = 'RahulTipole-Microsoft'
 
+@description('Optional. Prefix of Log Analytics Workspace Resource Name.This param is ignored when name is provided.')
+param prefix string = 'log'
+
 @minLength(4)
 @maxLength(63)
-@description('Required. Name of the Log Analytics Workspace.')
-param name string
+@description('Optional. Name of the Log Analytics Workspace.')
+param name string = take('${prefix}${uniqueString(resourceGroup().id, subscription().id)}', 63)
 
-@description('Required. Define the Azure Location that the Log Analytics Workspace should be created within.')
-param location string
+@description('Optional. Define the Azure Location that the Log Analytics Workspace should be created within.')
+param location string = resourceGroup().location
 
 @description('Optional. Tags for Log Analytics Workspace.')
 param tags object = {}

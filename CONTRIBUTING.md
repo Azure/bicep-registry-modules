@@ -4,12 +4,16 @@
 
 The following instructions are created to help with the development of Bicep public registry modules.
 
+> **NOTE:** If you are looking to contribute to an [Azure Verified Module (AVM)](https://aka.ms/avm) then please visit the AVM site for specific [contribution guidance](https://aka.ms/avm/contribute).
+
 ## Prerequisite
 
 - Create a fork of the [Azure/bicep-registry-modules](https://github.com/Azure/bicep-registry-modules) repository and clone the fork to your local machine.
 - Install [.NET 7.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/7.0/runtime)
 - Install the [Bicep registry module](https://www.nuget.org/packages/Azure.Bicep.RegistryModuleTool/) tool by running:
   - `dotnet tool install --global Azure.Bicep.RegistryModuleTool`
+- If already installed, update the Bicep registry module tool to the latest version by running:
+  - `dotnet tool update --global Azure.Bicep.RegistryModuleTool`
 
 > A GitHub Codespace is available which is preconfigured with all of these prerequisites.
 
@@ -88,7 +92,7 @@ output name string = name
 output id string = resource.id
 ```
 
-We try to maintain the consistencies demostrated above.
+We try to maintain the consistencies demonstrated above.
 
 Each template should include the following 3 parameters: `location`, `prefix` and `name`; and following 2 outputs: `name` and `id`.
 
@@ -103,9 +107,9 @@ Each template should include the following 3 parameters: `location`, `prefix` an
 - The `name` output should link to the `name` parameter.
 - THe `id` output should link to the main resource of the deployment. Additional ID parameters may be provided.
 
-##### Zone Redudancy
+##### Zone Redundancy
 
-Including an option to enable Zone Redudancy is recommended, but not required. When it is included, it should be enabled using the following parameter.
+Including an option to enable Zone Redundancy is recommended, but not required. When it is included, it should be enabled using the following parameter.
 
 ```bicep
 @description('Flag to indicate whether or not this region is an AvailabilityZone region')
@@ -290,7 +294,7 @@ If your change is non-breaking but does not require updating the MINOR version, 
 
 ## Validating module files
 
-> Before running the command, don't forget to run `generate` to ensure all files are up-to-date.
+> Before running the command, don't forget to run `brm generate` to ensure all files are up-to-date.
 
 You may use the Bicep registry module tool to validate the contents of the registry module files. To do so, invoke the follow command from the module folder:
 
@@ -306,19 +310,18 @@ The `brm validate` command mentioned in the above step does not deploy the `test
 
 Once the module files are validated locally, you can commit your changes and open a pull request. You must link the new module proposal in the pull request description if you are trying to add a new module. Adding or updating multiple modules is not supported and will cause a failure in the pull request validation CI, so please only add or change one module at a time.
 
-## Prefix the PR TItle based on the type of change.
+## Prefix the pull request title based on the type of change
 
-The modules in the repository follow Semantic Versioning.
-A GitHub action checks that PRs include a prefix. This acts as a stepping stone to automating the version incrementing, this action requires each PR have a semantic prefix.
+The modules in the repository follow Semantic Versioning. A GitHub action checks that pull requests include a prefix. This acts as a stepping stone to automating the version incrementing, this GitHub action requires each pull request to have a semantic prefix.
 
-Example PR Tiles:
+Example pull request titles:
 
 - Creating a new module: `feat(new): Storage Account Module`
 - Add a bug fix to existing module: `fix: Storage Account does not properly format output`
 - Add a feature to existing module `feat: Add input parameter to deploy storage into vnet`
 - Add a breaking change to a module due to refactoring: `refactor!: Use custom types in storage account`
 
-More details can be found [here] about each prefix(https://www.conventionalcommits.org/en/v1.0.0/).
+More details on prefixes can be found [here](https://www.conventionalcommits.org/en/v1.0.0/).
 
 Recommend prefixes include:
 

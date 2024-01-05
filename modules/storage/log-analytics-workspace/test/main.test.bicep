@@ -22,8 +22,16 @@ param tags object = {
 module test_01 '../main.bicep' = {
   name: '${uniqueName}-test01'
   params: {
-    name: 'test01${uniqueName}'
+    prefix: 'test01'
     location: location
+  }
+}
+
+module test_02 '../main.bicep' = {
+  name: '${uniqueName}-test02'
+  params: {
+    prefix: 'test02'
     tags: tags
+    location: location
   }
 }

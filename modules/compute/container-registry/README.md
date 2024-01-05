@@ -41,6 +41,7 @@ This module deploys Container Registry (Microsoft.ContainerRegistry/registries) 
 | `diagnosticEventHubName`                | `string` | No       | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category.                                                                                                                                                                                                                                                                                  |
 | `logsToEnable`                          | `array`  | No       | The name of logs that will be streamed.                                                                                                                                                                                                                                                                                                                                                                                         |
 | `metricsToEnable`                       | `array`  | No       | The name of metrics that will be streamed.                                                                                                                                                                                                                                                                                                                                                                                      |
+| `tasks`                                 | `array`  | No       | Optional. The list of ACR tasks to create.                                                                                                                                                                                                                                                                                                                                                                                      |
 
 ## Outputs
 
@@ -58,7 +59,7 @@ This module deploys Container Registry (Microsoft.ContainerRegistry/registries) 
 An example of how to deploy Azure Container Registry using the minimum required parameters.
 
 ```bicep
-module containerRegistry 'br/public:compute/container-registry:1.0.3' = {
+module containerRegistry 'br/public:compute/container-registry:1.1.1' = {
   name: '${uniqueString(deployment().name, 'eastus')}-container-registry'
   params: {
     name: 'acr${uniqueString(deployment().name, location)}'
@@ -75,7 +76,7 @@ An example of how to deploy a 'Premium' SKU instance of Azure Container Registry
 param subnetId string
 param privateDnsZoneId string
 
-module containerRegistry 'br/public:compute/container-registry:1.0.3' = {
+module containerRegistry 'br/public:compute/container-registry:1.1.1' = {
   name: '${uniqueString(deployment().name, 'eastus')}-container-registry'
   params: {
     name: 'acr${uniqueString(deployment().name, location)}'
@@ -88,6 +89,34 @@ module containerRegistry 'br/public:compute/container-registry:1.0.3' = {
         privateDnsZoneId: privateDnsZoneId
       }
     ]
+    tasks: [ {
+        taskName: 'task1'
+        status: 'Enabled'
+        platform: {
+          os: 'Linux'
+          architecture: 'Amd64'
+        }
+        agentConfiguration: {
+          cpu: 2
+        }
+        trigger: {
+          timerTriggers: [
+            {
+              name: 'trigger1'
+              status: 'Enabled'
+              schedule: '*/1 * * * Mon-Fri'
+            }
+          ]
+        }
+        step: {
+          type: 'EncodedTask'
+          encodedTaskContent: loadFileAsBase64('task.yaml')
+        }
+        identity: {
+          type: 'SystemAssigned'
+        }
+      }
+    ]
   }
 }
 ```
@@ -97,7 +126,7 @@ module containerRegistry 'br/public:compute/container-registry:1.0.3' = {
 An example of how to deploy a 'Premium' SKU instance of Azure Container Registry with replication to multiple Azure Locations.
 
 ```bicep
-module containerRegistry 'br/public:compute/container-registry:1.0.3' = {
+module containerRegistry 'br/public:compute/container-registry:1.1.1' = {
   name: '${uniqueString(deployment().name, 'eastus')}-container-registry'
   params: {
     name: 'acr${uniqueString(deployment().name, location)}'

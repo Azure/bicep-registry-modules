@@ -1,0 +1,70 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "1608393236922114459"
+    },
+    "name": "API Management Service Portal Settings",
+    "description": "This module deploys an API Management Service Portal Setting.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "allowedValues": [
+        "delegation",
+        "signin",
+        "signup"
+      ],
+      "metadata": {
+        "description": "Required. Portal setting name."
+      }
+    },
+    "properties": {
+      "type": "object",
+      "metadata": {
+        "description": "Required. Portal setting properties."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ApiManagement/service/portalsettings",
+      "apiVersion": "2021-08-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+      "properties": "[parameters('properties')]"
+    }
+  ],
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the API management service portal setting."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/portalsettings', parameters('apiManagementServiceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the API management service portal setting."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the API management service portal setting was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

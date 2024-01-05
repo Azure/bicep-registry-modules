@@ -10,31 +10,61 @@ async function getSubdirNames(fs, dir) {
 async function getModuleDescription(
   github,
   core,
-  path,
-  modulePath,
-  tag,
+  mainJsonPath,
+  gitTag,
   context
 ) {
-  // Retrieve the main.json file as it existed for the given tag
-  const ref = `tags/${modulePath}/${tag}`;
-  core.info(`  Retrieving main.json at ref ${ref}`);
-  const mainJsonPath = path
-    .join("modules", modulePath, "main.json")
-    .replace(/\\/g, "/");
+  const gitTagRef = `tags/${gitTag}`;
 
-  const response = await github.rest.repos.getContent({
+  core.info(`  Retrieving main.json at Git tag ref ${gitTagRef}`);
+
+  // Get the SHA of the commit
+  const {
+    data: {
+      object: { sha: commitSha },
+    },
+  } = await github.rest.git.getRef({
     owner: context.repo.owner,
     repo: context.repo.repo,
-    path: mainJsonPath,
-    ref,
+    ref: gitTagRef,
   });
 
-  if (response.data.type === "file") {
-    const content = Buffer.from(response.data.content, "base64").toString();
-    const json = JSON.parse(content);
+  // Get the tree data
+  const {
+    data: { tree },
+  } = await github.rest.git.getTree({
+    owner: context.repo.owner,
+    repo: context.repo.repo,
+    tree_sha: commitSha,
+    recursive: true,
+  });
+
+  // Find the file in the tree
+  const file = tree.find((f) => f.path === mainJsonPath);
+  if (!file) {
+    throw new Error(`File ${mainJsonPath} not found in repository`);
+  }
+
+  // Get the blob data
+  const {
+    data: { content },
+  } = await github.rest.git.getBlob({
+    owner: context.repo.owner,
+    repo: context.repo.repo,
+    file_sha: file.sha,
+  });
+
+  // content is base64 encoded, so decode it
+  const fileContent = Buffer.from(content, "base64").toString("utf8");
+
+  // Parse the main.json file
+  if (fileContent !== "") {
+    const json = JSON.parse(fileContent);
     return json.metadata.description;
   } else {
-    throw new Error("The specified path does not represent a file.");
+    throw new Error(
+      "The specified path does not represent a file or it is empty."
+    );
   }
 }
 
@@ -49,52 +79,106 @@ async function getModuleDescription(
  */
 async function generateModuleIndexData({ require, github, context, core }) {
   const fs = require("fs").promises;
-  const path = require("path");
   const axios = require("axios").default;
-  const moduleGroups = await getSubdirNames(fs, "modules");
-  const modulesWithDescriptions = new Map();
+  const moduleIndexData = [];
 
-  var moduleIndexData = [];
+  let numberOfModuleGroupsProcessed = 0;
 
-  for (const moduleGroup of moduleGroups) {
-    const moduleGroupPath = path.join("modules", moduleGroup);
+  // BRM Modules
+  for (const moduleGroup of await getSubdirNames(fs, "modules")) {
+    const moduleGroupPath = `modules/${moduleGroup}`;
     const moduleNames = await getSubdirNames(fs, moduleGroupPath);
 
     for (const moduleName of moduleNames) {
-      const modulePath = `${moduleGroup}/${moduleName}`;
-      const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
+      const modulePath = `${moduleGroupPath}/${moduleName}`;
+      const mainJsonPath = `${modulePath}/main.json`;
+      // BRM module git tags do not include the modules/ prefix.
+      const mcrModulePath = modulePath.slice(8);
+      const tagListUrl = `https://mcr.microsoft.com/v2/bicep/${mcrModulePath}/tags/list`;
 
       try {
-        core.info(`Processing ${modulePath}:...`);
-        core.info(`  Retrieving  ${versionListUrl}`);
+        core.info(`Processing BRM Module "${modulePath}"...`);
+        core.info(`  Getting available tags at "${tagListUrl}"...`);
 
-        const versionListResponse = await axios.get(versionListUrl);
-        const tags = versionListResponse.data.tags.sort();
+        const tagListResponse = await axios.get(tagListUrl);
+        const tags = tagListResponse.data.tags.sort();
 
         const properties = {};
         for (const tag of tags) {
-          var description = await getModuleDescription(
+          // Using mcrModulePath because BRM module git tags do not include the modules/ prefix
+          const gitTag = `${mcrModulePath}/${tag}`;
+          const documentationUri = `https://github.com/Azure/bicep-registry-modules/tree/${gitTag}/${modulePath}/README.md`;
+          const description = await getModuleDescription(
             github,
             core,
-            path,
-            modulePath,
-            tag,
+            mainJsonPath,
+            gitTag,
             context
           );
-          if (description) {
-            properties[tag] = { description };
-            modulesWithDescriptions[modulePath] = true;
-          }
+
+          properties[tag] = { description, documentationUri };
         }
 
         moduleIndexData.push({
-          moduleName: modulePath,
+          moduleName: mcrModulePath,
           tags,
           properties,
         });
       } catch (error) {
         core.setFailed(error);
       }
+    }
+
+    numberOfModuleGroupsProcessed++;
+  }
+
+  for (const avmModuleRoot of ["avm/res", "avm/ptn"]) {
+    // Resource module path pattern: `avm/res/${moduleGroup}/${moduleName}`
+    // Pattern module path pattern: `avm/ptn/${moduleGroup}/${moduleName}`
+    const avmModuleGroups = await getSubdirNames(fs, avmModuleRoot);
+
+    for (const moduleGroup of avmModuleGroups) {
+      const moduleGroupPath = `${avmModuleRoot}/${moduleGroup}`;
+      const moduleNames = await getSubdirNames(fs, moduleGroupPath);
+
+      for (const moduleName of moduleNames) {
+        const modulePath = `${moduleGroupPath}/${moduleName}`;
+        const mainJsonPath = `${modulePath}/main.json`;
+        const tagListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
+
+        try {
+          core.info(`Processing AVM Module "${modulePath}"...`);
+          core.info(`  Getting available tags at "${tagListUrl}"...`);
+
+          const tagListResponse = await axios.get(tagListUrl);
+          const tags = tagListResponse.data.tags.sort();
+
+          const properties = {};
+          for (const tag of tags) {
+            const gitTag = `${modulePath}/${tag}`;
+            const documentationUri = `https://github.com/Azure/bicep-registry-modules/tree/${gitTag}/${modulePath}/README.md`;
+            const description = await getModuleDescription(
+              github,
+              core,
+              mainJsonPath,
+              gitTag,
+              context
+            );
+
+            properties[tag] = { description, documentationUri };
+          }
+
+          moduleIndexData.push({
+            moduleName: modulePath,
+            tags,
+            properties,
+          });
+        } catch (error) {
+          core.setFailed(error);
+        }
+      }
+
+      numberOfModuleGroupsProcessed++;
     }
   }
 
@@ -104,13 +188,13 @@ async function generateModuleIndexData({ require, github, context, core }) {
     JSON.stringify(moduleIndexData, null, 2)
   );
 
-  core.info(`Processed ${moduleGroups.length} modules groups.`);
+  core.info(`Processed ${numberOfModuleGroupsProcessed} modules groups.`);
   core.info(`Processed ${moduleIndexData.length} total modules.`);
   core.info(
     `${
       moduleIndexData.filter((m) =>
-        Object.keys(m.properties).some((key) =>
-          m.properties[key].hasOwnProperty("description")
+        Object.keys(m.properties).some(
+          (key) => "description" in m.properties[key]
         )
       ).length
     } modules have a description`
