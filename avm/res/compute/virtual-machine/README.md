@@ -493,14 +493,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     enableAutomaticUpdates: true
     encryptionAtHost: false
-    extensionAadJoinConfig: {
-      enabled: true
-      tags: {
-        Environment: 'Non-Prod'
-        'hidden-title': 'This is visible in the resource name'
-        Role: 'DeploymentValidation'
-      }
-    }
     extensionAntiMalwareConfig: {
       enabled: true
       settings: {
@@ -794,16 +786,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "encryptionAtHost": {
       "value": false
-    },
-    "extensionAadJoinConfig": {
-      "value": {
-        "enabled": true,
-        "tags": {
-          "Environment": "Non-Prod",
-          "hidden-title": "This is visible in the resource name",
-          "Role": "DeploymentValidation"
-        }
-      }
     },
     "extensionAntiMalwareConfig": {
       "value": {
@@ -1219,14 +1201,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     enableAutomaticUpdates: true
     encryptionAtHost: false
-    extensionAadJoinConfig: {
-      enabled: true
-      tags: {
-        Environment: 'Non-Prod'
-        'hidden-title': 'This is visible in the resource name'
-        Role: 'DeploymentValidation'
-      }
-    }
     extensionAntiMalwareConfig: {
       enabled: true
       settings: {
@@ -1520,16 +1494,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "encryptionAtHost": {
       "value": false
-    },
-    "extensionAadJoinConfig": {
-      "value": {
-        "enabled": true,
-        "tags": {
-          "Environment": "Non-Prod",
-          "hidden-title": "This is visible in the resource name",
-          "Role": "DeploymentValidation"
-        }
-      }
     },
     "extensionAntiMalwareConfig": {
       "value": {
