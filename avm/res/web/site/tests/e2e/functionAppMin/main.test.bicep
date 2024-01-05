@@ -33,6 +33,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     serverFarmName: 'dep-${namePrefix}-sf-${serviceShort}'
+    location: location
   }
 }
 
@@ -46,6 +47,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
+    location: location
     kind: 'functionapp'
     serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
     siteConfig: {

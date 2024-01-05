@@ -39,6 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
     applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
     relayNamespaceName: 'dep-${namePrefix}-ns-${serviceShort}'
     hybridConnectionName: 'dep-${namePrefix}-hc-${serviceShort}'
+    location: location
   }
 }
 
@@ -66,6 +67,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
+    location: location
     kind: 'functionapp'
     serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
     appInsightResourceId: nestedDependencies.outputs.applicationInsightsResourceId

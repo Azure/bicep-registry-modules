@@ -14,9 +14,6 @@ param appName string
 @description('Optional. Name of the authorization rule send key to use.')
 param sendKeyName string = 'defaultSender'
 
-@description('Optional. Location for all Resources.')
-param location string = resourceGroup().location
-
 resource namespace 'Microsoft.Relay/namespaces@2021-11-01' existing = {
   name: split(hybridConnectionResourceId, '/')[8]
   scope: resourceGroup(split(hybridConnectionResourceId, '/')[2], split(hybridConnectionResourceId, '/')[4])

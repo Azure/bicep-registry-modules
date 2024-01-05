@@ -237,6 +237,7 @@ module slot_basicPublishingCredentialsPolicies 'basic-publishing-credentials-pol
     slotName: slot.name
     name: basicPublishingCredentialsPolicy.name
     allow: contains(basicPublishingCredentialsPolicy, 'allow') ? basicPublishingCredentialsPolicy.allow : null
+    location: location
   }
 }]
 module slot_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep' = [for (hybridConnectionRelay, index) in hybridConnectionRelays: {

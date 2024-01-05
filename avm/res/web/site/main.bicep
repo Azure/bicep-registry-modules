@@ -299,6 +299,7 @@ module app_basicPublishingCredentialsPolicies 'basic-publishing-credentials-poli
     webAppName: app.name
     name: basicPublishingCredentialsPolicy.name
     allow: contains(basicPublishingCredentialsPolicy, 'allow') ? basicPublishingCredentialsPolicy.allow : null
+    location: location
   }
 }]
 
