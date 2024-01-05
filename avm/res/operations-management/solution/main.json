@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "18444780972506374592"
+      "version": "0.24.24.22086",
+      "templateHash": "8133055319056249118"
     },
     "name": "Operations Management Solutions",
     "description": "This module deploys an Operations Management Solution.",
