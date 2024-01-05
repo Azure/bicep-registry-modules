@@ -24,26 +24,26 @@ Optional. A regex pattern that should not match against the workflow names. Defa
 Optional. The GitHub PAT token to use for authentication when interacting with GitHub. If not provided, the PAT must be available in the environment variable 'GH_TOKEN'
 
 .EXAMPLE
-Switch-WorkflowSate -RepositoryOwner 'Paul' -RepositoryName 'bicep-registry-modules' -TargetState 'enable' -GitHubToken ('iAmAToken' | ConvertTo-SecureString -AsPlainText -Force)
+Switch-WorkflowState -RepositoryOwner 'Paul' -RepositoryName 'bicep-registry-modules' -TargetState 'enable' -GitHubToken ('iAmAToken' | ConvertTo-SecureString -AsPlainText -Force)
 
 Enable any AVM res/ptn workflow in the [Paul/bicep-registry-modules] repository that is not in state 'active' using a custom GitHub PAT token.
 
 .EXAMPLE
-Switch-WorkflowSate -RepositoryOwner 'Paul' -RepositoryName 'bicep-registry-modules' -TargetState 'disable'
+Switch-WorkflowState -RepositoryOwner 'Paul' -RepositoryName 'bicep-registry-modules' -TargetState 'disable'
 
 Disable any workflow in the [Paul/bicep-registry-modules] repository that has the state 'active', assuming you have a GitHub PAT token 'GH_TOKEN' set in your environment.
 
 .EXAMPLE
-Switch-WorkflowSate -RepositoryOwner 'Paul' -RepositoryName 'bicep-registry-modules' -TargetState 'disable' -IncludePattern 'avm\.res\.network\.'
+Switch-WorkflowState -RepositoryOwner 'Paul' -RepositoryName 'bicep-registry-modules' -TargetState 'disable' -IncludePattern 'avm\.res\.network\.'
 
 Disable any workflow with a naming matching [avm.res.network*] in the [Paul/bicep-registry-modules] repository that has the state 'active', assuming you have a GitHub PAT token 'GH_TOKEN' set in your environment.
 
 .EXAMPLE
-Switch-WorkflowSate -RepositoryOwner 'Paul' -RepositoryName 'bicep-registry-modules' -TargetState 'disable' -IncludePattern 'avm\.res\.network' -ExlcudePattern 'avm\.res\.network\.virtual-network'
+Switch-WorkflowState -RepositoryOwner 'Paul' -RepositoryName 'bicep-registry-modules' -TargetState 'disable' -IncludePattern 'avm\.res\.network' -ExlcudePattern 'avm\.res\.network\.virtual-network'
 
 Disable any workflow with a naming matching [avm.res.network*] but exluding those that match the name [avm.res.network.virtual-network] in the [Paul/bicep-registry-modules] repository that has the state 'active', assuming you have a GitHub PAT token 'GH_TOKEN' set in your environment.
 #>
-function Switch-WorkflowSate {
+function Switch-WorkflowState {
 
     [CmdletBinding()]
     param (

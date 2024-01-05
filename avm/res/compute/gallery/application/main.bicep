@@ -24,12 +24,12 @@ param privacyStatementUri string?
 @sys.description('Optional. The release note uri. Has to be a valid URL.')
 param releaseNoteUri string?
 
-@sys.description('Optional. This property allows you to specify the supported type of the OS that application is built for.')
+@sys.description('Required. This property allows you to specify the supported type of the OS that application is built for.')
 @allowed([
   'Windows'
   'Linux'
 ])
-param supportedOSType string = 'Windows'
+param supportedOSType string
 
 @sys.description('Optional. The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z.')
 param endOfLifeDate string?
@@ -63,11 +63,11 @@ resource application 'Microsoft.Compute/galleries/applications@2022-03-03' = {
   tags: tags
   properties: {
     customActions: customActions
-    description: description ?? ''
-    endOfLifeDate: endOfLifeDate ?? ''
-    eula: eula ?? ''
-    privacyStatementUri: privacyStatementUri ?? ''
-    releaseNoteUri: releaseNoteUri ?? ''
+    description: description
+    endOfLifeDate: endOfLifeDate
+    eula: eula
+    privacyStatementUri: privacyStatementUri
+    releaseNoteUri: releaseNoteUri
     supportedOSType: supportedOSType
   }
 }
@@ -97,6 +97,7 @@ output name string = application.name
 
 @sys.description('The location the resource was deployed into.')
 output location string = application.location
+
 // =============== //
 //   Definitions   //
 // =============== //

@@ -9,6 +9,7 @@ This module deploys an Azure Compute Gallery Application.
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -24,6 +25,7 @@ This module deploys an Azure Compute Gallery Application.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the application definition. |
+| [`supportedOSType`](#parameter-supportedostype) | string | This property allows you to specify the supported type of the OS that application is built for. |
 
 **Conditional parameters**
 
@@ -43,7 +45,6 @@ This module deploys an Azure Compute Gallery Application.
 | [`privacyStatementUri`](#parameter-privacystatementuri) | string | The privacy statement uri. Has to be a valid URL. |
 | [`releaseNoteUri`](#parameter-releasenoteuri) | string | The release note uri. Has to be a valid URL. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`supportedOSType`](#parameter-supportedostype) | string | This property allows you to specify the supported type of the OS that application is built for. |
 | [`tags`](#parameter-tags) | object | Tags for all resources. |
 
 ### Parameter: `name`
@@ -52,6 +53,20 @@ Name of the application definition.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `supportedOSType`
+
+This property allows you to specify the supported type of the OS that application is built for.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Linux'
+    'Windows'
+  ]
+  ```
 
 ### Parameter: `galleryName`
 
@@ -199,21 +214,6 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `supportedOSType`
-
-This property allows you to specify the supported type of the OS that application is built for.
-
-- Required: No
-- Type: string
-- Default: `'Windows'`
-- Allowed:
-  ```Bicep
-  [
-    'Linux'
-    'Windows'
-  ]
-  ```
-
 ### Parameter: `tags`
 
 Tags for all resources.
@@ -335,3 +335,7 @@ customActions: [
 
 </details>
 <p>
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
