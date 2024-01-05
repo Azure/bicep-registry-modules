@@ -10,6 +10,7 @@ This module deploys a Web or Function App.
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -35,26 +36,87 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/web.site:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/web/site:<version>`.
 
-- [Functionappcommon](#example-1-functionappcommon)
-- [Functionappmin](#example-2-functionappmin)
-- [Webappcommon](#example-3-webappcommon)
-- [Webappmin](#example-4-webappmin)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Function App, using large parameter set](#example-2-function-app-using-large-parameter-set)
+- [Function App, using only defaults](#example-3-function-app-using-only-defaults)
+- [WAF-aligned](#example-4-waf-aligned)
+- [Web App, using large parameter set](#example-5-web-app-using-large-parameter-set)
+- [Web App, using only defaults](#example-6-web-app-using-only-defaults)
 
-### Example 1: _Functionappcommon_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module site 'br:bicep/modules/web.site:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsfacom'
+module site 'br/public:avm/res/web/site:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-wsmin'
+  params: {
+    // Required parameters
+    kind: 'app'
+    name: 'wsmin001'
+    serverFarmResourceId: '<serverFarmResourceId>'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "app"
+    },
+    "name": {
+      "value": "wsmin001"
+    },
+    "serverFarmResourceId": {
+      "value": "<serverFarmResourceId>"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Function App, using large parameter set_
+
+This instance deploys the module as Function App with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-wsfamax'
   params: {
     // Required parameters
     kind: 'functionapp'
-    name: 'wsfacom001'
+    name: 'wsfamax001'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
     appInsightResourceId: '<appInsightResourceId>'
@@ -150,7 +212,6 @@ module site 'br:bicep/modules/web.site:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     hybridConnectionRelays: [
       {
         resourceId: '<resourceId>'
@@ -158,6 +219,7 @@ module site 'br:bicep/modules/web.site:1.0.0' = {
       }
     ]
     keyVaultAccessIdentityResourceId: '<keyVaultAccessIdentityResourceId>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -225,7 +287,7 @@ module site 'br:bicep/modules/web.site:1.0.0' = {
       "value": "functionapp"
     },
     "name": {
-      "value": "wsfacom001"
+      "value": "wsfamax001"
     },
     "serverFarmResourceId": {
       "value": "<serverFarmResourceId>"
@@ -334,9 +396,6 @@ module site 'br:bicep/modules/web.site:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "hybridConnectionRelays": {
       "value": [
         {
@@ -347,6 +406,9 @@ module site 'br:bicep/modules/web.site:1.0.0' = {
     },
     "keyVaultAccessIdentityResourceId": {
       "value": "<keyVaultAccessIdentityResourceId>"
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -415,14 +477,17 @@ module site 'br:bicep/modules/web.site:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _Functionappmin_
+### Example 3: _Function App, using only defaults_
+
+This instance deploys the module as Function App with the minimum set of required parameters.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module site 'br:bicep/modules/web.site:1.0.0' = {
+module site 'br/public:avm/res/web/site:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-wsfamin'
   params: {
     // Required parameters
@@ -430,7 +495,7 @@ module site 'br:bicep/modules/web.site:1.0.0' = {
     name: 'wsfamin001'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     siteConfig: {
       alwaysOn: true
     }
@@ -461,8 +526,8 @@ module site 'br:bicep/modules/web.site:1.0.0' = {
       "value": "<serverFarmResourceId>"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "siteConfig": {
       "value": {
@@ -476,19 +541,162 @@ module site 'br:bicep/modules/web.site:1.0.0' = {
 </details>
 <p>
 
-### Example 3: _Webappcommon_
+### Example 4: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module site 'br:bicep/modules/web.site:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-wswa'
+module site 'br/public:avm/res/web/site:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-wswaf'
   params: {
     // Required parameters
     kind: 'app'
-    name: 'wswa001'
+    name: 'wswaf001'
+    serverFarmResourceId: '<serverFarmResourceId>'
+    // Non-required parameters
+    basicPublishingCredentialsPolicies: [
+      {
+        allow: false
+        name: 'ftp'
+      }
+      {
+        allow: false
+        name: 'scm'
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    httpsOnly: true
+    location: '<location>'
+    publicNetworkAccess: 'Disabled'
+    scmSiteAlsoStopped: true
+    siteConfig: {
+      alwaysOn: true
+      metadata: [
+        {
+          name: 'CURRENT_STACK'
+          value: 'dotnetcore'
+        }
+      ]
+    }
+    vnetContentShareEnabled: true
+    vnetImagePullEnabled: true
+    vnetRouteAllEnabled: true
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "app"
+    },
+    "name": {
+      "value": "wswaf001"
+    },
+    "serverFarmResourceId": {
+      "value": "<serverFarmResourceId>"
+    },
+    // Non-required parameters
+    "basicPublishingCredentialsPolicies": {
+      "value": [
+        {
+          "allow": false,
+          "name": "ftp"
+        },
+        {
+          "allow": false,
+          "name": "scm"
+        }
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "httpsOnly": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
+    "scmSiteAlsoStopped": {
+      "value": true
+    },
+    "siteConfig": {
+      "value": {
+        "alwaysOn": true,
+        "metadata": [
+          {
+            "name": "CURRENT_STACK",
+            "value": "dotnetcore"
+          }
+        ]
+      }
+    },
+    "vnetContentShareEnabled": {
+      "value": true
+    },
+    "vnetImagePullEnabled": {
+      "value": true
+    },
+    "vnetRouteAllEnabled": {
+      "value": true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Web App, using large parameter set_
+
+This instance deploys the module as Web App with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-wswamax'
+  params: {
+    // Required parameters
+    kind: 'app'
+    name: 'wswamax001'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
     basicPublishingCredentialsPolicies: [
@@ -515,7 +723,6 @@ module site 'br:bicep/modules/web.site:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     httpsOnly: true
     hybridConnectionRelays: [
       {
@@ -523,6 +730,7 @@ module site 'br:bicep/modules/web.site:1.0.0' = {
         sendKeyName: 'defaultSender'
       }
     ]
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -668,7 +876,7 @@ module site 'br:bicep/modules/web.site:1.0.0' = {
       "value": "app"
     },
     "name": {
-      "value": "wswa001"
+      "value": "wswamax001"
     },
     "serverFarmResourceId": {
       "value": "<serverFarmResourceId>"
@@ -702,9 +910,6 @@ module site 'br:bicep/modules/web.site:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "httpsOnly": {
       "value": true
     },
@@ -715,6 +920,9 @@ module site 'br:bicep/modules/web.site:1.0.0' = {
           "sendKeyName": "defaultSender"
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -869,14 +1077,17 @@ module site 'br:bicep/modules/web.site:1.0.0' = {
 </details>
 <p>
 
-### Example 4: _Webappmin_
+### Example 6: _Web App, using only defaults_
+
+This instance deploys the module as Web App with the minimum set of required parameters.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module site 'br:bicep/modules/web.site:1.0.0' = {
+module site 'br/public:avm/res/web/site:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-wswamin'
   params: {
     // Required parameters
@@ -884,7 +1095,7 @@ module site 'br:bicep/modules/web.site:1.0.0' = {
     name: 'wswamin001'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -912,8 +1123,8 @@ module site 'br:bicep/modules/web.site:1.0.0' = {
       "value": "<serverFarmResourceId>"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -952,7 +1163,7 @@ module site 'br:bicep/modules/web.site:1.0.0' = {
 | [`dailyMemoryTimeQuota`](#parameter-dailymemorytimequota) | int | Maximum allowed daily memory-time quota (applicable on dynamic apps only). |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enabled`](#parameter-enabled) | bool | Setting this value to false disables the app (takes the app offline). |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`hostNameSslStates`](#parameter-hostnamesslstates) | array | Hostname SSL states are used to manage the SSL bindings for app's hostnames. |
 | [`httpsOnly`](#parameter-httpsonly) | bool | Configures a site to accept only HTTPS requests. Issues redirect for HTTP requests. |
 | [`hybridConnectionRelays`](#parameter-hybridconnectionrelays) | array | Names of hybrid connection relays to connect app with. |
@@ -1219,9 +1430,9 @@ Setting this value to false disables the app (takes the app offline).
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -1818,7 +2029,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `modules/network/private-endpoint` | Local reference |
+| `br/public:avm/res/network/private-endpoint:0.3.2` | Remote reference |
 
 ## Notes
 
@@ -1859,3 +2070,7 @@ appSettingsKeyValuePairs: {
 
 </details>
 <p>
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
