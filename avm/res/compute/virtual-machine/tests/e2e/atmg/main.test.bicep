@@ -73,11 +73,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             name: 'ipconfig01'
             pipConfiguration: {
               publicIpNameSuffix: '-pip-01'
-              tags: {
-                'hidden-title': 'This is visible in the resource name'
-                Environment: 'Non-Prod'
-                Role: 'DeploymentValidation'
-              }
             }
             zones: [
               '1'

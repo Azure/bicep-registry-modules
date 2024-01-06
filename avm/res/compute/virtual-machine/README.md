@@ -68,11 +68,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             name: 'ipconfig01'
             pipConfiguration: {
               publicIpNameSuffix: '-pip-01'
-              tags: {
-                Environment: 'Non-Prod'
-                'hidden-title': 'This is visible in the resource name'
-                Role: 'DeploymentValidation'
-              }
             }
             subnetResourceId: '<subnetResourceId>'
             zones: [
@@ -141,12 +136,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             {
               "name": "ipconfig01",
               "pipConfiguration": {
-                "publicIpNameSuffix": "-pip-01",
-                "tags": {
-                  "Environment": "Non-Prod",
-                  "hidden-title": "This is visible in the resource name",
-                  "Role": "DeploymentValidation"
-                }
+                "publicIpNameSuffix": "-pip-01"
               },
               "subnetResourceId": "<subnetResourceId>",
               "zones": [
