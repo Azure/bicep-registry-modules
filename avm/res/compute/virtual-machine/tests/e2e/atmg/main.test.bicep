@@ -111,11 +111,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         path: '/home/localAdminUser/.ssh/authorized_keys'
       }
     ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
   }
   dependsOn: [
     nestedDependencies // Required to leverage `existing` SSH key reference
