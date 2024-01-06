@@ -83,11 +83,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           }
         ]
         nicSuffix: '-nic-01'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
       }
     ]
     osDisk: {
@@ -108,11 +103,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         path: '/home/localAdminUser/.ssh/authorized_keys'
       }
     ]
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -166,12 +156,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               ]
             }
           ],
-          "nicSuffix": "-nic-01",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
+          "nicSuffix": "-nic-01"
         }
       ]
     },
@@ -206,13 +191,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "path": "/home/localAdminUser/.ssh/authorized_keys"
         }
       ]
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
