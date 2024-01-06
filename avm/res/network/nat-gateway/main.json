@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "14427571589662041171"
+      "version": "0.24.24.22086",
+      "templateHash": "6929390552163326762"
     },
     "name": "NAT Gateways",
     "description": "This module deploys a NAT Gateway.",
@@ -1007,8 +1007,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "16528829671778949522"
+              "version": "0.24.24.22086",
+              "templateHash": "16611084599101521713"
             }
           },
           "parameters": {
@@ -1080,8 +1080,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "10775565777623704767"
+              "version": "0.24.24.22086",
+              "templateHash": "10236251134052848815"
             },
             "name": "Public IP Prefixes",
             "description": "This module deploys a Public IP Prefix.",
@@ -1155,7 +1155,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -1382,8 +1382,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "16528829671778949522"
+              "version": "0.24.24.22086",
+              "templateHash": "16611084599101521713"
             }
           },
           "parameters": {
