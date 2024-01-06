@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "6582025632748001639"
+      "version": "0.24.24.22086",
+      "templateHash": "14926290851354607845"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory.",
@@ -355,7 +355,7 @@
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to '' to disable metric collection."
             }
           },
           "logAnalyticsDestinationType": {
@@ -776,8 +776,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "8205336083056545135"
+              "version": "0.24.24.22086",
+              "templateHash": "2622993864386710404"
             },
             "name": "Data Factory Managed Virtual Networks",
             "description": "This module deploys a Data Factory Managed Virtual Network.",
@@ -850,8 +850,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "12618806090952186910"
+                      "version": "0.24.24.22086",
+                      "templateHash": "15507361222321538498"
                     },
                     "name": "Data Factory Managed Virtual Network Managed PrivateEndpoints",
                     "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint.",
@@ -995,8 +995,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "10144365283667338737"
+              "version": "0.24.24.22086",
+              "templateHash": "14308450010595234197"
             },
             "name": "Data Factory Integration RunTimes",
             "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime.",

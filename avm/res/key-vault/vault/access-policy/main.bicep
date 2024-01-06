@@ -49,6 +49,7 @@ type accessPoliciesType = {
   @description('Optional. Application ID of the client making request on behalf of a principal.')
   applicationId: string?
 
+  @description('Required. Permissions the identity has for keys, secrets and certificates.')
   permissions: {
     @description('Optional. Permissions to keys.')
     keys: ('all' | 'backup' | 'create' | 'decrypt' | 'delete' | 'encrypt' | 'get' | 'getrotationpolicy' | 'import' | 'list' | 'purge' | 'recover' | 'release' | 'restore' | 'rotate' | 'setrotationpolicy' | 'sign' | 'unwrapKey' | 'update' | 'verify' | 'wrapKey')[]?

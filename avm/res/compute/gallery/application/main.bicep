@@ -24,17 +24,17 @@ param privacyStatementUri string?
 @sys.description('Optional. The release note uri. Has to be a valid URL.')
 param releaseNoteUri string?
 
-@sys.description('Optional. This property allows you to specify the supported type of the OS that application is built for.')
+@sys.description('Required. This property allows you to specify the supported type of the OS that application is built for.')
 @allowed([
   'Windows'
   'Linux'
 ])
-param supportedOSType string = 'Windows'
+param supportedOSType string
 
 @sys.description('Optional. The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z.')
 param endOfLifeDate string?
 
-@sys.description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+@sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
 @sys.description('Optional. Tags for all resources.')
@@ -63,11 +63,11 @@ resource application 'Microsoft.Compute/galleries/applications@2022-03-03' = {
   tags: tags
   properties: {
     customActions: customActions
-    description: description ?? ''
-    endOfLifeDate: endOfLifeDate ?? ''
-    eula: eula ?? ''
-    privacyStatementUri: privacyStatementUri ?? ''
-    releaseNoteUri: releaseNoteUri ?? ''
+    description: description
+    endOfLifeDate: endOfLifeDate
+    eula: eula
+    privacyStatementUri: privacyStatementUri
+    releaseNoteUri: releaseNoteUri
     supportedOSType: supportedOSType
   }
 }
@@ -97,12 +97,13 @@ output name string = application.name
 
 @sys.description('The location the resource was deployed into.')
 output location string = application.location
+
 // =============== //
 //   Definitions   //
 // =============== //
 
 type roleAssignmentType = {
-  @sys.description('Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.')
+  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
   @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
@@ -114,7 +115,7 @@ type roleAssignmentType = {
   @sys.description('Optional. The description of the role assignment.')
   description: string?
 
-  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
+  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
   @sys.description('Optional. Version of the condition.')
