@@ -25,6 +25,7 @@ This module deploys an Azure Compute Gallery Application.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the application definition. |
+| [`supportedOSType`](#parameter-supportedostype) | string | This property allows you to specify the supported type of the OS that application is built for. |
 
 **Conditional parameters**
 
@@ -44,7 +45,6 @@ This module deploys an Azure Compute Gallery Application.
 | [`privacyStatementUri`](#parameter-privacystatementuri) | string | The privacy statement uri. Has to be a valid URL. |
 | [`releaseNoteUri`](#parameter-releasenoteuri) | string | The release note uri. Has to be a valid URL. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`supportedOSType`](#parameter-supportedostype) | string | This property allows you to specify the supported type of the OS that application is built for. |
 | [`tags`](#parameter-tags) | object | Tags for all resources. |
 
 ### Parameter: `name`
@@ -53,6 +53,20 @@ Name of the application definition.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `supportedOSType`
+
+This property allows you to specify the supported type of the OS that application is built for.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Linux'
+    'Windows'
+  ]
+  ```
 
 ### Parameter: `galleryName`
 
@@ -197,21 +211,6 @@ The principal type of the assigned principal ID.
     'Group'
     'ServicePrincipal'
     'User'
-  ]
-  ```
-
-### Parameter: `supportedOSType`
-
-This property allows you to specify the supported type of the OS that application is built for.
-
-- Required: No
-- Type: string
-- Default: `'Windows'`
-- Allowed:
-  ```Bicep
-  [
-    'Linux'
-    'Windows'
   ]
   ```
 

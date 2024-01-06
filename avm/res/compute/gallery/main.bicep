@@ -30,6 +30,12 @@ param tags object?
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@sys.description('Optional. Profile for gallery sharing to subscription or tenant.')
+param sharingProfile object?
+
+@sys.description('Optional. Soft deletion policy of the gallery.')
+param softDeletePolicy object?
+
 var builtInRoleNames = {
   'Compute Gallery Sharing Admin': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1ef6a3be-d0ac-425d-8c01-acb62866290b')
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -62,8 +68,10 @@ resource gallery 'Microsoft.Compute/galleries@2022-03-03' = {
   location: location
   tags: tags
   properties: {
-    description: description ?? ''
-    identifier: {}
+    description: description
+    // identifier: {} // Contains only read-only properties
+    sharingProfile: sharingProfile
+    softDeletePolicy: softDeletePolicy
   }
 }
 
@@ -90,14 +98,13 @@ resource gallery_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-0
   scope: gallery
 }]
 
-// Applications
 module galleries_applications 'application/main.bicep' = [for (application, index) in (applications ?? []): {
   name: '${uniqueString(deployment().name, location)}-Gallery-Application-${index}'
   params: {
-    name: application.name
     location: location
+    name: application.name
     galleryName: gallery.name
-    supportedOSType: application.?supportedOSType
+    supportedOSType: application.supportedOSType
     description: application.?description
     eula: application.?eula
     privacyStatementUri: application.?privacyStatementUri
@@ -109,26 +116,23 @@ module galleries_applications 'application/main.bicep' = [for (application, inde
   }
 }]
 
-// Images
 module galleries_images 'image/main.bicep' = [for (image, index) in (images ?? []): {
   name: '${uniqueString(deployment().name, location)}-Gallery-Image-${index}'
   params: {
-    name: image.name
     location: location
+    name: image.name
     galleryName: gallery.name
-    osType: image.?osType
+    osType: image.osType
     osState: image.?osState
-    publisher: image.?publisher
-    offer: image.?offer
-    sku: image.?sku
+    publisher: image.publisher
+    offer: image.offer
+    sku: image.sku
     minRecommendedvCPUs: image.?minRecommendedvCPUs
     maxRecommendedvCPUs: image.?maxRecommendedvCPUs
     minRecommendedMemory: image.?minRecommendedMemory
     maxRecommendedMemory: image.?maxRecommendedMemory
-    hyperVGeneration: image.?hyperVGeneration ?? 'V1'
+    hyperVGeneration: image.?hyperVGeneration
     securityType: image.?securityType
-    isAcceleratedNetworkSupported: image.?isAcceleratedNetworkSupported
-    isHibernateSupported: image.?isHibernateSupported
     description: image.?description
     eula: image.?eula
     privacyStatementUri: image.?privacyStatementUri

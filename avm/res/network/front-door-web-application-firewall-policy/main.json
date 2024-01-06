@@ -5,14 +5,39 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "9951919331605340265"
+      "version": "0.23.1.45101",
+      "templateHash": "15621879470526271545"
     },
-    "name": "Compute Galleries Applications",
-    "description": "This module deploys an Azure Compute Gallery Application.",
+    "name": "Front Door Web Application Firewall (WAF) Policies",
+    "description": "This module deploys a Front Door Web Application Firewall (WAF) Policy.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    },
     "roleAssignmentType": {
       "type": "array",
       "items": {
@@ -83,67 +108,108 @@
   "parameters": {
     "name": {
       "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
       "metadata": {
-        "description": "Required. Name of the application definition."
+        "description": "Required. Name of the Front Door WAF policy."
       }
     },
     "location": {
       "type": "string",
-      "defaultValue": "[resourceGroup().location]",
+      "defaultValue": "global",
       "metadata": {
         "description": "Optional. Location for all resources."
       }
     },
-    "galleryName": {
+    "sku": {
       "type": "string",
-      "minLength": 1,
-      "metadata": {
-        "description": "Conditional. The name of the parent Azure Compute Gallery. Required if the template is used in a standalone deployment."
-      }
-    },
-    "description": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The description of this gallery Application Definition resource. This property is updatable."
-      }
-    },
-    "eula": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The Eula agreement for the gallery Application Definition. Has to be a valid URL."
-      }
-    },
-    "privacyStatementUri": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The privacy statement uri. Has to be a valid URL."
-      }
-    },
-    "releaseNoteUri": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The release note uri. Has to be a valid URL."
-      }
-    },
-    "supportedOSType": {
-      "type": "string",
+      "defaultValue": "Standard_AzureFrontDoor",
       "allowedValues": [
-        "Windows",
-        "Linux"
+        "Standard_AzureFrontDoor",
+        "Premium_AzureFrontDoor"
       ],
       "metadata": {
-        "description": "Required. This property allows you to specify the supported type of the OS that application is built for."
+        "description": "Optional. The pricing tier of the WAF profile."
       }
     },
-    "endOfLifeDate": {
-      "type": "string",
+    "tags": {
+      "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z."
+        "description": "Optional. Resource tags."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "managedRules": {
+      "type": "object",
+      "defaultValue": {
+        "managedRuleSets": [
+          {
+            "ruleSetType": "Microsoft_DefaultRuleSet",
+            "ruleSetVersion": "2.1",
+            "ruleGroupOverrides": [],
+            "exclusions": [],
+            "ruleSetAction": "Block"
+          },
+          {
+            "ruleSetType": "Microsoft_BotManagerRuleSet",
+            "ruleSetVersion": "1.0",
+            "ruleGroupOverrides": [],
+            "exclusions": []
+          }
+        ]
+      },
+      "metadata": {
+        "description": "Optional. Describes the managedRules structure."
+      }
+    },
+    "customRules": {
+      "type": "object",
+      "defaultValue": {
+        "rules": [
+          {
+            "name": "ApplyGeoFilter",
+            "priority": 100,
+            "enabledState": "Enabled",
+            "ruleType": "MatchRule",
+            "action": "Block",
+            "matchConditions": [
+              {
+                "matchVariable": "RemoteAddr",
+                "operator": "GeoMatch",
+                "negateCondition": true,
+                "matchValue": [
+                  "ZZ"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "metadata": {
+        "description": "Optional. The custom rules inside the policy."
+      }
+    },
+    "policySettings": {
+      "type": "object",
+      "defaultValue": {
+        "enabledState": "Enabled",
+        "mode": "Prevention"
+      },
+      "metadata": {
+        "description": "Optional. The PolicySettings for policy."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
@@ -151,25 +217,10 @@
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
-    },
-    "tags": {
-      "type": "object",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Tags for all resources."
-      }
-    },
-    "customActions": {
-      "type": "array",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application."
-      }
     }
   },
   "variables": {
     "builtInRoleNames": {
-      "Compute Gallery Sharing Admin": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1ef6a3be-d0ac-425d-8c01-acb62866290b')]",
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
@@ -178,40 +229,64 @@
     }
   },
   "resources": {
-    "gallery": {
-      "existing": true,
-      "type": "Microsoft.Compute/galleries",
-      "apiVersion": "2022-03-03",
-      "name": "[parameters('galleryName')]"
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.network-frontdoorwebappfirewallpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
     },
-    "application": {
-      "type": "Microsoft.Compute/galleries/applications",
-      "apiVersion": "2022-03-03",
-      "name": "[format('{0}/{1}', parameters('galleryName'), parameters('name'))]",
+    "frontDoorWAFPolicy": {
+      "type": "Microsoft.Network/FrontDoorWebApplicationFirewallPolicies",
+      "apiVersion": "2022-05-01",
+      "name": "[parameters('name')]",
       "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('sku')]"
+      },
       "tags": "[parameters('tags')]",
       "properties": {
-        "customActions": "[parameters('customActions')]",
-        "description": "[parameters('description')]",
-        "endOfLifeDate": "[parameters('endOfLifeDate')]",
-        "eula": "[parameters('eula')]",
-        "privacyStatementUri": "[parameters('privacyStatementUri')]",
-        "releaseNoteUri": "[parameters('releaseNoteUri')]",
-        "supportedOSType": "[parameters('supportedOSType')]"
+        "customRules": "[parameters('customRules')]",
+        "managedRules": "[if(equals(parameters('sku'), 'Premium_AzureFrontDoor'), parameters('managedRules'), createObject('managedRuleSets', createArray()))]",
+        "policySettings": "[parameters('policySettings')]"
+      }
+    },
+    "frontDoorWAFPolicy_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
       },
       "dependsOn": [
-        "gallery"
+        "frontDoorWAFPolicy"
       ]
     },
-    "application_roleAssignments": {
+    "frontDoorWAFPolicy_roleAssignments": {
       "copy": {
-        "name": "application_roleAssignments",
+        "name": "frontDoorWAFPolicy_roleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Compute/galleries/{0}/applications/{1}', parameters('galleryName'), parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.Compute/galleries/applications', parameters('galleryName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "scope": "[format('Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/{0}', parameters('name'))]",
+      "name": "[guid(resourceId('Microsoft.Network/FrontDoorWebApplicationFirewallPolicies', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
       "properties": {
         "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
         "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
@@ -222,38 +297,38 @@
         "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
-        "application"
+        "frontDoorWAFPolicy"
       ]
     }
   },
   "outputs": {
-    "resourceGroupName": {
+    "name": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the image was deployed into."
+        "description": "The name of the Front Door WAF policy."
       },
-      "value": "[resourceGroup().name]"
+      "value": "[parameters('name')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the image."
+        "description": "The resource ID of the Front Door WAF policy."
       },
-      "value": "[resourceId('Microsoft.Compute/galleries/applications', parameters('galleryName'), parameters('name'))]"
+      "value": "[resourceId('Microsoft.Network/FrontDoorWebApplicationFirewallPolicies', parameters('name'))]"
     },
-    "name": {
+    "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the image."
+        "description": "The resource group the Front Door WAF policy was deployed into."
       },
-      "value": "[parameters('name')]"
+      "value": "[resourceGroup().name]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('application', '2022-03-03', 'full').location]"
+      "value": "[reference('frontDoorWAFPolicy', '2022-05-01', 'full').location]"
     }
   }
 }
