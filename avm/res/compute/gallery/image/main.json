@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "14441578962181885339"
+      "version": "0.24.24.22086",
+      "templateHash": "11732013039305076688"
     },
     "name": "Compute Galleries Image Definitions",
     "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -21,7 +21,7 @@
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
-              "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
             }
           },
           "principalId": {
@@ -55,7 +55,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
             }
           },
           "conditionVersion": {
@@ -103,13 +103,12 @@
     },
     "osType": {
       "type": "string",
-      "defaultValue": "Linux",
       "allowedValues": [
         "Windows",
         "Linux"
       ],
       "metadata": {
-        "description": "Optional. OS type of the image to be created."
+        "description": "Required. OS type of the image to be created."
       }
     },
     "osState": {
@@ -125,23 +124,20 @@
     },
     "publisher": {
       "type": "string",
-      "defaultValue": "canonical",
       "metadata": {
-        "description": "Optional. The name of the gallery Image Definition publisher."
+        "description": "Required. The name of the gallery Image Definition publisher."
       }
     },
     "offer": {
       "type": "string",
-      "defaultValue": "0001-com-ubuntu-server-jammy",
       "metadata": {
-        "description": "Optional. The name of the gallery Image Definition offer."
+        "description": "Required. The name of the gallery Image Definition offer."
       }
     },
     "sku": {
       "type": "string",
-      "defaultValue": "22_04-lts-gen2",
       "metadata": {
-        "description": "Optional. The name of the gallery Image Definition SKU."
+        "description": "Required. The name of the gallery Image Definition SKU."
       }
     },
     "minRecommendedvCPUs": {
@@ -182,14 +178,13 @@
     },
     "hyperVGeneration": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
-        "",
         "V1",
         "V2"
       ],
       "metadata": {
-        "description": "Optional. The hypervisor generation of the Virtual Machine.</p>- If this value is not specified, then it is determined by the securityType parameter.</p>- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1."
+        "description": "Optional. The hypervisor generation of the Virtual Machine.\n- If this value is not specified, then it is determined by the securityType parameter.\n- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\n"
       }
     },
     "securityType": {
@@ -206,25 +201,17 @@
       }
     },
     "isHibernateSupported": {
-      "type": "string",
-      "defaultValue": "false",
-      "allowedValues": [
-        "true",
-        "false"
-      ],
+      "type": "bool",
+      "defaultValue": false,
       "metadata": {
-        "description": "Optional. The image will support hibernation."
+        "description": "Optional. Specifiy if the image supports hibernation."
       }
     },
     "isAcceleratedNetworkSupported": {
-      "type": "string",
-      "defaultValue": "false",
-      "allowedValues": [
-        "true",
-        "false"
-      ],
+      "type": "bool",
+      "defaultValue": false,
       "metadata": {
-        "description": "Optional. The image supports accelerated networking.</p>Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.</p>This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types."
+        "description": "Optional. Specify if the image supports accelerated networking.\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.\n"
       }
     },
     "description": {
@@ -278,22 +265,22 @@
     },
     "endOfLife": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "",
       "metadata": {
         "description": "Optional. The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z."
       }
     },
     "excludedDiskTypes": {
       "type": "array",
-      "nullable": true,
+      "defaultValue": [],
       "metadata": {
-        "description": "Optional. List of the excluded disk types. E.g. Standard_LRS."
+        "description": "Optional. List of the excluded disk types (e.g., Standard_LRS)."
       }
     },
     "roleAssignments": {
       "$ref": "#/definitions/roleAssignmentType",
       "metadata": {
-        "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+        "description": "Optional. Array of role assignments to create."
       }
     },
     "tags": {
@@ -345,20 +332,20 @@
             "max": "[parameters('maxRecommendedMemory')]"
           }
         },
-        "hyperVGeneration": "[if(not(empty(parameters('hyperVGeneration'))), parameters('hyperVGeneration'), if(not(empty(parameters('securityType'))), 'V2', 'V1'))]",
-        "features": "[if(and(not(empty(parameters('securityType'))), not(equals(parameters('securityType'), 'Standard'))), createArray(createObject('name', 'SecurityType', 'value', parameters('securityType')), createObject('name', 'IsAcceleratedNetworkSupported', 'value', parameters('isAcceleratedNetworkSupported')), createObject('name', 'IsHibernateSupported', 'value', parameters('isHibernateSupported'))), createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', parameters('isAcceleratedNetworkSupported')), createObject('name', 'IsHibernateSupported', 'value', parameters('isHibernateSupported'))))]",
-        "description": "[coalesce(parameters('description'), '')]",
-        "eula": "[coalesce(parameters('eula'), '')]",
-        "privacyStatementUri": "[coalesce(parameters('privacyStatementUri'), '')]",
-        "releaseNoteUri": "[coalesce(parameters('releaseNoteUri'), '')]",
+        "hyperVGeneration": "[coalesce(parameters('hyperVGeneration'), if(not(empty(parameters('securityType'))), 'V2', 'V1'))]",
+        "features": "[union(createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', format('{0}', parameters('isAcceleratedNetworkSupported'))), createObject('name', 'IsHibernateSupported', 'value', format('{0}', parameters('isHibernateSupported')))), if(not(equals(parameters('securityType'), 'Standard')), createArray(createObject('name', 'SecurityType', 'value', parameters('securityType'))), createArray()))]",
+        "description": "[parameters('description')]",
+        "eula": "[parameters('eula')]",
+        "privacyStatementUri": "[parameters('privacyStatementUri')]",
+        "releaseNoteUri": "[parameters('releaseNoteUri')]",
         "purchasePlan": {
           "product": "[parameters('productName')]",
           "name": "[parameters('planName')]",
           "publisher": "[parameters('planPublisherName')]"
         },
-        "endOfLifeDate": "[coalesce(parameters('endOfLife'), '')]",
+        "endOfLifeDate": "[parameters('endOfLife')]",
         "disallowed": {
-          "diskTypes": "[coalesce(parameters('excludedDiskTypes'), createArray())]"
+          "diskTypes": "[parameters('excludedDiskTypes')]"
         }
       },
       "dependsOn": [

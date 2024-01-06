@@ -144,12 +144,15 @@ function Merge-FileWithNewContent {
         # Section is not existing (end of file)
         $startContent = $OldContent
         if ($OldContent[$startIndex] -ne $SectionStartIdentifier ) {
+            # Add newline if necessary
+            if (-not [String]::IsNullOrEmpty($OldContent[$startIndex])) {
+                $startContent += @('')
+            }
             # Add section header
-            $startContent = $startContent + @('', $SectionStartIdentifier)
+            $startContent = $startContent + @($SectionStartIdentifier)
         }
         $endContent = @()
-    }
-    else {
+    } else {
         switch ($ContentType) {
             'table' {
                 $tableStartIndex = $startIndex + 1
@@ -169,8 +172,7 @@ function Merge-FileWithNewContent {
                     if ($ReadMeFileContent[$startIndex] -notcontains $SectionStartIdentifier) {
                         $newContent = @('', $SectionStartIdentifier) + $newContent
                     }
-                }
-                else {
+                } else {
                     $endIndex = Get-EndIndex -ReadMeFileContent $OldContent -startIndex $tableStartIndex -ContentType $ContentType
                     if ($endIndex -ne $OldContent.Count - 1) {
                         $endContent = $OldContent[$endIndex..($OldContent.Count - 1)]
@@ -195,8 +197,7 @@ function Merge-FileWithNewContent {
                     if ($ReadMeFileContent[$startIndex] -notcontains $SectionStartIdentifier) {
                         $newContent = @('', $SectionStartIdentifier) + $newContent
                     }
-                }
-                else {
+                } else {
                     $endIndex = Get-EndIndex -ReadMeFileContent $OldContent -startIndex $listStartIndex -ContentType $ContentType
                     if ($endIndex -ne $OldContent.Count - 1) {
                         $endContent = $OldContent[$endIndex..($OldContent.Count - 1)]
@@ -209,8 +210,7 @@ function Merge-FileWithNewContent {
                     $startContent = $OldContent[0..($startIndex)]
                     $newContent = @($SectionStartIdentifier, '') + $newContent
                     $endContent = $OldContent[($startIndex + 1)..($OldContent.Count - 1)]
-                }
-                else {
+                } else {
                     # section was found
                     $startContent = $OldContent[0..($startIndex)]
                     $endIndex = Get-EndIndex -ReadMeFileContent $OldContent -startIndex $startIndex -ContentType $ContentType
