@@ -95,7 +95,7 @@
 #/avm/res/network/local-network-gateway/ @Azure/avm-res-network-localnetworkgateway-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/nat-gateway/ @Azure/avm-res-network-natgateway-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/network-interface/ @Azure/avm-res-network-networkinterface-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/network/network-manager/ @Azure/avm-res-network-networkmanager-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/network/network-manager/ @Azure/avm-res-network-networkmanager-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/network-security-group/ @Azure/avm-res-network-networksecuritygroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/network/network-watcher/ @Azure/avm-res-network-networkwatcher-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/private-dns-zone/ @Azure/avm-res-network-privatednszone-module-owners-bicep @Azure/avm-core-team-technical-bicep
