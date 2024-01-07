@@ -16,7 +16,7 @@ This module deploys an Azure Monitor Private Link Scope.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `microsoft.insights/privateLinkScopes` | [2019-10-17-preview](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2019-10-17-preview/privateLinkScopes) |
+| `microsoft.insights/privateLinkScopes` | [2021-07-01-preview](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2021-07-01-preview/privateLinkScopes) |
 | `Microsoft.Insights/privateLinkScopes/scopedResources` | [2021-07-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-07-01-preview/privateLinkScopes/scopedResources) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
@@ -95,6 +95,17 @@ This instance deploys the module with most of its features enabled.
     // Required parameters
     name: 'iplsmax001'
     // Non-required parameters
+    accessModeSettings: {
+      exclusions: [
+        {
+          ingestionAccessMode: 'PrivateOnly'
+          privateEndpointConnectionName: 'thisisatest'
+          queryAccessMode: 'PrivateOnly'
+        }
+      ]
+      ingestionAccessMode: 'Open'
+      queryAccessMode: 'Open'
+    }
     location: 'global'
     lock: {
       kind: 'CanNotDelete'
@@ -110,6 +121,7 @@ This instance deploys the module with most of its features enabled.
             ]
           }
         ]
+        customNetworkInterfaceName: 'nic-pe-'
         ipConfigurations: [
           {
             name: 'api'
@@ -200,6 +212,7 @@ This instance deploys the module with most of its features enabled.
             }
           }
         ]
+        name: 'pe-'
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
@@ -267,6 +280,19 @@ This instance deploys the module with most of its features enabled.
       "value": "iplsmax001"
     },
     // Non-required parameters
+    "accessModeSettings": {
+      "value": {
+        "exclusions": [
+          {
+            "ingestionAccessMode": "PrivateOnly",
+            "privateEndpointConnectionName": "thisisatest",
+            "queryAccessMode": "PrivateOnly"
+          }
+        ],
+        "ingestionAccessMode": "Open",
+        "queryAccessMode": "Open"
+      }
+    },
     "location": {
       "value": "global"
     },
@@ -287,6 +313,7 @@ This instance deploys the module with most of its features enabled.
               ]
             }
           ],
+          "customNetworkInterfaceName": "nic-pe-",
           "ipConfigurations": [
             {
               "name": "api",
@@ -377,6 +404,7 @@ This instance deploys the module with most of its features enabled.
               }
             }
           ],
+          "name": "pe-",
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
@@ -452,6 +480,17 @@ This instance deploys the module in alignment with the best-practices of the Azu
     // Required parameters
     name: 'iplswaf001'
     // Non-required parameters
+    accessModeSettings: {
+      exclusions: [
+        {
+          ingestionAccessMode: 'PrivateOnly'
+          privateEndpointConnectionName: 'thisisatest'
+          queryAccessMode: 'PrivateOnly'
+        }
+      ]
+      ingestionAccessMode: 'Open'
+      queryAccessMode: 'Open'
+    }
     location: 'global'
     lock: {
       kind: 'CanNotDelete'
@@ -467,6 +506,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
             ]
           }
         ]
+        customNetworkInterfaceName: 'nic-pe-'
         ipConfigurations: [
           {
             name: 'api'
@@ -557,6 +597,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
             }
           }
         ]
+        name: 'pe-'
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
@@ -624,6 +665,19 @@ This instance deploys the module in alignment with the best-practices of the Azu
       "value": "iplswaf001"
     },
     // Non-required parameters
+    "accessModeSettings": {
+      "value": {
+        "exclusions": [
+          {
+            "ingestionAccessMode": "PrivateOnly",
+            "privateEndpointConnectionName": "thisisatest",
+            "queryAccessMode": "PrivateOnly"
+          }
+        ],
+        "ingestionAccessMode": "Open",
+        "queryAccessMode": "Open"
+      }
+    },
     "location": {
       "value": "global"
     },
@@ -644,6 +698,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
               ]
             }
           ],
+          "customNetworkInterfaceName": "nic-pe-",
           "ipConfigurations": [
             {
               "name": "api",
@@ -734,6 +789,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
               }
             }
           ],
+          "name": "pe-",
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
@@ -807,6 +863,10 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`accessModeSettings`](#parameter-accessmodesettings) | object | Specifies the access mode of ingestion or queries through associated private endpoints in scope. For security reasons, it is recommended to use PrivateOnly whenever possible to avoid data exfiltration.
+
+  * Private Only - This mode allows the connected virtual network to reach only Private Link resources. It is the most secure mode and is set as the default when the `privateEndpoints` parameter is configured.
+  * Open - Allows the connected virtual network to reach both Private Link resources and the resources not in the AMPLS resource. Data exfiltration cannot be prevented in this mode. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | The location of the private link scope. Should be global. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -821,6 +881,64 @@ Name of the private link scope.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `accessModeSettings`
+
+Specifies the access mode of ingestion or queries through associated private endpoints in scope. For security reasons, it is recommended to use PrivateOnly whenever possible to avoid data exfiltration.
+
+  * Private Only - This mode allows the connected virtual network to reach only Private Link resources. It is the most secure mode and is set as the default when the `privateEndpoints` parameter is configured.
+  * Open - Allows the connected virtual network to reach both Private Link resources and the resources not in the AMPLS resource. Data exfiltration cannot be prevented in this mode.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ingestionAccessMode`](#parameter-accessmodesettingsingestionaccessmode) | string | Specifies the default access mode of ingestion through associated private endpoints in scope. |
+| [`queryAccessMode`](#parameter-accessmodesettingsqueryaccessmode) | string | Specifies the default access mode of queries through associated private endpoints in scope. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`exclusions`](#parameter-accessmodesettingsexclusions) | array | List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning. |
+
+### Parameter: `accessModeSettings.ingestionAccessMode`
+
+Specifies the default access mode of ingestion through associated private endpoints in scope.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Open'
+    'PrivateOnly'
+  ]
+  ```
+
+### Parameter: `accessModeSettings.queryAccessMode`
+
+Specifies the default access mode of queries through associated private endpoints in scope.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Open'
+    'PrivateOnly'
+  ]
+  ```
+
+### Parameter: `accessModeSettings.exclusions`
+
+List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning.
+
+- Required: No
+- Type: array
 
 ### Parameter: `enableTelemetry`
 
@@ -1217,7 +1335,27 @@ Configuration details for Azure Monitor Resources.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`linkedResourceId`](#parameter-scopedresourceslinkedresourceid) | string | The resource ID of the scoped Azure monitor resource. |
+| [`name`](#parameter-scopedresourcesname) | string | Name of the private link scoped resource. |
+
+### Parameter: `scopedResources.linkedResourceId`
+
+The resource ID of the scoped Azure monitor resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `scopedResources.name`
+
+Name of the private link scoped resource.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `tags`
 

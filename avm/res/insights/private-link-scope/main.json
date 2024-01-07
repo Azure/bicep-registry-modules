@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "17817007247734928285"
+      "templateHash": "16956549728476090430"
     },
     "name": "Azure Monitor Private Link Scopes",
     "description": "This module deploys an Azure Monitor Private Link Scope.",
@@ -278,6 +278,91 @@
         }
       },
       "nullable": true
+    },
+    "scopedResourceType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Name of the private link scoped resource."
+            }
+          },
+          "linkedResourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The resource ID of the scoped Azure monitor resource."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "accessModeType": {
+      "type": "object",
+      "properties": {
+        "exclusions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "privateEndpointConnectionName": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The private endpoint connection name associated to the private endpoint on which we want to apply the specific access mode settings."
+                }
+              },
+              "ingestionAccessMode": {
+                "type": "string",
+                "allowedValues": [
+                  "Open",
+                  "PrivateOnly"
+                ],
+                "metadata": {
+                  "description": "Required. Specifies the access mode of ingestion through the specified private endpoint connection in the exclusion."
+                }
+              },
+              "queryAccessMode": {
+                "type": "string",
+                "allowedValues": [
+                  "Open",
+                  "PrivateOnly"
+                ],
+                "metadata": {
+                  "description": "Required. Specifies the access mode of queries through the specified private endpoint connection in the exclusion."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning."
+          }
+        },
+        "ingestionAccessMode": {
+          "type": "string",
+          "allowedValues": [
+            "Open",
+            "PrivateOnly"
+          ],
+          "metadata": {
+            "description": "Required. Specifies the default access mode of ingestion through associated private endpoints in scope."
+          }
+        },
+        "queryAccessMode": {
+          "type": "string",
+          "allowedValues": [
+            "Open",
+            "PrivateOnly"
+          ],
+          "metadata": {
+            "description": "Required. Specifies the default access mode of queries through associated private endpoints in scope."
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -286,6 +371,12 @@
       "minLength": 1,
       "metadata": {
         "description": "Required. Name of the private link scope."
+      }
+    },
+    "accessModeSettings": {
+      "$ref": "#/definitions/accessModeType",
+      "metadata": {
+        "description": "Optional. Specifies the access mode of ingestion or queries through associated private endpoints in scope. For security reasons, it is recommended to use PrivateOnly whenever possible to avoid data exfiltration.\r\n\r\n  * Private Only - This mode allows the connected virtual network to reach only Private Link resources. It is the most secure mode and is set as the default when the `privateEndpoints` parameter is configured.\r\n  * Open - Allows the connected virtual network to reach both Private Link resources and the resources not in the AMPLS resource. Data exfiltration cannot be prevented in this mode."
       }
     },
     "location": {
@@ -308,8 +399,7 @@
       }
     },
     "scopedResources": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/scopedResourceType",
       "metadata": {
         "description": "Optional. Configuration details for Azure Monitor Resources."
       }
@@ -525,11 +615,13 @@
     },
     "privateLinkScope": {
       "type": "microsoft.insights/privateLinkScopes",
-      "apiVersion": "2019-10-17-preview",
+      "apiVersion": "2021-07-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
-      "properties": {}
+      "properties": {
+        "accessModeSettings": "[coalesce(parameters('accessModeSettings'), createObject('ingestionAccessMode', if(empty(parameters('privateEndpoints')), 'Open', 'PrivateOnly'), 'queryAccessMode', if(empty(parameters('privateEndpoints')), 'Open', 'PrivateOnly')))]"
+      }
     },
     "privateLinkScope_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -570,11 +662,11 @@
     "privateLinkScope_scopedResource": {
       "copy": {
         "name": "privateLinkScope_scopedResource",
-        "count": "[length(parameters('scopedResources'))]"
+        "count": "[length(coalesce(parameters('scopedResources'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-PvtLinkScope-ScopedRes-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-PrivateLinkScope-ScopedResource-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -582,13 +674,13 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('scopedResources')[copyIndex()].name]"
+            "value": "[coalesce(parameters('scopedResources'), createArray())[copyIndex()].name]"
           },
           "privateLinkScopeName": {
             "value": "[parameters('name')]"
           },
           "linkedResourceId": {
-            "value": "[parameters('scopedResources')[copyIndex()].linkedResourceId]"
+            "value": "[coalesce(parameters('scopedResources'), createArray())[copyIndex()].linkedResourceId]"
           }
         },
         "template": {
@@ -1361,7 +1453,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('privateLinkScope', '2019-10-17-preview', 'full').location]"
+      "value": "[reference('privateLinkScope', '2021-07-01-preview', 'full').location]"
     }
   }
 }

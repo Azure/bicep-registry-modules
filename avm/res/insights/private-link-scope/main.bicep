@@ -6,6 +6,12 @@ metadata owner = 'Azure/module-maintainers'
 @minLength(1)
 param name string
 
+@description('''Optional. Specifies the access mode of ingestion or queries through associated private endpoints in scope. For security reasons, it is recommended to use PrivateOnly whenever possible to avoid data exfiltration.
+
+  * Private Only - This mode allows the connected virtual network to reach only Private Link resources. It is the most secure mode and is set as the default when the `privateEndpoints` parameter is configured.
+  * Open - Allows the connected virtual network to reach both Private Link resources and the resources not in the AMPLS resource. Data exfiltration cannot be prevented in this mode.''')
+param accessModeSettings accessModeType
+
 @description('Optional. The location of the private link scope. Should be global.')
 param location string = 'global'
 
@@ -16,7 +22,7 @@ param lock lockType
 param roleAssignments roleAssignmentType
 
 @description('Optional. Configuration details for Azure Monitor Resources.')
-param scopedResources array = []
+param scopedResources scopedResourceType
 
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointType
@@ -211,15 +217,20 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource privateLinkScope 'Microsoft.Insights/privateLinkScopes@2019-10-17-preview' = {
+resource privateLinkScope 'microsoft.insights/privateLinkScopes@2021-07-01-preview' = {
   name: name
   location: location
   tags: tags
-  properties: {}
+  properties: {
+    accessModeSettings: accessModeSettings ?? {
+      ingestionAccessMode: empty(privateEndpoints) ? 'Open' : 'PrivateOnly'
+      queryAccessMode: empty(privateEndpoints) ? 'Open' : 'PrivateOnly'
+    }
+  }
 }
 
-module privateLinkScope_scopedResource 'scoped-resource/main.bicep' = [for (scopedResource, index) in scopedResources: {
-  name: '${uniqueString(deployment().name, location)}-PvtLinkScope-ScopedRes-${index}'
+module privateLinkScope_scopedResource 'scoped-resource/main.bicep' = [for (scopedResource, index) in (scopedResources ?? []): {
+  name: '${uniqueString(deployment().name, location)}-PrivateLinkScope-ScopedResource-${index}'
   params: {
     name: scopedResource.name
     privateLinkScopeName: privateLinkScope.name
@@ -395,3 +406,31 @@ type privateEndpointType = {
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
 }[]?
+
+type scopedResourceType = {
+  @description('Required. Name of the private link scoped resource.')
+  name: string
+
+  @description('Required. The resource ID of the scoped Azure monitor resource.')
+  linkedResourceId: string
+}[]?
+
+type accessModeType = {
+  @description('Optional. List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning.')
+  exclusions: {
+    @description('Required. The private endpoint connection name associated to the private endpoint on which we want to apply the specific access mode settings.')
+    privateEndpointConnectionName: string
+
+    @description('Required. Specifies the access mode of ingestion through the specified private endpoint connection in the exclusion.')
+    ingestionAccessMode: 'Open' | 'PrivateOnly'
+
+    @description('Required. Specifies the access mode of queries through the specified private endpoint connection in the exclusion.')
+    queryAccessMode: 'Open' | 'PrivateOnly'
+  }[]?
+
+  @description('Required. Specifies the default access mode of ingestion through associated private endpoints in scope.')
+  ingestionAccessMode: 'Open' | 'PrivateOnly'
+
+  @description('Required. Specifies the default access mode of queries through associated private endpoints in scope.')
+  queryAccessMode: 'Open' | 'PrivateOnly'
+}?

@@ -55,6 +55,17 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: 'global'
+    accessModeSettings: {
+      exclusions: [
+        {
+          ingestionAccessMode: 'PrivateOnly'
+          queryAccessMode: 'PrivateOnly'
+          privateEndpointConnectionName: 'thisisatest'
+        }
+      ]
+      ingestionAccessMode: 'Open'
+      queryAccessMode: 'Open'
+    }
     scopedResources: [
       {
         name: 'scoped1'
@@ -63,6 +74,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     privateEndpoints: [
       {
+        name: 'pe-${namePrefix}'
+        customNetworkInterfaceName: 'nic-pe-${namePrefix}'
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
