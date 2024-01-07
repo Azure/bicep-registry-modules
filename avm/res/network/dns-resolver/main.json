@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "9457647072008128040"
+      "version": "0.24.24.22086",
+      "templateHash": "17067194662081664048"
     },
     "name": "DNS Resolvers",
     "description": "This module deploys a DNS Resolver.",
@@ -55,7 +55,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
             }
           },
           "conditionVersion": {
@@ -293,8 +293,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "4959933150619557451"
+              "version": "0.24.24.22086",
+              "templateHash": "12086001893141712398"
             },
             "name": "DNS Resolver Inbound Endpoint",
             "description": "This module deploys a DNS Resolver Inbound Endpoint.",
@@ -444,8 +444,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "5115868945023493966"
+              "version": "0.24.24.22086",
+              "templateHash": "10188821198018164568"
             },
             "name": "DNS Resolver Outbound Endpoint",
             "description": "This module deploys a DNS Resolver Outbound Endpoint.",
