@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.21.1.54444",
-      "templateHash": "7839005038128499146"
+      "version": "0.24.24.22086",
+      "templateHash": "16201617947579685823"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet).",
@@ -46,7 +46,7 @@
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
-              "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
             }
           },
           "principalId": {
@@ -80,7 +80,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
             }
           },
           "conditionVersion": {
@@ -157,7 +157,7 @@
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to '' to disable metric collection."
             }
           },
           "logAnalyticsDestinationType": {
@@ -300,7 +300,7 @@
     "roleAssignments": {
       "$ref": "#/definitions/roleAssignmentType",
       "metadata": {
-        "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+        "description": "Optional. Array of role assignments to create."
       }
     },
     "tags": {
@@ -497,8 +497,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "16295395838729593723"
+              "version": "0.24.24.22086",
+              "templateHash": "279998742971122360"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet.",
@@ -513,7 +513,7 @@
                   "roleDefinitionIdOrName": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                     }
                   },
                   "principalId": {
@@ -547,7 +547,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -681,7 +681,7 @@
             "roleAssignments": {
               "$ref": "#/definitions/roleAssignmentType",
               "metadata": {
-                "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                "description": "Optional. Array of role assignments to create."
               }
             }
           },
@@ -823,8 +823,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "10220824930947117349"
+              "version": "0.24.24.22086",
+              "templateHash": "853734530125813320"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering.",
@@ -968,8 +968,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "10220824930947117349"
+              "version": "0.24.24.22086",
+              "templateHash": "853734530125813320"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering.",

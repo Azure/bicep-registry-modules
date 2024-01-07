@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "2407812006172168612"
+      "version": "0.24.24.22086",
+      "templateHash": "5924548870637712575"
     },
     "name": "Power BI Dedicated Capacities",
     "description": "This module deploys a Power BI Dedicated Capacity.",
@@ -80,7 +80,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
             }
           },
           "conditionVersion": {
