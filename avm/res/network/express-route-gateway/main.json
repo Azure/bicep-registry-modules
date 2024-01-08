@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "8926356487177848022"
+      "templateHash": "14141757213544356427"
     },
     "name": "Express Route Gateways",
     "description": "This module deploys an Express Route Gateway.",
@@ -170,7 +170,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "lock": {
