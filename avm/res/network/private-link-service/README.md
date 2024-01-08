@@ -452,7 +452,7 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
 | :-- | :-- | :-- |
 | [`autoApproval`](#parameter-autoapproval) | object | The auto-approval list of the private link service. |
 | [`enableProxyProtocol`](#parameter-enableproxyprotocol) | bool | Lets the service provider use tcp proxy v2 to retrieve connection information about the service consumer. Service Provider is responsible for setting up receiver configs to be able to parse the proxy protocol v2 header. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`extendedLocation`](#parameter-extendedlocation) | object | The extended location of the load balancer. |
 | [`fqdns`](#parameter-fqdns) | array | The list of Fqdn. |
 | [`ipConfigurations`](#parameter-ipconfigurations) | array | An array of private link service IP configurations. |
@@ -488,7 +488,7 @@ Lets the service provider use tcp proxy v2 to retrieve connection information ab
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
