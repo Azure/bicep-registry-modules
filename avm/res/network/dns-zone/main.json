@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "1913502883970188988"
+      "templateHash": "4876589289221431730"
     },
     "name": "Public DNS Zones",
     "description": "This module deploys a Public DNS zone.",
@@ -214,7 +214,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
