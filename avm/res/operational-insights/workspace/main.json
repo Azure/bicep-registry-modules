@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "7159205088586642629"
+      "templateHash": "17860197791351568468"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace.",
@@ -1595,7 +1595,7 @@
           "product": "[if(contains(parameters('gallerySolutions')[copyIndex()], 'product'), createObject('value', parameters('gallerySolutions')[copyIndex()].product), createObject('value', 'OMSGallery'))]",
           "publisher": "[if(contains(parameters('gallerySolutions')[copyIndex()], 'publisher'), createObject('value', parameters('gallerySolutions')[copyIndex()].publisher), createObject('value', 'Microsoft'))]",
           "enableTelemetry": {
-            "value": "[parameters('enableTelemetry')]"
+            "value": "[coalesce(tryGet(parameters('gallerySolutions')[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
           }
         },
         "template": {
