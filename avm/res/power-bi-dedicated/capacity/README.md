@@ -326,7 +326,7 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`mode`](#parameter-mode) | string | Mode of the resource. |
@@ -409,7 +409,7 @@ The tier of the SKU.
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
