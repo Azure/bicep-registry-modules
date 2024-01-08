@@ -524,7 +524,7 @@ module vm_azureMonitoringAgentExtension 'extension/main.bicep' = if (extensionMo
   name: '${uniqueString(deployment().name, location)}-VM-AzureMonitoringAgent'
   params: {
     virtualMachineName: vm.name
-    name: 'AzureMonitoringAgent'
+    name: 'AzureMonitorAgent'
     location: location
     publisher: 'Microsoft.Azure.Monitor'
     type: osType == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
