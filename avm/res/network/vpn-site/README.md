@@ -474,7 +474,7 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`deviceProperties`](#parameter-deviceproperties) | object | List of properties of the device. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`ipAddress`](#parameter-ipaddress) | string | The IP-address for the VPN-site. Note: This is a deprecated property, please use the corresponding VpnSiteLinks property instead. |
 | [`isSecuritySite`](#parameter-issecuritysite) | bool | IsSecuritySite flag. |
 | [`location`](#parameter-location) | string | Location where all resources will be created. |
@@ -524,7 +524,7 @@ List of properties of the device.
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
