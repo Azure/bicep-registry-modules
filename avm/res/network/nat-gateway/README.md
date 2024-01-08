@@ -707,8 +707,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `res/network/public-ip-prefix` | Local reference |
 | `br/public:avm/res/network/public-ip-address:0.2.1` | Remote reference |
+| `br/public:avm/res/network/public-ip-prefix:0.1.0` | Remote reference |
 
 ## Data Collection
 

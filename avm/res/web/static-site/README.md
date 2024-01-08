@@ -436,7 +436,7 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
 | [`branch`](#parameter-branch) | string | The branch name of the GitHub repository. |
 | [`buildProperties`](#parameter-buildproperties) | object | Build properties for the static site. |
 | [`customDomains`](#parameter-customdomains) | array | The custom domains associated with this static site. The deployment will fail as long as the validation records are not present. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`enterpriseGradeCdnStatus`](#parameter-enterprisegradecdnstatus) | string | State indicating the status of the enterprise grade CDN serving traffic to the static web app. |
 | [`functionAppSettings`](#parameter-functionappsettings) | object | Function app settings. |
 | [`linkedBackend`](#parameter-linkedbackend) | object | Object with "resourceId" and "location" of the a user defined function app. |
@@ -500,7 +500,7 @@ The custom domains associated with this static site. The deployment will fail as
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
