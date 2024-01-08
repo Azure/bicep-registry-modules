@@ -1,4 +1,4 @@
-name: "avm.res.virtual-machine-images.image-template"
+name: "avm.res.network.front-door-web-application-firewall-policy"
 
 on:
   schedule:
@@ -27,14 +27,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.virtual-machine-images.image-template.yml"
-      - "avm/res/virtual-machine-images/image-template/**"
+      - ".github/workflows/avm.res.network.front-door-web-application-firewall-policy.yml"
+      - "avm/res/network/front-door-web-application-firewall-policy/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/virtual-machine-images/image-template"
-  workflowPath: ".github/workflows/avm.res.virtual-machine-images.image-template.yml"
+  modulePath: "avm/res/network/front-door-web-application-firewall-policy"
+  workflowPath: ".github/workflows/avm.res.network.front-door-web-application-firewall-policy.yml"
 
 concurrency:
   group: ${{ github.workflow }}

@@ -1,4 +1,4 @@
-name: "avm.res.virtual-machine-images.image-template"
+name: "avm.res.network.front-door"
 
 on:
   schedule:
@@ -27,14 +27,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.virtual-machine-images.image-template.yml"
-      - "avm/res/virtual-machine-images/image-template/**"
+      - ".github/workflows/avm.res.network.front-door.yml"
+      - "avm/res/network/front-door/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/virtual-machine-images/image-template"
-  workflowPath: ".github/workflows/avm.res.virtual-machine-images.image-template.yml"
+  modulePath: "avm/res/network/front-door"
+  workflowPath: ".github/workflows/avm.res.network.front-door.yml"
 
 concurrency:
   group: ${{ github.workflow }}

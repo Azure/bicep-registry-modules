@@ -1,11 +1,11 @@
-# Azure Compute Galleries `[Microsoft.Compute/galleries]`
+# Front Door Web Application Firewall (WAF) Policies `[Microsoft.Network/FrontDoorWebApplicationFirewallPolicies]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
 > 
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
-This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).
+This module deploys a Front Door Web Application Firewall (WAF) Policy.
 
 ## Navigation
 
@@ -22,9 +22,7 @@ This module deploys an Azure Compute Gallery (formerly known as Shared Image Gal
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/galleries` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries) |
-| `Microsoft.Compute/galleries/applications` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries/applications) |
-| `Microsoft.Compute/galleries/images` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries/images) |
+| `Microsoft.Network/FrontDoorWebApplicationFirewallPolicies` | [2022-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-05-01/FrontDoorWebApplicationFirewallPolicies) |
 
 ## Usage examples
 
@@ -32,7 +30,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/gallery:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/front-door-web-application-firewall-policy:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -48,11 +46,11 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cgmin'
+module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-door-web-application-firewall-policy:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-nagwafpmin'
   params: {
     // Required parameters
-    name: 'cgmin001'
+    name: 'nagwafpmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -73,7 +71,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "cgmin001"
+      "value": "nagwafpmin001"
     },
     // Non-required parameters
     "location": {
@@ -96,105 +94,78 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cgmax'
+module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-door-web-application-firewall-policy:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-nagwafpmax'
   params: {
     // Required parameters
-    name: 'cgmax001'
+    name: 'nagwafpmax001'
     // Non-required parameters
-    applications: [
-      {
-        name: 'cgmax-appd-001'
-        supportedOSType: 'Linux'
-      }
-      {
-        name: 'cgmax-appd-002'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        supportedOSType: 'Windows'
-      }
-    ]
-    images: [
-      {
-        hyperVGeneration: 'V1'
-        name: 'az-imgd-ws-001'
-        offer: 'WindowsServer'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        sku: '2022-datacenter-azure-edition'
-      }
-      {
-        hyperVGeneration: 'V2'
-        isHibernateSupported: true
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 8
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: 'az-imgd-ws-002'
-        offer: 'WindowsServer'
-        osState: 'Generalized'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        sku: '2022-datacenter-azure-edition-hibernate'
-      }
-      {
-        hyperVGeneration: 'V2'
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 4
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: 'az-imgd-wdtl-001'
-        offer: 'WindowsDesktop'
-        osState: 'Generalized'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsDesktop'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        securityType: 'TrustedLaunch'
-        sku: 'Win11-21H2'
-      }
-      {
-        hyperVGeneration: 'V2'
-        maxRecommendedMemory: 32
-        maxRecommendedvCPUs: 4
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 1
-        name: 'az-imgd-us-001'
-        offer: '0001-com-ubuntu-server-focal'
-        osState: 'Generalized'
-        osType: 'Linux'
-        publisher: 'canonical'
-        sku: '20_04-lts-gen2'
-      }
-    ]
+    customRules: {
+      rules: [
+        {
+          action: 'Block'
+          enabledState: 'Enabled'
+          matchConditions: [
+            {
+              matchValue: [
+                'CH'
+              ]
+              matchVariable: 'RemoteAddr'
+              negateCondition: false
+              operator: 'GeoMatch'
+              selector: '<selector>'
+              transforms: []
+            }
+            {
+              matchValue: [
+                'windows'
+              ]
+              matchVariable: 'RequestHeader'
+              negateCondition: false
+              operator: 'Contains'
+              selector: 'UserAgent'
+              transforms: []
+            }
+            {
+              matchValue: [
+                '?>'
+                '<?php'
+              ]
+              matchVariable: 'QueryString'
+              negateCondition: false
+              operator: 'Contains'
+              transforms: [
+                'Lowercase'
+                'UrlDecode'
+              ]
+            }
+          ]
+          name: 'CustomRule1'
+          priority: 2
+          rateLimitDurationInMinutes: 1
+          rateLimitThreshold: 10
+          ruleType: 'MatchRule'
+        }
+      ]
+    }
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    managedRules: {
+      managedRuleSets: [
+        {
+          ruleSetType: 'Microsoft_BotManagerRuleSet'
+          ruleSetVersion: '1.0'
+        }
+      ]
+    }
+    policySettings: {
+      customBlockResponseBody: 'PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg=='
+      customBlockResponseStatusCode: 200
+      mode: 'Prevention'
+      redirectUrl: 'http://www.bing.com'
     }
     roleAssignments: [
       {
@@ -213,6 +184,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    sku: 'Premium_AzureFrontDoor'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -236,101 +208,58 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "cgmax001"
+      "value": "nagwafpmax001"
     },
     // Non-required parameters
-    "applications": {
-      "value": [
-        {
-          "name": "cgmax-appd-001",
-          "supportedOSType": "Linux"
-        },
-        {
-          "name": "cgmax-appd-002",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "supportedOSType": "Windows"
-        }
-      ]
-    },
-    "images": {
-      "value": [
-        {
-          "hyperVGeneration": "V1",
-          "name": "az-imgd-ws-001",
-          "offer": "WindowsServer",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsServer",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "sku": "2022-datacenter-azure-edition"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "isHibernateSupported": true,
-          "maxRecommendedMemory": 16,
-          "maxRecommendedvCPUs": 8,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 2,
-          "name": "az-imgd-ws-002",
-          "offer": "WindowsServer",
-          "osState": "Generalized",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsServer",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "sku": "2022-datacenter-azure-edition-hibernate"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "maxRecommendedMemory": 16,
-          "maxRecommendedvCPUs": 4,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 2,
-          "name": "az-imgd-wdtl-001",
-          "offer": "WindowsDesktop",
-          "osState": "Generalized",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsDesktop",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "securityType": "TrustedLaunch",
-          "sku": "Win11-21H2"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "maxRecommendedMemory": 32,
-          "maxRecommendedvCPUs": 4,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 1,
-          "name": "az-imgd-us-001",
-          "offer": "0001-com-ubuntu-server-focal",
-          "osState": "Generalized",
-          "osType": "Linux",
-          "publisher": "canonical",
-          "sku": "20_04-lts-gen2"
-        }
-      ]
+    "customRules": {
+      "value": {
+        "rules": [
+          {
+            "action": "Block",
+            "enabledState": "Enabled",
+            "matchConditions": [
+              {
+                "matchValue": [
+                  "CH"
+                ],
+                "matchVariable": "RemoteAddr",
+                "negateCondition": false,
+                "operator": "GeoMatch",
+                "selector": "<selector>",
+                "transforms": []
+              },
+              {
+                "matchValue": [
+                  "windows"
+                ],
+                "matchVariable": "RequestHeader",
+                "negateCondition": false,
+                "operator": "Contains",
+                "selector": "UserAgent",
+                "transforms": []
+              },
+              {
+                "matchValue": [
+                  "?>",
+                  "<?php"
+                ],
+                "matchVariable": "QueryString",
+                "negateCondition": false,
+                "operator": "Contains",
+                "transforms": [
+                  "Lowercase",
+                  "UrlDecode"
+                ]
+              }
+            ],
+            "name": "CustomRule1",
+            "priority": 2,
+            "rateLimitDurationInMinutes": 1,
+            "rateLimitThreshold": 10,
+            "ruleType": "MatchRule"
+          }
+        ]
+      }
     },
     "location": {
       "value": "<location>"
@@ -339,6 +268,24 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedRules": {
+      "value": {
+        "managedRuleSets": [
+          {
+            "ruleSetType": "Microsoft_BotManagerRuleSet",
+            "ruleSetVersion": "1.0"
+          }
+        ]
+      }
+    },
+    "policySettings": {
+      "value": {
+        "customBlockResponseBody": "PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg==",
+        "customBlockResponseStatusCode": 200,
+        "mode": "Prevention",
+        "redirectUrl": "http://www.bing.com"
       }
     },
     "roleAssignments": {
@@ -359,6 +306,9 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
+    },
+    "sku": {
+      "value": "Premium_AzureFrontDoor"
     },
     "tags": {
       "value": {
@@ -384,28 +334,76 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cgwaf'
+module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-door-web-application-firewall-policy:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-nagwafpwaf'
   params: {
     // Required parameters
-    name: 'cgwaf001'
+    name: 'nagwafpwaf001'
     // Non-required parameters
-    applications: [
-      {
-        name: 'cgwaf-appd-001'
-        supportedOSType: 'Windows'
-      }
-    ]
-    images: [
-      {
-        name: 'az-imgd-ws-001'
-        offer: 'WindowsServer'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        sku: '2022-datacenter-azure-edition'
-      }
-    ]
+    customRules: {
+      rules: [
+        {
+          action: 'Block'
+          enabledState: 'Enabled'
+          matchConditions: [
+            {
+              matchValue: [
+                'CH'
+              ]
+              matchVariable: 'RemoteAddr'
+              negateCondition: false
+              operator: 'GeoMatch'
+              selector: '<selector>'
+              transforms: []
+            }
+            {
+              matchValue: [
+                'windows'
+              ]
+              matchVariable: 'RequestHeader'
+              negateCondition: false
+              operator: 'Contains'
+              selector: 'UserAgent'
+              transforms: []
+            }
+            {
+              matchValue: [
+                '?>'
+                '<?php'
+              ]
+              matchVariable: 'QueryString'
+              negateCondition: false
+              operator: 'Contains'
+              transforms: [
+                'Lowercase'
+                'UrlDecode'
+              ]
+            }
+          ]
+          name: 'CustomRule1'
+          priority: 2
+          rateLimitDurationInMinutes: 1
+          rateLimitThreshold: 10
+          ruleType: 'MatchRule'
+        }
+      ]
+    }
     location: '<location>'
+    managedRules: {
+      managedRuleSets: [
+        {
+          ruleSetType: 'Microsoft_BotManagerRuleSet'
+          ruleSetVersion: '1.0'
+        }
+      ]
+    }
+    policySettings: {
+      customBlockResponseBody: 'PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg=='
+      customBlockResponseStatusCode: 200
+      mode: 'Prevention'
+      redirectUrl: 'http://www.bing.com'
+    }
+    sku: 'Premium_AzureFrontDoor'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -429,30 +427,82 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "cgwaf001"
+      "value": "nagwafpwaf001"
     },
     // Non-required parameters
-    "applications": {
-      "value": [
-        {
-          "name": "cgwaf-appd-001",
-          "supportedOSType": "Windows"
-        }
-      ]
-    },
-    "images": {
-      "value": [
-        {
-          "name": "az-imgd-ws-001",
-          "offer": "WindowsServer",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsServer",
-          "sku": "2022-datacenter-azure-edition"
-        }
-      ]
+    "customRules": {
+      "value": {
+        "rules": [
+          {
+            "action": "Block",
+            "enabledState": "Enabled",
+            "matchConditions": [
+              {
+                "matchValue": [
+                  "CH"
+                ],
+                "matchVariable": "RemoteAddr",
+                "negateCondition": false,
+                "operator": "GeoMatch",
+                "selector": "<selector>",
+                "transforms": []
+              },
+              {
+                "matchValue": [
+                  "windows"
+                ],
+                "matchVariable": "RequestHeader",
+                "negateCondition": false,
+                "operator": "Contains",
+                "selector": "UserAgent",
+                "transforms": []
+              },
+              {
+                "matchValue": [
+                  "?>",
+                  "<?php"
+                ],
+                "matchVariable": "QueryString",
+                "negateCondition": false,
+                "operator": "Contains",
+                "transforms": [
+                  "Lowercase",
+                  "UrlDecode"
+                ]
+              }
+            ],
+            "name": "CustomRule1",
+            "priority": 2,
+            "rateLimitDurationInMinutes": 1,
+            "rateLimitThreshold": 10,
+            "ruleType": "MatchRule"
+          }
+        ]
+      }
     },
     "location": {
       "value": "<location>"
+    },
+    "managedRules": {
+      "value": {
+        "managedRuleSets": [
+          {
+            "ruleSetType": "Microsoft_BotManagerRuleSet",
+            "ruleSetVersion": "1.0"
+          }
+        ]
+      }
+    },
+    "policySettings": {
+      "value": {
+        "customBlockResponseBody": "PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg==",
+        "customBlockResponseStatusCode": 200,
+        "mode": "Prevention",
+        "redirectUrl": "http://www.bing.com"
+      }
+    },
+    "sku": {
+      "value": "Premium_AzureFrontDoor"
     },
     "tags": {
       "value": {
@@ -475,43 +525,59 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Azure Compute Gallery. |
+| [`name`](#parameter-name) | string | Name of the Front Door WAF policy. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`applications`](#parameter-applications) | array | Applications to create. |
-| [`description`](#parameter-description) | string | Description of the Azure Shared Image Gallery. |
+| [`customRules`](#parameter-customrules) | object | The custom rules inside the policy. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`images`](#parameter-images) | array | Images to create. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedRules`](#parameter-managedrules) | object | Describes the managedRules structure. |
+| [`policySettings`](#parameter-policysettings) | object | The PolicySettings for policy. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`sharingProfile`](#parameter-sharingprofile) | object | Profile for gallery sharing to subscription or tenant. |
-| [`softDeletePolicy`](#parameter-softdeletepolicy) | object | Soft deletion policy of the gallery. |
-| [`tags`](#parameter-tags) | object | Tags for all resources. |
+| [`sku`](#parameter-sku) | string | The pricing tier of the WAF profile. |
+| [`tags`](#parameter-tags) | object | Resource tags. |
 
 ### Parameter: `name`
 
-Name of the Azure Compute Gallery.
+Name of the Front Door WAF policy.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `applications`
+### Parameter: `customRules`
 
-Applications to create.
-
-- Required: No
-- Type: array
-
-### Parameter: `description`
-
-Description of the Azure Shared Image Gallery.
+The custom rules inside the policy.
 
 - Required: No
-- Type: string
+- Type: object
+- Default:
+  ```Bicep
+  {
+      rules: [
+        {
+          action: 'Block'
+          enabledState: 'Enabled'
+          matchConditions: [
+            {
+              matchValue: [
+                'ZZ'
+              ]
+              matchVariable: 'RemoteAddr'
+              negateCondition: true
+              operator: 'GeoMatch'
+            }
+          ]
+          name: 'ApplyGeoFilter'
+          priority: 100
+          ruleType: 'MatchRule'
+        }
+      ]
+  }
+  ```
 
 ### Parameter: `enableTelemetry`
 
@@ -521,20 +587,13 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `images`
-
-Images to create.
-
-- Required: No
-- Type: array
-
 ### Parameter: `location`
 
 Location for all resources.
 
 - Required: No
 - Type: string
-- Default: `[resourceGroup().location]`
+- Default: `'global'`
 
 ### Parameter: `lock`
 
@@ -571,6 +630,47 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `managedRules`
+
+Describes the managedRules structure.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      managedRuleSets: [
+        {
+          exclusions: []
+          ruleGroupOverrides: []
+          ruleSetAction: 'Block'
+          ruleSetType: 'Microsoft_DefaultRuleSet'
+          ruleSetVersion: '2.1'
+        }
+        {
+          exclusions: []
+          ruleGroupOverrides: []
+          ruleSetType: 'Microsoft_BotManagerRuleSet'
+          ruleSetVersion: '1.0'
+        }
+      ]
+  }
+  ```
+
+### Parameter: `policySettings`
+
+The PolicySettings for policy.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      enabledState: 'Enabled'
+      mode: 'Prevention'
+  }
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -661,23 +761,24 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `sharingProfile`
+### Parameter: `sku`
 
-Profile for gallery sharing to subscription or tenant.
-
-- Required: No
-- Type: object
-
-### Parameter: `softDeletePolicy`
-
-Soft deletion policy of the gallery.
+The pricing tier of the WAF profile.
 
 - Required: No
-- Type: object
+- Type: string
+- Default: `'Standard_AzureFrontDoor'`
+- Allowed:
+  ```Bicep
+  [
+    'Premium_AzureFrontDoor'
+    'Standard_AzureFrontDoor'
+  ]
+  ```
 
 ### Parameter: `tags`
 
-Tags for all resources.
+Resource tags.
 
 - Required: No
 - Type: object
@@ -688,9 +789,9 @@ Tags for all resources.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the deployed image gallery. |
-| `resourceGroupName` | string | The resource group of the deployed image gallery. |
-| `resourceId` | string | The resource ID of the deployed image gallery. |
+| `name` | string | The name of the Front Door WAF policy. |
+| `resourceGroupName` | string | The resource group the Front Door WAF policy was deployed into. |
+| `resourceId` | string | The resource ID of the Front Door WAF policy. |
 
 ## Cross-referenced modules
 
