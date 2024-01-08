@@ -66,7 +66,10 @@ runs:
           Write-Verbose "Invoke function with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Publish-ModuleFromPathToPBR @functionInput -Verbose
+          if($publishOutputs = Publish-ModuleFromPathToPBR @functionInput -Verbose) {
+            Write-Output ('{0}={1}' -f 'version', $publishOutputs.version) >> $env:GITHUB_OUTPUT
+            Write-Output ('{0}={1}' -f 'publishedModuleName', $publishOutputs.publishedModuleName) >> $env:GITHUB_OUTPUT
+          }
 
           Write-Output '::endgroup::'
 
