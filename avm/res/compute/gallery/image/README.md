@@ -24,6 +24,10 @@ This module deploys an Azure Compute Gallery Image Definition.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the image definition. |
+| [`offer`](#parameter-offer) | string | The name of the gallery Image Definition offer. |
+| [`osType`](#parameter-ostype) | string | OS type of the image to be created. |
+| [`publisher`](#parameter-publisher) | string | The name of the gallery Image Definition publisher. |
+| [`sku`](#parameter-sku) | string | The name of the gallery Image Definition SKU. |
 
 **Conditional parameters**
 
@@ -38,32 +42,69 @@ This module deploys an Azure Compute Gallery Image Definition.
 | [`description`](#parameter-description) | string | The description of this gallery Image Definition resource. This property is updatable. |
 | [`endOfLife`](#parameter-endoflife) | string | The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z. |
 | [`eula`](#parameter-eula) | string | The Eula agreement for the gallery Image Definition. Has to be a valid URL. |
-| [`excludedDiskTypes`](#parameter-excludeddisktypes) | array | List of the excluded disk types. E.g. Standard_LRS. |
-| [`hyperVGeneration`](#parameter-hypervgeneration) | string | The hypervisor generation of the Virtual Machine.</p>- If this value is not specified, then it is determined by the securityType parameter.</p>- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1. |
-| [`isAcceleratedNetworkSupported`](#parameter-isacceleratednetworksupported) | string | The image supports accelerated networking.</p>Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.</p>This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types. |
-| [`isHibernateSupported`](#parameter-ishibernatesupported) | string | The image will support hibernation. |
+| [`excludedDiskTypes`](#parameter-excludeddisktypes) | array | List of the excluded disk types (e.g., Standard_LRS). |
+| [`hyperVGeneration`](#parameter-hypervgeneration) | string | The hypervisor generation of the Virtual Machine.
+- If this value is not specified, then it is determined by the securityType parameter.
+- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.
+ |
+| [`isAcceleratedNetworkSupported`](#parameter-isacceleratednetworksupported) | bool | Specify if the image supports accelerated networking.
+Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.
+This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.
+ |
+| [`isHibernateSupported`](#parameter-ishibernatesupported) | bool | Specifiy if the image supports hibernation. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`maxRecommendedMemory`](#parameter-maxrecommendedmemory) | int | The maximum amount of RAM in GB recommended for this image. |
 | [`maxRecommendedvCPUs`](#parameter-maxrecommendedvcpus) | int | The maximum number of the CPU cores recommended for this image. |
 | [`minRecommendedMemory`](#parameter-minrecommendedmemory) | int | The minimum amount of RAM in GB recommended for this image. |
 | [`minRecommendedvCPUs`](#parameter-minrecommendedvcpus) | int | The minimum number of the CPU cores recommended for this image. |
-| [`offer`](#parameter-offer) | string | The name of the gallery Image Definition offer. |
 | [`osState`](#parameter-osstate) | string | This property allows the user to specify whether the virtual machines created under this image are 'Generalized' or 'Specialized'. |
-| [`osType`](#parameter-ostype) | string | OS type of the image to be created. |
 | [`planName`](#parameter-planname) | string | The plan ID. |
 | [`planPublisherName`](#parameter-planpublishername) | string | The publisher ID. |
 | [`privacyStatementUri`](#parameter-privacystatementuri) | string | The privacy statement uri. Has to be a valid URL. |
 | [`productName`](#parameter-productname) | string | The product ID. |
-| [`publisher`](#parameter-publisher) | string | The name of the gallery Image Definition publisher. |
 | [`releaseNoteUri`](#parameter-releasenoteuri) | string | The release note uri. Has to be a valid URL. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`securityType`](#parameter-securitytype) | string | The security type of the image. Requires a hyperVGeneration V2. |
-| [`sku`](#parameter-sku) | string | The name of the gallery Image Definition SKU. |
 | [`tags`](#parameter-tags) | object | Tags for all resources. |
 
 ### Parameter: `name`
 
 Name of the image definition.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `offer`
+
+The name of the gallery Image Definition offer.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `osType`
+
+OS type of the image to be created.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Linux'
+    'Windows'
+  ]
+  ```
+
+### Parameter: `publisher`
+
+The name of the gallery Image Definition publisher.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sku`
+
+The name of the gallery Image Definition SKU.
 
 - Required: Yes
 - Type: string
@@ -88,6 +129,7 @@ The end of life date of the gallery Image Definition. This property can be used 
 
 - Required: No
 - Type: string
+- Default: `''`
 
 ### Parameter: `eula`
 
@@ -98,22 +140,24 @@ The Eula agreement for the gallery Image Definition. Has to be a valid URL.
 
 ### Parameter: `excludedDiskTypes`
 
-List of the excluded disk types. E.g. Standard_LRS.
+List of the excluded disk types (e.g., Standard_LRS).
 
 - Required: No
 - Type: array
+- Default: `[]`
 
 ### Parameter: `hyperVGeneration`
 
-The hypervisor generation of the Virtual Machine.</p>- If this value is not specified, then it is determined by the securityType parameter.</p>- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.
+The hypervisor generation of the Virtual Machine.
+- If this value is not specified, then it is determined by the securityType parameter.
+- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.
+
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'V1'
     'V2'
   ]
@@ -121,33 +165,22 @@ The hypervisor generation of the Virtual Machine.</p>- If this value is not spec
 
 ### Parameter: `isAcceleratedNetworkSupported`
 
-The image supports accelerated networking.</p>Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.</p>This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.
+Specify if the image supports accelerated networking.
+Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.
+This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.
+
 
 - Required: No
-- Type: string
-- Default: `'false'`
-- Allowed:
-  ```Bicep
-  [
-    'false'
-    'true'
-  ]
-  ```
+- Type: bool
+- Default: `False`
 
 ### Parameter: `isHibernateSupported`
 
-The image will support hibernation.
+Specifiy if the image supports hibernation.
 
 - Required: No
-- Type: string
-- Default: `'false'`
-- Allowed:
-  ```Bicep
-  [
-    'false'
-    'true'
-  ]
-  ```
+- Type: bool
+- Default: `False`
 
 ### Parameter: `location`
 
@@ -189,14 +222,6 @@ The minimum number of the CPU cores recommended for this image.
 - Type: int
 - Default: `1`
 
-### Parameter: `offer`
-
-The name of the gallery Image Definition offer.
-
-- Required: No
-- Type: string
-- Default: `'0001-com-ubuntu-server-jammy'`
-
 ### Parameter: `osState`
 
 This property allows the user to specify whether the virtual machines created under this image are 'Generalized' or 'Specialized'.
@@ -209,21 +234,6 @@ This property allows the user to specify whether the virtual machines created un
   [
     'Generalized'
     'Specialized'
-  ]
-  ```
-
-### Parameter: `osType`
-
-OS type of the image to be created.
-
-- Required: No
-- Type: string
-- Default: `'Linux'`
-- Allowed:
-  ```Bicep
-  [
-    'Linux'
-    'Windows'
   ]
   ```
 
@@ -254,14 +264,6 @@ The product ID.
 
 - Required: No
 - Type: string
-
-### Parameter: `publisher`
-
-The name of the gallery Image Definition publisher.
-
-- Required: No
-- Type: string
-- Default: `'canonical'`
 
 ### Parameter: `releaseNoteUri`
 
@@ -375,14 +377,6 @@ The security type of the image. Requires a hyperVGeneration V2.
     'TrustedLaunch'
   ]
   ```
-
-### Parameter: `sku`
-
-The name of the gallery Image Definition SKU.
-
-- Required: No
-- Type: string
-- Default: `'22_04-lts-gen2'`
 
 ### Parameter: `tags`
 
