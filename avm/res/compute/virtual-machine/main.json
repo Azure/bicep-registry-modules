@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "10795179531307040793"
+      "templateHash": "7458372846706074174"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -608,7 +608,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "baseTime": {
@@ -3018,7 +3018,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "AzureMonitoringAgent"
+            "value": "AzureMonitorAgent"
           },
           "location": {
             "value": "[parameters('location')]"
