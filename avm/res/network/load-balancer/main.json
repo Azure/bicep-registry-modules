@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "12106136869047165081"
+      "templateHash": "11386852556160593443"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer.",
@@ -267,7 +267,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "inboundNatRules": {

@@ -325,7 +325,7 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
 | [`dpdTimeoutSeconds`](#parameter-dpdtimeoutseconds) | int | The dead peer detection timeout of this connection in seconds. Setting the timeout to shorter periods will cause IKE to rekey more aggressively, causing the connection to appear to be disconnected in some instances. The general recommendation is to set the timeout between 30 to 45 seconds. |
 | [`enableBgp`](#parameter-enablebgp) | bool | Value to specify if BGP is enabled or not. |
 | [`enablePrivateLinkFastPath`](#parameter-enableprivatelinkfastpath) | bool | Bypass the ExpressRoute gateway when accessing private-links. ExpressRoute FastPath (expressRouteGatewayBypass) must be enabled. Only available when connection connectionType is Express Route. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`expressRouteGatewayBypass`](#parameter-expressroutegatewaybypass) | bool | Bypass ExpressRoute Gateway for data forwarding. Only available when connection connectionType is Express Route. |
 | [`localNetworkGateway2`](#parameter-localnetworkgateway2) | object | The local network gateway. Used for connection type [IPsec]. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -454,7 +454,7 @@ Bypass the ExpressRoute gateway when accessing private-links. ExpressRoute FastP
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool

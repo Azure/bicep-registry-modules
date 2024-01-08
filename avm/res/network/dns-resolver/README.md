@@ -341,7 +341,7 @@ module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`inboundEndpoints`](#parameter-inboundendpoints) | array | Inbound Endpoints for Private DNS Resolver. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -365,7 +365,7 @@ ResourceId of the virtual network to attach the Private DNS Resolver to.
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
