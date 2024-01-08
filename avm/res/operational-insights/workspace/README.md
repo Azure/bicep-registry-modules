@@ -9,6 +9,7 @@ This module deploys a Log Analytics Workspace.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -241,6 +242,23 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       {
         name: 'CustomTableBasic_CL'
         retentionInDays: 60
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
         schema: {
           columns: [
             {
@@ -258,6 +276,23 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       }
       {
         name: 'CustomTableAdvanced_CL'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
         schema: {
           columns: [
             {
@@ -530,6 +565,23 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         {
           "name": "CustomTableBasic_CL",
           "retentionInDays": 60,
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
           "schema": {
             "columns": [
               {
@@ -547,6 +599,23 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         },
         {
           "name": "CustomTableAdvanced_CL",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
           "schema": {
             "columns": [
               {
@@ -840,6 +909,92 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         ]
       }
     ]
+    tables: [
+      {
+        name: 'CustomTableBasic_CL'
+        retentionInDays: 60
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        schema: {
+          columns: [
+            {
+              name: 'TimeGenerated'
+              type: 'DateTime'
+            }
+            {
+              name: 'RawData'
+              type: 'String'
+            }
+          ]
+          name: 'CustomTableBasic_CL'
+        }
+        totalRetentionInDays: 90
+      }
+      {
+        name: 'CustomTableAdvanced_CL'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        schema: {
+          columns: [
+            {
+              name: 'TimeGenerated'
+              type: 'DateTime'
+            }
+            {
+              name: 'EventTime'
+              type: 'DateTime'
+            }
+            {
+              name: 'EventLevel'
+              type: 'String'
+            }
+            {
+              name: 'EventCode'
+              type: 'Int'
+            }
+            {
+              name: 'Message'
+              type: 'String'
+            }
+            {
+              name: 'RawData'
+              type: 'String'
+            }
+          ]
+          name: 'CustomTableAdvanced_CL'
+        }
+      }
+    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -1072,6 +1227,94 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
             "WADServiceFabric*EventTable",
             "WADWindowsEventLogsTable"
           ]
+        }
+      ]
+    },
+    "tables": {
+      "value": [
+        {
+          "name": "CustomTableBasic_CL",
+          "retentionInDays": 60,
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "schema": {
+            "columns": [
+              {
+                "name": "TimeGenerated",
+                "type": "DateTime"
+              },
+              {
+                "name": "RawData",
+                "type": "String"
+              }
+            ],
+            "name": "CustomTableBasic_CL"
+          },
+          "totalRetentionInDays": 90
+        },
+        {
+          "name": "CustomTableAdvanced_CL",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "schema": {
+            "columns": [
+              {
+                "name": "TimeGenerated",
+                "type": "DateTime"
+              },
+              {
+                "name": "EventTime",
+                "type": "DateTime"
+              },
+              {
+                "name": "EventLevel",
+                "type": "String"
+              },
+              {
+                "name": "EventCode",
+                "type": "Int"
+              },
+              {
+                "name": "Message",
+                "type": "String"
+              },
+              {
+                "name": "RawData",
+                "type": "String"
+              }
+            ],
+            "name": "CustomTableAdvanced_CL"
+          }
         }
       ]
     },
@@ -1934,3 +2177,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/operations-management/solution:0.1.0` | Remote reference |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

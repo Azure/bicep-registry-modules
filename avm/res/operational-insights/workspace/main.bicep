@@ -269,12 +269,13 @@ module logAnalyticsWorkspace_tables 'table/main.bicep' = [for (table, index) in 
   params: {
     workspaceName: logAnalyticsWorkspace.name
     name: table.name
-    plan: contains(table, 'plan') ? table.plan : 'Analytics'
-    schema: contains(table, 'schema') ? table.schema : {}
-    retentionInDays: contains(table, 'retentionInDays') ? table.retentionInDays : -1
-    totalRetentionInDays: contains(table, 'totalRetentionInDays') ? table.totalRetentionInDays : -1
-    restoredLogs: contains(table, 'restoredLogs') ? table.restoredLogs : {}
-    searchResults: contains(table, 'searchResults') ? table.searchResults : {}
+    plan: table.?plan
+    schema: table.?schema
+    retentionInDays: table.?retentionInDays
+    totalRetentionInDays: table.?totalRetentionInDays
+    restoredLogs: table.?restoredLogs
+    searchResults: table.?searchResults
+    roleAssignments: table.?roleAssignments
   }
 }]
 
@@ -286,7 +287,7 @@ module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/
     logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
     product: contains(gallerySolution, 'product') ? gallerySolution.product : 'OMSGallery'
     publisher: contains(gallerySolution, 'publisher') ? gallerySolution.publisher : 'Microsoft'
-    enableTelemetry: enableTelemetry
+    enableTelemetry: gallerySolution.?enableTelemetry ?? enableTelemetry
   }
 }]
 
