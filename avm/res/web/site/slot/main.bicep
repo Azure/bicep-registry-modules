@@ -300,7 +300,7 @@ resource slot_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-0
 }]
 
 module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.2' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-app-PrivateEndpoint-${index}'
+  name: '${uniqueString(deployment().name, location)}-Slot-PrivateEndpoint-${index}'
   params: {
     privateLinkServiceConnections: [
       {
@@ -313,7 +313,7 @@ module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.2' 
         }
       }
     ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites'}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(app.id, '/'))}-${name}-${privateEndpoint.?service ?? 'sites'}-${index}'
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
