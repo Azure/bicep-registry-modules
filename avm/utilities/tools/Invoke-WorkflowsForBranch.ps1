@@ -65,10 +65,14 @@ function Invoke-GitHubWorkflow {
         } | ConvertTo-Json
     }
     if ($PSCmdlet.ShouldProcess("GitHub workflow [$WorkflowFileName] for branch [$TargetBranch]", 'Invoke')) {
-        $response = Invoke-RestMethod @requestInputObject -Verbose:$false
-
+        try {
+            $response = Invoke-RestMethod @requestInputObject -Verbose:$false
+        } catch {
+            Write-Error ("Request failed for [$WorkflowFileName]. Response: [{0}]" -f $_.ErrorDetails)
+            return $false
+        }
         if ($response) {
-            Write-Error "Request failed. Reponse: [$response]"
+            Write-Error "Request failed. Response: [$response]"
             return $false
         }
     }
@@ -154,7 +158,7 @@ Trigger all workflows for the given GitHub repository. By default, pipelines are
 Mandatory. The PAT to use to interact with either GitHub / Azure DevOps.
 
 .PARAMETER TargetBranch
-Mandatory. The branch to run the pipelines for (e.g. `main`).
+Optional. The branch to run the pipelines for (e.g. `main`). Defaults to currently checked-out branch.
 
 .PARAMETER PipelineFilter
 Optional. The pipeline files to filter down to. By default only files with a name that starts with 'avm.res.*' are considered. E.g. 'avm.res.*'.
@@ -168,6 +172,9 @@ Optional. The GitHub organization to run the workfows in.
 .PARAMETER RepositoryName
 Optional. The GitHub repository to run the workfows in.
 
+.PARAMETER WorkflowInputs
+Optional. The inputs to pass into the workflows. Defaults to only run static validation.
+
 .EXAMPLE
 Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm.res.*' -WorkflowInputs @{ staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' }
 
@@ -177,6 +184,11 @@ Run all GitHub workflows that start with'avm.res.*' using branch 'feature/branch
 Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm.res.*' -WorkflowInputs @{ staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' } -WhatIf
 
 Only simulate the triggering of all GitHub workflows that start with'avm.res.*' using branch 'feature/branch'. Hence ONLY returns all GitHub status badges.
+
+.EXAMPLE
+Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -RepositoryOwner 'MyFork'
+
+Only simulate the triggering of all GitHub workflows of project [MyFork/bicep-registry-modules] that start with'avm.res.*', using the current locally checked out branch. Also returns all GitHub status badges.
 #>
 function Invoke-WorkflowsForBranch {
 
@@ -185,8 +197,8 @@ function Invoke-WorkflowsForBranch {
         [Parameter(Mandatory = $true)]
         [string] $PersonalAccessToken,
 
-        [Parameter(Mandatory = $true)]
-        [string] $TargetBranch,
+        [Parameter(Mandatory = $false)]
+        [string] $TargetBranch = (git branch --show-current),
 
         [Parameter(Mandatory = $false)]
         [string] $PipelineFilter = 'avm.res.*',
@@ -202,9 +214,9 @@ function Invoke-WorkflowsForBranch {
 
         [Parameter(Mandatory = $false)]
         [hashtable] $WorkflowInputs = @{
-            prerelease           = 'false'
+            staticValidation     = 'true'
             deploymentValidation = 'false'
-            removeDeployment     = 'true'
+            removeDeployment     = 'false'
         }
     )
 
