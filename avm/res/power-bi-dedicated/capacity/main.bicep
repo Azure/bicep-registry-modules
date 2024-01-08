@@ -8,7 +8,7 @@ param name string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Tags of the resource.')

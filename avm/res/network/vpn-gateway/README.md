@@ -401,7 +401,7 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
 | :-- | :-- | :-- |
 | [`bgpSettings`](#parameter-bgpsettings) | object | BGP settings details. |
 | [`enableBgpRouteTranslationForNat`](#parameter-enablebgproutetranslationfornat) | bool | Enable BGP routes translation for NAT on this VPN gateway. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`isRoutingPreferenceInternet`](#parameter-isroutingpreferenceinternet) | bool | Enable routing preference property for the public IP interface of the VPN gateway. |
 | [`location`](#parameter-location) | string | Location where all resources will be created. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -442,7 +442,7 @@ Enable BGP routes translation for NAT on this VPN gateway.
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
