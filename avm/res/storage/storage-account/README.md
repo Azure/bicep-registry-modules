@@ -10,6 +10,7 @@ This module deploys a Storage Account.
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -407,8 +408,46 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         }
       ]
       tables: [
-        'table1'
-        'table2'
+        {
+          name: 'table1'
+          roleAssignments: [
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'Owner'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+            }
+          ]
+        }
+        {
+          name: 'table2'
+          roleAssignments: [
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'Owner'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+            }
+          ]
+        }
       ]
     }
     tags: {
@@ -772,8 +811,46 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           }
         ],
         "tables": [
-          "table1",
-          "table2"
+          {
+            "name": "table1",
+            "roleAssignments": [
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "Owner"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+              }
+            ]
+          },
+          {
+            "name": "table2",
+            "roleAssignments": [
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "Owner"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+              }
+            ]
+          }
         ]
       }
     },
@@ -1369,8 +1446,12 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         }
       ]
       tables: [
-        'table1'
-        'table2'
+        {
+          name: 'table1'
+        }
+        {
+          name: 'table2'
+        }
       ]
     }
     tags: {
@@ -1658,8 +1739,12 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           }
         ],
         "tables": [
-          "table1",
-          "table2"
+          {
+            "name": "table1"
+          },
+          {
+            "name": "table2"
+          }
         ]
       }
     },
@@ -2631,3 +2716,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 This is a generic module for deploying a Storage Account. Any customization for different storage needs (such as a diagnostic or other storage account) need to be done through the Archetype.
 The hierarchical namespace of the storage account (see parameter `enableHierarchicalNamespace`), can be only set at creation time.
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
