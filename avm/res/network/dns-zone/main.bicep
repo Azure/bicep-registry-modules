@@ -49,7 +49,7 @@ param tags object?
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 var builtInRoleNames = {

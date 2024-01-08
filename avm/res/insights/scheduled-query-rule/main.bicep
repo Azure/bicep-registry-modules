@@ -147,6 +147,7 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = queryRule.location
+
 // =============== //
 //   Definitions   //
 // =============== //
