@@ -203,8 +203,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         }
       ]
       tables: [
-        'table1'
-        'table2'
+        {
+          name: 'table1'
+        }
+        {
+          name: 'table2'
+        }
       ]
     }
     queueServices: {

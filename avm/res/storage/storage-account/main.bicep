@@ -444,7 +444,7 @@ module storageAccount_fileServices 'file-service/main.bicep' = if (!empty(fileSe
   name: '${uniqueString(deployment().name, location)}-Storage-FileServices'
   params: {
     storageAccountName: storageAccount.name
-    diagnosticSettings: blobServices.?diagnosticSettings
+    diagnosticSettings: fileServices.?diagnosticSettings
     protocolSettings: fileServices.?protocolSettings
     shareDeleteRetentionPolicy: fileServices.?shareDeleteRetentionPolicy
     shares: fileServices.?shares
@@ -456,7 +456,7 @@ module storageAccount_queueServices 'queue-service/main.bicep' = if (!empty(queu
   name: '${uniqueString(deployment().name, location)}-Storage-QueueServices'
   params: {
     storageAccountName: storageAccount.name
-    diagnosticSettings: blobServices.?diagnosticSettings
+    diagnosticSettings: queueServices.?diagnosticSettings
     queues: queueServices.?queues
   }
 }
@@ -466,7 +466,7 @@ module storageAccount_tableServices 'table-service/main.bicep' = if (!empty(tabl
   name: '${uniqueString(deployment().name, location)}-Storage-TableServices'
   params: {
     storageAccountName: storageAccount.name
-    diagnosticSettings: blobServices.?diagnosticSettings
+    diagnosticSettings: tableServices.?diagnosticSettings
     tables: tableServices.?tables
   }
 }

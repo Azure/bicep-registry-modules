@@ -51,11 +51,12 @@ resource tableServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings
   scope: tableServices
 }]
 
-module tableServices_tables 'table/main.bicep' = [for (tableName, index) in tables: {
+module tableServices_tables 'table/main.bicep' = [for (table, index) in tables: {
   name: '${deployment().name}-Table-${index}'
   params: {
-    name: tableName
+    name: table.name
     storageAccountName: storageAccount.name
+    roleAssignments: table.?roleAssignments
   }
 }]
 
