@@ -23,7 +23,7 @@ runs:
 
           # Set fucntion input parameters
           $functionInput = @{
-              excludedRegions = @{"westeurope","westus2","eastus2"}
+              excludedRegions = @("westeurope","westus2","eastus2")
               pairedRegionsOnly = $true
           }
 
