@@ -201,7 +201,6 @@ Size of the function container.
 
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `customDomainVerificationId`
 
@@ -687,11 +686,9 @@ Allow or block all public traffic.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
   ]
@@ -810,7 +807,6 @@ The resource ID of the app service plan to use for the slot.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `setAzureWebJobsDashboard`
 

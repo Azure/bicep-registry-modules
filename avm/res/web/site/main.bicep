@@ -111,7 +111,7 @@ param clientCertMode string = 'Optional'
 param cloningInfo object?
 
 @description('Optional. Size of the function container.')
-param containerSize int = -1
+param containerSize int?
 
 @description('Optional. Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification.')
 param customDomainVerificationId string?
@@ -146,11 +146,10 @@ param hybridConnectionRelays array?
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
-  ''
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string?
 
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
@@ -209,7 +208,7 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
     clientCertExclusionPaths: clientCertExclusionPaths
     clientCertMode: clientCertMode
     cloningInfo: cloningInfo
-    containerSize: containerSize != -1 ? containerSize : null
+    containerSize: containerSize
     customDomainVerificationId: customDomainVerificationId
     dailyMemoryTimeQuota: dailyMemoryTimeQuota
     enabled: enabled
@@ -277,14 +276,14 @@ module app_slots 'slot/main.bicep' = [for (slot, index) in (slots ?? []): {
     clientCertExclusionPaths: slot.?clientCertExclusionPaths
     clientCertMode: contains(slot, 'clientCertMode') ? slot.clientCertMode : 'Optional'
     cloningInfo: slot.?cloningInfo
-    containerSize: contains(slot, 'containerSize') ? slot.containerSize : -1
+    containerSize: slot.?containerSize
     customDomainVerificationId: slot.?customDomainVerificationId
     dailyMemoryTimeQuota: slot.?dailyMemoryTimeQuota
     enabled: contains(slot, 'enabled') ? slot.enabled : true
     enableTelemetry: slot.?enableTelemetry ?? enableTelemetry
     hostNameSslStates: slot.?hostNameSslStates
     hyperV: contains(slot, 'hyperV') ? slot.hyperV : false
-    publicNetworkAccess: contains(slot, 'publicNetworkAccess') ? slot.publicNetworkAccess : ''
+    publicNetworkAccess: contains(slot, 'publicNetworkAccess') ? slot.publicNetworkAccess : ((!empty(slot.privateEndpoints) || !empty(privateEndpoints)) ? 'Disabled' : 'Enabled')
     redundancyMode: contains(slot, 'redundancyMode') ? slot.redundancyMode : 'None'
     vnetContentShareEnabled: contains(slot, 'vnetContentShareEnabled') ? slot.vnetContentShareEnabled : false
     vnetImagePullEnabled: contains(slot, 'vnetImagePullEnabled') ? slot.vnetImagePullEnabled : false
@@ -298,7 +297,7 @@ module app_basicPublishingCredentialsPolicies 'basic-publishing-credentials-poli
   params: {
     webAppName: app.name
     name: basicPublishingCredentialsPolicy.name
-    allow: contains(basicPublishingCredentialsPolicy, 'allow') ? basicPublishingCredentialsPolicy.allow : null
+    allow: basicPublishingCredentialsPolicy.?allow
     location: location
   }
 }]
@@ -308,7 +307,7 @@ module app_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep'
   params: {
     hybridConnectionResourceId: hybridConnectionRelay.resourceId
     appName: app.name
-    sendKeyName: contains(hybridConnectionRelay, 'sendKeyName') ? hybridConnectionRelay.sendKeyName : null
+    sendKeyName: hybridConnectionRelay.?sendKeyName
   }
 }]
 

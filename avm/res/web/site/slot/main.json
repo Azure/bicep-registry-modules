@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "1257947764515337625"
+      "templateHash": "12943294240141026832"
     },
     "name": "Web/Function App Deployment Slots",
     "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -444,7 +444,7 @@
     },
     "serverFarmResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID of the app service plan to use for the slot."
       }
@@ -605,7 +605,7 @@
     },
     "containerSize": {
       "type": "int",
-      "defaultValue": -1,
+      "nullable": true,
       "metadata": {
         "description": "Optional. Size of the function container."
       }
@@ -654,11 +654,10 @@
     },
     "publicNetworkAccess": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
         "Enabled",
-        "Disabled",
-        ""
+        "Disabled"
       ],
       "metadata": {
         "description": "Optional. Allow or block all public traffic."
@@ -756,7 +755,7 @@
         "clientCertExclusionPaths": "[parameters('clientCertExclusionPaths')]",
         "clientCertMode": "[parameters('clientCertMode')]",
         "cloningInfo": "[parameters('cloningInfo')]",
-        "containerSize": "[if(not(equals(parameters('containerSize'), -1)), parameters('containerSize'), null())]",
+        "containerSize": "[parameters('containerSize')]",
         "customDomainVerificationId": "[parameters('customDomainVerificationId')]",
         "dailyMemoryTimeQuota": "[parameters('dailyMemoryTimeQuota')]",
         "enabled": "[parameters('enabled')]",
@@ -1142,7 +1141,9 @@
           "name": {
             "value": "[coalesce(parameters('basicPublishingCredentialsPolicies'), createArray())[copyIndex()].name]"
           },
-          "allow": "[if(contains(coalesce(parameters('basicPublishingCredentialsPolicies'), createArray())[copyIndex()], 'allow'), createObject('value', coalesce(parameters('basicPublishingCredentialsPolicies'), createArray())[copyIndex()].allow), createObject('value', null()))]",
+          "allow": {
+            "value": "[tryGet(coalesce(parameters('basicPublishingCredentialsPolicies'), createArray())[copyIndex()], 'allow')]"
+          },
           "location": {
             "value": "[parameters('location')]"
           }
@@ -1269,7 +1270,9 @@
           "slotName": {
             "value": "[parameters('name')]"
           },
-          "sendKeyName": "[if(contains(coalesce(parameters('hybridConnectionRelays'), createArray())[copyIndex()], 'sendKeyName'), createObject('value', coalesce(parameters('hybridConnectionRelays'), createArray())[copyIndex()].sendKeyName), createObject('value', null()))]"
+          "sendKeyName": {
+            "value": "[tryGet(coalesce(parameters('hybridConnectionRelays'), createArray())[copyIndex()], 'sendKeyName')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

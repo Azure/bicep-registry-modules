@@ -22,7 +22,7 @@ param location string = resourceGroup().location
 param kind string
 
 @description('Optional. The resource ID of the app service plan to use for the slot.')
-param serverFarmResourceId string = ''
+param serverFarmResourceId string?
 
 @description('Optional. Configures a slot to accept only HTTPS requests. Issues redirect for HTTP requests.')
 param httpsOnly bool = true
@@ -96,7 +96,7 @@ param clientCertMode string = 'Optional'
 param cloningInfo object?
 
 @description('Optional. Size of the function container.')
-param containerSize int = -1
+param containerSize int?
 
 @description('Optional. Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification.')
 param customDomainVerificationId string?
@@ -120,9 +120,8 @@ param hyperV bool = false
 @allowed([
   'Enabled'
   'Disabled'
-  ''
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string?
 
 @description('Optional. Site redundancy mode.')
 @allowed([
@@ -193,7 +192,7 @@ resource slot 'Microsoft.Web/sites/slots@2022-09-01' = {
     clientCertExclusionPaths: clientCertExclusionPaths
     clientCertMode: clientCertMode
     cloningInfo: cloningInfo
-    containerSize: containerSize != -1 ? containerSize : null
+    containerSize: containerSize
     customDomainVerificationId: customDomainVerificationId
     dailyMemoryTimeQuota: dailyMemoryTimeQuota
     enabled: enabled
@@ -236,7 +235,7 @@ module slot_basicPublishingCredentialsPolicies 'basic-publishing-credentials-pol
     appName: app.name
     slotName: slot.name
     name: basicPublishingCredentialsPolicy.name
-    allow: contains(basicPublishingCredentialsPolicy, 'allow') ? basicPublishingCredentialsPolicy.allow : null
+    allow: basicPublishingCredentialsPolicy.?allow
     location: location
   }
 }]
@@ -246,7 +245,7 @@ module slot_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep
     hybridConnectionResourceId: hybridConnectionRelay.resourceId
     appName: app.name
     slotName: slot.name
-    sendKeyName: contains(hybridConnectionRelay, 'sendKeyName') ? hybridConnectionRelay.sendKeyName : null
+    sendKeyName: hybridConnectionRelay.?sendKeyName
   }
 }]
 
