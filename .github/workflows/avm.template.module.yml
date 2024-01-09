@@ -106,6 +106,8 @@ jobs:
       - name: "Set deployment location"
         id: set-deployment-location
         uses: ./.github/actions/templates/avm-setDeploymentLocation
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: "Run deployment validation with test file [${{ matrix.testCases.path }}]"
         uses: ./.github/actions/templates/avm-validateModuleDeployment
