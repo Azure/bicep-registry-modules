@@ -33,7 +33,7 @@ runs:
 
           $location = $regions[$index].Location
 
-          Write-Verbose "Publishing output: $deployCompressedOutput" -Verbose
+          Write-Verbose "Publishing output: $location" -Verbose
           Write-Output ('{0}={1}' -f 'deploymentLocation', $location) >> $env:GITHUB_OUTPUT
 
           Write-Output '::endgroup::'

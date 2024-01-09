@@ -62,7 +62,7 @@ function Get-AzRecommendedRegions {
 
   if ($pairedRegionsOnly) {
     # Filter regions where PairedRegionName is not null
-    $recommendedRegions = $recommendedRegions | Where-Object { $_.PairedRegion -ne $null }
+    $recommendedRegions = $recommendedRegions | Where-Object { $null -ne $_.PairedRegion }
     Write-Host "Paired regions only: $($recommendedRegions.Location)"
   }
 
