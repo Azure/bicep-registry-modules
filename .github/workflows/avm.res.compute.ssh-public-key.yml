@@ -61,19 +61,11 @@ jobs:
         uses: ./.github/actions/templates/avm-getModuleTestFiles
         with:
           modulePath: "${{ env.modulePath }}"
-      - name: Set environment
-        uses: ./.github/actions/templates/avm-setEnvironment
-      - name: "Set deployment location"
-        id: set-deployment-location
-        uses: ./.github/actions/templates/avm-setDeploymentLocation
-        env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
     outputs:
       workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
       moduleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
       psRuleModuleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.psRuleModuleTestFilePaths }}
       modulePath: "${{ env.modulePath }}"
-      deploymentLocation: ${{ steps.set-deployment-location.outputs.deploymentLocation }}
 
 
   ##############################
@@ -89,5 +81,4 @@ jobs:
       moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
       psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
       modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath}}"
-      deploymentLocation: "${{ needs.job_initialize_pipeline.outputs.deploymentLocation}}"
     secrets: inherit
