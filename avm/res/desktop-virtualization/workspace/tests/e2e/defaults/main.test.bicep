@@ -21,7 +21,7 @@ param location string = deployment().location
 param serviceShort string = 'wsmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = 'tst' //'#_namePrefix_#'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -47,7 +47,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     location: location
     tags: {}
     applicationGroupReferences: []
-    description: 'desc.'
+    description: 'description'
     friendlyName: 'friendlyName'
     publicNetworkAccess: 'Enabled'
     privateEndpoints: []
@@ -57,4 +57,3 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     enableTelemetry: true
   }
 }]
-

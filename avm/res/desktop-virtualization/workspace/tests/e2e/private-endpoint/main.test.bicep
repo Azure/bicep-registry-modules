@@ -9,7 +9,7 @@ metadata description = 'This instance deploys the module with Private Endpoints.
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'avm-ws-rg'//'dep-${namePrefix}-workspace-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-workspace-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
@@ -77,4 +77,3 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     }
   }
 }]
-
