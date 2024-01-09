@@ -1,13 +1,6 @@
 name: "Set Deplyoment Location"
 description: "Set the deployment location for the module validation"
 
-inputs:
-  excludedRegions:
-    description: "Regions to exclude from deployment"
-    required: false
-    default: "westeurope","westus2","eastus2"
-
-
 runs:
   using: "composite"
   steps:
@@ -30,7 +23,7 @@ runs:
 
           # Set fucntion input parameters
           $functionInput = @{
-              excludedRegions = ${{ inputs.excludedRegions }}
+              excludedRegions = @{"westeurope","westus2","eastus2"}
               pairedRegionsOnly = $true
           }
 
