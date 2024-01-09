@@ -18,6 +18,7 @@ runs:
         enable-AzPSSession: true
 
     - name: "Set Deployment Location"
+      uses: azure/powershell@v1
       with:
           azPSVersion: "latest"
           inlineScript: |
