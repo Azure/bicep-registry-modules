@@ -1,5 +1,13 @@
+metadata name = 'Azure Virtual Desktop Application Group'
+metadata description = 'This module deploys an Azure Virtual Desktop Application Group.'
+metadata owner = 'Azure/module-maintainers'
+
+// ================ //
+// Parameters       //
+// ================ //
+
 @sys.description('Required. Name of the Application Group to create this application in.')
-@minLength(1)
+@minLength(3)
 param name string
 
 @sys.description('Optional. Location for all resources.')
@@ -18,59 +26,27 @@ param hostpoolName string
 @sys.description('Optional. The friendly name of the Application Group to be created.')
 param friendlyName string = ''
 
-@sys.description('Optional. The description of the Application Group to be created.')
-param description string = ''
+@sys.description('Optional. Description of the application group')
+param description string
 
-@sys.description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalIds\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-param roleAssignments array = []
-
-// @sys.description('Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely.')
-// @minValue(0)
-// @maxValue(365)
-// param diagnosticLogsRetentionInDays int = 365
-
-@sys.description('Optional. Resource ID of the diagnostic storage account.')
-param diagnosticStorageAccountId string = ''
-
-@sys.description('Optional. Resource ID of log analytics.')
-param diagnosticWorkspaceId string = ''
-
-@sys.description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-param diagnosticEventHubAuthorizationRuleId string = ''
-
-@sys.description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category.')
-param diagnosticEventHubName string = ''
-
-@allowed([
-  ''
-  'CanNotDelete'
-  'ReadOnly'
-])
-@sys.description('Optional. Specify the type of lock.')
-param lock string = ''
-
-@sys.description('Optional. Tags of the resource.')
+@sys.description('Optional. Tags of the application group.')
 param tags object = {}
 
-@sys.description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+@sys.description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+param roleAssignments roleAssignmentType
 
-@sys.description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource.')
-@allowed([
-  'allLogs'
-  'Checkpoint'
-  'Error'
-  'Management'
-])
-param diagnosticLogCategoriesToEnable array = [
-  'allLogs'
-]
+@sys.description('Optional. Lock settings of the application group.')
+param lock lockType
 
-@sys.description('Optional. List of applications to be created in the Application Group.')
-param applications array = []
+@sys.description('Optional. Enable telemetry.')
+param enableTelemetry bool = true
 
-@sys.description('Optional. The name of the diagnostic setting, if deployed. If left empty, it defaults to "<resourceName>-diagnosticSettings".')
-param diagnosticSettingsName string = ''
+@sys.description('Optional. The diagnostic settings of the service.')
+param diagnosticSettings diagnosticSettingType
+
+// =========== //
+// Variables   //
+// =========== //
 
 var builtInRoleNames = {
   'Application Group Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ca6382a4-1721-4bcf-a114-ff0c70227b6b')
@@ -101,97 +77,55 @@ var builtInRoleNames = {
   'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
+// ============ //
+// Dependencies //
+// ============ //
 
-var diagnosticsLogsSpecified = [for category in filter(diagnosticLogCategoriesToEnable, item => item != 'allLogs'): {
-  category: category
-  enabled: true
-  /*retentionPolicy: {
-      enabled: true
-      days: diagnosticLogsRetentionInDays
-  }*/
-}]
-
-var diagnosticsLogs = contains(diagnosticLogCategoriesToEnable, 'allLogs') ? [
-  {
-    categoryGroup: 'allLogs'
-    enabled: true
-    /*retentionPolicy: {
-      enabled: true
-      days: diagnosticLogsRetentionInDays
-  }*/
-  }
-] : diagnosticsLogsSpecified
-
-var enableReferencedModulesTelemetry = false
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.destopvirtualization-ag.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
       contentVersion: '1.0.0.0'
       resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
     }
   }
 }
 
-resource appGroup_hostpool 'Microsoft.DesktopVirtualization/hostPools@2022-09-09' existing = {
+resource applicationGroup_hostpool 'Microsoft.DesktopVirtualization/hostPools@2022-09-09' existing = {
   name: hostpoolName
 }
 
-resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2022-09-09' = {
+resource applicationGroup 'Microsoft.DesktopVirtualization/applicationGroups@2023-09-05' = {
   name: name
   location: location
   tags: tags
   properties: {
-    hostPoolArmPath: appGroup_hostpool.id
+    hostPoolArmPath: applicationGroup_hostpool.id
     friendlyName: friendlyName
     description: description
     applicationGroupType: applicationGroupType
   }
 }
 
-resource appGroup_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock)) {
-  name: '${appGroup.name}-${lock}-lock'
+resource applicationGroup_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
   properties: {
-    level: any(lock)
-    notes: lock == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot modify the resource or child resources.'
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
   }
-  scope: appGroup
+  scope: applicationGroup
 }
 
-resource appGroup_diagnosticSettings 'Microsoft.Insights/diagnosticsettings@2021-05-01-preview' = if ((!empty(diagnosticStorageAccountId)) || (!empty(diagnosticWorkspaceId)) || (!empty(diagnosticEventHubAuthorizationRuleId)) || (!empty(diagnosticEventHubName))) {
-  name: !empty(diagnosticSettingsName) ? diagnosticSettingsName : '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: !empty(diagnosticStorageAccountId) ? diagnosticStorageAccountId : null
-    workspaceId: !empty(diagnosticWorkspaceId) ? diagnosticWorkspaceId : null
-    eventHubAuthorizationRuleId: !empty(diagnosticEventHubAuthorizationRuleId) ? diagnosticEventHubAuthorizationRuleId : null
-    eventHubName: !empty(diagnosticEventHubName) ? diagnosticEventHubName : null
-    logs: diagnosticsLogs
-  }
-  scope: appGroup
-}
-
-// module appGroup_applications 'applications/deploy.bicep' = [for (application, index) in applications: {
-//   name: '${uniqueString(deployment().name, location)}-AppGroup-App-${index}'
-//   params: {
-//     name: application.name
-//     appGroupName: appGroup.name
-//     description: contains(application, 'description') ? application.description : ''
-//     friendlyName: contains(application, 'friendlyName') ? application.friendlyName : appGroup.name
-//     filePath: application.filePath
-//     commandLineSetting: contains(application, 'commandLineSetting') ? application.commandLineSetting : 'DoNotAllow'
-//     commandLineArguments: contains(application, 'commandLineArguments') ? application.commandLineArguments : ''
-//     showInPortal: contains(application, 'showInPortal') ? application.showInPortal : false
-//     iconPath: contains(application, 'iconPath') ? application.iconPath : application.filePath
-//     iconIndex: contains(application, 'iconIndex') ? application.iconIndex : 0
-//     enableDefaultTelemetry: enableReferencedModulesTelemetry
-//   }
-// }]
-
-resource appGroup_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(appGroup.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+resource applicationGroup_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
+  name: guid(applicationGroup.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
   properties: {
     roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
     principalId: roleAssignment.principalId
@@ -201,17 +135,113 @@ resource appGroup_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-
     conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
     delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
   }
-  scope: appGroup
+  scope: applicationGroup
 }]
 
-@sys.description('The resource ID of the AVD application group.')
-output resourceId string = appGroup.id
+resource applicationGroup_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+  properties: {
+    storageAccountId: diagnosticSetting.?storageAccountResourceId
+    workspaceId: diagnosticSetting.?workspaceResourceId
+    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+    eventHubName: diagnosticSetting.?eventHubName
+    logs: diagnosticSetting.?logCategoriesAndGroups ?? [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+  }
+  scope: applicationGroup
+}]
 
-@sys.description('The resource group the AVD application group was deployed into.')
+// =========== //
+// Outputs     //
+// =========== //
+
+@sys.description('The resource ID of the scaling plan.')
+output resourceId string = applicationGroup.id
+
+@sys.description('The name of the resource group the scaling plan was created in.')
 output resourceGroupName string = resourceGroup().name
 
-@sys.description('The name of the AVD application group.')
-output name string = appGroup.name
+@sys.description('The name of the scaling plan.')
+output name string = applicationGroup.name
 
-@sys.description('The location the resource was deployed into.')
-output location string = appGroup.location
+@sys.description('The location of the scaling plan.')
+output location string = applicationGroup.location
+
+// ================ //
+// Definitions      //
+// ================ //
+
+type diagnosticSettingType = {
+  @sys.description('Optional. The name of diagnostic setting.')
+  name: string?
+
+  @sys.description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
+  logCategoriesAndGroups: {
+    @sys.description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
+    category: string?
+
+    @sys.description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
+    categoryGroup: string?
+  }[]?
+
+  @sys.description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
+  metricCategories: {
+    @sys.description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
+    category: string
+  }[]?
+
+  @sys.description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
+  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics' | null)?
+
+  @sys.description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+  workspaceResourceId: string?
+
+  @sys.description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+  storageAccountResourceId: string?
+
+  @sys.description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
+  eventHubAuthorizationRuleResourceId: string?
+
+  @sys.description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+  eventHubName: string?
+
+  @sys.description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
+  marketplacePartnerResourceId: string?
+}[]?
+
+type roleAssignmentType = {
+  @sys.description('Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.')
+  roleDefinitionIdOrName: string
+
+  @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
+  principalId: string
+
+  @sys.description('Optional. The principal type of the assigned principal ID.')
+  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device' | null)?
+
+  @sys.description('Optional. The description of the role assignment.')
+  description: string?
+
+  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
+  condition: string?
+
+  @sys.description('Optional. Version of the condition.')
+  conditionVersion: '2.0'?
+
+  @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
+  delegatedManagedIdentityResourceId: string?
+}[]?
+
+type lockType = {
+  @sys.description('Optional. Specify the name of lock.')
+  name: string?
+
+  @sys.description('Optional. Specify the type of lock.')
+  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
+}?
