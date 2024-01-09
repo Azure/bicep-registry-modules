@@ -66,6 +66,8 @@ jobs:
       - name: "Set deployment location"
         id: set-deployment-location
         uses: ./.github/actions/templates/avm-setDeploymentLocation
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
     outputs:
       workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
       moduleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
