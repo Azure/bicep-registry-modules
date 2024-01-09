@@ -19,7 +19,7 @@ runs:
           Write-Output '::group::Get Recommended Regions'
 
           # Load used functions
-          . (Join-Path$env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-AzRecommendedRegions.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-AzRecommendedRegions.ps1')
 
           # Set fucntion input parameters
           $functionInput = @{
