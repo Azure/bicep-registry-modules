@@ -31,37 +31,37 @@ param httpsOnly bool = true
 param clientAffinityEnabled bool = true
 
 @description('Optional. The resource ID of the app service environment to use for this resource.')
-param appServiceEnvironmentResourceId string = ''
+param appServiceEnvironmentResourceId string?
 
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
 @description('Optional. The resource ID of the assigned identity to be used to access a key vault with.')
-param keyVaultAccessIdentityResourceId string = ''
+param keyVaultAccessIdentityResourceId string?
 
 @description('Optional. Checks if Customer provided storage account is required.')
 param storageAccountRequired bool = false
 
 @description('Optional. Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}.')
-param virtualNetworkSubnetId string = ''
+param virtualNetworkSubnetId string?
 
 @description('Optional. The site config object.')
-param siteConfig object = {}
+param siteConfig object?
 
 @description('Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.')
-param storageAccountResourceId string = ''
+param storageAccountResourceId string?
 
 @description('Optional. Resource ID of the app insight to leverage for this resource.')
-param appInsightResourceId string = ''
+param appInsightResourceId string?
 
 @description('Optional. For function apps. If true the app settings "AzureWebJobsDashboard" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons.')
 param setAzureWebJobsDashboard bool = contains(kind, 'functionapp') ? true : false
 
 @description('Optional. The app settings-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING.')
-param appSettingsKeyValuePairs object = {}
+param appSettingsKeyValuePairs object?
 
 @description('Optional. The auth settings V2 configuration.')
-param authSettingV2Configuration object = {}
+param authSettingV2Configuration object?
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -82,7 +82,7 @@ param diagnosticSettings diagnosticSettingType
 param clientCertEnabled bool = false
 
 @description('Optional. Client certificate authentication comma-separated exclusion paths.')
-param clientCertExclusionPaths string = ''
+param clientCertExclusionPaths string?
 
 @description('Optional. This composes with ClientCertEnabled setting.</p>- ClientCertEnabled: false means ClientCert is ignored.</p>- ClientCertEnabled: true and ClientCertMode: Required means ClientCert is required.</p>- ClientCertEnabled: true and ClientCertMode: Optional means ClientCert is optional or accepted.')
 @allowed([
@@ -93,16 +93,16 @@ param clientCertExclusionPaths string = ''
 param clientCertMode string = 'Optional'
 
 @description('Optional. If specified during app creation, the app is cloned from a source app.')
-param cloningInfo object = {}
+param cloningInfo object?
 
 @description('Optional. Size of the function container.')
 param containerSize int = -1
 
 @description('Optional. Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification.')
-param customDomainVerificationId string = ''
+param customDomainVerificationId string?
 
 @description('Optional. Maximum allowed daily memory-time quota (applicable on dynamic apps only).')
-param dailyMemoryTimeQuota int = -1
+param dailyMemoryTimeQuota int?
 
 @description('Optional. Setting this value to false disables the app (takes the app offline).')
 param enabled bool = true
@@ -111,7 +111,7 @@ param enabled bool = true
 param enableTelemetry bool = true
 
 @description('Optional. Hostname SSL states are used to manage the SSL bindings for app\'s hostnames.')
-param hostNameSslStates array = []
+param hostNameSslStates array?
 
 @description('Optional. Hyper-V sandbox.')
 param hyperV bool = false
@@ -135,7 +135,7 @@ param publicNetworkAccess string = ''
 param redundancyMode string = 'None'
 
 @description('Optional. The site publishing credential policy names which are associated with the site slot.')
-param basicPublishingCredentialsPolicies array = []
+param basicPublishingCredentialsPolicies array?
 
 @description('Optional. To enable accessing content over virtual network.')
 param vnetContentShareEnabled bool = false
@@ -147,7 +147,7 @@ param vnetImagePullEnabled bool = false
 param vnetRouteAllEnabled bool = false
 
 @description('Optional. Names of hybrid connection relays to connect app with.')
-param hybridConnectionRelays array = []
+param hybridConnectionRelays array?
 
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
@@ -186,16 +186,16 @@ resource slot 'Microsoft.Web/sites/slots@2022-09-01' = {
       id: appServiceEnvironmentResourceId
     } : null
     storageAccountRequired: storageAccountRequired
-    keyVaultReferenceIdentity: !empty(keyVaultAccessIdentityResourceId) ? keyVaultAccessIdentityResourceId : any(null)
-    virtualNetworkSubnetId: !empty(virtualNetworkSubnetId) ? virtualNetworkSubnetId : any(null)
+    keyVaultReferenceIdentity: keyVaultAccessIdentityResourceId
+    virtualNetworkSubnetId: virtualNetworkSubnetId
     siteConfig: siteConfig
     clientCertEnabled: clientCertEnabled
-    clientCertExclusionPaths: !empty(clientCertExclusionPaths) ? clientCertExclusionPaths : null
+    clientCertExclusionPaths: clientCertExclusionPaths
     clientCertMode: clientCertMode
-    cloningInfo: !empty(cloningInfo) ? cloningInfo : null
+    cloningInfo: cloningInfo
     containerSize: containerSize != -1 ? containerSize : null
-    customDomainVerificationId: !empty(customDomainVerificationId) ? customDomainVerificationId : null
-    dailyMemoryTimeQuota: dailyMemoryTimeQuota != -1 ? dailyMemoryTimeQuota : null
+    customDomainVerificationId: customDomainVerificationId
+    dailyMemoryTimeQuota: dailyMemoryTimeQuota
     enabled: enabled
     hostNameSslStates: hostNameSslStates
     hyperV: hyperV
@@ -226,11 +226,11 @@ module slot_authsettingsv2 'config--authsettingsv2/main.bicep' = if (!empty(auth
     slotName: slot.name
     appName: app.name
     kind: kind
-    authSettingV2Configuration: authSettingV2Configuration
+    authSettingV2Configuration: authSettingV2Configuration ?? {}
   }
 }
 
-module slot_basicPublishingCredentialsPolicies 'basic-publishing-credentials-policy/main.bicep' = [for (basicPublishingCredentialsPolicy, index) in basicPublishingCredentialsPolicies: {
+module slot_basicPublishingCredentialsPolicies 'basic-publishing-credentials-policy/main.bicep' = [for (basicPublishingCredentialsPolicy, index) in (basicPublishingCredentialsPolicies ?? []): {
   name: '${uniqueString(deployment().name, location)}-Slot-Publish-Cred-${index}'
   params: {
     appName: app.name
@@ -240,7 +240,7 @@ module slot_basicPublishingCredentialsPolicies 'basic-publishing-credentials-pol
     location: location
   }
 }]
-module slot_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep' = [for (hybridConnectionRelay, index) in hybridConnectionRelays: {
+module slot_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep' = [for (hybridConnectionRelay, index) in (hybridConnectionRelays ?? []): {
   name: '${uniqueString(deployment().name, location)}-Slot-HybridConnectionRelay-${index}'
   params: {
     hybridConnectionResourceId: hybridConnectionRelay.resourceId

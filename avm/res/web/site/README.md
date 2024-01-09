@@ -1225,7 +1225,6 @@ Resource ID of the app insight to leverage for this resource.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `appServiceEnvironmentResourceId`
 
@@ -1233,7 +1232,6 @@ The resource ID of the app service environment to use for this resource.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `appSettingsKeyValuePairs`
 
@@ -1241,7 +1239,6 @@ The app settings-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboa
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `authSettingV2Configuration`
 
@@ -1249,7 +1246,6 @@ The auth settings V2 configuration.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `basicPublishingCredentialsPolicies`
 
@@ -1257,7 +1253,6 @@ The site publishing credential policy names which are associated with the sites.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `clientAffinityEnabled`
 
@@ -1281,7 +1276,6 @@ Client certificate authentication comma-separated exclusion paths.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `clientCertMode`
 
@@ -1305,7 +1299,6 @@ If specified during app creation, the app is cloned from a source app.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `containerSize`
 
@@ -1321,7 +1314,6 @@ Unique identifier that verifies the custom domains assigned to the app. Customer
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `dailyMemoryTimeQuota`
 
@@ -1329,7 +1321,6 @@ Maximum allowed daily memory-time quota (applicable on dynamic apps only).
 
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `diagnosticSettings`
 
@@ -1444,7 +1435,6 @@ Hostname SSL states are used to manage the SSL bindings for app's hostnames.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `httpsOnly`
 
@@ -1460,7 +1450,6 @@ Names of hybrid connection relays to connect app with.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `hyperV`
 
@@ -1476,7 +1465,6 @@ The resource ID of the assigned identity to be used to access a key vault with.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `location`
 
@@ -1943,7 +1931,6 @@ The site config object.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `slots`
 
@@ -1951,7 +1938,6 @@ Configuration for deployment slots for an app.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `storageAccountRequired`
 
@@ -1967,7 +1953,6 @@ Required if app of kind functionapp. Resource ID of the storage account to manag
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `tags`
 
@@ -1982,7 +1967,6 @@ Azure Resource Manager ID of the Virtual network and subnet to be joined by Regi
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `vnetContentShareEnabled`
 

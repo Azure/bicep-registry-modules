@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "17340347456195503656"
+      "templateHash": "3226432317232887780"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -458,7 +458,7 @@
     },
     "appServiceEnvironmentResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID of the app service environment to use for this resource."
       }
@@ -471,7 +471,7 @@
     },
     "keyVaultAccessIdentityResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID of the assigned identity to be used to access a key vault with."
       }
@@ -485,7 +485,7 @@
     },
     "virtualNetworkSubnetId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}."
       }
@@ -520,21 +520,21 @@
     },
     "siteConfig": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The site config object."
       }
     },
     "storageAccountResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions."
       }
     },
     "appInsightResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Resource ID of the app insight to leverage for this resource."
       }
@@ -548,14 +548,14 @@
     },
     "appSettingsKeyValuePairs": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The app settings-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING."
       }
     },
     "authSettingV2Configuration": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The auth settings V2 configuration."
       }
@@ -574,7 +574,7 @@
     },
     "slots": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration for deployment slots for an app."
       }
@@ -614,7 +614,7 @@
     },
     "clientCertExclusionPaths": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Client certificate authentication comma-separated exclusion paths."
       }
@@ -633,7 +633,7 @@
     },
     "cloningInfo": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. If specified during app creation, the app is cloned from a source app."
       }
@@ -647,14 +647,14 @@
     },
     "customDomainVerificationId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification."
       }
     },
     "dailyMemoryTimeQuota": {
       "type": "int",
-      "defaultValue": -1,
+      "nullable": true,
       "metadata": {
         "description": "Optional. Maximum allowed daily memory-time quota (applicable on dynamic apps only)."
       }
@@ -668,7 +668,7 @@
     },
     "hostNameSslStates": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Hostname SSL states are used to manage the SSL bindings for app's hostnames."
       }
@@ -696,14 +696,14 @@
     },
     "basicPublishingCredentialsPolicies": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The site publishing credential policy names which are associated with the sites."
       }
     },
     "hybridConnectionRelays": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Names of hybrid connection relays to connect app with."
       }
@@ -770,16 +770,16 @@
         "httpsOnly": "[parameters('httpsOnly')]",
         "hostingEnvironmentProfile": "[if(not(empty(parameters('appServiceEnvironmentResourceId'))), createObject('id', parameters('appServiceEnvironmentResourceId')), null())]",
         "storageAccountRequired": "[parameters('storageAccountRequired')]",
-        "keyVaultReferenceIdentity": "[if(not(empty(parameters('keyVaultAccessIdentityResourceId'))), parameters('keyVaultAccessIdentityResourceId'), null())]",
-        "virtualNetworkSubnetId": "[if(not(empty(parameters('virtualNetworkSubnetId'))), parameters('virtualNetworkSubnetId'), null())]",
+        "keyVaultReferenceIdentity": "[parameters('keyVaultAccessIdentityResourceId')]",
+        "virtualNetworkSubnetId": "[parameters('virtualNetworkSubnetId')]",
         "siteConfig": "[parameters('siteConfig')]",
         "clientCertEnabled": "[parameters('clientCertEnabled')]",
-        "clientCertExclusionPaths": "[if(not(empty(parameters('clientCertExclusionPaths'))), parameters('clientCertExclusionPaths'), null())]",
+        "clientCertExclusionPaths": "[parameters('clientCertExclusionPaths')]",
         "clientCertMode": "[parameters('clientCertMode')]",
-        "cloningInfo": "[if(not(empty(parameters('cloningInfo'))), parameters('cloningInfo'), null())]",
+        "cloningInfo": "[parameters('cloningInfo')]",
         "containerSize": "[if(not(equals(parameters('containerSize'), -1)), parameters('containerSize'), null())]",
-        "customDomainVerificationId": "[if(not(empty(parameters('customDomainVerificationId'))), parameters('customDomainVerificationId'), null())]",
-        "dailyMemoryTimeQuota": "[if(not(equals(parameters('dailyMemoryTimeQuota'), -1)), parameters('dailyMemoryTimeQuota'), null())]",
+        "customDomainVerificationId": "[parameters('customDomainVerificationId')]",
+        "dailyMemoryTimeQuota": "[parameters('dailyMemoryTimeQuota')]",
         "enabled": "[parameters('enabled')]",
         "hostNameSslStates": "[parameters('hostNameSslStates')]",
         "hyperV": "[parameters('hyperV')]",
@@ -882,12 +882,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "4771173442490129654"
+              "templateHash": "5201235133399979020"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting.",
@@ -915,14 +916,14 @@
             },
             "storageAccountResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions."
               }
             },
             "appInsightResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Resource ID of the app insight to leverage for this resource."
               }
@@ -936,21 +937,50 @@
             },
             "appSettingsKeyValuePairs": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "app": {
+              "existing": true,
+              "type": "Microsoft.Web/sites",
+              "apiVersion": "2022-09-01",
+              "name": "[parameters('appName')]"
+            },
+            "appInsight": {
+              "condition": "[not(empty(parameters('appInsightResourceId')))]",
+              "existing": true,
+              "type": "Microsoft.Insights/components",
+              "apiVersion": "2020-02-02",
+              "subscriptionId": "[split(coalesce(parameters('appInsightResourceId'), ''), '/')[2]]",
+              "resourceGroup": "[split(coalesce(parameters('appInsightResourceId'), ''), '/')[4]]",
+              "name": "[last(split(coalesce(parameters('appInsightResourceId'), ''), '/'))]"
+            },
+            "storageAccount": {
+              "condition": "[not(empty(parameters('storageAccountResourceId')))]",
+              "existing": true,
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2023-01-01",
+              "subscriptionId": "[split(coalesce(parameters('storageAccountResourceId'), ''), '/')[2]]",
+              "resourceGroup": "[split(coalesce(parameters('storageAccountResourceId'), ''), '/')[4]]",
+              "name": "[last(split(coalesce(parameters('storageAccountResourceId'), ''), '/'))]"
+            },
+            "appSettings": {
               "type": "Microsoft.Web/sites/config",
               "apiVersion": "2022-09-01",
               "name": "[format('{0}/{1}', parameters('appName'), 'appsettings')]",
               "kind": "[parameters('kind')]",
-              "properties": "[union(parameters('appSettingsKeyValuePairs'), if(not(empty(parameters('storageAccountResourceId'))), union(createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(parameters('storageAccountResourceId'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('storageAccountResourceId'), '/')[2], split(parameters('storageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(parameters('storageAccountResourceId'), '/'))), '2023-01-01').keys[0].value)), if(equals(parameters('setAzureWebJobsDashboard'), true()), createObject('AzureWebJobsDashboard', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(parameters('storageAccountResourceId'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('storageAccountResourceId'), '/')[2], split(parameters('storageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(parameters('storageAccountResourceId'), '/'))), '2023-01-01').keys[0].value)), createObject())), createObject()), if(not(empty(parameters('appInsightResourceId'))), createObject('APPINSIGHTS_INSTRUMENTATIONKEY', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('appInsightResourceId'), '/')[2], split(parameters('appInsightResourceId'), '/')[4]), 'Microsoft.Insights/components', last(split(parameters('appInsightResourceId'), '/'))), '2020-02-02').InstrumentationKey, 'APPLICATIONINSIGHTS_CONNECTION_STRING', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('appInsightResourceId'), '/')[2], split(parameters('appInsightResourceId'), '/')[4]), 'Microsoft.Insights/components', last(split(parameters('appInsightResourceId'), '/'))), '2020-02-02').ConnectionString), createObject()))]"
+              "properties": "[union(coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(not(empty(parameters('storageAccountResourceId'))), union(createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), ''), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), ''), '/')[2], split(coalesce(parameters('storageAccountResourceId'), ''), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), ''), '/'))), '2023-01-01').keys[0].value)), if(equals(parameters('setAzureWebJobsDashboard'), true()), createObject('AzureWebJobsDashboard', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), ''), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), ''), '/')[2], split(coalesce(parameters('storageAccountResourceId'), ''), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), ''), '/'))), '2023-01-01').keys[0].value)), createObject())), createObject()), if(not(empty(parameters('appInsightResourceId'))), createObject('APPINSIGHTS_INSTRUMENTATIONKEY', reference('appInsight').InstrumentationKey, 'APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
+              "dependsOn": [
+                "app",
+                "appInsight",
+                "storageAccount"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -998,7 +1028,7 @@
             "value": "[parameters('kind')]"
           },
           "authSettingV2Configuration": {
-            "value": "[parameters('authSettingV2Configuration')]"
+            "value": "[coalesce(parameters('authSettingV2Configuration'), createObject())]"
           }
         },
         "template": {
@@ -1082,13 +1112,13 @@
     "app_slots": {
       "copy": {
         "name": "app_slots",
-        "count": "[length(parameters('slots'))]",
+        "count": "[length(coalesce(parameters('slots'), createArray()))]",
         "mode": "serial",
         "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-Slot-{1}', uniqueString(deployment().name, parameters('location')), parameters('slots')[copyIndex()].name)]",
+      "name": "[format('{0}-Slot-{1}', uniqueString(deployment().name, parameters('location')), coalesce(parameters('slots'), createArray())[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1096,7 +1126,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('slots')[copyIndex()].name]"
+            "value": "[coalesce(parameters('slots'), createArray())[copyIndex()].name]"
           },
           "appName": {
             "value": "[parameters('name')]"
@@ -1110,50 +1140,62 @@
           "serverFarmResourceId": {
             "value": "[parameters('serverFarmResourceId')]"
           },
-          "httpsOnly": "[if(contains(parameters('slots')[copyIndex()], 'httpsOnly'), createObject('value', parameters('slots')[copyIndex()].httpsOnly), createObject('value', parameters('httpsOnly')))]",
+          "httpsOnly": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'httpsOnly'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].httpsOnly), createObject('value', parameters('httpsOnly')))]",
           "appServiceEnvironmentResourceId": "[if(not(empty(parameters('appServiceEnvironmentResourceId'))), createObject('value', parameters('appServiceEnvironmentResourceId')), createObject('value', ''))]",
-          "clientAffinityEnabled": "[if(contains(parameters('slots')[copyIndex()], 'clientAffinityEnabled'), createObject('value', parameters('slots')[copyIndex()].clientAffinityEnabled), createObject('value', parameters('clientAffinityEnabled')))]",
-          "managedIdentities": "[if(contains(parameters('slots')[copyIndex()], 'managedIdentities'), createObject('value', parameters('slots')[copyIndex()].managedIdentities), createObject('value', parameters('managedIdentities')))]",
-          "keyVaultAccessIdentityResourceId": "[if(contains(parameters('slots')[copyIndex()], 'keyVaultAccessIdentityResourceId'), createObject('value', parameters('slots')[copyIndex()].keyVaultAccessIdentityResourceId), createObject('value', parameters('keyVaultAccessIdentityResourceId')))]",
-          "storageAccountRequired": "[if(contains(parameters('slots')[copyIndex()], 'storageAccountRequired'), createObject('value', parameters('slots')[copyIndex()].storageAccountRequired), createObject('value', parameters('storageAccountRequired')))]",
-          "virtualNetworkSubnetId": "[if(contains(parameters('slots')[copyIndex()], 'virtualNetworkSubnetId'), createObject('value', parameters('slots')[copyIndex()].virtualNetworkSubnetId), createObject('value', parameters('virtualNetworkSubnetId')))]",
-          "siteConfig": "[if(contains(parameters('slots')[copyIndex()], 'siteConfig'), createObject('value', parameters('slots')[copyIndex()].siteConfig), createObject('value', parameters('siteConfig')))]",
-          "storageAccountResourceId": "[if(contains(parameters('slots')[copyIndex()], 'storageAccountResourceId'), createObject('value', parameters('slots')[copyIndex()].storageAccountResourceId), createObject('value', parameters('storageAccountResourceId')))]",
-          "appInsightResourceId": "[if(contains(parameters('slots')[copyIndex()], 'appInsightResourceId'), createObject('value', parameters('slots')[copyIndex()].appInsightResourceId), createObject('value', parameters('appInsightResourceId')))]",
-          "setAzureWebJobsDashboard": "[if(contains(parameters('slots')[copyIndex()], 'setAzureWebJobsDashboard'), createObject('value', parameters('slots')[copyIndex()].setAzureWebJobsDashboard), createObject('value', parameters('setAzureWebJobsDashboard')))]",
-          "authSettingV2Configuration": "[if(contains(parameters('slots')[copyIndex()], 'authSettingV2Configuration'), createObject('value', parameters('slots')[copyIndex()].authSettingV2Configuration), createObject('value', parameters('authSettingV2Configuration')))]",
+          "clientAffinityEnabled": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'clientAffinityEnabled'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].clientAffinityEnabled), createObject('value', parameters('clientAffinityEnabled')))]",
+          "managedIdentities": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'managedIdentities'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].managedIdentities), createObject('value', parameters('managedIdentities')))]",
+          "keyVaultAccessIdentityResourceId": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'keyVaultAccessIdentityResourceId'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].keyVaultAccessIdentityResourceId), createObject('value', parameters('keyVaultAccessIdentityResourceId')))]",
+          "storageAccountRequired": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'storageAccountRequired'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].storageAccountRequired), createObject('value', parameters('storageAccountRequired')))]",
+          "virtualNetworkSubnetId": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'virtualNetworkSubnetId'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].virtualNetworkSubnetId), createObject('value', parameters('virtualNetworkSubnetId')))]",
+          "siteConfig": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'siteConfig'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].siteConfig), createObject('value', parameters('siteConfig')))]",
+          "storageAccountResourceId": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'storageAccountResourceId'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].storageAccountResourceId), createObject('value', parameters('storageAccountResourceId')))]",
+          "appInsightResourceId": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'appInsightResourceId'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].appInsightResourceId), createObject('value', parameters('appInsightResourceId')))]",
+          "setAzureWebJobsDashboard": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'setAzureWebJobsDashboard'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].setAzureWebJobsDashboard), createObject('value', parameters('setAzureWebJobsDashboard')))]",
+          "authSettingV2Configuration": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'authSettingV2Configuration'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].authSettingV2Configuration), createObject('value', parameters('authSettingV2Configuration')))]",
           "diagnosticSettings": {
-            "value": "[tryGet(parameters('slots')[copyIndex()], 'diagnosticSettings')]"
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'diagnosticSettings')]"
           },
-          "roleAssignments": "[if(contains(parameters('slots')[copyIndex()], 'roleAssignments'), createObject('value', parameters('slots')[copyIndex()].roleAssignments), createObject('value', parameters('roleAssignments')))]",
-          "appSettingsKeyValuePairs": "[if(contains(parameters('slots')[copyIndex()], 'appSettingsKeyValuePairs'), createObject('value', parameters('slots')[copyIndex()].appSettingsKeyValuePairs), createObject('value', parameters('appSettingsKeyValuePairs')))]",
-          "basicPublishingCredentialsPolicies": "[if(contains(parameters('slots')[copyIndex()], 'basicPublishingCredentialsPolicies'), createObject('value', parameters('slots')[copyIndex()].basicPublishingCredentialsPolicies), createObject('value', parameters('basicPublishingCredentialsPolicies')))]",
+          "roleAssignments": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].roleAssignments), createObject('value', parameters('roleAssignments')))]",
+          "appSettingsKeyValuePairs": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'appSettingsKeyValuePairs'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].appSettingsKeyValuePairs), createObject('value', parameters('appSettingsKeyValuePairs')))]",
+          "basicPublishingCredentialsPolicies": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'basicPublishingCredentialsPolicies'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].basicPublishingCredentialsPolicies), createObject('value', parameters('basicPublishingCredentialsPolicies')))]",
           "lock": {
-            "value": "[coalesce(tryGet(parameters('slots')[copyIndex()], 'lock'), parameters('lock'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
-          "privateEndpoints": "[if(contains(parameters('slots')[copyIndex()], 'privateEndpoints'), createObject('value', parameters('slots')[copyIndex()].privateEndpoints), createObject('value', parameters('privateEndpoints')))]",
+          "privateEndpoints": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'privateEndpoints'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].privateEndpoints), createObject('value', parameters('privateEndpoints')))]",
           "tags": {
-            "value": "[coalesce(tryGet(parameters('slots')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "clientCertEnabled": "[if(contains(parameters('slots')[copyIndex()], 'clientCertEnabled'), createObject('value', parameters('slots')[copyIndex()].clientCertEnabled), createObject('value', false()))]",
-          "clientCertExclusionPaths": "[if(contains(parameters('slots')[copyIndex()], 'clientCertExclusionPaths'), createObject('value', parameters('slots')[copyIndex()].clientCertExclusionPaths), createObject('value', ''))]",
-          "clientCertMode": "[if(contains(parameters('slots')[copyIndex()], 'clientCertMode'), createObject('value', parameters('slots')[copyIndex()].clientCertMode), createObject('value', 'Optional'))]",
-          "cloningInfo": "[if(contains(parameters('slots')[copyIndex()], 'cloningInfo'), createObject('value', parameters('slots')[copyIndex()].cloningInfo), createObject('value', createObject()))]",
-          "containerSize": "[if(contains(parameters('slots')[copyIndex()], 'containerSize'), createObject('value', parameters('slots')[copyIndex()].containerSize), createObject('value', -1))]",
-          "customDomainVerificationId": "[if(contains(parameters('slots')[copyIndex()], 'customDomainVerificationId'), createObject('value', parameters('slots')[copyIndex()].customDomainVerificationId), createObject('value', ''))]",
-          "dailyMemoryTimeQuota": "[if(contains(parameters('slots')[copyIndex()], 'dailyMemoryTimeQuota'), createObject('value', parameters('slots')[copyIndex()].dailyMemoryTimeQuota), createObject('value', -1))]",
-          "enabled": "[if(contains(parameters('slots')[copyIndex()], 'enabled'), createObject('value', parameters('slots')[copyIndex()].enabled), createObject('value', true()))]",
+          "clientCertEnabled": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'clientCertEnabled'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].clientCertEnabled), createObject('value', false()))]",
+          "clientCertExclusionPaths": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'clientCertExclusionPaths')]"
+          },
+          "clientCertMode": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'clientCertMode'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].clientCertMode), createObject('value', 'Optional'))]",
+          "cloningInfo": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'cloningInfo')]"
+          },
+          "containerSize": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'containerSize'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].containerSize), createObject('value', -1))]",
+          "customDomainVerificationId": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'customDomainVerificationId')]"
+          },
+          "dailyMemoryTimeQuota": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'dailyMemoryTimeQuota')]"
+          },
+          "enabled": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'enabled'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].enabled), createObject('value', true()))]",
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(parameters('slots')[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
           },
-          "hostNameSslStates": "[if(contains(parameters('slots')[copyIndex()], 'hostNameSslStates'), createObject('value', parameters('slots')[copyIndex()].hostNameSslStates), createObject('value', createArray()))]",
-          "hyperV": "[if(contains(parameters('slots')[copyIndex()], 'hyperV'), createObject('value', parameters('slots')[copyIndex()].hyperV), createObject('value', false()))]",
-          "publicNetworkAccess": "[if(contains(parameters('slots')[copyIndex()], 'publicNetworkAccess'), createObject('value', parameters('slots')[copyIndex()].publicNetworkAccess), createObject('value', ''))]",
-          "redundancyMode": "[if(contains(parameters('slots')[copyIndex()], 'redundancyMode'), createObject('value', parameters('slots')[copyIndex()].redundancyMode), createObject('value', 'None'))]",
-          "vnetContentShareEnabled": "[if(contains(parameters('slots')[copyIndex()], 'vnetContentShareEnabled'), createObject('value', parameters('slots')[copyIndex()].vnetContentShareEnabled), createObject('value', false()))]",
-          "vnetImagePullEnabled": "[if(contains(parameters('slots')[copyIndex()], 'vnetImagePullEnabled'), createObject('value', parameters('slots')[copyIndex()].vnetImagePullEnabled), createObject('value', false()))]",
-          "vnetRouteAllEnabled": "[if(contains(parameters('slots')[copyIndex()], 'vnetRouteAllEnabled'), createObject('value', parameters('slots')[copyIndex()].vnetRouteAllEnabled), createObject('value', false()))]",
-          "hybridConnectionRelays": "[if(contains(parameters('slots')[copyIndex()], 'hybridConnectionRelays'), createObject('value', parameters('slots')[copyIndex()].hybridConnectionRelays), createObject('value', createArray()))]"
+          "hostNameSslStates": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'hostNameSslStates')]"
+          },
+          "hyperV": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'hyperV'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].hyperV), createObject('value', false()))]",
+          "publicNetworkAccess": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'publicNetworkAccess'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].publicNetworkAccess), createObject('value', ''))]",
+          "redundancyMode": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'redundancyMode'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].redundancyMode), createObject('value', 'None'))]",
+          "vnetContentShareEnabled": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'vnetContentShareEnabled'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].vnetContentShareEnabled), createObject('value', false()))]",
+          "vnetImagePullEnabled": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'vnetImagePullEnabled'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].vnetImagePullEnabled), createObject('value', false()))]",
+          "vnetRouteAllEnabled": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'vnetRouteAllEnabled'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].vnetRouteAllEnabled), createObject('value', false()))]",
+          "hybridConnectionRelays": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'hybridConnectionRelays')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1163,7 +1205,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "11891981724694631075"
+              "templateHash": "1257947764515337625"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -1622,7 +1664,7 @@
             },
             "appServiceEnvironmentResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The resource ID of the app service environment to use for this resource."
               }
@@ -1635,7 +1677,7 @@
             },
             "keyVaultAccessIdentityResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The resource ID of the assigned identity to be used to access a key vault with."
               }
@@ -1649,28 +1691,28 @@
             },
             "virtualNetworkSubnetId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}."
               }
             },
             "siteConfig": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The site config object."
               }
             },
             "storageAccountResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions."
               }
             },
             "appInsightResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Resource ID of the app insight to leverage for this resource."
               }
@@ -1684,14 +1726,14 @@
             },
             "appSettingsKeyValuePairs": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The app settings-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING."
               }
             },
             "authSettingV2Configuration": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The auth settings V2 configuration."
               }
@@ -1736,7 +1778,7 @@
             },
             "clientCertExclusionPaths": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Client certificate authentication comma-separated exclusion paths."
               }
@@ -1755,7 +1797,7 @@
             },
             "cloningInfo": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. If specified during app creation, the app is cloned from a source app."
               }
@@ -1769,14 +1811,14 @@
             },
             "customDomainVerificationId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification."
               }
             },
             "dailyMemoryTimeQuota": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Maximum allowed daily memory-time quota (applicable on dynamic apps only)."
               }
@@ -1797,7 +1839,7 @@
             },
             "hostNameSslStates": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Hostname SSL states are used to manage the SSL bindings for app's hostnames."
               }
@@ -1837,7 +1879,7 @@
             },
             "basicPublishingCredentialsPolicies": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The site publishing credential policy names which are associated with the site slot."
               }
@@ -1865,7 +1907,7 @@
             },
             "hybridConnectionRelays": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Names of hybrid connection relays to connect app with."
               }
@@ -1906,16 +1948,16 @@
                 "httpsOnly": "[parameters('httpsOnly')]",
                 "hostingEnvironmentProfile": "[if(not(empty(parameters('appServiceEnvironmentResourceId'))), createObject('id', parameters('appServiceEnvironmentResourceId')), null())]",
                 "storageAccountRequired": "[parameters('storageAccountRequired')]",
-                "keyVaultReferenceIdentity": "[if(not(empty(parameters('keyVaultAccessIdentityResourceId'))), parameters('keyVaultAccessIdentityResourceId'), null())]",
-                "virtualNetworkSubnetId": "[if(not(empty(parameters('virtualNetworkSubnetId'))), parameters('virtualNetworkSubnetId'), null())]",
+                "keyVaultReferenceIdentity": "[parameters('keyVaultAccessIdentityResourceId')]",
+                "virtualNetworkSubnetId": "[parameters('virtualNetworkSubnetId')]",
                 "siteConfig": "[parameters('siteConfig')]",
                 "clientCertEnabled": "[parameters('clientCertEnabled')]",
-                "clientCertExclusionPaths": "[if(not(empty(parameters('clientCertExclusionPaths'))), parameters('clientCertExclusionPaths'), null())]",
+                "clientCertExclusionPaths": "[parameters('clientCertExclusionPaths')]",
                 "clientCertMode": "[parameters('clientCertMode')]",
-                "cloningInfo": "[if(not(empty(parameters('cloningInfo'))), parameters('cloningInfo'), null())]",
+                "cloningInfo": "[parameters('cloningInfo')]",
                 "containerSize": "[if(not(equals(parameters('containerSize'), -1)), parameters('containerSize'), null())]",
-                "customDomainVerificationId": "[if(not(empty(parameters('customDomainVerificationId'))), parameters('customDomainVerificationId'), null())]",
-                "dailyMemoryTimeQuota": "[if(not(equals(parameters('dailyMemoryTimeQuota'), -1)), parameters('dailyMemoryTimeQuota'), null())]",
+                "customDomainVerificationId": "[parameters('customDomainVerificationId')]",
+                "dailyMemoryTimeQuota": "[parameters('dailyMemoryTimeQuota')]",
                 "enabled": "[parameters('enabled')]",
                 "hostNameSslStates": "[parameters('hostNameSslStates')]",
                 "hyperV": "[parameters('hyperV')]",
@@ -2023,12 +2065,13 @@
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.23.1.45101",
-                      "templateHash": "7428014775282298138"
+                      "templateHash": "9127517630940260435"
                     },
                     "name": "Site Slot App Settings",
                     "description": "This module deploys a Site Slot App Setting.",
@@ -2062,14 +2105,14 @@
                     },
                     "storageAccountResourceId": {
                       "type": "string",
-                      "defaultValue": "",
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions."
                       }
                     },
                     "appInsightResourceId": {
                       "type": "string",
-                      "defaultValue": "",
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Resource ID of the app insight to leverage for this resource."
                       }
@@ -2083,21 +2126,59 @@
                     },
                     "appSettingsKeyValuePairs": {
                       "type": "object",
-                      "defaultValue": {},
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING."
                       }
                     }
                   },
-                  "resources": [
-                    {
+                  "resources": {
+                    "app::slot": {
+                      "existing": true,
+                      "type": "Microsoft.Web/sites/slots",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('{0}/{1}', parameters('appName'), parameters('slotName'))]",
+                      "dependsOn": [
+                        "app"
+                      ]
+                    },
+                    "app": {
+                      "existing": true,
+                      "type": "Microsoft.Web/sites",
+                      "apiVersion": "2022-09-01",
+                      "name": "[parameters('appName')]"
+                    },
+                    "appInsight": {
+                      "condition": "[not(empty(parameters('appInsightResourceId')))]",
+                      "existing": true,
+                      "type": "Microsoft.Insights/components",
+                      "apiVersion": "2020-02-02",
+                      "subscriptionId": "[split(coalesce(parameters('appInsightResourceId'), ''), '/')[2]]",
+                      "resourceGroup": "[split(coalesce(parameters('appInsightResourceId'), ''), '/')[4]]",
+                      "name": "[last(split(coalesce(parameters('appInsightResourceId'), ''), '/'))]"
+                    },
+                    "storageAccount": {
+                      "condition": "[not(empty(parameters('storageAccountResourceId')))]",
+                      "existing": true,
+                      "type": "Microsoft.Storage/storageAccounts",
+                      "apiVersion": "2023-01-01",
+                      "subscriptionId": "[split(coalesce(parameters('storageAccountResourceId'), ''), '/')[2]]",
+                      "resourceGroup": "[split(coalesce(parameters('storageAccountResourceId'), ''), '/')[4]]",
+                      "name": "[last(split(coalesce(parameters('storageAccountResourceId'), ''), '/'))]"
+                    },
+                    "slotSettings": {
                       "type": "Microsoft.Web/sites/slots/config",
                       "apiVersion": "2022-09-01",
                       "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), 'appsettings')]",
                       "kind": "[parameters('kind')]",
-                      "properties": "[union(parameters('appSettingsKeyValuePairs'), if(not(empty(parameters('storageAccountResourceId'))), union(createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(parameters('storageAccountResourceId'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('storageAccountResourceId'), '/')[2], split(parameters('storageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(parameters('storageAccountResourceId'), '/'))), '2023-01-01').keys[0].value)), if(equals(parameters('setAzureWebJobsDashboard'), true()), createObject('AzureWebJobsDashboard', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(parameters('storageAccountResourceId'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('storageAccountResourceId'), '/')[2], split(parameters('storageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(parameters('storageAccountResourceId'), '/'))), '2023-01-01').keys[0].value)), createObject())), createObject()), if(not(empty(parameters('appInsightResourceId'))), createObject('APPINSIGHTS_INSTRUMENTATIONKEY', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('appInsightResourceId'), '/')[2], split(parameters('appInsightResourceId'), '/')[4]), 'Microsoft.Insights/components', last(split(parameters('appInsightResourceId'), '/'))), '2020-02-02').InstrumentationKey, 'APPLICATIONINSIGHTS_CONNECTION_STRING', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('appInsightResourceId'), '/')[2], split(parameters('appInsightResourceId'), '/')[4]), 'Microsoft.Insights/components', last(split(parameters('appInsightResourceId'), '/'))), '2020-02-02').ConnectionString), createObject()))]"
+                      "properties": "[union(coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(not(empty(parameters('storageAccountResourceId'))), union(createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), ''), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), ''), '/')[2], split(coalesce(parameters('storageAccountResourceId'), ''), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), ''), '/'))), '2023-01-01').keys[0].value)), if(equals(parameters('setAzureWebJobsDashboard'), true()), createObject('AzureWebJobsDashboard', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), ''), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), ''), '/')[2], split(coalesce(parameters('storageAccountResourceId'), ''), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), ''), '/'))), '2023-01-01').keys[0].value)), createObject())), createObject()), if(not(empty(parameters('appInsightResourceId'))), createObject('APPINSIGHTS_INSTRUMENTATIONKEY', reference('appInsight').InstrumentationKey, 'APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
+                      "dependsOn": [
+                        "appInsight",
+                        "app::slot",
+                        "storageAccount"
+                      ]
                     }
-                  ],
+                  },
                   "outputs": {
                     "name": {
                       "type": "string",
@@ -2149,7 +2230,7 @@
                     "value": "[parameters('kind')]"
                   },
                   "authSettingV2Configuration": {
-                    "value": "[parameters('authSettingV2Configuration')]"
+                    "value": "[coalesce(parameters('authSettingV2Configuration'), createObject())]"
                   }
                 },
                 "template": {
@@ -2240,7 +2321,7 @@
             "slot_basicPublishingCredentialsPolicies": {
               "copy": {
                 "name": "slot_basicPublishingCredentialsPolicies",
-                "count": "[length(parameters('basicPublishingCredentialsPolicies'))]"
+                "count": "[length(coalesce(parameters('basicPublishingCredentialsPolicies'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -2258,9 +2339,9 @@
                     "value": "[parameters('name')]"
                   },
                   "name": {
-                    "value": "[parameters('basicPublishingCredentialsPolicies')[copyIndex()].name]"
+                    "value": "[coalesce(parameters('basicPublishingCredentialsPolicies'), createArray())[copyIndex()].name]"
                   },
-                  "allow": "[if(contains(parameters('basicPublishingCredentialsPolicies')[copyIndex()], 'allow'), createObject('value', parameters('basicPublishingCredentialsPolicies')[copyIndex()].allow), createObject('value', null()))]",
+                  "allow": "[if(contains(coalesce(parameters('basicPublishingCredentialsPolicies'), createArray())[copyIndex()], 'allow'), createObject('value', coalesce(parameters('basicPublishingCredentialsPolicies'), createArray())[copyIndex()].allow), createObject('value', null()))]",
                   "location": {
                     "value": "[parameters('location')]"
                   }
@@ -2367,7 +2448,7 @@
             "slot_hybridConnectionRelays": {
               "copy": {
                 "name": "slot_hybridConnectionRelays",
-                "count": "[length(parameters('hybridConnectionRelays'))]"
+                "count": "[length(coalesce(parameters('hybridConnectionRelays'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -2379,7 +2460,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "hybridConnectionResourceId": {
-                    "value": "[parameters('hybridConnectionRelays')[copyIndex()].resourceId]"
+                    "value": "[coalesce(parameters('hybridConnectionRelays'), createArray())[copyIndex()].resourceId]"
                   },
                   "appName": {
                     "value": "[parameters('appName')]"
@@ -2387,7 +2468,7 @@
                   "slotName": {
                     "value": "[parameters('name')]"
                   },
-                  "sendKeyName": "[if(contains(parameters('hybridConnectionRelays')[copyIndex()], 'sendKeyName'), createObject('value', parameters('hybridConnectionRelays')[copyIndex()].sendKeyName), createObject('value', null()))]"
+                  "sendKeyName": "[if(contains(coalesce(parameters('hybridConnectionRelays'), createArray())[copyIndex()], 'sendKeyName'), createObject('value', coalesce(parameters('hybridConnectionRelays'), createArray())[copyIndex()].sendKeyName), createObject('value', null()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -3191,7 +3272,7 @@
     "app_basicPublishingCredentialsPolicies": {
       "copy": {
         "name": "app_basicPublishingCredentialsPolicies",
-        "count": "[length(parameters('basicPublishingCredentialsPolicies'))]"
+        "count": "[length(coalesce(parameters('basicPublishingCredentialsPolicies'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -3206,9 +3287,9 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('basicPublishingCredentialsPolicies')[copyIndex()].name]"
+            "value": "[coalesce(parameters('basicPublishingCredentialsPolicies'), createArray())[copyIndex()].name]"
           },
-          "allow": "[if(contains(parameters('basicPublishingCredentialsPolicies')[copyIndex()], 'allow'), createObject('value', parameters('basicPublishingCredentialsPolicies')[copyIndex()].allow), createObject('value', null()))]",
+          "allow": "[if(contains(coalesce(parameters('basicPublishingCredentialsPolicies'), createArray())[copyIndex()], 'allow'), createObject('value', coalesce(parameters('basicPublishingCredentialsPolicies'), createArray())[copyIndex()].allow), createObject('value', null()))]",
           "location": {
             "value": "[parameters('location')]"
           }
@@ -3308,7 +3389,7 @@
     "app_hybridConnectionRelays": {
       "copy": {
         "name": "app_hybridConnectionRelays",
-        "count": "[length(parameters('hybridConnectionRelays'))]"
+        "count": "[length(coalesce(parameters('hybridConnectionRelays'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -3320,12 +3401,12 @@
         "mode": "Incremental",
         "parameters": {
           "hybridConnectionResourceId": {
-            "value": "[parameters('hybridConnectionRelays')[copyIndex()].resourceId]"
+            "value": "[coalesce(parameters('hybridConnectionRelays'), createArray())[copyIndex()].resourceId]"
           },
           "appName": {
             "value": "[parameters('name')]"
           },
-          "sendKeyName": "[if(contains(parameters('hybridConnectionRelays')[copyIndex()], 'sendKeyName'), createObject('value', parameters('hybridConnectionRelays')[copyIndex()].sendKeyName), createObject('value', null()))]"
+          "sendKeyName": "[if(contains(coalesce(parameters('hybridConnectionRelays'), createArray())[copyIndex()], 'sendKeyName'), createObject('value', coalesce(parameters('hybridConnectionRelays'), createArray())[copyIndex()].sendKeyName), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -4097,8 +4178,8 @@
         "description": "The list of the slots."
       },
       "copy": {
-        "count": "[length(parameters('slots'))]",
-        "input": "[format('{0}-Slot-{1}', uniqueString(deployment().name, parameters('location')), parameters('slots')[copyIndex()].name)]"
+        "count": "[length(coalesce(parameters('slots'), createArray()))]",
+        "input": "[format('{0}-Slot-{1}', uniqueString(deployment().name, parameters('location')), coalesce(parameters('slots'), createArray())[copyIndex()].name)]"
       }
     },
     "slotResourceIds": {
@@ -4107,7 +4188,7 @@
         "description": "The list of the slot resource ids."
       },
       "copy": {
-        "count": "[length(parameters('slots'))]",
+        "count": "[length(coalesce(parameters('slots'), createArray()))]",
         "input": "[reference(format('app_slots[{0}]', copyIndex())).outputs.resourceId.value]"
       }
     },
@@ -4131,7 +4212,7 @@
         "description": "The principal ID of the system assigned identity of slots."
       },
       "copy": {
-        "count": "[length(parameters('slots'))]",
+        "count": "[length(coalesce(parameters('slots'), createArray()))]",
         "input": "[reference(format('app_slots[{0}]', copyIndex())).outputs.systemAssignedMIPrincipalId.value]"
       }
     },

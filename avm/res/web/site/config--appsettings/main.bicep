@@ -16,16 +16,16 @@ param appName string
 param kind string
 
 @description('Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.')
-param storageAccountResourceId string = ''
+param storageAccountResourceId string?
 
 @description('Optional. Resource ID of the app insight to leverage for this resource.')
-param appInsightResourceId string = ''
+param appInsightResourceId string?
 
 @description('Optional. For function apps. If true the app settings "AzureWebJobsDashboard" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons.')
 param setAzureWebJobsDashboard bool = contains(kind, 'functionapp') ? true : false
 
 @description('Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING.')
-param appSettingsKeyValuePairs object = {}
+param appSettingsKeyValuePairs object?
 
 var azureWebJobsValues = !empty(storageAccountResourceId) ? union({
     AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};'
@@ -38,20 +38,20 @@ var appInsightsValues = !empty(appInsightResourceId) ? {
   APPLICATIONINSIGHTS_CONNECTION_STRING: appInsight.properties.ConnectionString
 } : {}
 
-var expandedAppSettings = union(appSettingsKeyValuePairs, azureWebJobsValues, appInsightsValues)
+var expandedAppSettings = union(appSettingsKeyValuePairs ?? {}, azureWebJobsValues, appInsightsValues)
 
 resource app 'Microsoft.Web/sites@2022-09-01' existing = {
   name: appName
 }
 
 resource appInsight 'Microsoft.Insights/components@2020-02-02' existing = if (!empty(appInsightResourceId)) {
-  name: last(split(appInsightResourceId, '/'))!
-  scope: resourceGroup(split(appInsightResourceId, '/')[2], split(appInsightResourceId, '/')[4])
+  name: last(split(appInsightResourceId ?? '', '/'))!
+  scope: resourceGroup(split(appInsightResourceId ?? '', '/')[2], split(appInsightResourceId ?? '', '/')[4])
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing = if (!empty(storageAccountResourceId)) {
-  name: last(split(storageAccountResourceId, '/'))!
-  scope: resourceGroup(split(storageAccountResourceId, '/')[2], split(storageAccountResourceId, '/')[4])
+  name: last(split(storageAccountResourceId ?? '', '/'))!
+  scope: resourceGroup(split(storageAccountResourceId ?? '', '/')[2], split(storageAccountResourceId ?? '', '/')[4])
 }
 
 resource appSettings 'Microsoft.Web/sites/config@2022-09-01' = {

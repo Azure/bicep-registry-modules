@@ -70,7 +70,6 @@ Resource ID of the app insight to leverage for this resource.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `appSettingsKeyValuePairs`
 
@@ -78,7 +77,6 @@ The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDas
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `setAzureWebJobsDashboard`
 
@@ -94,7 +92,6 @@ Required if app of kind functionapp. Resource ID of the storage account to manag
 
 - Required: No
 - Type: string
-- Default: `''`
 
 
 ## Outputs
