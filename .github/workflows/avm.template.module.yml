@@ -19,10 +19,6 @@ on:
         type: string
         description: "Relative path to the module folder"
         required: true
-      deploymentLocation:
-        type: string
-        description: "Location to deploy the module to"
-        required: true
 
 permissions:
   id-token: write # For OIDC
