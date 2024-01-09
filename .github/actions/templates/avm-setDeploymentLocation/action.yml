@@ -5,7 +5,7 @@ inputs:
   excludedRegions:
     description: "Regions to exclude from deployment"
     required: false
-    default: "westeurope,westus2,eastus2"
+    default: "westeurope","westus2","eastus2"
 
 
 runs:
