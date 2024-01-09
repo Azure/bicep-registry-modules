@@ -20,27 +20,27 @@ runs:
     - name: "Set Deployment Location"
       uses: azure/powershell@v1
       with:
-          azPSVersion: "latest"
-          inlineScript: |
-            # Grouping task logs
-            Write-Output '::group::Get Recommended Regions'
+        azPSVersion: "latest"
+        inlineScript: |
+          # Grouping task logs
+          Write-Output '::group::Get Recommended Regions'
 
-            # Load used functions
-            . (Join-Path$env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-AzRecommendedRegions.ps1')
+          # Load used functions
+          . (Join-Path$env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-AzRecommendedRegions.ps1')
 
-            # Set fucntion input parameters
-            $functionInput = @{
-                excludedRegions = ${{ inputs.excludedRegions }}
-                pairedRegionsOnly = $true
-            }
+          # Set fucntion input parameters
+          $functionInput = @{
+              excludedRegions = ${{ inputs.excludedRegions }}
+              pairedRegionsOnly = $true
+          }
 
-            $regions = Get-AzRecommendedRegions @functionInput
+          $regions = Get-AzRecommendedRegions @functionInput
 
-            $index = Get-Random -Maximum ($regions.Count)
+          $index = Get-Random -Maximum ($regions.Count)
 
-            $location = $regions[$index].Location
+          $location = $regions[$index].Location
 
-            Write-Verbose "Publishing output: $deployCompressedOutput" -Verbose
-            Write-Output ('{0}={1}' -f 'deploymentLocation', $location) >> $env:GITHUB_OUTPUT
+          Write-Verbose "Publishing output: $deployCompressedOutput" -Verbose
+          Write-Output ('{0}={1}' -f 'deploymentLocation', $location) >> $env:GITHUB_OUTPUT
 
-            Write-Output '::endgroup::'
+          Write-Output '::endgroup::'
