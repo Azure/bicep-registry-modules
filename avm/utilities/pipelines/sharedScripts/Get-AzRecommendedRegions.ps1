@@ -5,21 +5,21 @@ Get the recommended regions for deployment
 .DESCRIPTION
 This script is used to set the deployment region for the mmodule deployment.
 
-.PARAMETER excludeRegions
+.PARAMETER excludedRegions
 Optional. The regions to exclude from the recommended regions list.
 
 .PARAMETER pairedRegionsOnly
 Optional. If set, only paired regions will be returned.
 
 .EXAMPLE
-Get-AzRecommendedRegions -excludeRegions @("West Europe", "Brazil South", "West US 2", "East US 2", "South Central US") -pairedRegionsOnly
+Get-AzRecommendedRegions -excludedRegions @("West Europe", "Brazil South", "West US 2", "East US 2", "South Central US") -pairedRegionsOnly
 
-Get the recommended regions excluding the regions specified in the excludeRegions parameter and only paired regions.
+Get the recommended regions excluding the regions specified in the excludedRegions parameter and only paired regions.
 
 .EXAMPLE
-Get-AzRecommendedRegions -excludeRegions @("West Europe", "Brazil South", "West US 2", "East US 2", "South Central US")
+Get-AzRecommendedRegions -excludedRegions @("West Europe", "Brazil South", "West US 2", "East US 2", "South Central US")
 
-Get the recommended regions excluding the regions specified in the excludeRegions parameter.
+Get the recommended regions excluding the regions specified in the excludedRegions parameter.
 
 .EXAMPLE
 Get-AzRecommendedRegions -pairedRegionsOnly
@@ -30,7 +30,7 @@ Get the recommended paired regions.
 function Get-AzRecommendedRegions {
   param (
     [Parameter(Mandatory = $false)]
-    [object]$excludeRegions = @("West Europe", "Brazil South", "West US 2", "East US 2", "South Central US"),
+    [object]$excludedRegions = @("West Europe", "Brazil South", "West US 2", "East US 2", "South Central US"),
     [Parameter(Mandatory = $false)]
     [switch]$pairedRegionsOnly
   )
@@ -40,7 +40,7 @@ function Get-AzRecommendedRegions {
 
   $exclusions = @()
 
-  foreach ($region in $excludeRegions) {
+  foreach ($region in $excludedRegions) {
     if ($region -like "* *") {
       $regionToExclude = $allRegions | Where-Object { $_.DisplayName -eq $region } | Select-Object Location
       $exclusions += $regionToExclude
