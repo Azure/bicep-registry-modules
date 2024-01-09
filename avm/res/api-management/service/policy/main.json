@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "2972278282486423100"
+      "version": "0.24.24.22086",
+      "templateHash": "836906111243238614"
     },
     "name": "API Management Service Policies",
     "description": "This module deploys an API Management Service Policy.",

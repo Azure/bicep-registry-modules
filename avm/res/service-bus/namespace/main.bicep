@@ -80,7 +80,7 @@ param disableLocalAuth bool = true
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. The queues to create in the service bus namespace.')
@@ -319,7 +319,7 @@ module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-e
     ]
     name: privateEndpoint.?name ?? 'pep-${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'vault'}-${index}'
     subnetResourceId: privateEndpoint.subnetResourceId
-    enableTelemetry: enableTelemetry
+    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
@@ -461,7 +461,7 @@ type privateEndpointType = {
   @description('Optional. Specify the type of lock.')
   lock: lockType
 
-  @description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+  @description('Optional. Array of role assignments to create.')
   roleAssignments: roleAssignmentType
 
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
@@ -487,7 +487,7 @@ type diagnosticSettingType = {
     categoryGroup: string?
   }[]?
 
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
+  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to \'\' to disable metric collection.')
   metricCategories: {
     @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to \'AllMetrics\' to collect all metrics.')
     category: string
