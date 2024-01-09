@@ -27,7 +27,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2022-09-09' = {
     startVMOnConnect: false
     validationEnvironment: false
     registrationInfo: {
-      expirationTime: '2023-11-30T23:59:59.0000000Z'
+      expirationTime: '2024-01-23T00:00:00.0000000Z'
       token: null
       registrationTokenOperation: 'Update'
     }

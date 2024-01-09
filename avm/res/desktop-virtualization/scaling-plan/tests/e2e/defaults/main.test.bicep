@@ -11,7 +11,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-desktopvirtualization.scp-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-desktopvirtualization.sp-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
@@ -20,7 +20,7 @@ param location string = deployment().location
 param serviceShort string = 'dvspmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = 'tst' //'#_namePrefix_#'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //

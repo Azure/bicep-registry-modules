@@ -8,16 +8,132 @@ metadata description = 'This instance deploys the module with most of its featur
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-desktopvirtualization.scp-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-desktopvirtualization.sp-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'scpmax'
+param serviceShort string = 'spmax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = 'tst' //'#_namePrefix_#'
+param namePrefix string = '#_namePrefix_#'
+
+var varHostPoolReferences = [
+  {
+    hostPoolArmPath: nestedDependencies.outputs.hostPoolId
+    scalingPlanEnabled: true
+  }
+]
+
+var varScalingPlanSchedules = [
+  {
+    daysOfWeek: [
+      'Monday'
+      'Wednesday'
+      'Thursday'
+      'Friday'
+    ]
+    name: 'WeekdaySchedule'
+    offPeakLoadBalancingAlgorithm: 'DepthFirst'
+    offPeakStartTime: {
+      hour: 20
+      minute: 0
+    }
+    peakLoadBalancingAlgorithm: 'DepthFirst'
+    peakStartTime: {
+      hour: 9
+      minute: 0
+    }
+    rampDownCapacityThresholdPct: 90
+    rampDownForceLogoffUsers: true
+    rampDownLoadBalancingAlgorithm: 'DepthFirst'
+    rampDownMinimumHostsPct: 0 //10
+    rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
+    rampDownStartTime: {
+      hour: 18
+      minute: 0
+    }
+    rampDownStopHostsWhen: 'ZeroActiveSessions'
+    rampDownWaitTimeMinutes: 30
+    rampUpCapacityThresholdPct: 80
+    rampUpLoadBalancingAlgorithm: 'BreadthFirst'
+    rampUpMinimumHostsPct: 20
+    rampUpStartTime: {
+      hour: 7
+      minute: 0
+    }
+  }
+  {
+    daysOfWeek: [
+      'Tuesday'
+    ]
+    name: 'weekdaysSchedule-agent-updates'
+    offPeakLoadBalancingAlgorithm: 'DepthFirst'
+    offPeakStartTime: {
+      hour: 20
+      minute: 0
+    }
+    peakLoadBalancingAlgorithm: 'DepthFirst'
+    peakStartTime: {
+      hour: 9
+      minute: 0
+    }
+    rampDownCapacityThresholdPct: 90
+    rampDownForceLogoffUsers: true
+    rampDownLoadBalancingAlgorithm: 'DepthFirst'
+    rampDownMinimumHostsPct: 0 //10
+    rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
+    rampDownStartTime: {
+      hour: 19
+      minute: 0
+    }
+    rampDownStopHostsWhen: 'ZeroActiveSessions'
+    rampDownWaitTimeMinutes: 30
+    rampUpCapacityThresholdPct: 80
+    rampUpLoadBalancingAlgorithm: 'BreadthFirst'
+    rampUpMinimumHostsPct: 20
+    rampUpStartTime: {
+      hour: 7
+      minute: 0
+    }
+  }
+  {
+    daysOfWeek: [
+      'Saturday'
+      'Sunday'
+    ]
+    name: 'WeekendSchedule'
+    offPeakLoadBalancingAlgorithm: 'DepthFirst'
+    offPeakStartTime: {
+      hour: 18
+      minute: 0
+    }
+    peakLoadBalancingAlgorithm: 'DepthFirst'
+    peakStartTime: {
+      hour: 10
+      minute: 0
+    }
+    rampDownCapacityThresholdPct: 90
+    rampDownForceLogoffUsers: true
+    rampDownLoadBalancingAlgorithm: 'DepthFirst'
+    rampDownMinimumHostsPct: 0
+    rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
+    rampDownStartTime: {
+      hour: 16
+      minute: 0
+    }
+    rampDownStopHostsWhen: 'ZeroActiveSessions'
+    rampDownWaitTimeMinutes: 30
+    rampUpCapacityThresholdPct: 90
+    rampUpLoadBalancingAlgorithm: 'DepthFirst'
+    rampUpMinimumHostsPct: 0
+    rampUpStartTime: {
+      hour: 9
+      minute: 0
+    }
+  }
+]
 
 // ============ //
 // Dependencies //
@@ -66,12 +182,14 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     location: location
     friendlyName: 'friendlyName'
     description: 'myDescription'
+    schedules: varScalingPlanSchedules
+    hostPoolReferences: varHostPoolReferences
     diagnosticSettings: [
       {
         name: 'customSetting'
         logCategoriesAndGroups: [
           {
-            category: 'allLogs'
+            categoryGroup: 'allLogs'
           }
         ]
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
@@ -79,14 +197,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
-      // {
-      //   eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-      //   eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-      //   storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-      //   workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      // }
     ]
-
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
