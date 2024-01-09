@@ -1,6 +1,11 @@
 name: "Set Deplyoment Location"
 description: "Set the deployment location for the module validation"
 
+outputs:
+  deploymentLocation:
+    description: "The deployment location for the module validation"
+    value: ${{ steps.set-deployment-location.outputs.deploymentLocation }}
+
 runs:
   using: "composite"
   steps:
@@ -11,6 +16,7 @@ runs:
         enable-AzPSSession: true
 
     - name: "Set Deployment Location"
+      id: set-deployment-location
       uses: azure/powershell@v1
       with:
         azPSVersion: "latest"
