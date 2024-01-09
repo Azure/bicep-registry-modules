@@ -63,13 +63,9 @@ jobs:
           modulePath: "${{ env.modulePath }}"
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
-        with:
-          removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
       - name: "Set deployment location"
         id: set-deployment-location
         uses: ./.github/actions/templates/avm-setDeploymentLocation
-        with:
-          removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
     outputs:
       workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
       moduleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
