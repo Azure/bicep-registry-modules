@@ -283,7 +283,7 @@ module app_slots 'slot/main.bicep' = [for (slot, index) in (slots ?? []): {
     enableTelemetry: slot.?enableTelemetry ?? enableTelemetry
     hostNameSslStates: slot.?hostNameSslStates
     hyperV: contains(slot, 'hyperV') ? slot.hyperV : false
-    publicNetworkAccess: contains(slot, 'publicNetworkAccess') ? slot.publicNetworkAccess : ((!empty(slot.privateEndpoints) || !empty(privateEndpoints)) ? 'Disabled' : 'Enabled')
+    publicNetworkAccess: contains(slot, 'publicNetworkAccess') ? slot.publicNetworkAccess : ((!empty(slot.?privateEndpoints) || !empty(privateEndpoints)) ? 'Disabled' : 'Enabled')
     redundancyMode: contains(slot, 'redundancyMode') ? slot.redundancyMode : 'None'
     vnetContentShareEnabled: contains(slot, 'vnetContentShareEnabled') ? slot.vnetContentShareEnabled : false
     vnetImagePullEnabled: contains(slot, 'vnetImagePullEnabled') ? slot.vnetImagePullEnabled : false

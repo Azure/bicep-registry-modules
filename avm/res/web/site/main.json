@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "2556459272215441119"
+      "templateHash": "11528857279777169490"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -1189,7 +1189,7 @@
             "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'hostNameSslStates')]"
           },
           "hyperV": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'hyperV'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].hyperV), createObject('value', false()))]",
-          "publicNetworkAccess": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'publicNetworkAccess'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].publicNetworkAccess), if(or(not(empty(coalesce(parameters('slots'), createArray())[copyIndex()].privateEndpoints)), not(empty(parameters('privateEndpoints')))), createObject('value', 'Disabled'), createObject('value', 'Enabled')))]",
+          "publicNetworkAccess": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'publicNetworkAccess'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].publicNetworkAccess), if(or(not(empty(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'privateEndpoints'))), not(empty(parameters('privateEndpoints')))), createObject('value', 'Disabled'), createObject('value', 'Enabled')))]",
           "redundancyMode": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'redundancyMode'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].redundancyMode), createObject('value', 'None'))]",
           "vnetContentShareEnabled": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'vnetContentShareEnabled'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].vnetContentShareEnabled), createObject('value', false()))]",
           "vnetImagePullEnabled": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'vnetImagePullEnabled'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].vnetImagePullEnabled), createObject('value', false()))]",
