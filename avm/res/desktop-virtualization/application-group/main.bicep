@@ -173,24 +173,24 @@ resource appGroup_diagnosticSettings 'Microsoft.Insights/diagnosticsettings@2021
   scope: appGroup
 }
 
-module appGroup_applications 'applications/deploy.bicep' = [for (application, index) in applications: {
-  name: '${uniqueString(deployment().name, location)}-AppGroup-App-${index}'
-  params: {
-    name: application.name
-    appGroupName: appGroup.name
-    description: contains(application, 'description') ? application.description : ''
-    friendlyName: contains(application, 'friendlyName') ? application.friendlyName : appGroup.name
-    filePath: application.filePath
-    commandLineSetting: contains(application, 'commandLineSetting') ? application.commandLineSetting : 'DoNotAllow'
-    commandLineArguments: contains(application, 'commandLineArguments') ? application.commandLineArguments : ''
-    showInPortal: contains(application, 'showInPortal') ? application.showInPortal : false
-    iconPath: contains(application, 'iconPath') ? application.iconPath : application.filePath
-    iconIndex: contains(application, 'iconIndex') ? application.iconIndex : 0
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
-  }
-}]
+// module appGroup_applications 'applications/deploy.bicep' = [for (application, index) in applications: {
+//   name: '${uniqueString(deployment().name, location)}-AppGroup-App-${index}'
+//   params: {
+//     name: application.name
+//     appGroupName: appGroup.name
+//     description: contains(application, 'description') ? application.description : ''
+//     friendlyName: contains(application, 'friendlyName') ? application.friendlyName : appGroup.name
+//     filePath: application.filePath
+//     commandLineSetting: contains(application, 'commandLineSetting') ? application.commandLineSetting : 'DoNotAllow'
+//     commandLineArguments: contains(application, 'commandLineArguments') ? application.commandLineArguments : ''
+//     showInPortal: contains(application, 'showInPortal') ? application.showInPortal : false
+//     iconPath: contains(application, 'iconPath') ? application.iconPath : application.filePath
+//     iconIndex: contains(application, 'iconIndex') ? application.iconIndex : 0
+//     enableDefaultTelemetry: enableReferencedModulesTelemetry
+//   }
+// }]
 
-resource keyVault_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
+resource appGroup_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
   name: guid(appGroup.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
   properties: {
     roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
@@ -202,19 +202,6 @@ resource keyVault_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-
     delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
   }
   scope: appGroup
-}]
-
-module appGroup_roleAssignments '.bicep/nested_roleAssignments.bicep' = [for (roleAssignment, index) in roleAssignments: {
-  name: '${uniqueString(deployment().name, location)}-AppGroup-Rbac-${index}'
-  params: {
-    description: contains(roleAssignment, 'description') ? roleAssignment.description : ''
-    principalIds: roleAssignment.principalIds
-    principalType: contains(roleAssignment, 'principalType') ? roleAssignment.principalType : ''
-    roleDefinitionIdOrName: roleAssignment.roleDefinitionIdOrName
-    condition: contains(roleAssignment, 'condition') ? roleAssignment.condition : ''
-    delegatedManagedIdentityResourceId: contains(roleAssignment, 'delegatedManagedIdentityResourceId') ? roleAssignment.delegatedManagedIdentityResourceId : ''
-    resourceId: appGroup.id
-  }
 }]
 
 @sys.description('The resource ID of the AVD application group.')
