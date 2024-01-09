@@ -242,6 +242,23 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       {
         name: 'CustomTableBasic_CL'
         retentionInDays: 60
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
         schema: {
           columns: [
             {
@@ -259,6 +276,23 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       }
       {
         name: 'CustomTableAdvanced_CL'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
         schema: {
           columns: [
             {
@@ -531,6 +565,23 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         {
           "name": "CustomTableBasic_CL",
           "retentionInDays": 60,
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
           "schema": {
             "columns": [
               {
@@ -548,6 +599,23 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         },
         {
           "name": "CustomTableAdvanced_CL",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
           "schema": {
             "columns": [
               {
@@ -841,6 +909,92 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         ]
       }
     ]
+    tables: [
+      {
+        name: 'CustomTableBasic_CL'
+        retentionInDays: 60
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        schema: {
+          columns: [
+            {
+              name: 'TimeGenerated'
+              type: 'DateTime'
+            }
+            {
+              name: 'RawData'
+              type: 'String'
+            }
+          ]
+          name: 'CustomTableBasic_CL'
+        }
+        totalRetentionInDays: 90
+      }
+      {
+        name: 'CustomTableAdvanced_CL'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        schema: {
+          columns: [
+            {
+              name: 'TimeGenerated'
+              type: 'DateTime'
+            }
+            {
+              name: 'EventTime'
+              type: 'DateTime'
+            }
+            {
+              name: 'EventLevel'
+              type: 'String'
+            }
+            {
+              name: 'EventCode'
+              type: 'Int'
+            }
+            {
+              name: 'Message'
+              type: 'String'
+            }
+            {
+              name: 'RawData'
+              type: 'String'
+            }
+          ]
+          name: 'CustomTableAdvanced_CL'
+        }
+      }
+    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -1073,6 +1227,94 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
             "WADServiceFabric*EventTable",
             "WADWindowsEventLogsTable"
           ]
+        }
+      ]
+    },
+    "tables": {
+      "value": [
+        {
+          "name": "CustomTableBasic_CL",
+          "retentionInDays": 60,
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "schema": {
+            "columns": [
+              {
+                "name": "TimeGenerated",
+                "type": "DateTime"
+              },
+              {
+                "name": "RawData",
+                "type": "String"
+              }
+            ],
+            "name": "CustomTableBasic_CL"
+          },
+          "totalRetentionInDays": 90
+        },
+        {
+          "name": "CustomTableAdvanced_CL",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "schema": {
+            "columns": [
+              {
+                "name": "TimeGenerated",
+                "type": "DateTime"
+              },
+              {
+                "name": "EventTime",
+                "type": "DateTime"
+              },
+              {
+                "name": "EventLevel",
+                "type": "String"
+              },
+              {
+                "name": "EventCode",
+                "type": "Int"
+              },
+              {
+                "name": "Message",
+                "type": "String"
+              },
+              {
+                "name": "RawData",
+                "type": "String"
+              }
+            ],
+            "name": "CustomTableAdvanced_CL"
+          }
         }
       ]
     },

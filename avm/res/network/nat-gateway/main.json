@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "6929390552163326762"
+      "templateHash": "6395864833059360250"
     },
     "name": "NAT Gateways",
     "description": "This module deploys a NAT Gateway.",
@@ -405,20 +405,42 @@
           "diagnosticSettings": {
             "value": "[tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'diagnosticSettings')]"
           },
-          "publicIPAddressVersion": "[if(contains(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'publicIPAddressVersion'), createObject('value', coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()].publicIPAddressVersion), createObject('value', 'IPv4'))]",
+          "publicIPAddressVersion": {
+            "value": "[tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'publicIPAddressVersion')]"
+          },
           "publicIPAllocationMethod": {
             "value": "Static"
           },
-          "publicIpPrefixResourceId": "[if(contains(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'publicIPPrefixResourceId'), createObject('value', coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()].publicIPPrefixResourceId), createObject('value', ''))]",
-          "roleAssignments": "[if(contains(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()].roleAssignments), createObject('value', createArray()))]",
+          "publicIpPrefixResourceId": {
+            "value": "[tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'publicIPPrefixResourceId')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
           "skuName": {
             "value": "Standard"
           },
-          "skuTier": "[if(contains(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'skuTier'), createObject('value', coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()].skuTier), createObject('value', 'Regional'))]",
+          "skuTier": {
+            "value": "[tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'skuTier')]"
+          },
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "zones": "[if(contains(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'zones'), createObject('value', coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()].zones), createObject('value', createArray()))]"
+          "zones": {
+            "value": "[tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'zones')]"
+          },
+          "enableTelemetry": {
+            "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+          },
+          "ddosSettings": {
+            "value": "[tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'ddosSettings')]"
+          },
+          "dnsSettings": {
+            "value": "[tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'dnsSettings')]"
+          },
+          "idleTimeoutInMinutes": {
+            "value": "[tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'idleTimeoutInMinutes')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1071,6 +1093,9 @@
           },
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('publicIPPrefixObjects'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "enableTelemetry": {
+            "value": "[coalesce(tryGet(coalesce(parameters('publicIPPrefixObjects'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
           }
         },
         "template": {
@@ -1080,8 +1105,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "10236251134052848815"
+              "version": "0.23.1.45101",
+              "templateHash": "10775565777623704767"
             },
             "name": "Public IP Prefixes",
             "description": "This module deploys a Public IP Prefix.",
@@ -1155,7 +1180,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
                     }
                   },
                   "conditionVersion": {
@@ -1252,7 +1277,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-publicipprefix.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-publicipprefix.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
