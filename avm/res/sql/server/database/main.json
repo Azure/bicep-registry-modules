@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "16643582358589893317"
+      "version": "0.24.24.22086",
+      "templateHash": "6114696968407769405"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database.",
@@ -66,7 +66,7 @@
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to '' to disable metric collection."
             }
           },
           "logAnalyticsDestinationType": {
@@ -451,8 +451,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "18285215987066720007"
+              "version": "0.24.24.22086",
+              "templateHash": "4029220159811407510"
             },
             "name": "Azure SQL Server Database Short Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
@@ -553,8 +553,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "4846793430941310733"
+              "version": "0.24.24.22086",
+              "templateHash": "7612753724930678316"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",
