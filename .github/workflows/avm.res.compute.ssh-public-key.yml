@@ -67,7 +67,6 @@ jobs:
       psRuleModuleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.psRuleModuleTestFilePaths }}
       modulePath: "${{ env.modulePath }}"
 
-
   ##############################
   #   Call reusable workflow   #
   ##############################
