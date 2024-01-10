@@ -20,6 +20,8 @@ param serviceShort string = 'nvngavpn'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+var tempLocation = 'francecentral'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -35,7 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
-    location: location
+    location: tempLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
@@ -50,7 +52,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    location: location
+    location: tempLocation
     name: '${namePrefix}${serviceShort}001'
     skuName: 'VpnGw2AZ'
     gatewayType: 'Vpn'
