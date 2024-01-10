@@ -21,7 +21,7 @@ param images array?
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType
 
-@sys.description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+@sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
 @sys.description('Optional. Tags for all resources.')
@@ -29,6 +29,12 @@ param tags object?
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@sys.description('Optional. Profile for gallery sharing to subscription or tenant.')
+param sharingProfile object?
+
+@sys.description('Optional. Soft deletion policy of the gallery.')
+param softDeletePolicy object?
 
 var builtInRoleNames = {
   'Compute Gallery Sharing Admin': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1ef6a3be-d0ac-425d-8c01-acb62866290b')
@@ -62,8 +68,10 @@ resource gallery 'Microsoft.Compute/galleries@2022-03-03' = {
   location: location
   tags: tags
   properties: {
-    description: description ?? ''
-    identifier: {}
+    description: description
+    // identifier: {} // Contains only read-only properties
+    sharingProfile: sharingProfile
+    softDeletePolicy: softDeletePolicy
   }
 }
 
@@ -90,14 +98,13 @@ resource gallery_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-0
   scope: gallery
 }]
 
-// Applications
 module galleries_applications 'application/main.bicep' = [for (application, index) in (applications ?? []): {
   name: '${uniqueString(deployment().name, location)}-Gallery-Application-${index}'
   params: {
-    name: application.name
     location: location
+    name: application.name
     galleryName: gallery.name
-    supportedOSType: application.?supportedOSType
+    supportedOSType: application.supportedOSType
     description: application.?description
     eula: application.?eula
     privacyStatementUri: application.?privacyStatementUri
@@ -109,26 +116,23 @@ module galleries_applications 'application/main.bicep' = [for (application, inde
   }
 }]
 
-// Images
 module galleries_images 'image/main.bicep' = [for (image, index) in (images ?? []): {
   name: '${uniqueString(deployment().name, location)}-Gallery-Image-${index}'
   params: {
-    name: image.name
     location: location
+    name: image.name
     galleryName: gallery.name
-    osType: image.?osType
+    osType: image.osType
     osState: image.?osState
-    publisher: image.?publisher
-    offer: image.?offer
-    sku: image.?sku
+    publisher: image.publisher
+    offer: image.offer
+    sku: image.sku
     minRecommendedvCPUs: image.?minRecommendedvCPUs
     maxRecommendedvCPUs: image.?maxRecommendedvCPUs
     minRecommendedMemory: image.?minRecommendedMemory
     maxRecommendedMemory: image.?maxRecommendedMemory
-    hyperVGeneration: image.?hyperVGeneration ?? 'V1'
+    hyperVGeneration: image.?hyperVGeneration
     securityType: image.?securityType
-    isAcceleratedNetworkSupported: image.?isAcceleratedNetworkSupported
-    isHibernateSupported: image.?isHibernateSupported
     description: image.?description
     eula: image.?eula
     privacyStatementUri: image.?privacyStatementUri
@@ -168,7 +172,7 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
-  @sys.description('Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.')
+  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
   @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
@@ -180,7 +184,7 @@ type roleAssignmentType = {
   @sys.description('Optional. The description of the role assignment.')
   description: string?
 
-  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
+  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
   @sys.description('Optional. Version of the condition.')

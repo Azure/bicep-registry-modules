@@ -107,6 +107,7 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = activityLogAlert.location
+
 // =============== //
 //   Definitions   //
 // =============== //
