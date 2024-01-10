@@ -1,0 +1,415 @@
+metadata name = 'Azure Virtual Desktop Host Pool'
+metadata description = 'This module deploys an Azure Virtual Desktop Host Pool'
+metadata owner = 'Azure/module-maintainers'
+
+// ================ //
+// Parameters       //
+// ================ //
+
+@sys.description('Required. Name of the scaling plan.')
+param name string
+
+@sys.description('Optional. Location of the scaling plan. Defaults to resource group location.')
+param location string = resourceGroup().location
+
+@sys.description('Optional. Friendly name of the scaling plan.')
+param friendlyName string
+
+@sys.description('Optional. Description of the scaling plan.')
+param description string
+
+@sys.description('Optional. Set this parameter to Personal if you would like to enable Persistent Desktop experience. Defaults to Pooled.')
+@allowed([
+  'Personal'
+  'Pooled'
+])
+param hostPoolType string
+
+@sys.description('Optional. ')
+@allowed([
+  'Disabled'
+  'Enabled'
+  'EnabledForClientsOnly'
+  'EnabledForSessionHostsOnly'
+])
+param publicNetworkAccess string = 'Enabled'
+
+@sys.description('Optional. Set the type of assignment for a Personal Host Pool type.')
+@allowed([
+  'Automatic'
+  'Direct'
+  ''
+])
+param personalDesktopAssignmentType string = ''
+
+@sys.description('Optional. Type of load balancer algorithm.')
+@allowed([
+  'BreadthFirst'
+  'DepthFirst'
+  'Persistent'
+])
+param loadBalancerType string = 'BreadthFirst'
+
+@sys.description('Optional. Maximum number of sessions.')
+param maxSessionLimit int
+
+@sys.description('Optional. Host Pool RDP properties.')
+param customRdpProperty string
+
+@sys.description('Optional. Validation host pools allows you to test service changes before they are deployed to production. When set to true, the Host Pool will be deployed in a validation \'ring\' (environment) that receives all the new features (might be less stable). Defaults to false that stands for the stable, production-ready environment.')
+param validationEnvironment bool
+
+@sys.description('Optional. The necessary information for adding more VMs to this Host Pool.')
+param vmTemplate object = {}
+
+@sys.description('Optional. Host Pool token validity length. Usage: \'PT8H\' - valid for 8 hours; \'P5D\' - valid for 5 days; \'P1Y\' - valid for 1 year. When not provided, the token will be valid for 8 hours.')
+param tokenValidityLength string = 'PT8H'
+
+@sys.description('Generated. Do not provide a value! This date value is used to generate a registration token.')
+param baseTime string = utcNow('u')
+
+@sys.description('Optional. The type of preferred application group type, default to Desktop Application Group.')
+@allowed([
+  'Desktop'
+  'None'
+  'RailApplications'
+])
+param preferredAppGroupType string = 'Desktop'
+
+@sys.description('Optional. Enable Start VM on connect to allow users to start the virtual machine from a deallocated state. Important: Custom RBAC role required to power manage VMs.')
+param startVMOnConnect bool = false
+
+@sys.description('Optional. The session host configuration for updating agent, monitoring agent, and stack component.')
+param agentUpdate object = {
+  useSessionHostLocalTime: true
+}
+
+@sys.description('Optional. The ring number of HostPool.')
+param ring int = -1
+
+@sys.description('Optional. URL to customer ADFS server for signing WVD SSO certificates.')
+param ssoadfsAuthority string = ''
+
+@sys.description('Optional. ClientId for the registered Relying Party used to issue WVD SSO certificates.')
+param ssoClientId string = ''
+
+@sys.description('Optional. Path to Azure KeyVault storing the secret used for communication to ADFS.')
+#disable-next-line secure-secrets-in-params
+param ssoClientSecretKeyVaultPath string = ''
+
+@sys.description('Optional. The type of single sign on Secret Type.')
+@allowed([
+  ''
+  'Certificate'
+  'CertificateInKeyVault'
+  'SharedKey'
+  'SharedKeyInKeyVault'
+])
+#disable-next-line secure-secrets-in-params
+param ssoSecretType string = ''
+
+@sys.description('Optional. Tags of the scaling plan.')
+param tags object = {}
+
+@sys.description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+param roleAssignments roleAssignmentType
+
+@sys.description('Optional. Lock settings of the scaling plan.')
+param lock lockType
+
+@sys.description('Optional. Enable telemetry.')
+param enableTelemetry bool = true
+
+@sys.description('Optional. The diagnostic settings of the service.')
+param diagnosticSettings diagnosticSettingType
+
+// =========== //
+// Variables   //
+// =========== //
+
+var builtInRoleNames = {
+  'Application Group Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ca6382a4-1721-4bcf-a114-ff0c70227b6b')
+  Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+  'Desktop Virtualization Application Group Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '86240b0e-9422-4c43-887b-b61143f32ba8')
+  'Desktop Virtualization Application Group Reader': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aebf23d0-b568-4e86-b8f9-fe83a2c6ab55')
+  'Desktop Virtualization Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '082f0a83-3be5-4ba1-904c-961cca79b387')
+  'Desktop Virtualization Host Pool Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e307426c-f9b6-4e81-87de-d99efb3c32bc')
+  'Desktop Virtualization Host Pool Reader': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ceadfde2-b300-400a-ab7b-6143895aa822')
+  'Desktop Virtualization Power On Off Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '40c5ff49-9181-41f8-ae61-143b0e78555e')
+  'Desktop Virtualization Reader': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '49a72310-ab8d-41df-bbb0-79b649203868')
+  'Log Analytics Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')
+  'Log Analytics Reader': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')
+  'Managed Application Contributor Role': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')
+  'Managed Application Operator Role': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')
+  'Managed Applications Reader': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')
+  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+  Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+  'Resource Policy Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
+  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+}
+
+var tokenExpirationTime = dateTimeAdd(baseTime, tokenValidityLength)
+
+// ============ //
+// Dependencies //
+// ============ //
+
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.destopvirtualization-sp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-11-01-preview' = {
+  name: name
+  location: location
+  tags: tags
+  properties: {
+    friendlyName: friendlyName
+    description: description
+    hostPoolType: hostPoolType
+    publicNetworkAccess: publicNetworkAccess
+    customRdpProperty: customRdpProperty
+    personalDesktopAssignmentType: any(personalDesktopAssignmentType)
+    preferredAppGroupType: preferredAppGroupType
+    maxSessionLimit: maxSessionLimit
+    loadBalancerType: loadBalancerType
+    startVMOnConnect: startVMOnConnect
+    validationEnvironment: validationEnvironment
+    registrationInfo: {
+      expirationTime: tokenExpirationTime
+      token: null
+      registrationTokenOperation: 'Update'
+    }
+    vmTemplate: ((!empty(vmTemplate)) ? null : string(vmTemplate))
+    agentUpdate: agentUpdate
+    ring: ring != -1 ? ring : null
+    ssoadfsAuthority: ssoadfsAuthority
+    ssoClientId: ssoClientId
+    ssoClientSecretKeyVaultPath: ssoClientSecretKeyVaultPath
+    ssoSecretType: ssoSecretType
+  }
+}
+
+resource hostPool_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+  }
+  scope: hostPool
+}
+
+resource hostPool_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
+  name: guid(hostPool.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  properties: {
+    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
+    principalId: roleAssignment.principalId
+    description: roleAssignment.?description
+    principalType: roleAssignment.?principalType
+    condition: roleAssignment.?condition
+    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+  }
+  scope: hostPool
+}]
+
+resource hostPool_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+  properties: {
+    storageAccountId: diagnosticSetting.?storageAccountResourceId
+    workspaceId: diagnosticSetting.?workspaceResourceId
+    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+    eventHubName: diagnosticSetting.?eventHubName
+    logs: diagnosticSetting.?logCategoriesAndGroups ?? [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+  }
+  scope: hostPool
+}]
+
+// ================ //
+// Definitions      //
+// ================ //
+
+type diagnosticSettingType = {
+  @sys.description('Optional. The name of diagnostic setting.')
+  name: string?
+
+  @sys.description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
+  logCategoriesAndGroups: {
+    @sys.description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
+    category: string?
+
+    @sys.description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
+    categoryGroup: string?
+  }[]?
+
+  @sys.description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to \'\' to disable metric collection.')
+  metricCategories: {
+    @sys.description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
+    category: string
+  }[]?
+
+  @sys.description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
+  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
+
+  @sys.description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+  workspaceResourceId: string?
+
+  @sys.description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+  storageAccountResourceId: string?
+
+  @sys.description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
+  eventHubAuthorizationRuleResourceId: string?
+
+  @sys.description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+  eventHubName: string?
+
+  @sys.description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
+  marketplacePartnerResourceId: string?
+}[]?
+
+type roleAssignmentType = {
+  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+  roleDefinitionIdOrName: string
+
+  @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
+  principalId: string
+
+  @sys.description('Optional. The principal type of the assigned principal ID.')
+  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
+
+  @sys.description('Optional. The description of the role assignment.')
+  description: string?
+
+  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
+  condition: string?
+
+  @sys.description('Optional. Version of the condition.')
+  conditionVersion: '2.0'?
+
+  @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
+  delegatedManagedIdentityResourceId: string?
+}[]?
+
+type privateEndpointType = {
+
+  @sys.description('Optional. The name of the private endpoint.')
+  name: string?
+
+  @sys.description('Optional. The location to deploy the private endpoint to.')
+  location: string?
+
+  @sys.description('Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".')
+  service: string?
+
+  @sys.description('Required. Resource ID of the subnet where the endpoint needs to be created.')
+  subnetResourceId: string
+
+  @sys.description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
+  privateDnsZoneGroupName: string?
+
+  @sys.description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
+  privateDnsZoneResourceIds: string[]?
+
+  @sys.description('Optional. Custom DNS configurations.')
+  customDnsConfigs: {
+    @sys.description('Required. Fqdn that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @sys.description('Required. A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]?
+
+  @sys.description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
+  ipConfigurations: {
+    @sys.description('Required. The name of the resource that is unique within a resource group.')
+    name: string
+
+    @sys.description('Required. Properties of private endpoint IP configurations.')
+    properties: {
+      @sys.description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
+      groupId: string
+
+      @sys.description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
+      memberName: string
+
+      @sys.description('Required. A private IP address obtained from the private endpoint\'s subnet.')
+      privateIPAddress: string
+    }
+  }[]?
+
+  @sys.description('Optional. Application security groups in which the private endpoint IP configuration is included.')
+  applicationSecurityGroupResourceIds: string[]?
+
+  @sys.description('Optional. The custom name of the network interface attached to the private endpoint.')
+  customNetworkInterfaceName: string?
+
+  @sys.description('Optional. Specify the type of lock.')
+  lock: lockType
+
+  @sys.description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType
+
+  @sys.description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
+  tags: object?
+
+  @sys.description('Optional. Manual PrivateLink Service Connections.')
+  manualPrivateLinkServiceConnections: array?
+
+  @sys.description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
+}[]?
+
+type lockType = {
+  @sys.description('Optional. Specify the name of lock.')
+  name: string?
+
+  @sys.description('Optional. Specify the type of lock.')
+  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
+}?
+
+type accessPoliciesType = {
+  @sys.description('Optional. The tenant ID that is used for authenticating requests to the key vault.')
+  tenantId: string?
+
+  @sys.description('Required. The object ID of a user, service principal or security group in the tenant for the vault.')
+  objectId: string
+
+  @sys.description('Optional. Application ID of the client making request on behalf of a principal.')
+  applicationId: string?
+
+  @sys.description('Required. Permissions the identity has for keys, secrets and certificates.')
+  permissions: {
+    @sys.description('Optional. Permissions to keys.')
+    keys: ('all' | 'backup' | 'create' | 'decrypt' | 'delete' | 'encrypt' | 'get' | 'getrotationpolicy' | 'import' | 'list' | 'purge' | 'recover' | 'release' | 'restore' | 'rotate' | 'setrotationpolicy' | 'sign' | 'unwrapKey' | 'update' | 'verify' | 'wrapKey')[]?
+
+    @sys.description('Optional. Permissions to secrets.')
+    secrets: ('all' | 'backup' | 'delete' | 'get' | 'list' | 'purge' | 'recover' | 'restore' | 'set')[]?
+
+    @sys.description('Optional. Permissions to certificates.')
+    certificates: ('all' | 'backup' | 'create' | 'delete' | 'deleteissuers' | 'get' | 'getissuers' | 'import' | 'list' | 'listissuers' | 'managecontacts' | 'manageissuers' | 'purge' | 'recover' | 'restore' | 'setissuers' | 'update')[]?
+
+    @sys.description('Optional. Permissions to storage accounts.')
+    storage: ('all' | 'backup' | 'delete' | 'deletesas' | 'get' | 'getsas' | 'list' | 'listsas' | 'purge' | 'recover' | 'regeneratekey' | 'restore' | 'set' | 'setsas' | 'update')[]?
+  }
+}[]?
