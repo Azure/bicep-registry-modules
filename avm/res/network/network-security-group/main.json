@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "9172306311946541571"
+      "version": "0.24.24.22086",
+      "templateHash": "14500468411287403856"
     },
     "name": "Network Security Groups",
     "description": "This module deploys a Network security Group (NSG).",
@@ -250,7 +250,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
@@ -429,8 +429,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "13132940167196258311"
+              "version": "0.24.24.22086",
+              "templateHash": "14729804066478009881"
             },
             "name": "Network Security Group (NSG) Security Rules",
             "description": "This module deploys a Network Security Group (NSG) Security Rule.",

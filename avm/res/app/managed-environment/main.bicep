@@ -20,7 +20,7 @@ param roleAssignments roleAssignmentType
 @description('Optional. Logs destination.')
 param logsDestination string = 'log-analytics'
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Application Insights connection string used by Dapr to export Service to Service communication telemetry.')
