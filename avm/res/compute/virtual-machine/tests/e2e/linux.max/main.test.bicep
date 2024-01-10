@@ -20,6 +20,9 @@ param serviceShort string = 'cvmlinmax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+#disable-next-line no-hardcoded-location // Just a value to avoid ongoing capaity challenges
+var tempLocation = 'northeurope'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -28,14 +31,14 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: location
+  location: tempLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
-    location: location
+    location: tempLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     applicationSecurityGroupName: 'dep-${namePrefix}-asg-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
@@ -59,7 +62,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: location
+    location: tempLocation
   }
 }
 
@@ -73,7 +76,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}'
     computerName: '${namePrefix}linvm1'
-    location: location
+    location: tempLocation
     adminUsername: 'localAdministrator'
     imageReference: {
       publisher: 'Canonical'
