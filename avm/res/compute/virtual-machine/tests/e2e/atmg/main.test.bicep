@@ -20,6 +20,9 @@ param serviceShort string = 'cvmlinatmg'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+#disable-next-line no-hardcoded-location // Just a value to avoid ongoing capaity challenges
+var tempLocation = 'northeurope'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -35,7 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
-    location: location
+    location: tempLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
@@ -57,7 +60,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    location: location
+    location: tempLocation
     name: '${namePrefix}${serviceShort}'
     adminUsername: 'localAdminUser'
     imageReference: {
