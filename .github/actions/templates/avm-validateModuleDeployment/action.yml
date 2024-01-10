@@ -76,7 +76,7 @@ runs:
               excludedRegions = @("westeurope","westus2","eastus2","centralus","southcentralus","brazilsouth","koreacentral","qatarcentral")
               usePairedRegionsOnly = $true
               useKnownRegionsOnly = $true
-              knownRegionList @("northeurope", "eastus", "polandcentral", "germanywestcentral", "francecentral", "westus3", "australiaeast", "uksouth")
+              knownRegionList = @("northeurope", "eastus", "polandcentral", "germanywestcentral", "francecentral", "westus3", "australiaeast", "uksouth")
           }
 
           $regions = Get-AzRecommendedRegions @functionInput
