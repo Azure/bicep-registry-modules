@@ -45,18 +45,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001.com'
     location: 'global'
-
-    // Workaround for PSRule
-    a: []
-    aaaa: []
-    cname: []
-    mx: []
-    ptr: []
-    soa: []
-    srv: []
-    txt: []
-    virtualNetworkLinks: []
-    lock: {}
-    roleAssignments: []
   }
 }]

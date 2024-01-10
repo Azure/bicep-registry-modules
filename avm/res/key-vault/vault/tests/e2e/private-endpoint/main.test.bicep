@@ -36,6 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: location
   }
 }
@@ -62,6 +63,31 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
+        roleAssignments: [
+          {
+            roleDefinitionIdOrName: 'Reader'
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+        ]
+        ipConfigurations: [
+          {
+            name: 'myIPconfig'
+            properties: {
+              groupId: 'vault'
+              memberName: 'default'
+              privateIPAddress: '10.0.0.10'
+            }
+          }
+        ]
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.keyvault.com'
+            ipAddresses: [
+              '10.0.0.10'
+            ]
+          }
+        ]
       }
     ]
     tags: {

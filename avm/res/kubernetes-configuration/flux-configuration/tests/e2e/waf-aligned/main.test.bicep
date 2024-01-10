@@ -76,8 +76,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         timeoutInSeconds: 300
       }
     }
-    // Workaround for PSRule
-    bucket: null
-    configurationProtectedSettings: null
   }
 }]

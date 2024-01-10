@@ -104,7 +104,7 @@ jobs:
           done
 
           while true; do
-            TAGS=https://mcr.microsoft.com/v2/bicep/ai/cognitiveservices/tags/list
+            TAGS=https://mcr.microsoft.com/v2/bicep/$ModulePath/tags/list
             echo curl -sLo tags $TAGS
             curl -sLo tags $TAGS
             echo "Tags:"

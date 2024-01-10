@@ -69,7 +69,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     sku: 'S0'
     managedIdentities: {
       systemAssigned: true
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         nestedDependencies.outputs.managedIdentityResourceId
       ]
     }
@@ -78,15 +78,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    // Workaround for PSRule
-    lock: null
-    roleAssignments: null
-    diagnosticSettings: null
-    customerManagedKey: null
-    allowedFqdnList: null
-    apiProperties: null
-    migrationToken: null
-    userOwnedStorage: null
-    networkAcls: null
   }
 }]
