@@ -177,7 +177,6 @@ runs:
           # --------------------------
           # Fetching parameters
           $location = '${{ steps.set-deployment-location.outputs.deploymentLocation }}'
-          # $location ='${{ steps.set-deployment-location.outputs.deploymentLocation }}'
           $subscriptionId = '${{ inputs.subscriptionId }}'
           $managementGroupId = '${{ inputs.managementGroupId }}'
 
