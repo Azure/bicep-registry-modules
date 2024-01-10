@@ -307,7 +307,7 @@ module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.2' 
         properties: {
           privateLinkServiceId: app.id
           groupIds: [
-            privateEndpoint.?service ?? 'sites'
+            privateEndpoint.?service ?? 'sites-${name}'
           ]
         }
       }

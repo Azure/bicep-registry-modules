@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "11528857279777169490"
+      "templateHash": "9891998816589206613"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -1206,7 +1206,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "12943294240141026832"
+              "templateHash": "14920531224746019758"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -2582,7 +2582,7 @@
                         "properties": {
                           "privateLinkServiceId": "[resourceId('Microsoft.Web/sites', parameters('appName'))]",
                           "groupIds": [
-                            "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'sites')]"
+                            "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), format('sites-{0}', parameters('name')))]"
                           ]
                         }
                       }
