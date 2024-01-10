@@ -268,7 +268,7 @@ module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<versi
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -283,7 +283,7 @@ Name of the DDoS protection plan to assign the VNET to.
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
