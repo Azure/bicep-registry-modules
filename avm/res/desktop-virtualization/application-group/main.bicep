@@ -29,6 +29,9 @@ param friendlyName string = ''
 @sys.description('Optional. Description of the application group')
 param description string
 
+@sys.description('Optional. List of applications to be created in the Application Group.')
+param applications array = []
+
 @sys.description('Optional. Tags of the application group.')
 param tags object = {}
 
@@ -114,6 +117,23 @@ resource applicationGroup 'Microsoft.DesktopVirtualization/applicationGroups@202
     applicationGroupType: applicationGroupType
   }
 }
+
+module applicationGroup_applications 'applications/main.bicep' = [for (application, index) in applications: {
+  name: '${uniqueString(deployment().name, location)}-AppGroup-App-${index}'
+  params: {
+    name: application.name
+    applicationGroupName: applicationGroup.name
+    description: contains(application, 'description') ? application.description : ''
+    friendlyName: contains(application, 'friendlyName') ? application.friendlyName : applicationGroup.name
+    filePath: application.filePath
+    commandLineSetting: contains(application, 'commandLineSetting') ? application.commandLineSetting : 'DoNotAllow'
+    commandLineArguments: contains(application, 'commandLineArguments') ? application.commandLineArguments : ''
+    showInPortal: contains(application, 'showInPortal') ? application.showInPortal : false
+    iconPath: contains(application, 'iconPath') ? application.iconPath : application.filePath
+    iconIndex: contains(application, 'iconIndex') ? application.iconIndex : 0
+    enableTelemetry: enableTelemetry
+  }
+}]
 
 resource applicationGroup_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'

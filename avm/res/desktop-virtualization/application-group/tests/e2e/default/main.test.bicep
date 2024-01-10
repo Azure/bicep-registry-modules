@@ -10,7 +10,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-desktopvirtualization.sp-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-desktopvirtualization.ag-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
@@ -19,15 +19,7 @@ param location string = deployment().location
 param serviceShort string = 'dvagmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
-
-// ============ //
-// Dependencies //
-// ============ //
-
-// ============ //
-// Dependencies //
-// ============ //
+param namePrefix string = 'tst' //'#_namePrefix_#'
 
 // ================= //
 // General resources //
@@ -37,8 +29,17 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
 }
 
-module nestedDependencies = 'dependencies.bicep' = {
-scope: resourceGroup
+// ============ //
+// Dependencies //
+// ============ //
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
+  params: {
+    location: location
+    hostPoolName: 'dep-${namePrefix}-hp-${serviceShort}'
+  }
 }
 
 // ============== //
@@ -46,13 +47,18 @@ scope: resourceGroup
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [   'init', 'idem'   ]: {
+module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
-  params:{
-    name:
-    applicationGroupType:
-    description:
-    hostpoolName:
+  params: {
+    name: '${namePrefix}${serviceShort}002'
+    location: location
+    applicationGroupType: 'Desktop'
+    description: 'myDescription'
+    hostpoolName: nestedDependencies.outputs.hostPoolName
+    lock: {}
+    roleAssignments: []
+    diagnosticSettings: []
+    tags: {}
   }
-}
+}]
