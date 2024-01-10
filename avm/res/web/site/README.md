@@ -815,6 +815,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
             privateDnsZoneResourceIds: [
               '<privateDNSZoneResourceId>'
             ]
+            service: 'sites-slot1'
             subnetResourceId: '<subnetResourceId>'
             tags: {
               Environment: 'Non-Prod'
@@ -1023,6 +1024,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
               "privateDnsZoneResourceIds": [
                 "<privateDNSZoneResourceId>"
               ],
+              "service": "sites-slot1",
               "subnetResourceId": "<subnetResourceId>",
               "tags": {
                 "Environment": "Non-Prod",

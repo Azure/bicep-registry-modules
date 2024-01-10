@@ -112,6 +112,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
               Environment: 'Non-Prod'
               Role: 'DeploymentValidation'
             }
+            service: 'sites-slot1'
           }
         ]
         basicPublishingCredentialsPolicies: [
