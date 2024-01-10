@@ -9,6 +9,7 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
