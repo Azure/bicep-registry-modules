@@ -527,7 +527,7 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonit
     location: location
     publisher: 'Microsoft.Azure.Monitor'
     type: osType == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
-    typeHandlerVersion: extensionMonitoringAgentConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '1.0' : '1.7')
+    typeHandlerVersion: extensionMonitoringAgentConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '1.22.0' : '1.29.4')
     autoUpgradeMinorVersion: extensionMonitoringAgentConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionMonitoringAgentConfig.?enableAutomaticUpgrade ?? false
     settings: {

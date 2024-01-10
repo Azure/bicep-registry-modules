@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "18048793978562689544"
+      "templateHash": "13657145996060859896"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -3037,7 +3037,7 @@
           },
           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'AzureMonitorWindowsAgent'), createObject('value', 'AzureMonitorLinuxAgent'))]",
           "typeHandlerVersion": {
-            "value": "[coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'typeHandlerVersion'), if(equals(parameters('osType'), 'Windows'), '1.0', '1.7'))]"
+            "value": "[coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'typeHandlerVersion'), if(equals(parameters('osType'), 'Windows'), '1.22.0', '1.29.4'))]"
           },
           "autoUpgradeMinorVersion": {
             "value": "[coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'autoUpgradeMinorVersion'), true())]"
