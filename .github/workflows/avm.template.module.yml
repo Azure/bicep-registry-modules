@@ -99,16 +99,16 @@ jobs:
         uses: ./.github/actions/templates/avm-setEnvironment
         with:
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
-      - name: "Set deployment location"
-        id: set-deployment-location
-        uses: ./.github/actions/templates/avm-setDeploymentLocation
-        env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      # - name: "Set deployment location"
+      #   id: set-deployment-location
+      #   uses: ./.github/actions/templates/avm-setDeploymentLocation
+      #   env:
+          # AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       - name: "Run deployment validation with test file [${{ matrix.testCases.path }}]"
         uses: ./.github/actions/templates/avm-validateModuleDeployment
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          location: "${{ steps.set-deployment-location.outputs.deploymentLocation }}"
+          # location: "${{ steps.set-deployment-location.outputs.deploymentLocation }}"
           subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"

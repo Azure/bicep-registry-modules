@@ -57,6 +57,41 @@ runs:
         creds: ${{ env.AZURE_CREDENTIALS }}
         enable-AzPSSession: true
 
+    # [Set Deployment Location] task(s)
+    # ---------------------------
+    - name: "Set Deployment Location"
+      id: set-deployment-location
+      uses: azure/powershell@v1
+      with:
+        azPSVersion: "latest"
+        inlineScript: |
+          # Grouping task logs
+          Write-Output '::group::Get Recommended Regions'
+
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-AzRecommendedRegions.ps1')
+
+          # Set fucntion input parameters
+          $functionInput = @{
+              excludedRegions = @("westeurope","westus2","eastus2")
+              pairedRegionsOnly = $true
+          }
+
+          $regions = Get-AzRecommendedRegions @functionInput
+          Write-Verbose "Recommended regions: $($regions.Count)" -Verbose
+
+          $index = Get-Random -Maximum ($regions.Count)
+          Write-Verbose "Random index: $index" -Verbose
+
+          $location = $regions[$index].Location
+          Write-Verbose "Random location: $location" -Verbose
+
+          $deploymentLocation = @{}
+          Write-Verbose ('{0}-{1}' -f 'deploymentLocation', $location) -Verbose
+          Write-Output ('{0}={1}' -f 'deploymentLocation', $location) >> $env:GITHUB_OUTPUT
+
+          Write-Output '::endgroup::'
+
     # [Token replacement] task(s)
     # ---------------------------
     - name: "Replace tokens in template file"
@@ -139,7 +174,8 @@ runs:
           # Prepare general parameters
           # --------------------------
           # Fetching parameters
-          $location = '${{ inputs.location }}'
+          $location = '${{ steps.set-deployment-location.outputs.deploymentLocation }}'
+          # $location ='${{ steps.set-deployment-location.outputs.deploymentLocation }}'
           $subscriptionId = '${{ inputs.subscriptionId }}'
           $managementGroupId = '${{ inputs.managementGroupId }}'
 
@@ -189,7 +225,7 @@ runs:
 
           # Prepare general parameters
           # --------------------------
-          $location = '${{ inputs.location }}'
+          $location ='${{ steps.set-deployment-location.outputs.deploymentLocation }}'
           $subscriptionId = '${{ inputs.subscriptionId }}'
           $managementGroupId = '${{ inputs.managementGroupId }}'
 
