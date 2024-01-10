@@ -74,7 +74,9 @@ runs:
           # Set fucntion input parameters
           $functionInput = @{
               excludedRegions = @("westeurope","westus2","eastus2","centralus","southcentralus","brazilsouth","koreacentral","qatarcentral")
-              pairedRegionsOnly = $true
+              usePairedRegionsOnly = $true
+              useKnownRegionsOnly = $true
+              knownRegionList @("northeurope", "eastus", "polandcentral", "germanywestcentral", "francecentral", "westus3", "australiaeast", "uksouth")
           }
 
           $regions = Get-AzRecommendedRegions @functionInput

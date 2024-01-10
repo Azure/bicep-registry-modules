@@ -42,13 +42,13 @@ Get the recommended paired regions.
 function Get-AzRecommendedRegions {
   param (
     [Parameter(Mandatory = $false)]
-    [object]$excludedRegions = @("westeurope", "westus2", "eastus2", "centralus", "southcentralus", "brazilsouth", "koreacentral", "qatarcentral"),
+    [object]$excludedRegions = @(),
     [Parameter(Mandatory = $false)]
     [switch]$usePairedRegionsOnly,
     [Parameter(Mandatory = $false)]
     [switch]$useKnownRegionsOnly,
     [Parameter(Mandatory = $false)]
-    [object]$knownRegionList = @("northeurope", "eastus", "polandcentral", "germanywestcentral", "francecentral", "westus3", "australiaeast", "uksouth")
+    [object]$knownRegionList = @()
   )
 
   $allRegions = Get-AzLocation -ExtendedLocation $true
