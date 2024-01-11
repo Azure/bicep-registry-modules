@@ -79,6 +79,9 @@ runs:
               knownRegionList = @("northeurope", "eastus", "polandcentral", "germanywestcentral", "francecentral", "westus3", "australiaeast", "uksouth")
           }
 
+          Write-Verbose "Invoke function with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
           $regions = Get-AzRecommendedRegions @functionInput
           Write-Verbose "Recommended regions: $($regions.Count)" -Verbose
 
