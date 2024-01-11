@@ -373,13 +373,6 @@ var linuxProfile = {
   }
 }
 
-var lbProfile = {
-  managedOutboundIPs: {
-    count: managedOutboundIPCount
-  }
-  effectiveOutboundIPs: []
-}
-
 var builtInRoleNames = {
   'Azure Kubernetes Fleet Manager Contributor Role': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '63bb64ad-9799-4770-b5c3-24ed299a07bf')
   'Azure Kubernetes Fleet Manager RBAC Admin': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '434fb43a-c01c-447e-9f67-c3ad923cfaba')
