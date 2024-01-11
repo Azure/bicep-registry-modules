@@ -49,7 +49,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         mode: 'System'
       }
     ]
-    // Workaround for PSRule
-    tags: {}
   }
 }]
