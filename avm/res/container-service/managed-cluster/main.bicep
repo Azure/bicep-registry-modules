@@ -622,7 +622,7 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [for (agentPool, inde
     nodeLabels: agentPool.?nodeLabels
     nodePublicIpPrefixId: agentPool.?nodePublicIpPrefixId
     nodeTaints: agentPool.?nodeTaints
-    orchestratorVersion: contains(agentPool, 'orchestratorVersion') ? agentPool.orchestratorVersion : kubernetesVersion
+    orchestratorVersion: agentPool.?orchestratorVersion ?? kubernetesVersion
     osDiskSizeGB: agentPool.?osDiskSizeGB
     osDiskType: agentPool.?osDiskType
     osSku: agentPool.?osSku
