@@ -169,7 +169,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
-    diskEncryptionSetID: nestedDependencies.outputs.diskEncryptionSetResourceId
+    diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
     openServiceMeshEnabled: true
     enableStorageProfileBlobCSIDriver: true
     enableStorageProfileDiskCSIDriver: true

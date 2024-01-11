@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "11440884328159969593"
+      "templateHash": "11478322727032895279"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -495,7 +495,7 @@
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to '' to disable metric collection."
             }
           },
           "logAnalyticsDestinationType": {
@@ -1307,7 +1307,7 @@
     "roleAssignments": {
       "$ref": "#/definitions/roleAssignmentType",
       "metadata": {
-        "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+        "description": "Optional. Array of role assignments to create."
       }
     },
     "lock": {
@@ -1323,7 +1323,7 @@
         "description": "Optional. Tags of the resource."
       }
     },
-    "diskEncryptionSetID": {
+    "diskEncryptionSetResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -1381,22 +1381,6 @@
   "variables": {
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-    "linuxProfile": {
-      "adminUsername": "[parameters('adminUsername')]",
-      "ssh": {
-        "publicKeys": [
-          {
-            "keyData": "[parameters('sshPublicKey')]"
-          }
-        ]
-      }
-    },
-    "lbProfile": {
-      "managedOutboundIPs": {
-        "count": "[parameters('managedOutboundIPCount')]"
-      },
-      "effectiveOutboundIPs": []
-    },
     "builtInRoleNames": {
       "Azure Kubernetes Fleet Manager Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '63bb64ad-9799-4770-b5c3-24ed299a07bf')]",
       "Azure Kubernetes Fleet Manager RBAC Admin": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '434fb43a-c01c-447e-9f67-c3ad923cfaba')]",
@@ -1475,11 +1459,11 @@
       "properties": {
         "httpProxyConfig": "[parameters('httpProxyConfig')]",
         "identityProfile": "[parameters('identityProfile')]",
-        "diskEncryptionSetID": "[parameters('diskEncryptionSetID')]",
+        "diskEncryptionSetID": "[parameters('diskEncryptionSetResourceId')]",
         "kubernetesVersion": "[parameters('kubernetesVersion')]",
         "dnsPrefix": "[parameters('dnsPrefix')]",
         "agentPoolProfiles": "[parameters('primaryAgentPoolProfile')]",
-        "linuxProfile": "[if(empty(parameters('sshPublicKey')), null(), variables('linuxProfile'))]",
+        "linuxProfile": "[if(not(empty(parameters('sshPublicKey'))), createObject('adminUsername', parameters('adminUsername'), 'ssh', createObject('publicKeys', createArray(createObject('keyData', parameters('sshPublicKey'))))), null())]",
         "servicePrincipalProfile": "[parameters('aksServicePrincipalProfile')]",
         "ingressProfile": {
           "webAppRouting": {
@@ -1533,7 +1517,7 @@
           "dnsServiceIP": "[parameters('dnsServiceIP')]",
           "outboundType": "[parameters('outboundType')]",
           "loadBalancerSku": "[parameters('loadBalancerSku')]",
-          "loadBalancerProfile": "[if(not(equals(parameters('managedOutboundIPCount'), 0)), variables('lbProfile'), null())]"
+          "loadBalancerProfile": "[if(not(equals(parameters('managedOutboundIPCount'), 0)), createObject('managedOutboundIPs', createObject('count', parameters('managedOutboundIPCount')), 'effectiveOutboundIPs', createArray()), null())]"
         },
         "aadProfile": {
           "clientAppID": "[parameters('aadProfileClientAppID')]",
@@ -1650,7 +1634,7 @@
       "scope": "[format('Microsoft.ContainerService/managedClusters/{0}', parameters('name'))]",
       "name": "[guid(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
         "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
         "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
         "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
@@ -1756,7 +1740,9 @@
           "nodeTaints": {
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'nodeTaints')]"
           },
-          "orchestratorVersion": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'orchestratorVersion'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].orchestratorVersion), createObject('value', parameters('kubernetesVersion')))]",
+          "orchestratorVersion": {
+            "value": "[coalesce(tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'orchestratorVersion'), parameters('kubernetesVersion'))]"
+          },
           "osDiskSizeGB": {
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'osDiskSizeGB')]"
           },
@@ -1814,7 +1800,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "1714806232122398549"
+              "templateHash": "59537816730486645"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
@@ -2108,14 +2094,6 @@
               }
             }
           },
-          "variables": {
-            "creationData": {
-              "sourceResourceId": "[parameters('sourceResourceId')]"
-            },
-            "upgradeSettings": {
-              "maxSurge": "[parameters('maxSurge')]"
-            }
-          },
           "resources": {
             "managedCluster": {
               "existing": true,
@@ -2158,7 +2136,9 @@
                 "spotMaxPrice": "[parameters('spotMaxPrice')]",
                 "tags": "[parameters('tags')]",
                 "type": "[parameters('type')]",
-                "upgradeSettings": "[variables('upgradeSettings')]",
+                "upgradeSettings": {
+                  "maxSurge": "[parameters('maxSurge')]"
+                },
                 "vmSize": "[parameters('vmSize')]",
                 "vnetSubnetID": "[parameters('vnetSubnetId')]",
                 "workloadRuntime": "[parameters('workloadRuntime')]"
@@ -2741,7 +2721,7 @@
       "metadata": {
         "description": "The Object ID of Web Application Routing."
       },
-      "value": "[if(and(and(and(contains(reference('managedCluster'), 'ingressProfile'), contains(reference('managedCluster').ingressProfile, 'webAppRouting')), contains(reference('managedCluster').ingressProfile.webAppRouting, 'identity')), contains(reference('managedCluster').ingressProfile.webAppRouting.identity, 'objectId')), reference('managedCluster').ingressProfile.webAppRouting.identity.objectId, '')]"
+      "value": "[coalesce(tryGet(tryGet(tryGet(tryGet(reference('managedCluster'), 'ingressProfile'), 'webAppRouting'), 'identity'), 'objectId'), '')]"
     }
   }
 }

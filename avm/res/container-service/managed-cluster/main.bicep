@@ -328,7 +328,7 @@ param lock lockType
 param tags object?
 
 @description('Optional. The resource ID of the disc encryption set to apply to the cluster. For security reasons, this value should be provided.')
-param diskEncryptionSetID string?
+param diskEncryptionSetResourceId string?
 
 @description('Optional. Settings and configurations for the flux extension.')
 param fluxExtension extensionType
@@ -431,7 +431,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
   properties: {
     httpProxyConfig: httpProxyConfig
     identityProfile: identityProfile
-    diskEncryptionSetID: diskEncryptionSetID
+    diskEncryptionSetID: diskEncryptionSetResourceId
     kubernetesVersion: kubernetesVersion
     dnsPrefix: dnsPrefix
     agentPoolProfiles: primaryAgentPoolProfile

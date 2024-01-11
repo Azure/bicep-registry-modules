@@ -146,14 +146,6 @@ param vnetSubnetId string?
 @description('Optional. Determines the type of workload a node can run.')
 param workloadRuntime string?
 
-var creationData = {
-  sourceResourceId: sourceResourceId
-}
-
-var upgradeSettings = {
-  maxSurge: maxSurge
-}
-
 resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-preview' existing = {
   name: managedClusterName
 }
@@ -194,7 +186,9 @@ resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2023-0
     spotMaxPrice: spotMaxPrice
     tags: tags
     type: type
-    upgradeSettings: upgradeSettings
+    upgradeSettings: {
+      maxSurge: maxSurge
+    }
     vmSize: vmSize
     vnetSubnetID: vnetSubnetId
     workloadRuntime: workloadRuntime
