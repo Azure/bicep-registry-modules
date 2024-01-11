@@ -41,7 +41,7 @@ function Set-IssueForWorkflow {
     [String[]] $IgnoreWorkflows = @()
   )
 
-  $issues = gh issue list --state open --label 'automation,bug' --json 'title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
+  $issues = gh issue list --state open --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --json 'title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
   $runs = gh run list --json 'url,workflowName,headBranch,startedAt' --limit $LimitNumberOfRuns --repo $Repo | ConvertFrom-Json -Depth 100
   $workflowRuns = @{}
   $issuesCreated = 0
