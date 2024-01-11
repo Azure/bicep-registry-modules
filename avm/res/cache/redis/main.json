@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "4044387362593822012"
+      "version": "0.24.24.22086",
+      "templateHash": "12989369361653663747"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache.",
