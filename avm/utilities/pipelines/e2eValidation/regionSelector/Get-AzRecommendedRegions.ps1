@@ -43,13 +43,13 @@ function Get-AzRecommendedRegions {
   param (
     [Parameter(Mandatory = $false)]
     [array] $excludedRegions = @(),
-    
+
     [Parameter(Mandatory = $false)]
     [switch] $usePairedRegionsOnly,
-    
+
     [Parameter(Mandatory = $false)]
     [switch] $useKnownRegionsOnly,
-    
+
     [Parameter(Mandatory = $false)]
     [array] $knownRegionList = @()
   )

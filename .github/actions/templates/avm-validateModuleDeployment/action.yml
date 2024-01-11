@@ -69,27 +69,18 @@ runs:
           Write-Output '::group::Get Recommended Regions'
 
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-AzRecommendedRegions.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'regionSelector' 'Set-AzDeploymentRegion.ps1')
 
           # Set fucntion input parameters
           $functionInput = @{
-              excludedRegions = @("westeurope","westus2","eastus2","centralus","southcentralus","brazilsouth","koreacentral","qatarcentral")
               usePairedRegionsOnly = $true
               useKnownRegionsOnly = $true
-              knownRegionList = @("northeurope", "eastus", "polandcentral", "germanywestcentral", "francecentral", "westus3", "australiaeast", "uksouth")
           }
 
           Write-Verbose "Invoke function with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          $regions = Get-AzRecommendedRegions @functionInput
-          Write-Verbose "Recommended regions: $($regions.Count)" -Verbose
-
-          $index = Get-Random -Maximum ($regions.Count)
-          Write-Verbose "Random index: $index" -Verbose
-
-          $location = $regions[$index].Location
-          Write-Verbose "Random location: $location" -Verbose
+          $location = Set-AzDeploymentRegion @functionInput
 
           $deploymentLocation = @{}
           Write-Verbose ('{0}-{1}' -f 'deploymentLocation', $location) -Verbose
