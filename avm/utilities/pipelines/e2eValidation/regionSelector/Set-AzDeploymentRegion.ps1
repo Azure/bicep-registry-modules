@@ -107,7 +107,7 @@ function Set-AzDeploymentRegion {
   if ($usePairedRegionsOnly) {
     # Filter regions where PairedRegionName is not null
     $recommendedRegions = $recommendedRegions | Where-Object { $null -ne $_.PairedRegion }
-    Write-Host "Paired regions only: $($recommendedRegions.Location)"
+    Write-Verbose "Paired regions only: $($recommendedRegions.Location | ConvertTo-Json))"
   }
 
   # Display indexed regions
