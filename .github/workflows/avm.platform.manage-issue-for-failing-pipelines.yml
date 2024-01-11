@@ -1,4 +1,4 @@
-name: ".Platform: Manage issues for failing pipelines"
+name: "avm.platform.manage-workflow-issue"
 
 on:
   schedule:
