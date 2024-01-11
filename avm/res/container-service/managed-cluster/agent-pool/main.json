@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "13303193450871121065"
+      "templateHash": "1714806232122398549"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
@@ -225,7 +225,7 @@
         "Delete"
       ],
       "metadata": {
-        "description": "Optional. Describes how VMs are added to or removed from Agent Pools. See billing states (https://learn.microsoft.com/en-us/azure/virtual-machines/states-billing)."
+        "description": "Optional. Describes how VMs are added to or removed from Agent Pools. See [billing states](https://learn.microsoft.com/en-us/azure/virtual-machines/states-billing)."
       }
     },
     "scaleSetEvictionPolicy": {
@@ -322,7 +322,7 @@
       "properties": {
         "availabilityZones": "[parameters('availabilityZones')]",
         "count": "[parameters('count')]",
-        "creationData": "[if(not(empty(parameters('sourceResourceId'))), variables('creationData'), null())]",
+        "creationData": "[if(not(empty(parameters('sourceResourceId'))), createObject('sourceResourceId', parameters('sourceResourceId')), null())]",
         "enableAutoScaling": "[parameters('enableAutoScaling')]",
         "enableEncryptionAtHost": "[parameters('enableEncryptionAtHost')]",
         "enableFIPS": "[parameters('enableFIPS')]",

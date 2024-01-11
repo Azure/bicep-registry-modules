@@ -362,17 +362,6 @@ var identity = !empty(managedIdentities) ? {
   userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
 } : null
 
-var linuxProfile = {
-  adminUsername: adminUsername
-  ssh: {
-    publicKeys: [
-      {
-        keyData: sshPublicKey
-      }
-    ]
-  }
-}
-
 var builtInRoleNames = {
   'Azure Kubernetes Fleet Manager Contributor Role': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '63bb64ad-9799-4770-b5c3-24ed299a07bf')
   'Azure Kubernetes Fleet Manager RBAC Admin': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '434fb43a-c01c-447e-9f67-c3ad923cfaba')
@@ -446,7 +435,16 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
     kubernetesVersion: kubernetesVersion
     dnsPrefix: dnsPrefix
     agentPoolProfiles: primaryAgentPoolProfile
-    linuxProfile: (empty(sshPublicKey) ? null : linuxProfile)
+    linuxProfile: !empty(sshPublicKey) ? {
+      adminUsername: adminUsername
+      ssh: {
+        publicKeys: [
+          {
+            keyData: sshPublicKey
+          }
+        ]
+      }
+    } : null
     servicePrincipalProfile: aksServicePrincipalProfile
     ingressProfile: {
       webAppRouting: {
