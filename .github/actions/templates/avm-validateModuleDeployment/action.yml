@@ -69,7 +69,7 @@ runs:
           Write-Output '::group::Get Recommended Regions'
 
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'regionSelector' 'Set-AzDeploymentRegion.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'regionSelector' 'Get-AzDeploymentRegion.ps1')
 
           # Set fucntion input parameters
           $functionInput = @{

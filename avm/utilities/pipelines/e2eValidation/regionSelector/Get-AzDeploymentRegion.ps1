@@ -38,7 +38,7 @@ Set-AzDeploymentRegion -usePairedRegionsOnly
 Get the recommended paired regions.
 #>
 
-function Set-AzDeploymentRegion {
+function Get-AzDeploymentRegion {
   param (
     [Parameter(Mandatory = $false)]
     [array] $excludedRegions = @(
@@ -69,7 +69,8 @@ function Set-AzDeploymentRegion {
       "francecentral",
       "westus3",
       "australiaeast",
-      "uksouth"
+      "uksouth",
+      "westeurope"
     )
   )
 
@@ -83,35 +84,24 @@ function Set-AzDeploymentRegion {
     $regionList = $allRegions
   }
 
+
   $exclusions = @()
-  if ($null -ne $excludedRegions) {
-    foreach ($region in $excludedRegions) {
-      if ($region -like "* *") {
-        $regionToExclude = $regionList | Where-Object { $_.DisplayName -eq $region } | Select-Object Location
-        $exclusions += $regionToExclude
-        Write-Verbose "Excluding region $regionToExclude"
-      }
-      else {
-        $regionToExclude = $regionList | Where-Object { $_.Location -eq $region } | Select-Object Location
-        $exclusions += $regionToExclude
-        Write-Verbose "Excluding region $regionToExclude"
-      }
-    }
-  }
+  $exclusions = $excludedRegions | Where-Object { $_ -in ($_ -like '* *' ? $regionList.DisplayName : $regionList.Location) }
+  Write-Verbose ('Excluding regions: {0}' -f ($exclusions | ConvertTo-Json)) -Verbose
 
 
   # Filter regions where RegionCategory is 'Recommended' and not in the excluded list
-  $recommendedRegions = $regionList | Where-Object { $_.RegionCategory -eq "Recommended" -and $_.Location -notin $exclusions.Location }
-  Write-Verbose "Recommended regions: $($recommendedRegions.Location | ConvertTo-Json))"
+  $recommendedRegions = $regionList | Where-Object { $_.RegionCategory -eq "Recommended" -and $_.Location -notin $exclusions }
+  Write-Verbose "Recommended regions: $($recommendedRegions.Location | ConvertTo-Json)"
 
   if ($usePairedRegionsOnly) {
     # Filter regions where PairedRegionName is not null
     $recommendedRegions = $recommendedRegions | Where-Object { $null -ne $_.PairedRegion }
-    Write-Verbose "Paired regions only: $($recommendedRegions.Location | ConvertTo-Json))"
+    Write-Verbose "Paired regions only: $($recommendedRegions.Location | ConvertTo-Json)"
   }
 
   # Display indexed regions
-  Write-Verbose "Recommended regions: $($recommendedRegions.Count | ConvertTo-Json))" -Verbose
+  Write-Verbose "Recommended regions: $($recommendedRegions.Location | ConvertTo-Json)" -Verbose
 
   $index = Get-Random -Maximum ($recommendedRegions.Count)
   Write-Verbose "Generated random index [$index]"
