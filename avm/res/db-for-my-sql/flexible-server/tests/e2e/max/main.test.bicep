@@ -106,10 +106,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     }
     administratorLogin: 'adminUserName'
     administratorLoginPassword: password
-    skuName: 'Standard_D2ds_v4'
+    skuName: 'Standard_D2ads_v5'
     tier: 'GeneralPurpose'
     storageAutoIoScaling: 'Enabled'
-    storageSizeGB: 32
+    storageSizeGB: 64
     storageIOPS: 400
     backupRetentionDays: 20
     availabilityZone: '1'
