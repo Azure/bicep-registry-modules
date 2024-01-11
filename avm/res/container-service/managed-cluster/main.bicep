@@ -513,7 +513,12 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
       dnsServiceIP: dnsServiceIP
       outboundType: outboundType
       loadBalancerSku: loadBalancerSku
-      loadBalancerProfile: managedOutboundIPCount != 0 ? lbProfile : null
+      loadBalancerProfile: managedOutboundIPCount != 0 ? {
+        managedOutboundIPs: {
+          count: managedOutboundIPCount
+        }
+        effectiveOutboundIPs: []
+      } : null
     }
     aadProfile: {
       clientAppID: aadProfileClientAppID
