@@ -18,22 +18,22 @@ Optional. If set, only known regions will be returned.
 Optional. The list of known regions to use when useKnownRegionsOnly is set. ARM Deployment are limited to 10 active deployment regions per subscription.
 
 .EXAMPLE
-Set-AzDeploymentRegion -excludedRegions @("West Europe", "Brazil South", "West US 2", "East US 2", "South Central US") -usePairedRegionsOnly -useKnownRegionsOnly
+Get-AzDeploymentRegion -excludedRegions @("West Europe", "Brazil South", "West US 2", "East US 2", "South Central US") -usePairedRegionsOnly -useKnownRegionsOnly
 
 Get the recommended regions using known regions excluding the regions specified in the excludedRegions parameter and only paired regions.
 
 .EXAMPLE
-Set-AzDeploymentRegion -excludedRegions @("West Europe", "Brazil South", "West US 2", "East US 2", "South Central US") -usePairedRegionsOnly
+Get-AzDeploymentRegion -excludedRegions @("West Europe", "Brazil South", "West US 2", "East US 2", "South Central US") -usePairedRegionsOnly
 
 Get the recommended regions excluding the regions specified in the excludedRegions parameter and only paired regions.
 
 .EXAMPLE
-Set-AzDeploymentRegion -excludedRegions @("West Europe", "Brazil South", "West US 2", "East US 2", "South Central US")
+Get-AzDeploymentRegion -excludedRegions @("West Europe", "Brazil South", "West US 2", "East US 2", "South Central US")
 
 Get the recommended regions excluding the regions specified in the excludedRegions parameter.
 
 .EXAMPLE
-Set-AzDeploymentRegion -usePairedRegionsOnly
+Get-AzDeploymentRegion -usePairedRegionsOnly
 
 Get the recommended paired regions.
 #>

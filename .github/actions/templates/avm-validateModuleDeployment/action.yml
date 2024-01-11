@@ -59,8 +59,8 @@ runs:
 
     # [Set Deployment Location] task(s)
     # ---------------------------
-    - name: "Set Deployment Location"
-      id: set-deployment-location
+    - name: "Get Deployment Location"
+      id: get-deployment-location
       uses: azure/powershell@v1
       with:
         azPSVersion: "latest"
@@ -80,7 +80,7 @@ runs:
           Write-Verbose "Invoke function with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          $location = Set-AzDeploymentRegion @functionInput
+          $location = Get-AzDeploymentRegion @functionInput
 
           $deploymentLocation = @{}
           Write-Verbose ('{0}-{1}' -f 'deploymentLocation', $location) -Verbose
@@ -170,7 +170,7 @@ runs:
           # Prepare general parameters
           # --------------------------
           # Fetching parameters
-          $location = '${{ steps.set-deployment-location.outputs.deploymentLocation }}'
+          $location = '${{ steps.get-deployment-location.outputs.deploymentLocation }}'
           $subscriptionId = '${{ inputs.subscriptionId }}'
           $managementGroupId = '${{ inputs.managementGroupId }}'
 
@@ -220,7 +220,7 @@ runs:
 
           # Prepare general parameters
           # --------------------------
-          $location ='${{ steps.set-deployment-location.outputs.deploymentLocation }}'
+          $location ='${{ steps.get-deployment-location.outputs.deploymentLocation }}'
           $subscriptionId = '${{ inputs.subscriptionId }}'
           $managementGroupId = '${{ inputs.managementGroupId }}'
 
