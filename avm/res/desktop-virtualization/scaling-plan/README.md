@@ -30,6 +30,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
+- [Using only defaults](#example-3-using-only-defaults)
 
 ### Example 1: _Using only defaults_
 
@@ -115,12 +116,12 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-spmax'
+  name: '${uniqueString(deployment().name, location)}-test-dvspmax'
   params: {
     // Required parameters
     description: 'myDescription'
     friendlyName: 'friendlyName'
-    name: 'spmax002'
+    name: 'dvspmax002'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -179,7 +180,7 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
       "value": "friendlyName"
     },
     "name": {
-      "value": "spmax002"
+      "value": "dvspmax002"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -221,6 +222,87 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
     },
     "schedules": {
       "value": "<schedules>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-dvspwaf'
+  params: {
+    // Required parameters
+    description: 'myDescription'
+    friendlyName: 'myFriendlyName'
+    name: 'dvspwaf002'
+    // Non-required parameters
+    diagnosticSettings: []
+    location: '<location>'
+    lock: {}
+    roleAssignments: []
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "description": {
+      "value": "myDescription"
+    },
+    "friendlyName": {
+      "value": "myFriendlyName"
+    },
+    "name": {
+      "value": "dvspwaf002"
+    },
+    // Non-required parameters
+    "diagnosticSettings": {
+      "value": []
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {}
+    },
+    "roleAssignments": {
+      "value": []
     },
     "tags": {
       "value": {
@@ -469,7 +551,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
@@ -491,7 +573,7 @@ The name of the role to assign. If it cannot be found you can specify the role d
 
 ### Parameter: `roleAssignments.condition`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
@@ -554,7 +636,6 @@ Tags of the scaling plan.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `timeZone`
 
