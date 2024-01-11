@@ -38,16 +38,15 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/web/site:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
+- [Function App, using only defaults](#example-1-function-app-using-only-defaults)
 - [Function App, using large parameter set](#example-2-function-app-using-large-parameter-set)
-- [Function App, using only defaults](#example-3-function-app-using-only-defaults)
-- [WAF-aligned](#example-4-waf-aligned)
+- [WAF-aligned](#example-3-waf-aligned)
+- [Web App, using only defaults](#example-4-web-app-using-only-defaults)
 - [Web App, using large parameter set](#example-5-web-app-using-large-parameter-set)
-- [Web App, using only defaults](#example-6-web-app-using-only-defaults)
 
-### Example 1: _Using only defaults_
+### Example 1: _Function App, using only defaults_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module as Function App with the minimum set of required parameters.
 
 
 <details>
@@ -56,14 +55,17 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsmin'
+  name: '${uniqueString(deployment().name, location)}-test-wsfamin'
   params: {
     // Required parameters
-    kind: 'app'
-    name: 'wsmin001'
+    kind: 'functionapp'
+    name: 'wsfamin001'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
     location: '<location>'
+    siteConfig: {
+      alwaysOn: true
+    }
   }
 }
 ```
@@ -82,10 +84,10 @@ module site 'br/public:avm/res/web/site:<version>' = {
   "parameters": {
     // Required parameters
     "kind": {
-      "value": "app"
+      "value": "functionapp"
     },
     "name": {
-      "value": "wsmin001"
+      "value": "wsfamin001"
     },
     "serverFarmResourceId": {
       "value": "<serverFarmResourceId>"
@@ -93,6 +95,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "siteConfig": {
+      "value": {
+        "alwaysOn": true
+      }
     }
   }
 }
@@ -477,71 +484,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
-### Example 3: _Function App, using only defaults_
-
-This instance deploys the module as Function App with the minimum set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module site 'br/public:avm/res/web/site:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsfamin'
-  params: {
-    // Required parameters
-    kind: 'functionapp'
-    name: 'wsfamin001'
-    serverFarmResourceId: '<serverFarmResourceId>'
-    // Non-required parameters
-    location: '<location>'
-    siteConfig: {
-      alwaysOn: true
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "kind": {
-      "value": "functionapp"
-    },
-    "name": {
-      "value": "wsfamin001"
-    },
-    "serverFarmResourceId": {
-      "value": "<serverFarmResourceId>"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "siteConfig": {
-      "value": {
-        "alwaysOn": true
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 4: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -673,6 +616,62 @@ module site 'br/public:avm/res/web/site:<version>' = {
     },
     "vnetRouteAllEnabled": {
       "value": true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Web App, using only defaults_
+
+This instance deploys the module as Web App with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-wswamin'
+  params: {
+    // Required parameters
+    kind: 'app'
+    name: 'wswamin001'
+    serverFarmResourceId: '<serverFarmResourceId>'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "app"
+    },
+    "name": {
+      "value": "wswamin001"
+    },
+    "serverFarmResourceId": {
+      "value": "<serverFarmResourceId>"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -1071,62 +1070,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
     },
     "vnetRouteAllEnabled": {
       "value": true
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 6: _Web App, using only defaults_
-
-This instance deploys the module as Web App with the minimum set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module site 'br/public:avm/res/web/site:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wswamin'
-  params: {
-    // Required parameters
-    kind: 'app'
-    name: 'wswamin001'
-    serverFarmResourceId: '<serverFarmResourceId>'
-    // Non-required parameters
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "kind": {
-      "value": "app"
-    },
-    "name": {
-      "value": "wswamin001"
-    },
-    "serverFarmResourceId": {
-      "value": "<serverFarmResourceId>"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
