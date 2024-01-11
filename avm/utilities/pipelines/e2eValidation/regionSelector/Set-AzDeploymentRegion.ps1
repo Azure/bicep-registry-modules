@@ -117,7 +117,7 @@ function Set-AzDeploymentRegion {
   Write-Verbose "Generated random index [$index]"
 
   $location = $recommendedRegions[$index].Location
-  Write-Verbose "Random location: $location" -Verbose
+  Write-Verbose "Selected location [$location]" -Verbose
 
   return $location
 }
