@@ -646,21 +646,20 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [for (agentPool, inde
   }
 }]
 
-module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.2.0' = if (!empty(fluxExtension ?? {})) {
+module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.2.0' = if (!empty(fluxExtension)) {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxExtension'
   params: {
-    extensionType: 'microsoft.flux'
     clusterName: managedCluster.name
-    name: fluxExtension.?name ?? 'flux-extension'
     configurationProtectedSettings: fluxExtension.?configurationProtectedSettings
     configurationSettings: fluxExtension.?configurationSettings
-    releaseTrain: fluxExtension.?releaseTrain
-    releaseNamespace: fluxExtension.?releaseNamespace
-    targetNamespace: fluxExtension.?targetNamespace
-    version: fluxExtension.?version
+    enableTelemetry: enableTelemetry
+    extensionType: 'microsoft.flux'
     fluxConfigurations: fluxExtension.?configurations
     location: location
-    enableTelemetry: enableTelemetry
+    name: 'flux'
+    releaseNamespace: fluxExtension.?releaseNamespace ?? 'flux-system'
+    releaseTrain: fluxExtension.?releaseTrain ?? 'Stable'
+    version: fluxExtension.?version ?? ''
   }
 }
 

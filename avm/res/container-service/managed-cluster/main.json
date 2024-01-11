@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "5047895426905338975"
+      "templateHash": "1815324428225001781"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -2198,7 +2198,7 @@
       ]
     },
     "managedCluster_extension": {
-      "condition": "[not(empty(coalesce(parameters('fluxExtension'), createObject())))]",
+      "condition": "[not(empty(parameters('fluxExtension')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-ManagedCluster-FluxExtension', uniqueString(deployment().name, parameters('location')))]",
@@ -2208,14 +2208,8 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "extensionType": {
-            "value": "microsoft.flux"
-          },
           "clusterName": {
             "value": "[parameters('name')]"
-          },
-          "name": {
-            "value": "[coalesce(tryGet(parameters('fluxExtension'), 'name'), 'flux-extension')]"
           },
           "configurationProtectedSettings": {
             "value": "[tryGet(parameters('fluxExtension'), 'configurationProtectedSettings')]"
@@ -2223,17 +2217,11 @@
           "configurationSettings": {
             "value": "[tryGet(parameters('fluxExtension'), 'configurationSettings')]"
           },
-          "releaseTrain": {
-            "value": "[tryGet(parameters('fluxExtension'), 'releaseTrain')]"
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
-          "releaseNamespace": {
-            "value": "[tryGet(parameters('fluxExtension'), 'releaseNamespace')]"
-          },
-          "targetNamespace": {
-            "value": "[tryGet(parameters('fluxExtension'), 'targetNamespace')]"
-          },
-          "version": {
-            "value": "[tryGet(parameters('fluxExtension'), 'version')]"
+          "extensionType": {
+            "value": "microsoft.flux"
           },
           "fluxConfigurations": {
             "value": "[tryGet(parameters('fluxExtension'), 'configurations')]"
@@ -2241,8 +2229,17 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "enableTelemetry": {
-            "value": "[parameters('enableTelemetry')]"
+          "name": {
+            "value": "flux"
+          },
+          "releaseNamespace": {
+            "value": "[coalesce(tryGet(parameters('fluxExtension'), 'releaseNamespace'), 'flux-system')]"
+          },
+          "releaseTrain": {
+            "value": "[coalesce(tryGet(parameters('fluxExtension'), 'releaseTrain'), 'Stable')]"
+          },
+          "version": {
+            "value": "[coalesce(tryGet(parameters('fluxExtension'), 'version'), '')]"
           }
         },
         "template": {
