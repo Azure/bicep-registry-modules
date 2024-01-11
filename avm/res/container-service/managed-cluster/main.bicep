@@ -331,7 +331,7 @@ param tags object?
 param diskEncryptionSetID string?
 
 @description('Optional. Settings and configurations for the flux extension.')
-param extension extensionType
+param fluxExtension extensionType
 
 @description('Optional. Configurations for provisioning the cluster with HTTP proxy servers.')
 param httpProxyConfig object?
@@ -646,19 +646,19 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [for (agentPool, inde
   }
 }]
 
-module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.2.0' = if (!empty(extension ?? {})) {
+module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.2.0' = if (!empty(fluxExtension ?? {})) {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxExtension'
   params: {
     extensionType: 'microsoft.flux'
     clusterName: managedCluster.name
-    name: extension.?name ?? 'flux-extension'
-    configurationProtectedSettings: extension.?configurationProtectedSettings
-    configurationSettings: extension.?configurationSettings
-    releaseTrain: extension.?releaseTrain
-    releaseNamespace: extension.?releaseNamespace
-    targetNamespace: extension.?targetNamespace
-    version: extension.?version
-    fluxConfigurations: extension.?configurations
+    name: fluxExtension.?name ?? 'flux-extension'
+    configurationProtectedSettings: fluxExtension.?configurationProtectedSettings
+    configurationSettings: fluxExtension.?configurationSettings
+    releaseTrain: fluxExtension.?releaseTrain
+    releaseNamespace: fluxExtension.?releaseNamespace
+    targetNamespace: fluxExtension.?targetNamespace
+    version: fluxExtension.?version
+    fluxConfigurations: fluxExtension.?configurations
     location: location
     enableTelemetry: enableTelemetry
   }
