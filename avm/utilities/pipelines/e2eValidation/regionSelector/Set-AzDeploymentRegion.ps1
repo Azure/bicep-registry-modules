@@ -111,7 +111,7 @@ function Set-AzDeploymentRegion {
   }
 
   # Display indexed regions
-  Write-Verbose "Recommended regions: $($recommendedRegions.Count)" -Verbose
+  Write-Verbose "Recommended regions: $($recommendedRegions.Count | ConvertTo-Json))" -Verbose
 
   $index = Get-Random -Maximum ($recommendedRegions.Count)
   Write-Verbose "Random index: $index" -Verbose
