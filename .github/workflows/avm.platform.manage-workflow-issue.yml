@@ -20,7 +20,7 @@ jobs:
         shell: pwsh
         run: |
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Set-IssueForWorkflow.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Set-AvmGithubIssueForWorkflow.ps1')
 
           $functionInput = @{
             Repo              = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
@@ -32,4 +32,4 @@ jobs:
           Write-Verbose "Invoke task with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Set-IssueForWorkflow @functionInput -Verbose # -WhatIf
+          Set-AvmGithubIssueForWorkflow @functionInput -Verbose # -WhatIf

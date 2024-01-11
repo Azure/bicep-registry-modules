@@ -18,14 +18,14 @@ Optional. Only runs in the past selected days will be analyzed. Default is 2.
 Optional. List of workflow names that should be ignored (even if they fail, no ticket will be created). Default is an empty array.
 
 .EXAMPLE
-Set-IssueForWorkflow -Repo 'owner/repo01' -LimitNumberOfRuns 100 -LimitInDays 2 -IgnoreWorkflows @('Pipeline 01')
+Set-AvmGithubIssueForWorkflow -Repo 'owner/repo01' -LimitNumberOfRuns 100 -LimitInDays 2 -IgnoreWorkflows @('Pipeline 01')
 
 Check the last 100 workflow runs in the repository 'owner/repo01' that happened in the last 2 days. If the workflow name is 'Pipeline 01', then ignore the workflow run.
 
 .NOTES
 The function requires GitHub CLI to be installed.
 #>
-function Set-IssueForWorkflow {
+function Set-AvmGithubIssueForWorkflow {
   [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
   param (
     [Parameter(Mandatory = $true)]
