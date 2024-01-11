@@ -177,6 +177,37 @@ output location string = scalingPlan.location
 // Definitions      //
 // ================ //
 
+type lockType = {
+  @sys.description('Optional. Specify the name of lock.')
+  name: string?
+
+  @sys.description('Optional. Specify the type of lock.')
+  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
+}?
+
+type roleAssignmentType = {
+  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+  roleDefinitionIdOrName: string
+
+  @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
+  principalId: string
+
+  @sys.description('Optional. The principal type of the assigned principal ID.')
+  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
+
+  @sys.description('Optional. The description of the role assignment.')
+  description: string?
+
+  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
+  condition: string?
+
+  @sys.description('Optional. Version of the condition.')
+  conditionVersion: '2.0'?
+
+  @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
+  delegatedManagedIdentityResourceId: string?
+}[]?
+
 type diagnosticSettingType = {
   @sys.description('Optional. The name of diagnostic setting.')
   name: string?
@@ -186,18 +217,18 @@ type diagnosticSettingType = {
     @sys.description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
     category: string?
 
-    @sys.description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
+    @sys.description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to \'AllLogs\' to collect all logs.')
     categoryGroup: string?
   }[]?
 
-  @sys.description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
+  @sys.description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to \'\' to disable metric collection.')
   metricCategories: {
-    @sys.description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
+    @sys.description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to \'AllMetrics\' to collect all metrics.')
     category: string
   }[]?
 
   @sys.description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics' | null)?
+  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
 
   @sys.description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
   workspaceResourceId: string?
@@ -214,34 +245,3 @@ type diagnosticSettingType = {
   @sys.description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
 }[]?
-
-type roleAssignmentType = {
-  @sys.description('Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.')
-  roleDefinitionIdOrName: string
-
-  @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @sys.description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device' | null)?
-
-  @sys.description('Optional. The description of the role assignment.')
-  description: string?
-
-  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @sys.description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type lockType = {
-  @sys.description('Optional. Specify the name of lock.')
-  name: string?
-
-  @sys.description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
