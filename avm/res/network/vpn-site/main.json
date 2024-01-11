@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "1751598884441695432"
+      "version": "0.24.24.22086",
+      "templateHash": "2045795544331702359"
     },
     "name": "VPN Sites",
     "description": "This module deploys a VPN Site.",
@@ -178,7 +178,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "vpnSiteLinks": {
