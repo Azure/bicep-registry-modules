@@ -102,7 +102,7 @@ function Set-AzDeploymentRegion {
 
   # Filter regions where RegionCategory is 'Recommended' and not in the excluded list
   $recommendedRegions = $regionList | Where-Object { $_.RegionCategory -eq "Recommended" -and $_.Location -notin $exclusions.Location }
-  Write-Verbose "Recommended regions: $($recommendedRegions.Location)"
+  Write-Verbose "Recommended regions: $($recommendedRegions.Location | ConvertTo-Json))"
 
   if ($usePairedRegionsOnly) {
     # Filter regions where PairedRegionName is not null
