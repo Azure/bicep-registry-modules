@@ -10,6 +10,8 @@ param workerServicePrincipalClientID string = servicePrincipalClientID
 param hostname string
 param certificateName string
 
+param managedIdentityPrefix string = 'id-ddc-storage-'
+
 @description('Does the Managed Identity already exists, or should be created')
 param useExistingManagedIdentity bool = false
 
@@ -80,6 +82,7 @@ module configAKS 'ContainerService/configure-aks.bicep' = [for (spec, index) in 
     staticIP: '${publicIpName}-${spec.location}'
     azureTenantID: azureTenantID
     useExistingManagedIdentity: useExistingManagedIdentity
+    managedIdentityName: '${managedIdentityPrefix}${spec.location}'
     existingManagedIdentitySubId: existingManagedIdentitySubId
     existingManagedIdentityResourceGroupName: existingManagedIdentityResourceGroupName
     isApp: isApp

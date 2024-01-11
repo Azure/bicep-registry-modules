@@ -23,7 +23,7 @@ param agentPoolCount int = 3
 param agentPoolName string = 'k8agent'
 
 @description('Virtual Machine Skew for Kubernetes')
-param vmSize string = 'Standard_L16s_v2'
+param vmSize string = 'Standard_L16as_v3' // 16 vCPU, 128 GB RAM
 
 @description('Hostname of Deployment')
 param hostname string = 'deploy1.ddc-storage.gaming.azure.com'
@@ -143,13 +143,19 @@ param helmChart string
 param helmVersion string = '0.2.3'
 
 @description('Name of the Helm release')
-param helmName string = 'myhordetest'
+param helmName string = 'helminstalltest'
 
 @description('Namespace of the Helm release')
-param helmNamespace string = 'horde-tests'
+param helmNamespace string = 'default'
 
 @description('Name of the site')
 param siteName string = 'ddc-${location}'
+
+@description('Prefix of Managed Identity used during deployment')
+param managedIdentityPrefix string = 'id-ddc-storage-'
+
+@description('Does the Managed Identity already exists, or should be created')
+param useExistingManagedIdentity bool = false
 
 @description('For an existing Managed Identity, the Subscription Id it is located in')
 param existingManagedIdentitySubId string = subscription().subscriptionId
@@ -187,7 +193,7 @@ var newOrExisting = {
 }
 
 //  Resources
-resource partnercenter 'Microsoft.Resources/deployments@2021-04-01' = {
+resource partnercenter 'Microsoft.Resources/deployments@2022-09-01' = {
   name: 'pid-7837dd60-4ba8-419a-a26f-237bbe170773-partnercenter'
   properties: {
     mode: 'Incremental'
@@ -296,6 +302,8 @@ module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.4.2' = [for 
     certificateCommonNames: [ fullHostname, spec.fullLocationHostName ]
     issuerName: certificateIssuer
     issuerProvider: issuerProvider
+    useExistingManagedIdentity: useExistingManagedIdentity
+    managedIdentityName: '${managedIdentityPrefix}${spec.location}'
     rbacRolesNeededOnKV: '00482a5a-887f-4fb3-b363-3b7fe8e74483' // Key Vault Admin
     isCrossTenant: isApp
   }
@@ -348,8 +356,8 @@ module setuplocations 'modules/ddc-setup-locations.bicep' = if (assignRole && ep
     locationSpecs: locationSpecs
     resourceGroupName: resourceGroup().name
     publicIpName: publicIpName
-    keyVaultName: keyVaultName
     servicePrincipalClientID: servicePrincipalClientID
+    keyVaultName: keyVaultName
     workerServicePrincipalClientID: workerServicePrincipalClientID
     hostname: fullHostname
     certificateName: certificateName
@@ -365,6 +373,7 @@ module setuplocations 'modules/ddc-setup-locations.bicep' = if (assignRole && ep
     siteName: siteName
     imageVersion: imageVersion
     useExistingManagedIdentity: enableCert // If created, Reuse ID from Cert
+    managedIdentityPrefix: managedIdentityPrefix
     existingManagedIdentitySubId: existingManagedIdentitySubId
     existingManagedIdentityResourceGroupName: existingManagedIdentityResourceGroupName
     isApp: isApp

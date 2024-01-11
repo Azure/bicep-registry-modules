@@ -45,6 +45,13 @@
         "description": "Does the Managed Identity already exists, or should be created"
       }
     },
+    "managedIdentityName": {
+      "type": "string",
+      "defaultValue": "[format('id-KeyVaultCertificateCreator-{0}', parameters('location'))]",
+      "metadata": {
+        "description": "Name of the Managed Identity resource"
+      }
+    },
     "existingManagedIdentitySubId": {
       "type": "string",
       "defaultValue": "[subscription().subscriptionId]",

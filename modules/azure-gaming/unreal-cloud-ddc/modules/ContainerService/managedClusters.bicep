@@ -3,11 +3,11 @@ param location string
 param name string = 'ucddc-storage-k8-cluster'
 param agentPoolCount int = 3
 param agentPoolName string = 'k8agent'
-param vmSize string = 'Standard_L16s_v2'
+param vmSize string = 'Standard_L16as_v3'
 param nodeLabels string = 'defaultLabel'
 param assignRole bool = false
 param dnsPrefix string = 'k8-${take(uniqueString(name), 5)}'
-param kubernetesVersion string = '1.24.9'
+param kubernetesVersion string = '1.26.10'
 param availabilityZones array = [
   '1'
   '2'

@@ -59,7 +59,7 @@
     },
     "vmSize": {
       "type": "string",
-      "defaultValue": "Standard_L16s_v2",
+      "defaultValue": "Standard_L16as_v3",
       "metadata": {
         "description": "Virtual Machine Skew for Kubernetes"
       }
@@ -344,14 +344,14 @@
     },
     "helmName": {
       "type": "string",
-      "defaultValue": "myhordetest",
+      "defaultValue": "helminstalltest",
       "metadata": {
         "description": "Name of the Helm release"
       }
     },
     "helmNamespace": {
       "type": "string",
-      "defaultValue": "horde-tests",
+      "defaultValue": "default",
       "metadata": {
         "description": "Namespace of the Helm release"
       }
@@ -361,6 +361,13 @@
       "defaultValue": "[format('ddc-{0}', parameters('location'))]",
       "metadata": {
         "description": "Name of the site"
+      }
+    },
+    "managedIdentityPrefix": {
+      "type": "string",
+      "defaultValue": "id-ddc-storage-",
+      "metadata": {
+        "description": "Prefix of Managed Identity used during deployment"
       }
     },
     "useExistingManagedIdentity": {
@@ -1045,7 +1052,7 @@
                     },
                     "vmSize": {
                       "type": "string",
-                      "defaultValue": "Standard_L16s_v2"
+                      "defaultValue": "Standard_L16as_v3"
                     },
                     "nodeLabels": {
                       "type": "string",
@@ -1061,7 +1068,7 @@
                     },
                     "kubernetesVersion": {
                       "type": "string",
-                      "defaultValue": "1.24.9"
+                      "defaultValue": "1.26.10"
                     },
                     "availabilityZones": {
                       "type": "array",
@@ -2006,6 +2013,13 @@
                 "description": "Does the Managed Identity already exists, or should be created"
               }
             },
+            "managedIdentityName": {
+              "type": "string",
+              "defaultValue": "[format('id-KeyVaultCertificateCreator-{0}', parameters('location'))]",
+              "metadata": {
+                "description": "Name of the Managed Identity resource"
+              }
+            },
             "existingManagedIdentitySubId": {
               "type": "string",
               "defaultValue": "[subscription().subscriptionId]",
@@ -2096,7 +2110,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "#!/bin/bash\nset -e\n\necho \"Waiting on Identity RBAC replication ($initialDelay)\"\nsleep $initialDelay\n\n#Retry loop to catch errors (usually RBAC delays)\nretryLoopCount=0\nuntil [ $retryLoopCount -ge $retryMax ]\ndo\n    echo \"Creating AKV Cert $certName with CN $certCommonName (attempt $retryLoopCount)...\"\n\n    if [ -z \"$issuerName\" ] || [ -z \"$issuerProvider\" ]; then\n        policy=$(az keyvault certificate get-default-policy \\\n            | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g \\\n            | sed -e s/\\\"name\\\":\\ \\\"Self\\\"/\\\"name\\\":\\ \\\"${issuerName}\\\"/g )\n    else\n      if [ \"$issuerProvider\" == \"DigiCert\" ] || [ \"$issuerProvider\" == \"GlobalCert\"]; then\n        az keyvault certificate issuer create \\\n          --vault-name $akvName \\\n          --issuer-name $issuerName \\\n          --provider-name $issuerProvider \\\n          --account-id $accountId \\\n          --password $issuerPassword \\\n          --organizatiion-id $organizationId\n      else\n        az keyvault certificate issuer create \\\n          --vault-name $akvName \\\n          --issuer-name $issuerName \\\n          --provider-name $issuerProvider\n      fi\n      policy=$(az keyvault certificate get-default-policy \\\n        | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g )\n    fi\n    az keyvault certificate create \\\n        --vault-name $akvName \\\n        -n $certName \\\n        -p \"$policy\" \\\n        && break\n\n    sleep $retrySleep\n    retryLoopCount=$((retryLoopCount+1))\ndone\n\necho \"Getting Certificate $certName\";\nretryLoopCount=0\ncreatedCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\nwhile [ -z \"$(echo $createdCert | jq -r '.x509ThumbprintHex')\" ] && [ $retryLoopCount -lt $retryMax ]\ndo\n    echo \"Waiting for cert creation (attempt $retryLoopCount)...\"\n    sleep $retrySleep\n    createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\n    retryLoopCount=$((retryLoopCount+1))\ndone\n\nunversionedSecretId=$(echo $createdCert | jq -r \".sid\" | cut -d'/' -f-5) # remove the version from the url;\njsonOutputString=$(echo $createdCert | jq --arg usid $unversionedSecretId '{name: .name ,certSecretId: {versioned: .sid, unversioned: $usid }, thumbprint: .x509Thumbprint, thumbprintHex: .x509ThumbprintHex}')\necho $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n",
+            "$fxv#0": "#!/bin/bash\nset -e\n\necho \"Waiting on Identity RBAC replication ($initialDelay)\"\nsleep $initialDelay\n\n#Retry loop to catch errors (usually RBAC delays)\nretryLoopCount=0\nuntil [ $retryLoopCount -ge $retryMax ]\ndo\n    echo \"Creating AKV Cert $certName with CN $certCommonName (attempt $retryLoopCount)...\"\n\n    if [ -z \"$issuerName\" ] || [ -z \"$issuerProvider\" ]; then\n        policy=$(az keyvault certificate get-default-policy \\\n            | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g )\n    else\n      if [ \"$issuerProvider\" == \"DigiCert\" ] || [ \"$issuerProvider\" == \"GlobalCert\"]; then\n        az keyvault certificate issuer create \\\n          --vault-name $akvName \\\n          --issuer-name $issuerName \\\n          --provider-name $issuerProvider \\\n          --account-id $accountId \\\n          --password $issuerPassword \\\n          --organizatiion-id $organizationId\n      else\n        az keyvault certificate issuer create \\\n          --vault-name $akvName \\\n          --issuer-name $issuerName \\\n          --provider-name $issuerProvider\n      fi\n      policy=$(az keyvault certificate get-default-policy \\\n        | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g  \\\n        | sed -e s/\\\"name\\\":\\ \\\"Self\\\"/\\\"name\\\":\\ \\\"${issuerName}\\\"/g )\n    fi\n    az keyvault certificate create \\\n        --vault-name $akvName \\\n        -n $certName \\\n        -p \"$policy\" \\\n        && break\n\n    sleep $retrySleep\n    retryLoopCount=$((retryLoopCount+1))\ndone\n\necho \"Getting Certificate $certName\";\nretryLoopCount=0\ncreatedCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\nwhile [ -z \"$(echo $createdCert | jq -r '.x509ThumbprintHex')\" ] && [ $retryLoopCount -lt $retryMax ]\ndo\n    echo \"Waiting for cert creation (attempt $retryLoopCount)...\"\n    sleep $retrySleep\n    createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\n    retryLoopCount=$((retryLoopCount+1))\ndone\n\nunversionedSecretId=$(echo $createdCert | jq -r \".sid\" | cut -d'/' -f-5) # remove the version from the url;\njsonOutputString=$(echo $createdCert | jq --arg usid $unversionedSecretId '{name: .name ,certSecretId: {versioned: .sid, unversioned: $usid }, thumbprint: .x509Thumbprint, thumbprintHex: .x509ThumbprintHex}')\necho $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n",
             "delegatedManagedIdentityResourceId": "[if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))]"
           },
           "resources": [
@@ -2741,6 +2755,10 @@
             "certificateName": {
               "type": "string"
             },
+            "managedIdentityPrefix": {
+              "type": "string",
+              "defaultValue": "id-ddc-storage-"
+            },
             "useExistingManagedIdentity": {
               "type": "bool",
               "defaultValue": false,
@@ -3287,6 +3305,10 @@
                       "type": "string",
                       "defaultValue": "[subscription().tenantId]"
                     },
+                    "managedIdentityName": {
+                      "type": "string",
+                      "defaultValue": "[format('id-ddc-storage-{0}', parameters('location'))]"
+                    },
                     "useExistingManagedIdentity": {
                       "type": "bool",
                       "defaultValue": false,
@@ -3560,9 +3582,9 @@
                             }
                           },
                           "variables": {
-                            "helmChart": "oci://tchordestoragecontainerregistry.azurecr.io/helm/tc-local-pv-provisioner",
-                            "helmName": "tcpvprovisioner",
-                            "helmNamespace": "tc-pv-provisioner",
+                            "helmChart": "oci://REPLACEWITHYOURcontainerregistry.azurecr.io/helm/REPLACEWITHYOURHELMCHART",
+                            "helmName": "helminstalltest",
+                            "helmNamespace": "default",
                             "helmArgs": [
                               "localProvisioner.enabled=true"
                             ],

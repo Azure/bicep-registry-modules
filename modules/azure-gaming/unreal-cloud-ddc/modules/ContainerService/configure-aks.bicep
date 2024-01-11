@@ -10,6 +10,8 @@ param enableIngress bool = true
 param enableLocalProvisioner bool = true
 param azureTenantID string = subscription().tenantId
 
+param managedIdentityName string = 'id-ddc-storage-${location}'
+
 @description('Does the Managed Identity already exists, or should be created')
 param useExistingManagedIdentity bool = false
 
@@ -59,6 +61,7 @@ module combo 'helmChartInstall.bicep' = {
     location: location
     helmCharts: helmCharts
     useExistingManagedIdentity: useExistingManagedIdentity
+    managedIdentityName: managedIdentityName
     existingManagedIdentitySubId: existingManagedIdentitySubId
     existingManagedIdentityResourceGroupName: existingManagedIdentityResourceGroupName
     isApp: isApp
