@@ -27,7 +27,7 @@ param baseTime string = utcNow('u')
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-#disable-next-line no-hardcoded-location // Just a value to avoid ongoing capaity challenges
+#disable-next-line no-hardcoded-location // Just a value to avoid ongoing capacity challenges
 var tempLocation = 'northeurope'
 
 // ============ //
