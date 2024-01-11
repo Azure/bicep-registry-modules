@@ -73,16 +73,50 @@ function Set-AzDeploymentRegion {
     )
   )
 
-  # Load used functions
-  . (join-Path $PSScriptRoot 'Get-AzRecommendedRegions.ps1')
+  $allRegions = Get-AzLocation -ExtendedLocation $true
 
-  $regions = Get-AzRecommendedRegions -excludedRegions $excludedRegions -usePairedRegionsOnly:$usePairedRegionsOnly -useKnownRegionsOnly:$useKnownRegionsOnly -knownRegionList $knownRegionList
-  Write-Verbose "Recommended regions: $($regions.Count)" -Verbose
+  # Filter regions where Location is in the known regions list
+  if ($useKnownRegionsOnly) {
+    $regionList = $allRegions | Where-Object { $_.Location -in $knownRegionList }
+  }
+  else {
+    $regionList = $allRegions
+  }
 
-  $index = Get-Random -Maximum ($regions.Count)
+  $exclusions = @()
+  if ($null -ne $excludedRegions) {
+    foreach ($region in $excludedRegions) {
+      if ($region -like "* *") {
+        $regionToExclude = $regionList | Where-Object { $_.DisplayName -eq $region } | Select-Object Location
+        $exclusions += $regionToExclude
+        Write-Verbose "Excluding region $regionToExclude"
+      }
+      else {
+        $regionToExclude = $regionList | Where-Object { $_.Location -eq $region } | Select-Object Location
+        $exclusions += $regionToExclude
+        Write-Verbose "Excluding region $regionToExclude"
+      }
+    }
+  }
+
+
+  # Filter regions where RegionCategory is 'Recommended' and not in the excluded list
+  $recommendedRegions = $regionList | Where-Object { $_.RegionCategory -eq "Recommended" -and $_.Location -notin $exclusions.Location }
+  Write-Verbose "Recommended regions: $($recommendedRegions.Location)"
+
+  if ($usePairedRegionsOnly) {
+    # Filter regions where PairedRegionName is not null
+    $recommendedRegions = $recommendedRegions | Where-Object { $null -ne $_.PairedRegion }
+    Write-Host "Paired regions only: $($recommendedRegions.Location)"
+  }
+
+  # Display indexed regions
+  Write-Verbose "Recommended regions: $($recommendedRegions.Count)" -Verbose
+
+  $index = Get-Random -Maximum ($recommendedRegions.Count)
   Write-Verbose "Random index: $index" -Verbose
 
-  $location = $regions[$index].Location
+  $location = $recommendedRegions[$index].Location
   Write-Verbose "Random location: $location" -Verbose
 
   return $location
