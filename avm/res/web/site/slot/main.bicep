@@ -303,11 +303,11 @@ module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.2' 
   params: {
     privateLinkServiceConnections: [
       {
-        name: name
+        name: slot.name
         properties: {
           privateLinkServiceId: app.id
           groupIds: [
-            privateEndpoint.?service ?? 'sites-${name}'
+            privateEndpoint.?service ?? 'sites-${slot.name}'
           ]
         }
       }

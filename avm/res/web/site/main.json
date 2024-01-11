@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "9891998816589206613"
+      "templateHash": "12183333319237767271"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -1206,7 +1206,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "14920531224746019758"
+              "templateHash": "1819905601693828569"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -3226,7 +3226,8 @@
                 }
               },
               "dependsOn": [
-                "app"
+                "app",
+                "slot"
               ]
             }
           },
