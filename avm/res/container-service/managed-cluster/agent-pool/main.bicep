@@ -104,7 +104,7 @@ param podSubnetId string?
 @description('Optional. The ID for the Proximity Placement Group.')
 param proximityPlacementGroupResourceId string?
 
-@description('Optional. Describes how VMs are added to or removed from Agent Pools. See billing states (https://learn.microsoft.com/en-us/azure/virtual-machines/states-billing).')
+@description('Optional. Describes how VMs are added to or removed from Agent Pools. See [billing states](https://learn.microsoft.com/en-us/azure/virtual-machines/states-billing).')
 @allowed([
   'Deallocate'
   'Delete'
