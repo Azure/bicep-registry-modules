@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "1815324428225001781"
+      "templateHash": "1315993113070308227"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -2239,7 +2239,7 @@
             "value": "[coalesce(tryGet(parameters('fluxExtension'), 'releaseTrain'), 'Stable')]"
           },
           "version": {
-            "value": "[coalesce(tryGet(parameters('fluxExtension'), 'version'), '')]"
+            "value": "[tryGet(parameters('fluxExtension'), 'version')]"
           }
         },
         "template": {

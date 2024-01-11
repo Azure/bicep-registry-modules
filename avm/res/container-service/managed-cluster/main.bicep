@@ -659,7 +659,7 @@ module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/exte
     name: 'flux'
     releaseNamespace: fluxExtension.?releaseNamespace ?? 'flux-system'
     releaseTrain: fluxExtension.?releaseTrain ?? 'Stable'
-    version: fluxExtension.?version ?? ''
+    version: fluxExtension.?version
   }
 }
 
