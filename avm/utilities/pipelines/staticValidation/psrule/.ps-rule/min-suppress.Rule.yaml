@@ -23,6 +23,11 @@ spec:
     - Azure.TrafficManager.Protocol
       # Azure Load Balancer specific
     - Azure.LB.Probe
+      # App Managed Environment specific
+    - Azure.ContainerApp.PublicAccess
+    # Azure Virtual Machine
+    - Azure.VM.AMA
+    - Azure.VM.Standalone
   if:
     name: "."
     contains:
