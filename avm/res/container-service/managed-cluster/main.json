@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "8785574806166687152"
+      "templateHash": "5047895426905338975"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1330,7 +1330,7 @@
         "description": "Optional. The resource ID of the disc encryption set to apply to the cluster. For security reasons, this value should be provided."
       }
     },
-    "extension": {
+    "fluxExtension": {
       "$ref": "#/definitions/extensionType",
       "metadata": {
         "description": "Optional. Settings and configurations for the flux extension."
@@ -2198,7 +2198,7 @@
       ]
     },
     "managedCluster_extension": {
-      "condition": "[not(empty(coalesce(parameters('extension'), createObject())))]",
+      "condition": "[not(empty(coalesce(parameters('fluxExtension'), createObject())))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-ManagedCluster-FluxExtension', uniqueString(deployment().name, parameters('location')))]",
@@ -2215,28 +2215,28 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(tryGet(parameters('extension'), 'name'), 'flux-extension')]"
+            "value": "[coalesce(tryGet(parameters('fluxExtension'), 'name'), 'flux-extension')]"
           },
           "configurationProtectedSettings": {
-            "value": "[tryGet(parameters('extension'), 'configurationProtectedSettings')]"
+            "value": "[tryGet(parameters('fluxExtension'), 'configurationProtectedSettings')]"
           },
           "configurationSettings": {
-            "value": "[tryGet(parameters('extension'), 'configurationSettings')]"
+            "value": "[tryGet(parameters('fluxExtension'), 'configurationSettings')]"
           },
           "releaseTrain": {
-            "value": "[tryGet(parameters('extension'), 'releaseTrain')]"
+            "value": "[tryGet(parameters('fluxExtension'), 'releaseTrain')]"
           },
           "releaseNamespace": {
-            "value": "[tryGet(parameters('extension'), 'releaseNamespace')]"
+            "value": "[tryGet(parameters('fluxExtension'), 'releaseNamespace')]"
           },
           "targetNamespace": {
-            "value": "[tryGet(parameters('extension'), 'targetNamespace')]"
+            "value": "[tryGet(parameters('fluxExtension'), 'targetNamespace')]"
           },
           "version": {
-            "value": "[tryGet(parameters('extension'), 'version')]"
+            "value": "[tryGet(parameters('fluxExtension'), 'version')]"
           },
           "fluxConfigurations": {
-            "value": "[tryGet(parameters('extension'), 'configurations')]"
+            "value": "[tryGet(parameters('fluxExtension'), 'configurations')]"
           },
           "location": {
             "value": "[parameters('location')]"

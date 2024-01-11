@@ -157,7 +157,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     enableStorageProfileFileCSIDriver: true
     enableStorageProfileSnapshotController: true
     enableWorkloadIdentity: true
-    extension: {
+    fluxExtension: {
       configurations: [
         {
           gitRepository: {
@@ -169,20 +169,47 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             timeoutInSeconds: 180
             url: 'https://github.com/mspnp/aks-baseline'
           }
+          namespace: 'flux-system'
+        }
+        {
+          gitRepository: {
+            repositoryRef: {
+              branch: 'main'
+            }
+            sshKnownHosts: ''
+            syncIntervalInSeconds: 300
+            timeoutInSeconds: 180
+            url: 'https://github.com/Azure/gitops-flux2-kustomize-helm-mt'
+          }
           kustomizations: {
-            unified: {
-              path: './cluster-manifests'
+            apps: {
+              dependsOn: [
+                'infra'
+              ]
+              path: './apps/staging'
+              prune: true
+              retryIntervalInSeconds: 120
+              syncIntervalInSeconds: 600
+              timeoutInSeconds: 600
+            }
+            infra: {
+              dependsOn: []
+              path: './infrastructure'
+              prune: true
+              syncIntervalInSeconds: 600
+              timeoutInSeconds: 600
+              validation: 'none'
             }
           }
-          namespace: 'flux-system'
-          suspend: false
+          namespace: 'flux-system-helm'
         }
       ]
       configurationSettings: {
+        'helm-controller.enabled': 'true'
         'image-automation-controller.enabled': 'false'
         'image-reflector-controller.enabled': 'false'
         'kustomize-controller.enabled': 'true'
-        'notification-controller.enabled': 'false'
+        'notification-controller.enabled': 'true'
         'source-controller.enabled': 'true'
       }
     }
@@ -377,7 +404,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "enableWorkloadIdentity": {
       "value": true
     },
-    "extension": {
+    "fluxExtension": {
       "value": {
         "configurations": [
           {
@@ -390,20 +417,47 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
               "timeoutInSeconds": 180,
               "url": "https://github.com/mspnp/aks-baseline"
             },
+            "namespace": "flux-system"
+          },
+          {
+            "gitRepository": {
+              "repositoryRef": {
+                "branch": "main"
+              },
+              "sshKnownHosts": "",
+              "syncIntervalInSeconds": 300,
+              "timeoutInSeconds": 180,
+              "url": "https://github.com/Azure/gitops-flux2-kustomize-helm-mt"
+            },
             "kustomizations": {
-              "unified": {
-                "path": "./cluster-manifests"
+              "apps": {
+                "dependsOn": [
+                  "infra"
+                ],
+                "path": "./apps/staging",
+                "prune": true,
+                "retryIntervalInSeconds": 120,
+                "syncIntervalInSeconds": 600,
+                "timeoutInSeconds": 600
+              },
+              "infra": {
+                "dependsOn": [],
+                "path": "./infrastructure",
+                "prune": true,
+                "syncIntervalInSeconds": 600,
+                "timeoutInSeconds": 600,
+                "validation": "none"
               }
             },
-            "namespace": "flux-system",
-            "suspend": false
+            "namespace": "flux-system-helm"
           }
         ],
         "configurationSettings": {
+          "helm-controller.enabled": "true",
           "image-automation-controller.enabled": "false",
           "image-reflector-controller.enabled": "false",
           "kustomize-controller.enabled": "true",
-          "notification-controller.enabled": "false",
+          "notification-controller.enabled": "true",
           "source-controller.enabled": "true"
         }
       }
@@ -1508,7 +1562,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`enableStorageProfileSnapshotController`](#parameter-enablestorageprofilesnapshotcontroller) | bool | Whether the snapshot controller for the storage profile is enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`enableWorkloadIdentity`](#parameter-enableworkloadidentity) | bool | Whether to enable Workload Identity. Requires OIDC issuer profile to be enabled. |
-| [`extension`](#parameter-extension) | object | Settings and configurations for the flux extension. |
+| [`fluxExtension`](#parameter-fluxextension) | object | Settings and configurations for the flux extension. |
 | [`httpApplicationRoutingEnabled`](#parameter-httpapplicationroutingenabled) | bool | Specifies whether the httpApplicationRouting add-on is enabled or not. |
 | [`httpProxyConfig`](#parameter-httpproxyconfig) | object | Configurations for provisioning the cluster with HTTP proxy servers. |
 | [`identityProfile`](#parameter-identityprofile) | object | Identities associated with the cluster. |
@@ -2547,7 +2601,7 @@ Whether to enable Workload Identity. Requires OIDC issuer profile to be enabled.
 - Type: bool
 - Default: `False`
 
-### Parameter: `extension`
+### Parameter: `fluxExtension`
 
 Settings and configurations for the flux extension.
 
@@ -2558,35 +2612,35 @@ Settings and configurations for the flux extension.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-extensionname) | string | The name of the extension. |
-| [`releaseTrain`](#parameter-extensionreleasetrain) | string | The release train of the extension. |
+| [`name`](#parameter-fluxextensionname) | string | The name of the extension. |
+| [`releaseTrain`](#parameter-fluxextensionreleasetrain) | string | The release train of the extension. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`configurationProtectedSettings`](#parameter-extensionconfigurationprotectedsettings) | object | The configuration protected settings of the extension. |
-| [`configurations`](#parameter-extensionconfigurations) | array | The flux configurations of the extension. |
-| [`configurationSettings`](#parameter-extensionconfigurationsettings) | object | The configuration settings of the extension. |
-| [`releaseNamespace`](#parameter-extensionreleasenamespace) | string | Namespace where the extension Release must be placed. |
-| [`targetNamespace`](#parameter-extensiontargetnamespace) | string | Namespace where the extension will be created for an Namespace scoped extension. |
-| [`version`](#parameter-extensionversion) | string | The version of the extension. |
+| [`configurationProtectedSettings`](#parameter-fluxextensionconfigurationprotectedsettings) | object | The configuration protected settings of the extension. |
+| [`configurations`](#parameter-fluxextensionconfigurations) | array | The flux configurations of the extension. |
+| [`configurationSettings`](#parameter-fluxextensionconfigurationsettings) | object | The configuration settings of the extension. |
+| [`releaseNamespace`](#parameter-fluxextensionreleasenamespace) | string | Namespace where the extension Release must be placed. |
+| [`targetNamespace`](#parameter-fluxextensiontargetnamespace) | string | Namespace where the extension will be created for an Namespace scoped extension. |
+| [`version`](#parameter-fluxextensionversion) | string | The version of the extension. |
 
-### Parameter: `extension.name`
+### Parameter: `fluxExtension.name`
 
 The name of the extension.
 
 - Required: No
 - Type: string
 
-### Parameter: `extension.releaseTrain`
+### Parameter: `fluxExtension.releaseTrain`
 
 The release train of the extension.
 
 - Required: No
 - Type: string
 
-### Parameter: `extension.configurationProtectedSettings`
+### Parameter: `fluxExtension.configurationProtectedSettings`
 
 The configuration protected settings of the extension.
 
@@ -2597,44 +2651,44 @@ The configuration protected settings of the extension.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`sshPrivateKey`](#parameter-extensionconfigurationprotectedsettingssshprivatekey) | string | The SSH private key to use for Git authentication. |
+| [`sshPrivateKey`](#parameter-fluxextensionconfigurationprotectedsettingssshprivatekey) | string | The SSH private key to use for Git authentication. |
 
-### Parameter: `extension.configurationProtectedSettings.sshPrivateKey`
+### Parameter: `fluxExtension.configurationProtectedSettings.sshPrivateKey`
 
 The SSH private key to use for Git authentication.
 
 - Required: No
 - Type: string
 
-### Parameter: `extension.configurations`
+### Parameter: `fluxExtension.configurations`
 
 The flux configurations of the extension.
 
 - Required: No
 - Type: array
 
-### Parameter: `extension.configurationSettings`
+### Parameter: `fluxExtension.configurationSettings`
 
 The configuration settings of the extension.
 
 - Required: No
 - Type: object
 
-### Parameter: `extension.releaseNamespace`
+### Parameter: `fluxExtension.releaseNamespace`
 
 Namespace where the extension Release must be placed.
 
 - Required: No
 - Type: string
 
-### Parameter: `extension.targetNamespace`
+### Parameter: `fluxExtension.targetNamespace`
 
 Namespace where the extension will be created for an Namespace scoped extension.
 
 - Required: No
 - Type: string
 
-### Parameter: `extension.version`
+### Parameter: `fluxExtension.version`
 
 The version of the extension.
 
