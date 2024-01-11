@@ -42,13 +42,16 @@ Get the recommended paired regions.
 function Get-AzRecommendedRegions {
   param (
     [Parameter(Mandatory = $false)]
-    [object]$excludedRegions = @(),
+    [array] $excludedRegions = @(),
+    
     [Parameter(Mandatory = $false)]
-    [switch]$usePairedRegionsOnly,
+    [switch] $usePairedRegionsOnly,
+    
     [Parameter(Mandatory = $false)]
-    [switch]$useKnownRegionsOnly,
+    [switch] $useKnownRegionsOnly,
+    
     [Parameter(Mandatory = $false)]
-    [object]$knownRegionList = @()
+    [array] $knownRegionList = @()
   )
 
   $allRegions = Get-AzLocation -ExtendedLocation $true
