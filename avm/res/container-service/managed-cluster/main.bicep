@@ -762,7 +762,7 @@ output oidcIssuerUrl string = enableOidcIssuerProfile ? managedCluster.propertie
 output addonProfiles object = contains(managedCluster.properties, 'addonProfiles') ? managedCluster.properties.addonProfiles : {}
 
 @description('The Object ID of Web Application Routing.')
-output webAppRoutingIdentityObjectId string = contains(managedCluster.properties, 'ingressProfile') && contains(managedCluster.properties.ingressProfile, 'webAppRouting') && contains(managedCluster.properties.ingressProfile.webAppRouting, 'identity') && contains(managedCluster.properties.ingressProfile.webAppRouting.identity, 'objectId') ? managedCluster.properties.ingressProfile.webAppRouting.identity.objectId : ''
+output webAppRoutingIdentityObjectId string = managedCluster.properties.?ingressProfile.?webAppRouting.?identity.?objectId ?? ''
 
 // =============== //
 //   Definitions   //
