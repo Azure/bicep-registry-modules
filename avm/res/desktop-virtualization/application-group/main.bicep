@@ -2,10 +2,6 @@ metadata name = 'Azure Virtual Desktop Application Group'
 metadata description = 'This module deploys an Azure Virtual Desktop Application Group.'
 metadata owner = 'Azure/module-maintainers'
 
-// ================ //
-// Parameters       //
-// ================ //
-
 @sys.description('Required. Name of the Application Group to create this application in.')
 @minLength(3)
 param name string
@@ -24,10 +20,10 @@ param applicationGroupType string
 param hostpoolName string
 
 @sys.description('Optional. The friendly name of the Application Group to be created.')
-param friendlyName string = ''
+param friendlyName string = name
 
 @sys.description('Optional. Description of the application group')
-param description string
+param description string = ''
 
 @sys.description('Optional. List of applications to be created in the Application Group.')
 param applications array = []
@@ -46,10 +42,6 @@ param enableTelemetry bool = true
 
 @sys.description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
-
-// =========== //
-// Variables   //
-// =========== //
 
 var builtInRoleNames = {
   'Application Group Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ca6382a4-1721-4bcf-a114-ff0c70227b6b')
@@ -72,9 +64,6 @@ var builtInRoleNames = {
   'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
-// ============ //
-// Dependencies //
-// ============ //
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.destopvirtualization-ag.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -94,29 +83,29 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource applicationGroup_hostpool 'Microsoft.DesktopVirtualization/hostPools@2022-09-09' existing = {
+resource appGroup_hostpool 'Microsoft.DesktopVirtualization/hostPools@2022-09-09' existing = {
   name: hostpoolName
 }
 
-resource applicationGroup 'Microsoft.DesktopVirtualization/applicationGroups@2023-09-05' = {
+resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2023-09-05' = {
   name: name
   location: location
   tags: tags
   properties: {
-    hostPoolArmPath: applicationGroup_hostpool.id
+    hostPoolArmPath: appGroup_hostpool.id
     friendlyName: friendlyName
     description: description
     applicationGroupType: applicationGroupType
   }
 }
 
-module applicationGroup_applications 'applications/main.bicep' = [for (application, index) in applications: {
+module appGroup_applications 'applications/main.bicep' = [for (application, index) in applications: {
   name: '${uniqueString(deployment().name, location)}-AppGroup-App-${index}'
   params: {
     name: application.name
-    applicationGroupName: applicationGroup.name
+    applicationGroupName: appGroup.name
     description: contains(application, 'description') ? application.description : ''
-    friendlyName: contains(application, 'friendlyName') ? application.friendlyName : applicationGroup.name
+    friendlyName: contains(application, 'friendlyName') ? application.friendlyName : appGroup.name
     filePath: application.filePath
     commandLineSetting: contains(application, 'commandLineSetting') ? application.commandLineSetting : 'DoNotAllow'
     commandLineArguments: contains(application, 'commandLineArguments') ? application.commandLineArguments : ''
@@ -127,17 +116,17 @@ module applicationGroup_applications 'applications/main.bicep' = [for (applicati
   }
 }]
 
-resource applicationGroup_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+resource appGroup_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
     notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
   }
-  scope: applicationGroup
+  scope: appGroup
 }
 
-resource applicationGroup_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(applicationGroup.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+resource appGroup_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
+  name: guid(appGroup.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
   properties: {
     roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
     principalId: roleAssignment.principalId
@@ -147,10 +136,10 @@ resource applicationGroup_roleAssignments 'Microsoft.Authorization/roleAssignmen
     conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
     delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
   }
-  scope: applicationGroup
+  scope: appGroup
 }]
 
-resource applicationGroup_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+resource appGroup_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
   name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
   properties: {
     storageAccountId: diagnosticSetting.?storageAccountResourceId
@@ -166,24 +155,20 @@ resource applicationGroup_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
     marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
     logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
   }
-  scope: applicationGroup
+  scope: appGroup
 }]
 
-// =========== //
-// Outputs     //
-// =========== //
-
 @sys.description('The resource ID of the scaling plan.')
-output resourceId string = applicationGroup.id
+output resourceId string = appGroup.id
 
 @sys.description('The name of the resource group the scaling plan was created in.')
 output resourceGroupName string = resourceGroup().name
 
 @sys.description('The name of the scaling plan.')
-output name string = applicationGroup.name
+output name string = appGroup.name
 
 @sys.description('The location of the scaling plan.')
-output location string = applicationGroup.location
+output location string = appGroup.location
 
 // ================ //
 // Definitions      //
