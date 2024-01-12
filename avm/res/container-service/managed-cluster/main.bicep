@@ -667,7 +667,7 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [for (agentPool, inde
     tags: agentPool.?tags ?? tags
     type: agentPool.?type
     maxSurge: agentPool.?maxSurge
-    vmSize: agentPool.?vmSize ?? 'Standard_D2s_v3'
+    vmSize: agentPool.?vmSize
     vnetSubnetId: agentPool.?vnetSubnetId
     workloadRuntime: agentPool.?workloadRuntime
   }
@@ -781,13 +781,13 @@ output keyvaultIdentityObjectId string = managedCluster.properties.?addonProfile
 output keyvaultIdentityClientId string = managedCluster.properties.?addonProfiles.?azureKeyvaultSecretsProvider.?identity.?clientId ?? ''
 
 @description('The Object ID of Application Gateway Ingress Controller (AGIC) identity.')
-output ingressApplicationGatewayIdentityObjectId string = managedCluster.properties.addonProfiles.?ingressApplicationGateway.?identity.?objectId ?? ''
+output ingressApplicationGatewayIdentityObjectId string = managedCluster.properties.?addonProfiles.?ingressApplicationGateway.?identity.?objectId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = managedCluster.location
 
 @description('The OIDC token issuer URL.')
-output oidcIssuerUrl string = managedCluster.properties.?oidcIssuerProfile.issuerURL ?? ''
+output oidcIssuerUrl string = managedCluster.properties.?oidcIssuerProfile.?issuerURL ?? ''
 
 @description('The addonProfiles of the Kubernetes cluster.')
 output addonProfiles object = managedCluster.properties.?addonProfiles ?? {}

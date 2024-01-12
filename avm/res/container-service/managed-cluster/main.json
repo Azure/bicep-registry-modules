@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "757006214149634198"
+      "templateHash": "4735311217553069306"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1812,7 +1812,7 @@
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'maxSurge')]"
           },
           "vmSize": {
-            "value": "[coalesce(tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'vmSize'), 'Standard_D2s_v3')]"
+            "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'vmSize')]"
           },
           "vnetSubnetId": {
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'vnetSubnetId')]"
@@ -2722,7 +2722,7 @@
       "metadata": {
         "description": "The Object ID of Application Gateway Ingress Controller (AGIC) identity."
       },
-      "value": "[coalesce(tryGet(tryGet(tryGet(reference('managedCluster').addonProfiles, 'ingressApplicationGateway'), 'identity'), 'objectId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(tryGet(tryGet(reference('managedCluster'), 'addonProfiles'), 'ingressApplicationGateway'), 'identity'), 'objectId'), '')]"
     },
     "location": {
       "type": "string",
@@ -2736,7 +2736,7 @@
       "metadata": {
         "description": "The OIDC token issuer URL."
       },
-      "value": "[coalesce(tryGet(reference('managedCluster'), 'oidcIssuerProfile', 'issuerURL'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('managedCluster'), 'oidcIssuerProfile'), 'issuerURL'), '')]"
     },
     "addonProfiles": {
       "type": "object",
