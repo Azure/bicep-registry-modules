@@ -30,12 +30,11 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using only defaults](#example-3-using-only-defaults)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
-
 
 
 <details>
@@ -205,7 +204,7 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
 </details>
 <p>
 
-### Example 3: _Using only defaults_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
