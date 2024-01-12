@@ -735,19 +735,19 @@ output name string = managedCluster.name
 output controlPlaneFQDN string = enablePrivateCluster ? managedCluster.properties.privateFQDN : managedCluster.properties.fqdn
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(managedCluster.identity, 'principalId') ? managedCluster.identity.principalId : ''
+output systemAssignedMIPrincipalId string = managedCluster.?identity.?principalId ?? ''
 
 @description('The Object ID of the AKS identity.')
-output kubeletidentityObjectId string = contains(managedCluster.properties, 'identityProfile') ? contains(managedCluster.properties.identityProfile, 'kubeletidentity') ? managedCluster.properties.identityProfile.kubeletidentity.objectId : '' : ''
+output kubeletidentityObjectId string = managedCluster.properties.?identityProfile.?kubeletidentity.?objectId ?? ''
 
 @description('The Object ID of the OMS agent identity.')
-output omsagentIdentityObjectId string = contains(managedCluster.properties, 'addonProfiles') ? contains(managedCluster.properties.addonProfiles, 'omsagent') ? contains(managedCluster.properties.addonProfiles.omsagent, 'identity') ? managedCluster.properties.addonProfiles.omsagent.identity.objectId : '' : '' : ''
+output omsagentIdentityObjectId string = managedCluster.properties.?addonProfiles.?omsagent.?identity.?objectId ?? ''
 
 @description('The Object ID of the Key Vault Secrets Provider identity.')
-output keyvaultIdentityObjectId string = contains(managedCluster.properties, 'addonProfiles') ? contains(managedCluster.properties.addonProfiles, 'azureKeyvaultSecretsProvider') ? contains(managedCluster.properties.addonProfiles.azureKeyvaultSecretsProvider, 'identity') ? managedCluster.properties.addonProfiles.azureKeyvaultSecretsProvider.identity.objectId : '' : '' : ''
+output keyvaultIdentityObjectId string = managedCluster.properties.?addonProfiles.?azureKeyvaultSecretsProvider.?identity.?objectId ?? ''
 
 @description('The Client ID of the Key Vault Secrets Provider identity.')
-output keyvaultIdentityClientId string = contains(managedCluster.properties, 'addonProfiles') ? contains(managedCluster.properties.addonProfiles, 'azureKeyvaultSecretsProvider') ? contains(managedCluster.properties.addonProfiles.azureKeyvaultSecretsProvider, 'identity') ? managedCluster.properties.addonProfiles.azureKeyvaultSecretsProvider.identity.clientId : '' : '' : ''
+output keyvaultIdentityClientId string = managedCluster.properties.?addonProfiles.?azureKeyvaultSecretsProvider.?identity.?clientId ?? ''
 
 @description('The Object ID of Application Gateway Ingress Controller (AGIC) identity.')
 output ingressApplicationGatewayIdentityObjectId string = managedCluster.properties.addonProfiles.?ingressApplicationGateway.?identity.?objectId ?? ''
@@ -756,10 +756,10 @@ output ingressApplicationGatewayIdentityObjectId string = managedCluster.propert
 output location string = managedCluster.location
 
 @description('The OIDC token issuer URL.')
-output oidcIssuerUrl string = enableOidcIssuerProfile ? managedCluster.properties.oidcIssuerProfile.issuerURL : ''
+output oidcIssuerUrl string = managedCluster.properties.?oidcIssuerProfile.issuerURL ?? ''
 
 @description('The addonProfiles of the Kubernetes cluster.')
-output addonProfiles object = contains(managedCluster.properties, 'addonProfiles') ? managedCluster.properties.addonProfiles : {}
+output addonProfiles object = managedCluster.properties.?addonProfiles ?? {}
 
 @description('The Object ID of Web Application Routing.')
 output webAppRoutingIdentityObjectId string = managedCluster.properties.?ingressProfile.?webAppRouting.?identity.?objectId ?? ''

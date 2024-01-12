@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "6634758097387267759"
+      "templateHash": "11992225577706951144"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -781,7 +781,7 @@
         "Standard"
       ],
       "metadata": {
-        "description": "Optional. Tier of a managed cluster SKU. - Free, Standard or Premium."
+        "description": "Optional. Tier of a managed cluster SKU."
       }
     },
     "kubernetesVersion": {
@@ -1294,7 +1294,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "roleAssignments": {
@@ -2651,35 +2651,35 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('managedCluster', '2023-07-02-preview', 'full').identity, 'principalId')), reference('managedCluster', '2023-07-02-preview', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('managedCluster', '2023-07-02-preview', 'full'), 'identity'), 'principalId'), '')]"
     },
     "kubeletidentityObjectId": {
       "type": "string",
       "metadata": {
         "description": "The Object ID of the AKS identity."
       },
-      "value": "[if(contains(reference('managedCluster'), 'identityProfile'), if(contains(reference('managedCluster').identityProfile, 'kubeletidentity'), reference('managedCluster').identityProfile.kubeletidentity.objectId, ''), '')]"
+      "value": "[coalesce(tryGet(tryGet(tryGet(reference('managedCluster'), 'identityProfile'), 'kubeletidentity'), 'objectId'), '')]"
     },
     "omsagentIdentityObjectId": {
       "type": "string",
       "metadata": {
         "description": "The Object ID of the OMS agent identity."
       },
-      "value": "[if(contains(reference('managedCluster'), 'addonProfiles'), if(contains(reference('managedCluster').addonProfiles, 'omsagent'), if(contains(reference('managedCluster').addonProfiles.omsagent, 'identity'), reference('managedCluster').addonProfiles.omsagent.identity.objectId, ''), ''), '')]"
+      "value": "[coalesce(tryGet(tryGet(tryGet(tryGet(reference('managedCluster'), 'addonProfiles'), 'omsagent'), 'identity'), 'objectId'), '')]"
     },
     "keyvaultIdentityObjectId": {
       "type": "string",
       "metadata": {
         "description": "The Object ID of the Key Vault Secrets Provider identity."
       },
-      "value": "[if(contains(reference('managedCluster'), 'addonProfiles'), if(contains(reference('managedCluster').addonProfiles, 'azureKeyvaultSecretsProvider'), if(contains(reference('managedCluster').addonProfiles.azureKeyvaultSecretsProvider, 'identity'), reference('managedCluster').addonProfiles.azureKeyvaultSecretsProvider.identity.objectId, ''), ''), '')]"
+      "value": "[coalesce(tryGet(tryGet(tryGet(tryGet(reference('managedCluster'), 'addonProfiles'), 'azureKeyvaultSecretsProvider'), 'identity'), 'objectId'), '')]"
     },
     "keyvaultIdentityClientId": {
       "type": "string",
       "metadata": {
         "description": "The Client ID of the Key Vault Secrets Provider identity."
       },
-      "value": "[if(contains(reference('managedCluster'), 'addonProfiles'), if(contains(reference('managedCluster').addonProfiles, 'azureKeyvaultSecretsProvider'), if(contains(reference('managedCluster').addonProfiles.azureKeyvaultSecretsProvider, 'identity'), reference('managedCluster').addonProfiles.azureKeyvaultSecretsProvider.identity.clientId, ''), ''), '')]"
+      "value": "[coalesce(tryGet(tryGet(tryGet(tryGet(reference('managedCluster'), 'addonProfiles'), 'azureKeyvaultSecretsProvider'), 'identity'), 'clientId'), '')]"
     },
     "ingressApplicationGatewayIdentityObjectId": {
       "type": "string",
@@ -2700,14 +2700,14 @@
       "metadata": {
         "description": "The OIDC token issuer URL."
       },
-      "value": "[if(parameters('enableOidcIssuerProfile'), reference('managedCluster').oidcIssuerProfile.issuerURL, '')]"
+      "value": "[coalesce(tryGet(reference('managedCluster'), 'oidcIssuerProfile', 'issuerURL'), '')]"
     },
     "addonProfiles": {
       "type": "object",
       "metadata": {
         "description": "The addonProfiles of the Kubernetes cluster."
       },
-      "value": "[if(contains(reference('managedCluster'), 'addonProfiles'), reference('managedCluster').addonProfiles, createObject())]"
+      "value": "[coalesce(tryGet(reference('managedCluster'), 'addonProfiles'), createObject())]"
     },
     "webAppRoutingIdentityObjectId": {
       "type": "string",
