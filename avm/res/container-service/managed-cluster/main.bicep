@@ -315,7 +315,7 @@ param omsAgentEnabled bool = true
 @description('Optional. Resource ID of the monitoring log analytics workspace.')
 param monitoringWorkspaceId string?
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Array of role assignments to create.')
