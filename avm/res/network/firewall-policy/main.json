@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "8585744319252078014"
+      "version": "0.23.1.45101",
+      "templateHash": "576890491523219712"
     },
     "name": "Firewall Policies",
     "description": "This module deploys a Firewall Policy.",
