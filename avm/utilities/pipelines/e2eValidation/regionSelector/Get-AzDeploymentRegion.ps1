@@ -42,7 +42,7 @@ function Get-AzDeploymentRegion {
   param (
     [Parameter(Mandatory = $false)]
     [array] $excludedRegions = @(
-      "westeurope",
+      # "westeurope",
       "westus2",
       "eastus2",
       "centralus",
@@ -62,8 +62,7 @@ function Get-AzDeploymentRegion {
 
     [Parameter(Mandatory = $false)]
     [array] $knownRegionList = @(
-      "eastus",
-      "northeurope"
+      "westeurope"
     )
   )
 
