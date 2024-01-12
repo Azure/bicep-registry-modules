@@ -57,37 +57,6 @@ runs:
         creds: ${{ env.AZURE_CREDENTIALS }}
         enable-AzPSSession: true
 
-    # [Set Deployment Location] task(s)
-    # ---------------------------
-    - name: "Get Deployment Location"
-      id: get-deployment-location
-      uses: azure/powershell@v1
-      with:
-        azPSVersion: "latest"
-        inlineScript: |
-          # Grouping task logs
-          Write-Output '::group::Get Recommended Regions'
-
-          # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'regionSelector' 'Get-AzDeploymentRegion.ps1')
-
-          # Set fucntion input parameters
-          $functionInput = @{
-              usePairedRegionsOnly = $true
-              useKnownRegionsOnly = $true
-          }
-
-          Write-Verbose "Invoke function with" -Verbose
-          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
-
-          $location = Get-AzDeploymentRegion @functionInput
-
-          $deploymentLocation = @{}
-          Write-Verbose ('{0}-{1}' -f 'deploymentLocation', $location) -Verbose
-          Write-Output ('{0}={1}' -f 'deploymentLocation', $location) >> $env:GITHUB_OUTPUT
-
-          Write-Output '::endgroup::'
-
     # [Token replacement] task(s)
     # ---------------------------
     - name: "Replace tokens in template file"
