@@ -305,7 +305,7 @@ module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.2' 
       {
         name: slot.name
         properties: {
-          privateLinkServiceId: app.id
+          privateLinkServiceId: app.id // Must be set on the WebApp and not the slot
           groupIds: [
             privateEndpoint.?service ?? 'sites-${slot.name}'
           ]
