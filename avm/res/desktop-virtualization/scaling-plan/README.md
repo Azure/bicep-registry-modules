@@ -46,16 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dvspmin'
   params: {
-    // Required parameters
-    description: 'myDescription'
-    friendlyName: 'myFriendlyName'
     name: 'dvspmin002'
-    // Non-required parameters
-    diagnosticSettings: []
-    location: '<location>'
-    lock: {}
-    roleAssignments: []
-    tags: {}
   }
 }
 ```
@@ -72,31 +63,8 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
-    "description": {
-      "value": "myDescription"
-    },
-    "friendlyName": {
-      "value": "myFriendlyName"
-    },
     "name": {
       "value": "dvspmin002"
-    },
-    // Non-required parameters
-    "diagnosticSettings": {
-      "value": []
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {}
-    },
-    "roleAssignments": {
-      "value": []
-    },
-    "tags": {
-      "value": {}
     }
   }
 }
@@ -119,10 +87,9 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
   name: '${uniqueString(deployment().name, location)}-test-dvspmax'
   params: {
     // Required parameters
-    description: 'myDescription'
-    friendlyName: 'friendlyName'
     name: 'dvspmax002'
     // Non-required parameters
+    description: 'myDescription'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -137,6 +104,7 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    friendlyName: 'friendlyName'
     hostPoolReferences: '<hostPoolReferences>'
     location: '<location>'
     lock: {
@@ -173,16 +141,13 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "description": {
-      "value": "myDescription"
-    },
-    "friendlyName": {
-      "value": "friendlyName"
-    },
     "name": {
       "value": "dvspmax002"
     },
     // Non-required parameters
+    "description": {
+      "value": "myDescription"
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -198,6 +163,9 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "friendlyName": {
+      "value": "friendlyName"
     },
     "hostPoolReferences": {
       "value": "<hostPoolReferences>"
@@ -239,8 +207,7 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
 
 ### Example 3: _Using only defaults_
 
-This instance deploys the module with the minimum set of required parameters.
-
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
@@ -252,11 +219,11 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
   name: '${uniqueString(deployment().name, location)}-test-dvspwaf'
   params: {
     // Required parameters
-    description: 'myDescription'
-    friendlyName: 'myFriendlyName'
     name: 'dvspwaf002'
     // Non-required parameters
+    description: 'myDescription'
     diagnosticSettings: []
+    friendlyName: 'myFriendlyName'
     location: '<location>'
     lock: {}
     roleAssignments: []
@@ -282,18 +249,18 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "description": {
-      "value": "myDescription"
-    },
-    "friendlyName": {
-      "value": "myFriendlyName"
-    },
     "name": {
       "value": "dvspwaf002"
     },
     // Non-required parameters
+    "description": {
+      "value": "myDescription"
+    },
     "diagnosticSettings": {
       "value": []
+    },
+    "friendlyName": {
+      "value": "myFriendlyName"
     },
     "location": {
       "value": "<location>"
@@ -356,8 +323,9 @@ Name of the scaling plan.
 
 Description of the scaling plan.
 
-- Required: Yes
+- Required: No
 - Type: string
+- Default: `[parameters('name')]`
 
 ### Parameter: `diagnosticSettings`
 
@@ -470,8 +438,9 @@ Exclusion tag to be used for exclusion of VMs from scaling plan.
 
 Friendly name of the scaling plan.
 
-- Required: Yes
+- Required: No
 - Type: string
+- Default: `[parameters('name')]`
 
 ### Parameter: `hostPoolReferences`
 
