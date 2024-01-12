@@ -2,10 +2,6 @@ metadata name = 'Azure Virtual Desktop Host Pool'
 metadata description = 'This module deploys an Azure Virtual Desktop Host Pool'
 metadata owner = 'Azure/module-maintainers'
 
-// ================ //
-// Parameters       //
-// ================ //
-
 @sys.description('Required. Name of the scaling plan.')
 param name string
 
@@ -123,10 +119,6 @@ param enableTelemetry bool = true
 @sys.description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
-// =========== //
-// Variables   //
-// =========== //
-
 var builtInRoleNames = {
   'Application Group Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ca6382a4-1721-4bcf-a114-ff0c70227b6b')
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -151,12 +143,8 @@ var builtInRoleNames = {
 
 var tokenExpirationTime = dateTimeAdd(baseTime, tokenValidityLength)
 
-// ============ //
-// Dependencies //
-// ============ //
-
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.destopvirtualization-sp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.res.destopvirtualization-hp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
