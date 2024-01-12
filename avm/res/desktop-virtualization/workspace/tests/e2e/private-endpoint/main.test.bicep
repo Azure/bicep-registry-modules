@@ -14,7 +14,7 @@ param location string = deployment().location
 param serviceShort string = 'dvwspe'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = 'tst' //'#_namePrefix_#'
+param namePrefix string = '#_namePrefix_#'
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
@@ -37,29 +37,14 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    applicationGroupReferences: []
-    friendlyName: 'friendlyName'
     publicNetworkAccess: 'Disabled'
-    roleAssignments: []
-    lock: {}
-    diagnosticSettings: []
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSResourceId
         ]
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
       }
     ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
   }
 }]

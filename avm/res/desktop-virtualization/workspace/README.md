@@ -253,31 +253,16 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
     // Required parameters
     name: 'dvwspe001'
     // Non-required parameters
-    applicationGroupReferences: []
-    diagnosticSettings: []
-    friendlyName: 'friendlyName'
     location: '<location>'
-    lock: {}
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
           '<privateDNSResourceId>'
         ]
         subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
       }
     ]
     publicNetworkAccess: 'Disabled'
-    roleAssignments: []
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -299,20 +284,8 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
       "value": "dvwspe001"
     },
     // Non-required parameters
-    "applicationGroupReferences": {
-      "value": []
-    },
-    "diagnosticSettings": {
-      "value": []
-    },
-    "friendlyName": {
-      "value": "friendlyName"
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {}
     },
     "privateEndpoints": {
       "value": [
@@ -320,27 +293,12 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
           "privateDnsZoneResourceIds": [
             "<privateDNSResourceId>"
           ],
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
     "publicNetworkAccess": {
       "value": "Disabled"
-    },
-    "roleAssignments": {
-      "value": []
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
