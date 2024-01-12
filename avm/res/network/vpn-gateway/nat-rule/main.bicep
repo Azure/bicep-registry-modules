@@ -19,7 +19,6 @@ param ipConfigurationId string = ''
 
 @description('Optional. The type of NAT rule for VPN NAT. IngressSnat mode (also known as Ingress Source NAT) is applicable to traffic entering the Azure hub\'s site-to-site VPN gateway. EgressSnat mode (also known as Egress Source NAT) is applicable to traffic leaving the Azure hub\'s Site-to-site VPN gateway.')
 @allowed([
-  ''
   'EgressSnat'
   'IngressSnat'
 ])
