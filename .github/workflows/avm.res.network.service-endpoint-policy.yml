@@ -29,7 +29,7 @@ on:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
         # >>> UPDATE to for example ".github/workflows/avm.res.azure.key-vault.vault"
-      - ".github/workflows/avm.res.network.service-endpoint-policy"
+      - ".github/workflows/avm.res.network.service-endpoint-policy.yml"
         # >>> UPDATE to for example "avm/res/key-vault/vault/**"
       - "avm/res/network/service-endpoint-policy/**"
       - "avm/utilities/pipelines/**"
@@ -39,7 +39,7 @@ env:
   # >>> UPDATE to for example "avm/res/key-vault/vault"
   modulePath: "avm/res/network/service-endpoint-policy"
   # >>> Update to for example ".github/workflows/avm.res.azure.key-vault.vault"
-  workflowPath: ".github/workflows/avm.res.network.service-endpoint-policy"
+  workflowPath: ".github/workflows/avm.res.network.service-endpoint-policy.yml"
 
 concurrency:
   group: ${{ github.workflow }}
