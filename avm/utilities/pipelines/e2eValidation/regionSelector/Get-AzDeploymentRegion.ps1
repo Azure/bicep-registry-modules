@@ -62,15 +62,7 @@ function Get-AzDeploymentRegion {
 
     [Parameter(Mandatory = $false)]
     [array] $knownRegionList = @(
-      "northeurope",
-      "eastus",
-      "polandcentral",
-      "germanywestcentral",
-      "francecentral",
-      "westus3",
-      "australiaeast",
-      "uksouth",
-      "westeurope"
+      "eastus"
     )
   )
 
