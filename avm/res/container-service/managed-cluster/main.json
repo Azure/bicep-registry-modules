@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "11992225577706951144"
+      "templateHash": "757006214149634198"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1353,21 +1353,56 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Whether the metrics profile for the Azure Monitor managed service for Prometheus addon is enabled."
+        "description": "Optional. Whether the metric state of the kubenetes cluster is enabled."
+      }
+    },
+    "enableAzureMonitorProfileLogs": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether the Logs profile for the Azure Monitor Infrastructure and Application Logs is enabled."
+      }
+    },
+    "enableAppMonitoring": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Indicates if Application Monitoring of the kubenetes cluster is enabled."
+      }
+    },
+    "enableWindowsHostLogs": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether the Windows Log Collection for Azure Monitor Container Insights Logs Addon is enabled."
+      }
+    },
+    "enableContainerInsights": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Indicates if Azure Monitor Container Insights Logs Addon is enabled."
+      }
+    },
+    "enableAppMonitoringOpenTelemetryMetrics": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Indicates if Application Monitoring Open Telemetry Metrics is enabled."
       }
     },
     "metricLabelsAllowlist": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. A comma-separated list of additional Kubernetes label keys."
+        "description": "Optional. A comma-separated list of kubernetes cluster metrics labels."
       }
     },
     "metricAnnotationsAllowList": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. A comma-separated list of Kubernetes annotation keys."
+        "description": "Optional. A comma-separated list of Kubernetes cluster metrics annotations."
       }
     }
   },
@@ -1551,7 +1586,8 @@
           "privateDNSZone": "[parameters('privateDNSZone')]"
         },
         "azureMonitorProfile": {
-          "metrics": "[if(parameters('enableAzureMonitorProfileMetrics'), createObject('enabled', true(), 'kubeStateMetrics', createObject('metricAnnotationsAllowList', parameters('metricAnnotationsAllowList'), 'metricLabelsAllowlist', parameters('metricLabelsAllowlist'))), null())]"
+          "logs": "[if(parameters('enableAzureMonitorProfileLogs'), createObject('enabled', parameters('enableAzureMonitorProfileLogs'), 'appMonitoring', createObject('enabled', parameters('enableAppMonitoring')), 'containerInsights', createObject('enabled', parameters('enableContainerInsights'), 'logAnalyticsWorkspaceResourceId', if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), null()), 'windowsHostLogs', createObject('enabled', parameters('enableWindowsHostLogs')))), null())]",
+          "metrics": "[if(parameters('enableAzureMonitorProfileMetrics'), createObject('enabled', parameters('enableAzureMonitorProfileMetrics'), 'appMonitoringOpenTelemetryMetrics', createObject('enabled', parameters('enableAppMonitoringOpenTelemetryMetrics')), 'kubeStateMetrics', createObject('metricLabelsAllowlist', parameters('metricLabelsAllowlist'), 'metricAnnotationsAllowList', parameters('metricAnnotationsAllowList'))), null())]"
         },
         "podIdentityProfile": {
           "allowNetworkPluginKubenet": "[parameters('podIdentityProfileAllowNetworkPluginKubenet')]",
