@@ -1,6 +1,8 @@
 targetScope = 'subscription'
+
 metadata name = 'Using Private Cluster.'
 metadata description = 'This instance deploys the module with a private cluster instance.'
+
 // ========== //
 // Parameters //
 // ========== //
