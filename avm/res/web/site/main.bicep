@@ -253,41 +253,41 @@ module app_slots 'slot/main.bicep' = [for (slot, index) in (slots ?? []): {
     location: location
     kind: kind
     serverFarmResourceId: serverFarmResourceId
-    httpsOnly: contains(slot, 'httpsOnly') ? slot.httpsOnly : httpsOnly
-    appServiceEnvironmentResourceId: !empty(appServiceEnvironmentResourceId) ? appServiceEnvironmentResourceId : ''
-    clientAffinityEnabled: contains(slot, 'clientAffinityEnabled') ? slot.clientAffinityEnabled : clientAffinityEnabled
-    managedIdentities: contains(slot, 'managedIdentities') ? slot.managedIdentities : managedIdentities
-    keyVaultAccessIdentityResourceId: contains(slot, 'keyVaultAccessIdentityResourceId') ? slot.keyVaultAccessIdentityResourceId : keyVaultAccessIdentityResourceId
-    storageAccountRequired: contains(slot, 'storageAccountRequired') ? slot.storageAccountRequired : storageAccountRequired
-    virtualNetworkSubnetId: contains(slot, 'virtualNetworkSubnetId') ? slot.virtualNetworkSubnetId : virtualNetworkSubnetId
-    siteConfig: contains(slot, 'siteConfig') ? slot.siteConfig : siteConfig
-    storageAccountResourceId: contains(slot, 'storageAccountResourceId') ? slot.storageAccountResourceId : storageAccountResourceId
-    appInsightResourceId: contains(slot, 'appInsightResourceId') ? slot.appInsightResourceId : appInsightResourceId
-    setAzureWebJobsDashboard: contains(slot, 'setAzureWebJobsDashboard') ? slot.setAzureWebJobsDashboard : setAzureWebJobsDashboard
-    authSettingV2Configuration: contains(slot, 'authSettingV2Configuration') ? slot.authSettingV2Configuration : authSettingV2Configuration
+    httpsOnly: slot.?httpsOnly ?? httpsOnly
+    appServiceEnvironmentResourceId: appServiceEnvironmentResourceId
+    clientAffinityEnabled: slot.?clientAffinityEnabled ?? clientAffinityEnabled
+    managedIdentities: slot.?managedIdentities ?? managedIdentities
+    keyVaultAccessIdentityResourceId: slot.?keyVaultAccessIdentityResourceId ?? keyVaultAccessIdentityResourceId
+    storageAccountRequired: slot.?storageAccountRequired ?? storageAccountRequired
+    virtualNetworkSubnetId: slot.?virtualNetworkSubnetId ?? virtualNetworkSubnetId
+    siteConfig: slot.?siteConfig ?? siteConfig
+    storageAccountResourceId: slot.?storageAccountResourceId ?? storageAccountResourceId
+    appInsightResourceId: slot.?appInsightResourceId ?? appInsightResourceId
+    setAzureWebJobsDashboard: slot.?setAzureWebJobsDashboard ?? setAzureWebJobsDashboard
+    authSettingV2Configuration: slot.?authSettingV2Configuration ?? authSettingV2Configuration
     diagnosticSettings: slot.?diagnosticSettings
-    roleAssignments: contains(slot, 'roleAssignments') ? slot.roleAssignments : roleAssignments
-    appSettingsKeyValuePairs: contains(slot, 'appSettingsKeyValuePairs') ? slot.appSettingsKeyValuePairs : appSettingsKeyValuePairs
-    basicPublishingCredentialsPolicies: contains(slot, 'basicPublishingCredentialsPolicies') ? slot.basicPublishingCredentialsPolicies : basicPublishingCredentialsPolicies
+    roleAssignments: slot.?roleAssignments ?? roleAssignments
+    appSettingsKeyValuePairs: slot.?appSettingsKeyValuePairs ?? appSettingsKeyValuePairs
+    basicPublishingCredentialsPolicies: slot.?basicPublishingCredentialsPolicies ?? basicPublishingCredentialsPolicies
     lock: slot.?lock ?? lock
-    privateEndpoints: contains(slot, 'privateEndpoints') ? slot.privateEndpoints : privateEndpoints
+    privateEndpoints: slot.?privateEndpoints ?? privateEndpoints
     tags: slot.?tags ?? tags
-    clientCertEnabled: contains(slot, 'clientCertEnabled') ? slot.clientCertEnabled : false
+    clientCertEnabled: slot.?clientCertEnabled
     clientCertExclusionPaths: slot.?clientCertExclusionPaths
-    clientCertMode: contains(slot, 'clientCertMode') ? slot.clientCertMode : 'Optional'
+    clientCertMode: slot.?clientCertMode
     cloningInfo: slot.?cloningInfo
     containerSize: slot.?containerSize
     customDomainVerificationId: slot.?customDomainVerificationId
     dailyMemoryTimeQuota: slot.?dailyMemoryTimeQuota
-    enabled: contains(slot, 'enabled') ? slot.enabled : true
+    enabled: slot.?enabled
     enableTelemetry: slot.?enableTelemetry ?? enableTelemetry
     hostNameSslStates: slot.?hostNameSslStates
-    hyperV: contains(slot, 'hyperV') ? slot.hyperV : false
-    publicNetworkAccess: contains(slot, 'publicNetworkAccess') ? slot.publicNetworkAccess : ((!empty(slot.?privateEndpoints) || !empty(privateEndpoints)) ? 'Disabled' : 'Enabled')
-    redundancyMode: contains(slot, 'redundancyMode') ? slot.redundancyMode : 'None'
-    vnetContentShareEnabled: contains(slot, 'vnetContentShareEnabled') ? slot.vnetContentShareEnabled : false
-    vnetImagePullEnabled: contains(slot, 'vnetImagePullEnabled') ? slot.vnetImagePullEnabled : false
-    vnetRouteAllEnabled: contains(slot, 'vnetRouteAllEnabled') ? slot.vnetRouteAllEnabled : false
+    hyperV: slot.?hyperV
+    publicNetworkAccess: slot.?publicNetworkAccess ?? ((!empty(slot.?privateEndpoints) || !empty(privateEndpoints)) ? 'Disabled' : 'Enabled')
+    redundancyMode: slot.?redundancyMode
+    vnetContentShareEnabled: slot.?vnetContentShareEnabled
+    vnetImagePullEnabled: slot.?vnetImagePullEnabled
+    vnetRouteAllEnabled: slot.?vnetRouteAllEnabled
     hybridConnectionRelays: slot.?hybridConnectionRelays
   }
 }]
