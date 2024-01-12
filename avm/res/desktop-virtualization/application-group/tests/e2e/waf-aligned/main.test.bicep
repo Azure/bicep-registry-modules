@@ -10,7 +10,7 @@ param resourceGroupName string = 'dep-${namePrefix}-desktopvirtualization.ag-${s
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dvagmin'
+param serviceShort string = 'dvagwaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = 'tst' //'#_namePrefix_#'
