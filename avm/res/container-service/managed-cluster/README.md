@@ -995,20 +995,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         vmSize: 'Standard_DS2_v2'
       }
     ]
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
     dnsServiceIP: '10.10.200.10'
     enablePrivateCluster: true
     location: '<location>'
@@ -1021,11 +1007,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     privateDNSZone: '<privateDNSZone>'
     serviceCidr: '10.10.200.0/24'
     skuTier: 'Standard'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -1123,22 +1104,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         }
       ]
     },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
     "dnsServiceIP": {
       "value": "10.10.200.10"
     },
@@ -1166,13 +1131,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "skuTier": {
       "value": "Standard"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -1271,7 +1229,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         vmSize: 'Standard_DS2_v2'
       }
     ]
-    authorizedIPRanges: '<authorizedIPRanges>'
     autoUpgradeProfileUpgradeChannel: 'stable'
     diagnosticSettings: [
       {
@@ -1305,7 +1262,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     dnsServiceIP: '10.10.200.10'
     enableAzureDefender: true
     enablePrivateCluster: true
-    kubernetesVersion: '<kubernetesVersion>'
     location: '<location>'
     managedIdentities: {
       userAssignedResourcesIds: [
@@ -1317,7 +1273,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     networkPolicy: 'azure'
     omsAgentEnabled: true
     privateDNSZone: '<privateDNSZone>'
-    roleAssignments: []
     serviceCidr: '10.10.200.0/24'
     skuTier: 'Standard'
     tags: {
@@ -1424,9 +1379,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         }
       ]
     },
-    "authorizedIPRanges": {
-      "value": "<authorizedIPRanges>"
-    },
     "autoUpgradeProfileUpgradeChannel": {
       "value": "stable"
     },
@@ -1472,9 +1424,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "enablePrivateCluster": {
       "value": true
     },
-    "kubernetesVersion": {
-      "value": "<kubernetesVersion>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -1499,9 +1448,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "privateDNSZone": {
       "value": "<privateDNSZone>"
-    },
-    "roleAssignments": {
-      "value": []
     },
     "serviceCidr": {
       "value": "10.10.200.0/24"
