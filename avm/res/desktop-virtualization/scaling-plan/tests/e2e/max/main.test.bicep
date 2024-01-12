@@ -141,7 +141,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     location: location
-    managedIdentityName: 'scp-managedIdentity'
+    managedIdentityName: 'sp-managedIdentity'
   }
 }
 
