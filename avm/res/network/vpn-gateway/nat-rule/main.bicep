@@ -29,7 +29,7 @@ param mode string = ''
   'Dynamic'
   'Static'
 ])
-param type string = ''
+param type string?
 
 resource vpnGateway 'Microsoft.Network/vpnGateways@2023-04-01' existing = {
   name: vpnGatewayName
