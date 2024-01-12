@@ -170,7 +170,7 @@ runs:
           # Prepare general parameters
           # --------------------------
           # Fetching parameters
-          $location = 'easus'
+          $location = 'eastus'
           $subscriptionId = '${{ inputs.subscriptionId }}'
           $managementGroupId = '${{ inputs.managementGroupId }}'
 
@@ -220,7 +220,7 @@ runs:
 
           # Prepare general parameters
           # --------------------------
-          $location ='easus'
+          $location ='eastus'
           $subscriptionId = '${{ inputs.subscriptionId }}'
           $managementGroupId = '${{ inputs.managementGroupId }}'
 
