@@ -43,7 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     diskEncryptionSetName: 'dep-${namePrefix}-des-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
     imageTemplateNamePrefix: 'dep-${namePrefix}-imgt-${serviceShort}'
     triggerImageDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-triggerImageTemplate'
     copyVhdDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-copyVhdToStorage'

@@ -19,6 +19,9 @@ param location string = 'eastus'
 // e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
 param serviceShort string = 'cimin'
 
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
+
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -39,7 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: location
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
     imageTemplateNamePrefix: 'dep-${namePrefix}-imgt-${serviceShort}'
     triggerImageDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-triggerImageTemplate'
     copyVhdDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-copyVhdToStorage'
