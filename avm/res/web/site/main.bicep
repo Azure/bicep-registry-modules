@@ -99,7 +99,12 @@ param clientCertEnabled bool = false
 @description('Optional. Client certificate authentication comma-separated exclusion paths.')
 param clientCertExclusionPaths string?
 
-@description('Optional. This composes with ClientCertEnabled setting.</p>- ClientCertEnabled: false means ClientCert is ignored.</p>- ClientCertEnabled: true and ClientCertMode: Required means ClientCert is required.</p>- ClientCertEnabled: true and ClientCertMode: Optional means ClientCert is optional or accepted.')
+@description('''
+Optional. This composes with ClientCertEnabled setting.
+- ClientCertEnabled=false means ClientCert is ignored.
+- ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.
+- ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.
+''')
 @allowed([
   'Optional'
   'OptionalInteractiveUser'
