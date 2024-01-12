@@ -75,8 +75,7 @@ runs:
           $functionInput = @{
               usePairedRegionsOnly = $true
               useKnownRegionsOnly = $true
-              # excludedRegions = @("France Central", "Poland Central")
-              knownRegionList = @("East US", "East US 2")
+              knownRegionList = @("eastus", "westus3")
           }
 
           Write-Verbose "Invoke function with" -Verbose
