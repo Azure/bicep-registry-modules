@@ -170,7 +170,7 @@ runs:
           # Prepare general parameters
           # --------------------------
           # Fetching parameters
-          $location = '${{ steps.get-deployment-location.outputs.deploymentLocation }}'
+          $location = 'easus'
           $subscriptionId = '${{ inputs.subscriptionId }}'
           $managementGroupId = '${{ inputs.managementGroupId }}'
 
@@ -220,7 +220,7 @@ runs:
 
           # Prepare general parameters
           # --------------------------
-          $location ='${{ steps.get-deployment-location.outputs.deploymentLocation }}'
+          $location ='easus'
           $subscriptionId = '${{ inputs.subscriptionId }}'
           $managementGroupId = '${{ inputs.managementGroupId }}'
 
