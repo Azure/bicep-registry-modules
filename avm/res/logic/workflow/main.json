@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "17117700491067404372"
+      "templateHash": "4887030268335586960"
     },
     "name": "Logic Apps (Workflows)",
     "description": "This module deploys a Logic App (Workflow).",
@@ -567,7 +567,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), tryGet(reference('logicApp', '2019-05-01', 'full').identity, 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('logicApp', '2019-05-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
