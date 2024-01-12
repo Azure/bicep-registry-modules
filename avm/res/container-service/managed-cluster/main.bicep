@@ -67,7 +67,7 @@ param managedOutboundIPCount int = 0
 ])
 param outboundType string = 'loadBalancer'
 
-@description('Optional. Tier of a managed cluster SKU. - Free, Standard or Premium.')
+@description('Optional. Tier of a managed cluster SKU.')
 @allowed([
   'Free'
   'Premium'
