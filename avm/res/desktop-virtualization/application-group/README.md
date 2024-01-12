@@ -265,12 +265,12 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module applicationGroup 'br/public:avm/res/desktop-virtualization/application-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dvagmin'
+  name: '${uniqueString(deployment().name, location)}-test-dvagwaf'
   params: {
     // Required parameters
     applicationGroupType: 'Desktop'
     hostpoolName: '<hostpoolName>'
-    name: 'dvagmin002'
+    name: 'dvagwaf002'
     // Non-required parameters
     location: '<location>'
     tags: {
@@ -301,7 +301,7 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
       "value": "<hostpoolName>"
     },
     "name": {
-      "value": "dvagmin002"
+      "value": "dvagwaf002"
     },
     // Non-required parameters
     "location": {
