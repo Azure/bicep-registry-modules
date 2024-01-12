@@ -131,20 +131,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     skuTier: 'Standard'
     dnsServiceIP: '10.10.200.10'
     serviceCidr: '10.10.200.0/24'
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
     privateDNSZone: nestedDependencies.outputs.privateDnsZoneResourceId
     managedIdentities: {
       userAssignedResourcesIds: [
