@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module with the minimum set of
 param resourceGroupName string = 'dep-${namePrefix}-analysisservices.servers-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param location string = 'eastus'
+param location string = 'northeurope'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'assmin'
