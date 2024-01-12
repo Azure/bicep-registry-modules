@@ -22,7 +22,7 @@ param ipConfigurationId string = ''
   'EgressSnat'
   'IngressSnat'
 ])
-param mode string = ''
+param mode string?
 
 @description('Optional. The type of NAT rule for VPN NAT. Static one-to-one NAT establishes a one-to-one relationship between an internal address and an external address while Dynamic NAT assigns an IP and port based on availability.')
 @allowed([
