@@ -1,13 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "1.10-experimental",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.19.5.34762",
-      "templateHash": "4252297606944310030"
+      "version": "0.24.24.22086",
+      "templateHash": "3918679174002277219"
     },
     "name": "Function app module",
     "description": "Module to create function app for your application",
@@ -121,15 +120,15 @@
     "identityType": {
       "type": "string",
       "defaultValue": "SystemAssigned",
-      "metadata": {
-        "description": "Optional. The type of identity used for the virtual machine. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a set of user assigned identities. The type 'None' will remove any identities from the sites ( app or functionapp)."
-      },
       "allowedValues": [
         "None",
         "SystemAssigned",
         "UserAssigned",
         "SystemAssigned, UserAssigned"
-      ]
+      ],
+      "metadata": {
+        "description": "Optional. The type of identity used for the virtual machine. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a set of user assigned identities. The type 'None' will remove any identities from the sites ( app or functionapp)."
+      }
     },
     "userAssignedIdentityId": {
       "type": "string",
@@ -213,24 +212,35 @@
     "publicNetworkAccessForIngestion": {
       "type": "string",
       "defaultValue": "Enabled",
-      "metadata": {
-        "description": "Optional. The network access type for accessing Application Insights ingestion. - Enabled or Disabled."
-      },
       "allowedValues": [
         "Disabled",
         "Enabled"
-      ]
+      ],
+      "metadata": {
+        "description": "Optional. The network access type for accessing Application Insights ingestion. - Enabled or Disabled."
+      }
     },
     "publicNetworkAccessForQuery": {
       "type": "string",
       "defaultValue": "Enabled",
-      "metadata": {
-        "description": "Optional. The network access type for accessing Application Insights query. - Enabled or Disabled."
-      },
       "allowedValues": [
         "Disabled",
         "Enabled"
-      ]
+      ],
+      "metadata": {
+        "description": "Optional. The network access type for accessing Application Insights query. - Enabled or Disabled."
+      }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "Optional. Property to allow or block all public traffic."
+      }
     },
     "appInsightsType": {
       "type": "string",
@@ -480,7 +490,8 @@
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('name'))]",
         "httpsOnly": "[parameters('httpsOnly')]",
         "hostingEnvironmentProfile": "[if(not(empty(parameters('appServiceEnvironmentId'))), createObject('id', parameters('appServiceEnvironmentId')), null())]",
-        "clientAffinityEnabled": "[parameters('clientAffinityEnabled')]"
+        "clientAffinityEnabled": "[parameters('clientAffinityEnabled')]",
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
       },
       "dependsOn": [
         "serverfarms"
@@ -497,7 +508,8 @@
       "dependsOn": [
         "appInsights",
         "networkConfig",
-        "sites"
+        "sites",
+        "storageAccount"
       ],
       "metadata": {
         "description": "Appsettings/config for the sites (app or functionapp)."
