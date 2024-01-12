@@ -31,13 +31,13 @@ on:
         # >>> UPDATE to for example ".github/workflows/avm.res.azure.key-vault.vault"
       - ".github/workflows/avm.res.network.service-endpoint-policy"
         # >>> UPDATE to for example "avm/res/key-vault/vault/**"
-      - "avm.res.network.service-endpoint-policy/**"
+      - "avm/res/network/service-endpoint-policy/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
   # >>> UPDATE to for example "avm/res/key-vault/vault"
-  modulePath: "avm.res.network.service-endpoint-policy"
+  modulePath: "avm/res/network/service-endpoint-policy"
   # >>> Update to for example ".github/workflows/avm.res.azure.key-vault.vault"
   workflowPath: ".github/workflows/avm.res.network.service-endpoint-policy"
 
