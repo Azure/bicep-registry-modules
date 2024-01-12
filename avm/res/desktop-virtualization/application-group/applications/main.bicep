@@ -54,13 +54,13 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource applicationGroup 'Microsoft.DesktopVirtualization/applicationGroups@2023-09-05' existing = {
+resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2023-09-05' existing = {
   name: applicationGroupName
 }
 
 resource application 'Microsoft.DesktopVirtualization/applicationGroups/applications@2023-09-05' = {
   name: name
-  parent: applicationGroup
+  parent: appGroup
   properties: {
     description: description
     friendlyName: friendlyName
@@ -72,10 +72,6 @@ resource application 'Microsoft.DesktopVirtualization/applicationGroups/applicat
     iconIndex: iconIndex
   }
 }
-
-// =========== //
-// Outputs     //
-// =========== //
 
 @sys.description('The resource ID of the application.')
 output resourceId string = application.id
