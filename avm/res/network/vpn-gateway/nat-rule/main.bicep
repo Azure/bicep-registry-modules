@@ -44,8 +44,8 @@ resource natRule 'Microsoft.Network/vpnGateways/natRules@2023-04-01' = {
     externalMappings: externalMappings
     internalMappings: internalMappings
     ipConfigurationId: !empty(ipConfigurationId) ? ipConfigurationId : null
-    mode: !empty(mode) ? any(mode) : null
-    type: !empty(type) ? any(type) : null
+    mode: mode
+    type: type
   }
 }
 
