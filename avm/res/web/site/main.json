@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "12183333319237767271"
+      "version": "0.24.24.22086",
+      "templateHash": "12442626664527443863"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -355,7 +355,7 @@
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to '' to disable metric collection."
             }
           },
           "logAnalyticsDestinationType": {
@@ -628,7 +628,7 @@
         "Required"
       ],
       "metadata": {
-        "description": "Optional. This composes with ClientCertEnabled setting.</p>- ClientCertEnabled: false means ClientCert is ignored.</p>- ClientCertEnabled: true and ClientCertMode: Required means ClientCert is required.</p>- ClientCertEnabled: true and ClientCertMode: Optional means ClientCert is optional or accepted."
+        "description": "Optional. This composes with ClientCertEnabled setting.\n- ClientCertEnabled=false means ClientCert is ignored.\n- ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.\n- ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.\n"
       }
     },
     "cloningInfo": {
@@ -886,8 +886,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "5201235133399979020"
+              "version": "0.24.24.22086",
+              "templateHash": "3735013939266613858"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting.",
@@ -1036,8 +1036,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "17780537944006869332"
+              "version": "0.24.24.22086",
+              "templateHash": "14009865534133766790"
             },
             "name": "Site Auth Settings V2 Config",
             "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -1139,36 +1139,72 @@
           "serverFarmResourceId": {
             "value": "[parameters('serverFarmResourceId')]"
           },
-          "httpsOnly": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'httpsOnly'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].httpsOnly), createObject('value', parameters('httpsOnly')))]",
-          "appServiceEnvironmentResourceId": "[if(not(empty(parameters('appServiceEnvironmentResourceId'))), createObject('value', parameters('appServiceEnvironmentResourceId')), createObject('value', ''))]",
-          "clientAffinityEnabled": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'clientAffinityEnabled'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].clientAffinityEnabled), createObject('value', parameters('clientAffinityEnabled')))]",
-          "managedIdentities": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'managedIdentities'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].managedIdentities), createObject('value', parameters('managedIdentities')))]",
-          "keyVaultAccessIdentityResourceId": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'keyVaultAccessIdentityResourceId'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].keyVaultAccessIdentityResourceId), createObject('value', parameters('keyVaultAccessIdentityResourceId')))]",
-          "storageAccountRequired": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'storageAccountRequired'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].storageAccountRequired), createObject('value', parameters('storageAccountRequired')))]",
-          "virtualNetworkSubnetId": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'virtualNetworkSubnetId'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].virtualNetworkSubnetId), createObject('value', parameters('virtualNetworkSubnetId')))]",
-          "siteConfig": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'siteConfig'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].siteConfig), createObject('value', parameters('siteConfig')))]",
-          "storageAccountResourceId": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'storageAccountResourceId'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].storageAccountResourceId), createObject('value', parameters('storageAccountResourceId')))]",
-          "appInsightResourceId": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'appInsightResourceId'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].appInsightResourceId), createObject('value', parameters('appInsightResourceId')))]",
-          "setAzureWebJobsDashboard": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'setAzureWebJobsDashboard'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].setAzureWebJobsDashboard), createObject('value', parameters('setAzureWebJobsDashboard')))]",
-          "authSettingV2Configuration": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'authSettingV2Configuration'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].authSettingV2Configuration), createObject('value', parameters('authSettingV2Configuration')))]",
+          "httpsOnly": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'httpsOnly'), parameters('httpsOnly'))]"
+          },
+          "appServiceEnvironmentResourceId": {
+            "value": "[parameters('appServiceEnvironmentResourceId')]"
+          },
+          "clientAffinityEnabled": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'clientAffinityEnabled'), parameters('clientAffinityEnabled'))]"
+          },
+          "managedIdentities": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'managedIdentities'), parameters('managedIdentities'))]"
+          },
+          "keyVaultAccessIdentityResourceId": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'keyVaultAccessIdentityResourceId'), parameters('keyVaultAccessIdentityResourceId'))]"
+          },
+          "storageAccountRequired": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'storageAccountRequired'), parameters('storageAccountRequired'))]"
+          },
+          "virtualNetworkSubnetId": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'virtualNetworkSubnetId'), parameters('virtualNetworkSubnetId'))]"
+          },
+          "siteConfig": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'siteConfig'), parameters('siteConfig'))]"
+          },
+          "storageAccountResourceId": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'storageAccountResourceId'), parameters('storageAccountResourceId'))]"
+          },
+          "appInsightResourceId": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'appInsightResourceId'), parameters('appInsightResourceId'))]"
+          },
+          "setAzureWebJobsDashboard": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'setAzureWebJobsDashboard'), parameters('setAzureWebJobsDashboard'))]"
+          },
+          "authSettingV2Configuration": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'authSettingV2Configuration'), parameters('authSettingV2Configuration'))]"
+          },
           "diagnosticSettings": {
             "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'diagnosticSettings')]"
           },
-          "roleAssignments": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].roleAssignments), createObject('value', parameters('roleAssignments')))]",
-          "appSettingsKeyValuePairs": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'appSettingsKeyValuePairs'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].appSettingsKeyValuePairs), createObject('value', parameters('appSettingsKeyValuePairs')))]",
-          "basicPublishingCredentialsPolicies": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'basicPublishingCredentialsPolicies'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].basicPublishingCredentialsPolicies), createObject('value', parameters('basicPublishingCredentialsPolicies')))]",
+          "roleAssignments": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'roleAssignments'), parameters('roleAssignments'))]"
+          },
+          "appSettingsKeyValuePairs": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'appSettingsKeyValuePairs'), parameters('appSettingsKeyValuePairs'))]"
+          },
+          "basicPublishingCredentialsPolicies": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'basicPublishingCredentialsPolicies'), parameters('basicPublishingCredentialsPolicies'))]"
+          },
           "lock": {
             "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
-          "privateEndpoints": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'privateEndpoints'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].privateEndpoints), createObject('value', parameters('privateEndpoints')))]",
+          "privateEndpoints": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'privateEndpoints'), parameters('privateEndpoints'))]"
+          },
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "clientCertEnabled": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'clientCertEnabled'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].clientCertEnabled), createObject('value', false()))]",
+          "clientCertEnabled": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'clientCertEnabled')]"
+          },
           "clientCertExclusionPaths": {
             "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'clientCertExclusionPaths')]"
           },
-          "clientCertMode": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'clientCertMode'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].clientCertMode), createObject('value', 'Optional'))]",
+          "clientCertMode": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'clientCertMode')]"
+          },
           "cloningInfo": {
             "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'cloningInfo')]"
           },
@@ -1181,19 +1217,33 @@
           "dailyMemoryTimeQuota": {
             "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'dailyMemoryTimeQuota')]"
           },
-          "enabled": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'enabled'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].enabled), createObject('value', true()))]",
+          "enabled": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'enabled')]"
+          },
           "enableTelemetry": {
             "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
           },
           "hostNameSslStates": {
             "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'hostNameSslStates')]"
           },
-          "hyperV": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'hyperV'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].hyperV), createObject('value', false()))]",
-          "publicNetworkAccess": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'publicNetworkAccess'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].publicNetworkAccess), if(or(not(empty(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'privateEndpoints'))), not(empty(parameters('privateEndpoints')))), createObject('value', 'Disabled'), createObject('value', 'Enabled')))]",
-          "redundancyMode": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'redundancyMode'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].redundancyMode), createObject('value', 'None'))]",
-          "vnetContentShareEnabled": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'vnetContentShareEnabled'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].vnetContentShareEnabled), createObject('value', false()))]",
-          "vnetImagePullEnabled": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'vnetImagePullEnabled'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].vnetImagePullEnabled), createObject('value', false()))]",
-          "vnetRouteAllEnabled": "[if(contains(coalesce(parameters('slots'), createArray())[copyIndex()], 'vnetRouteAllEnabled'), createObject('value', coalesce(parameters('slots'), createArray())[copyIndex()].vnetRouteAllEnabled), createObject('value', false()))]",
+          "hyperV": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'hyperV')]"
+          },
+          "publicNetworkAccess": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'publicNetworkAccess'), if(or(not(empty(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'privateEndpoints'))), not(empty(parameters('privateEndpoints')))), 'Disabled', 'Enabled'))]"
+          },
+          "redundancyMode": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'redundancyMode')]"
+          },
+          "vnetContentShareEnabled": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'vnetContentShareEnabled')]"
+          },
+          "vnetImagePullEnabled": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'vnetImagePullEnabled')]"
+          },
+          "vnetRouteAllEnabled": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'vnetRouteAllEnabled')]"
+          },
           "hybridConnectionRelays": {
             "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'hybridConnectionRelays')]"
           }
@@ -1205,8 +1255,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "1819905601693828569"
+              "version": "0.24.24.22086",
+              "templateHash": "13458641455647274431"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -2070,8 +2120,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "9127517630940260435"
+                      "version": "0.24.24.22086",
+                      "templateHash": "10616094367902686039"
                     },
                     "name": "Site Slot App Settings",
                     "description": "This module deploys a Site Slot App Setting.",
@@ -2239,8 +2289,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "4360576559070293650"
+                      "version": "0.24.24.22086",
+                      "templateHash": "7901002401130178704"
                     },
                     "name": "Site Slot Auth Settings V2 Config",
                     "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -2354,8 +2404,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "11138000346009033876"
+                      "version": "0.24.24.22086",
+                      "templateHash": "95340614388352354"
                     },
                     "name": "Web Site Slot Basic Publishing Credentials Policies",
                     "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy.",
@@ -2480,8 +2530,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "7671423353895459277"
+                      "version": "0.24.24.22086",
+                      "templateHash": "822472634155315347"
                     },
                     "name": "Web/Function Apps Slot Hybrid Connection Relay",
                     "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay.",
@@ -3307,8 +3357,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "17957510531718825943"
+              "version": "0.24.24.22086",
+              "templateHash": "10399361361481208001"
             },
             "name": "Web Site Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Basic Publishing Credentials Policy.",
@@ -3423,8 +3473,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "13796829969167449371"
+              "version": "0.24.24.22086",
+              "templateHash": "16924628128999801114"
             },
             "name": "Web/Function Apps Hybrid Connection Relay",
             "description": "This module deploys a Site Hybrid Connection Namespace Relay.",
