@@ -33,7 +33,7 @@ on:
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/network/network-security-group"
+  modulePath: "avm/res/compute/disk"
   workflowPath: ".github/workflows/avm.res.compute.disk.yml"
 
 concurrency:
