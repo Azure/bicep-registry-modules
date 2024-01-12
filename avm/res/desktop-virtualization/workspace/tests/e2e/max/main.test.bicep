@@ -1,7 +1,6 @@
 targetScope = 'subscription'
-
-metadata name = 'Using Private Endpoints'
-metadata description = 'This instance deploys the module with Private Endpoints.'
+metadata name = 'Using large parameter set'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
@@ -11,7 +10,7 @@ param resourceGroupName string = 'dep-${namePrefix}-workspace-${serviceShort}-rg
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dvwspe'
+param serviceShort string = 'dvwsmax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = 'tst' //'#_namePrefix_#'
