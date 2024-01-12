@@ -42,7 +42,6 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -70,7 +69,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         osDiskSizeGB: 0
         osType: 'Linux'
         serviceCidr: ''
-        storageProfile: 'ManagedDisks'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
         vnetSubnetID: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
@@ -97,7 +95,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
-        storageProfile: 'ManagedDisks'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
         vnetSubnetID: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
@@ -122,7 +119,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
-        storageProfile: 'ManagedDisks'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
       }

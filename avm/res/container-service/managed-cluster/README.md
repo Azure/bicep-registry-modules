@@ -67,7 +67,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 0
         osType: 'Linux'
         serviceCidr: ''
-        storageProfile: 'ManagedDisks'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
         vnetSubnetID: '<vnetSubnetID>'
@@ -96,7 +95,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
-        storageProfile: 'ManagedDisks'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
         vnetSubnetID: '<vnetSubnetID>'
@@ -121,7 +119,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
-        storageProfile: 'ManagedDisks'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
         vnetSubnetID: '<vnetSubnetID>'
@@ -293,7 +290,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "serviceCidr": "",
-          "storageProfile": "ManagedDisks",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2",
           "vnetSubnetID": "<vnetSubnetID>"
@@ -324,7 +320,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "proximityPlacementGroupResourceId": "<proximityPlacementGroupResourceId>",
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
-          "storageProfile": "ManagedDisks",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2",
           "vnetSubnetID": "<vnetSubnetID>"
@@ -349,7 +344,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
-          "storageProfile": "ManagedDisks",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2",
           "vnetSubnetID": "<vnetSubnetID>"
@@ -651,7 +645,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 0
         osType: 'Linux'
         serviceCidr: ''
-        storageProfile: 'ManagedDisks'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
       }
@@ -678,7 +671,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
-        storageProfile: 'ManagedDisks'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
       }
@@ -702,7 +694,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
-        storageProfile: 'ManagedDisks'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
       }
@@ -786,7 +777,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "serviceCidr": "",
-          "storageProfile": "ManagedDisks",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2"
         }
@@ -815,7 +805,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
-          "storageProfile": "ManagedDisks",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2"
         },
@@ -839,7 +828,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
-          "storageProfile": "ManagedDisks",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2"
         }
@@ -937,7 +925,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 0
         osType: 'Linux'
         serviceCidr: ''
-        storageProfile: 'ManagedDisks'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
         vnetSubnetID: '<vnetSubnetID>'
@@ -965,7 +952,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
-        storageProfile: 'ManagedDisks'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
         vnetSubnetID: '<vnetSubnetID>'
@@ -990,7 +976,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
-        storageProfile: 'ManagedDisks'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
       }
@@ -1043,7 +1028,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "serviceCidr": "",
-          "storageProfile": "ManagedDisks",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2",
           "vnetSubnetID": "<vnetSubnetID>"
@@ -1073,7 +1057,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
-          "storageProfile": "ManagedDisks",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2",
           "vnetSubnetID": "<vnetSubnetID>"
@@ -1098,7 +1081,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
-          "storageProfile": "ManagedDisks",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2"
         }
@@ -1169,7 +1151,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 0
         osType: 'Linux'
         serviceCidr: ''
-        storageProfile: 'ManagedDisks'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
         vnetSubnetID: '<vnetSubnetID>'
@@ -1198,7 +1179,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
-        storageProfile: 'ManagedDisks'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
         vnetSubnetID: '<vnetSubnetID>'
@@ -1224,7 +1204,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
-        storageProfile: 'ManagedDisks'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
       }
@@ -1316,7 +1295,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "serviceCidr": "",
-          "storageProfile": "ManagedDisks",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2",
           "vnetSubnetID": "<vnetSubnetID>"
@@ -1347,7 +1325,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
-          "storageProfile": "ManagedDisks",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2",
           "vnetSubnetID": "<vnetSubnetID>"
@@ -1373,7 +1350,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
-          "storageProfile": "ManagedDisks",
           "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2"
         }
@@ -1731,11 +1707,6 @@ Define one or more secondary/additional agent pools.
 | [`vmSize`](#parameter-agentpoolsvmsize) | string | The VM size of the agent pool. |
 | [`vnetSubnetID`](#parameter-agentpoolsvnetsubnetid) | string | The VNet subnet ID of the agent pool. |
 | [`workloadRuntime`](#parameter-agentpoolsworkloadruntime) | string | The workload runtime of the agent pool. |
-
-** parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 
 ### Parameter: `agentPools.name`
 

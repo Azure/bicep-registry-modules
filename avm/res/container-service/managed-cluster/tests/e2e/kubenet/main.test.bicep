@@ -81,7 +81,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         osDiskSizeGB: 0
         osType: 'Linux'
         serviceCidr: ''
-        storageProfile: 'ManagedDisks'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
       }
@@ -107,7 +106,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
-        storageProfile: 'ManagedDisks'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
       }
@@ -131,7 +129,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
-        storageProfile: 'ManagedDisks'
         type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
       }

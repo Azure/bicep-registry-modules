@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "11478322727032895279"
+      "templateHash": "6634758097387267759"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -315,13 +315,6 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. The enable default telemetry of the agent pool."
-            }
-          },
-          "storageProfile": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": ""
             }
           }
         }

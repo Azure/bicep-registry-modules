@@ -879,10 +879,6 @@ type agentPoolType = {
 
   @description('Optional. The enable default telemetry of the agent pool.')
   enableDefaultTelemetry: bool?
-
-  @description('')
-  storageProfile: string?
-
 }[]?
 
 type managedIdentitiesType = {
