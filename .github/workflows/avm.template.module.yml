@@ -85,7 +85,6 @@ jobs:
       (fromJson(inputs.workflowInput)).deploymentValidation == 'true' && needs.job_module_static_validation.result != 'failure'
     needs:
       - job_module_static_validation
-      # - job_psrule_test # Ignoring dependency whilst PSRule gets bedded in, in this project
     strategy:
       fail-fast: false
       matrix:
@@ -103,7 +102,6 @@ jobs:
         uses: ./.github/actions/templates/avm-validateModuleDeployment
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          location: "WestEurope"
           subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
