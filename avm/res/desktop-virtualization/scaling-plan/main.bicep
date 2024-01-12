@@ -2,10 +2,6 @@ metadata name = 'Azure Virtual Desktop Scaling Plan'
 metadata description = 'This module deploys an Azure Virtual Desktop Scaling Plan.'
 metadata owner = 'Azure/module-maintainers'
 
-// ================ //
-// Parameters       //
-// ================ //
-
 @sys.description('Required. Name of the scaling plan.')
 param name string
 
@@ -13,7 +9,7 @@ param name string
 param location string = resourceGroup().location
 
 @sys.description('Optional. Friendly name of the scaling plan.')
-param friendlyName string
+param friendlyName string = name
 
 @sys.description('Optional. Time zone of the scaling plan. Defaults to UTC.')
 param timeZone string = 'UTC'
@@ -31,7 +27,7 @@ param schedules array = []
 param hostPoolReferences array = []
 
 @sys.description('Optional. Description of the scaling plan.')
-param description string
+param description string = name
 
 @sys.description('Optional. Tags of the scaling plan.')
 param tags object?
@@ -47,10 +43,6 @@ param enableTelemetry bool = true
 
 @sys.description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
-
-// =========== //
-// Variables   //
-// =========== //
 
 var builtInRoleNames = {
   'Application Group Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ca6382a4-1721-4bcf-a114-ff0c70227b6b')
@@ -143,10 +135,6 @@ resource scalingPlan_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2
   }
   scope: scalingPlan
 }]
-
-// =========== //
-// Outputs     //
-// =========== //
 
 @sys.description('The resource ID of the scaling plan.')
 output resourceId string = scalingPlan.id

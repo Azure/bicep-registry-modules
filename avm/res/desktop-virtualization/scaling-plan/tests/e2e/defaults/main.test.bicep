@@ -43,12 +43,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}002'
-    friendlyName: 'myFriendlyName'
-    location: location
-    description: 'myDescription'
-    lock: {}
-    roleAssignments: []
-    diagnosticSettings: []
-    tags: {}
   }
 }]
