@@ -1,27 +1,23 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
-
 // ========== //
 // Parameters //
 // ========== //
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-network.serviceendpointpolicies-${serviceShort}-rg'
+// e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-<provider>-<resourceType>-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nsnpmin'
+// e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
+param serviceShort string = 'nsepdef'
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
-@description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
+@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -43,7 +39,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    enableDefaultTelemetry: enableDefaultTelemetry
-    name: '${namePrefix}-${serviceShort}-001'
+    // You parameters go here
+    name: '${namePrefix}${serviceShort}001'
   }
 }]
