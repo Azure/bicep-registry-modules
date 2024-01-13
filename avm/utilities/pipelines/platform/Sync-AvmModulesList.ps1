@@ -5,9 +5,6 @@ Updating the module names list in the issue template
 .DESCRIPTION
 CSV data for moules and pattern is loaded and overwrites the list in the issue template. The changes are then commited to the repository.
 
-.PARAMETER Repo
-Repository name according to GitHub (owner/name)
-
 .PARAMETER RepoRoot
 Optional. Path to the root of the repository.
 
@@ -19,9 +16,6 @@ Will be triggered by the workflow avm.platform.sync-avm-modules-list.yml
 #>
 function Sync-AvmModulesList {
   param (
-    [Parameter(Mandatory = $true)]
-    [string] $Repo,
-
     [Parameter(Mandatory = $false)]
     [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
   )
