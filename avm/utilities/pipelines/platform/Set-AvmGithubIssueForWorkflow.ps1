@@ -78,7 +78,7 @@ function Set-AvmGithubIssueForWorkflow {
   foreach ($workflowRun in $workflowRuns.values) {
     if ($workflowRun.conclusion -eq 'failure') {
       $issueName = "[Failed pipeline] $($workflowRun.workflowName)"
-      $failedrun = "failed run: $($workflowRun.url)"
+      $failedrun = "Failed run: $($workflowRun.url)"
 
       if ($issues.title -notcontains $issueName) {
         if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Create')) {
