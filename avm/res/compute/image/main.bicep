@@ -60,7 +60,7 @@ param snapshotResourceId string = ''
 @description('Optional. Specifies the parameters that are used to add a data disk to a virtual machine.')
 param dataDisks array = []
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 var builtInRoleNames = {
