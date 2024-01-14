@@ -285,10 +285,10 @@ Describe 'Module tests' -Tag 'Module' {
       $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
 
       $readmeFileTestCases += @{
-        moduleFolderName = $resourceTypeIdentifier
-        templateContent  = $builtTestFileMap[$templateFilePath]
-        templateFilePath = $templateFilePath
-        readMeFilePath   = Join-Path -Path $moduleFolderPath 'README.md'
+        moduleFolderName    = $resourceTypeIdentifier
+        templateFileContent = $builtTestFileMap[$templateFilePath]
+        templateFilePath    = $templateFilePath
+        readMeFilePath      = Join-Path -Path $moduleFolderPath 'README.md'
       }
     }
 
@@ -307,7 +307,7 @@ Describe 'Module tests' -Tag 'Module' {
       . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
 
       # Apply update with already compiled template content
-      Set-ModuleReadMe -TemplateFilePath $templateFilePath -TemplateFileContent $templateFileContent
+      Set-ModuleReadMe -TemplateFilePath $templateFilePath -PreLoadedContent @{ TemplateFileContent = $templateFileContent }
 
       # Get hash after 'update'
       $fileHashAfter = (Get-FileHash $readMeFilePath).Hash
