@@ -153,7 +153,7 @@ function New-TemplateDeploymentInner {
         [Parameter(Mandatory = $false)]
         [int]$retryLimit = 3,
 
-        [Parameter(Mandatory = $false)]
+        [Parameter(Mandatory = $true)]
         [string] $RepoRoot
     )
 
@@ -437,7 +437,7 @@ function New-TemplateDeployment {
         Write-Debug ('{0} entered' -f $MyInvocation.MyCommand)
 
         # Load helper functions
-        . (Join-Path $repoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-ScopeOfTemplateFile.ps1')
+        . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-ScopeOfTemplateFile.ps1')
     }
 
     process {
@@ -450,15 +450,16 @@ function New-TemplateDeployment {
 
         ## Iterate through each file
         $deploymentInputObject = @{
-            templateFilePath     = $templateFilePath
-            additionalTags       = $additionalTags
-            additionalParameters = $additionalParameters
-            location             = $location
-            resourceGroupName    = $resourceGroupName
-            subscriptionId       = $subscriptionId
-            managementGroupId    = $managementGroupId
-            doNotThrow           = $doNotThrow
-            retryLimit           = $retryLimit
+            TemplateFilePath     = $templateFilePath
+            AdditionalTags       = $additionalTags
+            AdditionalParameters = $additionalParameters
+            Location             = $location
+            ResourceGroupName    = $resourceGroupName
+            SubscriptionId       = $subscriptionId
+            ManagementGroupId    = $managementGroupId
+            DoNotThrow           = $doNotThrow
+            RetryLimit           = $retryLimit
+            RepoRoot             = $RepoRoot
         }
         if ($parameterFilePath) {
             if ($parameterFilePath -is [array]) {
