@@ -192,10 +192,10 @@ resource disk 'Microsoft.Compute/disks@2022-07-02' = {
     optimizedForFrequentAttach: optimizedForFrequentAttach
     osType: !empty(osType) ? osType : any(null)
     publicNetworkAccess: publicNetworkAccess
-    supportedCapabilities: empty(osType) ? {} : {
+    supportedCapabilities: !empty(osType) ? {
       acceleratedNetwork: acceleratedNetwork
-      architecture: empty(architecture) ? null : architecture
-    }
+      architecture: !empty(architecture) ? architecture : null
+    } : {}
   }
 }
 
