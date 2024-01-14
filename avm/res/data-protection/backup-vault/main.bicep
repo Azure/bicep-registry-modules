@@ -5,7 +5,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. Name of the Backup Vault.')
 param name string
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Location for all resources.')
