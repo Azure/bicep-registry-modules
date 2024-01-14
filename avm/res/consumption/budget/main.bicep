@@ -64,9 +64,9 @@ var notificationsArray = [for threshold in thresholds: {
     enabled: true
     operator: 'GreaterThan'
     threshold: threshold
-    contactEmails: empty(contactEmails) ? null : array(contactEmails)
-    contactRoles: empty(contactRoles) ? null : array(contactRoles)
-    contactGroups: empty(actionGroups) ? null : array(actionGroups)
+    contactEmails: !empty(contactEmails) ? array(contactEmails) : null
+    contactRoles: !empty(contactRoles) ? array(contactRoles) : null
+    contactGroups: !empty(actionGroups) ? array(actionGroups) : null
     thresholdType: 'Actual'
   }
 }]
