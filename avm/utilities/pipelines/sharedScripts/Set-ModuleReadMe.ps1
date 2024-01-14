@@ -1644,7 +1644,7 @@ function Set-ModuleReadMe {
 
     [CmdletBinding(SupportsShouldProcess = $true)]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [string] $TemplateFilePath,
 
         [Parameter(Mandatory = $false)]

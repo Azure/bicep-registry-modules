@@ -112,16 +112,17 @@ function Set-AVMModule {
         # load AVM references (done to reduce WebRequests to GitHub repository)
         # Telemetry
         $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
-        try {
-            $rawReponse = Invoke-WebRequest -Uri $telemetryUrl
-            if (($rawReponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
-                $TelemetryFileContent = $rawReponse.Content -split '\n'
-            } else {
-                throw "Failed to telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
-            }
-        } catch {
-            throw "Failed to telemetry information from [$telemetryUrl]." # Invalid url
-        }
+        $TelemetryFileContent = 'Oi'
+        # try {
+        #     $rawReponse = Invoke-WebRequest -Uri $telemetryUrl
+        #     if (($rawReponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
+        #         $TelemetryFileContent = $rawReponse.Content -split '\n'
+        #     } else {
+        #         throw "Failed to telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
+        #     }
+        # } catch {
+        #     throw "Failed to telemetry information from [$telemetryUrl]." # Invalid url
+        # }
 
         # create reference as it must be loaded in the thread to work
         $ReadMeScriptFilePath = (Join-Path (Get-Item $PSScriptRoot).Parent.FullName 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
@@ -151,16 +152,16 @@ function Set-AVMModule {
                 if (-not $using:SkipReadMe) {
                     Write-Output "Generating readme for [$resourceTypeIdentifier]"
 
-                    # If the template was just build, we can pass the JSON into the readme script to be more efficient
-                    $readmeTemplateFilePath = (-not $using:SkipBuild) ? (Join-Path (Split-Path $_ -Parent) 'main.json') : $_
-
                     . $using:ReadMeScriptFilePath
                     $readmeInputObject = @{
-                        TemplateFilePath = $readmeTemplateFilePath
+                        TemplateFilePath = $_
                         PreLoadedContent = @{
                             CrossReferencedModuleList = $using:crossReferencedModuleList
                             TelemetryFileContent      = $using:TelemetryFileContent
-                        }
+                        } + (-not $using:SkipBuild ? @{
+                                # If the template was just build, we can pass the JSON into the readme script to be more efficient
+                                TemplateFileContent = ConvertFrom-Json (Get-Content (Join-Path (Split-Path $_ -Parent) 'main.json') -Encoding 'utf8' -Raw) -ErrorAction 'Stop' -AsHashtable
+                            } : @{})
                     }
                     Set-ModuleReadMe @readmeInputObject
                 }
