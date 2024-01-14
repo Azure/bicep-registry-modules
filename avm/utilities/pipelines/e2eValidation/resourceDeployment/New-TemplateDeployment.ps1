@@ -3,19 +3,27 @@
 <#
 .SYNOPSIS
 If a deployment failed, get its error message
+
 .DESCRIPTION
 If a deployment failed, get its error message based on the deployment name in the given scope
+
 .PARAMETER DeploymentScope
 Mandatory. The scope to fetch the deployment from (e.g. resourcegroup, tenant,...)
+
 .PARAMETER DeploymentName
 Mandatory. The name of the deployment to search for (e.g. 'storageAccounts-20220105T0701282538Z')
+
 .PARAMETER ResourceGroupName
 Optional. The resource group to search the deployment in, if the scope is 'resourcegroup'
+
 .EXAMPLE
 Get-ErrorMessageForScope -DeploymentScope 'resourcegroup' -DeploymentName 'storageAccounts-20220105T0701282538Z' -ResourceGroupName 'validation-rg'
+
 Get the error message of any failed deployment into resource group 'validation-rg' that has the name 'storageAccounts-20220105T0701282538Z'
+
 .EXAMPLE
 Get-ErrorMessageForScope -DeploymentScope 'subscription' -DeploymentName 'resourcegroups-20220106T0401282538Z'
+
 Get the error message of any failed deployment into the current subscription that has the name 'storageAccounts-20220105T0701282538Z'
 #>
 function Get-ErrorMessageForScope {
@@ -58,39 +66,57 @@ function Get-ErrorMessageForScope {
 <#
 .SYNOPSIS
 Run a template deployment using a given parameter file
+
 .DESCRIPTION
 Run a template deployment using a given parameter file.
 Works on a resource group, subscription, managementgroup and tenant level
+
 .PARAMETER templateFilePath
 Mandatory. The path to the deployment file
+
 .PARAMETER parameterFilePath
 Optional. Path to the parameter file from root. Can be a single file, multiple files, or directory that contains (.json) files.
+
 .PARAMETER location
 Mandatory. Location to test in. E.g. WestEurope
+
 .PARAMETER resourceGroupName
 Optional. Name of the resource group to deploy into. Mandatory if deploying into a resource group (resource group level)
+
 .PARAMETER subscriptionId
 Optional. ID of the subscription to deploy into. Mandatory if deploying into a subscription (subscription level) using a Management groups service connection
+
 .PARAMETER managementGroupId
 Optional. Name of the management group to deploy into. Mandatory if deploying into a management group (management group level)
+
 .PARAMETER additionalTags
 Optional. Provde a Key Value Pair (Object) that will be appended to the Parameter file tags. Example: @{myKey = 'myValue',myKey2 = 'myValue2'}.
+
 .PARAMETER additionalParameters
 Optional. Additional parameters you can provide with the deployment. E.g. @{ resourceGroupName = 'myResourceGroup' }
+
 .PARAMETER retryLimit
 Optional. Maximum retry limit if the deployment fails. Default is 3.
+
 .PARAMETER doNotThrow
 Optional. Do not throw an exception if it failed. Still returns the error message though
+
 .PARAMETER RepoRoot
 Mandatory. Path to the root of the repository.
+
 .EXAMPLE
 New-TemplateDeploymentInner -templateFilePath 'C:/key-vault/vault/main.json' -parameterFilePath 'C:/key-vault/vault/.test/parameters.json' -location 'WestEurope' -resourceGroupName 'aLegendaryRg'
+
 Deploy the main.json of the KeyVault module with the parameter file 'parameters.json' using the resource group 'aLegendaryRg' in location 'WestEurope'
+
 .EXAMPLE
 New-TemplateDeploymentInner -templateFilePath 'C:/key-vault/vault/main.bicep' -location 'WestEurope' -resourceGroupName 'aLegendaryRg'
+
 Deploy the main.bicep of the KeyVault module using the resource group 'aLegendaryRg' in location 'WestEurope'
+
 .EXAMPLE
 New-TemplateDeploymentInner -templateFilePath 'C:/resources/resource-group/main.json' -location 'WestEurope'
+
 Deploy the main.json of the ResourceGroup module without a parameter file in location 'WestEurope'
 #>
 function New-TemplateDeploymentInner {
@@ -316,39 +342,57 @@ function New-TemplateDeploymentInner {
 <#
 .SYNOPSIS
 Run a template deployment using a given parameter file
+
 .DESCRIPTION
 Run a template deployment using a given parameter file.
 Works on a resource group, subscription, managementgroup and tenant level
+
 .PARAMETER templateFilePath
 Mandatory. The path to the deployment file
+
 .PARAMETER parameterFilePath
 Optional. Path to the parameter file from root. Can be a single file, multiple files, or directory that contains (.json) files.
+
 .PARAMETER location
 Mandatory. Location to test in. E.g. WestEurope
+
 .PARAMETER resourceGroupName
 Optional. Name of the resource group to deploy into. Mandatory if deploying into a resource group (resource group level)
+
 .PARAMETER subscriptionId
 Optional. ID of the subscription to deploy into. Mandatory if deploying into a subscription (subscription level) using a Management groups service connection
+
 .PARAMETER managementGroupId
 Optional. Name of the management group to deploy into. Mandatory if deploying into a management group (management group level)
+
 .PARAMETER additionalTags
 Optional. Provide a Key Value Pair (Object) that will be appended to the Parameter file tags. Example: @{myKey = 'myValue', myKey2 = 'myValue2'}.
+
 .PARAMETER additionalParameters
 Optional. Additional parameters you can provide with the deployment. E.g. @{ resourceGroupName = 'myResourceGroup' }
+
 .PARAMETER retryLimit
 Optional. Maximum retry limit if the deployment fails. Default is 3.
+
 .PARAMETER doNotThrow
 Optional. Do not throw an exception if it failed. Still returns the error message though
+
 .PARAMETER RepoRoot
 Optional. Path to the root of the repository.
+
 .EXAMPLE
 New-TemplateDeployment -templateFilePath 'C:/key-vault/vault/main.bicep' -parameterFilePath 'C:/key-vault/vault/.test/parameters.json' -location 'WestEurope' -resourceGroupName 'aLegendaryRg'
+
 Deploy the main.bicep of the 'key-vault/vault' module with the parameter file 'parameters.json' using the resource group 'aLegendaryRg' in location 'WestEurope'
+
 .EXAMPLE
 New-TemplateDeployment -templateFilePath 'C:/resources/resource-group/main.bicep' -location 'WestEurope'
+
 Deploy the main.bicep of the 'resources/resource-group' module in location 'WestEurope' without a parameter file
+
 .EXAMPLE
 New-TemplateDeployment -templateFilePath 'C:/resources/resource-group/main.json' -parameterFilePath 'C:/resources/resource-group/.test/parameters.json' -location 'WestEurope'
+
 Deploy the main.json of the 'resources/resource-group' module with the parameter file 'parameters.json' in location 'WestEurope'
 #>
 function New-TemplateDeployment {
