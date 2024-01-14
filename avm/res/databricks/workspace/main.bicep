@@ -82,7 +82,7 @@ param storageAccountSkuName string = 'Standard_GRS'
 @description('Optional. Address prefix for Managed virtual network.')
 param vnetAddressPrefix string = '10.139'
 
-@description('Optional. 	The network access type for accessing workspace. Set value to disabled to access workspace only via private link.')
+@description('Optional. The network access type for accessing workspace. Set value to disabled to access workspace only via private link.')
 @allowed([
   'Disabled'
   'Enabled'
