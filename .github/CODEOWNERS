@@ -33,7 +33,7 @@
 #/avm/res/consumption/budget/ @Azure/avm-res-consumption-budget-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/container-instance/container-group/ @Azure/avm-res-containerinstance-containergroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/container-registry/registry/ @Azure/avm-res-containerregistry-registry-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/container-service/managed-cluster/ @Azure/avm-res-containerservice-managedcluster-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/container-service/managed-cluster/ @Azure/avm-res-containerservice-managedcluster-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/databricks/access-connector/ @Azure/avm-res-databricks-accessconnector-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/databricks/workspace/ @Azure/avm-res-databricks-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/data-factory/factory/ @Azure/avm-res-datafactory-factory-module-owners-bicep @Azure/avm-core-team-technical-bicep
