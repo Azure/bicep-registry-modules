@@ -148,6 +148,7 @@ output name string = image.name
 
 @description('The location the resource was deployed into.')
 output location string = image.location
+
 // =============== //
 //   Definitions   //
 // =============== //
