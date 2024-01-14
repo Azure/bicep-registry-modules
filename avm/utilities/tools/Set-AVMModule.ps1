@@ -109,6 +109,20 @@ function Set-AVMModule {
         # load cross-references
         $crossReferencedModuleList = Get-CrossReferencedModuleList
 
+        # load AVM references (done to reduce WebRequests to GitHub repository)
+        # Telemetry
+        $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
+        try {
+            $rawReponse = Invoke-WebRequest -Uri $telemetryUrl
+            if (($rawReponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
+                $TelemetryFileContent = $rawReponse.Content -split '\n'
+            } else {
+                throw "Failed to telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
+            }
+        } catch {
+            throw "Failed to telemetry information from [$telemetryUrl]." # Invalid url
+        }
+
         # create reference as it must be loaded in the thread to work
         $ReadMeScriptFilePath = (Join-Path (Get-Item $PSScriptRoot).Parent.FullName 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
     } else {
@@ -141,7 +155,14 @@ function Set-AVMModule {
                     $readmeTemplateFilePath = (-not $using:SkipBuild) ? (Join-Path (Split-Path $_ -Parent) 'main.json') : $_
 
                     . $using:ReadMeScriptFilePath
-                    Set-ModuleReadMe -TemplateFilePath $readmeTemplateFilePath -CrossReferencedModuleList $using:crossReferencedModuleList
+                    $readmeInputObject = @{
+                        TemplateFilePath = $readmeTemplateFilePath
+                        PreLoadedContent = @{
+                            CrossReferencedModuleList = $using:crossReferencedModuleList
+                            TelemetryFileContent      = $using:TelemetryFileContent
+                        }
+                    }
+                    Set-ModuleReadMe @readmeInputObject
                 }
             }
 
