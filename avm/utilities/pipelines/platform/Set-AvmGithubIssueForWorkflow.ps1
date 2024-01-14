@@ -99,7 +99,7 @@ function Set-AvmGithubIssueForWorkflow {
             $issuesCommented++
           }
           else {
-            if (!$issue.comments.body.Contains($failedrun)) {
+            if (-not $issue.comments.body.Contains($failedrun)) {
               if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Close')) {
                 gh issue comment $issue.url --body $failedrun --repo $Repo
               }
