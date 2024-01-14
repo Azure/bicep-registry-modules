@@ -26,7 +26,7 @@ Check the last 100 workflow runs in the repository 'owner/repo01' that happened 
 The function requires GitHub CLI to be installed.
 #>
 function Set-AvmGithubIssueForWorkflow {
-  [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
+  [CmdletBinding(SupportsShouldProcess)]
   param (
     [Parameter(Mandatory = $true)]
     [string] $Repo,
