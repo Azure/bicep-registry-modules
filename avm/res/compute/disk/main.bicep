@@ -186,7 +186,7 @@ resource disk 'Microsoft.Compute/disks@2022-07-02' = {
     diskIOPSReadWrite: contains(sku, 'Ultra') ? diskIOPSReadWrite : null
     diskMBpsReadWrite: contains(sku, 'Ultra') ? diskMBpsReadWrite : null
     diskSizeGB: createOption == 'Empty' ? diskSizeGB : null
-    hyperVGeneration: empty(osType) ? null : hyperVGeneration
+    hyperVGeneration: !empty(osType) ? hyperVGeneration : null
     maxShares: maxShares
     networkAccessPolicy: networkAccessPolicy
     optimizedForFrequentAttach: optimizedForFrequentAttach
