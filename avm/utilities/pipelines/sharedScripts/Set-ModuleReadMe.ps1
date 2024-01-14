@@ -545,7 +545,6 @@ function Set-DataCollectionSection {
         } catch {
             throw "Failed to telemetry information from [$telemetryUrl]." # Invalid url
         }
-
     } else {
         $telemetryFileContent = $PreLoadedContent.TelemetryFileContent
     }

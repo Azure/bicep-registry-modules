@@ -112,17 +112,16 @@ function Set-AVMModule {
         # load AVM references (done to reduce WebRequests to GitHub repository)
         # Telemetry
         $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
-        $TelemetryFileContent = 'Oi'
-        # try {
-        #     $rawReponse = Invoke-WebRequest -Uri $telemetryUrl
-        #     if (($rawReponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
-        #         $TelemetryFileContent = $rawReponse.Content -split '\n'
-        #     } else {
-        #         throw "Failed to telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
-        #     }
-        # } catch {
-        #     throw "Failed to telemetry information from [$telemetryUrl]." # Invalid url
-        # }
+        try {
+            $rawReponse = Invoke-WebRequest -Uri $telemetryUrl
+            if (($rawReponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
+                $TelemetryFileContent = $rawReponse.Content -split '\n'
+            } else {
+                throw "Failed to telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
+            }
+        } catch {
+            throw "Failed to telemetry information from [$telemetryUrl]." # Invalid url
+        }
 
         # create reference as it must be loaded in the thread to work
         $ReadMeScriptFilePath = (Join-Path (Get-Item $PSScriptRoot).Parent.FullName 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
