@@ -190,7 +190,7 @@ resource disk 'Microsoft.Compute/disks@2022-07-02' = {
     maxShares: maxShares
     networkAccessPolicy: networkAccessPolicy
     optimizedForFrequentAttach: optimizedForFrequentAttach
-    osType: empty(osType) ? any(null) : osType
+    osType: !empty(osType) ? osType : any(null)
     publicNetworkAccess: publicNetworkAccess
     supportedCapabilities: empty(osType) ? {} : {
       acceleratedNetwork: acceleratedNetwork
