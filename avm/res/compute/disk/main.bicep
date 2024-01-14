@@ -173,9 +173,9 @@ resource disk 'Microsoft.Compute/disks@2022-07-02' = {
     completionPercent: completionPercent
     creationData: {
       createOption: createOption
-      imageReference: createOption != 'FromImage' ? null : {
+      imageReference: createOption == 'FromImage' ? {
         id: imageReferenceId
-      }
+      } : null
       logicalSectorSize: contains(sku, 'Ultra') ? logicalSectorSize : null
       securityDataUri: createOption == 'ImportSecure' ? securityDataUri : null
       sourceResourceId: createOption == 'Copy' ? sourceResourceId : null
