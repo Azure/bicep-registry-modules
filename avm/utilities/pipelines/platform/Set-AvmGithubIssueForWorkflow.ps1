@@ -90,7 +90,7 @@ function Set-AvmGithubIssueForWorkflow {
       else {
         $issue = ($issues | Where-Object { $_.title -eq $issueName })[0]
 
-        if (!$issue.body.Contains($failedrun)) {
+        if (-not $issue.body.Contains($failedrun)) {
           if ($issue.comments.length -eq 0) {
             if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Add comment')) {
               gh issue comment $issue.url --body $failedrun --repo $Repo
