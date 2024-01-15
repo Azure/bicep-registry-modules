@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "3071307466096766926"
+      "templateHash": "531940121050857025"
     },
     "name": "Analysis Services Servers",
     "description": "This module deploys an Analysis Services Server.",
@@ -157,7 +157,7 @@
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allMetrics\" includes all possible logs for the resource. Set to '' to disable log collection."
+              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to '' to disable metric collection."
             }
           },
           "logAnalyticsDestinationType": {
@@ -284,7 +284,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
@@ -303,7 +303,6 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
       "name": "[format('46d3xbcp.res.analysisservices-server.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
-      "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",
         "template": {
