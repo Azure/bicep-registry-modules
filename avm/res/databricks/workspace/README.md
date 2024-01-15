@@ -102,7 +102,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dwmax'
   params: {
     // Required parameters
-    name: 'dwmax001'
+    name: '<name>'
     // Non-required parameters
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
     customerManagedKey: {
@@ -205,7 +205,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dwmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "amlWorkspaceResourceId": {
@@ -364,7 +364,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dwwaf'
   params: {
     // Required parameters
-    name: 'dwwaf001'
+    name: '<name>'
     // Non-required parameters
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
     customerManagedKey: {
@@ -450,7 +450,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dwwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "amlWorkspaceResourceId": {
