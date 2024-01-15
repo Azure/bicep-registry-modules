@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "6422186884173444758"
+      "templateHash": "14996821705072365605"
     },
     "name": "Consumption Budgets",
     "description": "This module deploys a Consumption Budget for Subscriptions.",
@@ -103,7 +103,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "location": {
@@ -124,9 +124,9 @@
             "enabled": true,
             "operator": "GreaterThan",
             "threshold": "[parameters('thresholds')[copyIndex('notificationsArray')]]",
-            "contactEmails": "[if(empty(parameters('contactEmails')), null(), array(parameters('contactEmails')))]",
-            "contactRoles": "[if(empty(parameters('contactRoles')), null(), array(parameters('contactRoles')))]",
-            "contactGroups": "[if(empty(parameters('actionGroups')), null(), array(parameters('actionGroups')))]",
+            "contactEmails": "[if(not(empty(parameters('contactEmails'))), array(parameters('contactEmails')), null())]",
+            "contactRoles": "[if(not(empty(parameters('contactRoles'))), array(parameters('contactRoles')), null())]",
+            "contactGroups": "[if(not(empty(parameters('actionGroups'))), array(parameters('actionGroups')), null())]",
             "thresholdType": "Actual"
           }
         }

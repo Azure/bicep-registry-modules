@@ -264,7 +264,7 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`category`](#parameter-category) | string | The category of the budget, whether the budget tracks cost or usage. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`endDate`](#parameter-enddate) | string | The end date for the budget. If not provided, it will default to 10 years from the start date. |
 | [`location`](#parameter-location) | string | Location deployment metadata. |
 | [`resetPeriod`](#parameter-resetperiod) | string | The time covered by a budget. Tracking of the amount will be reset based on the time grain. BillingMonth, BillingQuarter, and BillingAnnual are only supported by WD customers. |
@@ -326,7 +326,7 @@ The category of the budget, whether the budget tracks cost or usage.
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
