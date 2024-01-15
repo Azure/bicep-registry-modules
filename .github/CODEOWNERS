@@ -92,7 +92,7 @@
 /avm/res/network/front-door-web-application-firewall-policy/ @Azure/avm-res-network-frontdoorwebapplicationfirewallpolicy-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/network/ip-group/ @Azure/avm-res-network-ipgroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/load-balancer/ @Azure/avm-res-network-loadbalancer-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/network/local-network-gateway/ @Azure/avm-res-network-localnetworkgateway-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/network/local-network-gateway/ @Azure/avm-res-network-localnetworkgateway-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/nat-gateway/ @Azure/avm-res-network-natgateway-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/network-interface/ @Azure/avm-res-network-networkinterface-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/network/network-manager/ @Azure/avm-res-network-networkmanager-module-owners-bicep @Azure/avm-core-team-technical-bicep
