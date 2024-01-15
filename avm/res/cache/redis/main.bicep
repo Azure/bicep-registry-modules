@@ -84,8 +84,8 @@ param skuName string = 'Basic'
 @description('Optional. Static IP address. Optionally, may be specified when deploying a Redis cache inside an existing Azure Virtual Network; auto assigned by default.')
 param staticIP string = ''
 
-@description('Optional. The full resource ID of a subnet in a virtual network to deploy the Redis cache in. Example format: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/Microsoft.{Network|ClassicNetwork}/VirtualNetworks/vnet1/subnets/subnet1.')
-param subnetId string = ''
+@description('Optional. The full resource ID of a subnet in a virtual network to deploy the Redis cache in.')
+param subnetResourceId string = ''
 
 @description('Optional. A dictionary of tenant settings.')
 param tenantSettings object = {}
