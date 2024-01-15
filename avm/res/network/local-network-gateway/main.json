@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "12786776759336273531"
+      "templateHash": "11224765230513420011"
     },
     "name": "Local Network Gateways",
     "description": "This module deploys a Local Network Gateway.",
@@ -176,7 +176,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "fqdn": {
