@@ -566,62 +566,16 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     acrAdminUserEnabled: false
     acrSku: 'Premium'
     azureADAuthenticationAsArmPolicyStatus: 'enabled'
-    cacheRules: [
-      {
-        name: 'customRule'
-        sourceRepository: 'docker.io/library/hello-world'
-        targetRepository: 'cached-docker-hub/hello-world'
-      }
-      {
-        sourceRepository: 'docker.io/library/hello-world'
-      }
-    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
     exportPolicyStatus: 'enabled'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    networkRuleSetIpRules: [
-      {
-        action: 'Allow'
-        value: '40.74.28.0/23'
-      }
-    ]
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        service: 'registry'
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
-      }
-    ]
     quarantinePolicyStatus: 'enabled'
     replications: [
       {
@@ -637,12 +591,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       Role: 'DeploymentValidation'
     }
     trustPolicyStatus: 'enabled'
-    webhooks: [
-      {
-        name: 'acrx001webhook'
-        serviceUri: 'https://www.contoso.com/webhook'
-      }
-    ]
   }
 }
 ```
@@ -673,29 +621,11 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     "azureADAuthenticationAsArmPolicyStatus": {
       "value": "enabled"
     },
-    "cacheRules": {
-      "value": [
-        {
-          "name": "customRule",
-          "sourceRepository": "docker.io/library/hello-world",
-          "targetRepository": "cached-docker-hub/hello-world"
-        },
-        {
-          "sourceRepository": "docker.io/library/hello-world"
-        }
-      ]
-    },
     "diagnosticSettings": {
       "value": [
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
@@ -706,44 +636,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "networkRuleSetIpRules": {
-      "value": [
-        {
-          "action": "Allow",
-          "value": "40.74.28.0/23"
-        }
-      ]
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "service": "registry",
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
-        }
-      ]
     },
     "quarantinePolicyStatus": {
       "value": "enabled"
@@ -771,14 +663,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     },
     "trustPolicyStatus": {
       "value": "enabled"
-    },
-    "webhooks": {
-      "value": [
-        {
-          "name": "acrx001webhook",
-          "serviceUri": "https://www.contoso.com/webhook"
-        }
-      ]
     }
   }
 }

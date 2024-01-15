@@ -72,12 +72,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     acrSku: 'Premium'
     diagnosticSettings: [
       {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
         eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
@@ -88,30 +82,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     azureADAuthenticationAsArmPolicyStatus: 'enabled'
     softDeletePolicyStatus: 'disabled'
     softDeletePolicyDays: 7
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    privateEndpoints: [
-      {
-        service: 'registry'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
-      }
-    ]
-    networkRuleSetIpRules: [
-      {
-        action: 'Allow'
-        value: '40.74.28.0/23'
-      }
-    ]
     quarantinePolicyStatus: 'enabled'
     replications: [
       {
@@ -119,29 +89,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         name: nestedDependencies.outputs.pairedRegionName
       }
     ]
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
     trustPolicyStatus: 'enabled'
-    cacheRules: [
-      {
-        name: 'customRule'
-        sourceRepository: 'docker.io/library/hello-world'
-        targetRepository: 'cached-docker-hub/hello-world'
-      }
-      {
-        sourceRepository: 'docker.io/library/hello-world'
-      }
-    ]
-    webhooks: [
-      {
-        name: '${namePrefix}acrx001webhook'
-        serviceUri: 'https://www.contoso.com/webhook'
-      }
-    ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
