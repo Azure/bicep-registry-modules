@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "11431773520158495442"
+      "templateHash": "6667320851687416621"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR).",
@@ -886,8 +886,12 @@
           "location": {
             "value": "[coalesce(parameters('replications'), createArray())[copyIndex()].location]"
           },
-          "regionEndpointEnabled": "[if(contains(coalesce(parameters('replications'), createArray())[copyIndex()], 'regionEndpointEnabled'), createObject('value', coalesce(parameters('replications'), createArray())[copyIndex()].regionEndpointEnabled), createObject('value', true()))]",
-          "zoneRedundancy": "[if(contains(coalesce(parameters('replications'), createArray())[copyIndex()], 'zoneRedundancy'), createObject('value', coalesce(parameters('replications'), createArray())[copyIndex()].zoneRedundancy), createObject('value', 'Disabled'))]",
+          "regionEndpointEnabled": {
+            "value": "[tryGet(coalesce(parameters('replications'), createArray())[copyIndex()], 'regionEndpointEnabled')]"
+          },
+          "zoneRedundancy": {
+            "value": "[tryGet(coalesce(parameters('replications'), createArray())[copyIndex()], 'zoneRedundancy')]"
+          },
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('replications'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           }
@@ -1030,9 +1034,15 @@
           "sourceRepository": {
             "value": "[coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository]"
           },
-          "name": "[if(contains(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'name'), createObject('value', coalesce(parameters('cacheRules'), createArray())[copyIndex()].name), createObject('value', replace(replace(coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository, '/', '-'), '.', '-')))]",
-          "targetRepository": "[if(contains(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'targetRepository'), createObject('value', coalesce(parameters('cacheRules'), createArray())[copyIndex()].targetRepository), createObject('value', coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository))]",
-          "credentialSetResourceId": "[if(contains(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'credentialSetResourceId'), createObject('value', coalesce(parameters('cacheRules'), createArray())[copyIndex()].credentialSetResourceId), createObject('value', ''))]"
+          "name": {
+            "value": "[coalesce(tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'name'), replace(replace(coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository, '/', '-'), '.', '-'))]"
+          },
+          "targetRepository": {
+            "value": "[coalesce(tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'targetRepository'), coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository)]"
+          },
+          "credentialSetResourceId": {
+            "value": "[tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'credentialSetResourceId')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1153,11 +1163,21 @@
           "registryName": {
             "value": "[parameters('name')]"
           },
-          "location": "[if(contains(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'location'), createObject('value', coalesce(parameters('webhooks'), createArray())[copyIndex()].location), createObject('value', parameters('location')))]",
-          "action": "[if(contains(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'action'), createObject('value', coalesce(parameters('webhooks'), createArray())[copyIndex()].action), createObject('value', createArray('chart_delete', 'chart_push', 'delete', 'push', 'quarantine')))]",
-          "customHeaders": "[if(contains(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'customHeaders'), createObject('value', coalesce(parameters('webhooks'), createArray())[copyIndex()].customHeaders), createObject('value', createObject()))]",
-          "scope": "[if(contains(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'scope'), createObject('value', coalesce(parameters('webhooks'), createArray())[copyIndex()].scope), createObject('value', ''))]",
-          "status": "[if(contains(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'status'), createObject('value', coalesce(parameters('webhooks'), createArray())[copyIndex()].status), createObject('value', 'enabled'))]",
+          "location": {
+            "value": "[coalesce(tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'location'), parameters('location'))]"
+          },
+          "action": {
+            "value": "[coalesce(tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'action'), createArray('chart_delete', 'chart_push', 'delete', 'push', 'quarantine'))]"
+          },
+          "customHeaders": {
+            "value": "[tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'customHeaders')]"
+          },
+          "scope": {
+            "value": "[tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'scope')]"
+          },
+          "status": {
+            "value": "[tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'status')]"
+          },
           "serviceUri": {
             "value": "[coalesce(parameters('webhooks'), createArray())[copyIndex()].serviceUri]"
           },

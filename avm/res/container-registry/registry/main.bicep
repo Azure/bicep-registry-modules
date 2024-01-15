@@ -250,8 +250,8 @@ module registry_replications 'replication/main.bicep' = [for (replication, index
     name: replication.name
     registryName: registry.name
     location: replication.location
-    regionEndpointEnabled: contains(replication, 'regionEndpointEnabled') ? replication.regionEndpointEnabled : true
-    zoneRedundancy: contains(replication, 'zoneRedundancy') ? replication.zoneRedundancy : 'Disabled'
+    regionEndpointEnabled: replication.?regionEndpointEnabled
+    zoneRedundancy: replication.?zoneRedundancy
     tags: replication.?tags ?? tags
   }
 }]
@@ -261,9 +261,9 @@ module registry_cacheRules 'cache-rules/main.bicep' = [for (cacheRule, index) in
   params: {
     registryName: registry.name
     sourceRepository: cacheRule.sourceRepository
-    name: contains(cacheRule, 'name') ? cacheRule.name : replace(replace(cacheRule.sourceRepository, '/', '-'), '.', '-')
-    targetRepository: contains(cacheRule, 'targetRepository') ? cacheRule.targetRepository : cacheRule.sourceRepository
-    credentialSetResourceId: contains(cacheRule, 'credentialSetResourceId') ? cacheRule.credentialSetResourceId : ''
+    name: cacheRule.?name ?? replace(replace(cacheRule.sourceRepository, '/', '-'), '.', '-')
+    targetRepository: cacheRule.?targetRepository ?? cacheRule.sourceRepository
+    credentialSetResourceId: cacheRule.?credentialSetResourceId
   }
 }]
 
@@ -272,17 +272,17 @@ module registry_webhooks 'webhook/main.bicep' = [for (webhook, index) in (webhoo
   params: {
     name: webhook.name
     registryName: registry.name
-    location: contains(webhook, 'location') ? webhook.location : location
-    action: contains(webhook, 'action') ? webhook.action : [
+    location: webhook.?location ?? location
+    action: webhook.?action ?? [
       'chart_delete'
       'chart_push'
       'delete'
       'push'
       'quarantine'
     ]
-    customHeaders: contains(webhook, 'customHeaders') ? webhook.customHeaders : {}
-    scope: contains(webhook, 'scope') ? webhook.scope : ''
-    status: contains(webhook, 'status') ? webhook.status : 'enabled'
+    customHeaders: webhook.?customHeaders
+    scope: webhook.?scope
+    status: webhook.?status
     serviceUri: webhook.serviceUri
     tags: webhook.?tags ?? tags
   }
