@@ -338,14 +338,21 @@ resource registry_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-
   scope: registry
 }]
 
-module registry_privateEndpoints '../../network/private-endpoint/main.bicep' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.2' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-registry-PrivateEndpoint-${index}'
   params: {
-    groupIds: [
-      privateEndpoint.?service ?? 'registry'
+    privateLinkServiceConnections: [
+      {
+        name: name
+        properties: {
+          privateLinkServiceId: registry.id
+          groupIds: [
+            privateEndpoint.?service ?? 'registry'
+          ]
+        }
+      }
     ]
     name: privateEndpoint.?name ?? 'pep-${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
-    serviceResourceId: registry.id
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
