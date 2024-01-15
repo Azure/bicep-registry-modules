@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "12989369361653663747"
+      "templateHash": "669587178989064951"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache.",
@@ -355,7 +355,7 @@
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allMetrics\" includes all possible logs for the resource. Set to '' to disable log collection."
+              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to '' to disable metric collection."
             }
           },
           "logAnalyticsDestinationType": {
@@ -556,11 +556,11 @@
         "description": "Optional. Static IP address. Optionally, may be specified when deploying a Redis cache inside an existing Azure Virtual Network; auto assigned by default."
       }
     },
-    "subnetId": {
+    "subnetResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The full resource ID of a subnet in a virtual network to deploy the Redis cache in. Example format: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/Microsoft.{Network|ClassicNetwork}/VirtualNetworks/vnet1/subnets/subnet1."
+        "description": "Optional. The full resource ID of a subnet in a virtual network to deploy the Redis cache in."
       }
     },
     "tenantSettings": {
@@ -600,7 +600,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
@@ -660,7 +660,7 @@
           "name": "[parameters('skuName')]"
         },
         "staticIP": "[if(not(empty(parameters('staticIP'))), parameters('staticIP'), null())]",
-        "subnetId": "[if(not(empty(parameters('subnetId'))), parameters('subnetId'), null())]",
+        "subnetId": "[if(not(empty(parameters('subnetResourceId'))), parameters('subnetResourceId'), null())]",
         "tenantSettings": "[parameters('tenantSettings')]"
       },
       "zones": "[variables('availabilityZones')]"
@@ -1429,19 +1429,19 @@
       },
       "value": "[reference('redis').sslPort]"
     },
-    "subnetId": {
+    "subnetResourceId": {
       "type": "string",
       "metadata": {
         "description": "The full resource ID of a subnet in a virtual network where the Redis Cache was deployed in."
       },
-      "value": "[if(not(empty(parameters('subnetId'))), reference('redis').subnetId, '')]"
+      "value": "[if(not(empty(parameters('subnetResourceId'))), reference('redis').subnetResourceId, '')]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('redis', '2022-06-01', 'full').identity, 'principalId')), reference('redis', '2022-06-01', 'full').identity.principalId, '')]"
+      "value": "[if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), tryGet(reference('redis', '2022-06-01', 'full').identity, 'principalId'), '')]"
     },
     "location": {
       "type": "string",

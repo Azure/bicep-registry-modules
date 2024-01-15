@@ -161,7 +161,7 @@ resource redis 'Microsoft.Cache/redis@2022-06-01' = {
       name: skuName
     }
     staticIP: !empty(staticIP) ? staticIP : null
-    subnetId: !empty(subnetId) ? subnetId : null
+    subnetId: !empty(subnetResourceId) ? subnetResourceId : null
     tenantSettings: tenantSettings
   }
   zones: availabilityZones
@@ -263,7 +263,7 @@ output hostName string = redis.properties.hostName
 output sslPort int = redis.properties.sslPort
 
 @description('The full resource ID of a subnet in a virtual network where the Redis Cache was deployed in.')
-output subnetId string = !empty(subnetId) ? redis.properties.subnetId : ''
+output subnetResourceId string = !empty(subnetResourceId) ? redis.properties.subnetResourceId : ''
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) ? redis.identity.?principalId : ''
