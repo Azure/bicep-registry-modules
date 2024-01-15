@@ -500,6 +500,18 @@ Describe 'Module tests' -Tag 'Module' {
         }
       }
 
+      It '[<moduleFolderName>] The telemetry parameter should be present & have the expected type, default value & metadata description.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+
+        param(
+          [hashtable] $templateFileParameters
+        )
+
+        $templateFileParameters.PSBase.Keys | Should -Contain 'enableTelemetry'
+        $templateFileParameters.enableTelemetry.type | Should -Be 'bool'
+        $templateFileParameters.enableTelemetry.defaultValue | Should -Be 'true'
+        $templateFileParameters.enableTelemetry.metadata.description | Should -Be 'Optional. Enable/Disable usage telemetry for module.'
+      }
+
       It '[<moduleFolderName>] Parameter & UDT names should be camel-cased (no dashes or underscores and must start with lower-case letter).' -TestCases $moduleFolderTestCases {
 
         param(
