@@ -1,0 +1,105 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.23.1.45101",
+      "templateHash": "9350283035071510554"
+    },
+    "name": "Container Registries Cache",
+    "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache)).",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "registryName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the parent registry. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "[replace(replace(parameters('sourceRepository'), '/', '-'), '.', '-')]",
+      "metadata": {
+        "description": "Optional. The name of the cache rule. Will be dereived from the source repository name if not defined."
+      }
+    },
+    "sourceRepository": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Source repository pulled from upstream."
+      }
+    },
+    "targetRepository": {
+      "type": "string",
+      "defaultValue": "[parameters('sourceRepository')]",
+      "metadata": {
+        "description": "Optional. Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}."
+      }
+    },
+    "credentialSetResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The resource ID of the credential store which is associated with the cache rule."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.ContainerRegistry/registries/cacheRules",
+      "apiVersion": "2023-06-01-preview",
+      "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
+      "properties": {
+        "sourceRepository": "[parameters('sourceRepository')]",
+        "targetRepository": "[parameters('targetRepository')]",
+        "credentialSetResourceId": "[if(not(empty(parameters('credentialSetResourceId'))), parameters('credentialSetResourceId'), null())]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The Name of the Cache Rule."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Cache Rule."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Cache Rule."
+      },
+      "value": "[resourceId('Microsoft.ContainerRegistry/registries/cacheRules', parameters('registryName'), parameters('name'))]"
+    }
+  }
+}
