@@ -102,7 +102,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dwmax'
   params: {
     // Required parameters
-    name: '<name>'
+    name: 'dwmax001'
     // Non-required parameters
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
     customerManagedKey: {
@@ -179,7 +179,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
       }
     ]
     skuName: 'premium'
-    storageAccountName: 'sadwmax001'
+    storageAccountName: '<storageAccountName>'
     storageAccountSkuName: 'Standard_ZRS'
     tags: {
       Environment: 'Non-Prod'
@@ -205,7 +205,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "<name>"
+      "value": "dwmax001"
     },
     // Non-required parameters
     "amlWorkspaceResourceId": {
@@ -328,7 +328,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
       "value": "premium"
     },
     "storageAccountName": {
-      "value": "sadwmax001"
+      "value": "<storageAccountName>"
     },
     "storageAccountSkuName": {
       "value": "Standard_ZRS"
@@ -364,7 +364,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dwwaf'
   params: {
     // Required parameters
-    name: '<name>'
+    name: 'dwwaf001'
     // Non-required parameters
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
     customerManagedKey: {
@@ -424,7 +424,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     requiredNsgRules: 'NoAzureDatabricksRules'
     requireInfrastructureEncryption: true
     skuName: 'premium'
-    storageAccountName: 'sadwwaf001'
+    storageAccountName: '<storageAccountName>'
     storageAccountSkuName: 'Standard_ZRS'
     tags: {
       Environment: 'Non-Prod'
@@ -450,7 +450,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "<name>"
+      "value": "dwwaf001"
     },
     // Non-required parameters
     "amlWorkspaceResourceId": {
@@ -554,7 +554,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
       "value": "premium"
     },
     "storageAccountName": {
-      "value": "sadwwaf001"
+      "value": "<storageAccountName>"
     },
     "storageAccountSkuName": {
       "value": "Standard_ZRS"
