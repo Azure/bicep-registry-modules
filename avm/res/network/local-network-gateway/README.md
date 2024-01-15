@@ -1,6 +1,6 @@
-# Proximity Placement Groups `[Microsoft.Compute/proximityPlacementGroups]`
+# Local Network Gateways `[Microsoft.Network/localNetworkGateways]`
 
-This module deploys a Proximity Placement Group.
+This module deploys a Local Network Gateway.
 
 ## Navigation
 
@@ -17,7 +17,7 @@ This module deploys a Proximity Placement Group.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/proximityPlacementGroups` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-08-01/proximityPlacementGroups) |
+| `Microsoft.Network/localNetworkGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/localNetworkGateways) |
 
 ## Usage examples
 
@@ -25,7 +25,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/proximity-placement-group:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/local-network-gateway:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -41,11 +41,15 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cppgmin'
+module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-nlngmin'
   params: {
     // Required parameters
-    name: 'cppgmin001'
+    localAddressPrefixes: [
+      '192.168.1.0/24'
+    ]
+    localGatewayPublicIpAddress: '8.8.8.8'
+    name: 'nlngmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -65,8 +69,16 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "localAddressPrefixes": {
+      "value": [
+        "192.168.1.0/24"
+      ]
+    },
+    "localGatewayPublicIpAddress": {
+      "value": "8.8.8.8"
+    },
     "name": {
-      "value": "cppgmin001"
+      "value": "nlngmin001"
     },
     // Non-required parameters
     "location": {
@@ -89,24 +101,18 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cppgmax'
+module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-nlngmax'
   params: {
     // Required parameters
-    name: 'cppgmax001'
+    localAddressPrefixes: [
+      '192.168.1.0/24'
+    ]
+    localGatewayPublicIpAddress: '8.8.8.8'
+    name: 'nlngmax001'
     // Non-required parameters
-    colocationStatus: {
-      code: 'ColocationStatus/Aligned'
-      displayStatus: 'Aligned'
-      level: 'Info'
-      message: 'I\'m a default error message'
-    }
-    intent: {
-      vmSizes: [
-        'Standard_B1ms'
-        'Standard_B4ms'
-      ]
-    }
+    localAsn: '65123'
+    localBgpPeeringAddress: '192.168.1.5'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -130,14 +136,10 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
       }
     ]
     tags: {
+      Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
-      TagA: 'Would you kindly...'
-      TagB: 'Tags for sale'
+      Role: 'DeploymentValidation'
     }
-    type: 'Standard'
-    zones: [
-      '1'
-    ]
   }
 }
 ```
@@ -155,25 +157,23 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "localAddressPrefixes": {
+      "value": [
+        "192.168.1.0/24"
+      ]
+    },
+    "localGatewayPublicIpAddress": {
+      "value": "8.8.8.8"
+    },
     "name": {
-      "value": "cppgmax001"
+      "value": "nlngmax001"
     },
     // Non-required parameters
-    "colocationStatus": {
-      "value": {
-        "code": "ColocationStatus/Aligned",
-        "displayStatus": "Aligned",
-        "level": "Info",
-        "message": "I\"m a default error message"
-      }
+    "localAsn": {
+      "value": "65123"
     },
-    "intent": {
-      "value": {
-        "vmSizes": [
-          "Standard_B1ms",
-          "Standard_B4ms"
-        ]
-      }
+    "localBgpPeeringAddress": {
+      "value": "192.168.1.5"
     },
     "location": {
       "value": "<location>"
@@ -205,18 +205,10 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
     },
     "tags": {
       "value": {
+        "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
-        "TagA": "Would you kindly...",
-        "TagB": "Tags for sale"
+        "Role": "DeploymentValidation"
       }
-    },
-    "type": {
-      "value": "Standard"
-    },
-    "zones": {
-      "value": [
-        "1"
-      ]
     }
   }
 }
@@ -235,34 +227,28 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cppgwaf'
+module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-nlngwaf'
   params: {
     // Required parameters
-    name: 'cppgwaf001'
-    // Non-required parameters
-    colocationStatus: {
-      code: 'ColocationStatus/Aligned'
-      displayStatus: 'Aligned'
-      level: 'Info'
-      message: 'I\'m a default error message'
-    }
-    intent: {
-      vmSizes: [
-        'Standard_B1ms'
-        'Standard_B4ms'
-      ]
-    }
-    location: '<location>'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      TagA: 'Would you kindly...'
-      TagB: 'Tags for sale'
-    }
-    type: 'Standard'
-    zones: [
-      '1'
+    localAddressPrefixes: [
+      '192.168.1.0/24'
     ]
+    localGatewayPublicIpAddress: '8.8.8.8'
+    name: 'nlngwaf001'
+    // Non-required parameters
+    localAsn: '65123'
+    localBgpPeeringAddress: '192.168.1.5'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -280,43 +266,39 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "localAddressPrefixes": {
+      "value": [
+        "192.168.1.0/24"
+      ]
+    },
+    "localGatewayPublicIpAddress": {
+      "value": "8.8.8.8"
+    },
     "name": {
-      "value": "cppgwaf001"
+      "value": "nlngwaf001"
     },
     // Non-required parameters
-    "colocationStatus": {
-      "value": {
-        "code": "ColocationStatus/Aligned",
-        "displayStatus": "Aligned",
-        "level": "Info",
-        "message": "I\"m a default error message"
-      }
+    "localAsn": {
+      "value": "65123"
     },
-    "intent": {
-      "value": {
-        "vmSizes": [
-          "Standard_B1ms",
-          "Standard_B4ms"
-        ]
-      }
+    "localBgpPeeringAddress": {
+      "value": "192.168.1.5"
     },
     "location": {
       "value": "<location>"
     },
-    "tags": {
+    "lock": {
       "value": {
-        "hidden-title": "This is visible in the resource name",
-        "TagA": "Would you kindly...",
-        "TagB": "Tags for sale"
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
       }
     },
-    "type": {
-      "value": "Standard"
-    },
-    "zones": {
-      "value": [
-        "1"
-      ]
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
@@ -332,35 +314,44 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the proximity placement group that is being created. |
+| [`localAddressPrefixes`](#parameter-localaddressprefixes) | array | List of the local (on-premises) IP address ranges. |
+| [`localGatewayPublicIpAddress`](#parameter-localgatewaypublicipaddress) | string | Public IP of the local gateway. |
+| [`name`](#parameter-name) | string | Name of the Local Network Gateway. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`colocationStatus`](#parameter-colocationstatus) | object | Describes colocation status of the Proximity Placement Group. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`intent`](#parameter-intent) | object | Specifies the user intent of the proximity placement group. |
-| [`location`](#parameter-location) | string | Resource location. |
+| [`fqdn`](#parameter-fqdn) | string | FQDN of local network gateway. |
+| [`localAsn`](#parameter-localasn) | string | The BGP speaker's ASN. Not providing this value will automatically disable BGP on this Local Network Gateway resource. |
+| [`localBgpPeeringAddress`](#parameter-localbgppeeringaddress) | string | The BGP peering address and BGP identifier of this BGP speaker. Not providing this value will automatically disable BGP on this Local Network Gateway resource. |
+| [`localPeerWeight`](#parameter-localpeerweight) | string | The weight added to routes learned from this BGP speaker. This will only take effect if both the localAsn and the localBgpPeeringAddress values are provided. |
+| [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`tags`](#parameter-tags) | object | Tags of the proximity placement group resource. |
-| [`type`](#parameter-type) | string | Specifies the type of the proximity placement group. |
-| [`zones`](#parameter-zones) | array | Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created. |
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
 
-### Parameter: `name`
+### Parameter: `localAddressPrefixes`
 
-The name of the proximity placement group that is being created.
+List of the local (on-premises) IP address ranges.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `localGatewayPublicIpAddress`
+
+Public IP of the local gateway.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `colocationStatus`
+### Parameter: `name`
 
-Describes colocation status of the Proximity Placement Group.
+Name of the Local Network Gateway.
 
-- Required: No
-- Type: object
+- Required: Yes
+- Type: string
 
 ### Parameter: `enableTelemetry`
 
@@ -370,16 +361,41 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `intent`
+### Parameter: `fqdn`
 
-Specifies the user intent of the proximity placement group.
+FQDN of local network gateway.
 
 - Required: No
-- Type: object
+- Type: string
+- Default: `''`
+
+### Parameter: `localAsn`
+
+The BGP speaker's ASN. Not providing this value will automatically disable BGP on this Local Network Gateway resource.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `localBgpPeeringAddress`
+
+The BGP peering address and BGP identifier of this BGP speaker. Not providing this value will automatically disable BGP on this Local Network Gateway resource.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `localPeerWeight`
+
+The weight added to routes learned from this BGP speaker. This will only take effect if both the localAsn and the localBgpPeeringAddress values are provided.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `location`
 
-Resource location.
+Location for all resources.
 
 - Required: No
 - Type: string
@@ -512,32 +528,10 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `tags`
 
-Tags of the proximity placement group resource.
+Tags of the resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `type`
-
-Specifies the type of the proximity placement group.
-
-- Required: No
-- Type: string
-- Default: `'Standard'`
-- Allowed:
-  ```Bicep
-  [
-    'Standard'
-    'Ultra'
-  ]
-  ```
-
-### Parameter: `zones`
-
-Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created.
-
-- Required: No
-- Type: array
 
 
 ## Outputs
@@ -545,9 +539,9 @@ Specifies the Availability Zone where virtual machine, virtual machine scale set
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the proximity placement group. |
-| `resourceGroupName` | string | The resource group the proximity placement group was deployed into. |
-| `resourceId` | string | The resourceId the proximity placement group. |
+| `name` | string | The name of the local network gateway. |
+| `resourceGroupName` | string | The resource group the local network gateway was deployed into. |
+| `resourceId` | string | The resource ID of the local network gateway. |
 
 ## Cross-referenced modules
 
