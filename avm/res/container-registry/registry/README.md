@@ -9,6 +9,7 @@ This module deploys an Azure Container Registry (ACR).
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -30,12 +31,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/container-registry.registry:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/container-registry/registry:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Encr](#example-2-encr)
+- [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [Pe](#example-4-pe)
+- [Using private endpoint](#example-4-using-private-endpoint)
 - [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -48,13 +49,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module registry 'br:bicep/modules/container-registry.registry:1.0.0' = {
+module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-crrmin'
   params: {
     // Required parameters
     name: 'crrmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -76,8 +77,8 @@ module registry 'br:bicep/modules/container-registry.registry:1.0.0' = {
       "value": "crrmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -86,14 +87,17 @@ module registry 'br:bicep/modules/container-registry.registry:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _Encr_
+### Example 2: _Using encryption with Customer-Managed-Key_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module registry 'br:bicep/modules/container-registry.registry:1.0.0' = {
+module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-crrencr'
   params: {
     // Required parameters
@@ -105,7 +109,7 @@ module registry 'br:bicep/modules/container-registry.registry:1.0.0' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -148,8 +152,8 @@ module registry 'br:bicep/modules/container-registry.registry:1.0.0' = {
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -185,7 +189,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module registry 'br:bicep/modules/container-registry.registry:1.0.0' = {
+module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-crrmax'
   params: {
     // Required parameters
@@ -218,8 +222,8 @@ module registry 'br:bicep/modules/container-registry.registry:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     exportPolicyStatus: 'enabled'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -346,11 +350,11 @@ module registry 'br:bicep/modules/container-registry.registry:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "exportPolicyStatus": {
       "value": "enabled"
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -451,21 +455,24 @@ module registry 'br:bicep/modules/container-registry.registry:1.0.0' = {
 </details>
 <p>
 
-### Example 4: _Pe_
+### Example 4: _Using private endpoint_
+
+This instance deploys the module with a private endpoint.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module registry 'br:bicep/modules/container-registry.registry:1.0.0' = {
+module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-crrpe'
   params: {
     // Required parameters
     name: 'crrpe001'
     // Non-required parameters
     acrSku: 'Premium'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -508,8 +515,8 @@ module registry 'br:bicep/modules/container-registry.registry:1.0.0' = {
     "acrSku": {
       "value": "Premium"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "privateEndpoints": {
       "value": [
@@ -550,7 +557,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module registry 'br:bicep/modules/container-registry.registry:1.0.0' = {
+module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-crrwaf'
   params: {
     // Required parameters
@@ -583,8 +590,8 @@ module registry 'br:bicep/modules/container-registry.registry:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     exportPolicyStatus: 'enabled'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -694,11 +701,11 @@ module registry 'br:bicep/modules/container-registry.registry:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "exportPolicyStatus": {
       "value": "enabled"
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -801,7 +808,7 @@ module registry 'br:bicep/modules/container-registry.registry:1.0.0' = {
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`dataEndpointEnabled`](#parameter-dataendpointenabled) | bool | Enable a single data endpoint per region for serving data. Not relevant in case of disabled public access. Note, requires the 'acrSku' to be 'Premium'. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`exportPolicyStatus`](#parameter-exportpolicystatus) | string | The value that indicates whether the export policy is enabled or not. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -1033,9 +1040,9 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -1651,4 +1658,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `modules/network/private-endpoint` | Local reference |
+| `br/public:avm/res/network/private-endpoint:0.3.2` | Remote reference |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
