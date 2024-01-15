@@ -77,11 +77,10 @@ param dataEndpointEnabled bool = false
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set.  Note, requires the \'acrSku\' to be \'Premium\'.')
 @allowed([
-  ''
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string?
 
 @allowed([
   'AzureServices'
@@ -98,7 +97,7 @@ param networkRuleBypassOptions string = 'AzureServices'
 param networkRuleSetDefaultAction string = 'Deny'
 
 @description('Optional. The IP ACL rules. Note, requires the \'acrSku\' to be \'Premium\'.')
-param networkRuleSetIpRules array = []
+param networkRuleSetIpRules array?
 
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the \'acrSku\' to be \'Premium\'.')
 param privateEndpoints privateEndpointType
@@ -111,10 +110,10 @@ param privateEndpoints privateEndpointType
 param zoneRedundancy string = 'Disabled'
 
 @description('Optional. All replications to create.')
-param replications array = []
+param replications array?
 
 @description('Optional. All webhooks to create.')
-param webhooks array = []
+param webhooks array?
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -138,7 +137,7 @@ param anonymousPullEnabled bool = false
 param customerManagedKey customerManagedKeyType
 
 @description('Optional. Array of Cache Rules. Note: This is a preview feature ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache#cache-for-acr-preview)).')
-param cacheRules array = []
+param cacheRules array?
 
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
@@ -245,7 +244,7 @@ resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' = 
   }
 }
 
-module registry_replications 'replication/main.bicep' = [for (replication, index) in replications: {
+module registry_replications 'replication/main.bicep' = [for (replication, index) in (replications ?? []): {
   name: '${uniqueString(deployment().name, location)}-Registry-Replication-${index}'
   params: {
     name: replication.name
@@ -257,7 +256,7 @@ module registry_replications 'replication/main.bicep' = [for (replication, index
   }
 }]
 
-module registry_cacheRules 'cache-rules/main.bicep' = [for (cacheRule, index) in cacheRules: {
+module registry_cacheRules 'cache-rules/main.bicep' = [for (cacheRule, index) in (cacheRules ?? []): {
   name: '${uniqueString(deployment().name, location)}-Registry-Cache-${index}'
   params: {
     registryName: registry.name
@@ -268,7 +267,7 @@ module registry_cacheRules 'cache-rules/main.bicep' = [for (cacheRule, index) in
   }
 }]
 
-module registry_webhooks 'webhook/main.bicep' = [for (webhook, index) in webhooks: {
+module registry_webhooks 'webhook/main.bicep' = [for (webhook, index) in (webhooks ?? []): {
   name: '${uniqueString(deployment().name, location)}-Registry-Webhook-${index}'
   params: {
     name: webhook.name

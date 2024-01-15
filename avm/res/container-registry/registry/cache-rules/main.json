@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "12602473702090687013"
+      "templateHash": "3326562317936673912"
     },
     "name": "Container Registries Cache",
     "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache)).",
@@ -40,24 +41,33 @@
     },
     "credentialSetResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID of the credential store which is associated with the cache rule."
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "registry": {
+      "existing": true,
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2023-06-01-preview",
+      "name": "[parameters('registryName')]"
+    },
+    "cacheRule": {
       "type": "Microsoft.ContainerRegistry/registries/cacheRules",
       "apiVersion": "2023-06-01-preview",
       "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
       "properties": {
         "sourceRepository": "[parameters('sourceRepository')]",
         "targetRepository": "[parameters('targetRepository')]",
-        "credentialSetResourceId": "[if(not(empty(parameters('credentialSetResourceId'))), parameters('credentialSetResourceId'), null())]"
-      }
+        "credentialSetResourceId": "[parameters('credentialSetResourceId')]"
+      },
+      "dependsOn": [
+        "registry"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

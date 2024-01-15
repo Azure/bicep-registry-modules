@@ -53,7 +53,6 @@ The resource ID of the credential store which is associated with the cache rule.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `name`
 

@@ -79,7 +79,6 @@ Custom headers that will be added to the webhook notifications.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `location`
 
@@ -103,7 +102,6 @@ The scope of repositories where the event can be triggered. For example, 'foo:*'
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `status`
 

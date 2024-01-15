@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "17955505889028376676"
+      "templateHash": "11431773520158495442"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR).",
@@ -571,9 +571,8 @@
     },
     "publicNetworkAccess": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
-        "",
         "Enabled",
         "Disabled"
       ],
@@ -605,7 +604,7 @@
     },
     "networkRuleSetIpRules": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'."
       }
@@ -629,14 +628,14 @@
     },
     "replications": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. All replications to create."
       }
     },
     "webhooks": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. All webhooks to create."
       }
@@ -688,7 +687,7 @@
     },
     "cacheRules": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of Cache Rules. Note: This is a preview feature ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache#cache-for-acr-preview))."
       }
@@ -867,7 +866,7 @@
     "registry_replications": {
       "copy": {
         "name": "registry_replications",
-        "count": "[length(parameters('replications'))]"
+        "count": "[length(coalesce(parameters('replications'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -879,18 +878,18 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('replications')[copyIndex()].name]"
+            "value": "[coalesce(parameters('replications'), createArray())[copyIndex()].name]"
           },
           "registryName": {
             "value": "[parameters('name')]"
           },
           "location": {
-            "value": "[parameters('replications')[copyIndex()].location]"
+            "value": "[coalesce(parameters('replications'), createArray())[copyIndex()].location]"
           },
-          "regionEndpointEnabled": "[if(contains(parameters('replications')[copyIndex()], 'regionEndpointEnabled'), createObject('value', parameters('replications')[copyIndex()].regionEndpointEnabled), createObject('value', true()))]",
-          "zoneRedundancy": "[if(contains(parameters('replications')[copyIndex()], 'zoneRedundancy'), createObject('value', parameters('replications')[copyIndex()].zoneRedundancy), createObject('value', 'Disabled'))]",
+          "regionEndpointEnabled": "[if(contains(coalesce(parameters('replications'), createArray())[copyIndex()], 'regionEndpointEnabled'), createObject('value', coalesce(parameters('replications'), createArray())[copyIndex()].regionEndpointEnabled), createObject('value', true()))]",
+          "zoneRedundancy": "[if(contains(coalesce(parameters('replications'), createArray())[copyIndex()], 'zoneRedundancy'), createObject('value', coalesce(parameters('replications'), createArray())[copyIndex()].zoneRedundancy), createObject('value', 'Disabled'))]",
           "tags": {
-            "value": "[coalesce(tryGet(parameters('replications')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('replications'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           }
         },
         "template": {
@@ -1014,7 +1013,7 @@
     "registry_cacheRules": {
       "copy": {
         "name": "registry_cacheRules",
-        "count": "[length(parameters('cacheRules'))]"
+        "count": "[length(coalesce(parameters('cacheRules'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1029,20 +1028,21 @@
             "value": "[parameters('name')]"
           },
           "sourceRepository": {
-            "value": "[parameters('cacheRules')[copyIndex()].sourceRepository]"
+            "value": "[coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository]"
           },
-          "name": "[if(contains(parameters('cacheRules')[copyIndex()], 'name'), createObject('value', parameters('cacheRules')[copyIndex()].name), createObject('value', replace(replace(parameters('cacheRules')[copyIndex()].sourceRepository, '/', '-'), '.', '-')))]",
-          "targetRepository": "[if(contains(parameters('cacheRules')[copyIndex()], 'targetRepository'), createObject('value', parameters('cacheRules')[copyIndex()].targetRepository), createObject('value', parameters('cacheRules')[copyIndex()].sourceRepository))]",
-          "credentialSetResourceId": "[if(contains(parameters('cacheRules')[copyIndex()], 'credentialSetResourceId'), createObject('value', parameters('cacheRules')[copyIndex()].credentialSetResourceId), createObject('value', ''))]"
+          "name": "[if(contains(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'name'), createObject('value', coalesce(parameters('cacheRules'), createArray())[copyIndex()].name), createObject('value', replace(replace(coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository, '/', '-'), '.', '-')))]",
+          "targetRepository": "[if(contains(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'targetRepository'), createObject('value', coalesce(parameters('cacheRules'), createArray())[copyIndex()].targetRepository), createObject('value', coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository))]",
+          "credentialSetResourceId": "[if(contains(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'credentialSetResourceId'), createObject('value', coalesce(parameters('cacheRules'), createArray())[copyIndex()].credentialSetResourceId), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "12602473702090687013"
+              "templateHash": "3326562317936673912"
             },
             "name": "Container Registries Cache",
             "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache)).",
@@ -1077,24 +1077,33 @@
             },
             "credentialSetResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The resource ID of the credential store which is associated with the cache rule."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "registry": {
+              "existing": true,
+              "type": "Microsoft.ContainerRegistry/registries",
+              "apiVersion": "2023-06-01-preview",
+              "name": "[parameters('registryName')]"
+            },
+            "cacheRule": {
               "type": "Microsoft.ContainerRegistry/registries/cacheRules",
               "apiVersion": "2023-06-01-preview",
               "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
               "properties": {
                 "sourceRepository": "[parameters('sourceRepository')]",
                 "targetRepository": "[parameters('targetRepository')]",
-                "credentialSetResourceId": "[if(not(empty(parameters('credentialSetResourceId'))), parameters('credentialSetResourceId'), null())]"
-              }
+                "credentialSetResourceId": "[parameters('credentialSetResourceId')]"
+              },
+              "dependsOn": [
+                "registry"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -1127,7 +1136,7 @@
     "registry_webhooks": {
       "copy": {
         "name": "registry_webhooks",
-        "count": "[length(parameters('webhooks'))]"
+        "count": "[length(coalesce(parameters('webhooks'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1139,21 +1148,21 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('webhooks')[copyIndex()].name]"
+            "value": "[coalesce(parameters('webhooks'), createArray())[copyIndex()].name]"
           },
           "registryName": {
             "value": "[parameters('name')]"
           },
-          "location": "[if(contains(parameters('webhooks')[copyIndex()], 'location'), createObject('value', parameters('webhooks')[copyIndex()].location), createObject('value', parameters('location')))]",
-          "action": "[if(contains(parameters('webhooks')[copyIndex()], 'action'), createObject('value', parameters('webhooks')[copyIndex()].action), createObject('value', createArray('chart_delete', 'chart_push', 'delete', 'push', 'quarantine')))]",
-          "customHeaders": "[if(contains(parameters('webhooks')[copyIndex()], 'customHeaders'), createObject('value', parameters('webhooks')[copyIndex()].customHeaders), createObject('value', createObject()))]",
-          "scope": "[if(contains(parameters('webhooks')[copyIndex()], 'scope'), createObject('value', parameters('webhooks')[copyIndex()].scope), createObject('value', ''))]",
-          "status": "[if(contains(parameters('webhooks')[copyIndex()], 'status'), createObject('value', parameters('webhooks')[copyIndex()].status), createObject('value', 'enabled'))]",
+          "location": "[if(contains(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'location'), createObject('value', coalesce(parameters('webhooks'), createArray())[copyIndex()].location), createObject('value', parameters('location')))]",
+          "action": "[if(contains(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'action'), createObject('value', coalesce(parameters('webhooks'), createArray())[copyIndex()].action), createObject('value', createArray('chart_delete', 'chart_push', 'delete', 'push', 'quarantine')))]",
+          "customHeaders": "[if(contains(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'customHeaders'), createObject('value', coalesce(parameters('webhooks'), createArray())[copyIndex()].customHeaders), createObject('value', createObject()))]",
+          "scope": "[if(contains(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'scope'), createObject('value', coalesce(parameters('webhooks'), createArray())[copyIndex()].scope), createObject('value', ''))]",
+          "status": "[if(contains(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'status'), createObject('value', coalesce(parameters('webhooks'), createArray())[copyIndex()].status), createObject('value', 'enabled'))]",
           "serviceUri": {
-            "value": "[parameters('webhooks')[copyIndex()].serviceUri]"
+            "value": "[coalesce(parameters('webhooks'), createArray())[copyIndex()].serviceUri]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('webhooks')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           }
         },
         "template": {
@@ -1164,7 +1173,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "3089081245455911817"
+              "templateHash": "13453164087600189664"
             },
             "name": "Azure Container Registry (ACR) Webhooks",
             "description": "This module deploys an Azure Container Registry (ACR) Webhook.",
@@ -1232,14 +1241,14 @@
             },
             "customHeaders": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Custom headers that will be added to the webhook notifications."
               }
             },
             "scope": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The scope of repositories where the event can be triggered. For example, 'foo:*' means events for all tags under repository 'foo'. 'foo:bar' means events for 'foo:bar' only. 'foo' is equivalent to 'foo:latest'. Empty means all events."
               }

@@ -774,7 +774,6 @@ Array of Cache Rules. Note: This is a preview feature ([ref](https://learn.micro
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `customerManagedKey`
 
@@ -1055,7 +1054,6 @@ The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `privateEndpoints`
 
@@ -1311,11 +1309,9 @@ Whether or not public network access is allowed for this resource. For security 
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
   ]
@@ -1342,7 +1338,6 @@ All replications to create.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `retentionPolicyDays`
 
@@ -1507,7 +1502,6 @@ All webhooks to create.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `zoneRedundancy`
 
