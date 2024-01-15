@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "4202404453877737665"
+      "templateHash": "7639602546717326275"
     },
     "name": "Azure Health Bots",
     "description": "This module deploys an Azure Health Bot.",
@@ -174,7 +174,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
