@@ -536,9 +536,9 @@ function Set-DataCollectionSection {
 
         $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
         try {
-            $rawReponse = Invoke-WebRequest -Uri $telemetryUrl
-            if (($rawReponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
-                $telemetryFileContent = $rawReponse.Content -split '\n'
+            $rawResponse = Invoke-WebRequest -Uri $telemetryUrl
+            if (($rawResponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
+                $telemetryFileContent = $rawResponse.Content -split '\n'
             } else {
                 throw "Failed to telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
             }
