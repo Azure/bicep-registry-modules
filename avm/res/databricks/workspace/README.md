@@ -597,7 +597,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 | [`customVirtualNetworkResourceId`](#parameter-customvirtualnetworkresourceid) | string | The resource ID of a Virtual Network where this Databricks Cluster should be created. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disablePublicIp`](#parameter-disablepublicip) | bool | Disable Public IP. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`loadBalancerBackendPoolName`](#parameter-loadbalancerbackendpoolname) | string | Name of the outbound Load Balancer Backend Pool for Secure Cluster Connectivity (No Public IP). |
 | [`loadBalancerResourceId`](#parameter-loadbalancerresourceid) | string | Resource URI of Outbound Load balancer for Secure Cluster Connectivity (No Public IP) workspace. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -607,7 +607,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 | [`prepareEncryption`](#parameter-prepareencryption) | bool | Prepare the workspace for encryption. Enables the Managed Identity for managed storage account. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicIpName`](#parameter-publicipname) | string | Name of the Public IP for No Public IP workspace with managed vNet. |
-| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | 	The network access type for accessing workspace. Set value to disabled to access workspace only via private link. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | The network access type for accessing workspace. Set value to disabled to access workspace only via private link. |
 | [`requiredNsgRules`](#parameter-requirednsgrules) | string | Gets or sets a value indicating whether data plane (clusters) to control plane communication happen over private endpoint. |
 | [`requireInfrastructureEncryption`](#parameter-requireinfrastructureencryption) | bool | A boolean indicating whether or not the DBFS root file system will be enabled with secondary layer of encryption with platform managed keys for data at rest. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -778,7 +778,7 @@ The diagnostic settings of the service.
 | [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of logs that will be streamed. "allMetrics" includes all possible logs for the resource. Set to '' to disable log collection. |
+| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to '' to disable metric collection. |
 | [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
@@ -827,7 +827,7 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
-The name of logs that will be streamed. "allMetrics" includes all possible logs for the resource. Set to '' to disable log collection.
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to '' to disable metric collection.
 
 - Required: No
 - Type: array
@@ -863,7 +863,7 @@ Disable Public IP.
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -1211,7 +1211,7 @@ Name of the Public IP for No Public IP workspace with managed vNet.
 
 ### Parameter: `publicNetworkAccess`
 
-	The network access type for accessing workspace. Set value to disabled to access workspace only via private link.
+The network access type for accessing workspace. Set value to disabled to access workspace only via private link.
 
 - Required: No
 - Type: string

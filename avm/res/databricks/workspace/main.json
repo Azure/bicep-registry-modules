@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "8058701732527405193"
+      "templateHash": "4791142681528432312"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace.",
@@ -403,7 +403,7 @@
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allMetrics\" includes all possible logs for the resource. Set to '' to disable log collection."
+              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to '' to disable metric collection."
             }
           },
           "logAnalyticsDestinationType": {
@@ -519,7 +519,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "customVirtualNetworkResourceId": {
@@ -640,7 +640,7 @@
         "Enabled"
       ],
       "metadata": {
-        "description": "Optional. \tThe network access type for accessing workspace. Set value to disabled to access workspace only via private link."
+        "description": "Optional. The network access type for accessing workspace. Set value to disabled to access workspace only via private link."
       }
     },
     "requiredNsgRules": {
