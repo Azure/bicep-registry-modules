@@ -8,7 +8,7 @@ param managedIdentityName string
 param storageAccountName string
 
 @description('Required. The name prefix of the Image Template to create.')
-param imageTemplateNamePrefix string
+param imageTemplateName string
 
 @description('Generated. Do not provide a value! This date value is used to generate a unique image template name.')
 param baseTime string = utcNow('yyyy-MM-dd-HH-mm-ss')
@@ -56,7 +56,7 @@ module roleAssignment 'dependencies_rbac.bicep' = {
 
 // Deploy image template
 resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2022-02-14' = {
-  name: '${imageTemplateNamePrefix}-${baseTime}'
+  name: imageTemplateName
   location: location
   identity: {
     type: 'UserAssigned'
@@ -80,7 +80,7 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2022-02-14
     distribute: [
       {
         type: 'VHD'
-        runOutputName: '${imageTemplateNamePrefix}-VHD'
+        runOutputName: '${imageTemplateName}-VHD'
         artifactTags: {}
       }
     ]
@@ -108,7 +108,7 @@ resource triggerImageDeploymentScript 'Microsoft.Resources/deploymentScripts@202
     azPowerShellVersion: '8.0'
     retentionInterval: 'P1D'
     arguments: '-ImageTemplateName \\"${imageTemplate.name}\\" -ImageTemplateResourceGroup \\"${resourceGroup().name}\\"'
-    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/.scripts/Start-ImageTemplate.ps1')
+    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Start-ImageTemplate.ps1')
     cleanupPreference: 'OnSuccess'
     forceUpdateTag: baseTime
   }
@@ -131,8 +131,8 @@ resource copyVhdDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-
   properties: {
     azPowerShellVersion: '8.0'
     retentionInterval: 'P1D'
-    arguments: '-ImageTemplateName \\"${imageTemplate.name}\\" -ImageTemplateResourceGroup \\"${resourceGroup().name}\\" -DestinationStorageAccountName \\"${storageAccount.name}\\" -VhdName \\"${imageTemplateNamePrefix}\\" -WaitForComplete'
-    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/.scripts/Copy-VhdToStorageAccount.ps1')
+    arguments: '-ImageTemplateName \\"${imageTemplate.name}\\" -ImageTemplateResourceGroup \\"${resourceGroup().name}\\" -DestinationStorageAccountName \\"${storageAccount.name}\\" -VhdName \\"${imageTemplateName}\\" -WaitForComplete'
+    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Copy-VhdToStorageAccount.ps1')
     cleanupPreference: 'OnSuccess'
     forceUpdateTag: baseTime
   }
@@ -140,7 +140,7 @@ resource copyVhdDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-
 }
 
 @description('The URI of the created VHD.')
-output vhdUri string = 'https://${storageAccount.name}.blob.${environment().suffixes.storage}/vhds/${imageTemplateNamePrefix}.vhd'
+output vhdUri string = 'https://${storageAccount.name}.blob.${environment().suffixes.storage}/vhds/${imageTemplateName}.vhd'
 
 @description('The resource ID of the created Storage Account.')
 output storageAccountResourceId string = storageAccount.id

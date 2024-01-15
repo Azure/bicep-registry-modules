@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "11182999004742950700"
+      "templateHash": "8032560098908563077"
     },
     "name": "Compute Disks",
     "description": "This module deploys a Compute Disk",
@@ -339,7 +339,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
@@ -392,7 +392,7 @@
         "completionPercent": "[parameters('completionPercent')]",
         "creationData": {
           "createOption": "[parameters('createOption')]",
-          "imageReference": "[if(not(equals(parameters('createOption'), 'FromImage')), null(), createObject('id', parameters('imageReferenceId')))]",
+          "imageReference": "[if(equals(parameters('createOption'), 'FromImage'), createObject('id', parameters('imageReferenceId')), null())]",
           "logicalSectorSize": "[if(contains(parameters('sku'), 'Ultra'), parameters('logicalSectorSize'), null())]",
           "securityDataUri": "[if(equals(parameters('createOption'), 'ImportSecure'), parameters('securityDataUri'), null())]",
           "sourceResourceId": "[if(equals(parameters('createOption'), 'Copy'), parameters('sourceResourceId'), null())]",
@@ -403,13 +403,13 @@
         "diskIOPSReadWrite": "[if(contains(parameters('sku'), 'Ultra'), parameters('diskIOPSReadWrite'), null())]",
         "diskMBpsReadWrite": "[if(contains(parameters('sku'), 'Ultra'), parameters('diskMBpsReadWrite'), null())]",
         "diskSizeGB": "[if(equals(parameters('createOption'), 'Empty'), parameters('diskSizeGB'), null())]",
-        "hyperVGeneration": "[if(empty(parameters('osType')), null(), parameters('hyperVGeneration'))]",
+        "hyperVGeneration": "[if(not(empty(parameters('osType'))), parameters('hyperVGeneration'), null())]",
         "maxShares": "[parameters('maxShares')]",
         "networkAccessPolicy": "[parameters('networkAccessPolicy')]",
         "optimizedForFrequentAttach": "[parameters('optimizedForFrequentAttach')]",
-        "osType": "[if(empty(parameters('osType')), null(), parameters('osType'))]",
+        "osType": "[if(not(empty(parameters('osType'))), parameters('osType'), null())]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
-        "supportedCapabilities": "[if(empty(parameters('osType')), createObject(), createObject('acceleratedNetwork', parameters('acceleratedNetwork'), 'architecture', if(empty(parameters('architecture')), null(), parameters('architecture'))))]"
+        "supportedCapabilities": "[if(not(empty(parameters('osType'))), createObject('acceleratedNetwork', parameters('acceleratedNetwork'), 'architecture', if(not(empty(parameters('architecture'))), parameters('architecture'), null())), createObject())]"
       }
     },
     "disk_lock": {
