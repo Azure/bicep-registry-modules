@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using private endpoint'
+metadata description = 'This instance deploys the module with a private endpoint.'
+
 // ========== //
 // Parameters //
 // ========== //
