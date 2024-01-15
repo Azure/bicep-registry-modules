@@ -125,8 +125,8 @@ param managedIdentities managedIdentitiesType
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
@@ -147,8 +147,6 @@ var identity = !empty(managedIdentities) ? {
   userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
 } : null
 
-var enableReferencedModulesTelemetry = false
-
 var builtInRoleNames = {
   AcrDelete: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c2f4ef07-c644-48eb-af81-4b1b4947fb11')
   AcrImageSigner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6cef56e8-d556-48e5-a04f-b8e64114680f')
@@ -163,14 +161,20 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.containerregistry-registry.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
       contentVersion: '1.0.0.0'
       resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
     }
   }
 }
@@ -250,7 +254,6 @@ module registry_replications 'replication/main.bicep' = [for (replication, index
     regionEndpointEnabled: contains(replication, 'regionEndpointEnabled') ? replication.regionEndpointEnabled : true
     zoneRedundancy: contains(replication, 'zoneRedundancy') ? replication.zoneRedundancy : 'Disabled'
     tags: replication.?tags ?? tags
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -262,7 +265,6 @@ module registry_cacheRules 'cache-rules/main.bicep' = [for (cacheRule, index) in
     name: contains(cacheRule, 'name') ? cacheRule.name : replace(replace(cacheRule.sourceRepository, '/', '-'), '.', '-')
     targetRepository: contains(cacheRule, 'targetRepository') ? cacheRule.targetRepository : cacheRule.sourceRepository
     credentialSetResourceId: contains(cacheRule, 'credentialSetResourceId') ? cacheRule.credentialSetResourceId : ''
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -284,7 +286,6 @@ module registry_webhooks 'webhook/main.bicep' = [for (webhook, index) in webhook
     status: contains(webhook, 'status') ? webhook.status : 'enabled'
     serviceUri: webhook.serviceUri
     tags: webhook.?tags ?? tags
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -346,7 +347,7 @@ module registry_privateEndpoints '../../network/private-endpoint/main.bicep' = [
     name: privateEndpoint.?name ?? 'pep-${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
     serviceResourceId: registry.id
     subnetResourceId: privateEndpoint.subnetResourceId
-    enableDefaultTelemetry: privateEndpoint.?enableDefaultTelemetry ?? enableReferencedModulesTelemetry
+    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
