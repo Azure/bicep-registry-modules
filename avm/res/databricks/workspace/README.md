@@ -179,7 +179,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
       }
     ]
     skuName: 'premium'
-    storageAccountName: '<storageAccountName>'
+    storageAccountName: 'sadwmax001'
     storageAccountSkuName: 'Standard_ZRS'
     tags: {
       Environment: 'Non-Prod'
@@ -328,7 +328,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
       "value": "premium"
     },
     "storageAccountName": {
-      "value": "<storageAccountName>"
+      "value": "sadwmax001"
     },
     "storageAccountSkuName": {
       "value": "Standard_ZRS"
@@ -424,7 +424,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     requiredNsgRules: 'NoAzureDatabricksRules'
     requireInfrastructureEncryption: true
     skuName: 'premium'
-    storageAccountName: '<storageAccountName>'
+    storageAccountName: 'sadwwaf001'
     storageAccountSkuName: 'Standard_ZRS'
     tags: {
       Environment: 'Non-Prod'
@@ -554,7 +554,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
       "value": "premium"
     },
     "storageAccountName": {
-      "value": "<storageAccountName>"
+      "value": "sadwwaf001"
     },
     "storageAccountSkuName": {
       "value": "Standard_ZRS"
