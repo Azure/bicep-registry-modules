@@ -11,6 +11,12 @@ param location string = resourceGroup().location
 @description('How the deployment script should be forced to execute')
 param forceUpdateTag string = utcNow()
 
+@description('An array of Azure RoleIds that are required for the DeploymentScript resource')
+param rbacRolesNeeded array = [
+  'b24988ac-6180-42a0-ab88-20f7382dd24c' //Contributor
+  '7f6c6a51-bcf8-42ba-9220-52d62157d7db' //Azure Kubernetes Service RBAC Reader
+]
+
 @description('Does the Managed Identity already exists, or should be created')
 param useExistingManagedIdentity bool = false
 
@@ -40,7 +46,7 @@ param helmApps array = []
 @description('When the script resource is cleaned up')
 param cleanupPreference string = 'OnSuccess'
 
-module helmAppInstalls 'br/public:deployment-scripts/aks-run-command:1.0.1' = [for (app, i) in helmApps: {
+module helmAppInstalls 'br/public:deployment-scripts/aks-run-command:2.0.2' = [for (app, i) in helmApps: {
   name: 'helmInstall-${app.helmAppName}-${i}'
   params: {
     aksName: aksName
@@ -49,7 +55,8 @@ module helmAppInstalls 'br/public:deployment-scripts/aks-run-command:1.0.1' = [f
       'helm repo add ${helmRepo} ${helmRepoURL} && helm repo update && helm upgrade --install ${app.helmAppName} ${app.helmApp} ${contains(app, 'helmAppParams') ? app.helmAppParams : ''}'
     ]
     forceUpdateTag: forceUpdateTag
-    useExistingManagedIdentity: useExistingManagedIdentity
+    rbacRolesNeeded: rbacRolesNeeded
+    newOrExistingManagedIdentity: useExistingManagedIdentity ? 'existing' : 'new'
     managedIdentityName: managedIdentityName
     existingManagedIdentitySubId: existingManagedIdentitySubId
     existingManagedIdentityResourceGroupName: existingManagedIdentityResourceGroupName
