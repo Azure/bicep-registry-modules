@@ -76,6 +76,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
+    location: location
     diagnosticSettings: [
       {
         name: 'customSetting'
@@ -142,6 +143,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     managedResourceGroupResourceId: '${subscription().id}/resourceGroups/rg-${resourceGroupName}-managed'
     requireInfrastructureEncryption: true
     vnetAddressPrefix: '10.100'
-    location: resourceGroup.location
   }
 }]
