@@ -152,7 +152,7 @@ output resourceGroupName string = resourceGroup().name
 output name string = backupVault.name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(backupVault.identity, 'principalId') ? backupVault.identity.principalId : ''
+output systemAssignedMIPrincipalId string = backupVault.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = backupVault.location
