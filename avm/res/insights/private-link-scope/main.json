@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "16956549728476090430"
+      "templateHash": "15473918679229790806"
     },
     "name": "Azure Monitor Private Link Scopes",
     "description": "This module deploys an Azure Monitor Private Link Scope.",
@@ -376,7 +376,7 @@
     "accessModeSettings": {
       "$ref": "#/definitions/accessModeType",
       "metadata": {
-        "description": "Optional. Specifies the access mode of ingestion or queries through associated private endpoints in scope. For security reasons, it is recommended to use PrivateOnly whenever possible to avoid data exfiltration.\r\n\r\n  * Private Only - This mode allows the connected virtual network to reach only Private Link resources. It is the most secure mode and is set as the default when the `privateEndpoints` parameter is configured.\r\n  * Open - Allows the connected virtual network to reach both Private Link resources and the resources not in the AMPLS resource. Data exfiltration cannot be prevented in this mode."
+        "description": "Optional. Specifies the access mode of ingestion or queries through associated private endpoints in scope. For security reasons, it is recommended to use PrivateOnly whenever possible to avoid data exfiltration.\n\n  * Private Only - This mode allows the connected virtual network to reach only Private Link resources. It is the most secure mode and is set as the default when the `privateEndpoints` parameter is configured.\n  * Open - Allows the connected virtual network to reach both Private Link resources and the resources not in the AMPLS resource. Data exfiltration cannot be prevented in this mode."
       }
     },
     "location": {
