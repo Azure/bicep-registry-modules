@@ -266,7 +266,7 @@ output sslPort int = redis.properties.sslPort
 output subnetResourceId string = !empty(subnetResourceId) ? redis.properties.subnetResourceId : ''
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) ? redis.identity.?principalId : ''
+output systemAssignedMIPrincipalId string = redis.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = redis.location
