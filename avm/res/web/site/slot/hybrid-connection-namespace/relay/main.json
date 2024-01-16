@@ -1,0 +1,81 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "822472634155315347"
+    },
+    "name": "Web/Function Apps Slot Hybrid Connection Relay",
+    "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "hybridConnectionResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource ID of the relay namespace hybrid connection."
+      }
+    },
+    "slotName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the site slot. Required if the template is used in a standalone deployment."
+      }
+    },
+    "appName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent web site. Required if the template is used in a standalone deployment."
+      }
+    },
+    "sendKeyName": {
+      "type": "string",
+      "defaultValue": "defaultSender",
+      "metadata": {
+        "description": "Optional. Name of the authorization rule send key to use."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}/{2}/{3}', parameters('appName'), parameters('slotName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10])]",
+      "properties": {
+        "serviceBusNamespace": "[split(parameters('hybridConnectionResourceId'), '/')[8]]",
+        "serviceBusSuffix": "[split(substring(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces', split(parameters('hybridConnectionResourceId'), '/')[8]), '2021-11-01').serviceBusEndpoint, indexOf(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces', split(parameters('hybridConnectionResourceId'), '/')[8]), '2021-11-01').serviceBusEndpoint, '.servicebus')), ':')[0]]",
+        "relayName": "[split(parameters('hybridConnectionResourceId'), '/')[10]]",
+        "relayArmUri": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10])]",
+        "hostname": "[split(json(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '2021-11-01').userMetadata)[0].value, ':')[0]]",
+        "port": "[int(split(json(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '2021-11-01').userMetadata)[0].value, ':')[1])]",
+        "sendKeyName": "[parameters('sendKeyName')]",
+        "sendKeyValue": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections/authorizationRules', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10], parameters('sendKeyName')), '2021-11-01').primaryKey]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the hybrid connection relay.."
+      },
+      "value": "[format('{0}/{1}/{2}/{3}', parameters('appName'), parameters('slotName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10])]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the hybrid connection relay."
+      },
+      "value": "[resourceId('Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays', split(format('{0}/{1}/{2}/{3}', parameters('appName'), parameters('slotName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '/')[0], split(format('{0}/{1}/{2}/{3}', parameters('appName'), parameters('slotName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '/')[1], split(format('{0}/{1}/{2}/{3}', parameters('appName'), parameters('slotName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '/')[2], split(format('{0}/{1}/{2}/{3}', parameters('appName'), parameters('slotName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '/')[3])]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the resource was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
