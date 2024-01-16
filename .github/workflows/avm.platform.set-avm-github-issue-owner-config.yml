@@ -1,0 +1,35 @@
+# Workflow for notifying and assigning issues on creation
+name: avm.platform.set-avm-github-issue-owner-config
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  SetAvmGitHubIssueOwnerConfig:
+    name: Set-AvmGitHubIssueOwnerConfig
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        name: "Run scripts"
+        shell: pwsh
+        run: |
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'platform' 'Set-AvmGitHubIssueOwnerConfig.ps1')
+
+          $functionInput = @{
+            Repo = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
+            IssueUrl = "${{ github.event.issue.url }}"
+          }
+
+          Write-Verbose "Invoke task with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+          Set-AvmGitHubIssueOwnerConfig @functionInput -Verbose # -WhatIf
