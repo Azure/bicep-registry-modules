@@ -33,7 +33,7 @@ on:
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/cognitive-services/account"
+  modulePath: "avm/res/desktop-virtualization/application-group"
   workflowPath: ".github/workflows/avm.res.desktop-virtualization.application-group.yml"
 
 concurrency:
