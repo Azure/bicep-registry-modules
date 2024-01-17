@@ -453,14 +453,14 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
 | [`applicationGroupReferences`](#parameter-applicationgroupreferences) | array | Array of application group references. |
 | [`description`](#parameter-description) | string | Description of the workspace. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`friendlyName`](#parameter-friendlyname) | string | Friendly name of the workspace. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | Lock settings of the scaling plan. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Public network access for the workspace. Enabled by default. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`tags`](#parameter-tags) | object | Tags to be applied on all resourcesin this deployment. |
+| [`tags`](#parameter-tags) | object | Tags to be applied on all resources in this deployment. |
 
 ### Parameter: `name`
 
@@ -578,7 +578,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry.
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -983,7 +983,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `tags`
 
-Tags to be applied on all resourcesin this deployment.
+Tags to be applied on all resources in this deployment.
 
 - Required: No
 - Type: object

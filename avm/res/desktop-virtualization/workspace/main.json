@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "14046850509008782988"
+      "templateHash": "7326416503792555390"
     },
     "name": "Workspace",
     "description": "This module deploys an Azure Virtual Desktop Workspace.",
@@ -378,7 +378,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Tags to be applied on all resourcesin this deployment."
+        "description": "Optional. Tags to be applied on all resources in this deployment."
       }
     },
     "applicationGroupReferences": {
@@ -431,7 +431,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "diagnosticSettings": {
