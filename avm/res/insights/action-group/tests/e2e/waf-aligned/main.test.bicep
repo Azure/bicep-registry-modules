@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+
 // ========== //
 // Parameters //
 // ========== //
@@ -54,17 +57,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    // Workaround for PSRule
-    emailReceivers: null
-    smsReceivers: null
-    webhookReceivers: null
-    itsmReceivers: null
-    azureAppPushReceivers: null
-    automationRunbookReceivers: null
-    voiceReceivers: null
-    logicAppReceivers: null
-    azureFunctionReceivers: null
-    armRoleReceivers: null
-    roleAssignments: null
   }
 }]
