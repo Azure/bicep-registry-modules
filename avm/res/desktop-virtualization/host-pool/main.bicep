@@ -155,7 +155,7 @@ var builtInRoleNames = {
 var tokenExpirationTime = dateTimeAdd(baseTime, tokenValidityLength)
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.desktopvirtualization-hostpool.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: take('46d3xbcp.res.desktopvirtualization-hostpool.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}', 64)
   properties: {
     mode: 'Incremental'
     template: {
