@@ -793,7 +793,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`principalId`](#parameter-privateendpointsroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-privateendpointsroleassignmentsroledefinitionidorname) | string | The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+| [`roleDefinitionIdOrName`](#parameter-privateendpointsroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 **Optional parameters**
 
@@ -814,7 +814,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 ### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
-The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
@@ -904,7 +904,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 **Optional parameters**
 
@@ -925,7 +925,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
-The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
