@@ -1,0 +1,113 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "7392920175754293043"
+    },
+    "name": "Azure Container Registry (ACR) Replications",
+    "description": "This module deploys an Azure Container Registry (ACR) Replication.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "registryName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent registry. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the replication."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "regionEndpointEnabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications."
+      }
+    },
+    "zoneRedundancy": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "Optional. Whether or not zone redundancy is enabled for this container registry."
+      }
+    }
+  },
+  "resources": {
+    "registry": {
+      "existing": true,
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2023-06-01-preview",
+      "name": "[parameters('registryName')]"
+    },
+    "replication": {
+      "type": "Microsoft.ContainerRegistry/registries/replications",
+      "apiVersion": "2023-06-01-preview",
+      "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "regionEndpointEnabled": "[parameters('regionEndpointEnabled')]",
+        "zoneRedundancy": "[parameters('zoneRedundancy')]"
+      },
+      "dependsOn": [
+        "registry"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the replication."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the replication."
+      },
+      "value": "[resourceId('Microsoft.ContainerRegistry/registries/replications', parameters('registryName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the replication was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('replication', '2023-06-01-preview', 'full').location]"
+    }
+  }
+}
