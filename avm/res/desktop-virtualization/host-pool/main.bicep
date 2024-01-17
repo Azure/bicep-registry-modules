@@ -271,6 +271,7 @@ resource hostPool_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021
 // ================ //
 // Definitions      //
 // ================ //
+
 type diagnosticSettingType = {
   @sys.description('Optional. The name of diagnostic setting.')
   name: string?
