@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "14287529092911845504"
+      "templateHash": "1333841895071022712"
     },
-    "name": "Web/Function App Deployment Slots",
-    "description": "This module deploys a Web or Function App Deployment Slot.",
+    "name": "Azure Container Registries (ACR)",
+    "description": "This module deploys an Azure Container Registry (ACR).",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
@@ -355,7 +355,7 @@
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to '' to disable metric collection."
             }
           },
           "logAnalyticsDestinationType": {
@@ -407,155 +407,61 @@
         }
       },
       "nullable": true
+    },
+    "customerManagedKeyType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        },
+        "keyVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using 'latest'."
+          }
+        },
+        "userAssignedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
     "name": {
       "type": "string",
+      "minLength": 5,
+      "maxLength": 50,
       "metadata": {
-        "description": "Required. Name of the slot."
+        "description": "Required. Name of your Azure container registry."
       }
     },
-    "appName": {
-      "type": "string",
+    "acrAdminUserEnabled": {
+      "type": "bool",
+      "defaultValue": false,
       "metadata": {
-        "description": "Conditional. The name of the parent site resource. Required if the template is used in a standalone deployment."
+        "description": "Optional. Enable admin user that have push / pull permission to the registry."
       }
     },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Optional. Location for all Resources."
-      }
-    },
-    "kind": {
-      "type": "string",
-      "allowedValues": [
-        "functionapp",
-        "functionapp,linux",
-        "functionapp,workflowapp",
-        "functionapp,workflowapp,linux",
-        "app"
-      ],
-      "metadata": {
-        "description": "Required. Type of slot to deploy."
-      }
-    },
-    "serverFarmResourceId": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The resource ID of the app service plan to use for the slot."
-      }
-    },
-    "httpsOnly": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Configures a slot to accept only HTTPS requests. Issues redirect for HTTP requests."
-      }
-    },
-    "clientAffinityEnabled": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. If client affinity is enabled."
-      }
-    },
-    "appServiceEnvironmentResourceId": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The resource ID of the app service environment to use for this resource."
-      }
-    },
-    "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
-      "metadata": {
-        "description": "Optional. The managed identity definition for this resource."
-      }
-    },
-    "keyVaultAccessIdentityResourceId": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The resource ID of the assigned identity to be used to access a key vault with."
-      }
-    },
-    "storageAccountRequired": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Checks if Customer provided storage account is required."
-      }
-    },
-    "virtualNetworkSubnetId": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}."
-      }
-    },
-    "siteConfig": {
-      "type": "object",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The site config object."
-      }
-    },
-    "storageAccountResourceId": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions."
-      }
-    },
-    "appInsightResourceId": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Resource ID of the app insight to leverage for this resource."
-      }
-    },
-    "setAzureWebJobsDashboard": {
-      "type": "bool",
-      "defaultValue": "[if(contains(parameters('kind'), 'functionapp'), true(), false())]",
-      "metadata": {
-        "description": "Optional. For function apps. If true the app settings \"AzureWebJobsDashboard\" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons."
-      }
-    },
-    "appSettingsKeyValuePairs": {
-      "type": "object",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The app settings-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING."
-      }
-    },
-    "authSettingV2Configuration": {
-      "type": "object",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The auth settings V2 configuration."
-      }
-    },
-    "lock": {
-      "$ref": "#/definitions/lockType",
-      "metadata": {
-        "description": "Optional. The lock settings of the service."
-      }
-    },
-    "privateEndpoints": {
-      "$ref": "#/definitions/privateEndpointType",
-      "metadata": {
-        "description": "Optional. Configuration details for private endpoints."
-      }
-    },
-    "tags": {
-      "type": "object",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Tags of the resource."
+        "description": "Optional. Location for all resources."
       }
     },
     "roleAssignments": {
@@ -564,92 +470,103 @@
         "description": "Optional. Array of role assignments to create."
       }
     },
-    "diagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
-      "metadata": {
-        "description": "Optional. The diagnostic settings of the service."
-      }
-    },
-    "clientCertEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. To enable client certificate authentication (TLS mutual authentication)."
-      }
-    },
-    "clientCertExclusionPaths": {
+    "acrSku": {
       "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Client certificate authentication comma-separated exclusion paths."
-      }
-    },
-    "clientCertMode": {
-      "type": "string",
-      "defaultValue": "Optional",
+      "defaultValue": "Basic",
       "allowedValues": [
-        "Optional",
-        "OptionalInteractiveUser",
-        "Required"
+        "Basic",
+        "Premium",
+        "Standard"
       ],
       "metadata": {
-        "description": "Optional. This composes with ClientCertEnabled setting.</p>- ClientCertEnabled: false means ClientCert is ignored.</p>- ClientCertEnabled: true and ClientCertMode: Required means ClientCert is required.</p>- ClientCertEnabled: true and ClientCertMode: Optional means ClientCert is optional or accepted."
+        "description": "Optional. Tier of your Azure container registry."
       }
     },
-    "cloningInfo": {
-      "type": "object",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. If specified during app creation, the app is cloned from a source app."
-      }
-    },
-    "containerSize": {
-      "type": "int",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Size of the function container."
-      }
-    },
-    "customDomainVerificationId": {
+    "exportPolicyStatus": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "disabled",
+      "allowedValues": [
+        "disabled",
+        "enabled"
+      ],
       "metadata": {
-        "description": "Optional. Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification."
+        "description": "Optional. The value that indicates whether the export policy is enabled or not."
       }
     },
-    "dailyMemoryTimeQuota": {
+    "quarantinePolicyStatus": {
+      "type": "string",
+      "defaultValue": "disabled",
+      "allowedValues": [
+        "disabled",
+        "enabled"
+      ],
+      "metadata": {
+        "description": "Optional. The value that indicates whether the quarantine policy is enabled or not."
+      }
+    },
+    "trustPolicyStatus": {
+      "type": "string",
+      "defaultValue": "disabled",
+      "allowedValues": [
+        "disabled",
+        "enabled"
+      ],
+      "metadata": {
+        "description": "Optional. The value that indicates whether the trust policy is enabled or not."
+      }
+    },
+    "retentionPolicyStatus": {
+      "type": "string",
+      "defaultValue": "enabled",
+      "allowedValues": [
+        "disabled",
+        "enabled"
+      ],
+      "metadata": {
+        "description": "Optional. The value that indicates whether the retention policy is enabled or not."
+      }
+    },
+    "retentionPolicyDays": {
       "type": "int",
-      "nullable": true,
+      "defaultValue": 15,
       "metadata": {
-        "description": "Optional. Maximum allowed daily memory-time quota (applicable on dynamic apps only)."
+        "description": "Optional. The number of days to retain an untagged manifest after which it gets purged."
       }
     },
-    "enabled": {
-      "type": "bool",
-      "defaultValue": true,
+    "azureADAuthenticationAsArmPolicyStatus": {
+      "type": "string",
+      "defaultValue": "enabled",
+      "allowedValues": [
+        "disabled",
+        "enabled"
+      ],
       "metadata": {
-        "description": "Optional. Setting this value to false disables the app (takes the app offline)."
+        "description": "Optional. The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled."
       }
     },
-    "enableTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
+    "softDeletePolicyStatus": {
+      "type": "string",
+      "defaultValue": "disabled",
+      "allowedValues": [
+        "disabled",
+        "enabled"
+      ],
       "metadata": {
-        "description": "Optional. Enable/Disable usage telemetry for module."
+        "description": "Optional. Soft Delete policy status. Default is disabled."
       }
     },
-    "hostNameSslStates": {
-      "type": "array",
-      "nullable": true,
+    "softDeletePolicyDays": {
+      "type": "int",
+      "defaultValue": 7,
       "metadata": {
-        "description": "Optional. Hostname SSL states are used to manage the SSL bindings for app's hostnames."
+        "description": "Optional. The number of days after which a soft-deleted item is permanently deleted."
       }
     },
-    "hyperV": {
+    "dataEndpointEnabled": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Hyper-V sandbox."
+        "description": "Optional. Enable a single data endpoint per region for serving data. Not relevant in case of disabled public access. Note, requires the 'acrSku' to be 'Premium'."
       }
     },
     "publicNetworkAccess": {
@@ -660,56 +577,119 @@
         "Disabled"
       ],
       "metadata": {
-        "description": "Optional. Allow or block all public traffic."
+        "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set.  Note, requires the 'acrSku' to be 'Premium'."
       }
     },
-    "redundancyMode": {
+    "networkRuleBypassOptions": {
       "type": "string",
-      "defaultValue": "None",
+      "defaultValue": "AzureServices",
       "allowedValues": [
-        "ActiveActive",
-        "Failover",
-        "GeoRedundant",
-        "Manual",
+        "AzureServices",
         "None"
       ],
       "metadata": {
-        "description": "Optional. Site redundancy mode."
+        "description": "Optional. Whether to allow trusted Azure services to access a network restricted registry."
       }
     },
-    "basicPublishingCredentialsPolicies": {
+    "networkRuleSetDefaultAction": {
+      "type": "string",
+      "defaultValue": "Deny",
+      "allowedValues": [
+        "Allow",
+        "Deny"
+      ],
+      "metadata": {
+        "description": "Optional. The default action of allow or deny when no other rules match."
+      }
+    },
+    "networkRuleSetIpRules": {
       "type": "array",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The site publishing credential policy names which are associated with the site slot."
+        "description": "Optional. The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'."
       }
     },
-    "vnetContentShareEnabled": {
-      "type": "bool",
-      "defaultValue": false,
+    "privateEndpoints": {
+      "$ref": "#/definitions/privateEndpointType",
       "metadata": {
-        "description": "Optional. To enable accessing content over virtual network."
+        "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'acrSku' to be 'Premium'."
       }
     },
-    "vnetImagePullEnabled": {
-      "type": "bool",
-      "defaultValue": false,
+    "zoneRedundancy": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
       "metadata": {
-        "description": "Optional. To enable pulling image over Virtual Network."
+        "description": "Optional. Whether or not zone redundancy is enabled for this container registry."
       }
     },
-    "vnetRouteAllEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied."
-      }
-    },
-    "hybridConnectionRelays": {
+    "replications": {
       "type": "array",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Names of hybrid connection relays to connect app with."
+        "description": "Optional. All replications to create."
+      }
+    },
+    "webhooks": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. All webhooks to create."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentitiesType",
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "diagnosticSettings": {
+      "$ref": "#/definitions/diagnosticSettingType",
+      "metadata": {
+        "description": "Optional. The diagnostic settings of the service."
+      }
+    },
+    "anonymousPullEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enables registry-wide pull from unauthenticated clients. It's in preview and available in the Standard and Premium service tiers."
+      }
+    },
+    "customerManagedKey": {
+      "$ref": "#/definitions/customerManagedKeyType",
+      "metadata": {
+        "description": "Optional. The customer managed key definition."
+      }
+    },
+    "cacheRules": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of Cache Rules. Note: This is a preview feature ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache#cache-for-acr-preview))."
       }
     }
   },
@@ -717,82 +697,135 @@
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
-      "App Compliance Automation Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f37683f-2463-46b6-9ce7-9b788b988ba2')]",
+      "AcrDelete": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c2f4ef07-c644-48eb-af81-4b1b4947fb11')]",
+      "AcrImageSigner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6cef56e8-d556-48e5-a04f-b8e64114680f')]",
+      "AcrPull": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]",
+      "AcrPush": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8311e382-0749-4cb8-b61a-304f252e45ec')]",
+      "AcrQuarantineReader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'cdda3590-29a3-44f6-95f2-9f980659eb04')]",
+      "AcrQuarantineWriter": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c8d4ff99-41c3-41a8-9f60-21dfdad59608')]",
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
-      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
-      "Web Plan Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2cc479cb-7b4d-49a8-b449-8c00fd0f0a4b')]",
-      "Website Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'de139f84-1756-47ae-9be6-808fbbe84772')]"
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
   },
   "resources": {
-    "app": {
+    "cMKKeyVault::cMKKey": {
+      "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
       "existing": true,
-      "type": "Microsoft.Web/sites",
-      "apiVersion": "2021-03-01",
-      "name": "[parameters('appName')]"
-    },
-    "slot": {
-      "type": "Microsoft.Web/sites/slots",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}/{1}', parameters('appName'), parameters('name'))]",
-      "location": "[parameters('location')]",
-      "kind": "[parameters('kind')]",
-      "tags": "[parameters('tags')]",
-      "identity": "[variables('identity')]",
-      "properties": {
-        "serverFarmId": "[parameters('serverFarmResourceId')]",
-        "clientAffinityEnabled": "[parameters('clientAffinityEnabled')]",
-        "httpsOnly": "[parameters('httpsOnly')]",
-        "hostingEnvironmentProfile": "[if(not(empty(parameters('appServiceEnvironmentResourceId'))), createObject('id', parameters('appServiceEnvironmentResourceId')), null())]",
-        "storageAccountRequired": "[parameters('storageAccountRequired')]",
-        "keyVaultReferenceIdentity": "[parameters('keyVaultAccessIdentityResourceId')]",
-        "virtualNetworkSubnetId": "[parameters('virtualNetworkSubnetId')]",
-        "siteConfig": "[parameters('siteConfig')]",
-        "clientCertEnabled": "[parameters('clientCertEnabled')]",
-        "clientCertExclusionPaths": "[parameters('clientCertExclusionPaths')]",
-        "clientCertMode": "[parameters('clientCertMode')]",
-        "cloningInfo": "[parameters('cloningInfo')]",
-        "containerSize": "[parameters('containerSize')]",
-        "customDomainVerificationId": "[parameters('customDomainVerificationId')]",
-        "dailyMemoryTimeQuota": "[parameters('dailyMemoryTimeQuota')]",
-        "enabled": "[parameters('enabled')]",
-        "hostNameSslStates": "[parameters('hostNameSslStates')]",
-        "hyperV": "[parameters('hyperV')]",
-        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
-        "redundancyMode": "[parameters('redundancyMode')]",
-        "vnetContentShareEnabled": "[parameters('vnetContentShareEnabled')]",
-        "vnetImagePullEnabled": "[parameters('vnetImagePullEnabled')]",
-        "vnetRouteAllEnabled": "[parameters('vnetRouteAllEnabled')]"
-      },
+      "type": "Microsoft.KeyVault/vaults/keys",
+      "apiVersion": "2023-02-01",
+      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
       "dependsOn": [
-        "app"
+        "cMKKeyVault"
       ]
     },
-    "slot_lock": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.containerregistry-registry.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "cMKKeyVault": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2023-02-01",
+      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
+      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))]"
+    },
+    "cMKUserAssignedIdentity": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]]",
+      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))]"
+    },
+    "registry": {
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2023-06-01-preview",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "identity": "[variables('identity')]",
+      "tags": "[parameters('tags')]",
+      "sku": {
+        "name": "[parameters('acrSku')]"
+      },
+      "properties": {
+        "anonymousPullEnabled": "[parameters('anonymousPullEnabled')]",
+        "adminUserEnabled": "[parameters('acrAdminUserEnabled')]",
+        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('status', 'enabled', 'keyVaultProperties', createObject('identity', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), ''))), reference('cMKUserAssignedIdentity').clientId, null()), 'keyIdentifier', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), reference('cMKKeyVault::cMKKey').keyUriWithVersion))), null())]",
+        "policies": {
+          "azureADAuthenticationAsArmPolicy": {
+            "status": "[parameters('azureADAuthenticationAsArmPolicyStatus')]"
+          },
+          "exportPolicy": "[if(equals(parameters('acrSku'), 'Premium'), createObject('status', parameters('exportPolicyStatus')), null())]",
+          "quarantinePolicy": {
+            "status": "[parameters('quarantinePolicyStatus')]"
+          },
+          "trustPolicy": {
+            "type": "Notary",
+            "status": "[parameters('trustPolicyStatus')]"
+          },
+          "retentionPolicy": "[if(equals(parameters('acrSku'), 'Premium'), createObject('days', parameters('retentionPolicyDays'), 'status', parameters('retentionPolicyStatus')), null())]",
+          "softDeletePolicy": {
+            "retentionDays": "[parameters('softDeletePolicyDays')]",
+            "status": "[parameters('softDeletePolicyStatus')]"
+          }
+        },
+        "dataEndpointEnabled": "[parameters('dataEndpointEnabled')]",
+        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkRuleSetIpRules'))), 'Disabled', null()))]",
+        "networkRuleBypassOptions": "[parameters('networkRuleBypassOptions')]",
+        "networkRuleSet": "[if(not(empty(parameters('networkRuleSetIpRules'))), createObject('defaultAction', parameters('networkRuleSetDefaultAction'), 'ipRules', parameters('networkRuleSetIpRules')), null())]",
+        "zoneRedundancy": "[if(equals(parameters('acrSku'), 'Premium'), parameters('zoneRedundancy'), null())]"
+      },
+      "dependsOn": [
+        "cMKKeyVault",
+        "cMKUserAssignedIdentity"
+      ]
+    },
+    "registry_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Web/sites/{0}/slots/{1}', parameters('appName'), parameters('name'))]",
+      "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
         "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
       },
       "dependsOn": [
-        "slot"
+        "registry"
       ]
     },
-    "slot_diagnosticSettings": {
+    "registry_diagnosticSettings": {
       "copy": {
-        "name": "slot_diagnosticSettings",
+        "name": "registry_diagnosticSettings",
         "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Web/sites/{0}/slots/{1}', parameters('appName'), parameters('name'))]",
+      "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
@@ -805,18 +838,18 @@
         "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
       },
       "dependsOn": [
-        "slot"
+        "registry"
       ]
     },
-    "slot_roleAssignments": {
+    "registry_roleAssignments": {
       "copy": {
-        "name": "slot_roleAssignments",
+        "name": "registry_roleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Web/sites/{0}/slots/{1}', parameters('appName'), parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.Web/sites/slots', parameters('appName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('name'))]",
+      "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
       "properties": {
         "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
         "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
@@ -827,40 +860,40 @@
         "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
-        "slot"
+        "registry"
       ]
     },
-    "slot_appsettings": {
-      "condition": "[not(empty(parameters('appSettingsKeyValuePairs')))]",
+    "registry_replications": {
+      "copy": {
+        "name": "registry_replications",
+        "count": "[length(coalesce(parameters('replications'), createArray()))]"
+      },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-Slot-{1}-Config-AppSettings', uniqueString(deployment().name, parameters('location')), parameters('name'))]",
+      "name": "[format('{0}-Registry-Replication-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
-          "slotName": {
+          "name": {
+            "value": "[coalesce(parameters('replications'), createArray())[copyIndex()].name]"
+          },
+          "registryName": {
             "value": "[parameters('name')]"
           },
-          "appName": {
-            "value": "[parameters('appName')]"
+          "location": {
+            "value": "[coalesce(parameters('replications'), createArray())[copyIndex()].location]"
           },
-          "kind": {
-            "value": "[parameters('kind')]"
+          "regionEndpointEnabled": {
+            "value": "[tryGet(coalesce(parameters('replications'), createArray())[copyIndex()], 'regionEndpointEnabled')]"
           },
-          "storageAccountResourceId": {
-            "value": "[parameters('storageAccountResourceId')]"
+          "zoneRedundancy": {
+            "value": "[tryGet(coalesce(parameters('replications'), createArray())[copyIndex()], 'zoneRedundancy')]"
           },
-          "appInsightResourceId": {
-            "value": "[parameters('appInsightResourceId')]"
-          },
-          "setAzureWebJobsDashboard": {
-            "value": "[parameters('setAzureWebJobsDashboard')]"
-          },
-          "appSettingsKeyValuePairs": {
-            "value": "[parameters('appSettingsKeyValuePairs')]"
+          "tags": {
+            "value": "[coalesce(tryGet(coalesce(parameters('replications'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           }
         },
         "template": {
@@ -871,364 +904,99 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "9605115891306784861"
+              "templateHash": "7392920175754293043"
             },
-            "name": "Site Slot App Settings",
-            "description": "This module deploys a Site Slot App Setting.",
+            "name": "Azure Container Registry (ACR) Replications",
+            "description": "This module deploys an Azure Container Registry (ACR) Replication.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
-            "slotName": {
+            "registryName": {
               "type": "string",
               "metadata": {
-                "description": "Required. Slot name to be configured."
+                "description": "Conditional. The name of the parent registry. Required if the template is used in a standalone deployment."
               }
             },
-            "appName": {
-              "type": "string",
-              "metadata": {
-                "description": "Conditional. The name of the parent site resource. Required if the template is used in a standalone deployment."
-              }
-            },
-            "kind": {
-              "type": "string",
-              "allowedValues": [
-                "functionapp",
-                "functionapp,linux",
-                "functionapp,workflowapp",
-                "functionapp,workflowapp,linux",
-                "app"
-              ],
-              "metadata": {
-                "description": "Required. Type of slot to deploy."
-              }
-            },
-            "storageAccountResourceId": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions."
-              }
-            },
-            "appInsightResourceId": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Resource ID of the app insight to leverage for this resource."
-              }
-            },
-            "setAzureWebJobsDashboard": {
-              "type": "bool",
-              "defaultValue": "[if(contains(parameters('kind'), 'functionapp'), true(), false())]",
-              "metadata": {
-                "description": "Optional. For function apps. If true the app settings \"AzureWebJobsDashboard\" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons."
-              }
-            },
-            "appSettingsKeyValuePairs": {
-              "type": "object",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING."
-              }
-            }
-          },
-          "resources": {
-            "app::slot": {
-              "existing": true,
-              "type": "Microsoft.Web/sites/slots",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}/{1}', parameters('appName'), parameters('slotName'))]",
-              "dependsOn": [
-                "app"
-              ]
-            },
-            "app": {
-              "existing": true,
-              "type": "Microsoft.Web/sites",
-              "apiVersion": "2022-09-01",
-              "name": "[parameters('appName')]"
-            },
-            "appInsight": {
-              "condition": "[not(empty(parameters('appInsightResourceId')))]",
-              "existing": true,
-              "type": "Microsoft.Insights/components",
-              "apiVersion": "2020-02-02",
-              "subscriptionId": "[split(coalesce(parameters('appInsightResourceId'), '//'), '/')[2]]",
-              "resourceGroup": "[split(coalesce(parameters('appInsightResourceId'), '////'), '/')[4]]",
-              "name": "[last(split(coalesce(parameters('appInsightResourceId'), 'dummyName'), '/'))]"
-            },
-            "storageAccount": {
-              "condition": "[not(empty(parameters('storageAccountResourceId')))]",
-              "existing": true,
-              "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2023-01-01",
-              "subscriptionId": "[split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2]]",
-              "resourceGroup": "[split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]]",
-              "name": "[last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))]"
-            },
-            "slotSettings": {
-              "type": "Microsoft.Web/sites/slots/config",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), 'appsettings')]",
-              "kind": "[parameters('kind')]",
-              "properties": "[union(coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(not(empty(parameters('storageAccountResourceId'))), union(createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value)), if(equals(parameters('setAzureWebJobsDashboard'), true()), createObject('AzureWebJobsDashboard', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value)), createObject())), createObject()), if(not(empty(parameters('appInsightResourceId'))), createObject('APPINSIGHTS_INSTRUMENTATIONKEY', reference('appInsight').InstrumentationKey, 'APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
-              "dependsOn": [
-                "appInsight",
-                "app::slot",
-                "storageAccount"
-              ]
-            }
-          },
-          "outputs": {
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The name of the slot config."
-              },
-              "value": "appsettings"
-            },
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource ID of the slot config."
-              },
-              "value": "[resourceId('Microsoft.Web/sites/slots/config', parameters('appName'), parameters('slotName'), 'appsettings')]"
-            },
-            "resourceGroupName": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource group the slot config was deployed into."
-              },
-              "value": "[resourceGroup().name]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "app",
-        "slot"
-      ]
-    },
-    "slot_authsettingsv2": {
-      "condition": "[not(empty(parameters('authSettingV2Configuration')))]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-Slot-{1}-Config-AuthSettingsV2', uniqueString(deployment().name, parameters('location')), parameters('name'))]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "slotName": {
-            "value": "[parameters('name')]"
-          },
-          "appName": {
-            "value": "[parameters('appName')]"
-          },
-          "kind": {
-            "value": "[parameters('kind')]"
-          },
-          "authSettingV2Configuration": {
-            "value": "[coalesce(parameters('authSettingV2Configuration'), createObject())]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "7901002401130178704"
-            },
-            "name": "Site Slot Auth Settings V2 Config",
-            "description": "This module deploys a Site Auth Settings V2 Configuration.",
-            "owner": "Azure/module-maintainers"
-          },
-          "parameters": {
-            "appName": {
-              "type": "string",
-              "metadata": {
-                "description": "Conditional. The name of the parent site resource. Required if the template is used in a standalone deployment."
-              }
-            },
-            "slotName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. Slot name to be configured."
-              }
-            },
-            "kind": {
-              "type": "string",
-              "allowedValues": [
-                "functionapp",
-                "functionapp,linux",
-                "functionapp,workflowapp",
-                "functionapp,workflowapp,linux",
-                "app"
-              ],
-              "metadata": {
-                "description": "Required. Type of slot to deploy."
-              }
-            },
-            "authSettingV2Configuration": {
-              "type": "object",
-              "metadata": {
-                "description": "Required. The auth settings V2 configuration."
-              }
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.Web/sites/slots/config",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), 'authsettingsV2')]",
-              "kind": "[parameters('kind')]",
-              "properties": "[parameters('authSettingV2Configuration')]"
-            }
-          ],
-          "outputs": {
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the slot config."
-              },
-              "value": "authsettingsV2"
-            },
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource ID of the slot config."
-              },
-              "value": "[resourceId('Microsoft.Web/sites/slots/config', parameters('appName'), parameters('slotName'), 'authsettingsV2')]"
-            },
-            "resourceGroupName": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource group the slot config was deployed into."
-              },
-              "value": "[resourceGroup().name]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "app",
-        "slot"
-      ]
-    },
-    "slot_basicPublishingCredentialsPolicies": {
-      "copy": {
-        "name": "slot_basicPublishingCredentialsPolicies",
-        "count": "[length(coalesce(parameters('basicPublishingCredentialsPolicies'), createArray()))]"
-      },
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-Slot-Publish-Cred-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "appName": {
-            "value": "[parameters('appName')]"
-          },
-          "slotName": {
-            "value": "[parameters('name')]"
-          },
-          "name": {
-            "value": "[coalesce(parameters('basicPublishingCredentialsPolicies'), createArray())[copyIndex()].name]"
-          },
-          "allow": {
-            "value": "[tryGet(coalesce(parameters('basicPublishingCredentialsPolicies'), createArray())[copyIndex()], 'allow')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "95340614388352354"
-            },
-            "name": "Web Site Slot Basic Publishing Credentials Policies",
-            "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy.",
-            "owner": "Azure/module-maintainers"
-          },
-          "parameters": {
-            "name": {
-              "type": "string",
-              "allowedValues": [
-                "scm",
-                "ftp"
-              ],
-              "metadata": {
-                "description": "Required. The name of the resource."
-              }
-            },
-            "allow": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Set to true to enable or false to disable a publishing method."
-              }
-            },
-            "appName": {
-              "type": "string",
-              "metadata": {
-                "description": "Conditional. The name of the parent web site. Required if the template is used in a standalone deployment."
-              }
-            },
-            "slotName": {
-              "type": "string",
-              "metadata": {
-                "description": "Conditional. The name of the parent web site slot. Required if the template is used in a standalone deployment."
+                "description": "Required. The name of the replication."
               }
             },
             "location": {
               "type": "string",
               "defaultValue": "[resourceGroup().location]",
               "metadata": {
-                "description": "Optional. Location for all Resources."
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            },
+            "regionEndpointEnabled": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications."
+              }
+            },
+            "zoneRedundancy": {
+              "type": "string",
+              "defaultValue": "Disabled",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "metadata": {
+                "description": "Optional. Whether or not zone redundancy is enabled for this container registry."
               }
             }
           },
-          "resources": [
-            {
-              "type": "Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), parameters('name'))]",
+          "resources": {
+            "registry": {
+              "existing": true,
+              "type": "Microsoft.ContainerRegistry/registries",
+              "apiVersion": "2023-06-01-preview",
+              "name": "[parameters('registryName')]"
+            },
+            "replication": {
+              "type": "Microsoft.ContainerRegistry/registries/replications",
+              "apiVersion": "2023-06-01-preview",
+              "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
               "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
               "properties": {
-                "allow": "[parameters('allow')]"
-              }
+                "regionEndpointEnabled": "[parameters('regionEndpointEnabled')]",
+                "zoneRedundancy": "[parameters('zoneRedundancy')]"
+              },
+              "dependsOn": [
+                "registry"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The name of the basic publishing credential policy."
+                "description": "The name of the replication."
               },
               "value": "[parameters('name')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
-                "description": "The resource ID of the basic publishing credential policy."
+                "description": "The resource ID of the replication."
               },
-              "value": "[resourceId('Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies', parameters('appName'), parameters('slotName'), parameters('name'))]"
+              "value": "[resourceId('Microsoft.ContainerRegistry/registries/replications', parameters('registryName'), parameters('name'))]"
             },
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The name of the resource group the basic publishing credential policy was deployed into."
+                "description": "The name of the resource group the replication was created in."
               },
               "value": "[resourceGroup().name]"
             },
@@ -1237,138 +1005,365 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference(resourceId('Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies', parameters('appName'), parameters('slotName'), parameters('name')), '2022-09-01', 'full').location]"
+              "value": "[reference('replication', '2023-06-01-preview', 'full').location]"
             }
           }
         }
       },
       "dependsOn": [
-        "app",
-        "slot"
+        "registry"
       ]
     },
-    "slot_hybridConnectionRelays": {
+    "registry_cacheRules": {
       "copy": {
-        "name": "slot_hybridConnectionRelays",
-        "count": "[length(coalesce(parameters('hybridConnectionRelays'), createArray()))]"
+        "name": "registry_cacheRules",
+        "count": "[length(coalesce(parameters('cacheRules'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-Slot-HybridConnectionRelay-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-Registry-Cache-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
-          "hybridConnectionResourceId": {
-            "value": "[coalesce(parameters('hybridConnectionRelays'), createArray())[copyIndex()].resourceId]"
-          },
-          "appName": {
-            "value": "[parameters('appName')]"
-          },
-          "slotName": {
+          "registryName": {
             "value": "[parameters('name')]"
           },
-          "sendKeyName": {
-            "value": "[tryGet(coalesce(parameters('hybridConnectionRelays'), createArray())[copyIndex()], 'sendKeyName')]"
+          "sourceRepository": {
+            "value": "[coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository]"
+          },
+          "name": {
+            "value": "[coalesce(tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'name'), replace(replace(coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository, '/', '-'), '.', '-'))]"
+          },
+          "targetRepository": {
+            "value": "[coalesce(tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'targetRepository'), coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository)]"
+          },
+          "credentialSetResourceId": {
+            "value": "[tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'credentialSetResourceId')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "822472634155315347"
+              "templateHash": "3326562317936673912"
             },
-            "name": "Web/Function Apps Slot Hybrid Connection Relay",
-            "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay.",
+            "name": "Container Registries Cache",
+            "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache)).",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
-            "hybridConnectionResourceId": {
+            "registryName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The resource ID of the relay namespace hybrid connection."
+                "description": "Required. The name of the parent registry. Required if the template is used in a standalone deployment."
               }
             },
-            "slotName": {
+            "name": {
               "type": "string",
+              "defaultValue": "[replace(replace(parameters('sourceRepository'), '/', '-'), '.', '-')]",
               "metadata": {
-                "description": "Conditional. The name of the site slot. Required if the template is used in a standalone deployment."
+                "description": "Optional. The name of the cache rule. Will be dereived from the source repository name if not defined."
               }
             },
-            "appName": {
+            "sourceRepository": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent web site. Required if the template is used in a standalone deployment."
+                "description": "Required. Source repository pulled from upstream."
               }
             },
-            "sendKeyName": {
+            "targetRepository": {
               "type": "string",
-              "defaultValue": "defaultSender",
+              "defaultValue": "[parameters('sourceRepository')]",
               "metadata": {
-                "description": "Optional. Name of the authorization rule send key to use."
+                "description": "Optional. Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}."
+              }
+            },
+            "credentialSetResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The resource ID of the credential store which is associated with the cache rule."
               }
             }
           },
-          "resources": [
-            {
-              "type": "Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}/{1}/{2}/{3}', parameters('appName'), parameters('slotName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10])]",
+          "resources": {
+            "registry": {
+              "existing": true,
+              "type": "Microsoft.ContainerRegistry/registries",
+              "apiVersion": "2023-06-01-preview",
+              "name": "[parameters('registryName')]"
+            },
+            "cacheRule": {
+              "type": "Microsoft.ContainerRegistry/registries/cacheRules",
+              "apiVersion": "2023-06-01-preview",
+              "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
               "properties": {
-                "serviceBusNamespace": "[split(parameters('hybridConnectionResourceId'), '/')[8]]",
-                "serviceBusSuffix": "[split(substring(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces', split(parameters('hybridConnectionResourceId'), '/')[8]), '2021-11-01').serviceBusEndpoint, indexOf(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces', split(parameters('hybridConnectionResourceId'), '/')[8]), '2021-11-01').serviceBusEndpoint, '.servicebus')), ':')[0]]",
-                "relayName": "[split(parameters('hybridConnectionResourceId'), '/')[10]]",
-                "relayArmUri": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10])]",
-                "hostname": "[split(json(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '2021-11-01').userMetadata)[0].value, ':')[0]]",
-                "port": "[int(split(json(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '2021-11-01').userMetadata)[0].value, ':')[1])]",
-                "sendKeyName": "[parameters('sendKeyName')]",
-                "sendKeyValue": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hybridConnectionResourceId'), '/')[2], split(parameters('hybridConnectionResourceId'), '/')[4]), 'Microsoft.Relay/namespaces/hybridConnections/authorizationRules', split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10], parameters('sendKeyName')), '2021-11-01').primaryKey]"
-              }
+                "sourceRepository": "[parameters('sourceRepository')]",
+                "targetRepository": "[parameters('targetRepository')]",
+                "credentialSetResourceId": "[parameters('credentialSetResourceId')]"
+              },
+              "dependsOn": [
+                "registry"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The name of the hybrid connection relay.."
+                "description": "The Name of the Cache Rule."
               },
-              "value": "[format('{0}/{1}/{2}/{3}', parameters('appName'), parameters('slotName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10])]"
-            },
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource ID of the hybrid connection relay."
-              },
-              "value": "[resourceId('Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays', split(format('{0}/{1}/{2}/{3}', parameters('appName'), parameters('slotName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '/')[0], split(format('{0}/{1}/{2}/{3}', parameters('appName'), parameters('slotName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '/')[1], split(format('{0}/{1}/{2}/{3}', parameters('appName'), parameters('slotName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '/')[2], split(format('{0}/{1}/{2}/{3}', parameters('appName'), parameters('slotName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10]), '/')[3])]"
+              "value": "[parameters('name')]"
             },
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The name of the resource group the resource was deployed into."
+                "description": "The name of the Cache Rule."
               },
               "value": "[resourceGroup().name]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Cache Rule."
+              },
+              "value": "[resourceId('Microsoft.ContainerRegistry/registries/cacheRules', parameters('registryName'), parameters('name'))]"
             }
           }
         }
       },
       "dependsOn": [
-        "app",
-        "slot"
+        "registry"
       ]
     },
-    "slot_privateEndpoints": {
+    "registry_webhooks": {
       "copy": {
-        "name": "slot_privateEndpoints",
+        "name": "registry_webhooks",
+        "count": "[length(coalesce(parameters('webhooks'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Registry-Webhook-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('webhooks'), createArray())[copyIndex()].name]"
+          },
+          "registryName": {
+            "value": "[parameters('name')]"
+          },
+          "location": {
+            "value": "[coalesce(tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'location'), parameters('location'))]"
+          },
+          "action": {
+            "value": "[coalesce(tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'action'), createArray('chart_delete', 'chart_push', 'delete', 'push', 'quarantine'))]"
+          },
+          "customHeaders": {
+            "value": "[tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'customHeaders')]"
+          },
+          "scope": {
+            "value": "[tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'scope')]"
+          },
+          "status": {
+            "value": "[tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'status')]"
+          },
+          "serviceUri": {
+            "value": "[coalesce(parameters('webhooks'), createArray())[copyIndex()].serviceUri]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.24.24.22086",
+              "templateHash": "13453164087600189664"
+            },
+            "name": "Azure Container Registry (ACR) Webhooks",
+            "description": "This module deploys an Azure Container Registry (ACR) Webhook.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "registryName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent registry. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "[format('{0}webhook', parameters('registryName'))]",
+              "minLength": 5,
+              "maxLength": 50,
+              "metadata": {
+                "description": "Optional. The name of the registry webhook."
+              }
+            },
+            "serviceUri": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The service URI for the webhook to post notifications."
+              }
+            },
+            "status": {
+              "type": "string",
+              "defaultValue": "enabled",
+              "allowedValues": [
+                "disabled",
+                "enabled"
+              ],
+              "metadata": {
+                "description": "Optional. The status of the webhook at the time the operation was called."
+              }
+            },
+            "action": {
+              "type": "array",
+              "defaultValue": [
+                "chart_delete",
+                "chart_push",
+                "delete",
+                "push",
+                "quarantine"
+              ],
+              "metadata": {
+                "description": "Optional. The list of actions that trigger the webhook to post notifications."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            },
+            "customHeaders": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Custom headers that will be added to the webhook notifications."
+              }
+            },
+            "scope": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The scope of repositories where the event can be triggered. For example, 'foo:*' means events for all tags under repository 'foo'. 'foo:bar' means events for 'foo:bar' only. 'foo' is equivalent to 'foo:latest'. Empty means all events."
+              }
+            }
+          },
+          "resources": {
+            "registry": {
+              "existing": true,
+              "type": "Microsoft.ContainerRegistry/registries",
+              "apiVersion": "2023-06-01-preview",
+              "name": "[parameters('registryName')]"
+            },
+            "webhook": {
+              "type": "Microsoft.ContainerRegistry/registries/webhooks",
+              "apiVersion": "2023-06-01-preview",
+              "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "actions": "[parameters('action')]",
+                "customHeaders": "[parameters('customHeaders')]",
+                "scope": "[parameters('scope')]",
+                "serviceUri": "[parameters('serviceUri')]",
+                "status": "[parameters('status')]"
+              },
+              "dependsOn": [
+                "registry"
+              ]
+            }
+          },
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the webhook."
+              },
+              "value": "[resourceId('Microsoft.ContainerRegistry/registries/webhooks', parameters('registryName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the webhook."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Azure container registry."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "actions": {
+              "type": "array",
+              "metadata": {
+                "description": "The actions of the webhook."
+              },
+              "value": "[reference('webhook').actions]"
+            },
+            "status": {
+              "type": "string",
+              "metadata": {
+                "description": "The status of the webhook."
+              },
+              "value": "[reference('webhook').status]"
+            },
+            "provistioningState": {
+              "type": "string",
+              "metadata": {
+                "description": "The provisioning state of the webhook."
+              },
+              "value": "[reference('webhook').provisioningState]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('webhook', '2023-06-01-preview', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "registry"
+      ]
+    },
+    "registry_privateEndpoints": {
+      "copy": {
+        "name": "registry_privateEndpoints",
         "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-Slot-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-registry-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1380,16 +1375,16 @@
               {
                 "name": "[parameters('name')]",
                 "properties": {
-                  "privateLinkServiceId": "[resourceId('Microsoft.Web/sites', parameters('appName'))]",
+                  "privateLinkServiceId": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))]",
                   "groupIds": [
-                    "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), format('sites-{0}', parameters('name')))]"
+                    "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'registry')]"
                   ]
                 }
               }
             ]
           },
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}-{3}', last(split(resourceId('Microsoft.Web/sites', parameters('appName')), '/')), parameters('name'), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'sites'), copyIndex()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'registry'), copyIndex()))]"
           },
           "subnetResourceId": {
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
@@ -2026,8 +2021,7 @@
         }
       },
       "dependsOn": [
-        "app",
-        "slot"
+        "registry"
       ]
     }
   },
@@ -2035,37 +2029,44 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the slot."
+        "description": "The Name of the Azure container registry."
       },
       "value": "[parameters('name')]"
     },
-    "resourceId": {
+    "loginServer": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the slot."
+        "description": "The reference to the Azure container registry."
       },
-      "value": "[resourceId('Microsoft.Web/sites/slots', parameters('appName'), parameters('name'))]"
+      "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), '2019-05-01').loginServer]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the slot was deployed into."
+        "description": "The name of the Azure container registry."
       },
       "value": "[resourceGroup().name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Azure container registry."
+      },
+      "value": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('slot', '2022-09-01', 'full').identity, 'principalId')), reference('slot', '2022-09-01', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('registry', '2023-06-01-preview', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('slot', '2022-09-01', 'full').location]"
+      "value": "[reference('registry', '2023-06-01-preview', 'full').location]"
     }
   }
 }
