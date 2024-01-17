@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "669587178989064951"
+      "templateHash": "13067057188654143593"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache.",
@@ -1434,14 +1434,14 @@
       "metadata": {
         "description": "The full resource ID of a subnet in a virtual network where the Redis Cache was deployed in."
       },
-      "value": "[if(not(empty(parameters('subnetResourceId'))), reference('redis').subnetResourceId, '')]"
+      "value": "[if(not(empty(parameters('subnetResourceId'))), reference('redis').subnetId, '')]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), tryGet(reference('redis', '2022-06-01', 'full').identity, 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('redis', '2022-06-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
