@@ -1,5 +1,6 @@
-#  `[Microsoft.DesktopVirtualization/applicationGroups/applications]`
+# Azure Virtual Desktop Application Group Application `[Microsoft.DesktopVirtualization/applicationGroups/applications]`
 
+This module deploys an Azure Virtual Desktop Application Group Application.
 
 ## Navigation
 

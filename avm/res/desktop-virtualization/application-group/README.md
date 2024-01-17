@@ -329,14 +329,14 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
 | :-- | :-- | :-- |
 | [`applicationGroupType`](#parameter-applicationgrouptype) | string | The type of the Application Group to be created. Allowed values: RemoteApp or Desktop. |
 | [`hostpoolName`](#parameter-hostpoolname) | string | Name of the Host Pool to be linked to this Application Group. |
-| [`name`](#parameter-name) | string | Name of the Application Group to create this application in. |
+| [`name`](#parameter-name) | string | Name of the Application Group. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`applications`](#parameter-applications) | array | List of applications to be created in the Application Group. |
-| [`description`](#parameter-description) | string | Description of the application group |
+| [`description`](#parameter-description) | string | Description of the application group. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry. |
 | [`friendlyName`](#parameter-friendlyname) | string | The friendly name of the Application Group to be created. |
@@ -367,7 +367,7 @@ List of applications to be created in the Application Group.
 
 ### Parameter: `description`
 
-Description of the application group
+Description of the application group.
 - Required: No
 - Type: string
 - Default: `''`
@@ -543,7 +543,7 @@ Optional. Specify the name of lock.
 
 ### Parameter: `name`
 
-Name of the Application Group to create this application in.
+Name of the Application Group.
 - Required: Yes
 - Type: string
 
@@ -620,7 +620,6 @@ Required. The role to assign. You can provide either the display name of the rol
 Tags of the application group.
 - Required: No
 - Type: object
-- Default: `{}`
 
 
 ## Outputs
