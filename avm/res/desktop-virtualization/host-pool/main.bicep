@@ -268,16 +268,16 @@ resource hostPool_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021
   scope: hostPool
 }]
 
-@sys.description('The resource ID of the scaling plan.')
+@sys.description('The resource ID of the host pool.')
 output resourceId string = hostPool.id
 
-@sys.description('The name of the resource group the scaling plan was created in.')
+@sys.description('The name of the resource group the host pool was created in.')
 output resourceGroupName string = resourceGroup().name
 
-@sys.description('The name of the scaling plan.')
+@sys.description('The name of the host pool.')
 output name string = hostPool.name
 
-@sys.description('The location of the scaling plan.')
+@sys.description('The location of the host pool.')
 output location string = hostPool.location
 
 // ================ //
@@ -421,41 +421,3 @@ type lockType = {
   @sys.description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
-
-type accessPoliciesType = {
-  @sys.description('Optional. The tenant ID that is used for authenticating requests to the key vault.')
-  tenantId: string?
-
-  @sys.description('Required. The object ID of a user, service principal or security group in the tenant for the vault.')
-  objectId: string
-
-  @sys.description('Optional. Application ID of the client making request on behalf of a principal.')
-  applicationId: string?
-
-  @sys.description('Required. Permissions the identity has for keys, secrets and certificates.')
-  permissions: {
-    @sys.description('Optional. Permissions to keys.')
-    keys: ('all' | 'backup' | 'create' | 'decrypt' | 'delete' | 'encrypt' | 'get' | 'getrotationpolicy' | 'import' | 'list' | 'purge' | 'recover' | 'release' | 'restore' | 'rotate' | 'setrotationpolicy' | 'sign' | 'unwrapKey' | 'update' | 'verify' | 'wrapKey')[]?
-
-    @sys.description('Optional. Permissions to secrets.')
-    secrets: ('all' | 'backup' | 'delete' | 'get' | 'list' | 'purge' | 'recover' | 'restore' | 'set')[]?
-
-    @sys.description('Optional. Permissions to certificates.')
-    certificates: ('all' | 'backup' | 'create' | 'delete' | 'deleteissuers' | 'get' | 'getissuers' | 'import' | 'list' | 'listissuers' | 'managecontacts' | 'manageissuers' | 'purge' | 'recover' | 'restore' | 'setissuers' | 'update')[]?
-
-    @sys.description('Optional. Permissions to storage accounts.')
-    storage: ('all' | 'backup' | 'delete' | 'deletesas' | 'get' | 'getsas' | 'list' | 'listsas' | 'purge' | 'recover' | 'regeneratekey' | 'restore' | 'set' | 'setsas' | 'update')[]?
-  }
-}[]?
-    keys: ('all' | 'backup' | 'create' | 'decrypt' | 'delete' | 'encrypt' | 'get' | 'getrotationpolicy' | 'import' | 'list' | 'purge' | 'recover' | 'release' | 'restore' | 'rotate' | 'setrotationpolicy' | 'sign' | 'unwrapKey' | 'update' | 'verify' | 'wrapKey')[]?
-
-    @sys.description('Optional. Permissions to secrets.')
-    secrets: ('all' | 'backup' | 'delete' | 'get' | 'list' | 'purge' | 'recover' | 'restore' | 'set')[]?
-
-    @sys.description('Optional. Permissions to certificates.')
-    certificates: ('all' | 'backup' | 'create' | 'delete' | 'deleteissuers' | 'get' | 'getissuers' | 'import' | 'list' | 'listissuers' | 'managecontacts' | 'manageissuers' | 'purge' | 'recover' | 'restore' | 'setissuers' | 'update')[]?
-
-    @sys.description('Optional. Permissions to storage accounts.')
-    storage: ('all' | 'backup' | 'delete' | 'deletesas' | 'get' | 'getsas' | 'list' | 'listsas' | 'purge' | 'recover' | 'regeneratekey' | 'restore' | 'set' | 'setsas' | 'update')[]?
-  }
-}[]?

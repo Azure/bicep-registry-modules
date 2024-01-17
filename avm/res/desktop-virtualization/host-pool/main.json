@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "4255000281566485131"
+      "templateHash": "8774019153179535717"
     },
     "name": "Azure Virtual Desktop Host Pool",
     "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -380,141 +380,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
-          }
-        }
-      },
-      "nullable": true
-    },
-    "accessPoliciesType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "tenantId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The tenant ID that is used for authenticating requests to the key vault."
-            }
-          },
-          "objectId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The object ID of a user, service principal or security group in the tenant for the vault."
-            }
-          },
-          "applicationId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Application ID of the client making request on behalf of a principal."
-            }
-          },
-          "permissions": {
-            "type": "object",
-            "properties": {
-              "keys": {
-                "type": "array",
-                "allowedValues": [
-                  "all",
-                  "backup",
-                  "create",
-                  "decrypt",
-                  "delete",
-                  "encrypt",
-                  "get",
-                  "getrotationpolicy",
-                  "import",
-                  "list",
-                  "purge",
-                  "recover",
-                  "release",
-                  "restore",
-                  "rotate",
-                  "setrotationpolicy",
-                  "sign",
-                  "unwrapKey",
-                  "update",
-                  "verify",
-                  "wrapKey"
-                ],
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Permissions to keys."
-                }
-              },
-              "secrets": {
-                "type": "array",
-                "allowedValues": [
-                  "all",
-                  "backup",
-                  "delete",
-                  "get",
-                  "list",
-                  "purge",
-                  "recover",
-                  "restore",
-                  "set"
-                ],
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Permissions to secrets."
-                }
-              },
-              "certificates": {
-                "type": "array",
-                "allowedValues": [
-                  "all",
-                  "backup",
-                  "create",
-                  "delete",
-                  "deleteissuers",
-                  "get",
-                  "getissuers",
-                  "import",
-                  "list",
-                  "listissuers",
-                  "managecontacts",
-                  "manageissuers",
-                  "purge",
-                  "recover",
-                  "restore",
-                  "setissuers",
-                  "update"
-                ],
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Permissions to certificates."
-                }
-              },
-              "storage": {
-                "type": "array",
-                "allowedValues": [
-                  "all",
-                  "backup",
-                  "delete",
-                  "deletesas",
-                  "get",
-                  "getsas",
-                  "list",
-                  "listsas",
-                  "purge",
-                  "recover",
-                  "regeneratekey",
-                  "restore",
-                  "set",
-                  "setsas",
-                  "update"
-                ],
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Permissions to storage accounts."
-                }
-              }
-            },
-            "metadata": {
-              "description": "Required. Permissions the identity has for keys, secrets and certificates."
-            }
           }
         }
       },
@@ -1419,6 +1284,36 @@
       "dependsOn": [
         "hostPool"
       ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the host pool."
+      },
+      "value": "[resourceId('Microsoft.DesktopVirtualization/hostPools', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the host pool was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the host pool."
+      },
+      "value": "[parameters('name')]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the host pool."
+      },
+      "value": "[reference('hostPool', '2023-09-05', 'full').location]"
     }
   }
 }

@@ -1192,8 +1192,12 @@ Do not provide a value! This date value is used to generate a registration token
 
 ## Outputs
 
-| Output | Type |
-| :-- | :-- |
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `location` | string | The location of the host pool. |
+| `name` | string | The name of the host pool. |
+| `resourceGroupName` | string | The name of the resource group the host pool was created in. |
+| `resourceId` | string | The resource ID of the host pool. |
 
 ## Cross-referenced modules
 
