@@ -151,6 +151,7 @@ var builtInRoleNames = {
   'Monitoring Reader': '/providers/Microsoft.Authorization/roleDefinitions/43d0d8ad-25c7-4714-9337-8ba259a9fe05'
   'Resource Policy Contributor': '/providers/Microsoft.Authorization/roleDefinitions/36243c78-bf99-498c-9df9-86d9f8d28608'
 }
+
 var tokenExpirationTime = dateTimeAdd(baseTime, tokenValidityLength)
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
