@@ -13,7 +13,7 @@ param location string = deployment().location
 param serviceShort string = 'dvwsmax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = 'tst' //'#_namePrefix_#'
+param namePrefix string = '#_namePrefix_#'
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
@@ -34,7 +34,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-diagnosticDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
+    storageAccountName: substring('dep${uniqueString(deployment().name, location)}${serviceShort}03', 0, 24)
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
