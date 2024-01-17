@@ -33,6 +33,7 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
 - [Using Private Endpoints](#example-3-using-private-endpoints)
+- [Using only defaults](#example-4-using-only-defaults)
 
 ### Example 1: _Using only defaults_
 
@@ -368,6 +369,66 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
     },
     "publicNetworkAccess": {
       "value": "Disabled"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-wsmin'
+  params: {
+    // Required parameters
+    name: 'wsmin002'
+    // Non-required parameters
+    location: '<location>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "wsmin002"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
