@@ -263,7 +263,7 @@ output hostName string = redis.properties.hostName
 output sslPort int = redis.properties.sslPort
 
 @description('The full resource ID of a subnet in a virtual network where the Redis Cache was deployed in.')
-output subnetResourceId string = !empty(subnetResourceId) ? redis.properties.subnetResourceId : ''
+output subnetResourceId string = !empty(subnetResourceId) ? redis.properties.subnetId : ''
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string = redis.?identity.?principalId ?? ''
