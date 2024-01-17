@@ -36,7 +36,7 @@ jobs:
   #########################
   job_module_static_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Static validation"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
     steps:
       - name: "Checkout"
@@ -55,7 +55,7 @@ jobs:
   #########################
   job_psrule_test: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "PSRule [${{ matrix.testCases.name }}]"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
     strategy:
       fail-fast: false
@@ -79,13 +79,12 @@ jobs:
   #############################
   job_module_deploy_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Deploy [${{ matrix.testCases.name}}]"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     if: |
       !cancelled() &&
       (fromJson(inputs.workflowInput)).deploymentValidation == 'true' && needs.job_module_static_validation.result != 'failure'
     needs:
       - job_module_static_validation
-      # - job_psrule_test # Ignoring dependency whilst PSRule gets bedded in, in this project
     strategy:
       fail-fast: false
       matrix:
@@ -103,7 +102,6 @@ jobs:
         uses: ./.github/actions/templates/avm-validateModuleDeployment
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          location: "WestEurope"
           subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
@@ -115,7 +113,7 @@ jobs:
   ##################
   job_publish_module: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Publishing"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && success()
     needs:
       - job_module_deploy_validation
