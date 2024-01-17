@@ -8,7 +8,7 @@ param name string
 @sys.description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@sys.description('Optional. Tags to be applied on all resourcesin this deployment.')
+@sys.description('Optional. Tags to be applied on all resources in this deployment.')
 param tags object?
 
 @sys.description('Optional. Array of application group references.')
@@ -32,7 +32,7 @@ param roleAssignments roleAssignmentType
 @sys.description('Optional. Lock settings of the scaling plan.')
 param lock lockType
 
-@sys.description('Optional. Enable telemetry.')
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @sys.description('Optional. The diagnostic settings of the service.')
