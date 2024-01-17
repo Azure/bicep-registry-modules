@@ -95,7 +95,8 @@ module workspace_privateEndpoints 'br/public:avm-res-network-privateendpoint:0.1
     groupIds: [
       privateEndpoint.?service //?? 'feed' fix
     ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'feed'}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.?service}-${index}'
+    //name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'feed'}-${index}'
     serviceResourceId: workspace.id
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: enableTelemetry

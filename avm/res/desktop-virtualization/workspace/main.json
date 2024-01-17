@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "3463125483430053989"
+      "templateHash": "18013904350951584476"
     },
     "name": "Workspace",
     "description": "This module deploys an Azure Virtual Desktop Workspace.",
@@ -571,11 +571,11 @@
         "parameters": {
           "groupIds": {
             "value": [
-              "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'workspace')]"
+              "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service')]"
             ]
           },
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.DesktopVirtualization/workspaces', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'workspace'), copyIndex()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.DesktopVirtualization/workspaces', parameters('name')), '/')), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), copyIndex()))]"
           },
           "serviceResourceId": {
             "value": "[resourceId('Microsoft.DesktopVirtualization/workspaces', parameters('name'))]"
