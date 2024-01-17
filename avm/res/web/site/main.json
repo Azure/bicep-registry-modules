@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "1531810359747805653"
+      "templateHash": "6827854649814438473"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -628,7 +628,7 @@
         "Required"
       ],
       "metadata": {
-        "description": "Optional. This composes with ClientCertEnabled setting.\r\n- ClientCertEnabled=false means ClientCert is ignored.\r\n- ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.\r\n- ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.\r\n"
+        "description": "Optional. This composes with ClientCertEnabled setting.\n- ClientCertEnabled=false means ClientCert is ignored.\n- ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.\n- ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.\n"
       }
     },
     "cloningInfo": {
