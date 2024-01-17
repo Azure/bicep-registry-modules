@@ -28,12 +28,12 @@ on:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.res.desktop-virtualization.host-pool.yml"
-      - "avm/res/key-vault/vault/**"
+      - "avm/res/desktop-virtualization/host-pool/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/key-vault/vault"
+  modulePath: "avm/res/desktop-virtualization/host-pool"
   workflowPath: ".github/workflows/avm.res.desktop-virtualization.host-pool.yml"
 
 concurrency:
