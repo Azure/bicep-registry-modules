@@ -99,7 +99,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dwmax'
+  name: '${uniqueString(deployment().name, tempLocation)}-test-dwmax'
   params: {
     // Required parameters
     name: 'dwmax001'

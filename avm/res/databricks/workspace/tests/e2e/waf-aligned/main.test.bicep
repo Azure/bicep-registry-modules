@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module in alignment with the b
 param resourceGroupName string = 'dep-${namePrefix}-databricks.workspaces-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param location string = 'westeurope'
+param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'dwwaf'
