@@ -26,10 +26,24 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+resource privateDNSZone_feed 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: 'privatelink.wvd.microsoft.com'
   location: 'global'
+  resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
+    name: '${virtualNetwork.name}-vnetlink'
+    location: 'global'
+    properties: {
+      virtualNetwork: {
+        id: virtualNetwork.id
+      }
+      registrationEnabled: false
+    }
+  }
+}
 
+resource privateDNSZone_global 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: 'privatelink.wvd.azure.com'
+  location: 'global'
   resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
     name: '${virtualNetwork.name}-vnetlink'
     location: 'global'
@@ -46,4 +60,7 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
 @description('The resource ID of the created Private DNS Zone.')
-output privateDNSResourceId string = privateDNSZone.id
+output privateDNSZoneResourceId_feed string = privateDNSZone_feed.id
+
+@description('The resource ID of the created Private DNS Zone.')
+output privateDNSZoneResourceId_global string = privateDNSZone_global.id

@@ -38,13 +38,68 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     name: '${namePrefix}${serviceShort}001'
     location: location
     publicNetworkAccess: 'Disabled'
+    // privateEndpoints: [
+    //   {
+    //     privateDnsZoneResourceIds: [
+    //       nestedDependencies.outputs.privateDNSResourceId
+    //     ]
+    //     subnetResourceId: nestedDependencies.outputs.subnetResourceId
+    //   }
+    // ]
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSResourceId
+          nestedDependencies.outputs.privateDNSZoneResourceId_feed
         ]
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+        ipConfigurations: [
+          {
+            name: 'myIPconfig'
+            properties: {
+              groupId: 'feed'
+              memberName: 'default'
+              privateIPAddress: '10.0.0.10'
+            }
+          }
+        ]
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.account.com'
+            ipAddresses: [
+              '10.0.0.10'
+            ]
+          }
+        ]
+      }
+	{
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId_global
+        ]
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+        ipConfigurations: [
+          {
+            name: 'myIPconfig'
+            properties: {
+              groupId: 'account'
+              memberName: 'default'
+              privateIPAddress: '10.0.0.10'
+            }
+          }
+        ]
+        customDnsConfigs: []
       }
     ]
   }
 }]
+
+
