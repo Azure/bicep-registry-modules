@@ -33,7 +33,7 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
 - [Using Private Endpoints](#example-3-using-private-endpoints)
-- [Using only defaults](#example-4-using-only-defaults)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -46,10 +46,10 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsmin'
+  name: '${uniqueString(deployment().name, location)}-test-dvwsmin'
   params: {
     // Required parameters
-    name: 'wsmin002'
+    name: 'dvwsmin002'
     // Non-required parameters
     location: '<location>'
   }
@@ -70,7 +70,7 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
   "parameters": {
     // Required parameters
     "name": {
-      "value": "wsmin002"
+      "value": "dvwsmin002"
     },
     // Non-required parameters
     "location": {
@@ -377,9 +377,9 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
 </details>
 <p>
 
-### Example 4: _Using only defaults_
+### Example 4: _WAF-aligned_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
 
 <details>
@@ -388,10 +388,10 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsmin'
+  name: '${uniqueString(deployment().name, location)}-test-dvwswaf'
   params: {
     // Required parameters
-    name: 'wsmin002'
+    name: 'dvwswaf002'
     // Non-required parameters
     location: '<location>'
     tags: {
@@ -417,7 +417,7 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
   "parameters": {
     // Required parameters
     "name": {
-      "value": "wsmin002"
+      "value": "dvwswaf002"
     },
     // Non-required parameters
     "location": {
