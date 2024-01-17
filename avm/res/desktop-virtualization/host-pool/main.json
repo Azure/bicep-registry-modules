@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "8774019153179535717"
+      "templateHash": "7524540239936682510"
     },
     "name": "Azure Virtual Desktop Host Pool",
     "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -582,7 +582,7 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Tags of the scaling plan."
       }

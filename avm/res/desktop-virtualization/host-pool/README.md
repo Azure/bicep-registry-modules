@@ -1155,7 +1155,6 @@ Tags of the scaling plan.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `tokenValidityLength`
 
