@@ -32,12 +32,12 @@
 #/avm/res/compute/virtual-machine-scale-set/ @Azure/avm-res-compute-virtualmachinescaleset-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/consumption/budget/ @Azure/avm-res-consumption-budget-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/container-instance/container-group/ @Azure/avm-res-containerinstance-containergroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/container-registry/registry/ @Azure/avm-res-containerregistry-registry-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/container-registry/registry/ @Azure/avm-res-containerregistry-registry-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/container-service/managed-cluster/ @Azure/avm-res-containerservice-managedcluster-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/databricks/access-connector/ @Azure/avm-res-databricks-accessconnector-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/databricks/workspace/ @Azure/avm-res-databricks-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/data-factory/factory/ @Azure/avm-res-datafactory-factory-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/data-protection/backup-vault/ @Azure/avm-res-dataprotection-backupvault-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/data-protection/backup-vault/ @Azure/avm-res-dataprotection-backupvault-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/db-for-my-sql/flexible-server/ @Azure/avm-res-dbformysql-flexibleserver-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/db-for-postgre-sql/flexible-server/ @Azure/avm-res-dbforpostgresql-flexibleserver-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/desktop-virtualization/application-group/ @Azure/avm-res-desktopvirtualization-applicationgroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -52,7 +52,7 @@
 /avm/res/event-grid/system-topic/ @Azure/avm-res-eventgrid-systemtopic-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/event-grid/topic/ @Azure/avm-res-eventgrid-topic-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/event-hub/namespace/ @Azure/avm-res-eventhub-namespace-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/health-bot/health-bot/ @Azure/avm-res-healthbot-healthbot-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/health-bot/health-bot/ @Azure/avm-res-healthbot-healthbot-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/healthcare-apis/workspace/ @Azure/avm-res-healthcareapis-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/action-group/ @Azure/avm-res-insights-actiongroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/activity-log-alert/ @Azure/avm-res-insights-activitylogalert-module-owners-bicep @Azure/avm-core-team-technical-bicep
