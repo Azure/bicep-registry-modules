@@ -268,6 +268,18 @@ resource hostPool_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021
   scope: hostPool
 }]
 
+@sys.description('The resource ID of the scaling plan.')
+output resourceId string = hostPool.id
+
+@sys.description('The name of the resource group the scaling plan was created in.')
+output resourceGroupName string = resourceGroup().name
+
+@sys.description('The name of the scaling plan.')
+output name string = hostPool.name
+
+@sys.description('The location of the scaling plan.')
+output location string = hostPool.location
+
 // ================ //
 // Definitions      //
 // ================ //
