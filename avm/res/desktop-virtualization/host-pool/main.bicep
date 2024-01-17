@@ -172,7 +172,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-11-01-preview' = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
   name: name
   location: location
   tags: tags
@@ -207,9 +207,9 @@ module hostPool_privateEndpoints 'br/public:avm-res-network-privateendpoint:0.1.
   name: '${uniqueString(deployment().name, location)}-Workspace-PrivateEndpoint-${index}'
   params: {
     groupIds: [
-      privateEndpoint.?service ?? 'feed' //fix
+      privateEndpoint.?service ?? 'connection'
     ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'feed'}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
     serviceResourceId: hostPool.id
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: enableTelemetry
