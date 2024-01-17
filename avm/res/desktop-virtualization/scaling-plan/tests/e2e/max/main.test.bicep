@@ -78,7 +78,7 @@ var varScalingPlanSchedules = [
     rampDownCapacityThresholdPct: 90
     rampDownForceLogoffUsers: true
     rampDownLoadBalancingAlgorithm: 'DepthFirst'
-    rampDownMinimumHostsPct: 0 //10
+    rampDownMinimumHostsPct: 0
     rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
     rampDownStartTime: {
       hour: 19
