@@ -1,8 +1,6 @@
 @sys.description('Optional. The location to deploy to.')
 param location string = resourceGroup().location
 
-param tags object = {}
-
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
