@@ -113,7 +113,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       keyVaultResourceId: nestedDependencies.outputs.keyVaultDiskResourceId
       rotationToLatestKeyVersionEnabled: true
     }
-    storageAccountName: 'sa${namePrefix}${serviceShort}001'
+    storageAccountName: 'sa${namePrefix}${serviceShort}002'
     storageAccountSkuName: 'Standard_ZRS'
     publicIpName: 'nat-gw-public-ip'
     natGatewayName: 'nat-gateway'
