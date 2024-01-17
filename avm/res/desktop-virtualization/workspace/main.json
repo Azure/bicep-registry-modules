@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "18013904350951584476"
+      "templateHash": "18270710366452325266"
     },
     "name": "Workspace",
     "description": "This module deploys an Azure Virtual Desktop Workspace.",
@@ -369,7 +369,7 @@
     },
     "location": {
       "type": "string",
-      "defaultValue": "eastus",
+      "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "Optional. Location for all resources."
       }
@@ -1088,18 +1088,30 @@
   "outputs": {
     "resourceId": {
       "type": "string",
+      "metadata": {
+        "description": "The resource ID of the workspace."
+      },
       "value": "[resourceId('Microsoft.DesktopVirtualization/workspaces', parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the workspace was created in."
+      },
       "value": "[resourceGroup().name]"
     },
     "name": {
       "type": "string",
+      "metadata": {
+        "description": "The name of the workspace."
+      },
       "value": "[parameters('name')]"
     },
     "location": {
       "type": "string",
+      "metadata": {
+        "description": "The location of the workspace."
+      },
       "value": "[reference('workspace', '2022-10-14-preview', 'full').location]"
     }
   }

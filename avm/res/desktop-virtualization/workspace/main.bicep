@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 param name string
 
 @sys.description('Optional. Location for all resources.')
-param location string = 'eastus'
+param location string = resourceGroup().location
 
 @sys.description('Optional. Tags to be applied on all resourcesin this deployment.')
 param tags object?
@@ -155,9 +155,16 @@ resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@202
   scope: workspace
 }]
 
+@sys.description('The resource ID of the workspace.')
 output resourceId string = workspace.id
+
+@sys.description('The name of the resource group the workspace was created in.')
 output resourceGroupName string = resourceGroup().name
+
+@sys.description('The name of the workspace.')
 output name string = workspace.name
+
+@sys.description('The location of the workspace.')
 output location string = workspace.location
 
 // ================ //

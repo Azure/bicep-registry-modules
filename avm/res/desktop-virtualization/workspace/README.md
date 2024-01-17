@@ -598,7 +598,7 @@ Location for all resources.
 
 - Required: No
 - Type: string
-- Default: `'eastus'`
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
 
@@ -991,12 +991,12 @@ Tags to be applied on all resourcesin this deployment.
 
 ## Outputs
 
-| Output | Type |
-| :-- | :-- |
-| `location` | string |
-| `name` | string |
-| `resourceGroupName` | string |
-| `resourceId` | string |
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `location` | string | The location of the workspace. |
+| `name` | string | The name of the workspace. |
+| `resourceGroupName` | string | The name of the resource group the workspace was created in. |
+| `resourceId` | string | The resource ID of the workspace. |
 
 ## Cross-referenced modules
 
