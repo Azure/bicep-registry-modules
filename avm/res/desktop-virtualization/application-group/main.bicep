@@ -2,7 +2,7 @@ metadata name = 'Azure Virtual Desktop Application Group'
 metadata description = 'This module deploys an Azure Virtual Desktop Application Group.'
 metadata owner = 'Azure/module-maintainers'
 
-@sys.description('Required. Name of the Application Group to create this application in.')
+@sys.description('Required. Name of the Application Group.')
 @minLength(3)
 param name string
 
@@ -22,14 +22,14 @@ param hostpoolName string
 @sys.description('Optional. The friendly name of the Application Group to be created.')
 param friendlyName string = name
 
-@sys.description('Optional. Description of the application group')
+@sys.description('Optional. Description of the application group.')
 param description string = ''
 
 @sys.description('Optional. List of applications to be created in the Application Group.')
 param applications array = []
 
 @sys.description('Optional. Tags of the application group.')
-param tags object = {}
+param tags object?
 
 @sys.description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
 param roleAssignments roleAssignmentType
