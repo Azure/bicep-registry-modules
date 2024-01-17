@@ -33,7 +33,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-diagnosticDependencies'
   params: {
-    storageAccountName: 'depmyteststaslkdj' //'dep${namePrefix}diasa${serviceShort}01'
+    storageAccountName: substring('dep${uniqueString(deployment().name, location)}${serviceShort}03', 0, 24)
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
