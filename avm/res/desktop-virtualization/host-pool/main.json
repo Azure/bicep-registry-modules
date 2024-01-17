@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "12276996219783181305"
+      "templateHash": "10809633670221027404"
     },
     "name": "Azure Virtual Desktop Host Pool",
     "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -603,7 +603,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "diagnosticSettings": {

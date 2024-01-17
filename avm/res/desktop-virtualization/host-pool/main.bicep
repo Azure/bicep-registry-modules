@@ -116,7 +116,7 @@ param roleAssignments roleAssignmentType
 @sys.description('Optional. Lock settings of the scaling plan.')
 param lock lockType
 
-@sys.description('Optional. Enable telemetry.')
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @sys.description('Optional. The diagnostic settings of the service.')
