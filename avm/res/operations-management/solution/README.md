@@ -9,6 +9,7 @@ This module deploys an Operations Management Solution.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -280,9 +281,24 @@ module solution 'br/public:avm/res/operations-management/solution:<version>' = {
 | [`product`](#parameter-product) | string | The product of the deployed solution. For Microsoft published gallery solution it should be `OMSGallery` and the target solution resource product will be composed as `OMSGallery/{name}`. For third party solution, it can be anything. This is case sensitive. |
 | [`publisher`](#parameter-publisher) | string | The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`. |
 
+### Parameter: `logAnalyticsWorkspaceName`
+
+Name of the Log Analytics workspace where the solution will be deployed/enabled.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `name`
+
+Name of the solution. For Microsoft published gallery solution the target solution resource name will be composed as `{name}({logAnalyticsWorkspaceName})`.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
+
 - Required: No
 - Type: bool
 - Default: `True`
@@ -290,25 +306,15 @@ Enable/Disable usage telemetry for module.
 ### Parameter: `location`
 
 Location for all resources.
+
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
 
-### Parameter: `logAnalyticsWorkspaceName`
-
-Name of the Log Analytics workspace where the solution will be deployed/enabled.
-- Required: Yes
-- Type: string
-
-### Parameter: `name`
-
-Name of the solution. For Microsoft published gallery solution the target solution resource name will be composed as `{name}({logAnalyticsWorkspaceName})`.
-- Required: Yes
-- Type: string
-
 ### Parameter: `product`
 
 The product of the deployed solution. For Microsoft published gallery solution it should be `OMSGallery` and the target solution resource product will be composed as `OMSGallery/{name}`. For third party solution, it can be anything. This is case sensitive.
+
 - Required: No
 - Type: string
 - Default: `'OMSGallery'`
@@ -316,6 +322,7 @@ The product of the deployed solution. For Microsoft published gallery solution i
 ### Parameter: `publisher`
 
 The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`.
+
 - Required: No
 - Type: string
 - Default: `'Microsoft'`
@@ -333,3 +340,7 @@ The publisher name of the deployed solution. For Microsoft published gallery sol
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

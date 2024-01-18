@@ -450,15 +450,16 @@ function New-TemplateDeployment {
 
         ## Iterate through each file
         $deploymentInputObject = @{
-            templateFilePath     = $templateFilePath
-            additionalTags       = $additionalTags
-            additionalParameters = $additionalParameters
-            location             = $location
-            resourceGroupName    = $resourceGroupName
-            subscriptionId       = $subscriptionId
-            managementGroupId    = $managementGroupId
-            doNotThrow           = $doNotThrow
-            retryLimit           = $retryLimit
+            TemplateFilePath     = $templateFilePath
+            AdditionalTags       = $additionalTags
+            AdditionalParameters = $additionalParameters
+            Location             = $location
+            ResourceGroupName    = $resourceGroupName
+            SubscriptionId       = $subscriptionId
+            ManagementGroupId    = $managementGroupId
+            DoNotThrow           = $doNotThrow
+            RetryLimit           = $retryLimit
+            RepoRoot             = $RepoRoot
         }
         if ($parameterFilePath) {
             if ($parameterFilePath -is [array]) {

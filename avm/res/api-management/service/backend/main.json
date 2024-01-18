@@ -1,0 +1,146 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "1760564242838625433"
+    },
+    "name": "API Management Service Backends",
+    "description": "This module deploys an API Management Service Backend.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Backend Name."
+      }
+    },
+    "credentials": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Backend Credentials Contract Properties."
+      }
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Backend Description."
+      }
+    },
+    "protocol": {
+      "type": "string",
+      "defaultValue": "http",
+      "metadata": {
+        "description": "Optional. Backend communication protocol. - http or soap."
+      }
+    },
+    "proxy": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Backend Proxy Contract Properties."
+      }
+    },
+    "resourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps."
+      }
+    },
+    "serviceFabricCluster": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Backend Service Fabric Cluster Properties."
+      }
+    },
+    "title": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Backend Title."
+      }
+    },
+    "tls": {
+      "type": "object",
+      "defaultValue": {
+        "validateCertificateChain": false,
+        "validateCertificateName": false
+      },
+      "metadata": {
+        "description": "Optional. Backend TLS Properties."
+      }
+    },
+    "url": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Runtime URL of the Backend."
+      }
+    }
+  },
+  "resources": {
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2021-08-01",
+      "name": "[parameters('apiManagementServiceName')]"
+    },
+    "backend": {
+      "type": "Microsoft.ApiManagement/service/backends",
+      "apiVersion": "2021-08-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+      "properties": {
+        "title": "[parameters('title')]",
+        "description": "[parameters('description')]",
+        "resourceId": "[parameters('resourceId')]",
+        "properties": {
+          "serviceFabricCluster": "[parameters('serviceFabricCluster')]"
+        },
+        "credentials": "[parameters('credentials')]",
+        "proxy": "[parameters('proxy')]",
+        "tls": "[parameters('tls')]",
+        "url": "[parameters('url')]",
+        "protocol": "[parameters('protocol')]"
+      },
+      "dependsOn": [
+        "service"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the API management service backend."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/backends', parameters('apiManagementServiceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the API management service backend."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the API management service backend was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

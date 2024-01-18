@@ -20,7 +20,7 @@ param autoScaleConfigurationBoundsMax int = 2
 @description('Optional. Minimum number of scale units deployed for ExpressRoute gateway.')
 param autoScaleConfigurationBoundsMin int = 2
 
-@description('Optional. List of ExpressRoute connections to the ExpressRoute gateway.')
+@description('Optional. List of ExpressRoute connections to the ExpressRoute gateway. **Note:** This parameter will overwrite existing connections, including deleting any that are not provided. This is by-design behavior of the resource provider.')
 param expressRouteConnections array = []
 
 @description('Required. Resource ID of the Virtual Wan Hub.')
@@ -29,7 +29,7 @@ param virtualHubId string
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. The lock settings of the service.')
@@ -141,7 +141,7 @@ type roleAssignmentType = {
   @description('Optional. The description of the role assignment.')
   description: string?
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
+  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
   @description('Optional. Version of the condition.')

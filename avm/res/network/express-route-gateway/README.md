@@ -9,6 +9,7 @@ This module deploys an Express Route Gateway.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -47,7 +48,6 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
     name: 'nergmin001'
     virtualHubId: '<virtualHubId>'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
   }
 }
@@ -73,9 +73,6 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
       "value": "<virtualHubId>"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     }
@@ -105,7 +102,6 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
     // Non-required parameters
     autoScaleConfigurationBoundsMax: 3
     autoScaleConfigurationBoundsMin: 2
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -161,9 +157,6 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
     },
     "autoScaleConfigurationBoundsMin": {
       "value": 2
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
@@ -225,7 +218,6 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
     // Non-required parameters
     autoScaleConfigurationBoundsMax: 3
     autoScaleConfigurationBoundsMin: 2
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -264,9 +256,6 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
     },
     "autoScaleConfigurationBoundsMin": {
       "value": 2
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
@@ -307,16 +296,31 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
 | [`allowNonVirtualWanTraffic`](#parameter-allownonvirtualwantraffic) | bool | Configures this gateway to accept traffic from non Virtual WAN networks. |
 | [`autoScaleConfigurationBoundsMax`](#parameter-autoscaleconfigurationboundsmax) | int | Maximum number of scale units deployed for ExpressRoute gateway. |
 | [`autoScaleConfigurationBoundsMin`](#parameter-autoscaleconfigurationboundsmin) | int | Minimum number of scale units deployed for ExpressRoute gateway. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
-| [`expressRouteConnections`](#parameter-expressrouteconnections) | array | List of ExpressRoute connections to the ExpressRoute gateway. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`expressRouteConnections`](#parameter-expressrouteconnections) | array | List of ExpressRoute connections to the ExpressRoute gateway. **Note:** This parameter will overwrite existing connections, including deleting any that are not provided. This is by-design behavior of the resource provider. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the Firewall policy resource. |
 
+### Parameter: `name`
+
+Name of the Express Route Gateway.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualHubId`
+
+Resource ID of the Virtual Wan Hub.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `allowNonVirtualWanTraffic`
 
 Configures this gateway to accept traffic from non Virtual WAN networks.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -324,6 +328,7 @@ Configures this gateway to accept traffic from non Virtual WAN networks.
 ### Parameter: `autoScaleConfigurationBoundsMax`
 
 Maximum number of scale units deployed for ExpressRoute gateway.
+
 - Required: No
 - Type: int
 - Default: `2`
@@ -331,20 +336,23 @@ Maximum number of scale units deployed for ExpressRoute gateway.
 ### Parameter: `autoScaleConfigurationBoundsMin`
 
 Minimum number of scale units deployed for ExpressRoute gateway.
+
 - Required: No
 - Type: int
 - Default: `2`
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
+
 - Required: No
 - Type: bool
 - Default: `True`
 
 ### Parameter: `expressRouteConnections`
 
-List of ExpressRoute connections to the ExpressRoute gateway.
+List of ExpressRoute connections to the ExpressRoute gateway. **Note:** This parameter will overwrite existing connections, including deleting any that are not provided. This is by-design behavior of the resource provider.
+
 - Required: No
 - Type: array
 - Default: `[]`
@@ -352,6 +360,7 @@ List of ExpressRoute connections to the ExpressRoute gateway.
 ### Parameter: `location`
 
 Location for all resources.
+
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
@@ -359,115 +368,134 @@ Location for all resources.
 ### Parameter: `lock`
 
 The lock settings of the service.
+
 - Required: No
 - Type: object
 
+**Optional parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`kind`](#parameter-lockkind) | No | string | Optional. Specify the type of lock. |
-| [`name`](#parameter-lockname) | No | string | Optional. Specify the name of lock. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
 
 ### Parameter: `lock.kind`
 
-Optional. Specify the type of lock.
+Specify the type of lock.
 
 - Required: No
 - Type: string
-- Allowed: `[CanNotDelete, None, ReadOnly]`
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
 
 ### Parameter: `lock.name`
 
-Optional. Specify the name of lock.
+Specify the name of lock.
 
 - Required: No
-- Type: string
-
-### Parameter: `name`
-
-Name of the Express Route Gateway.
-- Required: Yes
 - Type: string
 
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
+
 - Required: No
 - Type: array
 
+**Required parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`condition`](#parameter-roleassignmentscondition) | No | string | Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
-| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | No | string | Optional. Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | No | string | Optional. The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-roleassignmentsdescription) | No | string | Optional. The description of the role assignment. |
-| [`principalId`](#parameter-roleassignmentsprincipalid) | Yes | string | Required. The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`principalType`](#parameter-roleassignmentsprincipaltype) | No | string | Optional. The principal type of the assigned principal ID. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `roleAssignments.condition`
 
-Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.conditionVersion`
 
-Optional. Version of the condition.
+Version of the condition.
 
 - Required: No
 - Type: string
-- Allowed: `[2.0]`
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
-Optional. The Resource Id of the delegated managed identity resource.
+The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.description`
 
-Optional. The description of the role assignment.
+The description of the role assignment.
 
 - Required: No
-- Type: string
-
-### Parameter: `roleAssignments.principalId`
-
-Required. The principal ID of the principal (user/group/identity) to assign the role to.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `roleAssignments.principalType`
 
-Optional. The principal type of the assigned principal ID.
+The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Allowed: `[Device, ForeignGroup, Group, ServicePrincipal, User]`
-
-### Parameter: `roleAssignments.roleDefinitionIdOrName`
-
-Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
-
-- Required: Yes
-- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `tags`
 
 Tags of the Firewall policy resource.
+
 - Required: No
 - Type: object
-
-### Parameter: `virtualHubId`
-
-Resource ID of the Virtual Wan Hub.
-- Required: Yes
-- Type: string
 
 
 ## Outputs
@@ -482,3 +510,7 @@ Resource ID of the Virtual Wan Hub.
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

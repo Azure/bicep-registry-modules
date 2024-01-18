@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "13024100603539103519"
+      "version": "0.24.24.22086",
+      "templateHash": "1435642038697069486"
     },
     "name": "Event Grid System Topics",
     "description": "This module deploys an Event Grid System Topic.",
@@ -69,7 +69,7 @@
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
-              "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
             }
           },
           "principalId": {
@@ -103,7 +103,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
             }
           },
           "conditionVersion": {
@@ -180,7 +180,7 @@
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to '' to disable metric collection."
             }
           },
           "logAnalyticsDestinationType": {
@@ -276,7 +276,7 @@
     "roleAssignments": {
       "$ref": "#/definitions/roleAssignmentType",
       "metadata": {
-        "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+        "description": "Optional. Array of role assignments to create."
       }
     },
     "lock": {
@@ -443,7 +443,6 @@
           "expirationTimeUtc": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'expirationTimeUtc'), createObject('value', parameters('eventSubscriptions')[copyIndex()].expirationTimeUtc), createObject('value', ''))]",
           "filter": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'filter'), createObject('value', parameters('eventSubscriptions')[copyIndex()].filter), createObject('value', createObject()))]",
           "labels": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'labels'), createObject('value', parameters('eventSubscriptions')[copyIndex()].labels), createObject('value', createArray()))]",
-          "location": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'location'), createObject('value', parameters('eventSubscriptions')[copyIndex()].location), createObject('value', reference('systemTopic', '2021-12-01', 'full').location))]",
           "retryPolicy": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'retryPolicy'), createObject('value', parameters('eventSubscriptions')[copyIndex()].retryPolicy), createObject('value', createObject()))]"
         },
         "template": {
@@ -452,8 +451,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "15173790856574805238"
+              "version": "0.24.24.22086",
+              "templateHash": "17973992796962490837"
             },
             "name": "Event Grid System Topic Event Subscriptions",
             "description": "This module deploys an Event Grid System Topic Event Subscription.",
@@ -464,20 +463,6 @@
               "type": "string",
               "metadata": {
                 "description": "Required. The name of the Event Subscription."
-              }
-            },
-            "location": {
-              "type": "string",
-              "defaultValue": "[resourceGroup().location]",
-              "metadata": {
-                "description": "Optional. Location for all Resources."
-              }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
               }
             },
             "systemTopicName": {
@@ -557,20 +542,6 @@
           },
           "resources": [
             {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
-            {
               "type": "Microsoft.EventGrid/systemTopics/eventSubscriptions",
               "apiVersion": "2022-06-15",
               "name": "[format('{0}/{1}', parameters('systemTopicName'), parameters('name'))]",
@@ -578,7 +549,7 @@
                 "deadLetterDestination": "[if(not(empty(parameters('deadLetterDestination'))), parameters('deadLetterDestination'), null())]",
                 "deadLetterWithResourceIdentity": "[if(not(empty(parameters('deadLetterWithResourceIdentity'))), parameters('deadLetterWithResourceIdentity'), null())]",
                 "deliveryWithResourceIdentity": "[if(not(empty(parameters('deliveryWithResourceIdentity'))), parameters('deliveryWithResourceIdentity'), null())]",
-                "destination": "[parameters('destination')]",
+                "destination": "[if(empty(parameters('deliveryWithResourceIdentity')), parameters('destination'), null())]",
                 "eventDeliverySchema": "[parameters('eventDeliverySchema')]",
                 "expirationTimeUtc": "[if(not(empty(parameters('expirationTimeUtc'))), parameters('expirationTimeUtc'), '')]",
                 "filter": "[if(not(empty(parameters('filter'))), parameters('filter'), createObject())]",

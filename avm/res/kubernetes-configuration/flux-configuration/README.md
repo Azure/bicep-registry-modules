@@ -10,6 +10,7 @@ This module deploys a Kubernetes Configuration Flux Configuration.
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -369,65 +370,38 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`suspend`](#parameter-suspend) | bool | Whether this configuration should suspend its reconciliation of its kustomizations and sources. |
 
-### Parameter: `bucket`
-
-Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `Bucket`.
-- Required: No
-- Type: object
-
 ### Parameter: `clusterName`
 
 The name of the AKS cluster that should be configured.
+
 - Required: Yes
 - Type: string
-
-### Parameter: `configurationProtectedSettings`
-
-Key-value pairs of protected configuration settings for the configuration.
-- Required: No
-- Type: secureObject
-
-### Parameter: `enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `gitRepository`
-
-Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `GitRepository`.
-- Required: No
-- Type: object
 
 ### Parameter: `kustomizations`
 
 Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster.
+
 - Required: Yes
 - Type: object
-
-### Parameter: `location`
-
-Location for all resources.
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
 
 ### Parameter: `name`
 
 The name of the Flux Configuration.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `namespace`
 
 The namespace to which this configuration is installed to. Maximum of 253 lower case alphanumeric characters, hyphen and period only.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `scope`
 
 Scope at which the configuration will be installed.
+
 - Required: Yes
 - Type: string
 - Allowed:
@@ -441,6 +415,7 @@ Scope at which the configuration will be installed.
 ### Parameter: `sourceKind`
 
 Source Kind to pull the configuration data from.
+
 - Required: Yes
 - Type: string
 - Allowed:
@@ -451,9 +426,47 @@ Source Kind to pull the configuration data from.
   ]
   ```
 
+### Parameter: `bucket`
+
+Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `Bucket`.
+
+- Required: No
+- Type: object
+
+### Parameter: `gitRepository`
+
+Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `GitRepository`.
+
+- Required: No
+- Type: object
+
+### Parameter: `configurationProtectedSettings`
+
+Key-value pairs of protected configuration settings for the configuration.
+
+- Required: No
+- Type: secureObject
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
+
 ### Parameter: `suspend`
 
 Whether this configuration should suspend its reconciliation of its kustomizations and sources.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -488,3 +501,7 @@ az provider register --namespace Microsoft.KubernetesConfiguration
 ```
 
 For more details see [Prerequisites](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2)
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
