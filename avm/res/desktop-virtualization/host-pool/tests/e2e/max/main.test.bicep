@@ -13,7 +13,7 @@ param location string = deployment().location
 param serviceShort string = 'dvhpmax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'tm' //'#_namePrefix_#'
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
@@ -26,6 +26,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: location
     managedIdentityName: 'sp-managedIdentity'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
 
@@ -66,6 +67,14 @@ module testDeployment '../../../main.bicep' = {
     friendlyName: 'AVDv2'
     hostPoolType: 'Pooled'
     publicNetworkAccess: 'Disabled'
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSResourceId
+        ]
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      }
+    ]
     loadBalancerType: 'BreadthFirst'
     location: location
     maxSessionLimit: 99999

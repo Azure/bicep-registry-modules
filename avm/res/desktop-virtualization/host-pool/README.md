@@ -141,6 +141,14 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
     }
     maxSessionLimit: 99999
     personalDesktopAssignmentType: 'Automatic'
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
     publicNetworkAccess: 'Disabled'
     roleAssignments: [
       {
@@ -257,6 +265,16 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
     },
     "personalDesktopAssignmentType": {
       "value": "Automatic"
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
     },
     "publicNetworkAccess": {
       "value": "Disabled"
