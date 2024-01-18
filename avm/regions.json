@@ -11,7 +11,7 @@
     "eastus2"
   ],
   "microsoft.compute/*": [
-    "westus3"
+    "eastus"
   ]
 }
 
