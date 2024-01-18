@@ -24,18 +24,24 @@ function Get-AzDeploymentRegion {
     [cmdletbinding()]
     [switch] $usePairedRegionsOnly,
 
+    [Parameter(Mandatory = $false)]
+    [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName,
+
     [Parameter(Mandatory = $true)]
     [string] $ModuleRoot
   )
 
-  . (Join-Path $PSScriptRoot 'helper' 'Get-SpecsAlignedResourceName.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-SpecsAlignedResourceName.ps1')
   $fullModuleIdentifier = ($moduleRoot -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/'
-  $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $FullModuleIdentifier
+  Write-Verbose "Full module identifier: $fullModuleIdentifier"
+  $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $FullModuleIdentifier -Verbose
 
   $type = ($fullModuleIdentifier -split '[\/|\\]{1}')[2]
+  Write-Verbose "Resource type: $type"
   $resource = ($fullModuleIdentifier -split '[\/|\\]{1}')[3]
+  Write-Verbose "Resource: $resource"
 
-  $controlledRegionList = Get-Content -Path $PSScriptRoot/regions.json -Raw | ConvertFrom-Json
+  $controlledRegionList = Get-Content -Path $RepoRoot/avm/regions.json -Raw | ConvertFrom-Json
 
   if ($controlledRegionList | Get-Member -Name $type) {
     $recommendedRegions += $controlledRegionList[$formattedResourceType]
