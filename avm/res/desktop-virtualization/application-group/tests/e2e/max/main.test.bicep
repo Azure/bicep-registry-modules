@@ -25,7 +25,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: location
     hostPoolName: 'dep-${namePrefix}-hp-${serviceShort}'
-    managedIdentityName: 'ag-managedIdentity'
+    managedIdentityName: 'dvagmax-managedIdentity'
   }
 }
 
