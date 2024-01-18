@@ -334,9 +334,6 @@ resource applicationGateway_diagnosticSettings 'Microsoft.Insights/diagnosticSet
 module applicationGateway_privateEndpoints '../../network/private-endpoint/main.bicep' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-applicationGateway-PrivateEndpoint-${index}'
   params: {
-    groupIds: [
-      privateEndpoint.service
-    ]
     name: privateEndpoint.?name ?? 'pep-${last(split(applicationGateway.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
     serviceResourceId: applicationGateway.id
     subnetResourceId: privateEndpoint.subnetResourceId
