@@ -122,8 +122,22 @@ resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(
   scope: workspace
 }
 
+// resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
+//   name: guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
+//   properties: {
+//     roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
+//     principalId: roleAssignment.principalId
+//     description: roleAssignment.?description
+//     principalType: roleAssignment.?principalType
+//     condition: roleAssignment.?condition
+//     conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null
+//     delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+//   }
+//   scope: workspace
+// }]
+
 resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
+  name: guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
   properties: {
     roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
     principalId: roleAssignment.principalId
