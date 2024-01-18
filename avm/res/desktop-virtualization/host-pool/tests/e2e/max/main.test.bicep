@@ -25,7 +25,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     location: location
-    managedIdentityName: 'hp-managedIdentity'
+    managedIdentityName: 'dvhpmax-managedIdentity'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
@@ -70,7 +70,7 @@ module testDeployment '../../../main.bicep' = {
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSResourceId
+          nestedDependencies.outputs.privateDNSZoneResourceId
         ]
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
       }
