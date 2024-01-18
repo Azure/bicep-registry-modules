@@ -13,7 +13,7 @@ param location string = deployment().location
 param serviceShort string = 'dvwspe'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'tpe' //'#_namePrefix_#'
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
@@ -50,10 +50,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         }
         ipConfigurations: [
           {
+            name: 'myIPconfig-feed'
             groupId: 'feed'
-            memberName: 'default'
+            memberName: 'feed'
             privateIpAddress: '10.0.0.10'
-            name: 'myIPconfig'
           }
         ]
         customDnsConfigs: []
@@ -70,10 +70,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         }
         ipConfigurations: [
           {
+            name: 'myIPconfig-global'
             groupId: 'global'
-            memberName: 'default'
-            privateIpAddress: '10.0.0.12'
-            name: 'myIPconfig'
+            memberName: 'global'
+            privateIpAddress: '10.0.0.11'
           }
         ]
         customDnsConfigs: []
@@ -81,3 +81,140 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
   }
 }]
+
+// privateEndpoints: [
+//   {
+//     service: 'feed'
+//     subnetResourceId: nestedDependencies.outputs.subnetResourceId
+//     privateDnsZoneGroup: {
+//       privateDNSResourceIds: [
+//         nestedDependencies.outputs.privateDNSZoneResourceId
+//       ]
+//     }
+//     tags: {
+//       Environment: 'Non-Prod'
+//       Role: 'DeploymentValidation'
+//     }
+//   }
+//   {
+//     service: 'global'
+//     subnetResourceId: nestedDependencies.outputs.subnetResourceId
+//     privateDnsZoneGroup: {
+//       privateDNSResourceIds: [
+//         nestedDependencies.outputs.privateDNSZoneResourceId
+//       ]
+//     }
+//     tags: {
+//       Environment: 'Non-Prod'
+//       Role: 'DeploymentValidation'
+//     }
+//   }
+// ]
+
+// privateEndpoints: [
+// {
+// privateDnsZoneResourceIds: [
+// nestedDependencies.outputs.privateDNSZoneResourceId
+// ]
+// subnetResourceId: nestedDependencies.outputs.subnetResourceId
+// tags: {
+// 'hidden-title': 'This is visible in the resource name'
+// Environment: 'Non-Prod'
+// Role: 'DeploymentValidation'
+// }
+// ipConfigurations: [
+// {
+// name: 'myIPconfig-feed'
+// properties: {
+// groupId: 'feed'
+// memberName: 'feed'
+// privateIPAddress: '10.0.0.10'
+// }
+// }
+// ]
+// customDnsConfigs: [
+// {
+// fqdn: 'abc.avd.com'
+// ipAddresses: [
+// '10.0.0.10'
+// ]
+// }
+// ]
+// }
+// {
+// privateDnsZoneResourceIds: [
+// nestedDependencies.outputs.privateDNSZoneResourceId
+// ]
+// subnetResourceId: nestedDependencies.outputs.subnetResourceId
+// tags: {
+// 'hidden-title': 'This is visible in the resource name'
+// Environment: 'Non-Prod'
+// Role: 'DeploymentValidation'
+// }
+// ipConfigurations: [
+// {
+// name: 'myIPconfig-global'
+// properties: {
+// groupId: 'global'
+// memberName: 'global'
+// privateIPAddress: '10.0.0.10'
+// }
+// }
+// ]
+// customDnsConfigs: [
+// {
+// fqdn: 'abc.avd.com'
+// ipAddresses: [
+// '10.0.0.11'
+// ]
+// }
+// ]
+// }
+// ]
+
+// module testDeployment '../../../main.bicep' = {
+//   scope: resourceGroup
+//   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
+//   params: {
+//     name: '${namePrefix}-${serviceShort}'
+//     location: location
+//     administratorLogin: 'adminUserName'
+//     administratorLoginPassword: password
+//     privateEndpoints: [
+//       {
+//         privateDnsZoneResourceIds: [
+//           nestedDependencies.outputs.privateDNSZoneResourceId
+//         ]
+//         subnetResourceId: nestedDependencies.outputs.subnetResourceId
+//         tags: {
+//           'hidden-title': 'This is visible in the resource name'
+//           Environment: 'Non-Prod'
+//           Role: 'DeploymentValidation'
+//         }
+//         ipConfigurations: [
+//           {
+//             name: 'myIPconfig'
+//             properties: {
+//               groupId: 'sqlServer'
+//               memberName: 'sqlServer'
+//               privateIPAddress: '10.0.0.10'
+//             }
+//           }
+//         ]
+//         customDnsConfigs: [
+//           {
+//             fqdn: 'abc.sqlServer.com'
+//             ipAddresses: [
+//               '10.0.0.10'
+//             ]
+//           }
+//         ]
+//       }
+//     ]
+//     tags: {
+//       'hidden-title': 'This is visible in the resource name'
+//       Environment: 'Non-Prod'
+//       Role: 'DeploymentValidation'
+//     }
+//   }
+// }
