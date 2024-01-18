@@ -72,14 +72,18 @@ module publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.2.1' = [
     location: location
     lock: publicIPAddressObject.?lock ?? lock
     diagnosticSettings: publicIPAddressObject.?diagnosticSettings
-    publicIPAddressVersion: contains(publicIPAddressObject, 'publicIPAddressVersion') ? publicIPAddressObject.publicIPAddressVersion : 'IPv4'
+    publicIPAddressVersion: publicIPAddressObject.?publicIPAddressVersion
     publicIPAllocationMethod: 'Static'
-    publicIpPrefixResourceId: contains(publicIPAddressObject, 'publicIPPrefixResourceId') ? publicIPAddressObject.publicIPPrefixResourceId : ''
-    roleAssignments: contains(publicIPAddressObject, 'roleAssignments') ? publicIPAddressObject.roleAssignments : []
-    skuName: 'Standard'
-    skuTier: contains(publicIPAddressObject, 'skuTier') ? publicIPAddressObject.skuTier : 'Regional'
+    publicIpPrefixResourceId: publicIPAddressObject.?publicIPPrefixResourceId
+    roleAssignments: publicIPAddressObject.?roleAssignments
+    skuName: 'Standard' // Must be standard
+    skuTier: publicIPAddressObject.?skuTier
     tags: publicIPAddressObject.?tags ?? tags
-    zones: contains(publicIPAddressObject, 'zones') ? publicIPAddressObject.zones : []
+    zones: publicIPAddressObject.?zones
+    enableTelemetry: publicIPAddressObject.?enableTelemetry ?? enableTelemetry
+    ddosSettings: publicIPAddressObject.?ddosSettings
+    dnsSettings: publicIPAddressObject.?dnsSettings
+    idleTimeoutInMinutes: publicIPAddressObject.?idleTimeoutInMinutes
   }
 }]
 
@@ -91,7 +95,7 @@ module formattedPublicIpResourceIds 'modules/formatResourceId.bicep' = {
   }
 }
 
-module publicIPPrefixes '../public-ip-prefix/main.bicep' = [for (publicIPPrefixObject, index) in (publicIPPrefixObjects ?? []): {
+module publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix:0.1.0' = [for (publicIPPrefixObject, index) in (publicIPPrefixObjects ?? []): {
   name: '${uniqueString(deployment().name, location)}-NatGw-Prefix-PIP-${index}'
   params: {
     name: contains(publicIPPrefixObject, 'name') ? publicIPPrefixObject.name : '${name}-pip'
@@ -101,6 +105,7 @@ module publicIPPrefixes '../public-ip-prefix/main.bicep' = [for (publicIPPrefixO
     customIPPrefix: publicIPPrefixObject.?customIPPrefix
     roleAssignments: publicIPPrefixObject.?roleAssignments
     tags: publicIPPrefixObject.?tags ?? tags
+    enableTelemetry: publicIPPrefixObject.?enableTelemetry ?? enableTelemetry
   }
 }]
 module formattedPublicIpPrefixResourceIds 'modules/formatResourceId.bicep' = {
