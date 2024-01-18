@@ -105,20 +105,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         nestedDependencies.outputs.managedIdentityResourceId
       ]
     }
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
     administrators: [
       {
         identityResourceId: nestedDependencies.outputs.managedIdentityResourceId
