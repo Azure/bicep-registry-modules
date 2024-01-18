@@ -26,6 +26,11 @@ module nestedDependencies 'dependencies.bicep' = {
     location: location
     hostPoolName: 'dep-${namePrefix}-hp-${serviceShort}'
     managedIdentityName: 'dvagmax-managedIdentity'
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 
