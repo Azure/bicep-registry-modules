@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "8928308755688136330"
+      "templateHash": "5801242046314845466"
     },
     "name": "Azure Databricks Access Connectors",
     "description": "This module deploys an Azure Databricks Access Connector.",
@@ -280,7 +280,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), tryGet(reference('accessConnector', '2022-10-01-preview', 'full').identity, 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('accessConnector', '2022-10-01-preview', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
