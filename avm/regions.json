@@ -1,0 +1,17 @@
+{
+  "default": [
+    "eastus",
+    "australiaeast",
+    "uksouth"
+  ],
+  "microsoft.cdn/profiles": [
+    "eastus"
+  ],
+  "microsoft.web/staticSite": [
+    "eastus2"
+  ],
+  "microsoft.compute/*": [
+    "westus3"
+  ]
+}
+
