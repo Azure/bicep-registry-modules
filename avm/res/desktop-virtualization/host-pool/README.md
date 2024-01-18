@@ -144,7 +144,7 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
-          '<privateDNSResourceId>'
+          '<privateDNSZoneResourceId>'
         ]
         subnetResourceId: '<subnetResourceId>'
       }
@@ -270,7 +270,7 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
       "value": [
         {
           "privateDnsZoneResourceIds": [
-            "<privateDNSResourceId>"
+            "<privateDNSZoneResourceId>"
           ],
           "subnetResourceId": "<subnetResourceId>"
         }
@@ -341,7 +341,7 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
-          '<privateDNSResourceId>'
+          '<privateDNSZoneResourceId>'
         ]
         subnetResourceId: '<subnetResourceId>'
       }
@@ -375,7 +375,7 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
       "value": [
         {
           "privateDnsZoneResourceIds": [
-            "<privateDNSResourceId>"
+            "<privateDNSZoneResourceId>"
           ],
           "subnetResourceId": "<subnetResourceId>"
         }
