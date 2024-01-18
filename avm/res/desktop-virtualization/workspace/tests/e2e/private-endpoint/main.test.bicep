@@ -13,7 +13,7 @@ param location string = deployment().location
 param serviceShort string = 'dvwspe'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = 'tpe' //'#_namePrefix_#'
+param namePrefix string = '#_namePrefix_#'
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
@@ -26,6 +26,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: location
+    managedIdentityName: 'ws-managedidentity'
   }
 }
 
@@ -39,8 +40,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     publicNetworkAccess: 'Disabled'
     privateEndpoints: [
       {
+        service: 'feed'
         privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId_feed
+          nestedDependencies.outputs.privateDNSZoneResourceId
         ]
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
         tags: {
@@ -48,19 +50,45 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
-        ipConfigurations: [
+        roleAssignments: [
           {
-            name: 'myIPconfig-feed'
-            groupId: 'feed'
-            memberName: 'feed'
-            privateIpAddress: '10.0.0.10'
+            roleDefinitionIdOrName: 'Reader'
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
           }
         ]
-        customDnsConfigs: []
+        ipConfigurations: [
+          {
+            name: 'myIPconfig-feed1'
+            properties: {
+              groupId: 'feed'
+              memberName: 'web-r0'
+              privateIPAddress: '10.0.0.10'
+            }
+          }
+          {
+            name: 'myIPconfig-feed2'
+            properties: {
+              groupId: 'feed'
+              memberName: 'web-r1'
+              privateIPAddress: '10.0.0.13'
+            }
+          }
+        ]
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.workspace.com'
+            ipAddresses: [
+              '10.0.0.10'
+              '10.0.0.13'
+            ]
+          }
+        ]
       }
       {
+        service: 'global'
         privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId_global
+          nestedDependencies.outputs.privateDNSZoneResourceId
         ]
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
         tags: {
@@ -68,153 +96,32 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
+        roleAssignments: [
+          {
+            roleDefinitionIdOrName: 'Reader'
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+        ]
         ipConfigurations: [
           {
             name: 'myIPconfig-global'
-            groupId: 'global'
-            memberName: 'global'
-            privateIpAddress: '10.0.0.11'
+            properties: {
+              groupId: 'global'
+              memberName: 'web'
+              privateIPAddress: '10.0.0.11'
+            }
           }
         ]
-        customDnsConfigs: []
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.workspace.com'
+            ipAddresses: [
+              '10.0.0.11'
+            ]
+          }
+        ]
       }
     ]
   }
 }]
-
-// privateEndpoints: [
-//   {
-//     service: 'feed'
-//     subnetResourceId: nestedDependencies.outputs.subnetResourceId
-//     privateDnsZoneGroup: {
-//       privateDNSResourceIds: [
-//         nestedDependencies.outputs.privateDNSZoneResourceId
-//       ]
-//     }
-//     tags: {
-//       Environment: 'Non-Prod'
-//       Role: 'DeploymentValidation'
-//     }
-//   }
-//   {
-//     service: 'global'
-//     subnetResourceId: nestedDependencies.outputs.subnetResourceId
-//     privateDnsZoneGroup: {
-//       privateDNSResourceIds: [
-//         nestedDependencies.outputs.privateDNSZoneResourceId
-//       ]
-//     }
-//     tags: {
-//       Environment: 'Non-Prod'
-//       Role: 'DeploymentValidation'
-//     }
-//   }
-// ]
-
-// privateEndpoints: [
-// {
-// privateDnsZoneResourceIds: [
-// nestedDependencies.outputs.privateDNSZoneResourceId
-// ]
-// subnetResourceId: nestedDependencies.outputs.subnetResourceId
-// tags: {
-// 'hidden-title': 'This is visible in the resource name'
-// Environment: 'Non-Prod'
-// Role: 'DeploymentValidation'
-// }
-// ipConfigurations: [
-// {
-// name: 'myIPconfig-feed'
-// properties: {
-// groupId: 'feed'
-// memberName: 'feed'
-// privateIPAddress: '10.0.0.10'
-// }
-// }
-// ]
-// customDnsConfigs: [
-// {
-// fqdn: 'abc.avd.com'
-// ipAddresses: [
-// '10.0.0.10'
-// ]
-// }
-// ]
-// }
-// {
-// privateDnsZoneResourceIds: [
-// nestedDependencies.outputs.privateDNSZoneResourceId
-// ]
-// subnetResourceId: nestedDependencies.outputs.subnetResourceId
-// tags: {
-// 'hidden-title': 'This is visible in the resource name'
-// Environment: 'Non-Prod'
-// Role: 'DeploymentValidation'
-// }
-// ipConfigurations: [
-// {
-// name: 'myIPconfig-global'
-// properties: {
-// groupId: 'global'
-// memberName: 'global'
-// privateIPAddress: '10.0.0.10'
-// }
-// }
-// ]
-// customDnsConfigs: [
-// {
-// fqdn: 'abc.avd.com'
-// ipAddresses: [
-// '10.0.0.11'
-// ]
-// }
-// ]
-// }
-// ]
-
-// module testDeployment '../../../main.bicep' = {
-//   scope: resourceGroup
-//   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
-//   params: {
-//     name: '${namePrefix}-${serviceShort}'
-//     location: location
-//     administratorLogin: 'adminUserName'
-//     administratorLoginPassword: password
-//     privateEndpoints: [
-//       {
-//         privateDnsZoneResourceIds: [
-//           nestedDependencies.outputs.privateDNSZoneResourceId
-//         ]
-//         subnetResourceId: nestedDependencies.outputs.subnetResourceId
-//         tags: {
-//           'hidden-title': 'This is visible in the resource name'
-//           Environment: 'Non-Prod'
-//           Role: 'DeploymentValidation'
-//         }
-//         ipConfigurations: [
-//           {
-//             name: 'myIPconfig'
-//             properties: {
-//               groupId: 'sqlServer'
-//               memberName: 'sqlServer'
-//               privateIPAddress: '10.0.0.10'
-//             }
-//           }
-//         ]
-//         customDnsConfigs: [
-//           {
-//             fqdn: 'abc.sqlServer.com'
-//             ipAddresses: [
-//               '10.0.0.10'
-//             ]
-//           }
-//         ]
-//       }
-//     ]
-//     tags: {
-//       'hidden-title': 'This is visible in the resource name'
-//       Environment: 'Non-Prod'
-//       Role: 'DeploymentValidation'
-//     }
-//   }
-// }

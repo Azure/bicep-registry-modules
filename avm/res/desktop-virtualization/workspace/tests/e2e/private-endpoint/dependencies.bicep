@@ -4,7 +4,15 @@ param location string = resourceGroup().location
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
 
+@description('Required. The name of the Managed Identity to create.')
+param managedIdentityName string
+
 var addressPrefix = '10.0.0.0/16'
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: managedIdentityName
+  location: location
+}
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   name: virtualNetworkName
@@ -26,23 +34,8 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource privateDNSZone_feed 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: 'privatelink.wvd.microsoft.com'
-  location: 'global'
-  resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
-    name: '${virtualNetwork.name}-vnetlink'
-    location: 'global'
-    properties: {
-      virtualNetwork: {
-        id: virtualNetwork.id
-      }
-      registrationEnabled: false
-    }
-  }
-}
-
-resource privateDNSZone_global 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink.wvd.azure.com'
   location: 'global'
   resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
     name: '${virtualNetwork.name}-vnetlink'
@@ -60,7 +53,7 @@ resource privateDNSZone_global 'Microsoft.Network/privateDnsZones@2020-06-01' = 
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
 @description('The resource ID of the created Private DNS Zone.')
-output privateDNSZoneResourceId_feed string = privateDNSZone_feed.id
+output privateDNSZoneResourceId string = privateDNSZone.id
 
-@description('The resource ID of the created Private DNS Zone.')
-output privateDNSZoneResourceId_global string = privateDNSZone_global.id
+@description('The principal ID of the created Managed Identity.')
+output managedIdentityPrincipalId string = managedIdentity.properties.principalId
