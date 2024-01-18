@@ -26,7 +26,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: location
-    managedIdentityName: 'dvag-managedidentity'
+    managedIdentityName: 'dvwsmax-managedidentity'
   }
 }
 
@@ -79,8 +79,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     privateEndpoints: [
       {
+        service: 'feed'
         privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSResourceId
+          nestedDependencies.outputs.privateDNSZoneResourceId
         ]
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
         tags: {
@@ -88,6 +89,77 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
+        roleAssignments: [
+          {
+            roleDefinitionIdOrName: 'Reader'
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+        ]
+        ipConfigurations: [
+          {
+            name: 'myIPconfig-feed1'
+            properties: {
+              groupId: 'feed'
+              memberName: 'web-r0'
+              privateIPAddress: '10.0.0.10'
+            }
+          }
+          {
+            name: 'myIPconfig-feed2'
+            properties: {
+              groupId: 'feed'
+              memberName: 'web-r1'
+              privateIPAddress: '10.0.0.13'
+            }
+          }
+        ]
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.workspace.com'
+            ipAddresses: [
+              '10.0.0.10'
+              '10.0.0.13'
+            ]
+          }
+        ]
+      }
+      {
+        service: 'global'
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+        roleAssignments: [
+          {
+            roleDefinitionIdOrName: 'Reader'
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+        ]
+        ipConfigurations: [
+          {
+            name: 'myIPconfig-global'
+            properties: {
+              groupId: 'global'
+              memberName: 'web'
+              privateIPAddress: '10.0.0.11'
+            }
+          }
+        ]
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.workspace.com'
+            ipAddresses: [
+              '10.0.0.11'
+            ]
+          }
+        ]
       }
     ]
     tags: {

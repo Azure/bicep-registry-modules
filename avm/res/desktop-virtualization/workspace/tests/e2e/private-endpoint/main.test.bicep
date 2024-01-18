@@ -26,7 +26,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: location
-    managedIdentityName: 'ws-managedidentity'
+    managedIdentityName: 'dvwspe-managedidentity'
   }
 }
 
