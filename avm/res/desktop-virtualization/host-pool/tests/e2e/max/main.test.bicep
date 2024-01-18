@@ -25,7 +25,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     location: location
-    managedIdentityName: 'sp-managedIdentity'
+    managedIdentityName: 'hp-managedIdentity'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
