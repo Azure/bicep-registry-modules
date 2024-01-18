@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "1147906161216209685"
+      "templateHash": "5324082929014837266"
     },
     "name": "Data Protection Backup Vaults",
     "description": "This module deploys a Data Protection Backup Vault.",
@@ -438,7 +438,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('backupVault', '2023-05-01', 'full').identity, 'principalId')), reference('backupVault', '2023-05-01', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('backupVault', '2023-05-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
