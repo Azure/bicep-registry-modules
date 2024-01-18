@@ -7,7 +7,7 @@
   "microsoft.cdn/profiles": [
     "eastus"
   ],
-  "microsoft.web/staticSite": [
+  "Microsoft.Web/staticSites": [
     "eastus2"
   ],
   "microsoft.compute/*": [
