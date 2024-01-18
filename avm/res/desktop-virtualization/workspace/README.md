@@ -122,9 +122,81 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
     }
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSResourceId>'
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.workspace.com'
+            ipAddresses: [
+              '10.0.0.10'
+              '10.0.0.13'
+            ]
+          }
         ]
+        ipConfigurations: [
+          {
+            name: 'myIPconfig-feed1'
+            properties: {
+              groupId: 'feed'
+              memberName: 'web-r0'
+              privateIPAddress: '10.0.0.10'
+            }
+          }
+          {
+            name: 'myIPconfig-feed2'
+            properties: {
+              groupId: 'feed'
+              memberName: 'web-r1'
+              privateIPAddress: '10.0.0.13'
+            }
+          }
+        ]
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        service: 'feed'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.workspace.com'
+            ipAddresses: [
+              '10.0.0.11'
+            ]
+          }
+        ]
+        ipConfigurations: [
+          {
+            name: 'myIPconfig-global'
+            properties: {
+              groupId: 'global'
+              memberName: 'web'
+              privateIPAddress: '10.0.0.11'
+            }
+          }
+        ]
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        service: 'global'
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -201,9 +273,81 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSResourceId>"
+          "customDnsConfigs": [
+            {
+              "fqdn": "abc.workspace.com",
+              "ipAddresses": [
+                "10.0.0.10",
+                "10.0.0.13"
+              ]
+            }
           ],
+          "ipConfigurations": [
+            {
+              "name": "myIPconfig-feed1",
+              "properties": {
+                "groupId": "feed",
+                "memberName": "web-r0",
+                "privateIPAddress": "10.0.0.10"
+              }
+            },
+            {
+              "name": "myIPconfig-feed2",
+              "properties": {
+                "groupId": "feed",
+                "memberName": "web-r1",
+                "privateIPAddress": "10.0.0.13"
+              }
+            }
+          ],
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Reader"
+            }
+          ],
+          "service": "feed",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
+        {
+          "customDnsConfigs": [
+            {
+              "fqdn": "abc.workspace.com",
+              "ipAddresses": [
+                "10.0.0.11"
+              ]
+            }
+          ],
+          "ipConfigurations": [
+            {
+              "name": "myIPconfig-global",
+              "properties": {
+                "groupId": "global",
+                "memberName": "web",
+                "privateIPAddress": "10.0.0.11"
+              }
+            }
+          ],
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Reader"
+            }
+          ],
+          "service": "global",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -258,18 +402,44 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
     location: '<location>'
     privateEndpoints: [
       {
-        customDnsConfigs: []
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.workspace.com'
+            ipAddresses: [
+              '10.0.0.10'
+              '10.0.0.13'
+            ]
+          }
+        ]
         ipConfigurations: [
           {
-            groupId: 'feed'
-            memberName: 'default'
-            name: 'myIPconfig'
-            privateIpAddress: '10.0.0.10'
+            name: 'myIPconfig-feed1'
+            properties: {
+              groupId: 'feed'
+              memberName: 'web-r0'
+              privateIPAddress: '10.0.0.10'
+            }
+          }
+          {
+            name: 'myIPconfig-feed2'
+            properties: {
+              groupId: 'feed'
+              memberName: 'web-r1'
+              privateIPAddress: '10.0.0.13'
+            }
           }
         ]
         privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId_feed>'
+          '<privateDNSZoneResourceId>'
         ]
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        service: 'feed'
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -278,18 +448,35 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
         }
       }
       {
-        customDnsConfigs: []
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.workspace.com'
+            ipAddresses: [
+              '10.0.0.11'
+            ]
+          }
+        ]
         ipConfigurations: [
           {
-            groupId: 'global'
-            memberName: 'default'
-            name: 'myIPconfig'
-            privateIpAddress: '10.0.0.12'
+            name: 'myIPconfig-global'
+            properties: {
+              groupId: 'global'
+              memberName: 'web'
+              privateIPAddress: '10.0.0.11'
+            }
           }
         ]
         privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId_global>'
+          '<privateDNSZoneResourceId>'
         ]
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        service: 'global'
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -326,18 +513,44 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
     "privateEndpoints": {
       "value": [
         {
-          "customDnsConfigs": [],
+          "customDnsConfigs": [
+            {
+              "fqdn": "abc.workspace.com",
+              "ipAddresses": [
+                "10.0.0.10",
+                "10.0.0.13"
+              ]
+            }
+          ],
           "ipConfigurations": [
             {
-              "groupId": "feed",
-              "memberName": "default",
-              "name": "myIPconfig",
-              "privateIpAddress": "10.0.0.10"
+              "name": "myIPconfig-feed1",
+              "properties": {
+                "groupId": "feed",
+                "memberName": "web-r0",
+                "privateIPAddress": "10.0.0.10"
+              }
+            },
+            {
+              "name": "myIPconfig-feed2",
+              "properties": {
+                "groupId": "feed",
+                "memberName": "web-r1",
+                "privateIPAddress": "10.0.0.13"
+              }
             }
           ],
           "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId_feed>"
+            "<privateDNSZoneResourceId>"
           ],
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Reader"
+            }
+          ],
+          "service": "feed",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -346,18 +559,35 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
           }
         },
         {
-          "customDnsConfigs": [],
+          "customDnsConfigs": [
+            {
+              "fqdn": "abc.workspace.com",
+              "ipAddresses": [
+                "10.0.0.11"
+              ]
+            }
+          ],
           "ipConfigurations": [
             {
-              "groupId": "global",
-              "memberName": "default",
-              "name": "myIPconfig",
-              "privateIpAddress": "10.0.0.12"
+              "name": "myIPconfig-global",
+              "properties": {
+                "groupId": "global",
+                "memberName": "web",
+                "privateIPAddress": "10.0.0.11"
+              }
             }
           ],
           "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId_global>"
+            "<privateDNSZoneResourceId>"
           ],
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Reader"
+            }
+          ],
+          "service": "global",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -647,6 +877,7 @@ Configuration details for private endpoints.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`service`](#parameter-privateendpointsservice) | string | The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -665,8 +896,14 @@ Configuration details for private endpoints.
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`service`](#parameter-privateendpointsservice) | string | The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
+
+### Parameter: `privateEndpoints.service`
+
+The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
@@ -869,13 +1106,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-
-### Parameter: `privateEndpoints.service`
-
-The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".
-
-- Required: No
-- Type: string
 
 ### Parameter: `privateEndpoints.tags`
 
