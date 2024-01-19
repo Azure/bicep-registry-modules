@@ -18,7 +18,7 @@
 #/avm/res/authorization/role-definition/ @Azure/avm-res-authorization-roledefinition-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/automation/automation-account/ @Azure/avm-res-automation-automationaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/batch/batch-account/ @Azure/avm-res-batch-batchaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/cache/redis/ @Azure/avm-res-cache-redis-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/cache/redis/ @Azure/avm-res-cache-redis-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/cdn/profile/ @Azure/avm-res-cdn-profile-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/cognitive-services/account/ @Azure/avm-res-cognitiveservices-account-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/compute/availability-set/ @Azure/avm-res-compute-availabilityset-module-owners-bicep @Azure/avm-core-team-technical-bicep
