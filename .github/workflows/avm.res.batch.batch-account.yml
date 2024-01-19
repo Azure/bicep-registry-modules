@@ -56,6 +56,11 @@ jobs:
         uses: ./.github/actions/templates/avm-getWorkflowInput
         with:
           workflowPath: "${{ env.workflowPath}}"
+      - name: "Set trigger input to output variables"
+        id: get-trigger-input
+        uses: ./.github/actions/templates/avm-getTriggerInput
+        # with:
+          # workflowPath: "${{ env.workflowPath}}"
       - name: "Get module test file paths"
         id: get-module-test-file-paths
         uses: ./.github/actions/templates/avm-getModuleTestFiles
@@ -63,6 +68,7 @@ jobs:
           modulePath: "${{ env.modulePath }}"
     outputs:
       workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
+      triggerInput: ${{ steps.get-trigger-input.outputs.triggerInput }}
       moduleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
       psRuleModuleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.psRuleModuleTestFilePaths }}
       modulePath: "${{ env.modulePath }}"
@@ -77,6 +83,7 @@ jobs:
     uses: ./.github/workflows/avm.template.module.yml
     with:
       workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
+      triggerInput: ${{ needs.job_initialize_pipeline.outputs.triggerInput }}
       moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
       psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
       modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath}}"
