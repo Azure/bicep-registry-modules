@@ -1,6 +1,11 @@
-# Azure Container Registries (ACR) `[Microsoft.ContainerRegistry/registries]`
+# Redis Cache `[Microsoft.Cache/redis]`
 
-This module deploys an Azure Container Registry (ACR).
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
+This module deploys a Redis Cache.
 
 ## Navigation
 
@@ -9,6 +14,7 @@ This module deploys an Azure Container Registry (ACR).
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -17,10 +23,7 @@ This module deploys an Azure Container Registry (ACR).
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries) |
-| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/cacheRules) |
-| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/replications) |
-| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/webhooks) |
+| `Microsoft.Cache/redis` | [2022-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2022-06-01/redis) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
@@ -31,13 +34,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/container-registry/registry:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/cache/redis:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [Using private endpoint](#example-4-using-private-endpoint)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -49,11 +50,11 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-crrmin'
+module redis 'br/public:avm/res/cache/redis:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-crmin'
   params: {
     // Required parameters
-    name: 'crrmin001'
+    name: 'crmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -74,7 +75,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrmin001"
+      "value": "crmin001"
     },
     // Non-required parameters
     "location": {
@@ -87,87 +88,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using encryption with Customer-Managed-Key_
-
-This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-crrencr'
-  params: {
-    // Required parameters
-    name: 'crrencr001'
-    // Non-required parameters
-    acrSku: 'Premium'
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    location: '<location>'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    publicNetworkAccess: 'Disabled'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "crrencr001"
-    },
-    // Non-required parameters
-    "acrSku": {
-      "value": "Premium"
-    },
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-      }
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "publicNetworkAccess": {
-      "value": "Disabled"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 3: _Using large parameter set_
+### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -177,25 +98,13 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-crrmax'
+module redis 'br/public:avm/res/cache/redis:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-crmax'
   params: {
     // Required parameters
-    name: 'crrmax001'
+    name: 'crmax001'
     // Non-required parameters
-    acrAdminUserEnabled: false
-    acrSku: 'Premium'
-    azureADAuthenticationAsArmPolicyStatus: 'enabled'
-    cacheRules: [
-      {
-        name: 'customRule'
-        sourceRepository: 'docker.io/library/hello-world'
-        targetRepository: 'cached-docker-hub/hello-world'
-      }
-      {
-        sourceRepository: 'docker.io/library/hello-world'
-      }
-    ]
+    capacity: 2
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -210,7 +119,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    exportPolicyStatus: 'enabled'
+    enableNonSslPort: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -222,18 +131,29 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
-    networkRuleSetIpRules: [
-      {
-        action: 'Allow'
-        value: '40.74.28.0/23'
-      }
-    ]
+    minimumTlsVersion: '1.2'
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
-        service: 'registry'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -242,13 +162,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         }
       }
     ]
-    quarantinePolicyStatus: 'enabled'
-    replications: [
-      {
-        location: '<location>'
-        name: '<name>'
-      }
-    ]
+    redisVersion: '6'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -266,19 +180,16 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    softDeletePolicyDays: 7
-    softDeletePolicyStatus: 'disabled'
+    shardCount: 1
+    skuName: 'Premium'
     tags: {
-      Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
+      resourceType: 'Redis Cache'
     }
-    trustPolicyStatus: 'enabled'
-    webhooks: [
-      {
-        name: 'acrx001webhook'
-        serviceUri: 'https://www.contoso.com/webhook'
-      }
+    zoneRedundant: true
+    zones: [
+      1
+      2
     ]
   }
 }
@@ -298,29 +209,11 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrmax001"
+      "value": "crmax001"
     },
     // Non-required parameters
-    "acrAdminUserEnabled": {
-      "value": false
-    },
-    "acrSku": {
-      "value": "Premium"
-    },
-    "azureADAuthenticationAsArmPolicyStatus": {
-      "value": "enabled"
-    },
-    "cacheRules": {
-      "value": [
-        {
-          "name": "customRule",
-          "sourceRepository": "docker.io/library/hello-world",
-          "targetRepository": "cached-docker-hub/hello-world"
-        },
-        {
-          "sourceRepository": "docker.io/library/hello-world"
-        }
-      ]
+    "capacity": {
+      "value": 2
     },
     "diagnosticSettings": {
       "value": [
@@ -338,8 +231,8 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         }
       ]
     },
-    "exportPolicyStatus": {
-      "value": "enabled"
+    "enableNonSslPort": {
+      "value": true
     },
     "location": {
       "value": "<location>"
@@ -358,13 +251,8 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         ]
       }
     },
-    "networkRuleSetIpRules": {
-      "value": [
-        {
-          "action": "Allow",
-          "value": "40.74.28.0/23"
-        }
-      ]
+    "minimumTlsVersion": {
+      "value": "1.2"
     },
     "privateEndpoints": {
       "value": [
@@ -372,7 +260,23 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
-          "service": "registry",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -382,16 +286,8 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         }
       ]
     },
-    "quarantinePolicyStatus": {
-      "value": "enabled"
-    },
-    "replications": {
-      "value": [
-        {
-          "location": "<location>",
-          "name": "<name>"
-        }
-      ]
+    "redisVersion": {
+      "value": "6"
     },
     "roleAssignments": {
       "value": [
@@ -412,28 +308,25 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         }
       ]
     },
-    "softDeletePolicyDays": {
-      "value": 7
+    "shardCount": {
+      "value": 1
     },
-    "softDeletePolicyStatus": {
-      "value": "disabled"
+    "skuName": {
+      "value": "Premium"
     },
     "tags": {
       "value": {
-        "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
+        "resourceType": "Redis Cache"
       }
     },
-    "trustPolicyStatus": {
-      "value": "enabled"
+    "zoneRedundant": {
+      "value": true
     },
-    "webhooks": {
+    "zones": {
       "value": [
-        {
-          "name": "acrx001webhook",
-          "serviceUri": "https://www.contoso.com/webhook"
-        }
+        1,
+        2
       ]
     }
   }
@@ -443,77 +336,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using private endpoint_
-
-This instance deploys the module with a private endpoint.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-crrpe'
-  params: {
-    // Required parameters
-    name: 'crrpe001'
-    // Non-required parameters
-    acrSku: 'Premium'
-    location: '<location>'
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        subnetResourceId: '<subnetResourceId>'
-      }
-    ]
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "crrpe001"
-    },
-    // Non-required parameters
-    "acrSku": {
-      "value": "Premium"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "subnetResourceId": "<subnetResourceId>"
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 5: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -523,40 +346,62 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-crrwaf'
+module redis 'br/public:avm/res/cache/redis:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-crwaf'
   params: {
     // Required parameters
-    name: 'crrwaf001'
+    name: 'crwaf001'
     // Non-required parameters
-    acrAdminUserEnabled: false
-    acrSku: 'Premium'
-    azureADAuthenticationAsArmPolicyStatus: 'enabled'
+    capacity: 2
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    exportPolicyStatus: 'enabled'
+    enableNonSslPort: true
     location: '<location>'
-    quarantinePolicyStatus: 'enabled'
-    replications: [
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
+    minimumTlsVersion: '1.2'
+    privateEndpoints: [
       {
-        location: '<location>'
-        name: '<name>'
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
       }
     ]
-    softDeletePolicyDays: 7
-    softDeletePolicyStatus: 'disabled'
+    redisVersion: '6'
+    shardCount: 1
+    skuName: 'Premium'
     tags: {
-      Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
+      resourceType: 'Redis Cache'
     }
-    trustPolicyStatus: 'enabled'
+    zoneRedundant: true
+    zones: [
+      1
+      2
+    ]
   }
 }
 ```
@@ -575,60 +420,86 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrwaf001"
+      "value": "crwaf001"
     },
     // Non-required parameters
-    "acrAdminUserEnabled": {
-      "value": false
-    },
-    "acrSku": {
-      "value": "Premium"
-    },
-    "azureADAuthenticationAsArmPolicyStatus": {
-      "value": "enabled"
+    "capacity": {
+      "value": 2
     },
     "diagnosticSettings": {
       "value": [
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
     },
-    "exportPolicyStatus": {
-      "value": "enabled"
+    "enableNonSslPort": {
+      "value": true
     },
     "location": {
       "value": "<location>"
     },
-    "quarantinePolicyStatus": {
-      "value": "enabled"
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
     },
-    "replications": {
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "minimumTlsVersion": {
+      "value": "1.2"
+    },
+    "privateEndpoints": {
       "value": [
         {
-          "location": "<location>",
-          "name": "<name>"
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
         }
       ]
     },
-    "softDeletePolicyDays": {
-      "value": 7
+    "redisVersion": {
+      "value": "6"
     },
-    "softDeletePolicyStatus": {
-      "value": "disabled"
+    "shardCount": {
+      "value": 1
+    },
+    "skuName": {
+      "value": "Premium"
     },
     "tags": {
       "value": {
-        "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
+        "resourceType": "Redis Cache"
       }
     },
-    "trustPolicyStatus": {
-      "value": "enabled"
+    "zoneRedundant": {
+      "value": true
+    },
+    "zones": {
+      "value": [
+        1,
+        2
+      ]
     }
   }
 }
@@ -644,159 +515,62 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of your Azure Container Registry. |
+| [`name`](#parameter-name) | string | The name of the Redis cache resource. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`acrAdminUserEnabled`](#parameter-acradminuserenabled) | bool | Enable admin user that have push / pull permission to the registry. |
-| [`acrSku`](#parameter-acrsku) | string | Tier of your Azure container registry. |
-| [`anonymousPullEnabled`](#parameter-anonymouspullenabled) | bool | Enables registry-wide pull from unauthenticated clients. It's in preview and available in the Standard and Premium service tiers. |
-| [`azureADAuthenticationAsArmPolicyStatus`](#parameter-azureadauthenticationasarmpolicystatus) | string | The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled. |
-| [`cacheRules`](#parameter-cacherules) | array | Array of Cache Rules. Note: This is a preview feature ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache#cache-for-acr-preview)). |
-| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
-| [`dataEndpointEnabled`](#parameter-dataendpointenabled) | bool | Enable a single data endpoint per region for serving data. Not relevant in case of disabled public access. Note, requires the 'acrSku' to be 'Premium'. |
+| [`capacity`](#parameter-capacity) | int | The size of the Redis cache to deploy. Valid values: for C (Basic/Standard) family (0, 1, 2, 3, 4, 5, 6), for P (Premium) family (1, 2, 3, 4). |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`enableNonSslPort`](#parameter-enablenonsslport) | bool | Specifies whether the non-ssl Redis server port (6379) is enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`exportPolicyStatus`](#parameter-exportpolicystatus) | string | The value that indicates whether the export policy is enabled or not. |
-| [`location`](#parameter-location) | string | Location for all resources. |
+| [`location`](#parameter-location) | string | The location to deploy the Redis cache service. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`networkRuleBypassOptions`](#parameter-networkrulebypassoptions) | string | Whether to allow trusted Azure services to access a network restricted registry. |
-| [`networkRuleSetDefaultAction`](#parameter-networkrulesetdefaultaction) | string | The default action of allow or deny when no other rules match. |
-| [`networkRuleSetIpRules`](#parameter-networkrulesetiprules) | array | The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'. |
-| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'acrSku' to be 'Premium'. |
-| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set.  Note, requires the 'acrSku' to be 'Premium'. |
-| [`quarantinePolicyStatus`](#parameter-quarantinepolicystatus) | string | The value that indicates whether the quarantine policy is enabled or not. |
-| [`replications`](#parameter-replications) | array | All replications to create. |
-| [`retentionPolicyDays`](#parameter-retentionpolicydays) | int | The number of days to retain an untagged manifest after which it gets purged. |
-| [`retentionPolicyStatus`](#parameter-retentionpolicystatus) | string | The value that indicates whether the retention policy is enabled or not. |
+| [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | Requires clients to use a specified TLS version (or higher) to connect. |
+| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
+| [`redisConfiguration`](#parameter-redisconfiguration) | object | All Redis Settings. Few possible keys: rdb-backup-enabled,rdb-storage-connection-string,rdb-backup-frequency,maxmemory-delta,maxmemory-policy,notify-keyspace-events,maxmemory-samples,slowlog-log-slower-than,slowlog-max-len,list-max-ziplist-entries,list-max-ziplist-value,hash-max-ziplist-entries,hash-max-ziplist-value,set-max-intset-entries,zset-max-ziplist-entries,zset-max-ziplist-value etc. |
+| [`redisVersion`](#parameter-redisversion) | string | Redis version. Only major version will be used in PUT/PATCH request with current valid values: (4, 6). |
+| [`replicasPerMaster`](#parameter-replicaspermaster) | int | The number of replicas to be created per primary. |
+| [`replicasPerPrimary`](#parameter-replicasperprimary) | int | The number of replicas to be created per primary. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`softDeletePolicyDays`](#parameter-softdeletepolicydays) | int | The number of days after which a soft-deleted item is permanently deleted. |
-| [`softDeletePolicyStatus`](#parameter-softdeletepolicystatus) | string | Soft Delete policy status. Default is disabled. |
+| [`shardCount`](#parameter-shardcount) | int | The number of shards to be created on a Premium Cluster Cache. |
+| [`skuName`](#parameter-skuname) | string | The type of Redis cache to deploy. |
+| [`staticIP`](#parameter-staticip) | string | Static IP address. Optionally, may be specified when deploying a Redis cache inside an existing Azure Virtual Network; auto assigned by default. |
+| [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the Redis cache in. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`trustPolicyStatus`](#parameter-trustpolicystatus) | string | The value that indicates whether the trust policy is enabled or not. |
-| [`webhooks`](#parameter-webhooks) | array | All webhooks to create. |
-| [`zoneRedundancy`](#parameter-zoneredundancy) | string | Whether or not zone redundancy is enabled for this container registry. |
+| [`tenantSettings`](#parameter-tenantsettings) | object | A dictionary of tenant settings. |
+| [`zoneRedundant`](#parameter-zoneredundant) | bool | When true, replicas will be provisioned in availability zones specified in the zones parameter. |
+| [`zones`](#parameter-zones) | array | If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed. |
 
 ### Parameter: `name`
 
-Name of your Azure Container Registry.
+The name of the Redis cache resource.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `acrAdminUserEnabled`
+### Parameter: `capacity`
 
-Enable admin user that have push / pull permission to the registry.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `acrSku`
-
-Tier of your Azure container registry.
+The size of the Redis cache to deploy. Valid values: for C (Basic/Standard) family (0, 1, 2, 3, 4, 5, 6), for P (Premium) family (1, 2, 3, 4).
 
 - Required: No
-- Type: string
-- Default: `'Basic'`
+- Type: int
+- Default: `1`
 - Allowed:
   ```Bicep
   [
-    'Basic'
-    'Premium'
-    'Standard'
+    0
+    1
+    2
+    3
+    4
+    5
+    6
   ]
   ```
-
-### Parameter: `anonymousPullEnabled`
-
-Enables registry-wide pull from unauthenticated clients. It's in preview and available in the Standard and Premium service tiers.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `azureADAuthenticationAsArmPolicyStatus`
-
-The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled.
-
-- Required: No
-- Type: string
-- Default: `'enabled'`
-- Allowed:
-  ```Bicep
-  [
-    'disabled'
-    'enabled'
-  ]
-  ```
-
-### Parameter: `cacheRules`
-
-Array of Cache Rules. Note: This is a preview feature ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache#cache-for-acr-preview)).
-
-- Required: No
-- Type: array
-
-### Parameter: `customerManagedKey`
-
-The customer managed key definition.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
-| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
-| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
-
-### Parameter: `customerManagedKey.keyName`
-
-The name of the customer managed key to use for encryption.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `customerManagedKey.keyVaultResourceId`
-
-The resource ID of a key vault to reference a customer managed key for encryption from.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `customerManagedKey.keyVersion`
-
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
-
-- Required: No
-- Type: string
-
-### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
-
-User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
-
-- Required: No
-- Type: string
-
-### Parameter: `dataEndpointEnabled`
-
-Enable a single data endpoint per region for serving data. Not relevant in case of disabled public access. Note, requires the 'acrSku' to be 'Premium'.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `diagnosticSettings`
 
@@ -889,6 +663,14 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
+### Parameter: `enableNonSslPort`
+
+Specifies whether the non-ssl Redis server port (6379) is enabled.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -897,24 +679,9 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `exportPolicyStatus`
-
-The value that indicates whether the export policy is enabled or not.
-
-- Required: No
-- Type: string
-- Default: `'disabled'`
-- Allowed:
-  ```Bicep
-  [
-    'disabled'
-    'enabled'
-  ]
-  ```
-
 ### Parameter: `location`
 
-Location for all resources.
+The location to deploy the Redis cache service.
 
 - Required: No
 - Type: string
@@ -984,46 +751,25 @@ The resource ID(s) to assign to the resource.
 - Required: No
 - Type: array
 
-### Parameter: `networkRuleBypassOptions`
+### Parameter: `minimumTlsVersion`
 
-Whether to allow trusted Azure services to access a network restricted registry.
-
-- Required: No
-- Type: string
-- Default: `'AzureServices'`
-- Allowed:
-  ```Bicep
-  [
-    'AzureServices'
-    'None'
-  ]
-  ```
-
-### Parameter: `networkRuleSetDefaultAction`
-
-The default action of allow or deny when no other rules match.
+Requires clients to use a specified TLS version (or higher) to connect.
 
 - Required: No
 - Type: string
-- Default: `'Deny'`
+- Default: `'1.2'`
 - Allowed:
   ```Bicep
   [
-    'Allow'
-    'Deny'
+    '1.0'
+    '1.1'
+    '1.2'
   ]
   ```
-
-### Parameter: `networkRuleSetIpRules`
-
-The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'.
-
-- Required: No
-- Type: array
 
 ### Parameter: `privateEndpoints`
 
-Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'acrSku' to be 'Premium'.
+Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
 
 - Required: No
 - Type: array
@@ -1047,7 +793,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualPrivateLinkServiceConnections`](#parameter-privateendpointsmanualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
+| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
@@ -1154,7 +900,7 @@ The name of the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroupName`
 
-The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.
+The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
 
 - Required: No
 - Type: string
@@ -1271,62 +1017,58 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 ### Parameter: `publicNetworkAccess`
 
-Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set.  Note, requires the 'acrSku' to be 'Premium'.
+Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.
 
 - Required: No
 - Type: string
+- Default: `''`
 - Allowed:
   ```Bicep
   [
+    ''
     'Disabled'
     'Enabled'
   ]
   ```
 
-### Parameter: `quarantinePolicyStatus`
+### Parameter: `redisConfiguration`
 
-The value that indicates whether the quarantine policy is enabled or not.
+All Redis Settings. Few possible keys: rdb-backup-enabled,rdb-storage-connection-string,rdb-backup-frequency,maxmemory-delta,maxmemory-policy,notify-keyspace-events,maxmemory-samples,slowlog-log-slower-than,slowlog-max-len,list-max-ziplist-entries,list-max-ziplist-value,hash-max-ziplist-entries,hash-max-ziplist-value,set-max-intset-entries,zset-max-ziplist-entries,zset-max-ziplist-value etc.
+
+- Required: No
+- Type: object
+- Default: `{}`
+
+### Parameter: `redisVersion`
+
+Redis version. Only major version will be used in PUT/PATCH request with current valid values: (4, 6).
 
 - Required: No
 - Type: string
-- Default: `'disabled'`
+- Default: `'6'`
 - Allowed:
   ```Bicep
   [
-    'disabled'
-    'enabled'
+    '4'
+    '6'
   ]
   ```
 
-### Parameter: `replications`
+### Parameter: `replicasPerMaster`
 
-All replications to create.
-
-- Required: No
-- Type: array
-
-### Parameter: `retentionPolicyDays`
-
-The number of days to retain an untagged manifest after which it gets purged.
+The number of replicas to be created per primary.
 
 - Required: No
 - Type: int
-- Default: `15`
+- Default: `1`
 
-### Parameter: `retentionPolicyStatus`
+### Parameter: `replicasPerPrimary`
 
-The value that indicates whether the retention policy is enabled or not.
+The number of replicas to be created per primary.
 
 - Required: No
-- Type: string
-- Default: `'enabled'`
-- Allowed:
-  ```Bicep
-  [
-    'disabled'
-    'enabled'
-  ]
-  ```
+- Type: int
+- Default: `1`
 
 ### Parameter: `roleAssignments`
 
@@ -1417,28 +1159,45 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `softDeletePolicyDays`
+### Parameter: `shardCount`
 
-The number of days after which a soft-deleted item is permanently deleted.
+The number of shards to be created on a Premium Cluster Cache.
 
 - Required: No
 - Type: int
-- Default: `7`
+- Default: `1`
 
-### Parameter: `softDeletePolicyStatus`
+### Parameter: `skuName`
 
-Soft Delete policy status. Default is disabled.
+The type of Redis cache to deploy.
 
 - Required: No
 - Type: string
-- Default: `'disabled'`
+- Default: `'Basic'`
 - Allowed:
   ```Bicep
   [
-    'disabled'
-    'enabled'
+    'Basic'
+    'Premium'
+    'Standard'
   ]
   ```
+
+### Parameter: `staticIP`
+
+Static IP address. Optionally, may be specified when deploying a Redis cache inside an existing Azure Virtual Network; auto assigned by default.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `subnetResourceId`
+
+The full resource ID of a subnet in a virtual network to deploy the Redis cache in.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `tags`
 
@@ -1447,53 +1206,42 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-### Parameter: `trustPolicyStatus`
+### Parameter: `tenantSettings`
 
-The value that indicates whether the trust policy is enabled or not.
+A dictionary of tenant settings.
 
 - Required: No
-- Type: string
-- Default: `'disabled'`
-- Allowed:
-  ```Bicep
-  [
-    'disabled'
-    'enabled'
-  ]
-  ```
+- Type: object
+- Default: `{}`
 
-### Parameter: `webhooks`
+### Parameter: `zoneRedundant`
 
-All webhooks to create.
+When true, replicas will be provisioned in availability zones specified in the zones parameter.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `zones`
+
+If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed.
 
 - Required: No
 - Type: array
-
-### Parameter: `zoneRedundancy`
-
-Whether or not zone redundancy is enabled for this container registry.
-
-- Required: No
-- Type: string
-- Default: `'Disabled'`
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
+- Default: `[]`
 
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `hostName` | string | Redis hostname. |
 | `location` | string | The location the resource was deployed into. |
-| `loginServer` | string | The reference to the Azure container registry. |
-| `name` | string | The Name of the Azure container registry. |
-| `resourceGroupName` | string | The name of the Azure container registry. |
-| `resourceId` | string | The resource ID of the Azure container registry. |
+| `name` | string | The name of the Redis Cache. |
+| `resourceGroupName` | string | The name of the resource group the Redis Cache was created in. |
+| `resourceId` | string | The resource ID of the Redis Cache. |
+| `sslPort` | int | Redis SSL port. |
+| `subnetResourceId` | string | The full resource ID of a subnet in a virtual network where the Redis Cache was deployed in. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
@@ -1502,7 +1250,42 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.3.2` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.3.1` | Remote reference |
+
+## Notes
+
+### Parameter Usage: `redisConfiguration`
+
+All Redis Settings. Few possible keys: rdb-backup-enabled,rdb-storage-connection-string,rdb-backup-frequency,maxmemory-delta,maxmemory-policy,notify-keyspace-events,maxmemory-samples,slowlog-log-slower-than,slowlog-max-len,list-max-ziplist-entries,list-max-ziplist-value,hash-max-ziplist-entries,hash-max-ziplist-value,set-max-intset-entries,zset-max-ziplist-entries,zset-max-ziplist-value etc..
+
+Name | Description | Value
+---------|----------|---------
+aof-storage-connection-string-0 | First storage account connection string | string
+aof-storage-connection-string-1 | Second storage account connection string | string
+maxfragmentationmemory-reserved | Value in megabytes reserved for fragmentation per shard | string
+maxmemory-delta | Value in megabytes reserved for non-cache usage per shard e.g. failover. | string
+maxmemory-policy | The eviction strategy used when your data won't fit within its memory limit. | string
+maxmemory-reserved | Value in megabytes reserved for non-cache usage per shard e.g. failover. | string
+rdb-backup-enabled | Specifies whether the rdb backup is enabled | string
+rdb-backup-frequency | Specifies the frequency for creating rdb backup | string
+rdb-backup-max-snapshot-count | Specifies the maximum number of snapshots for rdb backup | string
+rdb-storage-connection-string | The storage account connection string for storing rdb file | string
+
+For more details visit [Microsoft.Cache redis reference](https://learn.microsoft.com/en-us/azure/templates/microsoft.cache/redis?tabs=bicep)
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+userAssignedIdentities: {
+    '/subscriptions/12345678-1234-1234-1234-123456789012/resourcegroups/validation-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/adp-sxx-az-msi-x-001': {}
+    '/subscriptions/12345678-1234-1234-1234-123456789012/resourcegroups/validation-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/adp-sxx-az-msi-x-002': {}
+}
+```
+
+</details>
+<p>
 
 ## Data Collection
 

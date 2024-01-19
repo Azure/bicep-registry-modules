@@ -1,6 +1,11 @@
-# Azure Container Registries (ACR) `[Microsoft.ContainerRegistry/registries]`
+# Azure Databricks Workspaces `[Microsoft.Databricks/workspaces]`
 
-This module deploys an Azure Container Registry (ACR).
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
+This module deploys an Azure Databricks Workspace.
 
 ## Navigation
 
@@ -9,6 +14,7 @@ This module deploys an Azure Container Registry (ACR).
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -17,10 +23,7 @@ This module deploys an Azure Container Registry (ACR).
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries) |
-| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/cacheRules) |
-| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/replications) |
-| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/webhooks) |
+| `Microsoft.Databricks/workspaces` | [2023-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Databricks/2023-02-01/workspaces) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
@@ -31,13 +34,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/container-registry/registry:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/databricks/workspace:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [Using private endpoint](#example-4-using-private-endpoint)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -49,11 +50,11 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-crrmin'
+module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-dwmin'
   params: {
     // Required parameters
-    name: 'crrmin001'
+    name: 'dwmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -74,7 +75,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrmin001"
+      "value": "dwmin001"
     },
     // Non-required parameters
     "location": {
@@ -87,87 +88,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using encryption with Customer-Managed-Key_
-
-This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-crrencr'
-  params: {
-    // Required parameters
-    name: 'crrencr001'
-    // Non-required parameters
-    acrSku: 'Premium'
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    location: '<location>'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    publicNetworkAccess: 'Disabled'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "crrencr001"
-    },
-    // Non-required parameters
-    "acrSku": {
-      "value": "Premium"
-    },
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-      }
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "publicNetworkAccess": {
-      "value": "Disabled"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 3: _Using large parameter set_
+### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -177,32 +98,35 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-crrmax'
+module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
+  name: '${uniqueString(deployment().name, tempLocation)}-test-dwmax'
   params: {
     // Required parameters
-    name: 'crrmax001'
+    name: 'dwmax001'
     // Non-required parameters
-    acrAdminUserEnabled: false
-    acrSku: 'Premium'
-    azureADAuthenticationAsArmPolicyStatus: 'enabled'
-    cacheRules: [
-      {
-        name: 'customRule'
-        sourceRepository: 'docker.io/library/hello-world'
-        targetRepository: 'cached-docker-hub/hello-world'
-      }
-      {
-        sourceRepository: 'docker.io/library/hello-world'
-      }
-    ]
+    amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    customerManagedKeyManagedDisk: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      rotationToLatestKeyVersionEnabled: true
+    }
+    customPrivateSubnetName: '<customPrivateSubnetName>'
+    customPublicSubnetName: '<customPublicSubnetName>'
+    customVirtualNetworkResourceId: '<customVirtualNetworkResourceId>'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
-        metricCategories: [
+        logCategoriesAndGroups: [
           {
-            category: 'AllMetrics'
+            category: 'jobs'
+          }
+          {
+            category: 'notebook'
           }
         ]
         name: 'customSetting'
@@ -210,45 +134,33 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    exportPolicyStatus: 'enabled'
+    disablePublicIp: true
+    loadBalancerBackendPoolName: '<loadBalancerBackendPoolName>'
+    loadBalancerResourceId: '<loadBalancerResourceId>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    networkRuleSetIpRules: [
-      {
-        action: 'Allow'
-        value: '40.74.28.0/23'
-      }
-    ]
+    managedResourceGroupResourceId: '<managedResourceGroupResourceId>'
+    natGatewayName: 'nat-gateway'
+    prepareEncryption: true
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
-        service: 'registry'
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
           Role: 'DeploymentValidation'
         }
       }
     ]
-    quarantinePolicyStatus: 'enabled'
-    replications: [
-      {
-        location: '<location>'
-        name: '<name>'
-      }
-    ]
+    publicIpName: 'nat-gw-public-ip'
+    publicNetworkAccess: 'Disabled'
+    requiredNsgRules: 'NoAzureDatabricksRules'
+    requireInfrastructureEncryption: true
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -266,20 +178,15 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    softDeletePolicyDays: 7
-    softDeletePolicyStatus: 'disabled'
+    skuName: 'premium'
+    storageAccountName: 'sadwmax001'
+    storageAccountSkuName: 'Standard_ZRS'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    trustPolicyStatus: 'enabled'
-    webhooks: [
-      {
-        name: 'acrx001webhook'
-        serviceUri: 'https://www.contoso.com/webhook'
-      }
-    ]
+    vnetAddressPrefix: '10.100'
   }
 }
 ```
@@ -298,38 +205,45 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrmax001"
+      "value": "dwmax001"
     },
     // Non-required parameters
-    "acrAdminUserEnabled": {
-      "value": false
+    "amlWorkspaceResourceId": {
+      "value": "<amlWorkspaceResourceId>"
     },
-    "acrSku": {
-      "value": "Premium"
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
     },
-    "azureADAuthenticationAsArmPolicyStatus": {
-      "value": "enabled"
+    "customerManagedKeyManagedDisk": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "rotationToLatestKeyVersionEnabled": true
+      }
     },
-    "cacheRules": {
-      "value": [
-        {
-          "name": "customRule",
-          "sourceRepository": "docker.io/library/hello-world",
-          "targetRepository": "cached-docker-hub/hello-world"
-        },
-        {
-          "sourceRepository": "docker.io/library/hello-world"
-        }
-      ]
+    "customPrivateSubnetName": {
+      "value": "<customPrivateSubnetName>"
+    },
+    "customPublicSubnetName": {
+      "value": "<customPublicSubnetName>"
+    },
+    "customVirtualNetworkResourceId": {
+      "value": "<customVirtualNetworkResourceId>"
     },
     "diagnosticSettings": {
       "value": [
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
-          "metricCategories": [
+          "logCategoriesAndGroups": [
             {
-              "category": "AllMetrics"
+              "category": "jobs"
+            },
+            {
+              "category": "notebook"
             }
           ],
           "name": "customSetting",
@@ -338,8 +252,14 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         }
       ]
     },
-    "exportPolicyStatus": {
-      "value": "enabled"
+    "disablePublicIp": {
+      "value": true
+    },
+    "loadBalancerBackendPoolName": {
+      "value": "<loadBalancerBackendPoolName>"
+    },
+    "loadBalancerResourceId": {
+      "value": "<loadBalancerResourceId>"
     },
     "location": {
       "value": "<location>"
@@ -350,21 +270,14 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         "name": "myCustomLockName"
       }
     },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
+    "managedResourceGroupResourceId": {
+      "value": "<managedResourceGroupResourceId>"
     },
-    "networkRuleSetIpRules": {
-      "value": [
-        {
-          "action": "Allow",
-          "value": "40.74.28.0/23"
-        }
-      ]
+    "natGatewayName": {
+      "value": "nat-gateway"
+    },
+    "prepareEncryption": {
+      "value": true
     },
     "privateEndpoints": {
       "value": [
@@ -372,26 +285,25 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
-          "service": "registry",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           }
         }
       ]
     },
-    "quarantinePolicyStatus": {
-      "value": "enabled"
+    "publicIpName": {
+      "value": "nat-gw-public-ip"
     },
-    "replications": {
-      "value": [
-        {
-          "location": "<location>",
-          "name": "<name>"
-        }
-      ]
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
+    "requiredNsgRules": {
+      "value": "NoAzureDatabricksRules"
+    },
+    "requireInfrastructureEncryption": {
+      "value": true
     },
     "roleAssignments": {
       "value": [
@@ -412,11 +324,14 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         }
       ]
     },
-    "softDeletePolicyDays": {
-      "value": 7
+    "skuName": {
+      "value": "premium"
     },
-    "softDeletePolicyStatus": {
-      "value": "disabled"
+    "storageAccountName": {
+      "value": "sadwmax001"
+    },
+    "storageAccountSkuName": {
+      "value": "Standard_ZRS"
     },
     "tags": {
       "value": {
@@ -425,16 +340,8 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         "Role": "DeploymentValidation"
       }
     },
-    "trustPolicyStatus": {
-      "value": "enabled"
-    },
-    "webhooks": {
-      "value": [
-        {
-          "name": "acrx001webhook",
-          "serviceUri": "https://www.contoso.com/webhook"
-        }
-      ]
+    "vnetAddressPrefix": {
+      "value": "10.100"
     }
   }
 }
@@ -443,77 +350,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using private endpoint_
-
-This instance deploys the module with a private endpoint.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-crrpe'
-  params: {
-    // Required parameters
-    name: 'crrpe001'
-    // Non-required parameters
-    acrSku: 'Premium'
-    location: '<location>'
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        subnetResourceId: '<subnetResourceId>'
-      }
-    ]
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "crrpe001"
-    },
-    // Non-required parameters
-    "acrSku": {
-      "value": "Premium"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "subnetResourceId": "<subnetResourceId>"
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 5: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -523,40 +360,78 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-crrwaf'
+module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-dwwaf'
   params: {
     // Required parameters
-    name: 'crrwaf001'
+    name: 'dwwaf001'
     // Non-required parameters
-    acrAdminUserEnabled: false
-    acrSku: 'Premium'
-    azureADAuthenticationAsArmPolicyStatus: 'enabled'
+    amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    customerManagedKeyManagedDisk: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      rotationToLatestKeyVersionEnabled: true
+    }
+    customPrivateSubnetName: '<customPrivateSubnetName>'
+    customPublicSubnetName: '<customPublicSubnetName>'
+    customVirtualNetworkResourceId: '<customVirtualNetworkResourceId>'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            category: 'jobs'
+          }
+          {
+            category: 'notebook'
+          }
+        ]
+        name: 'customSetting'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    exportPolicyStatus: 'enabled'
+    disablePublicIp: true
+    loadBalancerBackendPoolName: '<loadBalancerBackendPoolName>'
+    loadBalancerResourceId: '<loadBalancerResourceId>'
     location: '<location>'
-    quarantinePolicyStatus: 'enabled'
-    replications: [
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedResourceGroupResourceId: '<managedResourceGroupResourceId>'
+    natGatewayName: 'nat-gateway'
+    prepareEncryption: true
+    privateEndpoints: [
       {
-        location: '<location>'
-        name: '<name>'
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
       }
     ]
-    softDeletePolicyDays: 7
-    softDeletePolicyStatus: 'disabled'
+    publicIpName: 'nat-gw-public-ip'
+    publicNetworkAccess: 'Disabled'
+    requiredNsgRules: 'NoAzureDatabricksRules'
+    requireInfrastructureEncryption: true
+    skuName: 'premium'
+    storageAccountName: 'sadwwaf001'
+    storageAccountSkuName: 'Standard_ZRS'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    trustPolicyStatus: 'enabled'
+    vnetAddressPrefix: '10.100'
   }
 }
 ```
@@ -575,50 +450,114 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrwaf001"
+      "value": "dwwaf001"
     },
     // Non-required parameters
-    "acrAdminUserEnabled": {
-      "value": false
+    "amlWorkspaceResourceId": {
+      "value": "<amlWorkspaceResourceId>"
     },
-    "acrSku": {
-      "value": "Premium"
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
     },
-    "azureADAuthenticationAsArmPolicyStatus": {
-      "value": "enabled"
+    "customerManagedKeyManagedDisk": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "rotationToLatestKeyVersionEnabled": true
+      }
+    },
+    "customPrivateSubnetName": {
+      "value": "<customPrivateSubnetName>"
+    },
+    "customPublicSubnetName": {
+      "value": "<customPublicSubnetName>"
+    },
+    "customVirtualNetworkResourceId": {
+      "value": "<customVirtualNetworkResourceId>"
     },
     "diagnosticSettings": {
       "value": [
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "category": "jobs"
+            },
+            {
+              "category": "notebook"
+            }
+          ],
+          "name": "customSetting",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
     },
-    "exportPolicyStatus": {
-      "value": "enabled"
+    "disablePublicIp": {
+      "value": true
+    },
+    "loadBalancerBackendPoolName": {
+      "value": "<loadBalancerBackendPoolName>"
+    },
+    "loadBalancerResourceId": {
+      "value": "<loadBalancerResourceId>"
     },
     "location": {
       "value": "<location>"
     },
-    "quarantinePolicyStatus": {
-      "value": "enabled"
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
     },
-    "replications": {
+    "managedResourceGroupResourceId": {
+      "value": "<managedResourceGroupResourceId>"
+    },
+    "natGatewayName": {
+      "value": "nat-gateway"
+    },
+    "prepareEncryption": {
+      "value": true
+    },
+    "privateEndpoints": {
       "value": [
         {
-          "location": "<location>",
-          "name": "<name>"
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "Role": "DeploymentValidation"
+          }
         }
       ]
     },
-    "softDeletePolicyDays": {
-      "value": 7
+    "publicIpName": {
+      "value": "nat-gw-public-ip"
     },
-    "softDeletePolicyStatus": {
-      "value": "disabled"
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
+    "requiredNsgRules": {
+      "value": "NoAzureDatabricksRules"
+    },
+    "requireInfrastructureEncryption": {
+      "value": true
+    },
+    "skuName": {
+      "value": "premium"
+    },
+    "storageAccountName": {
+      "value": "sadwwaf001"
+    },
+    "storageAccountSkuName": {
+      "value": "Standard_ZRS"
     },
     "tags": {
       "value": {
@@ -627,8 +566,8 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         "Role": "DeploymentValidation"
       }
     },
-    "trustPolicyStatus": {
-      "value": "enabled"
+    "vnetAddressPrefix": {
+      "value": "10.100"
     }
   }
 }
@@ -644,106 +583,58 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of your Azure Container Registry. |
+| [`name`](#parameter-name) | string | The name of the Azure Databricks workspace to create. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`acrAdminUserEnabled`](#parameter-acradminuserenabled) | bool | Enable admin user that have push / pull permission to the registry. |
-| [`acrSku`](#parameter-acrsku) | string | Tier of your Azure container registry. |
-| [`anonymousPullEnabled`](#parameter-anonymouspullenabled) | bool | Enables registry-wide pull from unauthenticated clients. It's in preview and available in the Standard and Premium service tiers. |
-| [`azureADAuthenticationAsArmPolicyStatus`](#parameter-azureadauthenticationasarmpolicystatus) | string | The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled. |
-| [`cacheRules`](#parameter-cacherules) | array | Array of Cache Rules. Note: This is a preview feature ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache#cache-for-acr-preview)). |
-| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
-| [`dataEndpointEnabled`](#parameter-dataendpointenabled) | bool | Enable a single data endpoint per region for serving data. Not relevant in case of disabled public access. Note, requires the 'acrSku' to be 'Premium'. |
+| [`amlWorkspaceResourceId`](#parameter-amlworkspaceresourceid) | string | The resource ID of a Azure Machine Learning workspace to link with Databricks workspace. |
+| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition to use for the managed service. |
+| [`customerManagedKeyManagedDisk`](#parameter-customermanagedkeymanageddisk) | object | The customer managed key definition to use for the managed disk. |
+| [`customPrivateSubnetName`](#parameter-customprivatesubnetname) | string | The name of the Private Subnet within the Virtual Network. |
+| [`customPublicSubnetName`](#parameter-custompublicsubnetname) | string | The name of a Public Subnet within the Virtual Network. |
+| [`customVirtualNetworkResourceId`](#parameter-customvirtualnetworkresourceid) | string | The resource ID of a Virtual Network where this Databricks Cluster should be created. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`disablePublicIp`](#parameter-disablepublicip) | bool | Disable Public IP. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`exportPolicyStatus`](#parameter-exportpolicystatus) | string | The value that indicates whether the export policy is enabled or not. |
-| [`location`](#parameter-location) | string | Location for all resources. |
+| [`loadBalancerBackendPoolName`](#parameter-loadbalancerbackendpoolname) | string | Name of the outbound Load Balancer Backend Pool for Secure Cluster Connectivity (No Public IP). |
+| [`loadBalancerResourceId`](#parameter-loadbalancerresourceid) | string | Resource URI of Outbound Load balancer for Secure Cluster Connectivity (No Public IP) workspace. |
+| [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`networkRuleBypassOptions`](#parameter-networkrulebypassoptions) | string | Whether to allow trusted Azure services to access a network restricted registry. |
-| [`networkRuleSetDefaultAction`](#parameter-networkrulesetdefaultaction) | string | The default action of allow or deny when no other rules match. |
-| [`networkRuleSetIpRules`](#parameter-networkrulesetiprules) | array | The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'. |
-| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'acrSku' to be 'Premium'. |
-| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set.  Note, requires the 'acrSku' to be 'Premium'. |
-| [`quarantinePolicyStatus`](#parameter-quarantinepolicystatus) | string | The value that indicates whether the quarantine policy is enabled or not. |
-| [`replications`](#parameter-replications) | array | All replications to create. |
-| [`retentionPolicyDays`](#parameter-retentionpolicydays) | int | The number of days to retain an untagged manifest after which it gets purged. |
-| [`retentionPolicyStatus`](#parameter-retentionpolicystatus) | string | The value that indicates whether the retention policy is enabled or not. |
+| [`managedResourceGroupResourceId`](#parameter-managedresourcegroupresourceid) | string | The managed resource group ID. It is created by the module as per the to-be resource ID you provide. |
+| [`natGatewayName`](#parameter-natgatewayname) | string | Name of the NAT gateway for Secure Cluster Connectivity (No Public IP) workspace subnets. |
+| [`prepareEncryption`](#parameter-prepareencryption) | bool | Prepare the workspace for encryption. Enables the Managed Identity for managed storage account. |
+| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
+| [`publicIpName`](#parameter-publicipname) | string | Name of the Public IP for No Public IP workspace with managed vNet. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | The network access type for accessing workspace. Set value to disabled to access workspace only via private link. |
+| [`requiredNsgRules`](#parameter-requirednsgrules) | string | Gets or sets a value indicating whether data plane (clusters) to control plane communication happen over private endpoint. |
+| [`requireInfrastructureEncryption`](#parameter-requireinfrastructureencryption) | bool | A boolean indicating whether or not the DBFS root file system will be enabled with secondary layer of encryption with platform managed keys for data at rest. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`softDeletePolicyDays`](#parameter-softdeletepolicydays) | int | The number of days after which a soft-deleted item is permanently deleted. |
-| [`softDeletePolicyStatus`](#parameter-softdeletepolicystatus) | string | Soft Delete policy status. Default is disabled. |
+| [`skuName`](#parameter-skuname) | string | The pricing tier of workspace. |
+| [`storageAccountName`](#parameter-storageaccountname) | string | Default DBFS storage account name. |
+| [`storageAccountSkuName`](#parameter-storageaccountskuname) | string | Storage account SKU name. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`trustPolicyStatus`](#parameter-trustpolicystatus) | string | The value that indicates whether the trust policy is enabled or not. |
-| [`webhooks`](#parameter-webhooks) | array | All webhooks to create. |
-| [`zoneRedundancy`](#parameter-zoneredundancy) | string | Whether or not zone redundancy is enabled for this container registry. |
+| [`vnetAddressPrefix`](#parameter-vnetaddressprefix) | string | Address prefix for Managed virtual network. |
 
 ### Parameter: `name`
 
-Name of your Azure Container Registry.
+The name of the Azure Databricks workspace to create.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `acrAdminUserEnabled`
+### Parameter: `amlWorkspaceResourceId`
 
-Enable admin user that have push / pull permission to the registry.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `acrSku`
-
-Tier of your Azure container registry.
+The resource ID of a Azure Machine Learning workspace to link with Databricks workspace.
 
 - Required: No
 - Type: string
-- Default: `'Basic'`
-- Allowed:
-  ```Bicep
-  [
-    'Basic'
-    'Premium'
-    'Standard'
-  ]
-  ```
-
-### Parameter: `anonymousPullEnabled`
-
-Enables registry-wide pull from unauthenticated clients. It's in preview and available in the Standard and Premium service tiers.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `azureADAuthenticationAsArmPolicyStatus`
-
-The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled.
-
-- Required: No
-- Type: string
-- Default: `'enabled'`
-- Allowed:
-  ```Bicep
-  [
-    'disabled'
-    'enabled'
-  ]
-  ```
-
-### Parameter: `cacheRules`
-
-Array of Cache Rules. Note: This is a preview feature ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache#cache-for-acr-preview)).
-
-- Required: No
-- Type: array
+- Default: `''`
 
 ### Parameter: `customerManagedKey`
 
-The customer managed key definition.
+The customer managed key definition to use for the managed service.
 
 - Required: No
 - Type: object
@@ -790,13 +681,86 @@ User assigned identity to use when fetching the customer managed key. Required i
 - Required: No
 - Type: string
 
-### Parameter: `dataEndpointEnabled`
+### Parameter: `customerManagedKeyManagedDisk`
 
-Enable a single data endpoint per region for serving data. Not relevant in case of disabled public access. Note, requires the 'acrSku' to be 'Premium'.
+The customer managed key definition to use for the managed disk.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-customermanagedkeymanageddiskkeyname) | string | The name of the customer managed key to use for encryption. |
+| [`keyVaultResourceId`](#parameter-customermanagedkeymanageddiskkeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVersion`](#parameter-customermanagedkeymanageddiskkeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
+| [`rotationToLatestKeyVersionEnabled`](#parameter-customermanagedkeymanageddiskrotationtolatestkeyversionenabled) | bool | Indicate whether the latest key version should be automatically used for Managed Disk Encryption. Enabled by default. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeymanageddiskuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
+
+### Parameter: `customerManagedKeyManagedDisk.keyName`
+
+The name of the customer managed key to use for encryption.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKeyManagedDisk.keyVaultResourceId`
+
+The resource ID of a key vault to reference a customer managed key for encryption from.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKeyManagedDisk.keyVersion`
+
+The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+
+- Required: No
+- Type: string
+
+### Parameter: `customerManagedKeyManagedDisk.rotationToLatestKeyVersionEnabled`
+
+Indicate whether the latest key version should be automatically used for Managed Disk Encryption. Enabled by default.
 
 - Required: No
 - Type: bool
-- Default: `False`
+
+### Parameter: `customerManagedKeyManagedDisk.userAssignedIdentityResourceId`
+
+User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+
+- Required: No
+- Type: string
+
+### Parameter: `customPrivateSubnetName`
+
+The name of the Private Subnet within the Virtual Network.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `customPublicSubnetName`
+
+The name of a Public Subnet within the Virtual Network.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `customVirtualNetworkResourceId`
+
+The resource ID of a Virtual Network where this Databricks Cluster should be created.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `diagnosticSettings`
 
@@ -889,6 +853,14 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
+### Parameter: `disablePublicIp`
+
+Disable Public IP.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -897,24 +869,25 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `exportPolicyStatus`
+### Parameter: `loadBalancerBackendPoolName`
 
-The value that indicates whether the export policy is enabled or not.
+Name of the outbound Load Balancer Backend Pool for Secure Cluster Connectivity (No Public IP).
 
 - Required: No
 - Type: string
-- Default: `'disabled'`
-- Allowed:
-  ```Bicep
-  [
-    'disabled'
-    'enabled'
-  ]
-  ```
+- Default: `''`
+
+### Parameter: `loadBalancerResourceId`
+
+Resource URI of Outbound Load balancer for Secure Cluster Connectivity (No Public IP) workspace.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `location`
 
-Location for all resources.
+Location for all Resources.
 
 - Required: No
 - Type: string
@@ -956,74 +929,33 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `managedIdentities`
+### Parameter: `managedResourceGroupResourceId`
 
-The managed identity definition for this resource.
+The managed resource group ID. It is created by the module as per the to-be resource ID you provide.
 
 - Required: No
-- Type: object
+- Type: string
+- Default: `''`
 
-**Optional parameters**
+### Parameter: `natGatewayName`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+Name of the NAT gateway for Secure Cluster Connectivity (No Public IP) workspace subnets.
 
-### Parameter: `managedIdentities.systemAssigned`
+- Required: No
+- Type: string
+- Default: `''`
 
-Enables system assigned managed identity on the resource.
+### Parameter: `prepareEncryption`
+
+Prepare the workspace for encryption. Enables the Managed Identity for managed storage account.
 
 - Required: No
 - Type: bool
-
-### Parameter: `managedIdentities.userAssignedResourceIds`
-
-The resource ID(s) to assign to the resource.
-
-- Required: No
-- Type: array
-
-### Parameter: `networkRuleBypassOptions`
-
-Whether to allow trusted Azure services to access a network restricted registry.
-
-- Required: No
-- Type: string
-- Default: `'AzureServices'`
-- Allowed:
-  ```Bicep
-  [
-    'AzureServices'
-    'None'
-  ]
-  ```
-
-### Parameter: `networkRuleSetDefaultAction`
-
-The default action of allow or deny when no other rules match.
-
-- Required: No
-- Type: string
-- Default: `'Deny'`
-- Allowed:
-  ```Bicep
-  [
-    'Allow'
-    'Deny'
-  ]
-  ```
-
-### Parameter: `networkRuleSetIpRules`
-
-The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'.
-
-- Required: No
-- Type: array
+- Default: `False`
 
 ### Parameter: `privateEndpoints`
 
-Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'acrSku' to be 'Premium'.
+Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
 
 - Required: No
 - Type: array
@@ -1047,7 +979,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualPrivateLinkServiceConnections`](#parameter-privateendpointsmanualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
+| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
@@ -1154,7 +1086,7 @@ The name of the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroupName`
 
-The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.
+The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
 
 - Required: No
 - Type: string
@@ -1269,12 +1201,21 @@ Tags to be applied on all resources/resource groups in this deployment.
 - Required: No
 - Type: object
 
-### Parameter: `publicNetworkAccess`
+### Parameter: `publicIpName`
 
-Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set.  Note, requires the 'acrSku' to be 'Premium'.
+Name of the Public IP for No Public IP workspace with managed vNet.
 
 - Required: No
 - Type: string
+- Default: `''`
+
+### Parameter: `publicNetworkAccess`
+
+The network access type for accessing workspace. Set value to disabled to access workspace only via private link.
+
+- Required: No
+- Type: string
+- Default: `'Enabled'`
 - Allowed:
   ```Bicep
   [
@@ -1283,50 +1224,28 @@ Whether or not public network access is allowed for this resource. For security 
   ]
   ```
 
-### Parameter: `quarantinePolicyStatus`
+### Parameter: `requiredNsgRules`
 
-The value that indicates whether the quarantine policy is enabled or not.
-
-- Required: No
-- Type: string
-- Default: `'disabled'`
-- Allowed:
-  ```Bicep
-  [
-    'disabled'
-    'enabled'
-  ]
-  ```
-
-### Parameter: `replications`
-
-All replications to create.
-
-- Required: No
-- Type: array
-
-### Parameter: `retentionPolicyDays`
-
-The number of days to retain an untagged manifest after which it gets purged.
-
-- Required: No
-- Type: int
-- Default: `15`
-
-### Parameter: `retentionPolicyStatus`
-
-The value that indicates whether the retention policy is enabled or not.
+Gets or sets a value indicating whether data plane (clusters) to control plane communication happen over private endpoint.
 
 - Required: No
 - Type: string
-- Default: `'enabled'`
+- Default: `'AllRules'`
 - Allowed:
   ```Bicep
   [
-    'disabled'
-    'enabled'
+    'AllRules'
+    'NoAzureDatabricksRules'
   ]
   ```
+
+### Parameter: `requireInfrastructureEncryption`
+
+A boolean indicating whether or not the DBFS root file system will be enabled with secondary layer of encryption with platform managed keys for data at rest.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `roleAssignments`
 
@@ -1417,28 +1336,37 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `softDeletePolicyDays`
+### Parameter: `skuName`
 
-The number of days after which a soft-deleted item is permanently deleted.
-
-- Required: No
-- Type: int
-- Default: `7`
-
-### Parameter: `softDeletePolicyStatus`
-
-Soft Delete policy status. Default is disabled.
+The pricing tier of workspace.
 
 - Required: No
 - Type: string
-- Default: `'disabled'`
+- Default: `'premium'`
 - Allowed:
   ```Bicep
   [
-    'disabled'
-    'enabled'
+    'premium'
+    'standard'
+    'trial'
   ]
   ```
+
+### Parameter: `storageAccountName`
+
+Default DBFS storage account name.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `storageAccountSkuName`
+
+Storage account SKU name.
+
+- Required: No
+- Type: string
+- Default: `'Standard_GRS'`
 
 ### Parameter: `tags`
 
@@ -1447,42 +1375,13 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-### Parameter: `trustPolicyStatus`
+### Parameter: `vnetAddressPrefix`
 
-The value that indicates whether the trust policy is enabled or not.
-
-- Required: No
-- Type: string
-- Default: `'disabled'`
-- Allowed:
-  ```Bicep
-  [
-    'disabled'
-    'enabled'
-  ]
-  ```
-
-### Parameter: `webhooks`
-
-All webhooks to create.
-
-- Required: No
-- Type: array
-
-### Parameter: `zoneRedundancy`
-
-Whether or not zone redundancy is enabled for this container registry.
+Address prefix for Managed virtual network.
 
 - Required: No
 - Type: string
-- Default: `'Disabled'`
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
+- Default: `'10.139'`
 
 
 ## Outputs
@@ -1490,11 +1389,9 @@ Whether or not zone redundancy is enabled for this container registry.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `loginServer` | string | The reference to the Azure container registry. |
-| `name` | string | The Name of the Azure container registry. |
-| `resourceGroupName` | string | The name of the Azure container registry. |
-| `resourceId` | string | The resource ID of the Azure container registry. |
-| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+| `name` | string | The name of the deployed databricks workspace. |
+| `resourceGroupName` | string | The resource group of the deployed databricks workspace. |
+| `resourceId` | string | The resource ID of the deployed databricks workspace. |
 
 ## Cross-referenced modules
 
@@ -1502,7 +1399,74 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.3.2` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.3.1` | Remote reference |
+
+## Notes
+
+### Parameter Usage: `customPublicSubnetName` and `customPrivateSubnetName`
+
+- Require Network Security Groups attached to the subnets (Note: Rule don't have to be set, they are set through the deployment)
+
+- The two subnets also need the delegation to service `Microsoft.Databricks/workspaces`
+
+### Parameter Usage: `parameters`
+
+- Include only those elements (e.g. amlWorkspaceId) as object if specified, otherwise remove it.
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"parameters": {
+    "value": {
+        "amlWorkspaceId": {
+            "value": "/subscriptions/xxx/resourceGroups/xxx/providers/Microsoft.MachineLearningServices/workspaces/xxx"
+        },
+        "customVirtualNetworkId": {
+            "value": "/subscriptions/xxx/resourceGroups/xxx/providers/Microsoft.Network/virtualNetworks/xxx"
+        },
+        "customPublicSubnetName": {
+            "value": "xxx"
+        },
+        "customPrivateSubnetName": {
+            "value": "xxx"
+        },
+        "enableNoPublicIp": {
+            "value": true
+        }
+    }
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+parameters: {
+    amlWorkspaceId: {
+        value: '/subscriptions/xxx/resourceGroups/xxx/providers/Microsoft.MachineLearningServices/workspaces/xxx'
+    }
+    customVirtualNetworkId: {
+        value: '/subscriptions/xxx/resourceGroups/xxx/providers/Microsoft.Network/virtualNetworks/xxx'
+    }
+    customPublicSubnetName: {
+        value: 'xxx'
+    }
+    customPrivateSubnetName: {
+        value: 'xxx'
+    }
+    enableNoPublicIp: {
+        value: true
+    }
+}
+```
+
+</details>
+<p>
 
 ## Data Collection
 
