@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "2882579230984727691"
+      "version": "0.24.24.22086",
+      "templateHash": "17855800292568144576"
     },
     "name": "Service Bus Namespace Authorization Rules",
     "description": "This module deploys a Service Bus Namespace Authorization Rule.",

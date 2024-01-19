@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "629585137254239873"
+      "version": "0.24.24.22086",
+      "templateHash": "513848117762125355"
     },
     "name": "Kubernetes Configuration Extensions",
     "description": "This module deploys a Kubernetes Configuration Extension.",
@@ -158,7 +158,7 @@
         "mode": "Incremental",
         "parameters": {
           "enableTelemetry": {
-            "value": "[parameters('enableTelemetry')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
           },
           "clusterName": {
             "value": "[parameters('clusterName')]"

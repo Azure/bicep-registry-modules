@@ -269,12 +269,13 @@ module logAnalyticsWorkspace_tables 'table/main.bicep' = [for (table, index) in 
   params: {
     workspaceName: logAnalyticsWorkspace.name
     name: table.name
-    plan: contains(table, 'plan') ? table.plan : 'Analytics'
-    schema: contains(table, 'schema') ? table.schema : {}
-    retentionInDays: contains(table, 'retentionInDays') ? table.retentionInDays : -1
-    totalRetentionInDays: contains(table, 'totalRetentionInDays') ? table.totalRetentionInDays : -1
-    restoredLogs: contains(table, 'restoredLogs') ? table.restoredLogs : {}
-    searchResults: contains(table, 'searchResults') ? table.searchResults : {}
+    plan: table.?plan
+    schema: table.?schema
+    retentionInDays: table.?retentionInDays
+    totalRetentionInDays: table.?totalRetentionInDays
+    restoredLogs: table.?restoredLogs
+    searchResults: table.?searchResults
+    roleAssignments: table.?roleAssignments
   }
 }]
 
@@ -286,7 +287,7 @@ module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/
     logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
     product: contains(gallerySolution, 'product') ? gallerySolution.product : 'OMSGallery'
     publisher: contains(gallerySolution, 'publisher') ? gallerySolution.publisher : 'Microsoft'
-    enableTelemetry: enableTelemetry
+    enableTelemetry: gallerySolution.?enableTelemetry ?? enableTelemetry
   }
 }]
 
@@ -364,7 +365,7 @@ type roleAssignmentType = {
   @description('Optional. The description of the role assignment.')
   description: string?
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
+  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
   @description('Optional. Version of the condition.')
@@ -387,7 +388,7 @@ type diagnosticSettingType = {
     categoryGroup: string?
   }[]?
 
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
+  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to \'\' to disable metric collection.')
   metricCategories: {
     @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to \'AllMetrics\' to collect all metrics.')
     category: string

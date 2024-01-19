@@ -28,12 +28,12 @@ on:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.res.app.managed-environment.yml"
-      - "avm/res/key-vault/vault/**"
+      - "avm/res/app/managed-environment/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/key-vault/vault"
+  modulePath: "avm/res/app/managed-environment"
   workflowPath: ".github/workflows/avm.res.app.managed-environment.yml"
 
 concurrency:
@@ -44,7 +44,7 @@ jobs:
   #   Initialize pipeline   #
   ###########################
   job_initialize_pipeline:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     name: "Initialize pipeline"
     steps:
       - name: "Checkout"
