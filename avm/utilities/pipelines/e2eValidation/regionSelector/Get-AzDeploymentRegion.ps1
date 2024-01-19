@@ -50,7 +50,7 @@ function Get-AzDeploymentRegion {
   $controlledRegionList = Get-Content -Path $RepoRoot/avm/regions.json -Raw | ConvertFrom-Json
 
   # Validate if wildcard exists
-  if ($controlledRegionList | Get-Member -Name "$formattedResourceProvider/*") {
+  if ($controlledRegionList | Where-Object { $_.Name -match [regex]::Escape("$formattedResourceProvider/*") }) {
     Write-Verbose "Resource provider [$formattedResourceProvider/*] is in the regions.json"
     Write-Verbose "Adding [$($controlledRegionList."$formattedResourceProvider/*")] to the controlled regions"
     $controlledRegions += $controlledRegionList."$formattedResourceProvider/*"
