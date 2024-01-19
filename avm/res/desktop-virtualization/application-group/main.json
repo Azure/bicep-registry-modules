@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "15857502742946914926"
+      "templateHash": "2854389444952489582"
     },
     "name": "Azure Virtual Desktop Application Group",
     "description": "This module deploys an Azure Virtual Desktop Application Group.",
@@ -464,7 +464,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "1529263486422314166"
+              "templateHash": "16488955966870707963"
             },
             "name": "Azure Virtual Desktop Application Group Application",
             "description": "This module deploys an Azure Virtual Desktop Application Group Application.",
@@ -598,14 +598,14 @@
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The name of the resource group the scaling plan was created in."
+                "description": "The name of the resource group the application was created in."
               },
               "value": "[resourceGroup().name]"
             },
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The name of the scaling plan."
+                "description": "The name of the application."
               },
               "value": "[parameters('name')]"
             }
