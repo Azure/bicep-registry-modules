@@ -131,7 +131,7 @@ var builtInRoleNames = {
 }
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.app-container-app.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.res.app-containerapp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -195,29 +195,29 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
 }
 
 resource containerApp_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
- name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
- properties: {
-  storageAccountId: diagnosticSetting.?storageAccountResourceId
-  workspaceId: diagnosticSetting.?workspaceResourceId
-  eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-  eventHubName: diagnosticSetting.?eventHubName
-  metrics: diagnosticSetting.?metricCategories ?? [
-    {
-      category: 'AllMetrics'
-      timeGrain: null
-      enabled: true
-    }
-  ]
-  logs: diagnosticSetting.?logCategoriesAndGroups ?? [
-    {
-      categoryGroup: 'AllLogs'
-      enabled: true
-    }
-  ]
-  marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-  logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
-}
-scope: containerApp
+  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+  properties: {
+    storageAccountId: diagnosticSetting.?storageAccountResourceId
+    workspaceId: diagnosticSetting.?workspaceResourceId
+    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+    eventHubName: diagnosticSetting.?eventHubName
+    metrics: diagnosticSetting.?metricCategories ?? [
+      {
+        category: 'AllMetrics'
+        timeGrain: null
+        enabled: true
+      }
+    ]
+    logs: diagnosticSetting.?logCategoriesAndGroups ?? [
+      {
+        categoryGroup: 'AllLogs'
+        enabled: true
+      }
+    ]
+    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+  }
+  scope: containerApp
 }]
 
 resource containerApp_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
