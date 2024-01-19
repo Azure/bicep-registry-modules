@@ -92,7 +92,7 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     scope: keyVault::key
     properties: {
         principalId: '09ef9f59-e7b6-422e-84e4-508cfc8d64e7' // AzureDatabricks Enterprise Application Object Id
-        roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424') // Key Vault Crypto User
+        roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483') // Key Vault Crypto User
         principalType: 'ServicePrincipal'
     }
 }
