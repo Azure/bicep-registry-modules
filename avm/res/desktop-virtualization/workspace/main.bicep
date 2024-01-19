@@ -100,7 +100,7 @@ module workspace_privateEndpoints 'br/public:avm-res-network-privateendpoint:0.1
     serviceResourceId: workspace.id
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: enableTelemetry
-    //lock: privateEndpoint.?lock ?? lock
+    lock: privateEndpoint.?lock ?? lock
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
     roleAssignments: privateEndpoint.?roleAssignments
@@ -113,11 +113,11 @@ module workspace_privateEndpoints 'br/public:avm-res-network-privateendpoint:0.1
   }
 }]
 
-resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock)) {
-  name: '${workspace.name}-${lock}-lock'
+resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
   properties: {
-    level: any(lock)
-    notes: lock == 'CanNotDelete' ? 'Cannot delete resource or child resources' : 'Cannot modify this resource or child resources'
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
   }
   scope: workspace
 }

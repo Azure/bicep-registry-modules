@@ -122,15 +122,7 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
     }
     privateEndpoints: [
       {
-        customDnsConfigs: [
-          {
-            fqdn: 'abc.workspace.com'
-            ipAddresses: [
-              '10.0.0.10'
-              '10.0.0.13'
-            ]
-          }
-        ]
+        customDnsConfigs: []
         ipConfigurations: [
           {
             name: 'myIPconfig-feed1'
@@ -168,14 +160,7 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
         }
       }
       {
-        customDnsConfigs: [
-          {
-            fqdn: 'abc.workspace.com'
-            ipAddresses: [
-              '10.0.0.11'
-            ]
-          }
-        ]
+        customDnsConfigs: []
         ipConfigurations: [
           {
             name: 'myIPconfig-global'
@@ -273,15 +258,7 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
     "privateEndpoints": {
       "value": [
         {
-          "customDnsConfigs": [
-            {
-              "fqdn": "abc.workspace.com",
-              "ipAddresses": [
-                "10.0.0.10",
-                "10.0.0.13"
-              ]
-            }
-          ],
+          "customDnsConfigs": [],
           "ipConfigurations": [
             {
               "name": "myIPconfig-feed1",
@@ -319,14 +296,7 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
           }
         },
         {
-          "customDnsConfigs": [
-            {
-              "fqdn": "abc.workspace.com",
-              "ipAddresses": [
-                "10.0.0.11"
-              ]
-            }
-          ],
+          "customDnsConfigs": [],
           "ipConfigurations": [
             {
               "name": "myIPconfig-global",
@@ -686,7 +656,7 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`friendlyName`](#parameter-friendlyname) | string | Friendly name of the workspace. |
 | [`location`](#parameter-location) | string | Location for all resources. |
-| [`lock`](#parameter-lock) | object | Lock settings of the scaling plan. |
+| [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Public network access for the workspace. Enabled by default. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
@@ -832,7 +802,7 @@ Location for all resources.
 
 ### Parameter: `lock`
 
-Lock settings of the scaling plan.
+The lock settings of the service.
 
 - Required: No
 - Type: object
