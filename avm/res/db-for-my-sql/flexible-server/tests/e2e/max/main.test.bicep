@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module with most of its featur
 param resourceGroupName string = 'dep-${namePrefix}-dbformysql.flexibleservers-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param location string = 'eastus'
+param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'dfmsmax'
@@ -27,6 +27,9 @@ param baseTime string = utcNow('u')
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+#disable-next-line no-hardcoded-location // services used for this module are only available in major regions
+var tempLocation = 'eastus'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -35,7 +38,7 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: resourceGroupName
-  location: location
+  location: tempLocation
 }
 
 module nestedDependencies1 'dependencies1.bicep' = {
@@ -43,7 +46,7 @@ module nestedDependencies1 'dependencies1.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies1'
   params: {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
-    location: location
+    location: tempLocation
     managedIdentityName: 'dep-${namePrefix}-msi-ds-${serviceShort}'
     pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
   }
@@ -56,7 +59,7 @@ module nestedDependencies2 'dependencies2.bicep' = {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: location
+    location: tempLocation
     geoBackupKeyVaultName: 'dep-${namePrefix}-kvp-${serviceShort}-${substring(uniqueString(baseTime), 0, 2)}'
     geoBackupManagedIdentityName: 'dep-${namePrefix}-msip-${serviceShort}'
     geoBackupLocation: nestedDependencies1.outputs.pairedRegionName
@@ -73,7 +76,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: location
+    location: tempLocation
   }
 }
 
@@ -87,7 +90,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: resourceGroup.location
+    location: tempLocation
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
