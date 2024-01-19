@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-pratices of the Well-Architectured-Framework.'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
 
 // ========== //
 // Parameters //
@@ -101,13 +101,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     managedIdentities: {
       systemAssigned: true
     }
-    // Workaround for PSRule
-    roleAssignments: null
-    customerManagedKey: null
-    allowedFqdnList: null
-    apiProperties: null
-    migrationToken: null
-    userOwnedStorage: null
-    networkAcls: null
   }
 }]

@@ -1,0 +1,100 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "16846150865263245054"
+    },
+    "name": "API Management Service Caches",
+    "description": "This module deploys an API Management Service Cache.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Identifier of the Cache entity. Cache identifier (should be either 'default' or valid Azure region identifier)."
+      }
+    },
+    "connectionString": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Runtime connection string to cache. Can be referenced by a named value like so, {{<named-value>}}."
+      }
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Cache description."
+      }
+    },
+    "resourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Original uri of entity in external system cache points to."
+      }
+    },
+    "useFromLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Location identifier to use cache from (should be either 'default' or valid Azure region identifier)."
+      }
+    }
+  },
+  "resources": {
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2021-08-01",
+      "name": "[parameters('apiManagementServiceName')]"
+    },
+    "cache": {
+      "type": "Microsoft.ApiManagement/service/caches",
+      "apiVersion": "2021-08-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+      "properties": {
+        "description": "[parameters('description')]",
+        "connectionString": "[parameters('connectionString')]",
+        "useFromLocation": "[parameters('useFromLocation')]",
+        "resourceId": "[parameters('resourceId')]"
+      },
+      "dependsOn": [
+        "service"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the API management service cache."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/caches', parameters('apiManagementServiceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the API management service cache."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the API management service cache was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

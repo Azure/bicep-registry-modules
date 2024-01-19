@@ -1,0 +1,189 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "7004523533145561776"
+    },
+    "name": "Service Bus Namespace Topic Subscription",
+    "description": "This module deploys a Service Bus Namespace Topic Subscription.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the service bus namespace topic subscription."
+      }
+    },
+    "namespaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Service Bus Namespace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "topicName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Service Bus Namespace Topic. Required if the template is used in a standalone deployment."
+      }
+    },
+    "autoDeleteOnIdle": {
+      "type": "string",
+      "defaultValue": "PT1H",
+      "metadata": {
+        "description": "Optional. ISO 8601 timespan idle interval after which the subscription is automatically deleted. The minimum duration is 5 minutes."
+      }
+    },
+    "clientAffineProperties": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The properties that are associated with a subscription that is client-affine."
+      }
+    },
+    "deadLetteringOnFilterEvaluationExceptions": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. A value that indicates whether a subscription has dead letter support when a message expires."
+      }
+    },
+    "deadLetteringOnMessageExpiration": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. A value that indicates whether a subscription has dead letter support when a message expires."
+      }
+    },
+    "defaultMessageTimeToLive": {
+      "type": "string",
+      "defaultValue": "P10675199DT2H48M5.4775807S",
+      "metadata": {
+        "description": "Optional. ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes."
+      }
+    },
+    "duplicateDetectionHistoryTimeWindow": {
+      "type": "string",
+      "defaultValue": "PT10M",
+      "metadata": {
+        "description": "Optional. ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes."
+      }
+    },
+    "enableBatchedOperations": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. A value that indicates whether server-side batched operations are enabled."
+      }
+    },
+    "forwardDeadLetteredMessagesTo": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
+      }
+    },
+    "forwardTo": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
+      }
+    },
+    "isClientAffine": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. A value that indicates whether the subscription supports the concept of session."
+      }
+    },
+    "lockDuration": {
+      "type": "string",
+      "defaultValue": "PT1M",
+      "metadata": {
+        "description": "Optional. ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute."
+      }
+    },
+    "maxDeliveryCount": {
+      "type": "int",
+      "defaultValue": 10,
+      "metadata": {
+        "description": "Optional. Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10."
+      }
+    },
+    "requiresSession": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. A value that indicates whether the subscription supports the concept of session."
+      }
+    },
+    "status": {
+      "type": "string",
+      "defaultValue": "Active",
+      "allowedValues": [
+        "Active",
+        "Creating",
+        "Deleting",
+        "Disabled",
+        "ReceiveDisabled",
+        "Renaming",
+        "Restoring",
+        "SendDisabled",
+        "Unknown"
+      ],
+      "metadata": {
+        "description": "Optional. Enumerates the possible values for the status of a messaging entity."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+      "apiVersion": "2021-11-01",
+      "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('name'))]",
+      "properties": {
+        "autoDeleteOnIdle": "[parameters('autoDeleteOnIdle')]",
+        "clientAffineProperties": "[parameters('clientAffineProperties')]",
+        "deadLetteringOnFilterEvaluationExceptions": "[parameters('deadLetteringOnFilterEvaluationExceptions')]",
+        "deadLetteringOnMessageExpiration": "[parameters('deadLetteringOnMessageExpiration')]",
+        "defaultMessageTimeToLive": "[parameters('defaultMessageTimeToLive')]",
+        "duplicateDetectionHistoryTimeWindow": "[parameters('duplicateDetectionHistoryTimeWindow')]",
+        "enableBatchedOperations": "[parameters('enableBatchedOperations')]",
+        "forwardDeadLetteredMessagesTo": "[parameters('forwardDeadLetteredMessagesTo')]",
+        "forwardTo": "[if(not(empty(parameters('forwardTo'))), parameters('forwardTo'), parameters('topicName'))]",
+        "isClientAffine": "[parameters('isClientAffine')]",
+        "lockDuration": "[parameters('lockDuration')]",
+        "maxDeliveryCount": "[parameters('maxDeliveryCount')]",
+        "requiresSession": "[parameters('requiresSession')]",
+        "status": "[parameters('status')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the topic subscription."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Resource ID of the topic subscription."
+      },
+      "value": "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaceName'), parameters('topicName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the topic subscription was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
