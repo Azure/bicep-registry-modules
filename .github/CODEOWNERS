@@ -34,7 +34,7 @@
 #/avm/res/container-instance/container-group/ @Azure/avm-res-containerinstance-containergroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/container-registry/registry/ @Azure/avm-res-containerregistry-registry-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/container-service/managed-cluster/ @Azure/avm-res-containerservice-managedcluster-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/databricks/access-connector/ @Azure/avm-res-databricks-accessconnector-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/databricks/access-connector/ @Azure/avm-res-databricks-accessconnector-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/databricks/workspace/ @Azure/avm-res-databricks-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/data-factory/factory/ @Azure/avm-res-datafactory-factory-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/data-protection/backup-vault/ @Azure/avm-res-dataprotection-backupvault-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -130,7 +130,7 @@
 #/avm/res/signal-r-service/web-pub-sub/ @Azure/avm-res-signalrservice-webpubsub-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/sql/managed-instance/ @Azure/avm-res-sql-managedinstance-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/sql/server/ @Azure/avm-res-sql-server-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/storage/storage-account/ @Azure/avm-res-storage-storageaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/storage/storage-account/ @Azure/avm-res-storage-storageaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/synapse/private-link-hub/ @Azure/avm-res-synapse-privatelinkhub-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/synapse/workspace/ @Azure/avm-res-synapse-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/virtual-machine-images/image-template/ @Azure/avm-res-virtualmachineimages-imagetemplate-module-owners-bicep @Azure/avm-core-team-technical-bicep
