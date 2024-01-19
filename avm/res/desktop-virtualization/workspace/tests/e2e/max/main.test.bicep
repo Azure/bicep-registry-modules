@@ -13,7 +13,7 @@ param location string = deployment().location
 param serviceShort string = 'dvwsmax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'tp' //'#_namePrefix_#'
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
@@ -66,10 +66,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Reader'
@@ -114,15 +110,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             }
           }
         ]
-        customDnsConfigs: [
-          {
-            fqdn: 'abc.workspace.com'
-            ipAddresses: [
-              '10.0.0.10'
-              '10.0.0.13'
-            ]
-          }
-        ]
+        customDnsConfigs: []
       }
       {
         service: 'global'
@@ -152,20 +140,17 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             }
           }
         ]
-        customDnsConfigs: [
-          {
-            fqdn: 'abc.workspace.com'
-            ipAddresses: [
-              '10.0.0.11'
-            ]
-          }
-        ]
+        customDnsConfigs: []
       }
     ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
+    }
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
     }
   }
 }]

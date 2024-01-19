@@ -29,7 +29,7 @@ param privateEndpoints privateEndpointType
 @sys.description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
 param roleAssignments roleAssignmentType
 
-@sys.description('Optional. Lock settings of the scaling plan.')
+@sys.description('Optional. The lock settings of the service.')
 param lock lockType
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
@@ -100,7 +100,7 @@ module workspace_privateEndpoints 'br/public:avm-res-network-privateendpoint:0.1
     serviceResourceId: workspace.id
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: enableTelemetry
-    lock: privateEndpoint.?lock ?? lock
+    //lock: privateEndpoint.?lock ?? lock
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
     roleAssignments: privateEndpoint.?roleAssignments
@@ -121,20 +121,6 @@ resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(
   }
   scope: workspace
 }
-
-// resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-//   name: guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
-//   properties: {
-//     roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
-//     principalId: roleAssignment.principalId
-//     description: roleAssignment.?description
-//     principalType: roleAssignment.?principalType
-//     condition: roleAssignment.?condition
-//     conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null
-//     delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
-//   }
-//   scope: workspace
-// }]
 
 resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
   name: guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
