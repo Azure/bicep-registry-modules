@@ -1,23 +1,26 @@
 <#
 .SYNOPSIS
-Set the deployment region for the module deployment
+Set the location for the resource deployment.
 
 .DESCRIPTION
-This script is used to set the deployment region for the module deployment.
+This script is used to set the location for the resource deployment.
 
 .PARAMETER usePairedRegionsOnly
 Optional. If set, only paired regions will be returned.
 
 .PARAMETER moduleRoot
-Optional. If set, only known regions will be returned.
+Required. The root path of the module.
+
+.PARAMETER repoRoot
+Optional. The root path of the repository.
 
 .EXAMPLE
-Get-AzDeploymentRegion -usePairedRegionsOnly -ModuleRoot $ModuleRoot
+Get-AzDeploymentRegion -usePairedRegionsOnly -ModuleRoot "".\avm\res\resources\resource-group" -repoRoot .\
 
-Get the recommended paired regions.
+Get the recommended paired regions available for the service.
 #>
 
-function Get-AzDeploymentRegion {
+function Get-AzAvailableResourceLocation {
   param (
 
     [Parameter(Mandatory = $false)]
