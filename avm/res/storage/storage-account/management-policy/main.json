@@ -1,0 +1,64 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "17360500138014235250"
+    },
+    "name": "Storage Account Management Policies",
+    "description": "This module deploys a Storage Account Management Policy.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "storageAccountName": {
+      "type": "string",
+      "maxLength": 24,
+      "metadata": {
+        "description": "Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "rules": {
+      "type": "array",
+      "metadata": {
+        "description": "Required. The Storage Account ManagementPolicies Rules."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts/managementPolicies",
+      "apiVersion": "2023-01-01",
+      "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]",
+      "properties": {
+        "policy": {
+          "rules": "[parameters('rules')]"
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed management policy."
+      },
+      "value": "default"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed management policy."
+      },
+      "value": "default"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed management policy."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
