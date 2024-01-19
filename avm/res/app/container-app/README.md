@@ -382,14 +382,6 @@ module containerApp 'br/public:AVM/bicep-registry-modules:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
-    secrets: {
-      secureList: [
-        {
-          name: 'customtest'
-          value: '<value>'
-        }
-      ]
-    }
     tags: {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
@@ -476,16 +468,6 @@ module containerApp 'br/public:AVM/bicep-registry-modules:<version>' = {
       "value": {
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "secrets": {
-      "value": {
-        "secureList": [
-          {
-            "name": "customtest",
-            "value": "<value>"
-          }
         ]
       }
     },

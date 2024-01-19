@@ -91,14 +91,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         nestedDependencies.outputs.managedIdentityResourceId
       ]
     }
-    secrets: {
-      secureList: [
-        {
-          name: 'customtest'
-          value: guid(deployment().name)
-        }
-      ]
-    }
     containers: [
       {
         name: 'simple-hello-world-container'
