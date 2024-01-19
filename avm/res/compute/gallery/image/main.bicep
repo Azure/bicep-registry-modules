@@ -12,12 +12,12 @@ param location string = resourceGroup().location
 @minLength(1)
 param galleryName string
 
-@sys.description('Optional. OS type of the image to be created.')
+@sys.description('Required. OS type of the image to be created.')
 @allowed([
   'Windows'
   'Linux'
 ])
-param osType string = 'Linux'
+param osType string
 
 @sys.description('Optional. This property allows the user to specify whether the virtual machines created under this image are \'Generalized\' or \'Specialized\'.')
 @allowed([
@@ -26,14 +26,14 @@ param osType string = 'Linux'
 ])
 param osState string = 'Generalized'
 
-@sys.description('Optional. The name of the gallery Image Definition publisher.')
-param publisher string = 'canonical'
+@sys.description('Required. The name of the gallery Image Definition publisher.')
+param publisher string
 
-@sys.description('Optional. The name of the gallery Image Definition offer.')
-param offer string = '0001-com-ubuntu-server-jammy'
+@sys.description('Required. The name of the gallery Image Definition offer.')
+param offer string
 
-@sys.description('Optional. The name of the gallery Image Definition SKU.')
-param sku string = '22_04-lts-gen2'
+@sys.description('Required. The name of the gallery Image Definition SKU.')
+param sku string
 
 @sys.description('Optional. The minimum number of the CPU cores recommended for this image.')
 @minValue(1)
@@ -55,13 +55,15 @@ param minRecommendedMemory int = 4
 @maxValue(4000)
 param maxRecommendedMemory int = 16
 
-@sys.description('Optional. The hypervisor generation of the Virtual Machine.</p>- If this value is not specified, then it is determined by the securityType parameter.</p>- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.')
+@sys.description('''Optional. The hypervisor generation of the Virtual Machine.
+- If this value is not specified, then it is determined by the securityType parameter.
+- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.
+''')
 @allowed([
-  ''
   'V1'
   'V2'
 ])
-param hyperVGeneration string = ''
+param hyperVGeneration string?
 
 @sys.description('Optional. The security type of the image. Requires a hyperVGeneration V2.')
 @allowed([
@@ -72,19 +74,14 @@ param hyperVGeneration string = ''
 ])
 param securityType string = 'Standard'
 
-@sys.description('Optional. The image will support hibernation.')
-@allowed([
-  'true'
-  'false'
-])
-param isHibernateSupported string = 'false'
+@sys.description('Optional. Specifiy if the image supports hibernation.')
+param isHibernateSupported bool = false
 
-@sys.description('Optional. The image supports accelerated networking.</p>Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.</p>This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.')
-@allowed([
-  'true'
-  'false'
-])
-param isAcceleratedNetworkSupported string = 'false'
+@sys.description('''Optional. Specify if the image supports accelerated networking.
+Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.
+This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.
+''')
+param isAcceleratedNetworkSupported bool = false
 
 @sys.description('Optional. The description of this gallery Image Definition resource. This property is updatable.')
 param description string?
@@ -108,12 +105,12 @@ param planName string?
 param planPublisherName string?
 
 @sys.description('Optional. The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z.')
-param endOfLife string?
+param endOfLife string = ''
 
-@sys.description('Optional. List of the excluded disk types. E.g. Standard_LRS.')
-param excludedDiskTypes array?
+@sys.description('Optional. List of the excluded disk types (e.g., Standard_LRS).')
+param excludedDiskTypes array = []
 
-@sys.description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+@sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
 @sys.description('Optional. Tags for all resources.')
@@ -155,42 +152,35 @@ resource image 'Microsoft.Compute/galleries/images@2022-03-03' = {
         max: maxRecommendedMemory
       }
     }
-    hyperVGeneration: !empty(hyperVGeneration) ? hyperVGeneration : (!empty(securityType) ? 'V2' : 'V1')
-    features: !empty(securityType) && securityType != 'Standard' ? [
-      {
-        name: 'SecurityType'
-        value: securityType
-      }
-      {
-        name: 'IsAcceleratedNetworkSupported'
-        value: isAcceleratedNetworkSupported
-      }
-      {
-        name: 'IsHibernateSupported'
-        value: isHibernateSupported
-      }
-    ] : [
-      {
-        name: 'IsAcceleratedNetworkSupported'
-        value: isAcceleratedNetworkSupported
-      }
-      {
-        name: 'IsHibernateSupported'
-        value: isHibernateSupported
-      }
-    ]
-    description: description ?? ''
-    eula: eula ?? ''
-    privacyStatementUri: privacyStatementUri ?? ''
-    releaseNoteUri: releaseNoteUri ?? ''
+    hyperVGeneration: hyperVGeneration ?? (!empty(securityType) ? 'V2' : 'V1')
+    features: union([
+        {
+          name: 'IsAcceleratedNetworkSupported'
+          value: '${isAcceleratedNetworkSupported}'
+        }
+        {
+          name: 'IsHibernateSupported'
+          value: '${isHibernateSupported}'
+        }
+      ],
+      (securityType != 'Standard' ? [
+        {
+          name: 'SecurityType'
+          value: securityType
+        }
+      ] : []))
+    description: description
+    eula: eula
+    privacyStatementUri: privacyStatementUri
+    releaseNoteUri: releaseNoteUri
     purchasePlan: {
       product: productName
       name: planName
       publisher: planPublisherName
     }
-    endOfLifeDate: endOfLife ?? ''
+    endOfLifeDate: endOfLife
     disallowed: {
-      diskTypes: excludedDiskTypes ?? []
+      diskTypes: excludedDiskTypes
     }
   }
 }
@@ -220,12 +210,13 @@ output name string = image.name
 
 @sys.description('The location the resource was deployed into.')
 output location string = image.location
+
 // =============== //
 //   Definitions   //
 // =============== //
 
 type roleAssignmentType = {
-  @sys.description('Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.')
+  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
   @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
@@ -237,7 +228,7 @@ type roleAssignmentType = {
   @sys.description('Optional. The description of the role assignment.')
   description: string?
 
-  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
+  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
   @sys.description('Optional. Version of the condition.')
