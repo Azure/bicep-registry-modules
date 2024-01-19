@@ -30,11 +30,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/application-gateway:<version>`.
 
-- [Default](#example-1-default)
+- [Defaults](#example-1-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
 - [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Default_
+### Example 1: _Defaults_
 
 <details>
 
