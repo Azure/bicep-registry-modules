@@ -77,7 +77,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       'hidden-title': 'This is visible in the resource name'
       Env: 'test'
     }
-    enableTelemetry: enableTelemetry
     environmentId: nestedDependencies.outputs.managedEnvironmentResourceId
     location: location
     lock: {
