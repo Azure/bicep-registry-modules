@@ -80,8 +80,8 @@ resource application 'Microsoft.DesktopVirtualization/applicationGroups/applicat
 @sys.description('The resource ID of the application.')
 output resourceId string = application.id
 
-@sys.description('The name of the resource group the scaling plan was created in.')
+@sys.description('The name of the resource group the application was created in.')
 output resourceGroupName string = resourceGroup().name
 
-@sys.description('The name of the scaling plan.')
+@sys.description('The name of the application.')
 output name string = application.name

@@ -102,7 +102,7 @@ resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2023-09-05'
   }
 }
 
-module appGroup_applications 'applications/main.bicep' = [for (application, index) in applications: {
+module appGroup_applications 'modules/application.bicep' = [for (application, index) in applications: {
   name: '${uniqueString(deployment().name, location)}-AppGroup-App-${index}'
   params: {
     name: application.name
