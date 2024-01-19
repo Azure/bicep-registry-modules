@@ -370,6 +370,8 @@ module containerApp 'br/public:AVM/bicep-registry-modules:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    ingressAllowInsecure: false
+    ingressExternal: false
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -454,6 +456,12 @@ module containerApp 'br/public:AVM/bicep-registry-modules:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "ingressAllowInsecure": {
+      "value": false
+    },
+    "ingressExternal": {
+      "value": false
     },
     "location": {
       "value": "<location>"
