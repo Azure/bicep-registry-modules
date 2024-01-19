@@ -1,0 +1,85 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "15441426428461937893"
+    },
+    "name": "Storage Account Blob Container Immutability Policies",
+    "description": "This module deploys a Storage Account Blob Container Immutability Policy.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "storageAccountName": {
+      "type": "string",
+      "maxLength": 24,
+      "metadata": {
+        "description": "Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "containerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent container to apply the policy to. Required if the template is used in a standalone deployment."
+      }
+    },
+    "immutabilityPeriodSinceCreationInDays": {
+      "type": "int",
+      "defaultValue": 365,
+      "metadata": {
+        "description": "Optional. The immutability period for the blobs in the container since the policy creation, in days."
+      }
+    },
+    "allowProtectedAppendWrites": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API."
+      }
+    },
+    "allowProtectedAppendWritesAll": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both \"Append and Block Blobs\" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The \"allowProtectedAppendWrites\" and \"allowProtectedAppendWritesAll\" properties are mutually exclusive."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}/{2}/{3}', parameters('storageAccountName'), 'default', parameters('containerName'), 'default')]",
+      "properties": {
+        "immutabilityPeriodSinceCreationInDays": "[parameters('immutabilityPeriodSinceCreationInDays')]",
+        "allowProtectedAppendWrites": "[parameters('allowProtectedAppendWrites')]",
+        "allowProtectedAppendWritesAll": "[parameters('allowProtectedAppendWritesAll')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed immutability policy."
+      },
+      "value": "default"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed immutability policy."
+      },
+      "value": "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies', parameters('storageAccountName'), 'default', parameters('containerName'), 'default')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed immutability policy."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
