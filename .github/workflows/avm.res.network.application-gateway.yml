@@ -54,12 +54,12 @@ jobs:
           fetch-depth: 0
       - name: "Set input parameters to output variables"
         id: get-workflow-param
-        uses: ./.github/actions/templates/getWorkflowInput
+        uses: ./.github/actions/templates/avm-getWorkflowInput
         with:
           workflowPath: "${{ env.workflowPath}}"
       - name: "Get parameter file paths"
         id: get-module-test-file-paths
-        uses: ./.github/actions/templates/getModuleTestFiles
+        uses: ./.github/actions/templates/avm-getModuleTestFiles
         with:
           modulePath: "${{ env.modulePath }}"
     outputs:
