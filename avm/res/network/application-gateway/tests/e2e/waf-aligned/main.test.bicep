@@ -469,24 +469,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       requestBodyCheck: true
       ruleSetType: 'OWASP'
       ruleSetVersion: '3.0'
-      disabledRuleGroups: [
-        {
-          ruleGroupName: 'Known-CVEs'
-        }
-        {
-          ruleGroupName: 'REQUEST-943-APPLICATION-ATTACK-SESSION-FIXATION'
-        }
-        {
-          ruleGroupName: 'REQUEST-941-APPLICATION-ATTACK-XSS'
-        }
-      ]
-      exclusions: [
-        {
-          matchVariable: 'RequestHeaderNames'
-          selectorMatchOperator: 'StartsWith'
-          selector: 'hola'
-        }
-      ]
     }
     tags: {
       'hidden-title': 'This is visible in the resource name'

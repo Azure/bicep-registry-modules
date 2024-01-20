@@ -1462,25 +1462,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       Role: 'DeploymentValidation'
     }
     webApplicationFirewallConfiguration: {
-      disabledRuleGroups: [
-        {
-          ruleGroupName: 'Known-CVEs'
-        }
-        {
-          ruleGroupName: 'REQUEST-943-APPLICATION-ATTACK-SESSION-FIXATION'
-        }
-        {
-          ruleGroupName: 'REQUEST-941-APPLICATION-ATTACK-XSS'
-        }
-      ]
       enabled: true
-      exclusions: [
-        {
-          matchVariable: 'RequestHeaderNames'
-          selector: 'hola'
-          selectorMatchOperator: 'StartsWith'
-        }
-      ]
       fileUploadLimitInMb: 100
       firewallMode: 'Prevention'
       maxRequestBodySizeInKb: 128
@@ -1945,25 +1927,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     },
     "webApplicationFirewallConfiguration": {
       "value": {
-        "disabledRuleGroups": [
-          {
-            "ruleGroupName": "Known-CVEs"
-          },
-          {
-            "ruleGroupName": "REQUEST-943-APPLICATION-ATTACK-SESSION-FIXATION"
-          },
-          {
-            "ruleGroupName": "REQUEST-941-APPLICATION-ATTACK-XSS"
-          }
-        ],
         "enabled": true,
-        "exclusions": [
-          {
-            "matchVariable": "RequestHeaderNames",
-            "selector": "hola",
-            "selectorMatchOperator": "StartsWith"
-          }
-        ],
         "fileUploadLimitInMb": 100,
         "firewallMode": "Prevention",
         "maxRequestBodySizeInKb": 128,
