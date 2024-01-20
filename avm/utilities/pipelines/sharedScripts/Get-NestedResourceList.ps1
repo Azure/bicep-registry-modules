@@ -33,8 +33,7 @@ function Get-NestedResourceList {
             } | Where-Object {
                 $_.existing -ne $true
             }
-        }
-        else {
+        } else {
             # Default array
             $currLevelResources += $TemplateFileContent.resources
         }
@@ -43,9 +42,10 @@ function Get-NestedResourceList {
         $res += $resource
 
         if ($resource.type -eq 'Microsoft.Resources/deployments') {
-            $res += Get-NestedResourceList -TemplateFileContent $resource.properties.template
-        }
-        else {
+            if ($resource.properties.template -is [System.Collections.Hashtable]) {
+                $res += Get-NestedResourceList -TemplateFileContent $resource.properties.template
+            }        
+        } else {
             $res += Get-NestedResourceList -TemplateFileContent $resource
         }
     }
