@@ -166,7 +166,6 @@ runs:
           # Prepare general parameters
           # --------------------------
           # Fetching parameters
-          $location = '${{ inputs.location }}'
           $subscriptionId = '${{ inputs.subscriptionId }}'
           $managementGroupId = '${{ inputs.managementGroupId }}'
 
@@ -217,7 +216,6 @@ runs:
 
           # Prepare general parameters
           # --------------------------
-          $location = '${{ inputs.location }}'
           $subscriptionId = '${{ inputs.subscriptionId }}'
           $managementGroupId = '${{ inputs.managementGroupId }}'
 
