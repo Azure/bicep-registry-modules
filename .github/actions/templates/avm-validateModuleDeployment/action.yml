@@ -170,7 +170,7 @@ runs:
           # Prepare general parameters
           # --------------------------
           # Fetching parameters
-          $location = '${{ steps.get-deployment-location.outputs.deploymentLocation }}'
+          $location = '${{ inputs.location }}'
           $subscriptionId = '${{ inputs.subscriptionId }}'
           $managementGroupId = '${{ inputs.managementGroupId }}'
 
@@ -193,8 +193,10 @@ runs:
             Location             = $location
             SubscriptionId       = $subscriptionId
             ManagementGroupId    = $managementGroupId
-            AdditionalParameters = @{}
             RepoRoot             = $env:GITHUB_WORKSPACE
+            AdditionalParameters = @{
+              resourceLocation = ${{ steps.get-deployment-location.outputs.deploymentLocation }}'
+            }
           }
 
           Write-Verbose 'Invoke task with' -Verbose
@@ -220,7 +222,7 @@ runs:
 
           # Prepare general parameters
           # --------------------------
-          $location ='${{ steps.get-deployment-location.outputs.deploymentLocation }}'
+          $location = '${{ inputs.location }}'
           $subscriptionId = '${{ inputs.subscriptionId }}'
           $managementGroupId = '${{ inputs.managementGroupId }}'
 
@@ -245,7 +247,9 @@ runs:
             ManagementGroupId    = $managementGroupId
             DoNotThrow           = $true
             RepoRoot             = $env:GITHUB_WORKSPACE
-            AdditionalParameters = @{}
+            AdditionalParameters = @{
+              resourceLocation = ${{ steps.get-deployment-location.outputs.deploymentLocation }}'
+            }
           }
 
 
