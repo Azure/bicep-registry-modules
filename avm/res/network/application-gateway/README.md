@@ -148,8 +148,8 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     enableHttp2: true
+    enableTelemetry: '<enableTelemetry>'
     frontendIPConfigurations: [
       {
         name: 'private'
@@ -608,11 +608,11 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "enableHttp2": {
       "value": true
+    },
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "frontendIPConfigurations": {
       "value": [
@@ -1102,8 +1102,8 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     enableHttp2: true
+    enableTelemetry: '<enableTelemetry>'
     frontendIPConfigurations: [
       {
         name: 'private'
@@ -1545,11 +1545,11 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "enableHttp2": {
       "value": true
+    },
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "frontendIPConfigurations": {
       "value": [
@@ -1965,11 +1965,11 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
 | [`capacity`](#parameter-capacity) | int | The number of Application instances to be configured. |
 | [`customErrorConfigurations`](#parameter-customerrorconfigurations) | array | Custom error configurations of the application gateway resource. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`enableFips`](#parameter-enablefips) | bool | Whether FIPS is enabled on the application gateway resource. |
 | [`enableHttp2`](#parameter-enablehttp2) | bool | Whether HTTP2 is enabled on the application gateway resource. |
 | [`enableRequestBuffering`](#parameter-enablerequestbuffering) | bool | Enable request buffering. |
 | [`enableResponseBuffering`](#parameter-enableresponsebuffering) | bool | Enable response buffering. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`firewallPolicyId`](#parameter-firewallpolicyid) | string | The resource ID of an associated firewall policy. Should be configured for security reasons. |
 | [`frontendIPConfigurations`](#parameter-frontendipconfigurations) | array | Frontend IP addresses of the application gateway resource. |
 | [`frontendPorts`](#parameter-frontendports) | array | Frontend ports of the application gateway resource. |
@@ -2164,14 +2164,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
-
 ### Parameter: `enableFips`
 
 Whether FIPS is enabled on the application gateway resource.
@@ -2203,6 +2195,14 @@ Enable response buffering.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `firewallPolicyId`
 
