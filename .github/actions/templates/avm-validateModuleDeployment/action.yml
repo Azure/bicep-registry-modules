@@ -195,7 +195,7 @@ runs:
             ManagementGroupId    = $managementGroupId
             RepoRoot             = $env:GITHUB_WORKSPACE
             AdditionalParameters = @{
-              resourceLocation = ${{ steps.get-deployment-location.outputs.deploymentLocation }}'
+              resourceLocation = '${{ steps.get-deployment-location.outputs.deploymentLocation }}'
             }
           }
 
@@ -248,7 +248,7 @@ runs:
             DoNotThrow           = $true
             RepoRoot             = $env:GITHUB_WORKSPACE
             AdditionalParameters = @{
-              resourceLocation = ${{ steps.get-deployment-location.outputs.deploymentLocation }}'
+              resourceLocation = '${{ steps.get-deployment-location.outputs.deploymentLocation }}'
             }
           }
 
