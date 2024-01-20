@@ -15,7 +15,6 @@
 ##   | Parameter                 | Required | Default | Description                                           | Example                                                                    |
 ##   |---------------------------|----------|---------|-------------------------------------------------------|----------------------------------------------------------------------------|
 ##   | templateFilePath          | true     | ''      | The path to the template file to use for deployment   | 'modules/api-management/service/main.bicep'                                |
-##   | location                  | true     | ''      | The location to use for deployment                    | 'WestEurope'                                                               |
 ##   | subscriptionId            | false    | ''      | The subscriptionId to deploy to                       | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
 ##   | managementGroupId         | false    | ''      | The managementGroupId to deploy to                    | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
 ##   | customTokens              | false    | ''      | Additional token pairs in json format.                | '{"tokenName":"tokenValue"}'                                               |
@@ -30,9 +29,6 @@ description: "Deploy module"
 inputs:
   templateFilePath:
     description: "The path to the template file to use for deployment"
-    required: true
-  location:
-    description: "The location to use for deployment"
     required: true
   subscriptionId:
     description: "The subscription ID to deploy to"
@@ -190,7 +186,6 @@ runs:
           # ----------------- #
           $functionInput = @{
             TemplateFilePath     = $moduleTestFilePath
-            Location             = $location
             SubscriptionId       = $subscriptionId
             ManagementGroupId    = $managementGroupId
             RepoRoot             = $env:GITHUB_WORKSPACE
@@ -242,7 +237,6 @@ runs:
           # ----------------- #
           $functionInput = @{
             TemplateFilePath     = $moduleTestFilePath
-            Location             = $location
             SubscriptionId       = $subscriptionId
             ManagementGroupId    = $managementGroupId
             DoNotThrow           = $true
@@ -251,7 +245,6 @@ runs:
               resourceLocation = '${{ steps.get-deployment-location.outputs.deploymentLocation }}'
             }
           }
-
 
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose

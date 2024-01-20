@@ -15,8 +15,8 @@ Mandatory. Path to the template file from root.
 .PARAMETER parameterFilePath
 Optional. Path to the parameter file from root.
 
-.PARAMETER location
-Mandatory. Location to test in. E.g. WestEurope
+.PARAMETER Location
+Optional. Location to test in. E.g. WestEurope
 
 .PARAMETER resourceGroupName
 Optional. Name of the resource group to deploy into. Mandatory if deploying into a resource group (resource group level)
@@ -55,8 +55,8 @@ function Test-TemplateDeployment {
         [Parameter(Mandatory)]
         [string] $templateFilePath,
 
-        [Parameter(Mandatory)]
-        [string] $location,
+        [Parameter(Mandatory = $false)]
+        [string] $Location = 'WestEurope',
 
         [Parameter(Mandatory = $false)]
         [string] $parameterFilePath,
@@ -141,8 +141,8 @@ function Test-TemplateDeployment {
                     $null = Set-AzContext -Subscription $subscriptionId
                 }
                 if (-not (Get-AzResourceGroup -Name $resourceGroupName -ErrorAction 'SilentlyContinue')) {
-                    if ($PSCmdlet.ShouldProcess("Resource group [$resourceGroupName] in location [$location]", 'Create')) {
-                        $null = New-AzResourceGroup -Name $resourceGroupName -Location $location
+                    if ($PSCmdlet.ShouldProcess("Resource group [$resourceGroupName] in location [$Location]", 'Create')) {
+                        $null = New-AzResourceGroup -Name $resourceGroupName -Location $Location
                     }
                 }
                 if ($PSCmdlet.ShouldProcess('Resource group level deployment', 'Test')) {
@@ -169,7 +169,7 @@ function Test-TemplateDeployment {
             'tenant' {
                 Write-Verbose 'Handling tenant level validation'
                 if ($PSCmdlet.ShouldProcess('Tenant level deployment', 'Test')) {
-                    $res = Test-AzTenantDeployment @DeploymentInputs -Location $location
+                    $res = Test-AzTenantDeployment @DeploymentInputs -Location $Location
                 }
                 break
             }

@@ -77,7 +77,7 @@ Mandatory. The path to the deployment file
 .PARAMETER parameterFilePath
 Optional. Path to the parameter file from root. Can be a single file, multiple files, or directory that contains (.json) files.
 
-.PARAMETER location
+.PARAMETER Location
 Mandatory. Location to test in. E.g. WestEurope
 
 .PARAMETER resourceGroupName
@@ -133,7 +133,7 @@ function New-TemplateDeploymentInner {
         [string] $resourceGroupName = '',
 
         [Parameter(Mandatory)]
-        [string] $location,
+        [string] $Location,
 
         [Parameter(Mandatory = $false)]
         [string] $subscriptionId,
@@ -241,8 +241,8 @@ function New-TemplateDeploymentInner {
                             $null = Set-AzContext -Subscription $subscriptionId
                         }
                         if (-not (Get-AzResourceGroup -Name $resourceGroupName -ErrorAction 'SilentlyContinue')) {
-                            if ($PSCmdlet.ShouldProcess("Resource group [$resourceGroupName] in location [$location]", 'Create')) {
-                                $null = New-AzResourceGroup -Name $resourceGroupName -Location $location
+                            if ($PSCmdlet.ShouldProcess("Resource group [$resourceGroupName] in location [$Location]", 'Create')) {
+                                $null = New-AzResourceGroup -Name $resourceGroupName -Location $Location
                             }
                         }
                         if ($PSCmdlet.ShouldProcess('Resource group level deployment', 'Create')) {
@@ -256,19 +256,19 @@ function New-TemplateDeploymentInner {
                             $null = Set-AzContext -Subscription $subscriptionId
                         }
                         if ($PSCmdlet.ShouldProcess('Subscription level deployment', 'Create')) {
-                            $res = New-AzSubscriptionDeployment @DeploymentInputs -Location $location
+                            $res = New-AzSubscriptionDeployment @DeploymentInputs -Location $Location
                         }
                         break
                     }
                     'managementgroup' {
                         if ($PSCmdlet.ShouldProcess('Management group level deployment', 'Create')) {
-                            $res = New-AzManagementGroupDeployment @DeploymentInputs -Location $location -ManagementGroupId $managementGroupId
+                            $res = New-AzManagementGroupDeployment @DeploymentInputs -Location $Location -ManagementGroupId $managementGroupId
                         }
                         break
                     }
                     'tenant' {
                         if ($PSCmdlet.ShouldProcess('Tenant level deployment', 'Create')) {
-                            $res = New-AzTenantDeployment @DeploymentInputs -Location $location
+                            $res = New-AzTenantDeployment @DeploymentInputs -Location $Location
                         }
                         break
                     }
@@ -353,8 +353,8 @@ Mandatory. The path to the deployment file
 .PARAMETER parameterFilePath
 Optional. Path to the parameter file from root. Can be a single file, multiple files, or directory that contains (.json) files.
 
-.PARAMETER location
-Mandatory. Location to test in. E.g. WestEurope
+.PARAMETER Location
+Optional. Location to test in. E.g. WestEurope
 
 .PARAMETER resourceGroupName
 Optional. Name of the resource group to deploy into. Mandatory if deploying into a resource group (resource group level)
@@ -405,8 +405,8 @@ function New-TemplateDeployment {
         [Parameter(Mandatory = $false)]
         [string[]] $parameterFilePath,
 
-        [Parameter(Mandatory)]
-        [string] $location,
+        [Parameter(Mandatory = $false)]
+        [string] $Location = 'WestEurope',
 
         [Parameter(Mandatory = $false)]
         [string] $resourceGroupName = '',
@@ -453,7 +453,7 @@ function New-TemplateDeployment {
             TemplateFilePath     = $templateFilePath
             AdditionalTags       = $additionalTags
             AdditionalParameters = $additionalParameters
-            Location             = $location
+            Location             = $Location
             ResourceGroupName    = $resourceGroupName
             SubscriptionId       = $subscriptionId
             ManagementGroupId    = $managementGroupId
