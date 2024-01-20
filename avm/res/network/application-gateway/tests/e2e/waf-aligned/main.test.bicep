@@ -464,7 +464,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     webApplicationFirewallConfiguration: {
       enabled: true
       fileUploadLimitInMb: 100
-      firewallMode: 'Detection'
+      firewallMode: 'Prevention'
       maxRequestBodySizeInKb: 128
       requestBodyCheck: true
       ruleSetType: 'OWASP'

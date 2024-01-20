@@ -1482,7 +1482,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         }
       ]
       fileUploadLimitInMb: 100
-      firewallMode: 'Detection'
+      firewallMode: 'Prevention'
       maxRequestBodySizeInKb: 128
       requestBodyCheck: true
       ruleSetType: 'OWASP'
@@ -1965,7 +1965,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
           }
         ],
         "fileUploadLimitInMb": 100,
-        "firewallMode": "Detection",
+        "firewallMode": "Prevention",
         "maxRequestBodySizeInKb": 128,
         "requestBodyCheck": true,
         "ruleSetType": "OWASP",
