@@ -73,6 +73,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     enableTelemetry: enableTelemetry
     name: appGWName
+    zones: [
+      '1'
+      '2'
+      '3'
+    ]
     backendAddressPools: [
       {
         name: 'appServiceBackendPool'

@@ -523,6 +523,11 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       ruleSetType: 'OWASP'
       ruleSetVersion: '3.0'
     }
+    zones: [
+      '1'
+      '2'
+      '3'
+    ]
   }
 }
 ```
@@ -1020,6 +1025,13 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         "ruleSetType": "OWASP",
         "ruleSetVersion": "3.0"
       }
+    },
+    "zones": {
+      "value": [
+        "1",
+        "2",
+        "3"
+      ]
     }
   }
 }
