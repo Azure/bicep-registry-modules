@@ -42,9 +42,9 @@ The following section provides usage examples for the module, which were used to
 
 ```bicep
 module applicationGateway 'br/public:avm/res/network/application-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nagdef'
+  name: '${uniqueString(deployment().name, location)}-test-nagmin'
   params: {
-    name: 'nagdef001'
+    name: 'nagmin001'
   }
 }
 ```
@@ -62,7 +62,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
   "contentVersion": "1.0.0.0",
   "parameters": {
     "name": {
-      "value": "nagdef001"
+      "value": "nagmin001"
     }
   }
 }
