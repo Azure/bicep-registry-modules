@@ -47,7 +47,14 @@ This instance deploys the module with the minimum set of required parameters.
 module applicationGateway 'br/public:avm/res/network/application-gateway:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nagmin'
   params: {
+    // Required parameters
     name: 'nagmin001'
+    // Non-required parameters
+    zones: [
+      '1'
+      '2'
+      '3'
+    ]
   }
 }
 ```
@@ -64,8 +71,17 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "nagmin001"
+    },
+    // Non-required parameters
+    "zones": {
+      "value": [
+        "1",
+        "2",
+        "3"
+      ]
     }
   }
 }
