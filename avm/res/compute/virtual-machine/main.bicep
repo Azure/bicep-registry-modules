@@ -2,7 +2,6 @@ metadata name = 'Virtual Machines'
 metadata description = 'This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.'
 metadata owner = 'Azure/module-maintainers'
 
-// Main resource
 @description('Required. The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory.')
 param name string
 
@@ -515,23 +514,30 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
   }
 }
 
-// resource vm_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(monitoringWorkspaceId)) {
-//   name: last(split((!empty(monitoringWorkspaceId) ? monitoringWorkspaceId : 'law'), '/'))!
-//   scope: az.resourceGroup(split((!empty(monitoringWorkspaceId) ? monitoringWorkspaceId : '//'), '/')[2], split((!empty(monitoringWorkspaceId) ? monitoringWorkspaceId : '////'), '/')[4])
-// }
+resource vm_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId)) {
+  name: last(split((!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '') ? extensionMonitoringAgentConfig.monitoringWorkspaceId : 'law'), '/'))!
+  scope: az.resourceGroup(split((!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '') ? extensionMonitoringAgentConfig.monitoringWorkspaceId : '//'), '/')[2], split((!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '') ? extensionMonitoringAgentConfig.monitoringWorkspaceId : '////'), '/')[4])
+}
 
-module vm_azureMonitoringAgentExtension 'extension/main.bicep' = if (extensionMonitoringAgentConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VM-AzureMonitoringAgent'
+module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonitoringAgentConfig.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-AzureMonitorAgent'
   params: {
     virtualMachineName: vm.name
     name: 'AzureMonitorAgent'
     location: location
     publisher: 'Microsoft.Azure.Monitor'
     type: osType == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
-    typeHandlerVersion: contains(extensionMonitoringAgentConfig, 'typeHandlerVersion') ? extensionMonitoringAgentConfig.typeHandlerVersion : (osType == 'Windows' ? '1.0' : '1.21')
-    autoUpgradeMinorVersion: contains(extensionMonitoringAgentConfig, 'autoUpgradeMinorVersion') ? extensionMonitoringAgentConfig.autoUpgradeMinorVersion : true
-    enableAutomaticUpgrade: contains(extensionMonitoringAgentConfig, 'enableAutomaticUpgrade') ? extensionMonitoringAgentConfig.enableAutomaticUpgrade : true
+    typeHandlerVersion: extensionMonitoringAgentConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '1.22' : '1.29')
+    autoUpgradeMinorVersion: extensionMonitoringAgentConfig.?autoUpgradeMinorVersion ?? true
+    enableAutomaticUpgrade: extensionMonitoringAgentConfig.?enableAutomaticUpgrade ?? false
+    settings: {
+      workspaceId: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '') ? vm_logAnalyticsWorkspace.properties.customerId : ''
+      GCS_AUTO_CONFIG: osType == 'Linux' ? true : null
+    }
     tags: extensionMonitoringAgentConfig.?tags ?? tags
+    protectedSettings: {
+      workspaceKey: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '') ? vm_logAnalyticsWorkspace.listKeys().primarySharedKey : ''
+    }
   }
 }
 
@@ -621,7 +627,7 @@ module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzu
   }
   dependsOn: [
     vm_customScriptExtension
-    vm_azureMonitoringAgentExtension
+    vm_azureMonitorAgentExtension
   ]
 }
 
@@ -640,7 +646,7 @@ module vm_backup 'modules/protected-item.bicep' = if (!empty(backupVaultName)) {
   dependsOn: [
     vm_aadJoinExtension
     vm_domainJoinExtension
-    vm_azureMonitoringAgentExtension
+    vm_azureMonitorAgentExtension
     vm_microsoftAntiMalwareExtension
     vm_networkWatcherAgentExtension
     vm_dependencyAgentExtension

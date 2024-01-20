@@ -27,6 +27,9 @@ param baseTime string = utcNow('u')
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+#disable-next-line no-hardcoded-location // Just a value to avoid ongoing capacity challenges
+var tempLocation = 'northeurope'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -35,14 +38,14 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: location
+  location: tempLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
-    location: location
+    location: tempLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep${namePrefix}kv${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
@@ -58,7 +61,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    location: location
+    location: tempLocation
     name: '${namePrefix}${serviceShort}'
     adminUsername: 'VMAdministrator'
     imageReference: {
