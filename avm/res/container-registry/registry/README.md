@@ -644,7 +644,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of your Azure container registry. |
+| [`name`](#parameter-name) | string | Name of your Azure Container Registry. |
 
 **Optional parameters**
 
@@ -682,7 +682,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 
 ### Parameter: `name`
 
-Name of your Azure container registry.
+Name of your Azure Container Registry.
 
 - Required: Yes
 - Type: string
