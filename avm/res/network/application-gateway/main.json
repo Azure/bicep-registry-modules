@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "7962220867174754478"
+      "templateHash": "3609344192658442758"
     },
     "name": "Network Application Gateways",
     "description": "This module deploys a Network Application Gateway.",
@@ -576,7 +576,7 @@
     },
     "sku": {
       "type": "string",
-      "defaultValue": "WAF_Medium",
+      "defaultValue": "WAF_v2",
       "allowedValues": [
         "Standard_Small",
         "Standard_Medium",
