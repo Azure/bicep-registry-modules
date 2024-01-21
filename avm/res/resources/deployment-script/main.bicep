@@ -96,6 +96,8 @@ param roleAssignments roleAssignmentType
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+param enableManagedIdStorageAuthentication bool = false
+
 // =========== //
 // Variables   //
 // =========== //
@@ -130,7 +132,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' existing 
 }
 
 var storageAccountSettings = !empty(storageAccountResourceId) ? {
-  storageAccountKey: listKeys(storageAccount.id, '2023-01-01').keys[0].value
+  storageAccountKey: enableManagedIdStorageAuthentication ? null : listKeys(storageAccount.id, '2023-01-01').keys[0].value
   storageAccountName: last(split(storageAccountResourceId, '/'))
 } : null
 
