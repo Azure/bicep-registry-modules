@@ -29,8 +29,8 @@ function Sync-AvmModulesList {
   # build new strings
   $prefix = '        - "'
   $postfix = '"'
-  $moduleLines = $modules | ForEach-Object { $prefix + $_.ModuleName + $postfix }
-  $patternLines = $patterns | ForEach-Object { $prefix + $_.ModuleName + $postfix }
+  $newModuleLines = $modules | ForEach-Object { $prefix + $_.ModuleName + $postfix }
+  $newPatternLines = $patterns | ForEach-Object { $prefix + $_.ModuleName + $postfix }
 
   # parse workflow file
   $workflowFileLines = Get-Content $workflowFilePath
@@ -48,14 +48,10 @@ function Sync-AvmModulesList {
     }
   }
 
-  # build new workflow file
-  $newWorkflowFileLines = $workflowFileLines[0..$startIndex] + $moduleLines + $patternLines + $workflowFileLines[$endIndex..$workflowFileLines.Count]
-  $newWorkflowFileLines | Out-File -FilePath $workflowFilePath
+  $oldLines = $workflowFileLines[($startIndex + 1)..($endIndex - 1)]
+  $newLines = $newModuleLines + $newPatternLines
 
-  # save changes to repo
-  git config --global user.email "bot@contoso.com"
-  git config --global user.name "Github Bot"
-  git add .
-  git commit -m "Updating module list"
-  git push
+  if ($oldLines -ne $newLines) {
+    gh issue create --title "[AVM] Module/pattern list is not in sync with CSV file" --body "$newLines" --label "Needs: Attention :wave:" --repo $Repo
+  }
 }
