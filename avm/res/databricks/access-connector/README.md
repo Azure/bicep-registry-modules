@@ -1,6 +1,11 @@
-# Azure Compute Galleries `[Microsoft.Compute/galleries]`
+# Azure Databricks Access Connectors `[Microsoft.Databricks/accessConnectors]`
 
-This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
+This module deploys an Azure Databricks Access Connector.
 
 ## Navigation
 
@@ -17,9 +22,7 @@ This module deploys an Azure Compute Gallery (formerly known as Shared Image Gal
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/galleries` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries) |
-| `Microsoft.Compute/galleries/applications` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries/applications) |
-| `Microsoft.Compute/galleries/images` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries/images) |
+| `Microsoft.Databricks/accessConnectors` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Databricks/2022-10-01-preview/accessConnectors) |
 
 ## Usage examples
 
@@ -27,7 +30,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/gallery:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/databricks/access-connector:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -43,11 +46,11 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cgmin'
+module accessConnector 'br/public:avm/res/databricks/access-connector:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-dacmin'
   params: {
     // Required parameters
-    name: 'cgmin001'
+    name: 'dacmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -68,7 +71,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "cgmin001"
+      "value": "dacmin001"
     },
     // Non-required parameters
     "location": {
@@ -91,105 +94,22 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cgmax'
+module accessConnector 'br/public:avm/res/databricks/access-connector:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-dacmax'
   params: {
     // Required parameters
-    name: 'cgmax001'
+    name: 'dacmax001'
     // Non-required parameters
-    applications: [
-      {
-        name: 'cgmax-appd-001'
-        supportedOSType: 'Linux'
-      }
-      {
-        name: 'cgmax-appd-002'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        supportedOSType: 'Windows'
-      }
-    ]
-    images: [
-      {
-        hyperVGeneration: 'V1'
-        name: 'az-imgd-ws-001'
-        offer: 'WindowsServer'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        sku: '2022-datacenter-azure-edition'
-      }
-      {
-        hyperVGeneration: 'V2'
-        isHibernateSupported: true
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 8
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: 'az-imgd-ws-002'
-        offer: 'WindowsServer'
-        osState: 'Generalized'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        sku: '2022-datacenter-azure-edition-hibernate'
-      }
-      {
-        hyperVGeneration: 'V2'
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 4
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: 'az-imgd-wdtl-001'
-        offer: 'WindowsDesktop'
-        osState: 'Generalized'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsDesktop'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        securityType: 'TrustedLaunch'
-        sku: 'Win11-21H2'
-      }
-      {
-        hyperVGeneration: 'V2'
-        maxRecommendedMemory: 32
-        maxRecommendedvCPUs: 4
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 1
-        name: 'az-imgd-us-001'
-        offer: '0001-com-ubuntu-server-focal'
-        osState: 'Generalized'
-        osType: 'Linux'
-        publisher: 'canonical'
-        sku: '20_04-lts-gen2'
-      }
-    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
     roleAssignments: [
       {
@@ -231,102 +151,9 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "cgmax001"
+      "value": "dacmax001"
     },
     // Non-required parameters
-    "applications": {
-      "value": [
-        {
-          "name": "cgmax-appd-001",
-          "supportedOSType": "Linux"
-        },
-        {
-          "name": "cgmax-appd-002",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "supportedOSType": "Windows"
-        }
-      ]
-    },
-    "images": {
-      "value": [
-        {
-          "hyperVGeneration": "V1",
-          "name": "az-imgd-ws-001",
-          "offer": "WindowsServer",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsServer",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "sku": "2022-datacenter-azure-edition"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "isHibernateSupported": true,
-          "maxRecommendedMemory": 16,
-          "maxRecommendedvCPUs": 8,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 2,
-          "name": "az-imgd-ws-002",
-          "offer": "WindowsServer",
-          "osState": "Generalized",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsServer",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "sku": "2022-datacenter-azure-edition-hibernate"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "maxRecommendedMemory": 16,
-          "maxRecommendedvCPUs": 4,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 2,
-          "name": "az-imgd-wdtl-001",
-          "offer": "WindowsDesktop",
-          "osState": "Generalized",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsDesktop",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "securityType": "TrustedLaunch",
-          "sku": "Win11-21H2"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "maxRecommendedMemory": 32,
-          "maxRecommendedvCPUs": 4,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 1,
-          "name": "az-imgd-us-001",
-          "offer": "0001-com-ubuntu-server-focal",
-          "osState": "Generalized",
-          "osType": "Linux",
-          "publisher": "canonical",
-          "sku": "20_04-lts-gen2"
-        }
-      ]
-    },
     "location": {
       "value": "<location>"
     },
@@ -334,6 +161,14 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
       }
     },
     "roleAssignments": {
@@ -379,28 +214,20 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cgwaf'
+module accessConnector 'br/public:avm/res/databricks/access-connector:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-dacwaf'
   params: {
     // Required parameters
-    name: 'cgwaf001'
+    name: 'dacwaf001'
     // Non-required parameters
-    applications: [
-      {
-        name: 'cgwaf-appd-001'
-        supportedOSType: 'Windows'
-      }
-    ]
-    images: [
-      {
-        name: 'az-imgd-ws-001'
-        offer: 'WindowsServer'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        sku: '2022-datacenter-azure-edition'
-      }
-    ]
     location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -424,30 +251,22 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "cgwaf001"
+      "value": "dacwaf001"
     },
     // Non-required parameters
-    "applications": {
-      "value": [
-        {
-          "name": "cgwaf-appd-001",
-          "supportedOSType": "Windows"
-        }
-      ]
-    },
-    "images": {
-      "value": [
-        {
-          "name": "az-imgd-ws-001",
-          "offer": "WindowsServer",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsServer",
-          "sku": "2022-datacenter-azure-edition"
-        }
-      ]
-    },
     "location": {
       "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
     },
     "tags": {
       "value": {
@@ -470,42 +289,24 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Azure Compute Gallery. |
+| [`name`](#parameter-name) | string | The name of the Azure Databricks access connector to create. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`applications`](#parameter-applications) | array | Applications to create. |
-| [`description`](#parameter-description) | string | Description of the Azure Shared Image Gallery. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`images`](#parameter-images) | array | Images to create. |
-| [`location`](#parameter-location) | string | Location for all resources. |
+| [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`sharingProfile`](#parameter-sharingprofile) | object | Profile for gallery sharing to subscription or tenant. |
-| [`softDeletePolicy`](#parameter-softdeletepolicy) | object | Soft deletion policy of the gallery. |
-| [`tags`](#parameter-tags) | object | Tags for all resources. |
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
 
-Name of the Azure Compute Gallery.
+The name of the Azure Databricks access connector to create.
 
 - Required: Yes
-- Type: string
-
-### Parameter: `applications`
-
-Applications to create.
-
-- Required: No
-- Type: array
-
-### Parameter: `description`
-
-Description of the Azure Shared Image Gallery.
-
-- Required: No
 - Type: string
 
 ### Parameter: `enableTelemetry`
@@ -516,16 +317,9 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `images`
-
-Images to create.
-
-- Required: No
-- Type: array
-
 ### Parameter: `location`
 
-Location for all resources.
+Location for all Resources.
 
 - Required: No
 - Type: string
@@ -566,6 +360,34 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource.
+
+- Required: No
+- Type: array
 
 ### Parameter: `roleAssignments`
 
@@ -656,23 +478,9 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `sharingProfile`
-
-Profile for gallery sharing to subscription or tenant.
-
-- Required: No
-- Type: object
-
-### Parameter: `softDeletePolicy`
-
-Soft deletion policy of the gallery.
-
-- Required: No
-- Type: object
-
 ### Parameter: `tags`
 
-Tags for all resources.
+Tags of the resource.
 
 - Required: No
 - Type: object
@@ -683,9 +491,10 @@ Tags for all resources.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the deployed image gallery. |
-| `resourceGroupName` | string | The resource group of the deployed image gallery. |
-| `resourceId` | string | The resource ID of the deployed image gallery. |
+| `name` | string | The name of the deployed access connector. |
+| `resourceGroupName` | string | The resource group of the deployed access connector. |
+| `resourceId` | string | The resource ID of the deployed access connector. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 
