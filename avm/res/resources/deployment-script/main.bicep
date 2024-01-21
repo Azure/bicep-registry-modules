@@ -96,6 +96,7 @@ param roleAssignments roleAssignmentType
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. Enable/Disable managed identity storage account access.')
 param enableManagedIdStorageAuthentication bool = false
 
 // =========== //

@@ -23,6 +23,7 @@ param serviceShort string = 'rdsmin'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. Enable/Disable managed identity storage account access.')
 param enableManagedIdStorageAuthentication bool = true
 
 // ============ //
