@@ -130,7 +130,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' existing 
 }
 
 var storageAccountSettings = !empty(storageAccountResourceId) ? {
-  storageAccountKey: (storageAccount.properties.?allowSharedKeyAccess ?? true) ? listKeys(storageAccount.id, '2023-01-01').keys[0].value : null
+  storageAccountKey: (storageAccount.properties.?allowSharedKeyAccess) ? listKeys(storageAccount.id, '2023-01-01').keys[0].value : null
   storageAccountName: last(split(storageAccountResourceId, '/'))
 } : null
 
