@@ -34,21 +34,21 @@ jobs:
   #########################
   #   Static validation   #
   #########################
-  # job_module_static_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-  #   name: "Static validation"
-  #   runs-on: ubuntu-latest
-  #   if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
-  #   steps:
-  #     - name: "Checkout"
-  #       uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-  #     - name: Set environment
-  #       uses: ./.github/actions/templates/avm-setEnvironment
-  #     - name: "Run tests"
-  #       uses: ./.github/actions/templates/avm-validateModulePester
-  #       with:
-  #         modulePath: "${{ inputs.modulePath }}"
+  job_module_static_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+    name: "Static validation"
+    runs-on: ubuntu-latest
+    if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Run tests"
+        uses: ./.github/actions/templates/avm-validateModulePester
+        with:
+          modulePath: "${{ inputs.modulePath }}"
 
   #########################
   #   PSRule validation   #
@@ -80,11 +80,11 @@ jobs:
   job_module_deploy_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Deploy [${{ matrix.testCases.name}}]"
     runs-on: ubuntu-latest
-    # if: |
-    #   !cancelled() &&
-    #   (fromJson(inputs.workflowInput)).deploymentValidation == 'true' && needs.job_module_static_validation.result != 'failure'
-    # needs:
-    #   - job_module_static_validation
+    if: |
+      !cancelled() &&
+      (fromJson(inputs.workflowInput)).deploymentValidation == 'true' && needs.job_module_static_validation.result != 'failure'
+    needs:
+      - job_module_static_validation
     strategy:
       fail-fast: false
       matrix:
