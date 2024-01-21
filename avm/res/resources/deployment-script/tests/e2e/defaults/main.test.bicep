@@ -23,9 +23,6 @@ param serviceShort string = 'rdsmin'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. Enable/Disable managed identity storage account access.')
-param enableManagedIdStorageAuthentication bool = true
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -56,7 +53,6 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    enableManagedIdStorageAuthentication: enableManagedIdStorageAuthentication
     location: location
     azPowerShellVersion: '9.7'
     kind: 'AzurePowerShell'
