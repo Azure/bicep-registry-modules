@@ -47,7 +47,7 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
-    // keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     keyVaultDiskName: 'dep-${namePrefix}-kve-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
   }
 }
@@ -104,10 +104,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    // customerManagedKey: {
-    //   keyName: nestedDependencies.outputs.keyVaultKeyName
-    //   keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-    // }
+    customerManagedKey: {
+      keyName: nestedDependencies.outputs.keyVaultKeyName
+      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+    }
     customerManagedKeyManagedDisk: {
       keyName: nestedDependencies.outputs.keyVaultDiskKeyName
       keyVaultResourceId: nestedDependencies.outputs.keyVaultDiskResourceId

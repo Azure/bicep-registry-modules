@@ -4,8 +4,8 @@ param location string = resourceGroup().location
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
-// @description('Required. The name of the Key Vault to create.')
-// param keyVaultName string
+@description('Required. The name of the Key Vault to create.')
+param keyVaultName string
 
 @description('Required. The name of the Key Vault for Disk Encryption to create.')
 param keyVaultDiskName string
@@ -35,31 +35,31 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
     location: location
 }
 
-// resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
-//     name: keyVaultName
-//     location: location
-//     properties: {
-//         sku: {
-//             family: 'A'
-//             name: 'standard'
-//         }
-//         tenantId: tenant().tenantId
-//         enablePurgeProtection: true // Required by batch account
-//         softDeleteRetentionInDays: 7
-//         enabledForTemplateDeployment: true
-//         enabledForDiskEncryption: true
-//         enabledForDeployment: true
-//         enableRbacAuthorization: true
-//         accessPolicies: []
-//     }
+resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+    name: keyVaultName
+    location: location
+    properties: {
+        sku: {
+            family: 'A'
+            name: 'standard'
+        }
+        tenantId: tenant().tenantId
+        enablePurgeProtection: true // Required by batch account
+        softDeleteRetentionInDays: 7
+        enabledForTemplateDeployment: true
+        enabledForDiskEncryption: true
+        enabledForDeployment: true
+        enableRbacAuthorization: true
+        accessPolicies: []
+    }
 
-//     resource key 'keys@2022-07-01' = {
-//         name: 'keyEncryptionKey'
-//         properties: {
-//             kty: 'RSA'
-//         }
-//     }
-// }
+    resource key 'keys@2022-07-01' = {
+        name: 'keyEncryptionKey'
+        properties: {
+            kty: 'RSA'
+        }
+    }
+}
 
 resource keyVaultDisk 'Microsoft.KeyVault/vaults@2022-07-01' = {
     name: keyVaultDiskName
@@ -87,25 +87,25 @@ resource keyVaultDisk 'Microsoft.KeyVault/vaults@2022-07-01' = {
     }
 }
 
-// resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-//     name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Key-Vault-Crypto-User-RoleAssignment')
-//     scope: keyVault::key
-//     properties: {
-//         principalId: '09ef9f59-e7b6-422e-84e4-508cfc8d64e7' // AzureDatabricks Enterprise Application Object Id
-//         roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483') // Key Vault Crypto User
-//         principalType: 'ServicePrincipal'
-//     }
-// }
+resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+    name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Key-Vault-Crypto-User-RoleAssignment')
+    scope: keyVault::key
+    properties: {
+        principalId: '711330f9-cfad-4b10-a462-d82faa92027d' // AzureDatabricks Enterprise Application Object Id (Note: this is subscription specific, replace the GUID with your target deployment subscription one.)
+        roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424') // Key Vault Crypto User
+        principalType: 'ServicePrincipal'
+    }
+}
 
-// resource amlPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-//     name: guid('msi-${keyVault.id}-${location}-${managedIdentity.id}-Key-Vault-Contributor')
-//     scope: keyVault
-//     properties: {
-//         principalId: managedIdentity.properties.principalId
-//         roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c') // Contributor
-//         principalType: 'ServicePrincipal'
-//     }
-// }
+resource amlPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+    name: guid('msi-${keyVault.id}-${location}-${managedIdentity.id}-Key-Vault-Contributor')
+    scope: keyVault
+    properties: {
+        principalId: managedIdentity.properties.principalId
+        roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c') // Contributor
+        principalType: 'ServicePrincipal'
+    }
+}
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
     name: storageAccountName
@@ -137,7 +137,7 @@ resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@
     }
     properties: {
         storageAccount: storageAccount.id
-        // keyVault: keyVault.id
+        keyVault: keyVault.id
         applicationInsights: applicationInsights.id
         primaryUserAssignedIdentity: managedIdentity.id
     }
@@ -346,8 +346,8 @@ output privateDNSZoneResourceId string = privateDNSZone.id
 @description('The resource ID of the created Azure Machine Learning Workspace.')
 output machineLearningWorkspaceResourceId string = machineLearningWorkspace.id
 
-// @description('The resource ID of the created Key Vault.')
-// output keyVaultResourceId string = keyVault.id
+@description('The resource ID of the created Key Vault.')
+output keyVaultResourceId string = keyVault.id
 
 @description('The resource ID of the created Disk Key Vault.')
 output keyVaultDiskResourceId string = keyVaultDisk.id
@@ -358,8 +358,8 @@ output loadBalancerResourceId string = loadBalancer.id
 @description('The name of the created Load Balancer Backend Pool.')
 output loadBalancerBackendPoolName string = loadBalancer.properties.backendAddressPools[0].name
 
-// @description('The name of the created Key Vault encryption key.')
-// output keyVaultKeyName string = keyVault::key.name
+@description('The name of the created Key Vault encryption key.')
+output keyVaultKeyName string = keyVault::key.name
 
 @description('The name of the created Key Vault Disk encryption key.')
 output keyVaultDiskKeyName string = keyVaultDisk::key.name
