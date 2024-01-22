@@ -19,8 +19,8 @@ resource storageFileDataPrivilegedContributor 'Microsoft.Authorization/roleDefin
 }
 
 // Least-privileged role required for deployment script to be able to list the storage account keys
-resource readerRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-  name: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+resource readerAndDataAccessRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  name: 'c12c1c16-33a1-487b-954d-41c89c60f349'
   scope: tenant()
 }
 
@@ -44,7 +44,7 @@ resource storageReaderPermissions 'Microsoft.Authorization/roleAssignments@2022-
   scope: storageAccount
   properties: {
     principalId: managedIdentity.properties.principalId
-    roleDefinitionId: readerRole.id
+    roleDefinitionId: readerAndDataAccessRole.id
     principalType: 'ServicePrincipal'
   }
 }
