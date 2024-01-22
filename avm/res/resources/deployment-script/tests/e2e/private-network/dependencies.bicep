@@ -18,7 +18,7 @@ resource storageFileDataPrivilegedContributor 'Microsoft.Authorization/roleDefin
   scope: tenant()
 }
 
-// Role required for deployment script to be able to list the storage account keys
+// Least-privileged role required for deployment script to be able to list the storage account keys
 resource readerRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
   name: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
   scope: tenant()
@@ -58,7 +58,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   kind: 'StorageV2'
   properties: {
     supportsHttpsTrafficOnly: true
-    allowSharedKeyAccess: true
+    allowSharedKeyAccess: true // Cannot be set to false when using a private network for the deployment script
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: 'Deny'
