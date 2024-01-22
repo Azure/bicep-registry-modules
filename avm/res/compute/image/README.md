@@ -110,7 +110,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module image 'br/public:avm/res/compute/image:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cimax'
+  name: '${uniqueString(deployment().name, tempLocation)}-test-cimax'
   params: {
     // Required parameters
     name: 'cimax001'
@@ -242,7 +242,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module image 'br/public:avm/res/compute/image:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ciwaf'
+  name: '${uniqueString(deployment().name, tempLocation)}-test-ciwaf'
   params: {
     // Required parameters
     name: 'ciwaf001'
