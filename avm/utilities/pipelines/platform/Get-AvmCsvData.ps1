@@ -9,9 +9,9 @@ Depending on the parameter, the correct CSV file will be parsed and returned a a
 Type of CSV file, that should be parsed. E.g., 'Bicep-Resource'
 
 .EXAMPLE
-Next line will parse the AVM Bicep modules
 Get-AvmCsvData -ModuleIndex 'Bicep-Resource'
 
+Get the AVM-CSV data for 'Bicep-Resource's.
 #>
 Function Get-AvmCsvData {
   [CmdletBinding()]
