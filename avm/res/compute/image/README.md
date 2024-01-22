@@ -1,6 +1,11 @@
-# Azure Compute Galleries `[Microsoft.Compute/galleries]`
+# Images `[Microsoft.Compute/images]`
 
-This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
+This module deploys a Compute Image.
 
 ## Navigation
 
@@ -15,11 +20,8 @@ This module deploys an Azure Compute Gallery (formerly known as Shared Image Gal
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/galleries` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries) |
-| `Microsoft.Compute/galleries/applications` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries/applications) |
-| `Microsoft.Compute/galleries/images` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries/images) |
+| `Microsoft.Compute/images` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/images) |
 
 ## Usage examples
 
@@ -27,7 +29,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/gallery:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/image:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -43,11 +45,15 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cgmin'
+module image 'br/public:avm/res/compute/image:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-cimin'
   params: {
     // Required parameters
-    name: 'cgmin001'
+    name: 'cimin001'
+    osAccountType: 'Standard_LRS'
+    osDiskBlobUri: '<osDiskBlobUri>'
+    osDiskCaching: 'ReadWrite'
+    osType: 'Windows'
     // Non-required parameters
     location: '<location>'
   }
@@ -68,7 +74,19 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "cgmin001"
+      "value": "cimin001"
+    },
+    "osAccountType": {
+      "value": "Standard_LRS"
+    },
+    "osDiskBlobUri": {
+      "value": "<osDiskBlobUri>"
+    },
+    "osDiskCaching": {
+      "value": "ReadWrite"
+    },
+    "osType": {
+      "value": "Windows"
     },
     // Non-required parameters
     "location": {
@@ -91,106 +109,21 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cgmax'
+module image 'br/public:avm/res/compute/image:<version>' = {
+  name: '${uniqueString(deployment().name, tempLocation)}-test-cimax'
   params: {
     // Required parameters
-    name: 'cgmax001'
+    name: 'cimax001'
+    osAccountType: 'Premium_LRS'
+    osDiskBlobUri: '<osDiskBlobUri>'
+    osDiskCaching: 'ReadWrite'
+    osType: 'Windows'
     // Non-required parameters
-    applications: [
-      {
-        name: 'cgmax-appd-001'
-        supportedOSType: 'Linux'
-      }
-      {
-        name: 'cgmax-appd-002'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        supportedOSType: 'Windows'
-      }
-    ]
-    images: [
-      {
-        hyperVGeneration: 'V1'
-        name: 'az-imgd-ws-001'
-        offer: 'WindowsServer'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        sku: '2022-datacenter-azure-edition'
-      }
-      {
-        hyperVGeneration: 'V2'
-        isHibernateSupported: true
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 8
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: 'az-imgd-ws-002'
-        offer: 'WindowsServer'
-        osState: 'Generalized'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        sku: '2022-datacenter-azure-edition-hibernate'
-      }
-      {
-        hyperVGeneration: 'V2'
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 4
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: 'az-imgd-wdtl-001'
-        offer: 'WindowsDesktop'
-        osState: 'Generalized'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsDesktop'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        securityType: 'TrustedLaunch'
-        sku: 'Win11-21H2'
-      }
-      {
-        hyperVGeneration: 'V2'
-        maxRecommendedMemory: 32
-        maxRecommendedvCPUs: 4
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 1
-        name: 'az-imgd-us-001'
-        offer: '0001-com-ubuntu-server-focal'
-        osState: 'Generalized'
-        osType: 'Linux'
-        publisher: 'canonical'
-        sku: '20_04-lts-gen2'
-      }
-    ]
+    diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
+    diskSizeGB: 128
+    hyperVGeneration: 'V1'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
+    osState: 'Generalized'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -213,6 +146,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    zoneResilient: true
   }
 }
 ```
@@ -231,110 +165,35 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "cgmax001"
+      "value": "cimax001"
+    },
+    "osAccountType": {
+      "value": "Premium_LRS"
+    },
+    "osDiskBlobUri": {
+      "value": "<osDiskBlobUri>"
+    },
+    "osDiskCaching": {
+      "value": "ReadWrite"
+    },
+    "osType": {
+      "value": "Windows"
     },
     // Non-required parameters
-    "applications": {
-      "value": [
-        {
-          "name": "cgmax-appd-001",
-          "supportedOSType": "Linux"
-        },
-        {
-          "name": "cgmax-appd-002",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "supportedOSType": "Windows"
-        }
-      ]
+    "diskEncryptionSetResourceId": {
+      "value": "<diskEncryptionSetResourceId>"
     },
-    "images": {
-      "value": [
-        {
-          "hyperVGeneration": "V1",
-          "name": "az-imgd-ws-001",
-          "offer": "WindowsServer",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsServer",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "sku": "2022-datacenter-azure-edition"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "isHibernateSupported": true,
-          "maxRecommendedMemory": 16,
-          "maxRecommendedvCPUs": 8,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 2,
-          "name": "az-imgd-ws-002",
-          "offer": "WindowsServer",
-          "osState": "Generalized",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsServer",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "sku": "2022-datacenter-azure-edition-hibernate"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "maxRecommendedMemory": 16,
-          "maxRecommendedvCPUs": 4,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 2,
-          "name": "az-imgd-wdtl-001",
-          "offer": "WindowsDesktop",
-          "osState": "Generalized",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsDesktop",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "securityType": "TrustedLaunch",
-          "sku": "Win11-21H2"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "maxRecommendedMemory": 32,
-          "maxRecommendedvCPUs": 4,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 1,
-          "name": "az-imgd-us-001",
-          "offer": "0001-com-ubuntu-server-focal",
-          "osState": "Generalized",
-          "osType": "Linux",
-          "publisher": "canonical",
-          "sku": "20_04-lts-gen2"
-        }
-      ]
+    "diskSizeGB": {
+      "value": 128
+    },
+    "hyperVGeneration": {
+      "value": "V1"
     },
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
+    "osState": {
+      "value": "Generalized"
     },
     "roleAssignments": {
       "value": [
@@ -361,6 +220,9 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "zoneResilient": {
+      "value": true
     }
   }
 }
@@ -379,33 +241,27 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cgwaf'
+module image 'br/public:avm/res/compute/image:<version>' = {
+  name: '${uniqueString(deployment().name, tempLocation)}-test-ciwaf'
   params: {
     // Required parameters
-    name: 'cgwaf001'
+    name: 'ciwaf001'
+    osAccountType: 'Premium_LRS'
+    osDiskBlobUri: '<osDiskBlobUri>'
+    osDiskCaching: 'ReadWrite'
+    osType: 'Windows'
     // Non-required parameters
-    applications: [
-      {
-        name: 'cgwaf-appd-001'
-        supportedOSType: 'Windows'
-      }
-    ]
-    images: [
-      {
-        name: 'az-imgd-ws-001'
-        offer: 'WindowsServer'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        sku: '2022-datacenter-azure-edition'
-      }
-    ]
+    diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
+    diskSizeGB: 128
+    hyperVGeneration: 'V1'
     location: '<location>'
+    osState: 'Generalized'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    zoneResilient: true
   }
 }
 ```
@@ -424,30 +280,35 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "cgwaf001"
+      "value": "ciwaf001"
+    },
+    "osAccountType": {
+      "value": "Premium_LRS"
+    },
+    "osDiskBlobUri": {
+      "value": "<osDiskBlobUri>"
+    },
+    "osDiskCaching": {
+      "value": "ReadWrite"
+    },
+    "osType": {
+      "value": "Windows"
     },
     // Non-required parameters
-    "applications": {
-      "value": [
-        {
-          "name": "cgwaf-appd-001",
-          "supportedOSType": "Windows"
-        }
-      ]
+    "diskEncryptionSetResourceId": {
+      "value": "<diskEncryptionSetResourceId>"
     },
-    "images": {
-      "value": [
-        {
-          "name": "az-imgd-ws-001",
-          "offer": "WindowsServer",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsServer",
-          "sku": "2022-datacenter-azure-edition"
-        }
-      ]
+    "diskSizeGB": {
+      "value": 128
+    },
+    "hyperVGeneration": {
+      "value": "V1"
     },
     "location": {
       "value": "<location>"
+    },
+    "osState": {
+      "value": "Generalized"
     },
     "tags": {
       "value": {
@@ -455,6 +316,9 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "zoneResilient": {
+      "value": true
     }
   }
 }
@@ -470,43 +334,75 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Azure Compute Gallery. |
+| [`name`](#parameter-name) | string | The name of the image. |
+| [`osDiskBlobUri`](#parameter-osdiskbloburi) | string | The Virtual Hard Disk. |
+| [`osType`](#parameter-ostype) | string | This property allows you to specify the type of the OS that is included in the disk if creating a VM from a custom image. - Windows or Linux. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`applications`](#parameter-applications) | array | Applications to create. |
-| [`description`](#parameter-description) | string | Description of the Azure Shared Image Gallery. |
+| [`dataDisks`](#parameter-datadisks) | array | Specifies the parameters that are used to add a data disk to a virtual machine. |
+| [`diskEncryptionSetResourceId`](#parameter-diskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource ID for the managed image disk. |
+| [`diskSizeGB`](#parameter-disksizegb) | int | Specifies the size of empty data disks in gigabytes. This element can be used to overwrite the name of the disk in a virtual machine image. This value cannot be larger than 1023 GB. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`images`](#parameter-images) | array | Images to create. |
+| [`extendedLocation`](#parameter-extendedlocation) | object | The extended location of the Image. |
+| [`hyperVGeneration`](#parameter-hypervgeneration) | string | Gets the HyperVGenerationType of the VirtualMachine created from the image. - V1 or V2. |
 | [`location`](#parameter-location) | string | Location for all resources. |
-| [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedDiskResourceId`](#parameter-manageddiskresourceid) | string | The managedDisk. |
+| [`osAccountType`](#parameter-osaccounttype) | string | Specifies the storage account type for the managed disk. NOTE: UltraSSD_LRS can only be used with data disks, it cannot be used with OS Disk. - Standard_LRS, Premium_LRS, StandardSSD_LRS, UltraSSD_LRS. |
+| [`osDiskCaching`](#parameter-osdiskcaching) | string | Specifies the caching requirements. Default: None for Standard storage. ReadOnly for Premium storage. - None, ReadOnly, ReadWrite. |
+| [`osState`](#parameter-osstate) | string | The OS State. For managed images, use Generalized. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`sharingProfile`](#parameter-sharingprofile) | object | Profile for gallery sharing to subscription or tenant. |
-| [`softDeletePolicy`](#parameter-softdeletepolicy) | object | Soft deletion policy of the gallery. |
-| [`tags`](#parameter-tags) | object | Tags for all resources. |
+| [`snapshotResourceId`](#parameter-snapshotresourceid) | string | The snapshot resource ID. |
+| [`sourceVirtualMachineResourceId`](#parameter-sourcevirtualmachineresourceid) | string | The source virtual machine from which Image is created. |
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`zoneResilient`](#parameter-zoneresilient) | bool | Default is false. Specifies whether an image is zone resilient or not. Zone resilient images can be created only in regions that provide Zone Redundant Storage (ZRS). |
 
 ### Parameter: `name`
 
-Name of the Azure Compute Gallery.
+The name of the image.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `applications`
+### Parameter: `osDiskBlobUri`
 
-Applications to create.
+The Virtual Hard Disk.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `osType`
+
+This property allows you to specify the type of the OS that is included in the disk if creating a VM from a custom image. - Windows or Linux.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dataDisks`
+
+Specifies the parameters that are used to add a data disk to a virtual machine.
 
 - Required: No
 - Type: array
+- Default: `[]`
 
-### Parameter: `description`
+### Parameter: `diskEncryptionSetResourceId`
 
-Description of the Azure Shared Image Gallery.
+Specifies the customer managed disk encryption set resource ID for the managed image disk.
 
 - Required: No
 - Type: string
+- Default: `''`
+
+### Parameter: `diskSizeGB`
+
+Specifies the size of empty data disks in gigabytes. This element can be used to overwrite the name of the disk in a virtual machine image. This value cannot be larger than 1023 GB.
+
+- Required: No
+- Type: int
+- Default: `128`
 
 ### Parameter: `enableTelemetry`
 
@@ -516,12 +412,21 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `images`
+### Parameter: `extendedLocation`
 
-Images to create.
+The extended location of the Image.
 
 - Required: No
-- Type: array
+- Type: object
+- Default: `{}`
+
+### Parameter: `hyperVGeneration`
+
+Gets the HyperVGenerationType of the VirtualMachine created from the image. - V1 or V2.
+
+- Required: No
+- Type: string
+- Default: `'V1'`
 
 ### Parameter: `location`
 
@@ -531,41 +436,42 @@ Location for all resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
-### Parameter: `lock`
+### Parameter: `managedDiskResourceId`
 
-The lock settings of the service.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
-| [`name`](#parameter-lockname) | string | Specify the name of lock. |
-
-### Parameter: `lock.kind`
-
-Specify the type of lock.
+The managedDisk.
 
 - Required: No
 - Type: string
+- Default: `''`
+
+### Parameter: `osAccountType`
+
+Specifies the storage account type for the managed disk. NOTE: UltraSSD_LRS can only be used with data disks, it cannot be used with OS Disk. - Standard_LRS, Premium_LRS, StandardSSD_LRS, UltraSSD_LRS.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `osDiskCaching`
+
+Specifies the caching requirements. Default: None for Standard storage. ReadOnly for Premium storage. - None, ReadOnly, ReadWrite.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `osState`
+
+The OS State. For managed images, use Generalized.
+
+- Required: No
+- Type: string
+- Default: `'Generalized'`
 - Allowed:
   ```Bicep
   [
-    'CanNotDelete'
-    'None'
-    'ReadOnly'
+    'Generalized'
+    'Specialized'
   ]
   ```
-
-### Parameter: `lock.name`
-
-Specify the name of lock.
-
-- Required: No
-- Type: string
 
 ### Parameter: `roleAssignments`
 
@@ -656,26 +562,36 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `sharingProfile`
+### Parameter: `snapshotResourceId`
 
-Profile for gallery sharing to subscription or tenant.
-
-- Required: No
-- Type: object
-
-### Parameter: `softDeletePolicy`
-
-Soft deletion policy of the gallery.
+The snapshot resource ID.
 
 - Required: No
-- Type: object
+- Type: string
+- Default: `''`
+
+### Parameter: `sourceVirtualMachineResourceId`
+
+The source virtual machine from which Image is created.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `tags`
 
-Tags for all resources.
+Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `zoneResilient`
+
+Default is false. Specifies whether an image is zone resilient or not. Zone resilient images can be created only in regions that provide Zone Redundant Storage (ZRS).
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 
 ## Outputs
@@ -683,9 +599,9 @@ Tags for all resources.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the deployed image gallery. |
-| `resourceGroupName` | string | The resource group of the deployed image gallery. |
-| `resourceId` | string | The resource ID of the deployed image gallery. |
+| `name` | string | The name of the image. |
+| `resourceGroupName` | string | The resource group the image was deployed into. |
+| `resourceId` | string | The resource ID of the image. |
 
 ## Cross-referenced modules
 

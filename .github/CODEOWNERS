@@ -4,7 +4,7 @@
 /avm/ @Azure/avm-core-team-technical-bicep
 /avm/utilities/ @Azure/avm-core-team-technical-bicep
 #/avm/res/aad/domain-service/ @Azure/avm-res-aad-domainservice-module-owners-bicep
-#/avm/res/analysis-services/server/ @Azure/avm-res-analysisservices-server-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/analysis-services/server/ @Azure/avm-res-analysisservices-server-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/api-management/service/ @Azure/avm-res-apimanagement-service-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/app/container-app/ @Azure/avm-res-app-containerapp-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/app/managed-environment/ @Azure/avm-res-app-managedenvironment-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -25,7 +25,7 @@
 /avm/res/compute/disk/ @Azure/avm-res-compute-disk-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/compute/disk-encryption-set/ @Azure/avm-res-compute-diskencryptionset-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/compute/gallery/ @Azure/avm-res-compute-gallery-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/compute/image/ @Azure/avm-res-compute-image-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/compute/image/ @Azure/avm-res-compute-image-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/compute/proximity-placement-group/ @Azure/avm-res-compute-proximityplacementgroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/compute/ssh-public-key/ @Azure/avm-res-compute-sshpublickey-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/compute/virtual-machine/ @Azure/avm-res-compute-virtualmachine-module-owners-bicep @Azure/avm-core-team-technical-bicep
