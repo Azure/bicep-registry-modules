@@ -1171,27 +1171,15 @@ Describe 'Governance tests' {
     $entry.Trim() | Should -Not -Match '^\s*#.*' -Because 'the module should not be commented out in the issue template.'
 
     # Should be at correct location
-    # $listedModules | Should -Be ($listedModules | Sort-Object) -Because 'the module should be listed in the issue template at the correct alphabetical position.'
-
-
-    # if ($listedModules -ne ($listedModules | Sort-Object)) {
-    #   $false | Should -Be $true -Because 'the module should be listed in the issue template at the correct alphabetical position, but is not.'
-    # }
-
     $incorrectLines = @()
     foreach ($finding in (Compare-Object $listedModules ($listedModules | Sort-Object) -SyncWindow 0)) {
-      # if ($finding.SideIndicator -eq '=>') {
-      #   $incorrectLines += ('- {0}' -f $finding.InputObject)
-      # } elseif ($finding.SideIndicator -eq '<=') {
-      #   $incorrectLines += ('- {0}' -f $finding.InputObject)
-      # }
       if ($finding.SideIndicator -eq '<=') {
         $incorrectLines += $finding.InputObject
       }
     }
     $incorrectLines = $incorrectLines | Sort-Object -Unique
 
-    $incorrectLines | Should -BeNullOrEmpty -Because ('the list of modules in the issue template should be in the correct alphabetical order but it was not. The following incorrectly located lines were found:</br><pre>{0}</pre>' -f ($incorrectLines -join '</br>'))
+    $incorrectLines.Count | Should -Be 0 -Because ('the number of modules that are not in the correct alphabetical order in the issue template should be zero.</br>However, the following incorrectly located lines were found:</br><pre>{0}</pre>' -f ($incorrectLines -join '</br>'))
   }
 }
 
