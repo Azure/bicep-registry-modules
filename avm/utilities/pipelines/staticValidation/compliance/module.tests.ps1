@@ -1131,10 +1131,10 @@ Describe 'Governance tests' {
     $expectedEntry = "/{0}/ @Azure/{1}-module-owners-bicep @Azure/avm-core-team-technical-bicep" -f ($relativeModulePath -replace '\\', '/'), ($relativeModulePath -replace '-' -replace '[\\|\/]', '-')
 
     # Line should exist
-    $moduleLine | Should -Not -BeNullOrEmpty -Because "'the module should be listed in the CODEOWNERS file as [/$expectedEntry]."
+    $moduleLine | Should -Not -BeNullOrEmpty -Because "the module should be listed in the [CODEOWNERS](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file) file as [/$expectedEntry]."
 
     # Line should be correct
-    $moduleLine | Should -Be $expectedEntry
+    $moduleLine | Should -Be $expectedEntry -Because "the module should match the expected format as documented [here](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file)."
   }
 
 
