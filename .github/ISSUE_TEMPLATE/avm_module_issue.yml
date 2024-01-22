@@ -64,6 +64,7 @@ body:
         - "avm/res/compute/image"
         - "avm/res/compute/proximity-placement-group"
         - "avm/res/compute/ssh-public-key"
+        - "avm/res/compute/virtual-machine"
         - "avm/res/compute/virtual-machine-scale-set"
         - "avm/res/consumption/budget"
         - "avm/res/container-instance/container-group"
