@@ -1,4 +1,4 @@
-name: "avm.res.databricks.workspace"
+name: "avm.res.analysis-services.server"
 
 on:
   schedule:
@@ -27,14 +27,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.databricks.workspace.yml"
-      - "avm/res/databricks/workspace/**"
+      - ".github/workflows/avm.res.analysis-services.server.yml"
+      - "avm/res/analysis-services/server/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/databricks/workspace"
-  workflowPath: ".github/workflows/avm.res.databricks.workspace.yml"
+  modulePath: "avm/res/analysis-services/server"
+  workflowPath: ".github/workflows/avm.res.analysis-services.server.yml"
 
 concurrency:
   group: ${{ github.workflow }}
