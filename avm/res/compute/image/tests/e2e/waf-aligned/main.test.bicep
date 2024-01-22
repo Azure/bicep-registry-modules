@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module in alignment with the b
 param resourceGroupName string = 'dep-${namePrefix}-compute.images-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param location string = 'eastus'
+param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ciwaf'
@@ -22,6 +22,9 @@ param baseTime string = utcNow('u')
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
+
+#disable-next-line no-hardcoded-location // services used for this module are only available in major regions
+var tempLocation = 'eastus'
 
 // ============ //
 // Dependencies //
@@ -36,10 +39,10 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, tempLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: location
+    location: tempLocation
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     diskEncryptionSetName: 'dep-${namePrefix}-des-${serviceShort}'
@@ -56,10 +59,10 @@ module nestedDependencies 'dependencies.bicep' = {
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
+  name: '${uniqueString(deployment().name, tempLocation)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: location
+    location: tempLocation
     osAccountType: 'Premium_LRS'
     osDiskBlobUri: nestedDependencies.outputs.vhdUri
     osDiskCaching: 'ReadWrite'
