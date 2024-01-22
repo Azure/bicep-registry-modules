@@ -1167,7 +1167,7 @@ Describe 'Governance tests' {
     $listedModules | Should -Contain ($relativeModulePath -replace '\\', '/') -Because 'the module should be listed in the issue template in the correct alphabetical position.'
 
     # Should not be commented
-    $entry = $issueTemplateContent | Where-Object { $_ -match ('.+{0}.+' -f $relativeModulePath -replace '\\', '\/') }
+    $entry = $issueTemplateContent | Where-Object { $_ -match ('.+- "{0}".+' -f $relativeModulePath -replace '\\', '\/') }
     $entry.Trim() | Should -Not -Match '^\s*#.*' -Because 'the module should not be commented out in the issue template.'
 
     # Should be at correct location
