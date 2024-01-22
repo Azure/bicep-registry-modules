@@ -12,6 +12,21 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
+resource readerRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  name: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+  scope: tenant()
+}
+
+resource storageReaderPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('storageReaderRole', managedIdentity.id, storageAccount.id)
+  scope: storageAccount
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: readerRole.id
+    principalType: 'ServicePrincipal'
+  }
+}
+
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   name: storageAccountName
   location: location
