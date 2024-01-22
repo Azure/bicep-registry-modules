@@ -17,13 +17,13 @@ resource storageFileDataPrivilegedContributor 'Microsoft.Authorization/roleDefin
   name: '69566ab7-960f-475b-8e7c-b3118f30c6bd'
   scope: tenant()
 }
-
+/*
 // Least-privileged role required for deployment script to be able to list the storage account keys
 resource readerAndDataAccessRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
   name: 'c12c1c16-33a1-487b-954d-41c89c60f349'
   scope: tenant()
 }
-
+*/
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
   location: location
@@ -39,7 +39,7 @@ resource storageFileSharePermissions 'Microsoft.Authorization/roleAssignments@20
   }
 }
 
-resource storageReaderPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+/*resource storageReaderPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('storageReaderRole', managedIdentity.id, storageAccount.id)
   scope: storageAccount
   properties: {
@@ -47,7 +47,7 @@ resource storageReaderPermissions 'Microsoft.Authorization/roleAssignments@2022-
     roleDefinitionId: readerAndDataAccessRole.id
     principalType: 'ServicePrincipal'
   }
-}
+}*/
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   name: storageAccountName
