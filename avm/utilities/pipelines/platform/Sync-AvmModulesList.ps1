@@ -26,6 +26,9 @@ function Sync-AvmModulesList {
     [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
   )
 
+  # Loading helper functions
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'Get-AvmCsvData.ps1')
+
   $workflowFilePath = Join-Path $RepoRoot '.github' 'ISSUE_TEMPLATE' 'avm_module_issue.yml'
 
   # get CSV data

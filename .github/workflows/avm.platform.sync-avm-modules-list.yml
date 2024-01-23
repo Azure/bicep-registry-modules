@@ -19,11 +19,11 @@ jobs:
         shell: pwsh
         run: |
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Get-AvmCsvData.ps1')
           . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Sync-AvmModulesList.ps1')
 
           $functionInput = @{
             Repo = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
+            RepoRoot = $env:GITHUB_WORKSPACE
           }
 
           Sync-AvmModulesList @functionInput -Verbose

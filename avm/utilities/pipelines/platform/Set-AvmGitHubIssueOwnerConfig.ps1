@@ -24,8 +24,14 @@ function Set-AvmGitHubIssueOwnerConfig {
     [string] $Repo,
 
     [Parameter(Mandatory = $true)]
-    [string] $IssueUrl
+    [string] $IssueUrl,
+
+    [Parameter(Mandatory = $false)]
+    [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
   )
+
+  # Loading helper functions
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'Get-AvmCsvData.ps1')
 
   $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
 

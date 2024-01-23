@@ -22,12 +22,12 @@ jobs:
         shell: pwsh
         run: |
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Get-AvmCsvData.ps1')
           . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Set-AvmGitHubIssueOwnerConfig.ps1')
 
           $functionInput = @{
             Repo = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
             IssueUrl = "${{ github.event.issue.url }}"
+            RepoRoot = $env:GITHUB_WORKSPACE
           }
 
           Write-Verbose "Invoke task with" -Verbose
