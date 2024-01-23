@@ -31,7 +31,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    privateDnsZoneName: 'privatelink.${location}.azmk8s.io'
+    privateDnsZoneName: 'privatelink.${resourceLocation}.azmk8s.io'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: resourceLocation
   }

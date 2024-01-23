@@ -70,7 +70,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: location
+        locationName: resourceLocation
       }
       {
         failoverPriority: 1

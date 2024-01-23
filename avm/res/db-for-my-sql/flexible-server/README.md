@@ -1,7 +1,7 @@
 # DBforMySQL Flexible Servers `[Microsoft.DBforMySQL/flexibleServers]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
->
+> 
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
@@ -37,7 +37,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/db-for-my-sql/flexible-server:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
+- [Max](#example-2-max)
 - [Deploys in connectivity mode "Private Access"](#example-3-deploys-in-connectivity-mode-private-access)
 - [WAF-aligned](#example-4-waf-aligned)
 
@@ -105,10 +105,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
-
-This instance deploys the module with most of its features enabled.
-
+### Example 2: _Max_
 
 <details>
 

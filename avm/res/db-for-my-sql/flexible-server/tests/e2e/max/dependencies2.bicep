@@ -18,12 +18,12 @@ param geoBackupLocation string
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
     name: managedIdentityName
-    location: resourceLocation
+    location: location
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
     name: keyVaultName
-    location: resourceLocation
+    location: location
     properties: {
         sku: {
             family: 'A'
