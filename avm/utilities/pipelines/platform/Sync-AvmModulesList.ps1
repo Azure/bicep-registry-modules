@@ -62,6 +62,12 @@ function Sync-AvmModulesList {
   $body = $newLines -join ([Environment]::NewLine)
 
   if ($oldLines -ne $newLines) {
-    gh issue create --title "[AVM] Module/pattern list is not in sync with CSV file" --body $body --label "Needs: Attention :wave:" --repo $Repo
+    $title = "[AVM chore] Module(s) missing from AVM Module Issue template"
+    $label = "Type: AVM :a: :v: :m:,Type: Hygiene :broom:,Needs: Triage :mag:"
+    $issues = gh issue list --state open --label $label --json 'title' --repo $Repo | ConvertFrom-Json -Depth 100
+
+    if ($issues.title -notcontains $title) {
+      gh issue create --title $title --body $body --label $label --repo $Repo
+    }
   }
 }
