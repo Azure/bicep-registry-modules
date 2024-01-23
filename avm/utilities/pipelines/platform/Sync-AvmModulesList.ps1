@@ -47,12 +47,12 @@ function Sync-AvmModulesList {
   $endIndex = 0
 
   for ($lineNumber = 0; $lineNumber -lt $workflowFileLines.Count; $lineNumber++) {
-    if ($startIndex -gt 0 -and (-not $workflowFileLines[$lineNumber].StartsWith('        - "avm/'))) {
+    if ($startIndex -gt 0 -and (-not ($workflowFileLines[$lineNumber]).Trim().StartsWith('- "avm/'))) {
       $endIndex = $lineNumber
       break
     }
 
-    if ($workflowFileLines[$lineNumber] -eq '        - "Other, as defined below..."') {
+    if (($workflowFileLines[$lineNumber]).Trim() -eq '- "Other, as defined below..."') {
       $startIndex = $lineNumber
     }
   }
