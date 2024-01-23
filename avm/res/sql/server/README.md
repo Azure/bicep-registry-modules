@@ -48,11 +48,11 @@ The following section provides usage examples for the module, which were used to
 
 - [With an administrator](#example-1-with-an-administrator)
 - [Using only defaults](#example-2-using-only-defaults)
-- [Max](#example-3-max)
+- [Using large parameter set](#example-3-using-large-parameter-set)
 - [Using Private Endpoints](#example-4-using-private-endpoints)
 - [With a secondary database](#example-5-with-a-secondary-database)
 - [With vulnerability assessment](#example-6-with-vulnerability-assessment)
-- [Waf-Aligned](#example-7-waf-aligned)
+- [WAF-aligned](#example-7-waf-aligned)
 
 ### Example 1: _With an administrator_
 
@@ -172,7 +172,10 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
-### Example 3: _Max_
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -853,7 +856,10 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
-### Example 7: _Waf-Aligned_
+### Example 7: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
