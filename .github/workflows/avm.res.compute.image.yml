@@ -1,4 +1,4 @@
-name: "avm.res.databricks.workspace"
+name: "avm.res.compute.image"
 
 on:
   schedule:
@@ -27,14 +27,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.databricks.workspace.yml"
-      - "avm/res/databricks/workspace/**"
+      - ".github/workflows/avm.res.compute.image.yml"
+      - "avm/res/compute/image/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/databricks/workspace"
-  workflowPath: ".github/workflows/avm.res.databricks.workspace.yml"
+  modulePath: "avm/res/compute/image"
+  workflowPath: ".github/workflows/avm.res.compute.image.yml"
 
 concurrency:
   group: ${{ github.workflow }}
