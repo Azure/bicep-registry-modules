@@ -47,7 +47,7 @@ resource storageDataAccessContributor 'Microsoft.Authorization/roleDefinitions@2
 }
 
 resource storageDataAccessPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('storageFileDataPrivilegedContributorRole', managedIdentity.id, storageAccount.id)
+  name: guid('storageDataAccessRole', managedIdentity.id, storageAccount.id)
   scope: storageAccount
   properties: {
     principalId: managedIdentity.properties.principalId
