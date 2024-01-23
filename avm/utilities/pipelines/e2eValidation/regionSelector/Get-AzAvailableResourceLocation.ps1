@@ -5,8 +5,8 @@ Set the location for the resource deployment.
 .DESCRIPTION
 This script is used to set the location for the resource deployment.
 
-.PARAMETER usePairedRegionsOnly
-Optional. If set, only paired regions will be returned.
+.PARAMETER ExcludedRegions
+Optional. The list of regions to be excluded from the selection.
 
 .PARAMETER moduleRoot
 Required. The root path of the module.
@@ -15,7 +15,7 @@ Required. The root path of the module.
 Optional. The root path of the repository.
 
 .EXAMPLE
-Get-AzDeploymentRegion -usePairedRegionsOnly -ModuleRoot "".\avm\res\resources\resource-group" -repoRoot .\
+Get-AzAvailableResourceLocation -ModuleRoot ".\avm\res\resources\resource-group" -repoRoot .\
 
 Get the recommended paired regions available for the service.
 #>
