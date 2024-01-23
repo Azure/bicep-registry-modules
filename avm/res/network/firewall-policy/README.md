@@ -1,7 +1,7 @@
 # Firewall Policies `[Microsoft.Network/firewallPolicies]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
+>
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
@@ -46,7 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nfpmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nfpmin'
   params: {
     // Required parameters
     name: 'nfpmin001'
@@ -94,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nfpmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nfpmax'
   params: {
     // Required parameters
     name: 'nfpmax001'
@@ -260,7 +260,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nfpwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nfpwaf'
   params: {
     // Required parameters
     name: 'nfpwaf001'

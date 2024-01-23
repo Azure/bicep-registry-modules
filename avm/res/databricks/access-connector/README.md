@@ -1,7 +1,7 @@
 # Azure Databricks Access Connectors `[Microsoft.Databricks/accessConnectors]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
+>
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
@@ -47,7 +47,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module accessConnector 'br/public:avm/res/databricks/access-connector:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dacmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dacmin'
   params: {
     // Required parameters
     name: 'dacmin001'
@@ -95,7 +95,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module accessConnector 'br/public:avm/res/databricks/access-connector:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dacmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dacmax'
   params: {
     // Required parameters
     name: 'dacmax001'
@@ -215,7 +215,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module accessConnector 'br/public:avm/res/databricks/access-connector:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dacwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dacwaf'
   params: {
     // Required parameters
     name: 'dacwaf001'

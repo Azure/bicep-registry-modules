@@ -54,7 +54,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module automationAccount 'br/public:avm/res/automation/automation-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-aamin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-aamin'
   params: {
     // Required parameters
     name: 'aamin001'
@@ -102,7 +102,7 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module automationAccount 'br/public:avm/res/automation/automation-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-aaencr'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-aaencr'
   params: {
     // Required parameters
     name: 'aaencr001'
@@ -174,7 +174,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module automationAccount 'br/public:avm/res/automation/automation-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-aamax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-aamax'
   params: {
     // Required parameters
     name: 'aamax001'
@@ -638,7 +638,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module automationAccount 'br/public:avm/res/automation/automation-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-aawaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-aawaf'
   params: {
     // Required parameters
     name: 'aawaf001'

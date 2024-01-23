@@ -165,7 +165,7 @@ The following module usage examples are retrieved from the content of the files 
 
 ```bicep
 module userAssignedIdentity './managed-identity/user-assigned-identity/main.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-test-miuaicom'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-miuaicom'
   params: {
     enableDefaultTelemetry: '<enableDefaultTelemetry>'
     lock: 'CanNotDelete'

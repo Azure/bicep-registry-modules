@@ -9,7 +9,7 @@ param pairedRegionScriptName string
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
     name: managedIdentityName
-    location: location
+    location: resourceLocation
 }
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
@@ -23,7 +23,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 
 resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
     name: pairedRegionScriptName
-    location: location
+    location: resourceLocation
     kind: 'AzurePowerShell'
     identity: {
         type: 'UserAssigned'

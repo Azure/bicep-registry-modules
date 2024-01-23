@@ -47,7 +47,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-sssmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-sssmin'
   params: {
     // Required parameters
     name: 'sssmin001'
@@ -95,7 +95,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-sssmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-sssmax'
   params: {
     // Required parameters
     name: 'sssmax001'
@@ -297,7 +297,7 @@ This instance deploys the module with private endpoints.
 
 ```bicep
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ssspe'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssspe'
   params: {
     // Required parameters
     name: 'ssspe001'
@@ -421,7 +421,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ssswaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssswaf'
   params: {
     // Required parameters
     name: 'ssswaf001'

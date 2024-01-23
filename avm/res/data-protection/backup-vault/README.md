@@ -1,7 +1,7 @@
 # Data Protection Backup Vaults `[Microsoft.DataProtection/backupVaults]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
+>
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
@@ -49,7 +49,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dpbvmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dpbvmin'
   params: {
     // Required parameters
     name: 'dpbvmin001'
@@ -97,7 +97,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dpbvmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dpbvmax'
   params: {
     // Required parameters
     name: 'dpbvmax001'
@@ -341,7 +341,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dpbvwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dpbvwaf'
   params: {
     // Required parameters
     name: 'dpbvwaf001'

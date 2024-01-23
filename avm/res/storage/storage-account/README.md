@@ -61,7 +61,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ssamin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssamin'
   params: {
     // Required parameters
     name: 'ssamin001'
@@ -109,7 +109,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ssamax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssamax'
   params: {
     // Required parameters
     name: 'ssamax001'
@@ -879,7 +879,7 @@ This instance deploys the module with a NFS File Share.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ssanfs'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssanfs'
   params: {
     // Required parameters
     name: 'ssanfs001'
@@ -953,7 +953,7 @@ This instance deploys the module using Customer-Managed-Keys using a System-Assi
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ssasacr'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssasacr'
   params: {
     // Required parameters
     name: '<name>'
@@ -1057,7 +1057,7 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ssauacr'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssauacr'
   params: {
     // Required parameters
     name: 'ssauacr001'
@@ -1167,7 +1167,7 @@ This instance deploys the module as Storage Account version 1.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ssav1'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssav1'
   params: {
     // Required parameters
     name: 'ssav1001'
@@ -1219,7 +1219,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ssawaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssawaf'
   params: {
     // Required parameters
     name: 'ssawaf001'
