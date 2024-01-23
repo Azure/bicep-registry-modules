@@ -160,7 +160,6 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     }
     retentionInterval: 'P1D'
     scriptContent: 'Write-Host \'AVM Deployment Script test!\''
-    storageAccountResourceId: '<storageAccountResourceId>'
   }
 }
 ```
@@ -203,9 +202,6 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     },
     "scriptContent": {
       "value": "Write-Host \"AVM Deployment Script test!\""
-    },
-    "storageAccountResourceId": {
-      "value": "<storageAccountResourceId>"
     }
   }
 }
