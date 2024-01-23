@@ -10,7 +10,11 @@ param managedIdentityName string
 resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' = {
   name: managedEnvironmentName
   location: location
-  properties: {}
+  properties: {
+    appLogsConfiguration: {
+      destination: 'azure-monitor'
+    }
+  }
 }
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
