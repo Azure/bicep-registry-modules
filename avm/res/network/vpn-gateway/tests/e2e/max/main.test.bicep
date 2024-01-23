@@ -20,6 +20,9 @@ param serviceShort string = 'vpngmax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+#disable-next-line no-hardcoded-location // Just a value to avoid ongoing capacity challenges
+var tempLocation = 'uksouth'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -35,7 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
+    location: tempLocation
     virtualHubName: 'dep-${namePrefix}-vh-${serviceShort}'
     virtualWANName: 'dep-${namePrefix}-vw-${serviceShort}'
     vpnSiteName: 'dep-${namePrefix}-vs-${serviceShort}'
@@ -50,7 +53,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
-    location: resourceLocation
+    location: tempLocation
     name: '${namePrefix}${serviceShort}001'
     virtualHubResourceId: nestedDependencies.outputs.virtualHubResourceId
     bgpSettings: {
