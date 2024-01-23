@@ -1,7 +1,7 @@
 # Azure SQL Servers `[Microsoft.Sql/servers]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
->
+> 
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
@@ -48,11 +48,11 @@ The following section provides usage examples for the module, which were used to
 
 - [With an administrator](#example-1-with-an-administrator)
 - [Using only defaults](#example-2-using-only-defaults)
-- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Max](#example-3-max)
 - [Using Private Endpoints](#example-4-using-private-endpoints)
 - [With a secondary database](#example-5-with-a-secondary-database)
 - [With vulnerability assessment](#example-6-with-vulnerability-assessment)
-- [WAF-aligned](#example-7-waf-aligned)
+- [Waf-Aligned](#example-7-waf-aligned)
 
 ### Example 1: _With an administrator_
 
@@ -172,10 +172,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
-
-This instance deploys the module with most of its features enabled.
-
+### Example 3: _Max_
 
 <details>
 
@@ -856,10 +853,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
+### Example 7: _Waf-Aligned_
 
 <details>
 

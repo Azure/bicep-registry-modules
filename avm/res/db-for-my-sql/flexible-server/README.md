@@ -37,7 +37,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/db-for-my-sql/flexible-server:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Max](#example-2-max)
+- [Using large parameter set](#example-2-using-large-parameter-set)
 - [Deploys in connectivity mode "Private Access"](#example-3-deploys-in-connectivity-mode-private-access)
 - [WAF-aligned](#example-4-waf-aligned)
 
@@ -105,7 +105,10 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 

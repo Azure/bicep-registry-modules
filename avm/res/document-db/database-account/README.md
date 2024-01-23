@@ -1,7 +1,7 @@
 # DocumentDB Database Accounts `[Microsoft.DocumentDB/databaseAccounts]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
->
+> 
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
@@ -66,7 +66,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: '<location>'
+        locationName: '<locationName>'
       }
     ]
     name: 'dddamin001'
@@ -94,7 +94,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "failoverPriority": 0,
           "isZoneRedundant": false,
-          "locationName": "<location>"
+          "locationName": "<locationName>"
         }
       ]
     },
@@ -130,7 +130,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: '<location>'
+        locationName: '<locationName>'
       }
       {
         failoverPriority: 1
@@ -254,7 +254,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "failoverPriority": 0,
           "isZoneRedundant": false,
-          "locationName": "<location>"
+          "locationName": "<locationName>"
         },
         {
           "failoverPriority": 1,
@@ -398,7 +398,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: '<location>'
+        locationName: '<locationName>'
       }
       {
         failoverPriority: 1
@@ -656,7 +656,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "failoverPriority": 0,
           "isZoneRedundant": false,
-          "locationName": "<location>"
+          "locationName": "<locationName>"
         },
         {
           "failoverPriority": 1,
@@ -932,7 +932,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: '<location>'
+        locationName: '<locationName>'
       }
       {
         failoverPriority: 1
@@ -1005,7 +1005,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "failoverPriority": 0,
           "isZoneRedundant": false,
-          "locationName": "<location>"
+          "locationName": "<locationName>"
         },
         {
           "failoverPriority": 1,
@@ -1094,7 +1094,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: '<location>'
+        locationName: '<locationName>'
       }
       {
         failoverPriority: 1
@@ -1256,7 +1256,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "failoverPriority": 0,
           "isZoneRedundant": false,
-          "locationName": "<location>"
+          "locationName": "<locationName>"
         },
         {
           "failoverPriority": 1,
@@ -1438,7 +1438,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: '<location>'
+        locationName: '<locationName>'
       }
       {
         failoverPriority: 1
@@ -1521,7 +1521,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "failoverPriority": 0,
           "isZoneRedundant": false,
-          "locationName": "<location>"
+          "locationName": "<locationName>"
         },
         {
           "failoverPriority": 1,
