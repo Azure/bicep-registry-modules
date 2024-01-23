@@ -12,6 +12,22 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
+resource storageFileSharePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('storageFileDataPrivilegedContributorRole', managedIdentity.id, storageAccount.id)
+  scope: storageAccount
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: storageFileDataPrivilegedContributor.id
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Role required for deployment script to be able to use a storage account via private networking
+resource storageFileDataPrivilegedContributor 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  name: '69566ab7-960f-475b-8e7c-b3118f30c6bd'
+  scope: tenant()
+}
+
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   name: storageAccountName
   location: location
