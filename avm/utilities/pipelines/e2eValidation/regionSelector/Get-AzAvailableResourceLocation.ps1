@@ -24,14 +24,26 @@ function Get-AzAvailableResourceLocation {
   param (
 
     [Parameter(Mandatory = $false)]
-    [cmdletbinding()]
-    [switch] $usePairedRegionsOnly,
-
-    [Parameter(Mandatory = $false)]
     [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName,
 
     [Parameter(Mandatory = $true)]
-    [string] $ModuleRoot
+    [string] $ModuleRoot,
+
+    [Parameter(Mandatory = $false)]
+    [array] $ExcludedRegions = @(
+      "eastus2",
+      "westus2",
+      "westus2",
+      "southcentralus",
+      "brazilsouth",
+      "westeurope",
+      "switzerlandnorth",
+      "asiasoutheast",
+      "japaneast",
+      "qatercentral",
+      "uaenorth",
+      "koreacentral"
+    )
   )
 
   # Load used functions
@@ -49,74 +61,18 @@ function Get-AzAvailableResourceLocation {
   $formattedServiceName = ($formattedResourceType -split '[\/|\\]{1}')[1]
   Write-Verbose "Resource: $formattedServiceName"
 
-  # Load regions.json
-  $controlledRegionList = Get-Content -Path $RepoRoot/avm/regions.json -Raw | ConvertFrom-Json
+  $resourceRegionList = @()
+  $ResourceRegionList = (Get-AzResourceProvider | Where-Object { $_.ProviderNamespace -eq $formattedResourceProvider }).ResourceTypes | Where-Object { $_.ResourceTypeName -eq $formattedServiceName } | Select-Object -ExpandProperty Locations
+  Write-Verbose "Region list: $($resourceRegionList | ConvertTo-Json)"
 
-  # Validate if wildcard exists
-  if ($controlledRegionList | Where-Object { $_.Name -match [regex]::Escape("$formattedResourceProvider/*") }) {
-    Write-Verbose "Resource provider [$formattedResourceProvider/*] is in the regions.json"
-    Write-Verbose "Adding [$($controlledRegionList."$formattedResourceProvider/*")] to the controlled regions"
-    $controlledRegions += $controlledRegionList."$formattedResourceProvider/*"
-    Write-Verbose "Controlled regions: $($controlledRegions | ConvertTo-Json)"
-    $regionList = Get-AzLocation | Where-Object { $_.Location -in $controlledRegions }
-  }
+  $locations = Get-AzLocation | Where-Object { $_.DisplayName -in $ResourceRegionList } | Where-Object { $_.Location -notin $ExcludedRegions } | Where-Object { $_.PairedRegion -ne "{}" } | Where-Object { $_.RegionCategory -eq "Recommended" } |  Select-Object -ExpandProperty Location
+  Write-Verbose "Available Locations: $($locations | ConvertTo-Json)"
 
-  # Validate if the resource type is in the regions.json
-  elseif ($controlledRegionList | Get-Member -Name $formattedResourceType) {
-    write-verbose "Resource type [formattedResourceType] is in the regions.json"
-    $controlledRegions += $controlledRegionList."$($formattedResourceType)"
-    Write-Verbose "Controlled regions: $($controlledRegions | ConvertTo-Json)"
-    Write-Verbose "Trying to fetch detailed location information"
-    $regionList = Get-AzLocation | Where-Object { $_.Location -in $controlledRegions }
-  }
 
-  # Validate usage of default regions
-  else {
-    Write-Verbose "Resource type and provider [$formattedResourceType] is not in the regions.json"
-    Write-Verbose "Trying to fetch detailed location information for resource type"
-    try {
-      # Fetch available locations for resource type
-      $defaultRegionList = Get-AzLocation | Where-Object { $_.Location -in $controlledRegionList.default }
-      $providerLocations = (Get-AzResourceProvider | Where-Object { $_.ProviderNamespace -eq $formattedResourceProvider }).ResourceTypes | Where-Object { $_.ResourceTypeName -eq $formattedServiceName }
-      if ($null -ne $providerLocations) {
-        Write-Verbose "Found the following locations for [$formattedResourceType]: $($providerLocations.Locations | ConvertTo-Json)"
-
-        # Filter regions
-        $regionList += $defaultRegionList | Where-Object { $providerLocations.Locations -contains $_.DisplayName }
-
-        Write-Verbose "Using regions: $($defaultRegions.Location | ConvertTo-Json)"
-      }
-      else {
-        # Trigger catch statement as null reponse is not an error
-        throw "response is null"
-      }
-    }
-    # Catch when the resource provider is not registered
-    catch {
-      Write-Verbose "Failed to fetch detailed location information for default regions"
-      Write-Verbose "Ensure the resource provider [$formattedResourceProvider] is registered on the target subscription"
-      Write-Verbose "Using default regions from regions.json"
-      $index = Get-Random -Maximum ($controlledRegionList.default)
-      $location = $controlledRegionList.default[$index]
-    }
-  }
-
-  Write-Verbose "Region list: $($regionList.Location | ConvertTo-Json)"
-
-  # Filter regions where RegionCategory is 'Recommended' and not in the excluded list
-  $recommendedRegions = $regionList | Where-Object { $_.RegionCategory -eq "Recommended" }
-  Write-Verbose "Filtering recommended regions: $($recommendedRegions.Location | ConvertTo-Json)"
-
-  if ($usePairedRegionsOnly) {
-    # Filter regions where PairedRegionName is not null
-    $recommendedRegions = $recommendedRegions | Where-Object { $_.PairedRegion -ne "{}" }
-    Write-Verbose "Filtering paired regions only: $($recommendedRegions.Location | ConvertTo-Json)"
-  }
-
-  $index = Get-Random -Maximum ($recommendedRegions.Count)
+  $index = Get-Random -Maximum ($locations.Count)
   Write-Verbose "Generated random index [$index]"
 
-  $location = $recommendedRegions[$index].Location
+  $location = $locations[$index]
   Write-Verbose "Selected location [$location]" -Verbose
 
   return $location
