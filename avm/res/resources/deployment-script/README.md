@@ -136,6 +136,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 
 This instance deploys the module with the minimum set of required parameters.
 > **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
+> **Note:** In this scenario, In this scenario, the `Storage File Data Privileged Contributor` role needs to be assigned to the user-assigned managed identity and the deployment principal needs to have permissions to list the storage account keys.
 
 
 
@@ -718,7 +719,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 | [`runOnce`](#parameter-runonce) | bool | When set to false, script will run every time the template is deployed. When set to true, the script will only run once. |
 | [`scriptContent`](#parameter-scriptcontent) | string | Script body. Max length: 32000 characters. To run an external script, use primaryScriptURI instead. |
 | [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | The resource ID of the storage account to use for this deployment script. If none is provided, the deployment script uses a temporary, managed storage account. |
-| [`subnetResourceIds`](#parameter-subnetresourceids) | array | List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network. |
+| [`subnetResourceIds`](#parameter-subnetresourceids) | array | List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network. In this scenario, the `Storage File Data Privileged Contributor` role needs to be assigned to the user-assigned managed identity and the deployment principal needs to have permissions to list the storage account keys. |
 | [`supportingScriptUris`](#parameter-supportingscripturis) | array | List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent). |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 | [`timeout`](#parameter-timeout) | string | Maximum allowed script execution time specified in ISO 8601 format. Default value is PT1H - 1 hour; 'PT30M' - 30 minutes; 'P5D' - 5 days; 'P1Y' 1 year. |
@@ -1002,7 +1003,7 @@ The resource ID of the storage account to use for this deployment script. If non
 
 ### Parameter: `subnetResourceIds`
 
-List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network.
+List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network. In this scenario, the `Storage File Data Privileged Contributor` role needs to be assigned to the user-assigned managed identity and the deployment principal needs to have permissions to list the storage account keys.
 
 - Required: No
 - Type: array

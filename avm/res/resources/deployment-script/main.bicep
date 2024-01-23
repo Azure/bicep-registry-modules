@@ -55,7 +55,7 @@ param environmentVariables object = {}
 @description('Optional. List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent).')
 param supportingScriptUris array?
 
-@description('Optional. List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network.')
+@description('Optional. List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network. In this scenario, the `Storage File Data Privileged Contributor` role needs to be assigned to the user-assigned managed identity and the deployment principal needs to have permissions to list the storage account keys.')
 param subnetResourceIds string[]?
 
 @description('Optional. Command-line arguments to pass to the script. Arguments are separated by spaces.')
