@@ -140,7 +140,7 @@
   "resources": [
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2015-01-01",
       "name": "[guid(parameters('name'), 'deploy')]",
       "properties": {
         "expressionEvaluationOptions": {

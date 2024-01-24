@@ -1,3 +1,4 @@
 node_modules
 .netrc
 moduleIndex.json
+local.parameters.json
