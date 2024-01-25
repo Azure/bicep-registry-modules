@@ -45,7 +45,10 @@ This instance deploys the module with the minimum set of required parameters.
 module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dvspmin'
   params: {
+    // Required parameters
     name: 'dvspmin002'
+    // Non-required parameters
+    location: '<location>'
   }
 }
 ```
@@ -62,8 +65,13 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "dvspmin002"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -104,7 +112,12 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
       }
     ]
     friendlyName: 'friendlyName'
-    hostPoolReferences: '<hostPoolReferences>'
+    hostPoolReferences: [
+      {
+        hostPoolArmPath: '<hostPoolArmPath>'
+        scalingPlanEnabled: true
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -114,10 +127,127 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    schedules: '<schedules>'
+    schedules: [
+      {
+        daysOfWeek: [
+          'Friday'
+          'Monday'
+          'Thursday'
+          'Wednesday'
+        ]
+        name: 'WeekdaySchedule'
+        offPeakLoadBalancingAlgorithm: 'DepthFirst'
+        offPeakStartTime: {
+          hour: 20
+          minute: 0
+        }
+        peakLoadBalancingAlgorithm: 'DepthFirst'
+        peakStartTime: {
+          hour: 9
+          minute: 0
+        }
+        rampDownCapacityThresholdPct: 90
+        rampDownForceLogoffUsers: true
+        rampDownLoadBalancingAlgorithm: 'DepthFirst'
+        rampDownMinimumHostsPct: 0
+        rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
+        rampDownStartTime: {
+          hour: 18
+          minute: 0
+        }
+        rampDownStopHostsWhen: 'ZeroActiveSessions'
+        rampDownWaitTimeMinutes: 30
+        rampUpCapacityThresholdPct: 80
+        rampUpLoadBalancingAlgorithm: 'BreadthFirst'
+        rampUpMinimumHostsPct: 20
+        rampUpStartTime: {
+          hour: 7
+          minute: 0
+        }
+      }
+      {
+        daysOfWeek: [
+          'Tuesday'
+        ]
+        name: 'weekdaysSchedule-agent-updates'
+        offPeakLoadBalancingAlgorithm: 'DepthFirst'
+        offPeakStartTime: {
+          hour: 20
+          minute: 0
+        }
+        peakLoadBalancingAlgorithm: 'DepthFirst'
+        peakStartTime: {
+          hour: 9
+          minute: 0
+        }
+        rampDownCapacityThresholdPct: 90
+        rampDownForceLogoffUsers: true
+        rampDownLoadBalancingAlgorithm: 'DepthFirst'
+        rampDownMinimumHostsPct: 0
+        rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
+        rampDownStartTime: {
+          hour: 19
+          minute: 0
+        }
+        rampDownStopHostsWhen: 'ZeroActiveSessions'
+        rampDownWaitTimeMinutes: 30
+        rampUpCapacityThresholdPct: 80
+        rampUpLoadBalancingAlgorithm: 'BreadthFirst'
+        rampUpMinimumHostsPct: 20
+        rampUpStartTime: {
+          hour: 7
+          minute: 0
+        }
+      }
+      {
+        daysOfWeek: [
+          'Saturday'
+          'Sunday'
+        ]
+        name: 'WeekendSchedule'
+        offPeakLoadBalancingAlgorithm: 'DepthFirst'
+        offPeakStartTime: {
+          hour: 18
+          minute: 0
+        }
+        peakLoadBalancingAlgorithm: 'DepthFirst'
+        peakStartTime: {
+          hour: 10
+          minute: 0
+        }
+        rampDownCapacityThresholdPct: 90
+        rampDownForceLogoffUsers: true
+        rampDownLoadBalancingAlgorithm: 'DepthFirst'
+        rampDownMinimumHostsPct: 0
+        rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
+        rampDownStartTime: {
+          hour: 16
+          minute: 0
+        }
+        rampDownStopHostsWhen: 'ZeroActiveSessions'
+        rampDownWaitTimeMinutes: 30
+        rampUpCapacityThresholdPct: 90
+        rampUpLoadBalancingAlgorithm: 'DepthFirst'
+        rampUpMinimumHostsPct: 0
+        rampUpStartTime: {
+          hour: 9
+          minute: 0
+        }
+      }
+    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -167,7 +297,12 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
       "value": "friendlyName"
     },
     "hostPoolReferences": {
-      "value": "<hostPoolReferences>"
+      "value": [
+        {
+          "hostPoolArmPath": "<hostPoolArmPath>",
+          "scalingPlanEnabled": true
+        }
+      ]
     },
     "location": {
       "value": "<location>"
@@ -183,12 +318,129 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
     "schedules": {
-      "value": "<schedules>"
+      "value": [
+        {
+          "daysOfWeek": [
+            "Friday",
+            "Monday",
+            "Thursday",
+            "Wednesday"
+          ],
+          "name": "WeekdaySchedule",
+          "offPeakLoadBalancingAlgorithm": "DepthFirst",
+          "offPeakStartTime": {
+            "hour": 20,
+            "minute": 0
+          },
+          "peakLoadBalancingAlgorithm": "DepthFirst",
+          "peakStartTime": {
+            "hour": 9,
+            "minute": 0
+          },
+          "rampDownCapacityThresholdPct": 90,
+          "rampDownForceLogoffUsers": true,
+          "rampDownLoadBalancingAlgorithm": "DepthFirst",
+          "rampDownMinimumHostsPct": 0,
+          "rampDownNotificationMessage": "You will be logged off in 30 min. Make sure to save your work.",
+          "rampDownStartTime": {
+            "hour": 18,
+            "minute": 0
+          },
+          "rampDownStopHostsWhen": "ZeroActiveSessions",
+          "rampDownWaitTimeMinutes": 30,
+          "rampUpCapacityThresholdPct": 80,
+          "rampUpLoadBalancingAlgorithm": "BreadthFirst",
+          "rampUpMinimumHostsPct": 20,
+          "rampUpStartTime": {
+            "hour": 7,
+            "minute": 0
+          }
+        },
+        {
+          "daysOfWeek": [
+            "Tuesday"
+          ],
+          "name": "weekdaysSchedule-agent-updates",
+          "offPeakLoadBalancingAlgorithm": "DepthFirst",
+          "offPeakStartTime": {
+            "hour": 20,
+            "minute": 0
+          },
+          "peakLoadBalancingAlgorithm": "DepthFirst",
+          "peakStartTime": {
+            "hour": 9,
+            "minute": 0
+          },
+          "rampDownCapacityThresholdPct": 90,
+          "rampDownForceLogoffUsers": true,
+          "rampDownLoadBalancingAlgorithm": "DepthFirst",
+          "rampDownMinimumHostsPct": 0,
+          "rampDownNotificationMessage": "You will be logged off in 30 min. Make sure to save your work.",
+          "rampDownStartTime": {
+            "hour": 19,
+            "minute": 0
+          },
+          "rampDownStopHostsWhen": "ZeroActiveSessions",
+          "rampDownWaitTimeMinutes": 30,
+          "rampUpCapacityThresholdPct": 80,
+          "rampUpLoadBalancingAlgorithm": "BreadthFirst",
+          "rampUpMinimumHostsPct": 20,
+          "rampUpStartTime": {
+            "hour": 7,
+            "minute": 0
+          }
+        },
+        {
+          "daysOfWeek": [
+            "Saturday",
+            "Sunday"
+          ],
+          "name": "WeekendSchedule",
+          "offPeakLoadBalancingAlgorithm": "DepthFirst",
+          "offPeakStartTime": {
+            "hour": 18,
+            "minute": 0
+          },
+          "peakLoadBalancingAlgorithm": "DepthFirst",
+          "peakStartTime": {
+            "hour": 10,
+            "minute": 0
+          },
+          "rampDownCapacityThresholdPct": 90,
+          "rampDownForceLogoffUsers": true,
+          "rampDownLoadBalancingAlgorithm": "DepthFirst",
+          "rampDownMinimumHostsPct": 0,
+          "rampDownNotificationMessage": "You will be logged off in 30 min. Make sure to save your work.",
+          "rampDownStartTime": {
+            "hour": 16,
+            "minute": 0
+          },
+          "rampDownStopHostsWhen": "ZeroActiveSessions",
+          "rampDownWaitTimeMinutes": 30,
+          "rampUpCapacityThresholdPct": 90,
+          "rampUpLoadBalancingAlgorithm": "DepthFirst",
+          "rampUpMinimumHostsPct": 0,
+          "rampUpStartTime": {
+            "hour": 9,
+            "minute": 0
+          }
+        }
+      ]
     },
     "tags": {
       "value": {
@@ -221,11 +473,16 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
     name: 'dvspwaf002'
     // Non-required parameters
     description: 'myDescription'
-    diagnosticSettings: []
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     friendlyName: 'myFriendlyName'
     location: '<location>'
-    lock: {}
-    roleAssignments: []
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -256,19 +513,20 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
       "value": "myDescription"
     },
     "diagnosticSettings": {
-      "value": []
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
     },
     "friendlyName": {
       "value": "myFriendlyName"
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {}
-    },
-    "roleAssignments": {
-      "value": []
     },
     "tags": {
       "value": {
@@ -299,16 +557,16 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
 | :-- | :-- | :-- |
 | [`description`](#parameter-description) | string | Description of the scaling plan. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`exclusionTag`](#parameter-exclusiontag) | string | Exclusion tag to be used for exclusion of VMs from scaling plan. |
 | [`friendlyName`](#parameter-friendlyname) | string | Friendly name of the scaling plan. |
 | [`hostPoolReferences`](#parameter-hostpoolreferences) | array | Host pool references of the scaling plan. |
 | [`hostPoolType`](#parameter-hostpooltype) | string | Host pool type of the scaling plan. |
 | [`location`](#parameter-location) | string | Location of the scaling plan. Defaults to resource group location. |
-| [`lock`](#parameter-lock) | object | Lock settings of the scaling plan. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`schedules`](#parameter-schedules) | array | Schedules of the scaling plan. |
-| [`tags`](#parameter-tags) | object | Tags of the scaling plan. |
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`timeZone`](#parameter-timezone) | string | Time zone of the scaling plan. Defaults to UTC. |
 
 ### Parameter: `name`
@@ -342,7 +600,6 @@ The diagnostic settings of the service.
 | [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to '' to disable metric collection. |
 | [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
@@ -389,13 +646,6 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 - Required: No
 - Type: string
 
-### Parameter: `diagnosticSettings.metricCategories`
-
-The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to '' to disable metric collection.
-
-- Required: No
-- Type: array
-
 ### Parameter: `diagnosticSettings.name`
 
 The name of diagnostic setting.
@@ -419,7 +669,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry.
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -467,7 +717,7 @@ Location of the scaling plan. Defaults to resource group location.
 
 ### Parameter: `lock`
 
-Lock settings of the scaling plan.
+The lock settings of the service.
 
 - Required: No
 - Type: object
@@ -503,7 +753,7 @@ Specify the name of lock.
 
 ### Parameter: `roleAssignments`
 
-Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+Array of role assignments to create.
 
 - Required: No
 - Type: array
@@ -600,7 +850,7 @@ Schedules of the scaling plan.
 
 ### Parameter: `tags`
 
-Tags of the scaling plan.
+Tags of the resource.
 
 - Required: No
 - Type: object
