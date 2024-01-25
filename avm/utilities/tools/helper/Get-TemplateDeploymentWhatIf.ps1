@@ -16,7 +16,7 @@ Mandatory. Path to the template file from root.
 Optional. Path to the parameter file from root.
 
 .PARAMETER DeploymentMetadataLocation
-Mandatory. Location to test in. E.g. WestEurope
+Mandatory. The location to store the deployment metadata.
 
 .PARAMETER ResourceGroupName
 Optional. Name of the resource group to deploy into. Mandatory if deploying into a resource group (resource group level)
@@ -52,10 +52,10 @@ function Get-TemplateDeploymentWhatIf {
 
     [CmdletBinding(SupportsShouldProcess)]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [string] $TemplateFilePath,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [string] $DeploymentMetadataLocation,
 
         [Parameter(Mandatory = $false)]

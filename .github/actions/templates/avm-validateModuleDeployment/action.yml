@@ -11,15 +11,16 @@
 ## ACTION PARAMETERS                         ##
 ##-------------------------------------------##
 ##
-##   |=====================================================================================================================================================================================|
-##   | Parameter                 | Required | Default | Description                                           | Example                                                                    |
-##   |---------------------------|----------|---------|-------------------------------------------------------|----------------------------------------------------------------------------|
-##   | templateFilePath          | true     | ''      | The path to the template file to use for deployment   | 'modules/api-management/service/main.bicep'                                |
-##   | subscriptionId            | false    | ''      | The subscriptionId to deploy to                       | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
-##   | managementGroupId         | false    | ''      | The managementGroupId to deploy to                    | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
-##   | customTokens              | false    | ''      | Additional token pairs in json format.                | '{"tokenName":"tokenValue"}'                                               |
-##   | removeDeployment          | false    | 'true'  | Set "true" to set module up for removal               | 'true'                                                                     |
-##   |=====================================================================================================================================================================================|
+##   |======================================================================================================================================================================================|
+##   | Parameter                  | Required | Default | Description                                           | Example                                                                    |
+##   |----------------------------|----------|---------|-------------------------------------------------------|----------------------------------------------------------------------------|
+##   | templateFilePath           | true     | ''      | The path to the template file to use for deployment   | 'modules/api-management/service/main.bicep'                                |
+##   | deploymentMetadataLocation | true     | ''      | The location to store the deployment metadata         | 'WestEurope'                                                               |
+##   | subscriptionId             | false    | ''      | The subscriptionId to deploy to                       | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
+##   | managementGroupId          | false    | ''      | The managementGroupId to deploy to                    | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
+##   | customTokens               | false    | ''      | Additional token pairs in json format.                | '{"tokenName":"tokenValue"}'                                               |
+##   | removeDeployment           | false    | 'true'  | Set "true" to set module up for removal               | 'true'                                                                     |
+##   |======================================================================================================================================================================================|
 ##
 #########################################################
 
@@ -29,6 +30,9 @@ description: "Deploy module"
 inputs:
   templateFilePath:
     description: "The path to the template file to use for deployment"
+    required: true
+  deploymentMetadataLocation:
+    description: "The location to store the deployment metadata"
     required: true
   subscriptionId:
     description: "The subscription ID to deploy to"
@@ -184,11 +188,12 @@ runs:
           # Invoke validation #
           # ----------------- #
           $functionInput = @{
-            TemplateFilePath     = $moduleTestFilePath
-            SubscriptionId       = $subscriptionId
-            ManagementGroupId    = $managementGroupId
-            RepoRoot             = $env:GITHUB_WORKSPACE
-            AdditionalParameters = @{
+            TemplateFilePath           = $moduleTestFilePath
+            DeploymentMetadataLocation = '${{ inputs.deploymentMetadataLocation }}'
+            SubscriptionId             = $subscriptionId
+            ManagementGroupId          = $managementGroupId
+            RepoRoot                   = $env:GITHUB_WORKSPACE
+            AdditionalParameters       = @{
               resourceLocation = '${{ steps.get-resource-location.outputs.resourceLocation }}'
             }
           }
@@ -234,12 +239,13 @@ runs:
           # Invoke deployment #
           # ----------------- #
           $functionInput = @{
-            TemplateFilePath     = $moduleTestFilePath
-            SubscriptionId       = $subscriptionId
-            ManagementGroupId    = $managementGroupId
-            DoNotThrow           = $true
-            RepoRoot             = $env:GITHUB_WORKSPACE
-            AdditionalParameters = @{
+            TemplateFilePath           = $moduleTestFilePath
+            DeploymentMetadataLocation = '${{ inputs.deploymentMetadataLocation }}'
+            SubscriptionId             = $subscriptionId
+            ManagementGroupId          = $managementGroupId
+            DoNotThrow                 = $true
+            RepoRoot                   = $env:GITHUB_WORKSPACE
+            AdditionalParameters       = @{
               resourceLocation = '${{ steps.get-resource-location.outputs.resourceLocation }}'
             }
           }

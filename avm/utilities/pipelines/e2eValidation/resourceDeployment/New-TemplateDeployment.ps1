@@ -78,7 +78,7 @@ Mandatory. The path to the deployment file
 Optional. Path to the parameter file from root. Can be a single file, multiple files, or directory that contains (.json) files.
 
 .PARAMETER DeploymentMetadataLocation
-Optional. The location to store the deployment metadata.
+Mandatory. The location to store the deployment metadata.
 
 .PARAMETER ResourceGroupName
 Optional. Name of the resource group to deploy into. Mandatory if deploying into a resource group (resource group level)
@@ -123,7 +123,7 @@ function New-TemplateDeploymentInner {
 
     [CmdletBinding(SupportsShouldProcess = $true)]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [string] $TemplateFilePath,
 
         [Parameter(Mandatory = $false)]
@@ -132,7 +132,7 @@ function New-TemplateDeploymentInner {
         [Parameter(Mandatory = $false)]
         [string] $ResourceGroupName = '',
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [string] $DeploymentMetadataLocation,
 
         [Parameter(Mandatory = $false)]
@@ -355,7 +355,7 @@ Mandatory. The path to the deployment file
 Optional. Path to the parameter file from root. Can be a single file, multiple files, or directory that contains (.json) files.
 
 .PARAMETER DeploymentMetadataLocation
-Optional. The location to store the deployment metadata.
+Mandatory. The location to store the deployment metadata.
 
 .PARAMETER ResourceGroupName
 Optional. Name of the resource group to deploy into. Mandatory if deploying into a resource group (resource group level)
@@ -400,14 +400,14 @@ function New-TemplateDeployment {
 
     [CmdletBinding(SupportsShouldProcess)]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [string] $TemplateFilePath,
+
+        [Parameter(Mandatory = $true)]
+        [string] $DeploymentMetadataLocation,
 
         [Parameter(Mandatory = $false)]
         [string[]] $ParameterFilePath,
-
-        [Parameter(Mandatory = $false)]
-        [string] $DeploymentMetadataLocation = 'WestEurope',
 
         [Parameter(Mandatory = $false)]
         [string] $ResourceGroupName = '',
