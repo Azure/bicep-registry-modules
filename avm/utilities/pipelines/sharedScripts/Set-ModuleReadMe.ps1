@@ -506,6 +506,12 @@ Mandatory. The readme file content array to update
 .PARAMETER SectionStartIdentifier
 Optional. The identifier of the section. Defaults to '## Data Collection'
 
+.PARAMETER PreLoadedContent
+Optional. Pre-Loaded content. May be used to reuse the same data for multiple invocations. For example:
+@{
+    TelemetryFileContent = @() // Optional. The text of the telemetry notice to add to each readme.
+}
+
 .EXAMPLE
 Set-DataCollectionSection -ReadMeFileContent @('# Title', '', '## Section 1', ...)
 
@@ -519,25 +525,33 @@ function Set-DataCollectionSection {
         [object[]] $ReadMeFileContent,
 
         [Parameter(Mandatory = $false)]
+        [hashtable] $PreLoadedContent = @{},
+
+        [Parameter(Mandatory = $false)]
         [string] $SectionStartIdentifier = '## Data Collection'
     )
 
+    # Load content, if required
+    if ($PreLoadedContent.Keys -notcontains 'TelemetryFileContent') {
 
-    $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
-    try {
-        $rawReponse = Invoke-WebRequest -Uri $telemetryUrl
-        if (($rawReponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
-            $telemetryInfoContent = $rawReponse.Content -split '\n'
-        } else {
-            throw "Failed to telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
+        $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
+        try {
+            $rawResponse = Invoke-WebRequest -Uri $telemetryUrl
+            if (($rawResponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
+                $telemetryFileContent = $rawResponse.Content -split '\n'
+            } else {
+                throw "Failed to telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
+            }
+        } catch {
+            throw "Failed to telemetry information from [$telemetryUrl]." # Invalid url
         }
-    } catch {
-        throw "Failed to telemetry information from [$telemetryUrl]." # Invalid url
+    } else {
+        $telemetryFileContent = $PreLoadedContent.TelemetryFileContent
     }
 
     # Build result
     if ($PSCmdlet.ShouldProcess('Original file with new output content', 'Merge')) {
-        $updatedFileContent = Merge-FileWithNewContent -oldContent $ReadMeFileContent -newContent $telemetryInfoContent -SectionStartIdentifier $SectionStartIdentifier -contentType 'nextH2'
+        $updatedFileContent = Merge-FileWithNewContent -oldContent $ReadMeFileContent -newContent $telemetryFileContent -SectionStartIdentifier $SectionStartIdentifier -contentType 'nextH2'
     }
     return $updatedFileContent
 }
@@ -564,11 +578,14 @@ Mandatory. The readme file content array to update
 .PARAMETER SectionStartIdentifier
 Optional. The identifier of the 'outputs' section. Defaults to '## Cross-referenced modules'
 
-.PARAMETER CrossReferencedModuleList
-Required. The Cross Module References to consider when refreshing the readme.
+.PARAMETER PreLoadedContent
+Optional. Pre-Loaded content. May be used to reuse the same data for multiple invocations. For example:
+@{
+    CrossReferencedModuleList = @{} // Optional. Cross Module References to consider when refreshing the readme. Can be provided to speed up the generation. If not provided, is fetched by this script.
+}
 
 .EXAMPLE
-Set-CrossReferencesSection -ModuleRoot 'C:/key-vault/vault' -FullModuleIdentifier 'key-vault/vault' -TemplateFileContent @{ resource = @{}; ... } -ReadMeFileContent @('# Title', '', '## Section 1', ...) -CrossReferencedModuleList @{}
+Set-CrossReferencesSection -ModuleRoot 'C:/key-vault/vault' -FullModuleIdentifier 'key-vault/vault' -TemplateFileContent @{ resource = @{}; ... } -ReadMeFileContent @('# Title', '', '## Section 1', ...) -PreLoadedContent @{ CrossReferencedModuleList = @{ ... } }
 Update the given readme file's 'Cross-referenced modules' section based on the given template file content
 #>
 function Set-CrossReferencesSection {
@@ -587,12 +604,19 @@ function Set-CrossReferencesSection {
         [Parameter(Mandatory)]
         [object[]] $ReadMeFileContent,
 
-        [Parameter(Mandatory)]
-        [hashtable] $CrossReferencedModuleList,
+        [Parameter(Mandatory = $false)]
+        [hashtable] $PreLoadedContent = @{},
 
         [Parameter(Mandatory = $false)]
         [string] $SectionStartIdentifier = '## Cross-referenced modules'
     )
+
+    # Load content, if required
+    if ($PreLoadedContent.Keys -notcontains 'CrossReferencedModuleList') {
+        $CrossReferencedModuleList = Get-CrossReferencedModuleList
+    } else {
+        $CrossReferencedModuleList = $PreLoadedContent.CrossReferencedModuleList
+    }
 
     # Process content
     $SectionContent = [System.Collections.ArrayList]@(
@@ -1574,10 +1598,6 @@ Supports both ARM & bicep templates.
 .PARAMETER TemplateFilePath
 Mandatory. The path to the template to update
 
-.PARAMETER TemplateFileContent
-Optional. The template file content to process. If not provided, the template file content will be read from the TemplateFilePath file.
-Using this property is useful if you already compiled the bicep template before invoking this function and want to avoid re-compiling it.
-
 .PARAMETER ReadMeFilePath
 Optional. The path to the readme to update. If not provided assumes a 'README.md' file in the same folder as the template
 
@@ -1585,8 +1605,13 @@ Optional. The path to the readme to update. If not provided assumes a 'README.md
 Optional. The sections to update. By default it refreshes all that are supported.
 Currently supports: 'Resource Types', 'Parameters', 'Outputs', 'Template references'
 
-.PARAMETER CrossReferencedModuleList
-Optional. Cross Module References to consider when refreshing the readme. Can be provided to speed up the generation. If not provided, is fetched by this script.
+.PARAMETER PreLoadedContent
+Optional. Pre-Loaded content. May be used to reuse the same data for multiple invocations. For example:
+@{
+    CrossReferencedModuleList = @{} // Optional. Cross Module References to consider when refreshing the readme. Can be provided to speed up the generation. If not provided, is fetched by this script.
+    TemplateFileContent       = @{} // Optional. The template file content to process. If not provided, the template file content will be read from the TemplateFilePath file.
+    TelemetryFileContent      = @() // Optional. The text of the telemetry notice to add to each readme.
+}
 
 .EXAMPLE
 Set-ModuleReadMe -TemplateFilePath 'C:\main.bicep'
@@ -1599,9 +1624,9 @@ Set-ModuleReadMe -TemplateFilePath 'C:/network/load-balancer/main.bicep' -Sectio
 Generate the Module ReadMe only for specific sections. Updates only the sections `Parameters` & `Outputs`. Other sections remain untouched.
 
 .EXAMPLE
-Set-ModuleReadMe -TemplateFilePath 'C:/network/load-balancer/main.bicep' -TemplateFileContent @{...}
+Set-ModuleReadMe -TemplateFilePath 'C:/network/load-balancer/main.bicep' -PreLoadedContent @{ TemplateFileContent = @{...} }
 
-(Re)Generate the readme file for template 'loadBalancer' based on the content provided in the TemplateFileContent parameter
+(Re)Generate the readme file for template 'loadBalancer' based on the content provided in the PreLoadedContent.TemplateFileContent parameter
 
 .EXAMPLE
 Set-ModuleReadMe -TemplateFilePath 'C:/network/load-balancer/main.bicep' -ReadMeFilePath 'C:/differentFolder'
@@ -1618,17 +1643,14 @@ function Set-ModuleReadMe {
 
     [CmdletBinding(SupportsShouldProcess = $true)]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [string] $TemplateFilePath,
-
-        [Parameter(Mandatory = $false)]
-        [hashtable] $TemplateFileContent,
 
         [Parameter(Mandatory = $false)]
         [string] $ReadMeFilePath = (Join-Path (Split-Path $TemplateFilePath -Parent) 'README.md'),
 
         [Parameter(Mandatory = $false)]
-        [hashtable] $CrossReferencedModuleList = @{},
+        [hashtable] $PreLoadedContent = @{},
 
         [Parameter(Mandatory = $false)]
         [ValidateSet(
@@ -1660,6 +1682,7 @@ function Set-ModuleReadMe {
     . (Join-Path $PSScriptRoot 'helper' 'Get-SpecsAlignedResourceName.ps1')
     . (Join-Path $PSScriptRoot 'helper' 'ConvertTo-OrderedHashtable.ps1')
     . (Join-Path $PSScriptRoot 'Get-BRMRepositoryName.ps1')
+    . (Join-Path $PSScriptRoot  'helper' 'Get-CrossReferencedModuleList.ps1')
 
     # Check template & make full path
     $TemplateFilePath = Resolve-Path -Path $TemplateFilePath -ErrorAction Stop
@@ -1668,12 +1691,15 @@ function Set-ModuleReadMe {
         throw "[$TemplateFilePath] is no valid file path."
     }
 
-    if (-not $TemplateFileContent) {
+    # Build template, if required
+    if ($PreLoadedContent.Keys -notcontains 'TemplateFileContent') {
         if ((Split-Path -Path $TemplateFilePath -Extension) -eq '.bicep') {
             $templateFileContent = bicep build $TemplateFilePath --stdout | ConvertFrom-Json -AsHashtable
         } else {
             $templateFileContent = ConvertFrom-Json (Get-Content $TemplateFilePath -Encoding 'utf8' -Raw) -ErrorAction 'Stop' -AsHashtable
         }
+    } else {
+        $templateFileContent = $PreLoadedContent.TemplateFileContent
     }
 
     if (-not $templateFileContent) {
@@ -1681,7 +1707,7 @@ function Set-ModuleReadMe {
     }
 
     $moduleRoot = Split-Path $TemplateFilePath -Parent
-    $fullModuleIdentifier = $moduleRoot.Replace('\', '/').split('res/')[-1]
+    $fullModuleIdentifier = ($moduleRoot -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/'
     # Custom modules are modules having the same resource type but different properties based on the name
     # E.g., web/site/config--appsetting vs web/site/config--authsettingv2
     $customModuleSeparator = '--'
@@ -1769,16 +1795,12 @@ function Set-ModuleReadMe {
     if ($SectionsToRefresh -contains 'CrossReferences') {
         # Handle [CrossReferences] section
         # ========================
-        if ($CrossReferencedModuleList.Count -eq 0) {
-            . (Join-Path $PSScriptRoot  'helper' 'Get-CrossReferencedModuleList.ps1')
-            $CrossReferencedModuleList = Get-CrossReferencedModuleList
-        }
         $inputObject = @{
-            ModuleRoot                = $ModuleRoot
-            FullModuleIdentifier      = $fullModuleIdentifier
-            ReadMeFileContent         = $readMeFileContent
-            TemplateFileContent       = $templateFileContent
-            CrossReferencedModuleList = $CrossReferencedModuleList
+            ModuleRoot           = $ModuleRoot
+            FullModuleIdentifier = $fullModuleIdentifier
+            ReadMeFileContent    = $readMeFileContent
+            TemplateFileContent  = $templateFileContent
+            PreLoadedContent     = $PreLoadedContent
         }
         $readMeFileContent = Set-CrossReferencesSection @inputObject
     }
@@ -1795,6 +1817,7 @@ function Set-ModuleReadMe {
         # ========================
         $inputObject = @{
             ReadMeFileContent = $readMeFileContent
+            PreLoadedContent  = $PreLoadedContent
         }
         $readMeFileContent = Set-DataCollectionSection @inputObject
     }

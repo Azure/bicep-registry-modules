@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "13131715530414275926"
+      "templateHash": "4884548870640081043"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -901,6 +901,15 @@
       "dependsOn": [
         "vm"
       ]
+    },
+    "vm_logAnalyticsWorkspace": {
+      "condition": "[not(empty(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId')))]",
+      "existing": true,
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2021-06-01",
+      "subscriptionId": "[split(if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), parameters('extensionMonitoringAgentConfig').monitoringWorkspaceId, '//'), '/')[2]]",
+      "resourceGroup": "[split(if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), parameters('extensionMonitoringAgentConfig').monitoringWorkspaceId, '////'), '/')[4]]",
+      "name": "[last(split(if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), parameters('extensionMonitoringAgentConfig').monitoringWorkspaceId, 'law'), '/'))]"
     },
     "vm_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -3003,11 +3012,11 @@
         "vm"
       ]
     },
-    "vm_azureMonitoringAgentExtension": {
+    "vm_azureMonitorAgentExtension": {
       "condition": "[parameters('extensionMonitoringAgentConfig').enabled]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-VM-AzureMonitoringAgent', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-VM-AzureMonitorAgent', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3027,11 +3036,28 @@
             "value": "Microsoft.Azure.Monitor"
           },
           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'AzureMonitorWindowsAgent'), createObject('value', 'AzureMonitorLinuxAgent'))]",
-          "typeHandlerVersion": "[if(contains(parameters('extensionMonitoringAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionMonitoringAgentConfig').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '1.0'), createObject('value', '1.21')))]",
-          "autoUpgradeMinorVersion": "[if(contains(parameters('extensionMonitoringAgentConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionMonitoringAgentConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionMonitoringAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionMonitoringAgentConfig').enableAutomaticUpgrade), createObject('value', true()))]",
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'typeHandlerVersion'), if(equals(parameters('osType'), 'Windows'), '1.22', '1.29'))]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'enableAutomaticUpgrade'), false())]"
+          },
+          "settings": {
+            "value": {
+              "workspaceId": "[if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), reference('vm_logAnalyticsWorkspace').customerId, '')]",
+              "GCS_AUTO_CONFIG": "[if(equals(parameters('osType'), 'Linux'), true(), null())]"
+            }
+          },
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'tags'), parameters('tags'))]"
+          },
+          "protectedSettings": {
+            "value": {
+              "workspaceKey": "[if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), parameters('extensionMonitoringAgentConfig').monitoringWorkspaceId, '//'), '/')[2], split(if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), parameters('extensionMonitoringAgentConfig').monitoringWorkspaceId, '////'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), parameters('extensionMonitoringAgentConfig').monitoringWorkspaceId, 'law'), '/'))), '2021-06-01').primarySharedKey, '')]"
+            }
           }
         },
         "template": {
@@ -3196,7 +3222,8 @@
         }
       },
       "dependsOn": [
-        "vm"
+        "vm",
+        "vm_logAnalyticsWorkspace"
       ]
     },
     "vm_dependencyAgentExtension": {
@@ -4198,7 +4225,7 @@
       },
       "dependsOn": [
         "vm",
-        "vm_azureMonitoringAgentExtension",
+        "vm_azureMonitorAgentExtension",
         "vm_customScriptExtension"
       ]
     },
@@ -4347,7 +4374,7 @@
       "dependsOn": [
         "vm",
         "vm_aadJoinExtension",
-        "vm_azureMonitoringAgentExtension",
+        "vm_azureMonitorAgentExtension",
         "vm_customScriptExtension",
         "vm_dependencyAgentExtension",
         "vm_desiredStateConfigurationExtension",
