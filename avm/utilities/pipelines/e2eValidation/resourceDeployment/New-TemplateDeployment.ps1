@@ -105,17 +105,17 @@ Optional. Do not throw an exception if it failed. Still returns the error messag
 Mandatory. Path to the root of the repository.
 
 .EXAMPLE
-New-TemplateDeploymentInner -templateFilePath 'C:/key-vault/vault/main.json' -parameterFilePath 'C:/key-vault/vault/.test/parameters.json' -location 'WestEurope' -resourceGroupName 'aLegendaryRg'
+New-TemplateDeploymentInner -TemplateFilePath 'C:/key-vault/vault/main.json' -ParameterFilePath 'C:/key-vault/vault/.test/parameters.json' -DeploymentMetadataLocation 'WestEurope' -ResourceGroupName 'aLegendaryRg'
 
 Deploy the main.json of the KeyVault module with the parameter file 'parameters.json' using the resource group 'aLegendaryRg' in location 'WestEurope'
 
 .EXAMPLE
-New-TemplateDeploymentInner -templateFilePath 'C:/key-vault/vault/main.bicep' -location 'WestEurope' -resourceGroupName 'aLegendaryRg'
+New-TemplateDeploymentInner -TemplateFilePath 'C:/key-vault/vault/main.bicep' -DeploymentMetadataLocation 'WestEurope' -ResourceGroupName 'aLegendaryRg'
 
 Deploy the main.bicep of the KeyVault module using the resource group 'aLegendaryRg' in location 'WestEurope'
 
 .EXAMPLE
-New-TemplateDeploymentInner -templateFilePath 'C:/resources/resource-group/main.json' -location 'WestEurope'
+New-TemplateDeploymentInner -TemplateFilePath 'C:/resources/resource-group/main.json' -DeploymentMetadataLocation 'WestEurope'
 
 Deploy the main.json of the ResourceGroup module without a parameter file in location 'WestEurope'
 #>
@@ -243,7 +243,7 @@ function New-TemplateDeploymentInner {
                         if (-not (Get-AzResourceGroup -Name $ResourceGroupName -ErrorAction 'SilentlyContinue')) {
                             $resourceGroupLocation = $AdditionalParameters.resourceLocation ?? $DeploymentMetadataLocation
                             if ($PSCmdlet.ShouldProcess("Resource group [$ResourceGroupName] in (metadata) location [$resourceGroupLocation]", 'Create')) {
-                                $null = New-AzResourceGroup -Name $ResourceGroupName -Location $resourceGroupLocation
+                                $null = New-AzResourceGroup -Name $ResourceGroupName -DeploymentMetadataLocation $resourceGroupLocation
                             }
                         }
                         if ($PSCmdlet.ShouldProcess('Resource group level deployment', 'Create')) {
@@ -257,19 +257,19 @@ function New-TemplateDeploymentInner {
                             $null = Set-AzContext -Subscription $SubscriptionId
                         }
                         if ($PSCmdlet.ShouldProcess('Subscription level deployment', 'Create')) {
-                            $res = New-AzSubscriptionDeployment @DeploymentInputs -Location $DeploymentMetadataLocation
+                            $res = New-AzSubscriptionDeployment @DeploymentInputs -DeploymentMetadataLocation $DeploymentMetadataLocation
                         }
                         break
                     }
                     'managementgroup' {
                         if ($PSCmdlet.ShouldProcess('Management group level deployment', 'Create')) {
-                            $res = New-AzManagementGroupDeployment @DeploymentInputs -Location $DeploymentMetadataLocation -ManagementGroupId $ManagementGroupId
+                            $res = New-AzManagementGroupDeployment @DeploymentInputs -DeploymentMetadataLocation $DeploymentMetadataLocation -ManagementGroupId $ManagementGroupId
                         }
                         break
                     }
                     'tenant' {
                         if ($PSCmdlet.ShouldProcess('Tenant level deployment', 'Create')) {
-                            $res = New-AzTenantDeployment @DeploymentInputs -Location $DeploymentMetadataLocation
+                            $res = New-AzTenantDeployment @DeploymentInputs -DeploymentMetadataLocation $DeploymentMetadataLocation
                         }
                         break
                     }
@@ -348,10 +348,10 @@ Run a template deployment using a given parameter file
 Run a template deployment using a given parameter file.
 Works on a resource group, subscription, managementgroup and tenant level
 
-.PARAMETER templateFilePath
+.PARAMETER TemplateFilePath
 Mandatory. The path to the deployment file
 
-.PARAMETER parameterFilePath
+.PARAMETER ParameterFilePath
 Optional. Path to the parameter file from root. Can be a single file, multiple files, or directory that contains (.json) files.
 
 .PARAMETER DeploymentMetadataLocation
@@ -382,17 +382,17 @@ Optional. Do not throw an exception if it failed. Still returns the error messag
 Optional. Path to the root of the repository.
 
 .EXAMPLE
-New-TemplateDeployment -templateFilePath 'C:/key-vault/vault/main.bicep' -parameterFilePath 'C:/key-vault/vault/.test/parameters.json' -location 'WestEurope' -resourceGroupName 'aLegendaryRg'
+New-TemplateDeployment -TemplateFilePath 'C:/key-vault/vault/main.bicep' -ParameterFilePath 'C:/key-vault/vault/.test/parameters.json' -DeploymentMetadataLocation 'WestEurope' -ResourceGroupName 'aLegendaryRg'
 
 Deploy the main.bicep of the 'key-vault/vault' module with the parameter file 'parameters.json' using the resource group 'aLegendaryRg' in location 'WestEurope'
 
 .EXAMPLE
-New-TemplateDeployment -templateFilePath 'C:/resources/resource-group/main.bicep' -location 'WestEurope'
+New-TemplateDeployment -TemplateFilePath 'C:/resources/resource-group/main.bicep' -DeploymentMetadataLocation 'WestEurope'
 
 Deploy the main.bicep of the 'resources/resource-group' module in location 'WestEurope' without a parameter file
 
 .EXAMPLE
-New-TemplateDeployment -templateFilePath 'C:/resources/resource-group/main.json' -parameterFilePath 'C:/resources/resource-group/.test/parameters.json' -location 'WestEurope'
+New-TemplateDeployment -TemplateFilePath 'C:/resources/resource-group/main.json' -ParameterFilePath 'C:/resources/resource-group/.test/parameters.json' -DeploymentMetadataLocation 'WestEurope'
 
 Deploy the main.json of the 'resources/resource-group' module with the parameter file 'parameters.json' in location 'WestEurope'
 #>
@@ -467,13 +467,13 @@ function New-TemplateDeployment {
                 $deploymentResult = [System.Collections.ArrayList]@()
                 foreach ($path in $ParameterFilePath) {
                     if ($PSCmdlet.ShouldProcess("Deployment for parameter file [$ParameterFilePath]", 'Trigger')) {
-                        $deploymentResult += New-TemplateDeploymentInner @deploymentInputObject -parameterFilePath $path
+                        $deploymentResult += New-TemplateDeploymentInner @deploymentInputObject -ParameterFilePath $path
                     }
                 }
                 return $deploymentResult
             } else {
                 if ($PSCmdlet.ShouldProcess("Deployment for single parameter file [$ParameterFilePath]", 'Trigger')) {
-                    return New-TemplateDeploymentInner @deploymentInputObject -parameterFilePath $ParameterFilePath
+                    return New-TemplateDeploymentInner @deploymentInputObject -ParameterFilePath $ParameterFilePath
                 }
             }
         } else {
