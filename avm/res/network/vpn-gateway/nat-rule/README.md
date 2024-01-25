@@ -76,7 +76,6 @@ A NAT rule must be configured to a specific VPN Gateway instance. This is applic
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `mode`
 
@@ -84,11 +83,9 @@ The type of NAT rule for VPN NAT. IngressSnat mode (also known as Ingress Source
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'EgressSnat'
     'IngressSnat'
   ]
@@ -100,11 +97,9 @@ The type of NAT rule for VPN NAT. Static one-to-one NAT establishes a one-to-one
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Dynamic'
     'Static'
   ]
