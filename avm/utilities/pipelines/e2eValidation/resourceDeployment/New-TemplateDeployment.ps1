@@ -353,9 +353,8 @@ Mandatory. The path to the deployment file
 .PARAMETER parameterFilePath
 Optional. Path to the parameter file from root. Can be a single file, multiple files, or directory that contains (.json) files.
 
-.PARAMETER Location
-Optional. Location to test in. E.g. WestEurope
-
+.PARAMETER deploymentMetadataLocation
+Optional. The location to store the deployment metadata.
 .PARAMETER ResourceGroupName
 Optional. Name of the resource group to deploy into. Mandatory if deploying into a resource group (resource group level)
 
