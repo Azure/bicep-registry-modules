@@ -1,10 +1,11 @@
 targetScope = 'subscription'
+
 metadata name = 'Using large parameter set'
 metadata description = 'This instance deploys the module with most of its features enabled.'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-desktopvirtualization.sp-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-desktopvirtualization.scalingplans-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
@@ -15,121 +16,12 @@ param serviceShort string = 'dvspmax'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-var varHostPoolReferences = [
-  {
-    hostPoolArmPath: nestedDependencies.outputs.hostPoolId
-    scalingPlanEnabled: true
-  }
-]
+// ============ //
+// Dependencies //
+// ============ //
 
-var varScalingPlanSchedules = [
-  {
-    daysOfWeek: [
-      'Monday'
-      'Wednesday'
-      'Thursday'
-      'Friday'
-    ]
-    name: 'WeekdaySchedule'
-    offPeakLoadBalancingAlgorithm: 'DepthFirst'
-    offPeakStartTime: {
-      hour: 20
-      minute: 0
-    }
-    peakLoadBalancingAlgorithm: 'DepthFirst'
-    peakStartTime: {
-      hour: 9
-      minute: 0
-    }
-    rampDownCapacityThresholdPct: 90
-    rampDownForceLogoffUsers: true
-    rampDownLoadBalancingAlgorithm: 'DepthFirst'
-    rampDownMinimumHostsPct: 0 //10
-    rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
-    rampDownStartTime: {
-      hour: 18
-      minute: 0
-    }
-    rampDownStopHostsWhen: 'ZeroActiveSessions'
-    rampDownWaitTimeMinutes: 30
-    rampUpCapacityThresholdPct: 80
-    rampUpLoadBalancingAlgorithm: 'BreadthFirst'
-    rampUpMinimumHostsPct: 20
-    rampUpStartTime: {
-      hour: 7
-      minute: 0
-    }
-  }
-  {
-    daysOfWeek: [
-      'Tuesday'
-    ]
-    name: 'weekdaysSchedule-agent-updates'
-    offPeakLoadBalancingAlgorithm: 'DepthFirst'
-    offPeakStartTime: {
-      hour: 20
-      minute: 0
-    }
-    peakLoadBalancingAlgorithm: 'DepthFirst'
-    peakStartTime: {
-      hour: 9
-      minute: 0
-    }
-    rampDownCapacityThresholdPct: 90
-    rampDownForceLogoffUsers: true
-    rampDownLoadBalancingAlgorithm: 'DepthFirst'
-    rampDownMinimumHostsPct: 0
-    rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
-    rampDownStartTime: {
-      hour: 19
-      minute: 0
-    }
-    rampDownStopHostsWhen: 'ZeroActiveSessions'
-    rampDownWaitTimeMinutes: 30
-    rampUpCapacityThresholdPct: 80
-    rampUpLoadBalancingAlgorithm: 'BreadthFirst'
-    rampUpMinimumHostsPct: 20
-    rampUpStartTime: {
-      hour: 7
-      minute: 0
-    }
-  }
-  {
-    daysOfWeek: [
-      'Saturday'
-      'Sunday'
-    ]
-    name: 'WeekendSchedule'
-    offPeakLoadBalancingAlgorithm: 'DepthFirst'
-    offPeakStartTime: {
-      hour: 18
-      minute: 0
-    }
-    peakLoadBalancingAlgorithm: 'DepthFirst'
-    peakStartTime: {
-      hour: 10
-      minute: 0
-    }
-    rampDownCapacityThresholdPct: 90
-    rampDownForceLogoffUsers: true
-    rampDownLoadBalancingAlgorithm: 'DepthFirst'
-    rampDownMinimumHostsPct: 0
-    rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
-    rampDownStartTime: {
-      hour: 16
-      minute: 0
-    }
-    rampDownStopHostsWhen: 'ZeroActiveSessions'
-    rampDownWaitTimeMinutes: 30
-    rampUpCapacityThresholdPct: 90
-    rampUpLoadBalancingAlgorithm: 'DepthFirst'
-    rampUpMinimumHostsPct: 0
-    rampUpStartTime: {
-      hour: 9
-      minute: 0
-    }
-  }
-]
+// General resources
+// =================
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
@@ -141,9 +33,12 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     location: location
-    managedIdentityName: 'sp-managedIdentity'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
+
+// Diagnostics
+// ===========
 
 module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
@@ -157,6 +52,10 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
   }
 }
 
+// ============== //
+// Test Execution //
+// ============== //
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
@@ -166,8 +65,120 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     location: location
     friendlyName: 'friendlyName'
     description: 'myDescription'
-    schedules: varScalingPlanSchedules
-    hostPoolReferences: varHostPoolReferences
+    schedules: [
+      {
+        daysOfWeek: [
+          'Monday'
+          'Wednesday'
+          'Thursday'
+          'Friday'
+        ]
+        name: 'WeekdaySchedule'
+        offPeakLoadBalancingAlgorithm: 'DepthFirst'
+        offPeakStartTime: {
+          hour: 20
+          minute: 0
+        }
+        peakLoadBalancingAlgorithm: 'DepthFirst'
+        peakStartTime: {
+          hour: 9
+          minute: 0
+        }
+        rampDownCapacityThresholdPct: 90
+        rampDownForceLogoffUsers: true
+        rampDownLoadBalancingAlgorithm: 'DepthFirst'
+        rampDownMinimumHostsPct: 0 //10
+        rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
+        rampDownStartTime: {
+          hour: 18
+          minute: 0
+        }
+        rampDownStopHostsWhen: 'ZeroActiveSessions'
+        rampDownWaitTimeMinutes: 30
+        rampUpCapacityThresholdPct: 80
+        rampUpLoadBalancingAlgorithm: 'BreadthFirst'
+        rampUpMinimumHostsPct: 20
+        rampUpStartTime: {
+          hour: 7
+          minute: 0
+        }
+      }
+      {
+        daysOfWeek: [
+          'Tuesday'
+        ]
+        name: 'weekdaysSchedule-agent-updates'
+        offPeakLoadBalancingAlgorithm: 'DepthFirst'
+        offPeakStartTime: {
+          hour: 20
+          minute: 0
+        }
+        peakLoadBalancingAlgorithm: 'DepthFirst'
+        peakStartTime: {
+          hour: 9
+          minute: 0
+        }
+        rampDownCapacityThresholdPct: 90
+        rampDownForceLogoffUsers: true
+        rampDownLoadBalancingAlgorithm: 'DepthFirst'
+        rampDownMinimumHostsPct: 0
+        rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
+        rampDownStartTime: {
+          hour: 19
+          minute: 0
+        }
+        rampDownStopHostsWhen: 'ZeroActiveSessions'
+        rampDownWaitTimeMinutes: 30
+        rampUpCapacityThresholdPct: 80
+        rampUpLoadBalancingAlgorithm: 'BreadthFirst'
+        rampUpMinimumHostsPct: 20
+        rampUpStartTime: {
+          hour: 7
+          minute: 0
+        }
+      }
+      {
+        daysOfWeek: [
+          'Saturday'
+          'Sunday'
+        ]
+        name: 'WeekendSchedule'
+        offPeakLoadBalancingAlgorithm: 'DepthFirst'
+        offPeakStartTime: {
+          hour: 18
+          minute: 0
+        }
+        peakLoadBalancingAlgorithm: 'DepthFirst'
+        peakStartTime: {
+          hour: 10
+          minute: 0
+        }
+        rampDownCapacityThresholdPct: 90
+        rampDownForceLogoffUsers: true
+        rampDownLoadBalancingAlgorithm: 'DepthFirst'
+        rampDownMinimumHostsPct: 0
+        rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
+        rampDownStartTime: {
+          hour: 16
+          minute: 0
+        }
+        rampDownStopHostsWhen: 'ZeroActiveSessions'
+        rampDownWaitTimeMinutes: 30
+        rampUpCapacityThresholdPct: 90
+        rampUpLoadBalancingAlgorithm: 'DepthFirst'
+        rampUpMinimumHostsPct: 0
+        rampUpStartTime: {
+          hour: 9
+          minute: 0
+        }
+      }
+    ]
+    hostPoolReferences: [
+      {
+        hostPoolArmPath: nestedDependencies.outputs.hostPoolId
+        scalingPlanEnabled: true
+      }
+    ]
     diagnosticSettings: [
       {
         name: 'customSetting'
@@ -188,7 +199,17 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     }
     roleAssignments: [
       {
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }
