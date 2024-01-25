@@ -77,8 +77,8 @@ Mandatory. The path to the deployment file
 .PARAMETER ParameterFilePath
 Optional. Path to the parameter file from root. Can be a single file, multiple files, or directory that contains (.json) files.
 
-.PARAMETER Location
-Mandatory. Location to test in. E.g. WestEurope
+.PARAMETER DeploymentMetadataLocation
+Optional. The location to store the deployment metadata.
 
 .PARAMETER ResourceGroupName
 Optional. Name of the resource group to deploy into. Mandatory if deploying into a resource group (resource group level)
@@ -133,7 +133,7 @@ function New-TemplateDeploymentInner {
         [string] $ResourceGroupName = '',
 
         [Parameter(Mandatory)]
-        [string] $Location,
+        [string] $DeploymentMetadataLocation,
 
         [Parameter(Mandatory = $false)]
         [string] $SubscriptionId,
@@ -241,8 +241,9 @@ function New-TemplateDeploymentInner {
                             $null = Set-AzContext -Subscription $SubscriptionId
                         }
                         if (-not (Get-AzResourceGroup -Name $ResourceGroupName -ErrorAction 'SilentlyContinue')) {
-                            if ($PSCmdlet.ShouldProcess("Resource group [$ResourceGroupName] in location [$Location]", 'Create')) {
-                                $null = New-AzResourceGroup -Name $ResourceGroupName -Location $Location
+                            $resourceGroupLocation = $AdditionalParameters.resourceLocation ?? $DeploymentMetadataLocation
+                            if ($PSCmdlet.ShouldProcess("Resource group [$ResourceGroupName] in (metadata) location [$resourceGroupLocation]", 'Create')) {
+                                $null = New-AzResourceGroup -Name $ResourceGroupName -Location $resourceGroupLocation
                             }
                         }
                         if ($PSCmdlet.ShouldProcess('Resource group level deployment', 'Create')) {
@@ -256,19 +257,19 @@ function New-TemplateDeploymentInner {
                             $null = Set-AzContext -Subscription $SubscriptionId
                         }
                         if ($PSCmdlet.ShouldProcess('Subscription level deployment', 'Create')) {
-                            $res = New-AzSubscriptionDeployment @DeploymentInputs -Location $Location
+                            $res = New-AzSubscriptionDeployment @DeploymentInputs -Location $DeploymentMetadataLocation
                         }
                         break
                     }
                     'managementgroup' {
                         if ($PSCmdlet.ShouldProcess('Management group level deployment', 'Create')) {
-                            $res = New-AzManagementGroupDeployment @DeploymentInputs -Location $Location -ManagementGroupId $ManagementGroupId
+                            $res = New-AzManagementGroupDeployment @DeploymentInputs -Location $DeploymentMetadataLocation -ManagementGroupId $ManagementGroupId
                         }
                         break
                     }
                     'tenant' {
                         if ($PSCmdlet.ShouldProcess('Tenant level deployment', 'Create')) {
-                            $res = New-AzTenantDeployment @DeploymentInputs -Location $Location
+                            $res = New-AzTenantDeployment @DeploymentInputs -Location $DeploymentMetadataLocation
                         }
                         break
                     }
@@ -353,8 +354,9 @@ Mandatory. The path to the deployment file
 .PARAMETER parameterFilePath
 Optional. Path to the parameter file from root. Can be a single file, multiple files, or directory that contains (.json) files.
 
-.PARAMETER deploymentMetadataLocation
+.PARAMETER DeploymentMetadataLocation
 Optional. The location to store the deployment metadata.
+
 .PARAMETER ResourceGroupName
 Optional. Name of the resource group to deploy into. Mandatory if deploying into a resource group (resource group level)
 
@@ -405,7 +407,7 @@ function New-TemplateDeployment {
         [string[]] $ParameterFilePath,
 
         [Parameter(Mandatory = $false)]
-        [string] $Location = 'WestEurope',
+        [string] $DeploymentMetadataLocation = 'WestEurope',
 
         [Parameter(Mandatory = $false)]
         [string] $ResourceGroupName = '',
@@ -452,7 +454,7 @@ function New-TemplateDeployment {
             TemplateFilePath     = $TemplateFilePath
             AdditionalTags       = $AdditionalTags
             AdditionalParameters = $AdditionalParameters
-            Location             = $Location
+            Location             = $DeploymentMetadataLocation
             ResourceGroupName    = $ResourceGroupName
             SubscriptionId       = $SubscriptionId
             ManagementGroupId    = $ManagementGroupId
