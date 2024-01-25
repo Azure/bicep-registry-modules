@@ -35,23 +35,23 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-// resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
-//   name: keyVaultName
-//   location: location
-//   properties: {
-//     sku: {
-//       family: 'A'
-//       name: 'standard'
-//     }
-//     tenantId: tenant().tenantId
-//     enablePurgeProtection: null
-//     enabledForTemplateDeployment: true
-//     enabledForDiskEncryption: true
-//     enabledForDeployment: true
-//     enableRbacAuthorization: true
-//     accessPolicies: []
-//   }
-// }
+resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+  name: keyVaultName
+  location: location
+  properties: {
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }
+    tenantId: tenant().tenantId
+    enablePurgeProtection: null
+    enabledForTemplateDeployment: true
+    enabledForDiskEncryption: true
+    enabledForDeployment: true
+    enableRbacAuthorization: true
+    accessPolicies: []
+  }
+}
 
 resource applicationSecurityGroup 'Microsoft.Network/applicationSecurityGroups@2023-04-01' = {
   name: applicationSecurityGroupName
@@ -61,7 +61,6 @@ resource applicationSecurityGroup 'Microsoft.Network/applicationSecurityGroups@2
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
   location: location
-  tags: tags
 }
 
 resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
@@ -82,6 +81,9 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
+
+@description('The resource ID of the created Key Vault.')
+output keyVaultResourceId string = keyVault.id
 
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
