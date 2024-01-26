@@ -81,7 +81,7 @@ runs:
         $triggerInput["publishing"] = "true"
         if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath)) {
           Write-Verbose "No changes detected. Set publishing to be skipped." -Verbose
-          $triggerInput[publishing] = "false"
+          $triggerInput["publishing"] = "false"
         }
         Write-Output ('{0}={1}' -f 'triggerInput', ($triggerInput | ConvertTo-Json -Compress)) >> $env:GITHUB_OUTPUT
         }
