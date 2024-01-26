@@ -243,7 +243,7 @@ function New-TemplateDeploymentInner {
                         if (-not (Get-AzResourceGroup -Name $ResourceGroupName -ErrorAction 'SilentlyContinue')) {
                             $resourceGroupLocation = $AdditionalParameters.resourceLocation ?? $DeploymentMetadataLocation
                             if ($PSCmdlet.ShouldProcess("Resource group [$ResourceGroupName] in (metadata) location [$resourceGroupLocation]", 'Create')) {
-                                $null = New-AzResourceGroup -Name $ResourceGroupName -DeploymentMetadataLocation $resourceGroupLocation
+                                $null = New-AzResourceGroup -Name $ResourceGroupName -Location $resourceGroupLocation
                             }
                         }
                         if ($PSCmdlet.ShouldProcess('Resource group level deployment', 'Create')) {
@@ -257,19 +257,19 @@ function New-TemplateDeploymentInner {
                             $null = Set-AzContext -Subscription $SubscriptionId
                         }
                         if ($PSCmdlet.ShouldProcess('Subscription level deployment', 'Create')) {
-                            $res = New-AzSubscriptionDeployment @DeploymentInputs -DeploymentMetadataLocation $DeploymentMetadataLocation
+                            $res = New-AzSubscriptionDeployment @DeploymentInputs -Location $DeploymentMetadataLocation
                         }
                         break
                     }
                     'managementgroup' {
                         if ($PSCmdlet.ShouldProcess('Management group level deployment', 'Create')) {
-                            $res = New-AzManagementGroupDeployment @DeploymentInputs -DeploymentMetadataLocation $DeploymentMetadataLocation -ManagementGroupId $ManagementGroupId
+                            $res = New-AzManagementGroupDeployment @DeploymentInputs -Location $DeploymentMetadataLocation -ManagementGroupId $ManagementGroupId
                         }
                         break
                     }
                     'tenant' {
                         if ($PSCmdlet.ShouldProcess('Tenant level deployment', 'Create')) {
-                            $res = New-AzTenantDeployment @DeploymentInputs -DeploymentMetadataLocation $DeploymentMetadataLocation
+                            $res = New-AzTenantDeployment @DeploymentInputs -Location $DeploymentMetadataLocation
                         }
                         break
                     }
