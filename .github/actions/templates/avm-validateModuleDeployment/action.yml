@@ -73,12 +73,12 @@ runs:
           Write-Output '::group::Get Recommended Regions'
 
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'regionSelector' 'Get-AzDeploymentRegion.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'regionSelector' 'Get-AzAvailableResourceLocation.ps1')
 
           # Set fucntion input parameters
           $functionInput = @{
               ModuleRoot = '${{ inputs.modulePath }}'
-              RepoRoot   = '${{ env.GITHUB_WORKSPACE}}'
+              RepoRoot   = $env:GITHUB_WORKSPACE
           }
 
           Write-Verbose "Invoke function with" -Verbose
