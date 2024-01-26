@@ -22,7 +22,7 @@ function Get-ModifiedFileList {
     $Diff = git diff --name-only --diff-filter=AM HEAD^ HEAD
   }
   else {
-    Write-Verbose 'Running on a custom branch: Skipping' -Verbose
+    Write-Verbose 'Running on a custom branch: Skipping modified files' -Verbose
   }
   $ModifiedFiles = $Diff ? ($Diff | Get-Item -Force) : @()
 
