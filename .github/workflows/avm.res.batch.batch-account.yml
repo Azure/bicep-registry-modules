@@ -59,8 +59,8 @@ jobs:
       - name: "Set trigger input to output variables"
         id: get-trigger-input
         uses: ./.github/actions/templates/avm-getTriggerInput
-        # with:
-          # workflowPath: "${{ env.workflowPath}}"
+        with:
+          modulePath: "${{ env.modulePath }}"
       - name: "Get module test file paths"
         id: get-module-test-file-paths
         uses: ./.github/actions/templates/avm-getModuleTestFiles

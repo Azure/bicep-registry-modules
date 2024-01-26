@@ -38,15 +38,15 @@
 name: "Get Trigger Input"
 description: "Get Trigger Input"
 
-# inputs:
-#   workflowPath:
-#     description: "The path to the workflow file used to retrieve default workflow input parameters."
-#     required: true
+inputs:
+  modulePath:
+    description: "The path to the module's folder"
+    required: true
 
 outputs:
   triggerInput:
     description: "A table of all pipeline stages and their enablement in JSON format."
-    value: ${{ steps.get-trigger-input-action.outputs.triggetInput }}
+    value: ${{ steps.get-trigger-input-action.outputs.triggerInput }}
 
 runs:
   using: "composite"
@@ -63,10 +63,18 @@ runs:
         . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'publish' 'helper' 'Get-ModulesToPublish.ps1')
 
         # Get values per each stage
+        $moduleFolderPath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}'
+        Write-Verbose "The module path is: $moduleFolderPath" -Verbose
+
         $triggerInput = @{}
+
         ## Static validation
+        $triggerInput[staticValidation] = "true"
+        # TODO: add logic to update the value
 
         ## Deployment validation
+        $triggerInput[deploymentValidation] = "true"
+        # TODO: add logic to update the value
 
         ## Publishing
         ### Test if module qualifies for publishing
@@ -75,39 +83,6 @@ runs:
           Write-Verbose "No changes detected. Set publishing to be skipped." -Verbose
           $triggerInput[publishing] = "false"
         }
-        # # When running from workflow_dispatch event get input values
-        # if ('${{ github.event_name }}' -eq 'workflow_dispatch') {
-        #   $parameters = '${{ toJSON(github.event.inputs) }}' | ConvertFrom-Json -AsHashTable
-
-        #   # Output values to be accessed by next jobs
-        #   $workflowInput = @{}
-        #   foreach($parameterName in $parameters.Keys) {
-        #     Write-Verbose ('Passing output [{0}] with value [{1}]' -f $parameterName, $parameters[$parameterName]) -Verbose
-        #     $workflowInput[$parameterName] = $parameters[$parameterName]
-        #   }
-        #   Write-Output ('{0}={1}' -f 'workflowInput', ($workflowInput | ConvertTo-Json -Compress)) >> $env:GITHUB_OUTPUT
-        # }
-        # # Otherwise retrieve default values
-        # else {
-        #   # Load used functions
-        #   . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-GitHubWorkflowDefaultInput.ps1')
-
-        #   $functionInput = @{
-        #     workflowPath = '${{ inputs.workflowPath }}'
-        #   }
-
-        #   Write-Verbose "Invoke task with" -Verbose
-        #   Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
-
-        #   $workflowParameters = Get-GitHubWorkflowDefaultInput @functionInput -Verbose
-
-        #   # Output values to be accessed by next jobs
-        #   $triggerInput = @{}
-        #   foreach($parameterName in $workflowParameters.Keys) {
-        #     Write-Verbose ('Passing output [{0}] with value [{1}]' -f $parameterName, $workflowParameters[$parameterName]) -Verbose
-        #     $workflowInput[$parameterName] = $workflowParameters[$parameterName].toString()
-        #   }
-
         Write-Output ('{0}={1}' -f 'triggerInput', ($triggerInput | ConvertTo-Json -Compress)) >> $env:GITHUB_OUTPUT
         }
         Write-Output '::endgroup::'
