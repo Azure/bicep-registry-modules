@@ -65,7 +65,12 @@ function Get-AzAvailableResourceLocation {
   $ResourceRegionList = (Get-AzResourceProvider | Where-Object { $_.ProviderNamespace -eq $formattedResourceProvider }).ResourceTypes | Where-Object { $_.ResourceTypeName -eq $formattedServiceName } | Select-Object -ExpandProperty Locations
   Write-Verbose "Region list: $($resourceRegionList | ConvertTo-Json)"
 
-  $locations = Get-AzLocation | Where-Object { $_.DisplayName -in $ResourceRegionList } | Where-Object { $_.Location -notin $ExcludedRegions } | Where-Object { $_.PairedRegion -ne "{}" } | Where-Object { $_.RegionCategory -eq "Recommended" } |  Select-Object -ExpandProperty Location
+  $locations = Get-AzLocation | Where-Object { 
+    $_.DisplayName -in $ResourceRegionList  -and
+    $_.Location -notin $ExcludedRegions -and
+    $_.PairedRegion -ne "{}" -and
+    $_.RegionCategory -eq "Recommended" 
+  } |  Select-Object -ExpandProperty Location
   Write-Verbose "Available Locations: $($locations | ConvertTo-Json)"
 
 
