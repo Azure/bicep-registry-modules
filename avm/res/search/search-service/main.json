@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "2340292260752527729"
+      "templateHash": "11985965072265356380"
     },
     "name": "Search Services",
     "description": "This module deploys a Search Service.",
@@ -1487,7 +1487,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('searchService', '2022-09-01', 'full').identity, 'principalId')), reference('searchService', '2022-09-01', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('searchService', '2022-09-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",

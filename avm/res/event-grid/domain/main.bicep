@@ -197,7 +197,7 @@ output resourceGroupName string = resourceGroup().name
 output location string = domain.location
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(domain.identity, 'principalId') ? domain.identity.principalId : ''
+output systemAssignedMIPrincipalId string = domain.?identity.?principalId ?? ''
 
 // =============== //
 //   Definitions   //
