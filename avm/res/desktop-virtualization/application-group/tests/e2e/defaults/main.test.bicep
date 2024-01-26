@@ -1,10 +1,11 @@
 targetScope = 'subscription'
+
 metadata name = 'Using only defaults'
 metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-desktopvirtualization.ag-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-desktopvirtualization.applicationgroup-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
@@ -14,6 +15,13 @@ param serviceShort string = 'dvagmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
+
+// ============ //
+// Dependencies //
+// ============ //
+
+// General resources
+// =================
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
@@ -28,6 +36,10 @@ module nestedDependencies 'dependencies.bicep' = {
     hostPoolName: 'dep-${namePrefix}-hp-${serviceShort}'
   }
 }
+
+// ============== //
+// Test Execution //
+// ============== //
 
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
