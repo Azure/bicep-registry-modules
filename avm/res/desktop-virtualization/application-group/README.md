@@ -44,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module applicationGroup 'br/public:avm/res/desktop-virtualization/application-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dvagmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvagmin'
   params: {
     // Required parameters
     applicationGroupType: 'Desktop'
@@ -100,7 +100,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module applicationGroup 'br/public:avm/res/desktop-virtualization/application-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dvagmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvagmax'
   params: {
     // Required parameters
     applicationGroupType: 'RemoteApp'
@@ -286,7 +286,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module applicationGroup 'br/public:avm/res/desktop-virtualization/application-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dvagwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvagwaf'
   params: {
     // Required parameters
     applicationGroupType: 'Desktop'
