@@ -43,7 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dvspmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvspmin'
   params: {
     // Required parameters
     name: 'dvspmin002'
@@ -91,7 +91,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dvspmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvspmax'
   params: {
     // Required parameters
     name: 'dvspmax002'
@@ -467,7 +467,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dvspwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvspwaf'
   params: {
     // Required parameters
     name: 'dvspwaf002'
