@@ -1,10 +1,11 @@
 targetScope = 'subscription'
+
 metadata name = 'Using only defaults'
 metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'ms.desktopvirtualization.hostpools-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-desktopvirtualization.hostpools-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
@@ -15,10 +16,21 @@ param serviceShort string = 'dvhpmin'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+// ============ //
+// Dependencies //
+// ============ //
+
+// General resources
+// =================
+
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: location
 }
+
+// ============== //
+// Test Execution //
+// ============== //
 
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup

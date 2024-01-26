@@ -1,10 +1,11 @@
 targetScope = 'subscription'
+
 metadata name = 'Using all available parameters'
 metadata description = 'This instance deploys the module with all available parameters for testing purposes.'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'ms.desktopvirtualization.hostpools-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-desktopvirtualization.hostpools-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
@@ -14,6 +15,13 @@ param serviceShort string = 'dvhpmax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
+
+// ============ //
+// Dependencies //
+// ============ //
+
+// General resources
+// =================
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
@@ -25,10 +33,13 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     location: location
-    managedIdentityName: 'dvhpmax-managedIdentity'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
+
+// Diagnostics
+// ===========
 
 module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
@@ -41,6 +52,10 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
     location: location
   }
 }
+
+// ============== //
+// Test Execution //
+// ============== //
 
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
@@ -102,7 +117,17 @@ module testDeployment '../../../main.bicep' = {
     }
     roleAssignments: [
       {
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }

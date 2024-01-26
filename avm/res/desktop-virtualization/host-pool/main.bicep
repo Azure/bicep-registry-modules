@@ -107,13 +107,13 @@ param ssoClientSecretKeyVaultPath string = ''
 #disable-next-line secure-secrets-in-params
 param ssoSecretType string = ''
 
-@sys.description('Optional. Tags of the scaling plan.')
+@sys.description('Optional. Tags of the resource.')
 param tags object?
 
-@sys.description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+@sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@sys.description('Optional. Lock settings of the scaling plan.')
+@sys.description('Optional. Lock settings of the resource.')
 param lock lockType
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
@@ -233,7 +233,7 @@ resource hostPool_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(l
 resource hostPool_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
   name: guid(hostPool.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
   properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
+    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
     principalId: roleAssignment.principalId
     description: roleAssignment.?description
     principalType: roleAssignment.?principalType
@@ -290,12 +290,6 @@ type diagnosticSettingType = {
 
     @sys.description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
     categoryGroup: string?
-  }[]?
-
-  @sys.description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to \'\' to disable metric collection.')
-  metricCategories: {
-    @sys.description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
-    category: string
   }[]?
 
   @sys.description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
