@@ -40,7 +40,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module diagnosticSetting 'br/public:avm/res/insights/diagnostic-setting:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-idsmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-idsmin'
   params: {
     location: '<location>'
     name: 'idsmin001'
@@ -88,7 +88,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module diagnosticSetting 'br/public:avm/res/insights/diagnostic-setting:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-idsmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-idsmax'
   params: {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
     eventHubName: '<eventHubName>'
@@ -160,7 +160,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module diagnosticSetting 'br/public:avm/res/insights/diagnostic-setting:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-idswaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-idswaf'
   params: {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
     eventHubName: '<eventHubName>'
