@@ -54,7 +54,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module factory 'br/public:avm/res/data-factory/factory:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dffmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dffmin'
   params: {
     // Required parameters
     name: 'dffmin001'
@@ -102,7 +102,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module factory 'br/public:avm/res/data-factory/factory:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dffmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dffmax'
   params: {
     // Required parameters
     name: 'dffmax001'
@@ -368,7 +368,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module factory 'br/public:avm/res/data-factory/factory:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dffwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dffwaf'
   params: {
     // Required parameters
     name: 'dffwaf001'

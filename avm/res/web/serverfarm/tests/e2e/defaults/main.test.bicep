@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module with a base set of para
 param resourceGroupName string = 'dep-${namePrefix}-web.serverfarms-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param location string = deployment().location
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'wsfmin'
@@ -38,7 +38,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: 'eastus'
