@@ -63,7 +63,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module service 'br/public:avm/res/api-management/service:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-apismin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-apismin'
   params: {
     // Required parameters
     name: 'apismin001'
@@ -119,7 +119,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module service 'br/public:avm/res/api-management/service:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-apismax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-apismax'
   params: {
     // Required parameters
     name: 'apismax001'
@@ -523,7 +523,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module service 'br/public:avm/res/api-management/service:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-apiswaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-apiswaf'
   params: {
     // Required parameters
     name: 'apiswaf001'

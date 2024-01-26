@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module component 'br/public:avm/res/insights/component:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-icmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-icmin'
   params: {
     // Required parameters
     name: 'icmin001'
@@ -94,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module component 'br/public:avm/res/insights/component:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-icmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-icmax'
   params: {
     // Required parameters
     name: 'icmax001'
@@ -224,7 +224,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module component 'br/public:avm/res/insights/component:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-icwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-icwaf'
   params: {
     // Required parameters
     name: 'icwaf001'
