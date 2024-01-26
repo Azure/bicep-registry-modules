@@ -55,11 +55,11 @@ param linkedAccessCheckOnTargetResource bool = false
 
 @description('Optional. Prevent Data Exfiltration.')
 param preventDataExfiltration bool = false
-
 @allowed([
   'Enabled'
   'Disabled'
 ])
+
 @description('Optional. Enable or Disable public network access to workspace.')
 param publicNetworkAccess string = 'Enabled'
 
