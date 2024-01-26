@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "14384932156588592123"
+      "templateHash": "12873830842417325184"
     },
     "name": "Azure Virtual Desktop Host Pool",
     "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -578,7 +578,7 @@
     "lock": {
       "$ref": "#/definitions/lockType",
       "metadata": {
-        "description": "Optional. Lock settings of the resource."
+        "description": "Optional. The lock settings of the service."
       }
     },
     "enableTelemetry": {

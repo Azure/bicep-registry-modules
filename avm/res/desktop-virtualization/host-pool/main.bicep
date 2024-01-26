@@ -113,7 +113,7 @@ param tags object?
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@sys.description('Optional. Lock settings of the resource.')
+@sys.description('Optional. The lock settings of the service.')
 param lock lockType
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')

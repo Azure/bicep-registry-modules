@@ -511,7 +511,7 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
 | [`hostPoolType`](#parameter-hostpooltype) | string | Set this parameter to Personal if you would like to enable Persistent Desktop experience. Defaults to Pooled. |
 | [`loadBalancerType`](#parameter-loadbalancertype) | string | Type of load balancer algorithm. |
 | [`location`](#parameter-location) | string | Location of the scaling plan. Defaults to resource group location. |
-| [`lock`](#parameter-lock) | object | Lock settings of the resource. |
+| [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`maxSessionLimit`](#parameter-maxsessionlimit) | int | Maximum number of sessions. |
 | [`personalDesktopAssignmentType`](#parameter-personaldesktopassignmenttype) | string | Set the type of assignment for a Personal Host Pool type. |
 | [`preferredAppGroupType`](#parameter-preferredappgrouptype) | string | The type of preferred application group type, default to Desktop Application Group. |
@@ -711,7 +711,7 @@ Location of the scaling plan. Defaults to resource group location.
 
 ### Parameter: `lock`
 
-Lock settings of the resource.
+The lock settings of the service.
 
 - Required: No
 - Type: object
