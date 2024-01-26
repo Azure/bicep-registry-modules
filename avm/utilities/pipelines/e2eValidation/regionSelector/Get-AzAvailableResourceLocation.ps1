@@ -65,19 +65,27 @@ function Get-AzAvailableResourceLocation {
   $ResourceRegionList = (Get-AzResourceProvider | Where-Object { $_.ProviderNamespace -eq $formattedResourceProvider }).ResourceTypes | Where-Object { $_.ResourceTypeName -eq $formattedServiceName } | Select-Object -ExpandProperty Locations
   Write-Verbose "Region list: $($resourceRegionList | ConvertTo-Json)"
 
-  $locations = Get-AzLocation | Where-Object {
-    $_.DisplayName -in $ResourceRegionList -and
-    $_.Location -notin $ExcludedRegions -and
-    $_.PairedRegion -ne "{}" -and
-    $_.RegionCategory -eq "Recommended"
-  } |  Select-Object -ExpandProperty Location
-  Write-Verbose "Available Locations: $($locations | ConvertTo-Json)"
+  if ($resourceRegionList -eq "global") {
+    Write-Verbose "Resource is global, no region selection required"
+    $location = "global"
+  }
+  else {
+
+    $locations = Get-AzLocation | Where-Object {
+      $_.DisplayName -in $ResourceRegionList -and
+      $_.Location -notin $ExcludedRegions -and
+      $_.PairedRegion -ne "{}" -and
+      $_.RegionCategory -eq "Recommended"
+    } |  Select-Object -ExpandProperty Location
+    Write-Verbose "Available Locations: $($locations | ConvertTo-Json)"
 
 
-  $index = Get-Random -Maximum ($locations.Count)
-  Write-Verbose "Generated random index [$index]"
+    $index = Get-Random -Maximum ($locations.Count)
+    Write-Verbose "Generated random index [$index]"
 
-  $location = $locations[$index]
+    $location = $locations[$index]
+
+  }
   Write-Verbose "Selected location [$location]" -Verbose
 
   return $location
