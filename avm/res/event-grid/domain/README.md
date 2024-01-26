@@ -47,7 +47,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module domain 'br/public:avm/res/event-grid/domain:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-egdmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-egdmin'
   params: {
     // Required parameters
     name: 'egdmin001'
@@ -95,7 +95,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module domain 'br/public:avm/res/event-grid/domain:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-egdmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-egdmax'
   params: {
     // Required parameters
     name: 'egdmax001'
@@ -283,7 +283,7 @@ This instance deploys the module with private endpoint.
 
 ```bicep
 module domain 'br/public:avm/res/event-grid/domain:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-egdpe'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-egdpe'
   params: {
     // Required parameters
     name: 'egdpe001'
@@ -371,7 +371,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module domain 'br/public:avm/res/event-grid/domain:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-egdwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-egdwaf'
   params: {
     // Required parameters
     name: 'egdwaf001'

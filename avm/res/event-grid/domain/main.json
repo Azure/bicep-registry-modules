@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "3680673253004786953"
+      "templateHash": "1330606995473778125"
     },
     "name": "Event Grid Domains",
     "description": "This module deploys an Event Grid Domain.",
@@ -1276,7 +1276,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('domain', '2023-06-01-preview', 'full').identity, 'principalId')), reference('domain', '2023-06-01-preview', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('domain', '2023-06-01-preview', 'full'), 'identity'), 'principalId'), '')]"
     }
   }
 }

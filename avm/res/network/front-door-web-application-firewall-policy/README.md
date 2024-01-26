@@ -1,10 +1,5 @@
 # Front Door Web Application Firewall (WAF) Policies `[Microsoft.Network/FrontDoorWebApplicationFirewallPolicies]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a Front Door Web Application Firewall (WAF) Policy.
 
 ## Navigation
@@ -47,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-door-web-application-firewall-policy:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nagwafpmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nagwafpmin'
   params: {
     // Required parameters
     name: 'nagwafpmin001'
@@ -95,7 +90,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-door-web-application-firewall-policy:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nagwafpmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nagwafpmax'
   params: {
     // Required parameters
     name: 'nagwafpmax001'
@@ -335,7 +330,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-door-web-application-firewall-policy:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nagwafpwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nagwafpwaf'
   params: {
     // Required parameters
     name: 'nagwafpwaf001'
