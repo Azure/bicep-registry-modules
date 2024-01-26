@@ -44,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module workflow 'br/public:avm/res/logic/workflow:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-lwmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-lwmin'
   params: {
     // Required parameters
     name: 'lwmin001'
@@ -92,7 +92,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module workflow 'br/public:avm/res/logic/workflow:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-lwmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-lwmax'
   params: {
     // Required parameters
     name: 'lwmax001'
@@ -306,7 +306,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module workflow 'br/public:avm/res/logic/workflow:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-lwwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-lwwaf'
   params: {
     // Required parameters
     name: 'lwwaf001'

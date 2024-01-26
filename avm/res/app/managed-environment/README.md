@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-amemin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-amemin'
   params: {
     // Required parameters
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
@@ -94,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-amemax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-amemax'
   params: {
     // Required parameters
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
@@ -244,7 +244,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-amewaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-amewaf'
   params: {
     // Required parameters
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'

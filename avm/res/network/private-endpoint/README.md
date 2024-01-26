@@ -43,7 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-npemin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-npemin'
   params: {
     // Required parameters
     name: 'npemin001'
@@ -159,7 +159,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-npemax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-npemax'
   params: {
     // Required parameters
     name: 'npemax001'
@@ -363,7 +363,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-npewaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-npewaf'
   params: {
     // Required parameters
     name: 'npewaf001'

@@ -44,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ndfrsmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ndfrsmin'
   params: {
     // Required parameters
     dnsForwardingRulesetOutboundEndpointResourceIds: [
@@ -100,7 +100,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ndfrsmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ndfrsmax'
   params: {
     // Required parameters
     dnsForwardingRulesetOutboundEndpointResourceIds: [
@@ -250,7 +250,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ndfrswaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ndfrswaf'
   params: {
     // Required parameters
     dnsForwardingRulesetOutboundEndpointResourceIds: [
