@@ -8,7 +8,7 @@
       "version": "0.24.24.22086",
       "templateHash": "12017185166479854402"
     },
-    "name": "Batch Account",
+    "name": "Batch Accounts",
     "description": "This module deploys a Batch Account.",
     "owner": "Azure/module-maintainers"
   },
