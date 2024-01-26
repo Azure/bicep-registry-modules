@@ -84,7 +84,7 @@ runs:
           $triggerInput["publishing"] = "false"
         }
         Write-Output ('{0}={1}' -f 'triggerInput', ($triggerInput | ConvertTo-Json -Compress)) >> $env:GITHUB_OUTPUT
-        }
+
         Write-Output '::endgroup::'
       shell: pwsh
 
