@@ -63,22 +63,22 @@ runs:
         Write-Verbose "The module path is: $moduleFolderPath" -Verbose
 
         $triggerInput = @{
-          staticValidation     = "true"
-          deploymentValidation = "true"
-          publishing           = "true"
+          staticValidation     = 'true'
+          deploymentValidation = 'true'
+          publishing           = 'true'
         }
 
         ## Static validation
-        # TODO: (if needed) add logic to update the value $triggerInput["staticValidation"]
+        # TODO: (if needed) add logic to update the value $triggerInput['staticValidation']
 
         ## Deployment validation
-        # TODO: add logic to update the value $triggerInput["deploymentValidation"]
+        # TODO: add logic to update the value $triggerInput['deploymentValidation']
 
         ## Publishing
         ### Test if module qualifies for publishing
         if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath -Verbose)) {
           Write-Verbose "No changes detected. Set publishing to be skipped." -Verbose
-          $triggerInput["publishing"] = "false"
+          $triggerInput['publishing'] = 'false'
         }
         Write-Verbose ('{0}={1}' -f 'triggerInput', ($triggerInput | ConvertTo-Json -Compress)) -Verbose
         Write-Output ('{0}={1}' -f 'triggerInput', ($triggerInput | ConvertTo-Json -Compress)) >> $env:GITHUB_OUTPUT
