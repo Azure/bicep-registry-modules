@@ -199,7 +199,7 @@ output resourceGroupName string = resourceGroup().name
 output location string = topic.location
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(topic.identity, 'principalId') ? topic.identity.principalId : ''
+output systemAssignedMIPrincipalId string = topic.?identity.?principalId ?? ''
 
 // =============== //
 //   Definitions   //

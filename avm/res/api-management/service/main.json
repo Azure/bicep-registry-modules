@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "2230233908165104812"
+      "templateHash": "12440563688380406844"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -2854,7 +2854,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('service', '2021-08-01', 'full').identity, 'principalId')), reference('service', '2021-08-01', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('service', '2021-08-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
