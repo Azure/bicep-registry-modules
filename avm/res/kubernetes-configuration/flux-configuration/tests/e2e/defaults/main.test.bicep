@@ -15,7 +15,7 @@ This instance deploys the module with the minimum set of required parameters.
 param resourceGroupName string = 'dep-${namePrefix}-kubernetesconfiguration.fluxconfigurations-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param location string = deployment().location
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'kcfcmin'
@@ -31,17 +31,17 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: location
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     clusterName: 'dep-${namePrefix}-aks-${serviceShort}'
     clusterExtensionName: '${namePrefix}${serviceShort}001'
     clusterNodeResourceGroupName: 'dep-${namePrefix}-aks-${serviceShort}-rg'
-    location: location
+    location: resourceLocation
   }
 }
 
@@ -52,9 +52,9 @@ module nestedDependencies 'dependencies.bicep' = {
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
-    location: location
+    location: resourceLocation
     name: '${namePrefix}${serviceShort}001'
     clusterName: nestedDependencies.outputs.clusterName
     namespace: 'flux-system'
@@ -69,9 +69,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       timeoutInSeconds: 180
       url: 'https://github.com/mspnp/aks-baseline'
     }
-    // Workaround for PSRule
-    bucket: null
-    kustomizations: null
-    configurationProtectedSettings: null
+    kustomizations: {
+      unified: {
+        path: './cluster-manifests'
+      }
+    }
   }
 }]

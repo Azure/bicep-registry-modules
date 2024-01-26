@@ -1,0 +1,84 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "5949458902590917375"
+    },
+    "name": "DBforMySQL Flexible Server Administrators",
+    "description": "This module deploys a DBforMySQL Flexible Server Administrator.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "flexibleServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent DBforMySQL flexible server. Required if the template is used in a standalone deployment."
+      }
+    },
+    "sid": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. SID (object ID) of the server administrator."
+      }
+    },
+    "identityResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource ID of the identity used for AAD Authentication."
+      }
+    },
+    "login": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Login name of the server administrator."
+      }
+    },
+    "tenantId": {
+      "type": "string",
+      "defaultValue": "[tenant().tenantId]",
+      "metadata": {
+        "description": "Optional. The tenantId of the Active Directory administrator."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DBforMySQL/flexibleServers/administrators",
+      "apiVersion": "2022-01-01",
+      "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'ActiveDirectory')]",
+      "properties": {
+        "administratorType": "ActiveDirectory",
+        "identityResourceId": "[parameters('identityResourceId')]",
+        "login": "[parameters('login')]",
+        "sid": "[parameters('sid')]",
+        "tenantId": "[parameters('tenantId')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed administrator."
+      },
+      "value": "ActiveDirectory"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed administrator."
+      },
+      "value": "[resourceId('Microsoft.DBforMySQL/flexibleServers/administrators', parameters('flexibleServerName'), 'ActiveDirectory')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed administrator."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
