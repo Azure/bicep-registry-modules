@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "10745050092912187859"
+      "templateHash": "14321734198796364988"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -976,7 +976,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "10540991074684743146"
+              "templateHash": "1893962329691986346"
             },
             "name": "Synapse Workspaces Keys",
             "description": "This module deploys a Synapse Workspaces Key.",
@@ -992,7 +992,7 @@
             "workspaceName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment."
+                "description": "Optional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment."
               }
             },
             "isActiveCMK": {
