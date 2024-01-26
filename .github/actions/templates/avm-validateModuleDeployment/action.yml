@@ -77,7 +77,7 @@ runs:
 
           # Set fucntion input parameters
           $functionInput = @{
-              ModuleRoot =
+              ModuleRoot = '${{ inputs.modulePath }}'
           }
 
           Write-Verbose "Invoke function with" -Verbose
