@@ -20,9 +20,6 @@ param serviceShort string = 'nvgmin'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-#disable-next-line no-hardcoded-location // Just a value to avoid ongoing capacity challenges
-var tempLocation = 'francecentral'
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -39,7 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: tempLocation
+    location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     localNetworkGatewayName: 'dep-${namePrefix}-lng-${serviceShort}'
   }
@@ -54,7 +51,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
-    location: tempLocation
+    location: resourceLocation
     name: '${namePrefix}${serviceShort}001'
     skuName: 'VpnGw2AZ'
     gatewayType: 'Vpn'

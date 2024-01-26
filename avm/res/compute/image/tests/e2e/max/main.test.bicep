@@ -23,9 +23,6 @@ param baseTime string = utcNow('u')
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-#disable-next-line no-hardcoded-location // services used for this module are only available in major regions
-var tempLocation = 'eastus'
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -34,7 +31,7 @@ var tempLocation = 'eastus'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: resourceGroupName
-  location: tempLocation
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
@@ -42,7 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: tempLocation
+    location: resourceLocation
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     diskEncryptionSetName: 'dep-${namePrefix}-des-${serviceShort}'
@@ -62,7 +59,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: tempLocation
+    location: resourceLocation
     osAccountType: 'Premium_LRS'
     osDiskBlobUri: nestedDependencies.outputs.vhdUri
     osDiskCaching: 'ReadWrite'

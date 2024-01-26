@@ -24,9 +24,6 @@ param password string = newGuid()
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-#disable-next-line no-hardcoded-location // Just a value to avoid ongoing capacity challenges
-var tempLocation = 'northeurope'
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -35,14 +32,14 @@ var tempLocation = 'northeurope'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: tempLocation
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: tempLocation
+    location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     applicationSecurityGroupName: 'dep-${namePrefix}-asg-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
@@ -65,7 +62,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: tempLocation
+    location: resourceLocation
   }
 }
 
@@ -78,7 +75,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
-    location: tempLocation
+    location: resourceLocation
     name: '${namePrefix}${serviceShort}'
     computerName: '${namePrefix}winvm1'
     adminUsername: 'VMAdmin'
