@@ -1,10 +1,5 @@
 # Redis Cache `[Microsoft.Cache/redis]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a Redis Cache.
 
 ## Navigation
@@ -51,7 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-crmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-crmin'
   params: {
     // Required parameters
     name: 'crmin001'
@@ -99,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-crmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-crmax'
   params: {
     // Required parameters
     name: 'crmax001'
@@ -347,7 +342,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-crwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-crwaf'
   params: {
     // Required parameters
     name: 'crwaf001'
