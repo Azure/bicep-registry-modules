@@ -69,16 +69,16 @@ runs:
         $triggerInput = @{}
 
         ## Static validation
-        $triggerInput[staticValidation] = "true"
+        $triggerInput["staticValidation"] = "true"
         # TODO: add logic to update the value
 
         ## Deployment validation
-        $triggerInput[deploymentValidation] = "true"
+        $triggerInput["deploymentValidation"] = "true"
         # TODO: add logic to update the value
 
         ## Publishing
         ### Test if module qualifies for publishing
-        $triggerInput[publishing] = "true"
+        $triggerInput["publishing"] = "true"
         if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath)) {
           Write-Verbose "No changes detected. Set publishing to be skipped." -Verbose
           $triggerInput[publishing] = "false"
