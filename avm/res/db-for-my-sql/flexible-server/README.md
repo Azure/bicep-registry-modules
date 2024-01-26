@@ -1,10 +1,5 @@
 # DBforMySQL Flexible Servers `[Microsoft.DBforMySQL/flexibleServers]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a DBforMySQL Flexible Server.
 
 ## Navigation
@@ -52,7 +47,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dfmsfsmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dfmsfsmin'
   params: {
     // Required parameters
     name: 'dfmsfsmin001'
@@ -116,7 +111,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dfmsmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dfmsmax'
   params: {
     // Required parameters
     name: 'dfmsmax001'
@@ -400,7 +395,7 @@ This instance deploys the module with connectivity mode "Private Access".
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dfmspvt'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dfmspvt'
   params: {
     // Required parameters
     name: 'dfmspvt001'
@@ -536,7 +531,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dfmswaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dfmswaf'
   params: {
     // Required parameters
     name: 'dfmswaf001'

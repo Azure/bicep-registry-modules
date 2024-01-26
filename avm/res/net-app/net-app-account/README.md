@@ -50,7 +50,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nanaamin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nanaamin'
   params: {
     // Required parameters
     name: 'nanaamin001'
@@ -98,7 +98,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nanaamax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nanaamax'
   params: {
     // Required parameters
     name: 'nanaamax001'
@@ -360,7 +360,7 @@ This instance deploys the module with nfs31.
 
 ```bicep
 module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nanaanfs3'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nanaanfs3'
   params: {
     // Required parameters
     name: 'nanaanfs3001'
@@ -600,7 +600,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nanaawaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nanaawaf'
   params: {
     // Required parameters
     name: 'nanaawaf001'
