@@ -1,13 +1,10 @@
 #########################################################
-## 'Get workflow input' Composite Action               ##
+## 'Get trigger input' Composite Action                ##
 #########################################################
 ##
-## This composite action contains the logic to read workflow runtime parameters and publih their value as a workflow output.
-## This is essential in case a module workflow was not triggered via the 'workflow_dispatch' method, so these runtime parameters will not be available to use when the workflow runs.
-## To solve this, the action reads the workflow file for the module, and looks for the default values of the workflow inputs and publishes them as an output, regardless of how the workflow was triggered.
-##
-## Currently publishes the runtime parameter(s):
-## - removeDeployment
+## This composite action contains the logic to calculate the running condition for each module workflow job,
+## based on the diff (modified files from the previous head), and the GitHub event triggering the module workflow.
+## It then publishes their values in a flattened table as an action output.
 ##
 #########################################################
 ##
@@ -15,11 +12,11 @@
 ## ACTION PARAMETERS                         ##
 ##-------------------------------------------##
 ##
-##   |===================================================================================================================================================================|
-##   | Parameter    | Required | Default | Description                                                                      | Example                                    |
-##   |--------------|----------|---------|----------------------------------------------------------------------------------|--------------------------------------------|
-##   | workflowPath | true     | ''      | The path to the workflow file used to retrieve default workflow input parameters | '.github/workflows/ms.keyvault.vaults.yml' |
-##   |===================================================================================================================================================================|
+##   |=================================================================================================================|
+##   | Parameter    | Required | Default | Description                              | Example                          |
+##   |--------------|----------|---------|------------------------------------------|----------------------------------|
+##   | modulePath   | true     | -       | The relative path to the module's folder | 'avm/res/api-management/service' |
+##   |=================================================================================================================|
 ##
 #########################################################
 ##
@@ -27,11 +24,11 @@
 ## ACTION OUTPUTS                         ##
 ##----------------------------------------##
 ##
-##   |==========================================================================================|
-##   | Output        | Description                                                              |
-##   |---------------|--------------------------------------------------------------------------|
-##   | workflowInput | A table of all pipeline input parameters and their value in JSON format. |
-##   |==========================================================================================|
+##   |=====================================================================================|
+##   | Output        | Description                                                         |
+##   |---------------|---------------------------------------------------------------------|
+##   | triggerInput  | A table of all pipeline stages and their enablement in JSON format. |
+##   |=====================================================================================|
 ##
 ##---------------------------------------------##
 
@@ -40,7 +37,7 @@ description: "Get Trigger Input"
 
 inputs:
   modulePath:
-    description: "The path to the module's folder"
+    description: "The relative path to the module's folder."
     required: true
 
 outputs:
@@ -87,4 +84,3 @@ runs:
 
         Write-Output '::endgroup::'
       shell: pwsh
-
