@@ -46,7 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dvwsmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvwsmin'
   params: {
     // Required parameters
     name: 'dvwsmin002'
@@ -94,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dvwsmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvwsmax'
   params: {
     // Required parameters
     name: 'dvwsmax001'
@@ -384,7 +384,7 @@ This instance deploys the module with Private Endpoints.
 
 ```bicep
 module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dvwspe'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvwspe'
   params: {
     // Required parameters
     name: 'dvwspe001'
@@ -608,7 +608,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dvwswaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvwswaf'
   params: {
     // Required parameters
     name: 'dvwswaf002'
