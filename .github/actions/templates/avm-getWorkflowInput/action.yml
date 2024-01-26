@@ -95,9 +95,3 @@ runs:
         }
         Write-Output '::endgroup::'
       shell: pwsh
-  #   - get publishing
-  #     # 1. Test if module qualifies for publishing
-  # if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath)) {
-  #   Write-Verbose "No changes detected. Skipping publishing" -Verbose
-  #   return
-  # }
