@@ -79,7 +79,7 @@ runs:
         ## Publishing
         ### Test if module qualifies for publishing
         $triggerInput["publishing"] = "true"
-        if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath)) {
+        if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath -Verbose)) {
           Write-Verbose "No changes detected. Set publishing to be skipped." -Verbose
           $triggerInput["publishing"] = "false"
         }

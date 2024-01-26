@@ -187,7 +187,6 @@ Could return paths like
 #>
 function Get-ModulesToPublish {
 
-
   [CmdletBinding()]
   param (
     [Parameter(Mandatory)]
