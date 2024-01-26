@@ -14,6 +14,9 @@ Required. The root path of the module.
 .PARAMETER repoRoot
 Optional. The root path of the repository.
 
+.PARAMETER GlobalResourceGroupLocation
+Required. The location of the resource group where the global resources will be deployed.
+
 .EXAMPLE
 Get-AzAvailableResourceLocation -ModuleRoot ".\avm\res\resources\resource-group" -repoRoot .\
 
@@ -28,6 +31,9 @@ function Get-AzAvailableResourceLocation {
 
     [Parameter(Mandatory = $true)]
     [string] $ModuleRoot,
+
+    [Parameter(Mandatory = $false)]
+    [string] $GlobalResourceGroupLocation,
 
     [Parameter(Mandatory = $false)]
     [array] $ExcludedRegions = @(
@@ -67,7 +73,7 @@ function Get-AzAvailableResourceLocation {
 
   if ($resourceRegionList -eq "global") {
     Write-Verbose "Resource is global, default region [West Europe] will be used for resource group creation"
-    $location = "westeurope" # Using West Europe for resource group location. GLobabl resources should have hardocded location in `main.bicep`
+    $location = $GlobalResourceGroupLocation # Set Location to resource group location. Globabl resources should have hardocded location in `main.bicep`
   }
   else {
 
