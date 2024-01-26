@@ -1096,6 +1096,93 @@ Describe 'Module tests' -Tag 'Module' {
   }
 }
 
+Describe 'Governance tests' {
+
+  $governanceTestCases = [System.Collections.ArrayList] @()
+  foreach ($moduleFolderPath in $moduleFolderPaths) {
+
+    $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
+    $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}')[1]
+
+    $isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+    if ($isTopLevelModule) {
+
+      $governanceTestCases += @{
+        relativeModulePath = $relativeModulePath
+        repoRootPath       = $repoRootPath
+        moduleFolderName   = $resourceTypeIdentifier
+      }
+    }
+  }
+
+  It '[<moduleFolderName>] Owning team should be specified correctly in CODEWONERS file.' -TestCases $governanceTestCases {
+
+    param(
+      [string] $relativeModulePath,
+      [string] $repoRootPath
+    )
+
+    $codeownersFilePath = Join-Path $repoRootPath '.github' 'CODEOWNERS'
+    $codeOwnersContent = Get-Content $codeownersFilePath
+
+    $formattedEntry = $relativeModulePath -replace '\\', '\/'
+    $moduleLine = $codeOwnersContent | Where-Object { $_ -match "^\s*\/$formattedEntry\/" }
+
+    $expectedEntry = "/{0}/ @Azure/{1}-module-owners-bicep @Azure/avm-core-team-technical-bicep" -f ($relativeModulePath -replace '\\', '/'), ($relativeModulePath -replace '-' -replace '[\\|\/]', '-')
+
+    # Line should exist
+    $moduleLine | Should -Not -BeNullOrEmpty -Because "the module should be listed in the [CODEOWNERS](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file) file as [/$expectedEntry]."
+
+    # Line should be correct
+    $moduleLine | Should -Be $expectedEntry -Because "the module should match the expected format as documented [here](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file)."
+  }
+
+
+  It '[<moduleFolderName>] Module identifier should be listed in issue template in the correct alphabetical position.' -TestCases $governanceTestCases {
+
+    param(
+      [string] $relativeModulePath,
+      [string] $repoRootPath
+    )
+
+    $issueTemplatePath = Join-Path $repoRootPath '.github' 'ISSUE_TEMPLATE' 'avm_module_issue.yml'
+    $issueTemplateContent = Get-Content $issueTemplatePath
+
+    # Identify listed modules
+    $startIndex = 0
+    while ($issueTemplateContent[$startIndex] -notmatch '^\s*- "Other, as defined below\.\.\."' -and $startIndex -ne $issueTemplateContent.Length) {
+      $startIndex++
+    }
+    $startIndex++ # Go one further than dummy value line
+
+    $endIndex = $startIndex
+    while ($issueTemplateContent[$endIndex] -match '.*- "avm\/.*' -and $endIndex -ne $issueTemplateContent.Length) {
+      $endIndex++
+    }
+    $endIndex-- # Go one back to last module line
+
+    $listedModules = $issueTemplateContent[$startIndex..$endIndex] | ForEach-Object { $_ -replace '.*- "(avm\/.*)".*', '$1' }
+
+    # Should exist
+    $listedModules | Should -Contain ($relativeModulePath -replace '\\', '/') -Because 'the module should be listed in the issue template in the correct alphabetical position ([ref](https://azure.github.io/Azure-Verified-Modules/specs/bicep/#id-bcpnfr15---category-contributionsupport---avm-module-issue-template-file)).'
+
+    # Should not be commented
+    $entry = $issueTemplateContent | Where-Object { $_ -match ('.*- "{0}".*' -f $relativeModulePath -replace '\\', '\/') }
+    $entry.Trim() | Should -Not -Match '^\s*#.*' -Because 'the module should not be commented out in the issue template.'
+
+    # Should be at correct location
+    $incorrectLines = @()
+    foreach ($finding in (Compare-Object $listedModules ($listedModules | Sort-Object) -SyncWindow 0)) {
+      if ($finding.SideIndicator -eq '<=') {
+        $incorrectLines += $finding.InputObject
+      }
+    }
+    $incorrectLines = $incorrectLines | Sort-Object -Unique
+
+    $incorrectLines.Count | Should -Be 0 -Because ('the number of modules that are not in the correct alphabetical order in the issue template should be zero ([ref](https://azure.github.io/Azure-Verified-Modules/specs/bicep/#id-bcpnfr15---category-contributionsupport---avm-module-issue-template-file)).</br>However, the following incorrectly located lines were found:</br><pre>{0}</pre>' -f ($incorrectLines -join '</br>'))
+  }
+}
+
 Describe 'Test file tests' -Tag 'TestTemplate' {
 
   Context 'General test file' {
