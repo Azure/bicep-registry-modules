@@ -46,7 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dvhpmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvhpmin'
   params: {
     // Required parameters
     name: 'dvhpmin002'
@@ -94,7 +94,7 @@ This instance deploys the module with all available parameters for testing purpo
 
 ```bicep
 module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dvhpmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvhpmax'
   params: {
     // Required parameters
     name: 'dvhpmax001'
@@ -352,7 +352,7 @@ This instance deploys the module with Private Endpoints.
 
 ```bicep
 module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dvhppe'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvhppe'
   params: {
     // Required parameters
     name: 'dvhppe001'
@@ -422,7 +422,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dvhpwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvhpwaf'
   params: {
     // Required parameters
     name: 'dvhpwaf002'
