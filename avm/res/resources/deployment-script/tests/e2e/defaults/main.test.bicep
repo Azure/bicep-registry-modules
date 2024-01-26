@@ -36,7 +36,6 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}st${serviceShort}'
     location: location
   }
 }
@@ -55,7 +54,6 @@ module testDeployment '../../../main.bicep' = {
     kind: 'AzurePowerShell'
     retentionInterval: 'P1D'
     scriptContent: 'Write-Host \'AVM Deployment Script test!\''
-    storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
     managedIdentities: {
       userAssignedResourcesIds: [
         nestedDependencies.outputs.managedIdentityResourceId

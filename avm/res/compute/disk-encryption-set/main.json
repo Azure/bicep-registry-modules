@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "8898450237590542842"
+      "version": "0.24.24.22086",
+      "templateHash": "231465906721977114"
     },
     "name": "Disk Encryption Sets",
     "description": "This module deploys a Disk Encryption Set. The module will attempt to set permissions on the provided Key Vault for any used user-assigned identity.",
@@ -374,8 +374,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "3415943548000075516"
+              "version": "0.24.24.22086",
+              "templateHash": "18116549045396353747"
             }
           },
           "parameters": {
@@ -462,8 +462,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "3185669298547069044"
+                      "version": "0.24.24.22086",
+                      "templateHash": "11258728276348640403"
                     },
                     "name": "Key Vault Access Policies",
                     "description": "This module deploys a Key Vault Access Policy.",
@@ -711,7 +711,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('diskEncryptionSet', '2022-07-02', 'full').identity, 'principalId')), reference('diskEncryptionSet', '2022-07-02', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('diskEncryptionSet', '2022-07-02', 'full'), 'identity'), 'principalId'), '')]"
     },
     "identities": {
       "type": "object",
