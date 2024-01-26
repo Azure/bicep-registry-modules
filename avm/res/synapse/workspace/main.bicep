@@ -224,7 +224,6 @@ module workspace_key 'key/main.bicep' = if (encryptionActivateWorkspace) {
   name: '${workspace.name}-cmk-activation'
   params: {
     name: customerManagedKey!.keyName
-    location: location
     isActiveCMK: true
     keyVaultResourceId: cMKKeyVault.id
     workspaceName: workspace.name
