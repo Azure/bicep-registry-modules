@@ -173,6 +173,7 @@ body:
         - "avm/res/web/serverfarm"
         - "avm/res/web/site"
         - "avm/res/web/static-site"
+
     validations:
       required: true
   - type: input

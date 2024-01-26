@@ -1,0 +1,90 @@
+#########################################################
+## 'Get workflow input' Composite Action               ##
+#########################################################
+##
+## This composite action contains the logic to read workflow runtime parameters and publih their value as a workflow output.
+## This is essential in case a module workflow was not triggered via the 'workflow_dispatch' method, so these runtime parameters will not be available to use when the workflow runs.
+## To solve this, the action reads the workflow file for the module, and looks for the default values of the workflow inputs and publishes them as an output, regardless of how the workflow was triggered.
+##
+## Currently publishes the runtime parameter(s):
+## - removeDeployment
+##
+#########################################################
+##
+##-------------------------------------------##
+## ACTION PARAMETERS                         ##
+##-------------------------------------------##
+##
+##   |===================================================================================================================================================================|
+##   | Parameter    | Required | Default | Description                                                                      | Example                                    |
+##   |--------------|----------|---------|----------------------------------------------------------------------------------|--------------------------------------------|
+##   | workflowPath | true     | ''      | The path to the workflow file used to retrieve default workflow input parameters | '.github/workflows/ms.keyvault.vaults.yml' |
+##   |===================================================================================================================================================================|
+##
+#########################################################
+##
+##----------------------------------------##
+## ACTION OUTPUTS                         ##
+##----------------------------------------##
+##
+##   |==========================================================================================|
+##   | Output        | Description                                                              |
+##   |---------------|--------------------------------------------------------------------------|
+##   | workflowInput | A table of all pipeline input parameters and their value in JSON format. |
+##   |==========================================================================================|
+##
+##---------------------------------------------##
+
+name: "Get Trigger Input"
+description: "Get Trigger Input"
+
+inputs:
+  modulePath:
+    description: "The path to the module's folder"
+    required: true
+
+outputs:
+  triggerInput:
+    description: "A table of all pipeline stages and their enablement in JSON format."
+    value: ${{ steps.get-trigger-input-action.outputs.triggerInput }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get trigger input
+      id: get-trigger-input-action
+      run: |
+        # Grouping task logs
+        Write-Output '::group::Get trigger input parameters'
+
+        Write-Verbose "The workflow trigger is: ${{ github.event_name }}" -Verbose
+
+        # Load used functions
+        . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'publish' 'helper' 'Get-ModulesToPublish.ps1')
+
+        # Get values per each stage
+        $moduleFolderPath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}'
+        Write-Verbose "The module path is: $moduleFolderPath" -Verbose
+
+        $triggerInput = @{}
+
+        ## Static validation
+        $triggerInput["staticValidation"] = "true"
+        # TODO: add logic to update the value
+
+        ## Deployment validation
+        $triggerInput["deploymentValidation"] = "true"
+        # TODO: add logic to update the value
+
+        ## Publishing
+        ### Test if module qualifies for publishing
+        $triggerInput["publishing"] = "true"
+        if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath -Verbose)) {
+          Write-Verbose "No changes detected. Set publishing to be skipped." -Verbose
+          $triggerInput["publishing"] = "false"
+        }
+        Write-Output ('{0}={1}' -f 'triggerInput', ($triggerInput | ConvertTo-Json -Compress)) >> $env:GITHUB_OUTPUT
+
+        Write-Output '::endgroup::'
+      shell: pwsh
+
