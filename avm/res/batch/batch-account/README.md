@@ -35,7 +35,7 @@ The following section provides usage examples for the module, which were used to
 - [Using large parameter set](#example-3-using-large-parameter-set)
 - [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Using only defaults_
+<!-- ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -85,7 +85,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
 ```
 
 </details>
-<p>
+<p> -->
 
 ### Example 2: _Using Customer-Managed-Keys with User-Assigned identity_
 
