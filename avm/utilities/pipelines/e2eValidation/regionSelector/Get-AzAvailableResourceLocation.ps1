@@ -67,7 +67,7 @@ function Get-AzAvailableResourceLocation {
 
   if ($resourceRegionList -eq "global") {
     Write-Verbose "Resource is global, no region selection required"
-    $location = "global"
+    $location = "westeurope" # Using West Europe for resource group location. GLobabl resources should have hardocded location in `main.bicep`
   }
   else {
 
