@@ -31,18 +31,18 @@ function Get-AzAvailableResourceLocation {
 
     [Parameter(Mandatory = $false)]
     [array] $ExcludedRegions = @(
-      "eastus2",
-      "westus2",
-      "westus2",
-      "southcentralus",
-      "brazilsouth",
-      "westeurope",
-      "switzerlandnorth",
       "asiasoutheast",
+      "brazilsouth",
+      "eastus2",
       "japaneast",
+      "koreacentral",
       "qatercentral",
+      "southcentralus",
+      "switzerlandnorth",
       "uaenorth",
-      "koreacentral"
+      "westeurope",
+      "westus2",
+      "westus2"
     )
   )
 
