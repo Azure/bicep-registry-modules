@@ -83,7 +83,7 @@ runs:
           Write-Verbose "Invoke function with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          $resourceLocation = Get-AzDeploymentRegion @functionInput
+          $resourceLocation = Get-AzAvailableResourceLocation @functionInput
 
           $deploymentLocation = @{}
           Write-Verbose ('{0}-{1}' -f 'resourceLocation', $resourceLocation) -Verbose
