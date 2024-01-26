@@ -78,7 +78,6 @@ runs:
           # Set fucntion input parameters
           $functionInput = @{
               ModuleRoot = '${{ inputs.modulePath }}'
-              RepoRoot   = $env:GITHUB_WORKSPACE
           }
 
           Write-Verbose "Invoke function with" -Verbose
