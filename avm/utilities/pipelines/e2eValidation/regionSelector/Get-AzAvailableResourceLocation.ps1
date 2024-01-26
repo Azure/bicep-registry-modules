@@ -24,7 +24,7 @@ function Get-AzAvailableResourceLocation {
   param (
 
     [Parameter(Mandatory = $false)]
-    [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.parent.FullName,
+    [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName,
 
     [Parameter(Mandatory = $true)]
     [string] $ModuleRoot,
