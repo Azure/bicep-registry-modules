@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "6610248633645776629"
+      "templateHash": "7251796385032619850"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace.",
@@ -1906,7 +1906,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('logAnalyticsWorkspace', '2022-10-01', 'full').identity, 'principalId')), reference('logAnalyticsWorkspace', '2022-10-01', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('logAnalyticsWorkspace', '2022-10-01', 'full'), 'identity'), 'principalId'), '')]"
     }
   }
 }

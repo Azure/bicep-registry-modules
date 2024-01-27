@@ -43,7 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nercmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nercmin'
   params: {
     // Required parameters
     bandwidthInMbps: 50
@@ -103,7 +103,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nercmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nercmax'
   params: {
     // Required parameters
     bandwidthInMbps: 50
@@ -264,7 +264,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nercwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nercwaf'
   params: {
     // Required parameters
     bandwidthInMbps: 50
