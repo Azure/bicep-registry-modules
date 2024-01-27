@@ -53,7 +53,7 @@ This instance deploys the module with registering to an automation account.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmlinatmg'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmlinatmg'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
@@ -203,7 +203,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmlinmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmlinmin'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
@@ -341,7 +341,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmlinmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmlinmax'
   params: {
     // Required parameters
     adminUsername: 'localAdministrator'
@@ -913,7 +913,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmwinwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmwinwaf'
   params: {
     // Required parameters
     adminUsername: 'VMAdmin'
@@ -1521,7 +1521,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmwinmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmwinmin'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
@@ -1639,7 +1639,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmwinmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmwinmax'
   params: {
     // Required parameters
     adminUsername: 'VMAdmin'
@@ -2249,7 +2249,7 @@ This instance deploys the module with disk enryption set.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmwincmk'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmwincmk'
   params: {
     // Required parameters
     adminUsername: 'VMAdministrator'

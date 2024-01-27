@@ -45,7 +45,7 @@ This instance deploys the module with an Azure CLI script.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdscli'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdscli'
   params: {
     // Required parameters
     kind: 'AzureCLI'
@@ -135,7 +135,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 ### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
+> **Note:** In this scenario, In this scenario, the `Storage File Data Privileged Contributor` role needs to be assigned to the user-assigned managed identity and the deployment principal needs to have permissions to list the storage account keys.
 
 
 
@@ -145,7 +145,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdsmin'
   params: {
     // Required parameters
     kind: 'AzurePowerShell'
@@ -160,7 +160,6 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     }
     retentionInterval: 'P1D'
     scriptContent: 'Write-Host \'AVM Deployment Script test!\''
-    storageAccountResourceId: '<storageAccountResourceId>'
   }
 }
 ```
@@ -203,9 +202,6 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     },
     "scriptContent": {
       "value": "Write-Host \"AVM Deployment Script test!\""
-    },
-    "storageAccountResourceId": {
-      "value": "<storageAccountResourceId>"
     }
   }
 }
@@ -225,7 +221,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdsmax'
   params: {
     // Required parameters
     kind: 'AzureCLI'
@@ -407,7 +403,7 @@ This instance deploys the module with access to a private network.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsnet'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdsnet'
   params: {
     // Required parameters
     kind: 'AzureCLI'
@@ -507,7 +503,7 @@ This instance deploys the module with an Azure PowerShell script.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsps'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdsps'
   params: {
     // Required parameters
     kind: 'AzurePowerShell'
@@ -591,7 +587,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdswaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdswaf'
   params: {
     // Required parameters
     kind: 'AzureCLI'
@@ -722,7 +718,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 | [`runOnce`](#parameter-runonce) | bool | When set to false, script will run every time the template is deployed. When set to true, the script will only run once. |
 | [`scriptContent`](#parameter-scriptcontent) | string | Script body. Max length: 32000 characters. To run an external script, use primaryScriptURI instead. |
 | [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | The resource ID of the storage account to use for this deployment script. If none is provided, the deployment script uses a temporary, managed storage account. |
-| [`subnetResourceIds`](#parameter-subnetresourceids) | array | List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network. |
+| [`subnetResourceIds`](#parameter-subnetresourceids) | array | List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network. When using a private network, the `Storage File Data Privileged Contributor` role needs to be assigned to the user-assigned managed identity and the deployment principal needs to have permissions to list the storage account keys. Also, Shared-Keys must not be disabled on the used storage account [ref](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet). |
 | [`supportingScriptUris`](#parameter-supportingscripturis) | array | List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent). |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 | [`timeout`](#parameter-timeout) | string | Maximum allowed script execution time specified in ISO 8601 format. Default value is PT1H - 1 hour; 'PT30M' - 30 minutes; 'P5D' - 5 days; 'P1Y' 1 year. |
@@ -1006,7 +1002,7 @@ The resource ID of the storage account to use for this deployment script. If non
 
 ### Parameter: `subnetResourceIds`
 
-List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network.
+List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network. When using a private network, the `Storage File Data Privileged Contributor` role needs to be assigned to the user-assigned managed identity and the deployment principal needs to have permissions to list the storage account keys. Also, Shared-Keys must not be disabled on the used storage account [ref](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet).
 
 - Required: No
 - Type: array

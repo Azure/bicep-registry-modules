@@ -46,7 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ialamin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ialamin'
   params: {
     // Required parameters
     conditions: [
@@ -156,7 +156,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ialamax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ialamax'
   params: {
     // Required parameters
     conditions: [
@@ -338,7 +338,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ialawaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ialawaf'
   params: {
     // Required parameters
     conditions: [

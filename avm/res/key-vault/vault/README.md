@@ -51,7 +51,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kvvmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-kvvmin'
   params: {
     // Required parameters
     name: 'kvvmin002'
@@ -103,7 +103,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kvvmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-kvvmax'
   params: {
     // Required parameters
     name: 'kvvmax002'
@@ -613,7 +613,7 @@ This instance deploys the module with Private Endpoints.
 
 ```bicep
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kvvpe'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-kvvpe'
   params: {
     // Required parameters
     name: 'kvvpe001'
@@ -755,7 +755,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kvvwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-kvvwaf'
   params: {
     // Required parameters
     name: 'kvvwaf002'
