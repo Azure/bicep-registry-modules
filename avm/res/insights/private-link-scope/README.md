@@ -44,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-  name: '${uniqueString(deployment().name, location)}-test-iplsmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-iplsmin'
   params: {
     // Required parameters
     name: 'iplsmin001'
@@ -91,7 +91,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-  name: '${uniqueString(deployment().name, location)}-test-iplsmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-iplsmax'
   params: {
     // Required parameters
     name: 'iplsmax001'
@@ -476,7 +476,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-  name: '${uniqueString(deployment().name, location)}-test-iplswaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-iplswaf'
   params: {
     // Required parameters
     name: 'iplswaf001'
