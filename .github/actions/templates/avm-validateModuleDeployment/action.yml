@@ -78,12 +78,13 @@ runs:
           # Set fucntion input parameters
           $functionInput = @{
               ModuleRoot = '${{ inputs.modulePath }}'
+              GlobalResourceGroupLocation = '${{ inputs.deploymentMetadataLocation }}'
           }
 
           Write-Verbose "Invoke function with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          $resourceLocation = Get-AzAvailableResourceLocation @functionInput
+          $resourceLocation = Get-AzAvailableResourceLocation @functionInput -Verbose
 
           $deploymentLocation = @{}
           Write-Verbose ('{0}-{1}' -f 'resourceLocation', $resourceLocation) -Verbose
