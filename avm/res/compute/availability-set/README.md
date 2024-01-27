@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-casmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-casmin'
   params: {
     // Required parameters
     name: 'casmin001'
@@ -90,7 +90,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-casmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-casmax'
   params: {
     // Required parameters
     name: 'casmax001'
@@ -200,7 +200,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-caswaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-caswaf'
   params: {
     // Required parameters
     name: 'caswaf001'
