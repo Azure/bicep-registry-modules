@@ -45,7 +45,7 @@ This instance does not require a pre-deployed public IP but includes its deploym
 
 ```bicep
 module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nbhctmpip'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nbhctmpip'
   params: {
     // Required parameters
     name: 'nbhctmpip001'
@@ -175,7 +175,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nbhmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nbhmin'
   params: {
     // Required parameters
     name: 'nbhmin001'
@@ -227,7 +227,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nbhmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nbhmax'
   params: {
     // Required parameters
     name: 'nbhmax001'
@@ -385,7 +385,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nbhwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nbhwaf'
   params: {
     // Required parameters
     name: 'nbhwaf001'

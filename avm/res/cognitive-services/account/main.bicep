@@ -319,7 +319,7 @@ output resourceGroupName string = resourceGroup().name
 output endpoint string = cognitiveService.properties.endpoint
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(cognitiveService.identity, 'principalId') ? cognitiveService.identity.principalId : ''
+output systemAssignedMIPrincipalId string = cognitiveService.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = cognitiveService.location
