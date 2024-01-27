@@ -45,7 +45,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-npiamin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-npiamin'
   params: {
     // Required parameters
     name: 'npiamin001'
@@ -93,7 +93,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-npiamax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-npiamax'
   params: {
     // Required parameters
     name: 'npiamax001'
@@ -259,7 +259,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-npiawaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-npiawaf'
   params: {
     // Required parameters
     name: 'npiawaf001'

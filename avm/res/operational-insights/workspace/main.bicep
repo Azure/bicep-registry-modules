@@ -330,7 +330,7 @@ output logAnalyticsWorkspaceId string = logAnalyticsWorkspace.properties.custome
 output location string = logAnalyticsWorkspace.location
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(logAnalyticsWorkspace.identity, 'principalId') ? logAnalyticsWorkspace.identity.principalId : ''
+output systemAssignedMIPrincipalId string = logAnalyticsWorkspace.?identity.?principalId ?? ''
 
 // =============== //
 //   Definitions   //

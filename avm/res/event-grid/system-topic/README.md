@@ -44,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-egstmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-egstmin'
   params: {
     // Required parameters
     name: 'egstmin001'
@@ -100,7 +100,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-egstmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-egstmax'
   params: {
     // Required parameters
     name: 'egstmax001'
@@ -300,7 +300,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-egstwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-egstwaf'
   params: {
     // Required parameters
     name: 'egstwaf001'

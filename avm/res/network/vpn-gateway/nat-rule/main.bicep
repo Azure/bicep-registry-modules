@@ -15,23 +15,21 @@ param externalMappings array = []
 param internalMappings array = []
 
 @description('Optional. A NAT rule must be configured to a specific VPN Gateway instance. This is applicable to Dynamic NAT only. Static NAT rules are automatically applied to both VPN Gateway instances.')
-param ipConfigurationId string = ''
+param ipConfigurationId string?
 
 @description('Optional. The type of NAT rule for VPN NAT. IngressSnat mode (also known as Ingress Source NAT) is applicable to traffic entering the Azure hub\'s site-to-site VPN gateway. EgressSnat mode (also known as Egress Source NAT) is applicable to traffic leaving the Azure hub\'s Site-to-site VPN gateway.')
 @allowed([
-  ''
   'EgressSnat'
   'IngressSnat'
 ])
-param mode string = ''
+param mode string?
 
 @description('Optional. The type of NAT rule for VPN NAT. Static one-to-one NAT establishes a one-to-one relationship between an internal address and an external address while Dynamic NAT assigns an IP and port based on availability.')
 @allowed([
-  ''
   'Dynamic'
   'Static'
 ])
-param type string = ''
+param type string?
 
 resource vpnGateway 'Microsoft.Network/vpnGateways@2023-04-01' existing = {
   name: vpnGatewayName
@@ -43,9 +41,9 @@ resource natRule 'Microsoft.Network/vpnGateways/natRules@2023-04-01' = {
   properties: {
     externalMappings: externalMappings
     internalMappings: internalMappings
-    ipConfigurationId: !empty(ipConfigurationId) ? ipConfigurationId : null
-    mode: !empty(mode) ? any(mode) : null
-    type: !empty(type) ? any(type) : null
+    ipConfigurationId: ipConfigurationId
+    mode: mode
+    type: type
   }
 }
 
