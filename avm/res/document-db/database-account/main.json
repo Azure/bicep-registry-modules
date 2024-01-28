@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "3077721667954326119"
+      "templateHash": "1861152987880656619"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -2365,7 +2365,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('databaseAccount', '2023-04-15', 'full').identity, 'principalId')), reference('databaseAccount', '2023-04-15', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('databaseAccount', '2023-04-15', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",

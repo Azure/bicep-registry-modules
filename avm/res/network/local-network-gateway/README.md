@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nlngmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nlngmin'
   params: {
     // Required parameters
     localAddressPrefixes: [
@@ -102,7 +102,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nlngmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nlngmax'
   params: {
     // Required parameters
     localAddressPrefixes: [
@@ -228,7 +228,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nlngwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nlngwaf'
   params: {
     // Required parameters
     localAddressPrefixes: [

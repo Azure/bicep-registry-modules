@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nergmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nergmin'
   params: {
     // Required parameters
     name: 'nergmin001'
@@ -94,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nergmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nergmax'
   params: {
     // Required parameters
     name: 'nergmax001'
@@ -210,7 +210,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nergwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nergwaf'
   params: {
     // Required parameters
     name: 'nergwaf001'

@@ -44,7 +44,7 @@ This instance uses a Key Vault with the Access Policy permission model. If no pe
 
 ```bicep
 module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cdesap'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdesap'
   params: {
     // Required parameters
     keyName: '<keyName>'
@@ -162,7 +162,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cdesmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdesmin'
   params: {
     // Required parameters
     keyName: '<keyName>'
@@ -218,7 +218,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cdesmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdesmax'
   params: {
     // Required parameters
     keyName: '<keyName>'
@@ -344,7 +344,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cdeswaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdeswaf'
   params: {
     // Required parameters
     keyName: '<keyName>'
