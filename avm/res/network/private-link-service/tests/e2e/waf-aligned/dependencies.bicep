@@ -7,9 +7,6 @@ param virtualNetworkName string
 @description('Required. The name of the Load Balancer to create.')
 param loadBalancerName string
 
-@description('Required. The name of the Managed Identity to create.')
-param managedIdentityName string
-
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
@@ -53,16 +50,8 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
-  name: managedIdentityName
-  location: location
-}
-
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
-
-@description('The principal ID of the created Managed Identity.')
-output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 
 @description('The resource ID of the created Load Balancer Frontend IP Configuration.')
 output loadBalancerFrontendIpConfigurationResourceId string = loadBalancer.properties.frontendIPConfigurations[0].id
