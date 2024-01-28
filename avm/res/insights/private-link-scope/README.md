@@ -602,13 +602,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -776,13 +769,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
           "name": "pe-",
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
-          ],
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
           ],
           "subnetResourceId": "<subnetResourceId>",
           "tags": {

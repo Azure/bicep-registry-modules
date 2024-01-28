@@ -36,7 +36,6 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-la-${serviceShort}'
     location: resourceLocation
   }
@@ -84,13 +83,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
         ipConfigurations: [
           {
             name: 'api'
