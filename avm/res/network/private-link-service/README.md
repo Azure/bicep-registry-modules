@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module privateLinkService 'br/public:avm/res/network/private-link-service:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nplsmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nplsmin'
   params: {
     // Required parameters
     name: 'nplsmin001'
@@ -124,7 +124,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module privateLinkService 'br/public:avm/res/network/private-link-service:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nplsmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nplsmax'
   params: {
     // Required parameters
     name: 'nplsmax001'
@@ -286,7 +286,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module privateLinkService 'br/public:avm/res/network/private-link-service:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nplswaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nplswaf'
   params: {
     // Required parameters
     name: 'nplswaf001'
@@ -323,13 +323,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -406,15 +399,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
     },
     "tags": {
       "value": {
