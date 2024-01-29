@@ -39,7 +39,7 @@ param scaleRules array = []
   'Multiple'
   'Single'
 ])
-@description('Optional. ActiveRevisionsMode controls how active revisions are handled for the Container app.')
+@description('Optional. Controls how active revisions are handled for the Container app.')
 param activeRevisionsMode string = 'Single'
 
 @description('Required. Resource ID of environment.')
