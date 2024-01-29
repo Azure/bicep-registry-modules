@@ -202,6 +202,6 @@ body:
     id: correlation-id
     attributes:
       label: (Optional) Correlation Id
-      description: Please provide a correlation id f available and appropriate.
+      description: Please provide a correlation id if available and appropriate.
     validations:
       required: false
