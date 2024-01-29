@@ -1,7 +1,10 @@
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata description = '''
+This instance deploys the module with the minimum set of required parameters.
+> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
+'''
 
 // ========== //
 // Parameters //

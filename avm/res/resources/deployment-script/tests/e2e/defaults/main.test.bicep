@@ -1,7 +1,10 @@
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata description = '''
+This instance deploys the module with the minimum set of required parameters.
+> **Note:** In this scenario, In this scenario, the `Storage File Data Privileged Contributor` role needs to be assigned to the user-assigned managed identity and the deployment principal needs to have permissions to list the storage account keys.
+'''
 
 // ========== //
 // Parameters //
