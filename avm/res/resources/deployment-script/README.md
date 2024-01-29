@@ -45,7 +45,7 @@ This instance deploys the module with an Azure CLI script.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdscli'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdscli'
   params: {
     // Required parameters
     kind: 'AzureCLI'
@@ -145,7 +145,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdsmin'
   params: {
     // Required parameters
     kind: 'AzurePowerShell'
@@ -221,7 +221,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdsmax'
   params: {
     // Required parameters
     kind: 'AzureCLI'
@@ -403,7 +403,7 @@ This instance deploys the module with access to a private network.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsnet'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdsnet'
   params: {
     // Required parameters
     kind: 'AzureCLI'
@@ -503,7 +503,7 @@ This instance deploys the module with an Azure PowerShell script.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsps'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdsps'
   params: {
     // Required parameters
     kind: 'AzurePowerShell'
@@ -587,7 +587,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdswaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdswaf'
   params: {
     // Required parameters
     kind: 'AzureCLI'

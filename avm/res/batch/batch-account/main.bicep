@@ -262,7 +262,7 @@ output resourceGroupName string = resourceGroup().name
 output location string = batchAccount.location
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(batchAccount.identity, 'principalId') ? batchAccount.identity.principalId : ''
+output systemAssignedMIPrincipalId string = batchAccount.?identity.?principalId ?? ''
 
 // ================ //
 // Definitions      //

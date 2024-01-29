@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-pbdcapmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-pbdcapmin'
   params: {
     // Required parameters
     members: [
@@ -106,7 +106,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-pbdcapmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-pbdcapmax'
   params: {
     // Required parameters
     members: [
@@ -236,7 +236,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-pbdcapwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-pbdcapwaf'
   params: {
     // Required parameters
     members: [

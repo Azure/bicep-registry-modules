@@ -232,13 +232,13 @@ function Test-ModuleLocally {
             # Deployment & Validation Testing
             # -------------------------------
             $functionInput = @{
-                location             = $ValidateOrDeployParameters.Location
-                resourceGroupName    = $ValidateOrDeployParameters.ResourceGroupName
-                subscriptionId       = $ValidateOrDeployParameters.SubscriptionId
-                managementGroupId    = $ValidateOrDeployParameters.ManagementGroupId
-                additionalParameters = $additionalParameters
-                RepoRoot             = $repoRootPath
-                Verbose              = $true
+                DeploymentMetadataLocation = $ValidateOrDeployParameters.Location
+                resourceGroupName          = $ValidateOrDeployParameters.ResourceGroupName
+                subscriptionId             = $ValidateOrDeployParameters.SubscriptionId
+                managementGroupId          = $ValidateOrDeployParameters.ManagementGroupId
+                additionalParameters       = $additionalParameters
+                RepoRoot                   = $repoRootPath
+                Verbose                    = $true
             }
 
             try {
