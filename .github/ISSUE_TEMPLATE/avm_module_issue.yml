@@ -48,7 +48,7 @@ body:
         - "avm/res/analysis-services/server"
         - "avm/res/api-management/service"
         # - "avm/res/app-configuration/configuration-store"
-        # - "avm/res/app/container-app"
+        - "avm/res/app/container-app"
         - "avm/res/app/managed-environment"
         - "avm/res/automation/automation-account"
         - "avm/res/batch/batch-account"
