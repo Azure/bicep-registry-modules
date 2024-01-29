@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.21.1.54444",
-      "templateHash": "7210670012885312812"
+      "version": "0.24.24.22086",
+      "templateHash": "14421664754265859300"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -205,7 +205,7 @@
         "Single"
       ],
       "metadata": {
-        "description": "Optional. ActiveRevisionsMode controls how active revisions are handled for the Container app."
+        "description": "Optional. Controls how active revisions are handled for the Container app."
       }
     },
     "environmentId": {
