@@ -44,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-vpngmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-vpngmin'
   params: {
     // Required parameters
     name: 'vpngmin001'
@@ -96,7 +96,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-vpngmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-vpngmax'
   params: {
     // Required parameters
     name: 'vpngmax001'
@@ -246,7 +246,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-vpngwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-vpngwaf'
   params: {
     // Required parameters
     name: 'vpngwaf001'

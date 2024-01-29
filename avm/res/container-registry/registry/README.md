@@ -50,7 +50,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-crrmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-crrmin'
   params: {
     // Required parameters
     name: 'crrmin001'
@@ -98,7 +98,7 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-crrencr'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-crrencr'
   params: {
     // Required parameters
     name: 'crrencr001'
@@ -178,7 +178,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-crrmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-crrmax'
   params: {
     // Required parameters
     name: 'crrmax001'
@@ -454,7 +454,7 @@ This instance deploys the module with a private endpoint.
 
 ```bicep
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-crrpe'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-crrpe'
   params: {
     // Required parameters
     name: 'crrpe001'
@@ -524,7 +524,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-crrwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-crrwaf'
   params: {
     // Required parameters
     name: 'crrwaf001'

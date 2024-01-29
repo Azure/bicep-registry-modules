@@ -43,7 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nfdmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nfdmin'
   params: {
     // Required parameters
     backendPools: [
@@ -259,7 +259,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nfdmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nfdmax'
   params: {
     // Required parameters
     backendPools: [
@@ -609,7 +609,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nfdwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nfdwaf'
   params: {
     // Required parameters
     backendPools: [

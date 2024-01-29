@@ -41,7 +41,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-iagmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-iagmin'
   params: {
     // Required parameters
     groupShortName: 'agiagmin001'
@@ -93,7 +93,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-iagmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-iagmax'
   params: {
     // Required parameters
     groupShortName: 'agiagmax001'
@@ -235,7 +235,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-iagwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-iagwaf'
   params: {
     // Required parameters
     groupShortName: 'agiagwaf001'
