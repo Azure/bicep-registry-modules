@@ -14,7 +14,8 @@
 ##   |======================================================================================================================================================================================|
 ##   | Parameter                  | Required | Default | Description                                           | Example                                                                    |
 ##   |----------------------------|----------|---------|-------------------------------------------------------|----------------------------------------------------------------------------|
-##   | templateFilePath           | true     | ''      | The path to the template file to use for deployment   | 'modules/api-management/service/main.bicep'                                |
+##   | modulePath                 | true     | ''      | The path to the module file directory                 | 'modules/api-management/service/main.bicep'
+##   | templateFilePath           | true     | ''      | The path to the template file to use for deployment   | 'modules/api-management/service/tests/e2e/maix/main.test.bicep'                                |
 ##   | deploymentMetadataLocation | true     | ''      | The location to store the deployment metadata         | 'WestEurope'                                                               |
 ##   | subscriptionId             | false    | ''      | The subscriptionId to deploy to                       | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
 ##   | managementGroupId          | false    | ''      | The managementGroupId to deploy to                    | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
@@ -28,6 +29,9 @@ name: "Deploy module"
 description: "Deploy module"
 
 inputs:
+  modulePath:
+    descriptio: "The path to the module file directory used to determine the resource location"
+    required: true
   templateFilePath:
     description: "The path to the template file to use for deployment"
     required: true
@@ -69,18 +73,18 @@ runs:
           Write-Output '::group::Get Recommended Regions'
 
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'regionSelector' 'Get-AzDeploymentRegion.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'regionSelector' 'Get-AzAvailableResourceLocation.ps1')
 
           # Set fucntion input parameters
           $functionInput = @{
-              usePairedRegionsOnly = $true
-              useKnownRegionsOnly = $true
+              ModuleRoot = '${{ inputs.modulePath }}'
+              GlobalResourceGroupLocation = '${{ inputs.deploymentMetadataLocation }}'
           }
 
           Write-Verbose "Invoke function with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          $resourceLocation = Get-AzDeploymentRegion @functionInput
+          $resourceLocation = Get-AzAvailableResourceLocation @functionInput -Verbose
 
           $deploymentLocation = @{}
           Write-Verbose ('{0}-{1}' -f 'resourceLocation', $resourceLocation) -Verbose
