@@ -447,7 +447,7 @@
       "minLength": 5,
       "maxLength": 50,
       "metadata": {
-        "description": "Required. Name of your Azure container registry."
+        "description": "Required. Name of your Azure Container Registry."
       }
     },
     "acrAdminUserEnabled": {

@@ -59,14 +59,14 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dddamin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dddamin'
   params: {
     // Required parameters
     locations: [
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: '<location>'
+        locationName: '<locationName>'
       }
     ]
     name: 'dddamin001'
@@ -94,7 +94,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "failoverPriority": 0,
           "isZoneRedundant": false,
-          "locationName": "<location>"
+          "locationName": "<locationName>"
         }
       ]
     },
@@ -123,14 +123,14 @@ This instance deploys the module with a Gremlin Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dddagrm'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dddagrm'
   params: {
     // Required parameters
     locations: [
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: '<location>'
+        locationName: '<locationName>'
       }
       {
         failoverPriority: 1
@@ -254,7 +254,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "failoverPriority": 0,
           "isZoneRedundant": false,
-          "locationName": "<location>"
+          "locationName": "<locationName>"
         },
         {
           "failoverPriority": 1,
@@ -391,14 +391,14 @@ This instance deploys the module with a Mongo Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dddamng'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dddamng'
   params: {
     // Required parameters
     locations: [
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: '<location>'
+        locationName: '<locationName>'
       }
       {
         failoverPriority: 1
@@ -656,7 +656,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "failoverPriority": 0,
           "isZoneRedundant": false,
-          "locationName": "<location>"
+          "locationName": "<locationName>"
         },
         {
           "failoverPriority": 1,
@@ -925,14 +925,14 @@ This instance deploys the module without a Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dddapln'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dddapln'
   params: {
     // Required parameters
     locations: [
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: '<location>'
+        locationName: '<locationName>'
       }
       {
         failoverPriority: 1
@@ -1005,7 +1005,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "failoverPriority": 0,
           "isZoneRedundant": false,
-          "locationName": "<location>"
+          "locationName": "<locationName>"
         },
         {
           "failoverPriority": 1,
@@ -1087,14 +1087,14 @@ This instance deploys the module with a SQL Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dddasql'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dddasql'
   params: {
     // Required parameters
     locations: [
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: '<location>'
+        locationName: '<locationName>'
       }
       {
         failoverPriority: 1
@@ -1256,7 +1256,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "failoverPriority": 0,
           "isZoneRedundant": false,
-          "locationName": "<location>"
+          "locationName": "<locationName>"
         },
         {
           "failoverPriority": 1,
@@ -1431,14 +1431,14 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dddawaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dddawaf'
   params: {
     // Required parameters
     locations: [
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: '<location>'
+        locationName: '<locationName>'
       }
       {
         failoverPriority: 1
@@ -1521,7 +1521,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "failoverPriority": 0,
           "isZoneRedundant": false,
-          "locationName": "<location>"
+          "locationName": "<locationName>"
         },
         {
           "failoverPriority": 1,

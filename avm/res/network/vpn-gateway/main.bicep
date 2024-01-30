@@ -109,8 +109,8 @@ module vpnGateway_natRules 'nat-rule/main.bicep' = [for (natRule, index) in natR
     externalMappings: contains(natRule, 'externalMappings') ? natRule.externalMappings : []
     internalMappings: contains(natRule, 'internalMappings') ? natRule.internalMappings : []
     ipConfigurationId: contains(natRule, 'ipConfigurationId') ? natRule.ipConfigurationId : ''
-    mode: contains(natRule, 'mode') ? natRule.mode : ''
-    type: contains(natRule, 'type') ? natRule.type : ''
+    mode: natRule.?mode 
+    type: natRule.?type
   }
 }]
 

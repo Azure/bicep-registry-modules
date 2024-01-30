@@ -46,7 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nngmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nngmin'
   params: {
     // Required parameters
     name: 'nngmin001'
@@ -94,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nngmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nngmax'
   params: {
     // Required parameters
     name: 'nngmax001'
@@ -286,7 +286,7 @@ This example shows how you can provide a Public IP Prefix to the module, while a
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nngcprx'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nngcprx'
   params: {
     // Required parameters
     name: 'nngcprx001'
@@ -354,7 +354,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nngwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nngwaf'
   params: {
     // Required parameters
     name: 'nngwaf001'

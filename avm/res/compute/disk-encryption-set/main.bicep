@@ -162,7 +162,7 @@ output name string = diskEncryptionSet.name
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(diskEncryptionSet.identity, 'principalId') ? diskEncryptionSet.identity.principalId : ''
+output systemAssignedMIPrincipalId string = diskEncryptionSet.?identity.?principalId ?? ''
 
 @description('The idenities of the disk encryption set.')
 output identities object = diskEncryptionSet.identity
