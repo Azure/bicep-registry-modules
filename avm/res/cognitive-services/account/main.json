@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "900552806279578658"
+      "templateHash": "13697179912910947708"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",
@@ -1523,7 +1523,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('cognitiveService', '2022-12-01', 'full').identity, 'principalId')), reference('cognitiveService', '2022-12-01', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('cognitiveService', '2022-12-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",

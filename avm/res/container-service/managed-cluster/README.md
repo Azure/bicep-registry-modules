@@ -48,7 +48,7 @@ This instance deploys the module with Azure CNI network plugin .
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-csmaz'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-csmaz'
   params: {
     // Required parameters
     name: 'csmaz001'
@@ -552,7 +552,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-csmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-csmin'
   params: {
     // Required parameters
     name: 'csmin001'
@@ -626,7 +626,7 @@ This instance deploys the module with Kubenet network plugin .
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-csmkube'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-csmkube'
   params: {
     // Required parameters
     name: 'csmkube001'
@@ -906,7 +906,7 @@ This instance deploys the module with a private cluster instance.
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-csmpriv'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-csmpriv'
   params: {
     // Required parameters
     name: 'csmpriv001'
@@ -1132,7 +1132,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cswaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cswaf'
   params: {
     // Required parameters
     name: 'cswaf001'

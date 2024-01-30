@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "10051365519912587561"
+      "templateHash": "1210072663750911007"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory.",
@@ -1780,7 +1780,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('dataFactory', '2018-06-01', 'full').identity, 'principalId')), reference('dataFactory', '2018-06-01', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('dataFactory', '2018-06-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",

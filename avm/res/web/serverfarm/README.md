@@ -43,7 +43,7 @@ This instance deploys the module with a base set of parameters. Note it does inc
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsfmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsfmin'
   params: {
     // Required parameters
     name: 'wsfmin001'
@@ -55,7 +55,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       tier: 'Premium'
     }
     // Non-required parameters
-    location: 'eastus'
+    location: '<location>'
   }
 }
 ```
@@ -87,7 +87,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     },
     // Non-required parameters
     "location": {
-      "value": "eastus"
+      "value": "<location>"
     }
   }
 }
@@ -107,7 +107,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsfmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsfmax'
   params: {
     // Required parameters
     name: 'wsfmax001'
@@ -134,7 +134,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       }
     ]
     kind: 'App'
-    location: 'eastus'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'lock'
@@ -213,7 +213,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       "value": "App"
     },
     "location": {
-      "value": "eastus"
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -271,7 +271,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsfwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsfwaf'
   params: {
     // Required parameters
     name: 'wsfwaf001'
@@ -298,7 +298,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       }
     ]
     kind: 'App'
-    location: 'eastus'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'lock'
@@ -359,7 +359,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       "value": "App"
     },
     "location": {
-      "value": "eastus"
+      "value": "<location>"
     },
     "lock": {
       "value": {

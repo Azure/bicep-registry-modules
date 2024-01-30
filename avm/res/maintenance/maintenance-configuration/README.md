@@ -47,7 +47,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-mmcmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-mmcmin'
   params: {
     // Required parameters
     name: 'mmcmin001'
@@ -95,7 +95,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-mmcmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-mmcmax'
   params: {
     // Required parameters
     name: 'mmcmax001'
@@ -267,7 +267,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-mmcwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-mmcwaf'
   params: {
     // Required parameters
     name: 'mmcwaf001'

@@ -43,7 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-miuaimin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-miuaimin'
   params: {
     // Required parameters
     name: 'miuaimin001'
@@ -91,7 +91,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-miuaimax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-miuaimax'
   params: {
     // Required parameters
     name: 'miuaimax001'
@@ -219,7 +219,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-miuaiwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-miuaiwaf'
   params: {
     // Required parameters
     name: 'miuaiwaf001'

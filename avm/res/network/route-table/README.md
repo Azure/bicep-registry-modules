@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module routeTable 'br/public:avm/res/network/route-table:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nrtmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nrtmin'
   params: {
     // Required parameters
     name: 'nrtmin001'
@@ -90,7 +90,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module routeTable 'br/public:avm/res/network/route-table:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nrtmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nrtmax'
   params: {
     // Required parameters
     name: 'nrtmax001'
@@ -218,7 +218,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module routeTable 'br/public:avm/res/network/route-table:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nrtwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nrtwaf'
   params: {
     // Required parameters
     name: 'nrtwaf001'

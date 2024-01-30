@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "6402533243232998196"
+      "templateHash": "4884548870640081043"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -4411,7 +4411,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('vm', '2022-11-01', 'full').identity, 'principalId')), reference('vm', '2022-11-01', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('vm', '2022-11-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
