@@ -14,6 +14,9 @@ Required. The root path of the module.
 .PARAMETER repoRoot
 Optional. The root path of the repository.
 
+.PARAMETER GlobalResourceGroupLocation
+Required. The location of the resource group where the global resources will be deployed.
+
 .EXAMPLE
 Get-AzAvailableResourceLocation -ModuleRoot ".\avm\res\resources\resource-group" -repoRoot .\
 
@@ -28,6 +31,9 @@ function Get-AzAvailableResourceLocation {
 
     [Parameter(Mandatory = $true)]
     [string] $ModuleRoot,
+
+    [Parameter(Mandatory = $false)]
+    [string] $GlobalResourceGroupLocation,
 
     [Parameter(Mandatory = $false)]
     [array] $ExcludedRegions = @(
@@ -65,19 +71,27 @@ function Get-AzAvailableResourceLocation {
   $ResourceRegionList = (Get-AzResourceProvider | Where-Object { $_.ProviderNamespace -eq $formattedResourceProvider }).ResourceTypes | Where-Object { $_.ResourceTypeName -eq $formattedServiceName } | Select-Object -ExpandProperty Locations
   Write-Verbose "Region list: $($resourceRegionList | ConvertTo-Json)"
 
-  $locations = Get-AzLocation | Where-Object {
-    $_.DisplayName -in $ResourceRegionList -and
-    $_.Location -notin $ExcludedRegions -and
-    $_.PairedRegion -ne "{}" -and
-    $_.RegionCategory -eq "Recommended"
-  } |  Select-Object -ExpandProperty Location
-  Write-Verbose "Available Locations: $($locations | ConvertTo-Json)"
+  if ($resourceRegionList -eq "global") {
+    Write-Verbose "Resource is global, default region [$GlobalResourceGroupLocation] will be used for resource group creation"
+    $location = $GlobalResourceGroupLocation # Set Location to resource group location. Globabl resources should have hardocded location in `main.bicep`
+  }
+  else {
+
+    $locations = Get-AzLocation | Where-Object {
+      $_.DisplayName -in $ResourceRegionList -and
+      $_.Location -notin $ExcludedRegions -and
+      $_.PairedRegion -ne "{}" -and
+      $_.RegionCategory -eq "Recommended"
+    } |  Select-Object -ExpandProperty Location
+    Write-Verbose "Available Locations: $($locations | ConvertTo-Json)"
 
 
-  $index = Get-Random -Maximum ($locations.Count)
-  Write-Verbose "Generated random index [$index]"
+    $index = Get-Random -Maximum ($locations.Count)
+    Write-Verbose "Generated random index [$index]"
 
-  $location = $locations[$index]
+    $location = $locations[$index]
+
+  }
   Write-Verbose "Selected location [$location]" -Verbose
 
   return $location
