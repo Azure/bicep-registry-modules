@@ -1,9 +1,6 @@
 @description('Optional. The location to deploy to.')
 param location string = resourceGroup().location
 
-@description('Optional. Tags of the resource.')
-param tags object = {}
-
 @description('Required. The name of the Host Pool to create.')
 param hostPoolName string
 
