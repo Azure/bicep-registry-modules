@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using all available parameters'
-metadata description = 'This instance deploys the module with all available parameters for testing purposes.'
+metadata name = 'Using large parameter set'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
