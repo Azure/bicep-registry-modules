@@ -35,11 +35,6 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     hostPoolName: 'dep-${namePrefix}-hp-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 
