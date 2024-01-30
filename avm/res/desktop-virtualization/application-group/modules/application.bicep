@@ -37,27 +37,6 @@ param iconPath string = ''
 @sys.description('Optional. Index of the icon.')
 param iconIndex int = 0
 
-@sys.description('Optional. Enable telemetry.')
-param enableTelemetry bool = true
-
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.desktopvirtualization-appgroup.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-        }
-      }
-    }
-  }
-}
-
 resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2023-09-05' existing = {
   name: applicationGroupName
 }
