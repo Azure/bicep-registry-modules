@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "13880536558340319383"
+      "templateHash": "12022767093866974773"
     },
     "name": "Static Web Apps",
     "description": "This module deploys a Static Web App.",
@@ -1644,7 +1644,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('staticSite', '2021-03-01', 'full').identity, 'principalId')), reference('staticSite', '2021-03-01', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('staticSite', '2021-03-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",

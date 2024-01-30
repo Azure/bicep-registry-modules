@@ -1,0 +1,140 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "9605115891306784861"
+    },
+    "name": "Site Slot App Settings",
+    "description": "This module deploys a Site Slot App Setting.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "slotName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Slot name to be configured."
+      }
+    },
+    "appName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent site resource. Required if the template is used in a standalone deployment."
+      }
+    },
+    "kind": {
+      "type": "string",
+      "allowedValues": [
+        "functionapp",
+        "functionapp,linux",
+        "functionapp,workflowapp",
+        "functionapp,workflowapp,linux",
+        "app"
+      ],
+      "metadata": {
+        "description": "Required. Type of slot to deploy."
+      }
+    },
+    "storageAccountResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions."
+      }
+    },
+    "appInsightResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Resource ID of the app insight to leverage for this resource."
+      }
+    },
+    "setAzureWebJobsDashboard": {
+      "type": "bool",
+      "defaultValue": "[if(contains(parameters('kind'), 'functionapp'), true(), false())]",
+      "metadata": {
+        "description": "Optional. For function apps. If true the app settings \"AzureWebJobsDashboard\" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons."
+      }
+    },
+    "appSettingsKeyValuePairs": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING."
+      }
+    }
+  },
+  "resources": {
+    "app::slot": {
+      "existing": true,
+      "type": "Microsoft.Web/sites/slots",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}', parameters('appName'), parameters('slotName'))]",
+      "dependsOn": [
+        "app"
+      ]
+    },
+    "app": {
+      "existing": true,
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2022-09-01",
+      "name": "[parameters('appName')]"
+    },
+    "appInsight": {
+      "condition": "[not(empty(parameters('appInsightResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02",
+      "subscriptionId": "[split(coalesce(parameters('appInsightResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(parameters('appInsightResourceId'), '////'), '/')[4]]",
+      "name": "[last(split(coalesce(parameters('appInsightResourceId'), 'dummyName'), '/'))]"
+    },
+    "storageAccount": {
+      "condition": "[not(empty(parameters('storageAccountResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2023-01-01",
+      "subscriptionId": "[split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]]",
+      "name": "[last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))]"
+    },
+    "slotSettings": {
+      "type": "Microsoft.Web/sites/slots/config",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), 'appsettings')]",
+      "kind": "[parameters('kind')]",
+      "properties": "[union(coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(not(empty(parameters('storageAccountResourceId'))), union(createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value)), if(equals(parameters('setAzureWebJobsDashboard'), true()), createObject('AzureWebJobsDashboard', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value)), createObject())), createObject()), if(not(empty(parameters('appInsightResourceId'))), createObject('APPINSIGHTS_INSTRUMENTATIONKEY', reference('appInsight').InstrumentationKey, 'APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
+      "dependsOn": [
+        "appInsight",
+        "app::slot",
+        "storageAccount"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the slot config."
+      },
+      "value": "appsettings"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the slot config."
+      },
+      "value": "[resourceId('Microsoft.Web/sites/slots/config', parameters('appName'), parameters('slotName'), 'appsettings')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the slot config was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
