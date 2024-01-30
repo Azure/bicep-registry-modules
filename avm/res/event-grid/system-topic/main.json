@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "1435642038697069486"
+      "templateHash": "3698031087535001530"
     },
     "name": "Event Grid System Topics",
     "description": "This module deploys an Event Grid System Topic.",
@@ -622,7 +622,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('systemTopic', '2021-12-01', 'full').identity, 'principalId')), reference('systemTopic', '2021-12-01', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('systemTopic', '2021-12-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",

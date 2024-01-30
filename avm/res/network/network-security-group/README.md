@@ -44,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nnsgmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nnsgmin'
   params: {
     // Required parameters
     name: 'nnsgmin001'
@@ -92,7 +92,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nnsgmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nnsgmax'
   params: {
     // Required parameters
     name: 'nnsgmax001'
@@ -348,7 +348,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nnsgwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nnsgwaf'
   params: {
     // Required parameters
     name: 'nnsgwaf001'

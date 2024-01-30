@@ -39,12 +39,17 @@ body:
       description: Which existing AVM module is this issue related to?
       options:
         - "Other, as defined below..."
+        # - "avm/ptn/avd-lza/insights"
+        # - "avm/ptn/avd-lza/management-plane"
+        # - "avm/ptn/avd-lza/networking"
+        # - "avm/ptn/avd-lza/session-hosts"
+        # - "avm/ptn/security/security-center"
         # - "avm/res/aad/domain-service"
         - "avm/res/analysis-services/server"
         - "avm/res/api-management/service"
-        # - "avm/res/app/container-app"
-        - "avm/res/app/managed-environment"
         # - "avm/res/app-configuration/configuration-store"
+        - "avm/res/app/container-app"
+        - "avm/res/app/managed-environment"
         - "avm/res/automation/automation-account"
         - "avm/res/batch/batch-account"
         - "avm/res/cache/redis"
@@ -63,10 +68,10 @@ body:
         # - "avm/res/container-instance/container-group"
         - "avm/res/container-registry/registry"
         - "avm/res/container-service/managed-cluster"
-        - "avm/res/databricks/access-connector"
-        - "avm/res/databricks/workspace"
         - "avm/res/data-factory/factory"
         - "avm/res/data-protection/backup-vault"
+        - "avm/res/databricks/access-connector"
+        - "avm/res/databricks/workspace"
         - "avm/res/db-for-my-sql/flexible-server"
         - "avm/res/db-for-postgre-sql/flexible-server"
         # - "avm/res/desktop-virtualization/application-group"
@@ -168,11 +173,7 @@ body:
         - "avm/res/web/serverfarm"
         - "avm/res/web/site"
         - "avm/res/web/static-site"
-        # - "avm/ptn/avd-lza/insights"
-        # - "avm/ptn/avd-lza/management-plane"
-        # - "avm/ptn/avd-lza/networking"
-        # - "avm/ptn/avd-lza/session-hosts"
-        # - "avm/ptn/security/security-center"
+
     validations:
       required: true
   - type: input
@@ -201,6 +202,6 @@ body:
     id: correlation-id
     attributes:
       label: (Optional) Correlation Id
-      description: Please provide a correlation id f available and appropriate.
+      description: Please provide a correlation id if available and appropriate.
     validations:
       required: false

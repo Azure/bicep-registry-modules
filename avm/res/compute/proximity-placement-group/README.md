@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cppgmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cppgmin'
   params: {
     // Required parameters
     name: 'cppgmin001'
@@ -90,7 +90,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cppgmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cppgmax'
   params: {
     // Required parameters
     name: 'cppgmax001'
@@ -236,7 +236,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cppgwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cppgwaf'
   params: {
     // Required parameters
     name: 'cppgwaf001'
