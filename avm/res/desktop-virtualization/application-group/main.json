@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "17914134979329182391"
+      "templateHash": "2654703443312844248"
     },
     "name": "Azure Virtual Desktop Application Group",
     "description": "This module deploys an Azure Virtual Desktop Application Group.",
@@ -434,10 +434,7 @@
           "commandLineArguments": "[if(contains(parameters('applications')[copyIndex()], 'commandLineArguments'), createObject('value', parameters('applications')[copyIndex()].commandLineArguments), createObject('value', ''))]",
           "showInPortal": "[if(contains(parameters('applications')[copyIndex()], 'showInPortal'), createObject('value', parameters('applications')[copyIndex()].showInPortal), createObject('value', false()))]",
           "iconPath": "[if(contains(parameters('applications')[copyIndex()], 'iconPath'), createObject('value', parameters('applications')[copyIndex()].iconPath), createObject('value', parameters('applications')[copyIndex()].filePath))]",
-          "iconIndex": "[if(contains(parameters('applications')[copyIndex()], 'iconIndex'), createObject('value', parameters('applications')[copyIndex()].iconIndex), createObject('value', 0))]",
-          "enableTelemetry": {
-            "value": "[parameters('enableTelemetry')]"
-          }
+          "iconIndex": "[if(contains(parameters('applications')[copyIndex()], 'iconIndex'), createObject('value', parameters('applications')[copyIndex()].iconIndex), createObject('value', 0))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -446,7 +443,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "16488955966870707963"
+              "templateHash": "16966262699054894958"
             },
             "name": "Azure Virtual Desktop Application Group Application",
             "description": "This module deploys an Azure Virtual Desktop Application Group Application.",
@@ -523,36 +520,9 @@
               "metadata": {
                 "description": "Optional. Index of the icon."
               }
-            },
-            "enableTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.desktopvirtualization-appgroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": [],
-                  "outputs": {
-                    "telemetry": {
-                      "type": "String",
-                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                    }
-                  }
-                }
-              }
-            },
             {
               "type": "Microsoft.DesktopVirtualization/applicationGroups/applications",
               "apiVersion": "2023-09-05",

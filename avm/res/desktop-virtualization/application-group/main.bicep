@@ -102,7 +102,7 @@ resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2023-09-05'
   }
 }
 
-module appGroup_applications 'modules/application.bicep' = [for (application, index) in applications: {
+module appGroup_applications 'application/main.bicep' = [for (application, index) in applications: {
   name: '${uniqueString(deployment().name, location)}-AppGroup-App-${index}'
   params: {
     name: application.name
@@ -115,7 +115,6 @@ module appGroup_applications 'modules/application.bicep' = [for (application, in
     showInPortal: contains(application, 'showInPortal') ? application.showInPortal : false
     iconPath: contains(application, 'iconPath') ? application.iconPath : application.filePath
     iconIndex: contains(application, 'iconIndex') ? application.iconIndex : 0
-    enableTelemetry: enableTelemetry
   }
 }]
 
