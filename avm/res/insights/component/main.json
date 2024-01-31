@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "10324025487128140389"
+      "templateHash": "8791848207852953697"
     },
     "name": "Application Insights",
     "description": "This component deploys an Application Insights instance.",
@@ -447,7 +447,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "10890899348116202349"
+              "templateHash": "15083145243255175413"
             },
             "name": "Application Insights Linked Storage Account - ASB",
             "description": "This component deploys an Application Insights Linked Storage Account.",
@@ -478,6 +478,13 @@
             }
           ],
           "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Linked Storage Account."
+              },
+              "value": "ServiceProfiler"
+            },
             "resourceId": {
               "type": "string",
               "metadata": {
