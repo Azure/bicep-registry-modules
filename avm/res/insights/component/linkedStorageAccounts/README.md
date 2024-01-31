@@ -49,6 +49,7 @@ The name of the parent Application Insights instance. Required if the template i
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `name` | string | The name of the Linked Storage Account. |
 | `resourceGroupName` | string | The resource group the agent pool was deployed into. |
 | `resourceId` | string | The resource ID of the Linked Storage Account. |
 

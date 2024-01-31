@@ -20,6 +20,9 @@ resource linkedStorageAccount 'Microsoft.Insights/components/linkedStorageAccoun
   }
 }
 
+@description('The name of the Linked Storage Account.')
+output name string = linkedStorageAccount.name
+
 @description('The resource ID of the Linked Storage Account.')
 output resourceId string = linkedStorageAccount.id
 
