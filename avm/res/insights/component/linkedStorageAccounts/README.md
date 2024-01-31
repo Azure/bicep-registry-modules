@@ -1,4 +1,4 @@
-# Application Insights Linked Storage Account - ASB `[microsoft.insights/components/linkedStorageAccounts]`
+# Application Insights Linked Storage Account `[microsoft.insights/components/linkedStorageAccounts]`
 
 This component deploys an Application Insights Linked Storage Account.
 

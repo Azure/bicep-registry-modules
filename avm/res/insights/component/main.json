@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "8791848207852953697"
+      "templateHash": "4904899500252762566"
     },
     "name": "Application Insights",
     "description": "This component deploys an Application Insights instance.",
@@ -447,11 +447,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "15083145243255175413"
+              "templateHash": "15481388144279509267"
             },
-            "name": "Application Insights Linked Storage Account - ASB",
+            "name": "Application Insights Linked Storage Account",
             "description": "This component deploys an Application Insights Linked Storage Account.",
-            "owner": "ASBVML/module-maintainers"
+            "owner": "Azure/module-maintainers"
           },
           "parameters": {
             "appInsightsName": {
