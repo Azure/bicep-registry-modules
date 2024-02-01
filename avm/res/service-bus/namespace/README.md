@@ -56,7 +56,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-sbnmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-sbnmin'
   params: {
     // Required parameters
     name: 'sbnmin001'
@@ -112,7 +112,7 @@ This instance deploys the module with features enabled for CMK encryption.
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-sbnencr'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-sbnencr'
   params: {
     // Required parameters
     name: 'sbnencr001'
@@ -196,7 +196,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-sbnmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-sbnmax'
   params: {
     // Required parameters
     name: 'sbnmax001'
@@ -644,7 +644,7 @@ This instance deploys the module with features enabled for private endpoint conf
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-sbnpe'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-sbnpe'
   params: {
     // Required parameters
     name: 'sbnpe001'
@@ -782,7 +782,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-sbnwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-sbnwaf'
   params: {
     // Required parameters
     name: 'sbnwaf001'

@@ -47,7 +47,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module staticSite 'br/public:avm/res/web/static-site:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wssmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wssmin'
   params: {
     // Required parameters
     name: 'wssmin001'
@@ -95,7 +95,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module staticSite 'br/public:avm/res/web/static-site:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wssmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wssmax'
   params: {
     // Required parameters
     name: 'wssmax001'
@@ -287,7 +287,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module staticSite 'br/public:avm/res/web/static-site:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsswaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsswaf'
   params: {
     // Required parameters
     name: 'wsswaf001'

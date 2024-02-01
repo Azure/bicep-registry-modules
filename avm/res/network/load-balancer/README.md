@@ -47,7 +47,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nlbmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nlbmin'
   params: {
     // Required parameters
     frontendIPConfigurations: [
@@ -117,7 +117,7 @@ This instance deploys the module with the minimum set of required parameters to 
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nlbint'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nlbint'
   params: {
     // Required parameters
     frontendIPConfigurations: [
@@ -335,7 +335,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nlbmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nlbmax'
   params: {
     // Required parameters
     frontendIPConfigurations: [
@@ -643,7 +643,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nlbwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nlbwaf'
   params: {
     // Required parameters
     frontendIPConfigurations: [

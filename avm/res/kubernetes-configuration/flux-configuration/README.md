@@ -33,8 +33,6 @@ The following section provides usage examples for the module, which were used to
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-
 
 
 <details>
@@ -43,7 +41,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kcfcmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-kcfcmin'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
@@ -135,7 +133,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kcfcmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-kcfcmax'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
@@ -249,7 +247,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kcfcwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-kcfcwaf'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
