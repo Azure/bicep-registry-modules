@@ -1,7 +1,8 @@
 targetScope = 'subscription'
 
-metadata name = 'Using Customer-Managed-Keys with System-Assigned identity'
+metadata name = 'Using encryption with Customer-Managed-Key'
 metadata description = 'This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity to access the Customer-Managed-Key secret.'
+
 
 // ========== //
 // Parameters //
@@ -41,10 +42,8 @@ module nestedDependencies 'dependencies.bicep' = {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
-    location: location
   }
 }
-
 
 // ============== //
 // Test Execution //
@@ -56,7 +55,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: location
     defaultDataLakeStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
     defaultDataLakeStorageFilesystem: nestedDependencies.outputs.storageContainerName
     sqlAdministratorLogin: 'synwsadmin'

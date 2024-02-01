@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "13572549826340676103"
+      "templateHash": "9288002267952533111"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -436,6 +436,13 @@
         "description": "Optional. Tags of the resource."
       }
     },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
     "azureADOnlyAuthentication": {
       "type": "bool",
       "defaultValue": false,
@@ -467,13 +474,6 @@
       "defaultValue": false,
       "metadata": {
         "description": "Optional. Create managed private endpoint to the default storage account or not. If Yes is selected, a managed private endpoint connection request is sent to the workspace's primary Data Lake Storage Gen2 account for Spark pools to access data. This must be approved by an owner of the storage account."
-      }
-    },
-    "enableTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "customerManagedKey": {
@@ -790,7 +790,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "556207760166596069"
+              "templateHash": "2245322500910751784"
             },
             "name": "Synapse Workspace Integration Runtimes",
             "description": "This module deploys a Synapse Workspace Integration Runtime.",
@@ -800,7 +800,7 @@
             "workspaceName": {
               "type": "string",
               "metadata": {
-                "description": "Optional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment."
+                "description": "Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
@@ -823,7 +823,7 @@
               "type": "object",
               "defaultValue": {},
               "metadata": {
-                "description": "Optional. Integration Runtime type properties. Required if type is \"Managed\"."
+                "description": "Conditional. Integration Runtime type properties. Required if type is \"Managed\"."
               }
             }
           },
@@ -976,7 +976,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "1893962329691986346"
+              "templateHash": "10540991074684743146"
             },
             "name": "Synapse Workspaces Keys",
             "description": "This module deploys a Synapse Workspaces Key.",
@@ -992,7 +992,7 @@
             "workspaceName": {
               "type": "string",
               "metadata": {
-                "description": "Optional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment."
+                "description": "Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment."
               }
             },
             "isActiveCMK": {
@@ -1071,7 +1071,7 @@
                 "properties": {
                   "privateLinkServiceId": "[resourceId('Microsoft.Synapse/workspaces', parameters('name'))]",
                   "groupIds": [
-                    "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'workspaces')]"
+                    "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'SQL')]"
                   ]
                 }
               }
@@ -1115,6 +1115,9 @@
           },
           "customNetworkInterfaceName": {
             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customNetworkInterfaceName')]"
+          },
+          "enableTelemetry": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
           }
         },
         "template": {

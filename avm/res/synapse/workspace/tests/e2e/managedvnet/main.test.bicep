@@ -1,9 +1,5 @@
 targetScope = 'subscription'
 
-
-metadata name = 'Using Managed Workspace Vnet'
-metadata description = 'This instance deploys the module associating the workspace to a Managed workspace Virtual Netowork.'
-
 // ========== //
 // Parameters //
 // ========== //
@@ -37,10 +33,8 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
-    location: location
   }
 }
-
 
 // ============== //
 // Test Execution //
@@ -52,7 +46,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: location
     defaultDataLakeStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
     defaultDataLakeStorageFilesystem: nestedDependencies.outputs.storageContainerName
     sqlAdministratorLogin: 'synwsadmin'

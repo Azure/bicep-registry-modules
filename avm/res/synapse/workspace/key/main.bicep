@@ -5,7 +5,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. Encryption key name.')
 param name string
 
-@description('Optional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment.')
+@description('Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment.')
 param workspaceName string
 
 @description('Required. Used to activate the workspace after a customer managed key is provided.')

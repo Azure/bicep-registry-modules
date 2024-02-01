@@ -38,7 +38,6 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
-    location: location
   }
 }
 
@@ -48,11 +47,11 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-diagnosticDependencies'
   params: {
-    location: location
+    storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
+    location: location
   }
 }
 
@@ -66,7 +65,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: location
     defaultDataLakeStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
     defaultDataLakeStorageFilesystem: nestedDependencies.outputs.storageContainerName
     sqlAdministratorLogin: 'synwsadmin'
@@ -78,11 +76,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     }
     privateEndpoints: [
       {
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        service: 'SQL'
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
+        service: 'SQL'
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
@@ -114,10 +112,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
   }
 }]

@@ -13,6 +13,9 @@ param location string = resourceGroup().location
 @description('Optional. Tags of the resource.')
 param tags object?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 @description('Optional. Enable or Disable AzureADOnlyAuthentication on All Workspace sub-resource.')
 param azureADOnlyAuthentication bool = false
 
@@ -27,9 +30,6 @@ param defaultDataLakeStorageFilesystem string
 
 @description('Optional. Create managed private endpoint to the default storage account or not. If Yes is selected, a managed private endpoint connection request is sent to the workspace\'s primary Data Lake Storage Gen2 account for Spark pools to access data. This must be approved by an owner of the storage account.')
 param defaultDataLakeStorageCreateManagedPrivateEndpoint bool = false
-
-@description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
 
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
@@ -55,11 +55,11 @@ param linkedAccessCheckOnTargetResource bool = false
 
 @description('Optional. Prevent Data Exfiltration.')
 param preventDataExfiltration bool = false
+
 @allowed([
   'Enabled'
   'Disabled'
 ])
-
 @description('Optional. Enable or Disable public network access to workspace.')
 param publicNetworkAccess string = 'Enabled'
 
@@ -268,7 +268,7 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
         properties: {
           privateLinkServiceId: workspace.id
           groupIds: [
-            privateEndpoint.?service ?? 'workspaces'
+            privateEndpoint.?service ?? 'SQL'
           ]
         }
       }
@@ -286,6 +286,7 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
     customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
   }
 }]
 

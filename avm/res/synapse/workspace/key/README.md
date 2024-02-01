@@ -26,7 +26,7 @@ This module deploys a Synapse Workspaces Key.
 | [`keyVaultResourceId`](#parameter-keyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
 | [`name`](#parameter-name) | string | Encryption key name. |
 
-**Optional parameters**
+**Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |

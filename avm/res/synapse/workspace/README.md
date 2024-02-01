@@ -1,10 +1,5 @@
 # Synapse Workspaces `[Microsoft.Synapse/workspaces]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a Synapse Workspace.
 
 ## Navigation
@@ -39,9 +34,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/synapse/workspace:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-2-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
-- [Using Managed Workspace Vnet](#example-4-using-managed-workspace-vnet)
+- [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
+- [Using encryption with Customer-Managed-Key](#example-3-using-encryption-with-customer-managed-key)
+- [Managedvnet](#example-4-managedvnet)
 - [Using large parameter set](#example-5-using-large-parameter-set)
 - [WAF-aligned](#example-6-waf-aligned)
 
@@ -63,8 +58,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
     name: 'swmin001'
     sqlAdministratorLogin: 'synwsadmin'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -93,10 +86,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     },
     "sqlAdministratorLogin": {
       "value": "synwsadmin"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -105,7 +94,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 2: _Using encryption with Customer-Managed-Key_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -129,7 +118,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
     }
     encryptionActivateWorkspace: true
-    location: '<location>'
   }
 }
 ```
@@ -168,9 +156,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     },
     "encryptionActivateWorkspace": {
       "value": true
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -179,7 +164,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 3: _Using encryption with Customer-Managed-Key_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -203,7 +188,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -246,9 +230,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -263,10 +244,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using Managed Workspace Vnet_
-
-This instance deploys the module associating the workspace to a Managed workspace Virtual Netowork.
-
+### Example 4: _Managedvnet_
 
 <details>
 
@@ -285,7 +263,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     allowedAadTenantIdsForLinking: [
       '<tenantId>'
     ]
-    location: '<location>'
     managedVirtualNetwork: true
     preventDataExfiltration: true
     tags: {
@@ -327,9 +304,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       "value": [
         "<tenantId>"
       ]
-    },
-    "location": {
-      "value": "<location>"
     },
     "managedVirtualNetwork": {
       "value": true
@@ -394,7 +368,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         type: 'SelfHosted'
       }
     ]
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -492,9 +465,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -590,7 +560,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         type: 'SelfHosted'
       }
     ]
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -611,11 +580,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         }
       }
     ]
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -676,9 +640,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -704,13 +665,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           }
         }
       ]
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
