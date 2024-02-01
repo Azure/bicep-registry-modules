@@ -97,6 +97,7 @@ function Publish-ModuleFromPathToPBR {
     $moduleJsonFilePath
     '--target', ("br:{0}/public/bicep/{1}:{2}" -f $plainPublicRegistryServer, $publishedModuleName, $targetVersion)
     '--documentationUri', $documentationUri
+    '--with-source'
     '--force'
   )
   # TODO move to its own task to show that as skipped if no file qualifies for new version
