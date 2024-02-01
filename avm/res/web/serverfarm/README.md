@@ -55,7 +55,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       tier: 'Premium'
     }
     // Non-required parameters
-    location: 'eastus'
+    location: '<location>'
   }
 }
 ```
@@ -87,7 +87,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     },
     // Non-required parameters
     "location": {
-      "value": "eastus"
+      "value": "<location>"
     }
   }
 }
@@ -134,7 +134,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       }
     ]
     kind: 'App'
-    location: 'eastus'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'lock'
@@ -213,7 +213,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       "value": "App"
     },
     "location": {
-      "value": "eastus"
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -298,7 +298,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       }
     ]
     kind: 'App'
-    location: 'eastus'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'lock'
@@ -359,7 +359,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       "value": "App"
     },
     "location": {
-      "value": "eastus"
+      "value": "<location>"
     },
     "lock": {
       "value": {
