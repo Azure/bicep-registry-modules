@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "2245322500910751784"
+      "templateHash": "556207760166596069"
     },
     "name": "Synapse Workspace Integration Runtimes",
     "description": "This module deploys a Synapse Workspace Integration Runtime.",
@@ -15,7 +15,7 @@
     "workspaceName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment."
+        "description": "Optional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment."
       }
     },
     "name": {
@@ -38,7 +38,7 @@
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": "Conditional. Integration Runtime type properties. Required if type is \"Managed\"."
+        "description": "Optional. Integration Runtime type properties. Required if type is \"Managed\"."
       }
     }
   },

@@ -25,7 +25,7 @@ This module deploys a Synapse Workspace Integration Runtime.
 | [`name`](#parameter-name) | string | The name of the Integration Runtime. |
 | [`type`](#parameter-type) | string | The type of Integration Runtime. |
 
-**Conditional parameters**
+**Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
