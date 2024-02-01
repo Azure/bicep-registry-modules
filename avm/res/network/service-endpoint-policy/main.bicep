@@ -1,4 +1,4 @@
-metadata name = 'Service Endpoint Policies'
+metadata name = 'Service-Endpoint-Policy'
 metadata description = 'This module deploys a Service Endpoint Policy.'
 metadata owner = 'Azure/module-maintainers'
 
@@ -61,7 +61,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
       }
     }
   }
-} ,
+}
 
 resource serviceEndpointPolicy 'Microsoft.Network/serviceEndpointPolicies@2023-04-01' = {
   name: name
