@@ -43,7 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-vmiitmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-vmiitmin'
   params: {
     // Required parameters
     customizationSteps: [
@@ -147,7 +147,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-vmiitmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-vmiitmax'
   params: {
     // Required parameters
     customizationSteps: [
@@ -181,7 +181,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       }
       {
         replicationRegions: [
-          '<location>'
+          '<resourceLocation>'
         ]
         sharedImageGalleryImageDefinitionResourceId: '<sharedImageGalleryImageDefinitionResourceId>'
         sharedImageGalleryImageDefinitionTargetVersion: '<sharedImageGalleryImageDefinitionTargetVersion>'
@@ -288,7 +288,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         },
         {
           "replicationRegions": [
-            "<location>"
+            "<resourceLocation>"
           ],
           "sharedImageGalleryImageDefinitionResourceId": "<sharedImageGalleryImageDefinitionResourceId>",
           "sharedImageGalleryImageDefinitionTargetVersion": "<sharedImageGalleryImageDefinitionTargetVersion>",
@@ -389,7 +389,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-vmiitwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-vmiitwaf'
   params: {
     // Required parameters
     customizationSteps: [
