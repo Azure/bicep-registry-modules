@@ -31,7 +31,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/desktop-virtualization/host-pool:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using all available parameters](#example-2-using-all-available-parameters)
+- [Using large parameter set](#example-2-using-large-parameter-set)
 - [Using Private Endpoints](#example-3-using-private-endpoints)
 - [WAF-aligned](#example-4-waf-aligned)
 
@@ -83,9 +83,9 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
 </details>
 <p>
 
-### Example 2: _Using all available parameters_
+### Example 2: _Using large parameter set_
 
-This instance deploys the module with all available parameters for testing purposes.
+This instance deploys the module with most of its features enabled.
 
 
 <details>
