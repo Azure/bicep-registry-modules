@@ -1,5 +1,10 @@
 # Synapse Workspaces `[Microsoft.Synapse/workspaces]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys a Synapse Workspace.
 
 ## Navigation
@@ -58,6 +63,8 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
     name: 'swmin001'
     sqlAdministratorLogin: 'synwsadmin'
+    // Non-required parameters
+    location: '<location>'
   }
 }
 ```
@@ -86,6 +93,10 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     },
     "sqlAdministratorLogin": {
       "value": "synwsadmin"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -118,6 +129,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
     }
     encryptionActivateWorkspace: true
+    location: '<location>'
   }
 }
 ```
@@ -156,6 +168,9 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     },
     "encryptionActivateWorkspace": {
       "value": true
+    },
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -188,6 +203,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
+    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -230,6 +246,9 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
+    "location": {
+      "value": "<location>"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -263,6 +282,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     allowedAadTenantIdsForLinking: [
       '<tenantId>'
     ]
+    location: '<location>'
     managedVirtualNetwork: true
     preventDataExfiltration: true
     tags: {
@@ -304,6 +324,9 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       "value": [
         "<tenantId>"
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "managedVirtualNetwork": {
       "value": true
@@ -368,6 +391,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         type: 'SelfHosted'
       }
     ]
+    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -465,6 +489,9 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         }
       ]
     },
+    "location": {
+      "value": "<location>"
+    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -560,6 +587,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         type: 'SelfHosted'
       }
     ]
+    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -639,6 +667,9 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           "type": "SelfHosted"
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
