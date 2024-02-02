@@ -35,6 +35,19 @@ module akvCertSingle '../main.bicep' = {
 output singleSecretId string = akvCertSingle.outputs.certificateSecretIds[0][0]
 output singleThumbprint string = akvCertSingle.outputs.certificateThumbprintHexs[0][0]
 
+//Test 1b. Just a single certificate, again
+module akvCertSingleAgain '../main.bicep' = {
+  name: 'akvCertSingleAgain'
+  params: {
+    akvName: akv.name
+    location: location
+    certificateNames: [ 'mysingleapp' ]
+    certificateCommonNames: [ 'mysingleapp.mydomain.local' ]
+    validity: 11
+    disabled: true
+  }
+}
+
 //Test 2. Array of certificates
 var certificateNames = [
   'myapp'

@@ -154,7 +154,7 @@ var internalViewId = builtInView == null ? viewId : '${scope}/providers/Microsof
 resource sa 'Microsoft.CostManagement/scheduledActions@2022-10-01' = {
   name: name
   kind: kind
-  scope: private ? tenant() : resourceGroup() 
+  scope: private ? tenant() : resourceGroup()
   properties: {
     scope: private ? scope : ''
     displayName: displayName

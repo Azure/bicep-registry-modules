@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.19.5.34762",
-      "templateHash": "3959456113273968386"
+      "version": "0.24.24.22086",
+      "templateHash": "7303889729125699702"
     },
     "name": "Key Vault Certificate Creation",
     "description": "Create Key Vault self-signed certificates. Requires Key Vaults to be using RBAC Authorization, not Access Policies.",
@@ -89,14 +89,14 @@
     "cleanupPreference": {
       "type": "string",
       "defaultValue": "OnSuccess",
-      "metadata": {
-        "description": "When the script resource is cleaned up"
-      },
       "allowedValues": [
         "OnSuccess",
         "OnExpiration",
         "Always"
-      ]
+      ],
+      "metadata": {
+        "description": "When the script resource is cleaned up"
+      }
     },
     "issuerName": {
       "type": "string",
@@ -154,14 +154,21 @@
         "description": "The default policy might cause errors about CSR being used before, so set this to false if that happens"
       }
     },
+    "verbose": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Extra logging during Deployment Script."
+      }
+    },
     "validity": {
       "type": "int",
       "defaultValue": 12,
+      "minValue": 1,
+      "maxValue": 1200,
       "metadata": {
         "description": "Optional. Override default validityInMonths 12 value"
-      },
-      "maxValue": 1200,
-      "minValue": 1
+      }
     },
     "performRoleAssignment": {
       "type": "bool",
@@ -172,7 +179,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "#!/bin/bash\nset -e\ninitialDelay=\"${initialDelay:-5}\"\nretryMax=\"${retryMax:-5}\"\ncertName=\"${certName:-default-cert}\"\ncertCommonName=\"${certCommonName:-default}\"\nvalidity=\"${validity:-12}\"\nakvName=\"${akvName:-keyvault}\"\nissuerName=\"${issuerName:-}\"\nreuseKey=\"${reuseKey:-true}\"\nretrySleep=\"${retrySleep:-5}\"\n\necho \"Waiting on Identity RBAC replication (\\\"$initialDelay\\\")\"\nsleep \"$initialDelay\"\n\n#Retry loop to catch errors (usually RBAC delays)\nretryLoopCount=0\nuntil [ \"$retryLoopCount\" -ge \"$retryMax\" ]\ndo\n    echo \"Creating AKV Cert $certName with CN $certCommonName (attempt $retryLoopCount)...\"\n\n    if [ -z \"$issuerName\" ] || [ -z \"$issuerProvider\" ]; then\n        policy=$(az keyvault certificate get-default-policy \\\n            | sed -e s/\\\"validityInMonths\\\":\\ 12/\\\"validityInMonths\\\":\\ \"${validity}\"/g \\\n            | sed -e s/CN=CLIGetDefaultPolicy/CN=\"${certCommonName}\"/g )\n    else\n      if [ \"$issuerProvider\" == \"DigiCert\" ] || [ \"$issuerProvider\" == \"GlobalCert\" ]; then\n        az keyvault certificate issuer create \\\n          --vault-name \"$akvName\" \\\n          --issuer-name \"$issuerName\" \\\n          --provider-name \"$issuerProvider\" \\\n          --account-id \"$accountId\" \\\n          --password \"$issuerPassword\" \\\n          --organizatiion-id \"$organizationId\"\n      else\n        az keyvault certificate issuer create \\\n          --vault-name \"$akvName\" \\\n          --issuer-name \"$issuerName\" \\\n          --provider-name \"$issuerProvider\"\n      fi\n      policy=$(az keyvault certificate get-default-policy \\\n        | sed -e s/\\\"validityInMonths\\\":\\ 12/\\\"validityInMonths\\\":\\ \"${validity}\"/g \\\n        | sed -e s/CN=CLIGetDefaultPolicy/CN=\"${certCommonName}\"/g \\\n        | sed -e s/\\\"name\\\":\\ \\\"Self\\\"/\\\"name\\\":\\ \\\"\"${issuerName}\"\\\"/g \\\n        | sed -e s/\\\"reuseKey\\\":\\ true/\\\"reuseKey\\\":\\ \"${reuseKey}\"/g )\n    fi\n    az keyvault certificate create \\\n        --vault-name \"$akvName\" \\\n        -n \"$certName\" \\\n        -p \"$policy\" \\\n        --disabled \"$disabled\" \\\n        && break\n\n    sleep \"$retrySleep\"\n    retryLoopCount=$((retryLoopCount+1))\ndone\n\necho \"Getting Certificate $certName\";\nretryLoopCount=0\ncreatedCert=$(az keyvault certificate show -n \"$certName\" --vault-name \"$akvName\" -o json)\nwhile [ -z \"$(echo \"$createdCert\" | jq -r '.x509ThumbprintHex')\" ] && [ $retryLoopCount -lt \"$retryMax\" ]\ndo\n    echo \"Waiting for cert creation (attempt $retryLoopCount)...\"\n    sleep $retrySleep\n    createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\n    retryLoopCount=$((retryLoopCount+1))\ndone\n\nunversionedSecretId=$(echo $createdCert | jq -r \".sid\" | cut -d'/' -f-5) # remove the version from the url;\njsonOutputString=$(echo $createdCert | jq --arg usid $unversionedSecretId '{name: .name ,certSecretId: {versioned: .sid, unversioned: $usid }, thumbprint: .x509Thumbprint, thumbprintHex: .x509ThumbprintHex}')\necho $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n",
+    "$fxv#0": "#!/bin/bash\nset -e\ninitialDelay=\"${initialDelay:-5}\"\nretryMax=\"${retryMax:-5}\"\ncertName=\"${certName:-default-cert}\"\ncertCommonName=\"${certCommonName:-default}\"\nvalidity=\"${validity:-12}\"\nakvName=\"${akvName:-keyvault}\"\nissuerName=\"${issuerName:-}\"\nreuseKey=\"${reuseKey:-true}\"\nretrySleep=\"${retrySleep:-5}\"\n\necho \"Waiting on Identity RBAC replication (\\\"$initialDelay\\\")\"\nsleep \"$initialDelay\"\n\n#Retry loop to catch errors (usually RBAC delays)\nretryLoopCount=0\nuntil [ \"$retryLoopCount\" -ge \"$retryMax\" ]\ndo\n    echo \"Creating AKV Cert $certName with CN $certCommonName (attempt $retryLoopCount)...\"\n\n    if [ -z \"$issuerName\" ] || [ -z \"$issuerProvider\" ]; then\n        policy=$(az keyvault certificate get-default-policy \\\n            | sed -e s/\\\"validityInMonths\\\":\\ 12/\\\"validityInMonths\\\":\\ \"${validity}\"/g \\\n            | sed -e s/CN=CLIGetDefaultPolicy/CN=\"${certCommonName}\"/g )\n    else\n      if [ \"$issuerProvider\" == \"DigiCert\" ] || [ \"$issuerProvider\" == \"GlobalCert\" ]; then\n        az keyvault certificate issuer list \\\n          --vault-name \"$akvName\" \\\n          --account-id \"$accountId\" \\\n          --organizatiion-id \"$organizationId\"\n\n        az keyvault certificate issuer create \\\n          --vault-name \"$akvName\" \\\n          --issuer-name \"$issuerName\" \\\n          --provider-name \"$issuerProvider\" \\\n          --account-id \"$accountId\" \\\n          --password \"$issuerPassword\" \\\n          --organizatiion-id \"$organizationId\"\n      else\n        az keyvault certificate issuer create \\\n          --vault-name \"$akvName\" \\\n          --issuer-name \"$issuerName\" \\\n          --provider-name \"$issuerProvider\"\n      fi\n      policy=$(az keyvault certificate get-default-policy \\\n        | sed -e s/\\\"validityInMonths\\\":\\ 12/\\\"validityInMonths\\\":\\ \"${validity}\"/g \\\n        | sed -e s/CN=CLIGetDefaultPolicy/CN=\"${certCommonName}\"/g \\\n        | sed -e s/\\\"name\\\":\\ \\\"Self\\\"/\\\"name\\\":\\ \\\"\"${issuerName}\"\\\"/g \\\n        | sed -e s/\\\"reuseKey\\\":\\ true/\\\"reuseKey\\\":\\ \"${reuseKey}\"/g )\n    fi\n    az keyvault certificate create \\\n        --vault-name \"$akvName\" \\\n        -n \"$certName\" \\\n        -p \"$policy\" \\\n        --disabled \"$disabled\" \\\n        && break\n\n    sleep \"$retrySleep\"\n    retryLoopCount=$((retryLoopCount+1))\ndone\n\necho \"Getting Certificate $certName\";\nretryLoopCount=0\ncreatedCert=$(az keyvault certificate show -n \"$certName\" --vault-name \"$akvName\" -o json)\nwhile [ -z \"$(echo \"$createdCert\" | jq -r '.x509ThumbprintHex')\" ] && [ $retryLoopCount -lt \"$retryMax\" ]\ndo\n    echo \"Waiting for cert creation (attempt $retryLoopCount)...\"\n    sleep $retrySleep\n    createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\n    retryLoopCount=$((retryLoopCount+1))\ndone\n\nunversionedSecretId=$(echo $createdCert | jq -r \".sid\" | cut -d'/' -f-5) # remove the version from the url;\njsonOutputString=$(echo $createdCert | jq --arg usid $unversionedSecretId '{name: .name ,certSecretId: {versioned: .sid, unversioned: $usid }, thumbprint: .x509Thumbprint, thumbprintHex: .x509ThumbprintHex}')\necho $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n",
     "delegatedManagedIdentityResourceId": "[if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))]"
   },
   "resources": [
@@ -340,6 +347,13 @@
         "count": "[length(parameters('certificateNames'))]",
         "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-'))), '2020-10-01').outputs.thumbprintHex)]"
       }
+    },
+    "verbose": {
+      "type": "bool",
+      "metadata": {
+        "description": "Verbose output"
+      },
+      "value": "[parameters('verbose')]"
     }
   }
 }
