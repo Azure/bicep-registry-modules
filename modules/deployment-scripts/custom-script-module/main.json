@@ -1,0 +1,40 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "1792705596453783045"
+    },
+    "name": "TODO: <module name>",
+    "description": "TODO: <module description>",
+    "owner": "TODO: <GitHub username of module owner>"
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Deployment Location. It defaults to the location of the resource group."
+      }
+    },
+    "prefix": {
+      "type": "string",
+      "defaultValue": "st",
+      "metadata": {
+        "description": "Prefix of Storage Account Resource Name. This param is ignored when name is provided."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "[format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, parameters('location')))]",
+      "minLength": 3,
+      "maxLength": 24,
+      "metadata": {
+        "description": "Name of Storage Account. Must be unique within Azure."
+      }
+    }
+  },
+  "resources": []
+}
