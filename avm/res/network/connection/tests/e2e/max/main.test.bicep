@@ -24,9 +24,6 @@ param password string = newGuid()
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-#disable-next-line no-hardcoded-location // Just a value to avoid ongoing capacity challenges
-var tempLocation = 'italynorth'
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -42,7 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: tempLocation
+    location: resourceLocation
     primaryPublicIPName: 'dep-${namePrefix}-pip-${serviceShort}-1'
     primaryVirtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}-1'
     primaryVirtualNetworkGatewayName: 'dep-${namePrefix}-vpn-gw-${serviceShort}-1'
@@ -61,7 +58,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
-    location: tempLocation
+    location: resourceLocation
     name: '${namePrefix}${serviceShort}001'
     virtualNetworkGateway1: {
       id: nestedDependencies.outputs.primaryVNETGatewayResourceID
