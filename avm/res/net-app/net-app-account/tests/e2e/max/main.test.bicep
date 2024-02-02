@@ -20,9 +20,6 @@ param serviceShort string = 'nanaamax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-#disable-next-line no-hardcoded-location // services used for this module are only available in major regions
-var tempLocation = 'westus3'
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -31,7 +28,7 @@ var tempLocation = 'westus3'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: tempLocation
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
@@ -40,7 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: tempLocation
+    location: resourceLocation
   }
 }
 
@@ -53,7 +50,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: tempLocation
+    location: resourceLocation
     capacityPools: [
       {
         name: '${namePrefix}-${serviceShort}-cp-001'

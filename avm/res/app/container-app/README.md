@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module containerApp 'br/public:avm/res/app/container-app:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-acamin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-acamin'
   params: {
     // Required parameters
     containers: [
@@ -116,7 +116,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module containerApp 'br/public:avm/res/app/container-app:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-acamax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-acamax'
   params: {
     // Required parameters
     containers: [
@@ -310,7 +310,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module containerApp 'br/public:avm/res/app/container-app:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-acawaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-acawaf'
   params: {
     // Required parameters
     containers: [
@@ -462,7 +462,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`activeRevisionsMode`](#parameter-activerevisionsmode) | string | ActiveRevisionsMode controls how active revisions are handled for the Container app. |
+| [`activeRevisionsMode`](#parameter-activerevisionsmode) | string | Controls how active revisions are handled for the Container app. |
 | [`customDomains`](#parameter-customdomains) | array | Custom domain bindings for Container App hostnames. |
 | [`dapr`](#parameter-dapr) | object | Dapr configuration for the Container App. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -515,7 +515,7 @@ Name of the Container App.
 
 ### Parameter: `activeRevisionsMode`
 
-ActiveRevisionsMode controls how active revisions are handled for the Container app.
+Controls how active revisions are handled for the Container app.
 
 - Required: No
 - Type: string
