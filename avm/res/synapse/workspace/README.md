@@ -611,6 +611,11 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         }
       }
     ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -699,6 +704,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           }
         }
       ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
