@@ -1,6 +1,6 @@
-# Dns Forwarding Rulesets `[Microsoft.Network/dnsForwardingRulesets]`
+# Availability Sets `[Microsoft.Compute/availabilitySets]`
 
-This template deploys an dns forwarding ruleset.
+This module deploys an Availability Set.
 
 ## Navigation
 
@@ -17,9 +17,7 @@ This template deploys an dns forwarding ruleset.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/dnsForwardingRulesets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-07-01/dnsForwardingRulesets) |
-| `Microsoft.Network/dnsForwardingRulesets/forwardingRules` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-07-01/dnsForwardingRulesets/forwardingRules) |
-| `Microsoft.Network/dnsForwardingRulesets/virtualNetworkLinks` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-07-01/dnsForwardingRulesets/virtualNetworkLinks) |
+| `Microsoft.Compute/availabilitySets` | [2023-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-03-01/availabilitySets) |
 
 ## Usage examples
 
@@ -27,7 +25,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/dns-forwarding-ruleset:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/availability-set:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -43,14 +41,11 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ndfrsmin'
+module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-casmin'
   params: {
     // Required parameters
-    dnsForwardingRulesetOutboundEndpointResourceIds: [
-      '<dnsResolverOutboundEndpointsResourceId>'
-    ]
-    name: 'ndfrsmin001'
+    name: 'casmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -70,13 +65,8 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "dnsForwardingRulesetOutboundEndpointResourceIds": {
-      "value": [
-        "<dnsResolverOutboundEndpointsResourceId>"
-      ]
-    },
     "name": {
-      "value": "ndfrsmin001"
+      "value": "casmin001"
     },
     // Non-required parameters
     "location": {
@@ -99,33 +89,18 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ndfrsmax'
+module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-casmax'
   params: {
     // Required parameters
-    dnsForwardingRulesetOutboundEndpointResourceIds: [
-      '<dnsResolverOutboundEndpointsId>'
-    ]
-    name: 'ndfrsmax001'
+    name: 'casmax001'
     // Non-required parameters
-    forwardingRules: [
-      {
-        domainName: 'contoso.'
-        forwardingRuleState: 'Enabled'
-        name: 'rule1'
-        targetDnsServers: [
-          {
-            ipAddress: '192.168.0.1'
-            port: '53'
-          }
-        ]
-      }
-    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -148,9 +123,6 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    vNetLinks: [
-      '<virtualNetworkResourceId>'
-    ]
   }
 }
 ```
@@ -168,30 +140,10 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "dnsForwardingRulesetOutboundEndpointResourceIds": {
-      "value": [
-        "<dnsResolverOutboundEndpointsId>"
-      ]
-    },
     "name": {
-      "value": "ndfrsmax001"
+      "value": "casmax001"
     },
     // Non-required parameters
-    "forwardingRules": {
-      "value": [
-        {
-          "domainName": "contoso.",
-          "forwardingRuleState": "Enabled",
-          "name": "rule1",
-          "targetDnsServers": [
-            {
-              "ipAddress": "192.168.0.1",
-              "port": "53"
-            }
-          ]
-        }
-      ]
-    },
     "location": {
       "value": "<location>"
     },
@@ -200,6 +152,9 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "proximityPlacementGroupResourceId": {
+      "value": "<proximityPlacementGroupResourceId>"
     },
     "roleAssignments": {
       "value": [
@@ -226,11 +181,6 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "vNetLinks": {
-      "value": [
-        "<virtualNetworkResourceId>"
-      ]
     }
   }
 }
@@ -249,20 +199,18 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ndfrswaf'
+module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-caswaf'
   params: {
     // Required parameters
-    dnsForwardingRulesetOutboundEndpointResourceIds: [
-      '<dnsResolverOutboundEndpointsId>'
-    ]
-    name: 'ndfrswaf001'
+    name: 'caswaf001'
     // Non-required parameters
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -285,13 +233,8 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "dnsForwardingRulesetOutboundEndpointResourceIds": {
-      "value": [
-        "<dnsResolverOutboundEndpointsId>"
-      ]
-    },
     "name": {
-      "value": "ndfrswaf001"
+      "value": "caswaf001"
     },
     // Non-required parameters
     "location": {
@@ -302,6 +245,9 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "proximityPlacementGroupResourceId": {
+      "value": "<proximityPlacementGroupResourceId>"
     },
     "tags": {
       "value": {
@@ -324,31 +270,25 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dnsForwardingRulesetOutboundEndpointResourceIds`](#parameter-dnsforwardingrulesetoutboundendpointresourceids) | array | The reference to the DNS resolver outbound endpoints that are used to route DNS queries matching the forwarding rules in the ruleset to the target DNS servers. |
-| [`name`](#parameter-name) | string | Name of the DNS Forwarding Ruleset. |
+| [`name`](#parameter-name) | string | The name of the availability set that is being created. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`forwardingRules`](#parameter-forwardingrules) | array | Array of forwarding rules. |
-| [`location`](#parameter-location) | string | Location for all resources. |
+| [`location`](#parameter-location) | string | Resource location. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`platformFaultDomainCount`](#parameter-platformfaultdomaincount) | int | The number of fault domains to use. |
+| [`platformUpdateDomainCount`](#parameter-platformupdatedomaincount) | int | The number of update domains to use. |
+| [`proximityPlacementGroupResourceId`](#parameter-proximityplacementgroupresourceid) | string | Resource ID of a proximity placement group. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`vNetLinks`](#parameter-vnetlinks) | array | Array of virtual network links. |
-
-### Parameter: `dnsForwardingRulesetOutboundEndpointResourceIds`
-
-The reference to the DNS resolver outbound endpoints that are used to route DNS queries matching the forwarding rules in the ruleset to the target DNS servers.
-
-- Required: Yes
-- Type: array
+| [`skuName`](#parameter-skuname) | string | SKU of the availability set.</p>- Use 'Aligned' for virtual machines with managed disks.</p>- Use 'Classic' for virtual machines with unmanaged disks. |
+| [`tags`](#parameter-tags) | object | Tags of the availability set resource. |
 
 ### Parameter: `name`
 
-Name of the DNS Forwarding Ruleset.
+The name of the availability set that is being created.
 
 - Required: Yes
 - Type: string
@@ -361,94 +301,9 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `forwardingRules`
-
-Array of forwarding rules.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`domainName`](#parameter-forwardingrulesdomainname) | string | The domain name to forward. |
-| [`name`](#parameter-forwardingrulesname) | string | The name of the forwarding rule. |
-| [`targetDnsServers`](#parameter-forwardingrulestargetdnsservers) | array | The target DNS servers to forward to. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`forwardingRuleState`](#parameter-forwardingrulesforwardingrulestate) | string | The state of the forwarding rule. |
-| [`metadata`](#parameter-forwardingrulesmetadata) | string | Metadata attached to the forwarding rule. |
-
-### Parameter: `forwardingRules.domainName`
-
-The domain name to forward.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `forwardingRules.name`
-
-The name of the forwarding rule.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `forwardingRules.targetDnsServers`
-
-The target DNS servers to forward to.
-
-- Required: Yes
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ipAddress`](#parameter-forwardingrulestargetdnsserversipaddress) | string | The IP address of the target DNS server. |
-| [`port`](#parameter-forwardingrulestargetdnsserversport) | string | The port of the target DNS server. |
-
-### Parameter: `forwardingRules.targetDnsServers.ipAddress`
-
-The IP address of the target DNS server.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `forwardingRules.targetDnsServers.port`
-
-The port of the target DNS server.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `forwardingRules.forwardingRuleState`
-
-The state of the forwarding rule.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
-
-### Parameter: `forwardingRules.metadata`
-
-Metadata attached to the forwarding rule.
-
-- Required: No
-- Type: string
-
 ### Parameter: `location`
 
-Location for all resources.
+Resource location.
 
 - Required: No
 - Type: string
@@ -489,6 +344,30 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `platformFaultDomainCount`
+
+The number of fault domains to use.
+
+- Required: No
+- Type: int
+- Default: `2`
+
+### Parameter: `platformUpdateDomainCount`
+
+The number of update domains to use.
+
+- Required: No
+- Type: int
+- Default: `5`
+
+### Parameter: `proximityPlacementGroupResourceId`
+
+Resource ID of a proximity placement group.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `roleAssignments`
 
@@ -579,19 +458,20 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `skuName`
+
+SKU of the availability set.</p>- Use 'Aligned' for virtual machines with managed disks.</p>- Use 'Classic' for virtual machines with unmanaged disks.
+
+- Required: No
+- Type: string
+- Default: `'Aligned'`
+
 ### Parameter: `tags`
 
-Tags of the resource.
+Tags of the availability set resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `vNetLinks`
-
-Array of virtual network links.
-
-- Required: No
-- Type: array
 
 
 ## Outputs
@@ -599,9 +479,9 @@ Array of virtual network links.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the DNS Forwarding Ruleset. |
-| `resourceGroupName` | string | The resource group the DNS Forwarding Ruleset was deployed into. |
-| `resourceId` | string | The resource ID of the DNS Forwarding Ruleset. |
+| `name` | string | The name of the availability set. |
+| `resourceGroupName` | string | The resource group the availability set was deployed into. |
+| `resourceId` | string | The resource ID of the availability set. |
 
 ## Cross-referenced modules
 
