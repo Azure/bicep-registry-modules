@@ -1,4 +1,4 @@
-# Synapse Workspaces `[Microsoft.synapse/workspace]`
+# Synapse Workspaces `[Microsoft.Synapse/workspaces]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
 > 
