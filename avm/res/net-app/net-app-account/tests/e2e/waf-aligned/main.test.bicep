@@ -22,9 +22,6 @@ param serviceShort string = 'nanaawaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-#disable-next-line no-hardcoded-location // services used for this module are only available in major regions
-var tempLocation = 'westus3'
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -33,7 +30,7 @@ var tempLocation = 'westus3'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: tempLocation
+  location: resourceLocation
 }
 
 // ============== //
@@ -46,6 +43,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: tempLocation
+    location: resourceLocation
   }
 }]
