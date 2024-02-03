@@ -52,7 +52,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ndzmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ndzmin'
   params: {
     // Required parameters
     name: 'ndzmin001.com'
@@ -100,7 +100,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ndzmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ndzmax'
   params: {
     // Required parameters
     name: 'ndzmax001.com'
@@ -660,7 +660,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ndzwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ndzwaf'
   params: {
     // Required parameters
     name: 'ndzwaf001.com'
