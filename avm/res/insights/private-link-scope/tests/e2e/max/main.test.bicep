@@ -182,14 +182,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             }
           }
         ]
-        customDnsConfigs: [
-          {
-            fqdn: 'abc.azuremonitor.com'
-            ipAddresses: [
-              '10.0.0.10'
-            ]
-          }
-        ]
       }
     ]
     roleAssignments: [

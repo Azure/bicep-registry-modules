@@ -61,8 +61,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           privateEndpointConnectionName: 'thisisatest'
         }
       ]
-      ingestionAccessMode: 'Open'
-      queryAccessMode: 'Open'
     }
     scopedResources: [
       {
@@ -173,24 +171,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             }
           }
         ]
-        customDnsConfigs: [
-          {
-            fqdn: 'abc.azuremonitor.com'
-            ipAddresses: [
-              '10.0.0.10'
-            ]
-          }
-        ]
       }
     ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
-    }
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
     }
   }
 }]

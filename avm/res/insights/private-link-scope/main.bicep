@@ -279,9 +279,9 @@ type accessModeType = {
     queryAccessMode: 'Open' | 'PrivateOnly'
   }[]?
 
-  @description('Required. Specifies the default access mode of ingestion through associated private endpoints in scope.')
-  ingestionAccessMode: 'Open' | 'PrivateOnly'
+  @description('Optional. Specifies the default access mode of ingestion through associated private endpoints in scope.')
+  ingestionAccessMode: 'Open' | 'PrivateOnly'?
 
-  @description('Required. Specifies the default access mode of queries through associated private endpoints in scope.')
-  queryAccessMode: 'Open' | 'PrivateOnly'
+  @description('Optional. Specifies the default access mode of queries through associated private endpoints in scope.')
+  queryAccessMode: 'Open' | 'PrivateOnly'?
 }?
