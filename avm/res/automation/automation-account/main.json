@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "16375809366957188835"
+      "templateHash": "5485541427531214967"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account.",
@@ -2960,7 +2960,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('automationAccount', '2022-08-08', 'full').identity, 'principalId')), reference('automationAccount', '2022-08-08', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('automationAccount', '2022-08-08', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",

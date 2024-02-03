@@ -25,6 +25,7 @@
   "features": {
     "azure-cli": "latest",
     "dotnet": "7.0",
-    "ghcr.io/devcontainers/features/node:1": "none"
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainers/features/powershell:1": {}
   }
 }
