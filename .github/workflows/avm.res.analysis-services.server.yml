@@ -20,7 +20,6 @@ on:
         description: "Remove deployed module"
         required: false
         default: true
-
   push:
     branches:
       - main
@@ -31,6 +30,10 @@ on:
       - "avm/res/analysis-services/server/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
+
+permissions:
+  id-token: write # For OIDC
+  contents: write # For release tags
 
 env:
   modulePath: "avm/res/analysis-services/server"
