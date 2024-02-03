@@ -116,6 +116,9 @@ jobs:
   job_publish_module: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Publishing"
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write # For OIDC
+      contents: write # For release tags
     if: github.ref == 'refs/heads/main' && success()
     needs:
       - job_module_deploy_validation
