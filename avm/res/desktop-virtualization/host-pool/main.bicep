@@ -342,7 +342,7 @@ type privateEndpointType = {
   @sys.description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
-  @sys.description('Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".')
+  @sys.description('Optional. The service (sub-) type to deploy the private endpoint for. For example "connection".')
   service: string?
 
   @sys.description('Required. Resource ID of the subnet where the endpoint needs to be created.')
