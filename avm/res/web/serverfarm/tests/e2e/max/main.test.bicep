@@ -20,6 +20,9 @@ param serviceShort string = 'wsfmax'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+#disable-next-line no-hardcoded-location // Just a value to avoid ongoing capacity challenges
+var tempLocation = 'eastus'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -28,7 +31,7 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: 'eastus'
+  location: tempLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
@@ -36,7 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: 'eastus'
+    location: tempLocation
   }
 }
 
@@ -48,7 +51,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: 'eastus'
+    location: tempLocation
   }
 }
 
@@ -62,7 +65,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: 'eastus'
+    location: tempLocation
     sku: {
       name: 'P1v3'
       tier: 'Premium'
