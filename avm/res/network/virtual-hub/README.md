@@ -138,6 +138,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         }
       }
     ]
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -206,6 +207,9 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
           }
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {

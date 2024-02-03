@@ -21,7 +21,7 @@ param serviceShort string = 'nvhmax'
 param enableTelemetry bool = true
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -40,6 +40,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualWANName: 'dep-${namePrefix}-vw-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    location: resourceLocation
   }
 }
 
@@ -53,6 +54,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
     enableTelemetry: enableTelemetry
+    location: resourceLocation
     name: '${namePrefix}-${serviceShort}'
     lock: {
       kind: 'CanNotDelete'
