@@ -35,8 +35,8 @@ This module deploys a Virtual Hub Virtual Network Connection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`enableInternetSecurity`](#parameter-enableinternetsecurity) | bool | Enable internet security. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`routingConfiguration`](#parameter-routingconfiguration) | object | Routing Configuration indicating the associated and propagated route tables for this connection. |
 
 ### Parameter: `name`
@@ -60,17 +60,17 @@ The name of the parent virtual hub. Required if the template is used in a standa
 - Required: Yes
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableInternetSecurity`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable internet security.
 
 - Required: No
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableInternetSecurity`
+### Parameter: `enableTelemetry`
 
-Enable internet security.
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool

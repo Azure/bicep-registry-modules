@@ -73,19 +73,25 @@ param hubVirtualNetworkConnections array = []
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 var enableReferencedModulesTelemetry = false
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: '46d3xbcp.res.network-virtualhub-${uniqueString(deployment().name, location)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: take('46d3xbcp.res.network-virtualhub.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}', 64)
   properties: {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
       contentVersion: '1.0.0.0'
       resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
     }
   }
 }
@@ -140,7 +146,7 @@ module virtualHub_routeTables 'hub-route-table/main.bicep' = [for (routeTable, i
     name: routeTable.name
     labels: contains(routeTable, 'labels') ? routeTable.labels : []
     routes: contains(routeTable, 'routes') ? routeTable.routes : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -152,7 +158,7 @@ module virtualHub_hubVirtualNetworkConnections 'hub-virtual-network-connection/m
     enableInternetSecurity: contains(virtualNetworkConnection, 'enableInternetSecurity') ? virtualNetworkConnection.enableInternetSecurity : true
     remoteVirtualNetworkId: virtualNetworkConnection.remoteVirtualNetworkId
     routingConfiguration: contains(virtualNetworkConnection, 'routingConfiguration') ? virtualNetworkConnection.routingConfiguration : {}
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     virtualHub_routeTables

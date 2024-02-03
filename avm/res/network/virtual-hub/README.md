@@ -44,14 +44,15 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nvhmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvhmin'
   params: {
     // Required parameters
     addressPrefix: '10.0.0.0/16'
     name: 'nvhmin'
     virtualWanId: '<virtualWanId>'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -79,8 +80,11 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       "value": "<virtualWanId>"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
+    },
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -100,14 +104,14 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nvhmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvhmax'
   params: {
     // Required parameters
     addressPrefix: '10.1.0.0/16'
     name: 'nvhmax'
     virtualWanId: '<virtualWanId>'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     hubRouteTables: [
       {
         name: 'routeTable1'
@@ -170,8 +174,8 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       "value": "<virtualWanId>"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "hubRouteTables": {
       "value": [
@@ -234,14 +238,14 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nvhwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvhwaf'
   params: {
     // Required parameters
     addressPrefix: '10.1.0.0/16'
     name: 'nvhwaf'
     virtualWanId: '<virtualWanId>'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     hubRouteTables: [
       {
         name: 'routeTable1'
@@ -268,6 +272,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         }
       }
     ]
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -304,8 +309,8 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       "value": "<virtualWanId>"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "hubRouteTables": {
       "value": [
@@ -336,6 +341,9 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
           }
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -373,7 +381,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`allowBranchToBranchTraffic`](#parameter-allowbranchtobranchtraffic) | bool | Flag to control transit for VirtualRouter hub. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`expressRouteGatewayId`](#parameter-expressroutegatewayid) | string | Resource ID of the Express Route Gateway to link to. |
 | [`hubRouteTables`](#parameter-hubroutetables) | array | Route tables to create for the virtual hub. |
 | [`hubVirtualNetworkConnections`](#parameter-hubvirtualnetworkconnections) | array | Virtual network connections to create for the virtual hub. |
@@ -420,9 +428,9 @@ Flag to control transit for VirtualRouter hub.
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
