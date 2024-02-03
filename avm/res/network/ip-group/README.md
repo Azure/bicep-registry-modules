@@ -216,10 +216,6 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
       '10.0.0.2'
     ]
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -254,12 +250,6 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "tags": {
       "value": {
