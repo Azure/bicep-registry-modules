@@ -319,10 +319,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
       }
     ]
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -393,12 +389,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "tags": {
       "value": {

@@ -52,10 +52,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     ipConfigurations: [
       {
         name: '${serviceShort}01'
