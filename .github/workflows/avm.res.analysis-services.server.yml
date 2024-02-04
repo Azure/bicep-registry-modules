@@ -31,10 +31,6 @@ on:
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
-permissions:
-  id-token: write # For OIDC
-  contents: write # For release tags
-
 env:
   modulePath: "avm/res/analysis-services/server"
   workflowPath: ".github/workflows/avm.res.analysis-services.server.yml"

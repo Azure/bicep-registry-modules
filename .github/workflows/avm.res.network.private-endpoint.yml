@@ -32,10 +32,6 @@ on:
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
-permissions:
-  id-token: write # For OIDC
-  # contents: write # For release tags
-
 env:
   modulePath: "avm/res/network/private-endpoint"
   workflowPath: ".github/workflows/avm.res.network.private-endpoint.yml"

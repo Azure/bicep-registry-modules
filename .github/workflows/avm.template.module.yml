@@ -20,10 +20,6 @@ on:
         description: "Relative path to the module folder"
         required: true
 
-# permissions:
-#   id-token: write # For OIDC
-#   contents: write # For release tags
-
 env:
   ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
   ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
