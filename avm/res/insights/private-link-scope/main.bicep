@@ -73,9 +73,14 @@ resource privateLinkScope 'microsoft.insights/privateLinkScopes@2021-07-01-previ
   location: location
   tags: tags
   properties: {
-    accessModeSettings: accessModeSettings ?? {
-      ingestionAccessMode: empty(privateEndpoints) ? 'Open' : 'PrivateOnly'
-      queryAccessMode: empty(privateEndpoints) ? 'Open' : 'PrivateOnly'
+    accessModeSettings: !empty(privateEndpoints) ? {
+      ingestionAccessMode: accessModeSettings.?ingestionAccessMode ?? 'PrivateOnly'
+      queryAccessMode: accessModeSettings.?queryAccessMode ?? 'PrivateOnly'
+      exclusions: accessModeSettings.?exclusions ?? []
+    } : accessModeSettings ?? {
+      ingestionAccessMode: accessModeSettings.?ingestionAccessMode ?? 'Open'
+      queryAccessMode: accessModeSettings.?queryAccessMode ?? 'Open'
+      exclusions: accessModeSettings.?exclusions ?? []
     }
   }
 }
@@ -279,9 +284,9 @@ type accessModeType = {
     queryAccessMode: 'Open' | 'PrivateOnly'
   }[]?
 
-  @description('Optional. Specifies the default access mode of ingestion through associated private endpoints in scope.')
+  @description('Optional. Specifies the default access mode of ingestion through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value.')
   ingestionAccessMode: 'Open' | 'PrivateOnly'?
 
-  @description('Optional. Specifies the default access mode of queries through associated private endpoints in scope.')
+  @description('Optional. Specifies the default access mode of queries through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value.')
   queryAccessMode: 'Open' | 'PrivateOnly'?
 }?

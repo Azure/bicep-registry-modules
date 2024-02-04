@@ -114,14 +114,6 @@ This instance deploys the module with most of its features enabled.
     }
     privateEndpoints: [
       {
-        customDnsConfigs: [
-          {
-            fqdn: 'abc.azuremonitor.com'
-            ipAddresses: [
-              '10.0.0.10'
-            ]
-          }
-        ]
         customNetworkInterfaceName: 'nic-pe-'
         ipConfigurations: [
           {
@@ -306,14 +298,6 @@ This instance deploys the module with most of its features enabled.
     "privateEndpoints": {
       "value": [
         {
-          "customDnsConfigs": [
-            {
-              "fqdn": "abc.azuremonitor.com",
-              "ipAddresses": [
-                "10.0.0.10"
-              ]
-            }
-          ],
           "customNetworkInterfaceName": "nic-pe-",
           "ipConfigurations": [
             {
@@ -481,32 +465,9 @@ This instance deploys the module in alignment with the best-practices of the Azu
     // Required parameters
     name: 'iplswaf001'
     // Non-required parameters
-    accessModeSettings: {
-      exclusions: [
-        {
-          ingestionAccessMode: 'PrivateOnly'
-          privateEndpointConnectionName: 'thisisatest'
-          queryAccessMode: 'PrivateOnly'
-        }
-      ]
-      ingestionAccessMode: 'Open'
-      queryAccessMode: 'Open'
-    }
     location: 'global'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     privateEndpoints: [
       {
-        customDnsConfigs: [
-          {
-            fqdn: 'abc.azuremonitor.com'
-            ipAddresses: [
-              '10.0.0.10'
-            ]
-          }
-        ]
         customNetworkInterfaceName: 'nic-pe-'
         ipConfigurations: [
           {
@@ -642,39 +603,12 @@ This instance deploys the module in alignment with the best-practices of the Azu
       "value": "iplswaf001"
     },
     // Non-required parameters
-    "accessModeSettings": {
-      "value": {
-        "exclusions": [
-          {
-            "ingestionAccessMode": "PrivateOnly",
-            "privateEndpointConnectionName": "thisisatest",
-            "queryAccessMode": "PrivateOnly"
-          }
-        ],
-        "ingestionAccessMode": "Open",
-        "queryAccessMode": "Open"
-      }
-    },
     "location": {
       "value": "global"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "privateEndpoints": {
       "value": [
         {
-          "customDnsConfigs": [
-            {
-              "fqdn": "abc.azuremonitor.com",
-              "ipAddresses": [
-                "10.0.0.10"
-              ]
-            }
-          ],
           "customNetworkInterfaceName": "nic-pe-",
           "ipConfigurations": [
             {
@@ -843,24 +777,26 @@ Specifies the access mode of ingestion or queries through associated private end
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ingestionAccessMode`](#parameter-accessmodesettingsingestionaccessmode) | string | Specifies the default access mode of ingestion through associated private endpoints in scope. |
-| [`queryAccessMode`](#parameter-accessmodesettingsqueryaccessmode) | string | Specifies the default access mode of queries through associated private endpoints in scope. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`exclusions`](#parameter-accessmodesettingsexclusions) | array | List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning. |
+| [`ingestionAccessMode`](#parameter-accessmodesettingsingestionaccessmode) | string | Specifies the default access mode of ingestion through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value. |
+| [`queryAccessMode`](#parameter-accessmodesettingsqueryaccessmode) | string | Specifies the default access mode of queries through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value. |
+
+### Parameter: `accessModeSettings.exclusions`
+
+List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning.
+
+- Required: No
+- Type: array
 
 ### Parameter: `accessModeSettings.ingestionAccessMode`
 
-Specifies the default access mode of ingestion through associated private endpoints in scope.
+Specifies the default access mode of ingestion through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
@@ -872,9 +808,9 @@ Specifies the default access mode of ingestion through associated private endpoi
 
 ### Parameter: `accessModeSettings.queryAccessMode`
 
-Specifies the default access mode of queries through associated private endpoints in scope.
+Specifies the default access mode of queries through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
@@ -883,13 +819,6 @@ Specifies the default access mode of queries through associated private endpoint
     'PrivateOnly'
   ]
   ```
-
-### Parameter: `accessModeSettings.exclusions`
-
-List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning.
-
-- Required: No
-- Type: array
 
 ### Parameter: `enableTelemetry`
 

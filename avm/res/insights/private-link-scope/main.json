@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "9538080729149386454"
+      "templateHash": "13333472574597727627"
     },
     "name": "Azure Monitor Private Link Scopes",
     "description": "This module deploys an Azure Monitor Private Link Scope.",
@@ -347,8 +347,9 @@
             "Open",
             "PrivateOnly"
           ],
+          "nullable": true,
           "metadata": {
-            "description": "Required. Specifies the default access mode of ingestion through associated private endpoints in scope."
+            "description": "Optional. Specifies the default access mode of ingestion through associated private endpoints in scope. Default is \"Open\" if no private endpoints are configured and will be set to \"PrivateOnly\" if private endpoints are configured. Override default behaviour by explicitly providing a value."
           }
         },
         "queryAccessMode": {
@@ -357,8 +358,9 @@
             "Open",
             "PrivateOnly"
           ],
+          "nullable": true,
           "metadata": {
-            "description": "Required. Specifies the default access mode of queries through associated private endpoints in scope."
+            "description": "Optional. Specifies the default access mode of queries through associated private endpoints in scope. Default is \"Open\" if no private endpoints are configured and will be set to \"PrivateOnly\" if private endpoints are configured. Override default behaviour by explicitly providing a value."
           }
         }
       },
@@ -471,7 +473,7 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "accessModeSettings": "[coalesce(parameters('accessModeSettings'), createObject('ingestionAccessMode', if(empty(parameters('privateEndpoints')), 'Open', 'PrivateOnly'), 'queryAccessMode', if(empty(parameters('privateEndpoints')), 'Open', 'PrivateOnly')))]"
+        "accessModeSettings": "[if(not(empty(parameters('privateEndpoints'))), createObject('ingestionAccessMode', coalesce(tryGet(parameters('accessModeSettings'), 'ingestionAccessMode'), 'PrivateOnly'), 'queryAccessMode', coalesce(tryGet(parameters('accessModeSettings'), 'queryAccessMode'), 'PrivateOnly'), 'exclusions', coalesce(tryGet(parameters('accessModeSettings'), 'exclusions'), createArray())), coalesce(parameters('accessModeSettings'), createObject('ingestionAccessMode', coalesce(tryGet(parameters('accessModeSettings'), 'ingestionAccessMode'), 'Open'), 'queryAccessMode', coalesce(tryGet(parameters('accessModeSettings'), 'queryAccessMode'), 'Open'), 'exclusions', coalesce(tryGet(parameters('accessModeSettings'), 'exclusions'), createArray()))))]"
       }
     },
     "privateLinkScope_lock": {

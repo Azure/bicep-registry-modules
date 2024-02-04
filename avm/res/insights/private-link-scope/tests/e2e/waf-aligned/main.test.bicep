@@ -53,15 +53,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: 'global'
-    accessModeSettings: {
-      exclusions: [
-        {
-          ingestionAccessMode: 'PrivateOnly'
-          queryAccessMode: 'PrivateOnly'
-          privateEndpointConnectionName: 'thisisatest'
-        }
-      ]
-    }
     scopedResources: [
       {
         name: 'scoped1'
