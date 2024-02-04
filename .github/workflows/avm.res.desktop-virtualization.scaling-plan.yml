@@ -1,4 +1,4 @@
-name: "avm.res.virtual-machine-images.image-template"
+name: "avm.res.desktop-virtualization.scaling-plan"
 
 on:
   schedule:
@@ -20,21 +20,20 @@ on:
         description: "Remove deployed module"
         required: false
         default: true
-
   push:
     branches:
       - main
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.virtual-machine-images.image-template.yml"
-      - "avm/res/virtual-machine-images/image-template/**"
+      - ".github/workflows/avm.res.desktop-virtualization.scaling-plan.yml"
+      - "avm/res/desktop-virtualization/scaling-plan/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/virtual-machine-images/image-template"
-  workflowPath: ".github/workflows/avm.res.virtual-machine-images.image-template.yml"
+  modulePath: "avm/res/desktop-virtualization/scaling-plan"
+  workflowPath: ".github/workflows/avm.res.desktop-virtualization.scaling-plan.yml"
 
 concurrency:
   group: ${{ github.workflow }}
@@ -72,6 +71,9 @@ jobs:
   ##############################
   call-workflow-passing-data:
     name: "Run"
+    permissions:
+      id-token: write # For OIDC
+      contents: write # For release tags
     needs:
       - job_initialize_pipeline
     uses: ./.github/workflows/avm.template.module.yml
