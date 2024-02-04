@@ -23,7 +23,6 @@ on:
   push:
     branches:
       - main
-      - fix/eriqua/gh-token
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
