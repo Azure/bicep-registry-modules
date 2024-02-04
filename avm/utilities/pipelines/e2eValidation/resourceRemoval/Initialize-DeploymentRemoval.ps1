@@ -76,8 +76,10 @@ function Initialize-DeploymentRemoval {
             'Microsoft.Authorization/policyDefinitions'
             'Microsoft.Sql/managedInstances',
             'Microsoft.MachineLearningServices/workspaces',
-            'Microsoft.Resources/resourceGroups',
-            'Microsoft.Compute/virtualMachines'
+            'Microsoft.Compute/virtualMachines',
+            'Microsoft.VirtualMachineImages/imageTemplates', # Must be removed before their MSI
+            'Microsoft.ManagedIdentity/userAssignedIdentities',
+            'Microsoft.Resources/resourceGroups'
         )
 
         Write-Verbose ('Handling resource removal with deployment names [{0}]' -f ($deploymentNames -join ', ')) -Verbose
