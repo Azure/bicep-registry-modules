@@ -310,19 +310,18 @@ The `brm validate` command mentioned in the above step does not deploy the `test
 
 Once the module files are validated locally, you can commit your changes and open a pull request. You must link the new module proposal in the pull request description if you are trying to add a new module. Adding or updating multiple modules is not supported and will cause a failure in the pull request validation CI, so please only add or change one module at a time.
 
-## Prefix the PR TItle based on the type of change.
+## Prefix the pull request title based on the type of change
 
-The modules in the repository follow Semantic Versioning.
-A GitHub action checks that PRs include a prefix. This acts as a stepping stone to automating the version incrementing, this action requires each PR have a semantic prefix.
+The modules in the repository follow Semantic Versioning. A GitHub action checks that pull requests include a prefix. This acts as a stepping stone to automating the version incrementing, this GitHub action requires each pull request to have a semantic prefix.
 
-Example PR Tiles:
+Example pull request titles:
 
 - Creating a new module: `feat(new): Storage Account Module`
 - Add a bug fix to existing module: `fix: Storage Account does not properly format output`
 - Add a feature to existing module `feat: Add input parameter to deploy storage into vnet`
 - Add a breaking change to a module due to refactoring: `refactor!: Use custom types in storage account`
 
-More details can be found [here] about each prefix(https://www.conventionalcommits.org/en/v1.0.0/).
+More details on prefixes can be found [here](https://www.conventionalcommits.org/en/v1.0.0/).
 
 Recommend prefixes include:
 

@@ -1,0 +1,166 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "13453164087600189664"
+    },
+    "name": "Azure Container Registry (ACR) Webhooks",
+    "description": "This module deploys an Azure Container Registry (ACR) Webhook.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "registryName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent registry. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "[format('{0}webhook', parameters('registryName'))]",
+      "minLength": 5,
+      "maxLength": 50,
+      "metadata": {
+        "description": "Optional. The name of the registry webhook."
+      }
+    },
+    "serviceUri": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The service URI for the webhook to post notifications."
+      }
+    },
+    "status": {
+      "type": "string",
+      "defaultValue": "enabled",
+      "allowedValues": [
+        "disabled",
+        "enabled"
+      ],
+      "metadata": {
+        "description": "Optional. The status of the webhook at the time the operation was called."
+      }
+    },
+    "action": {
+      "type": "array",
+      "defaultValue": [
+        "chart_delete",
+        "chart_push",
+        "delete",
+        "push",
+        "quarantine"
+      ],
+      "metadata": {
+        "description": "Optional. The list of actions that trigger the webhook to post notifications."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "customHeaders": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Custom headers that will be added to the webhook notifications."
+      }
+    },
+    "scope": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The scope of repositories where the event can be triggered. For example, 'foo:*' means events for all tags under repository 'foo'. 'foo:bar' means events for 'foo:bar' only. 'foo' is equivalent to 'foo:latest'. Empty means all events."
+      }
+    }
+  },
+  "resources": {
+    "registry": {
+      "existing": true,
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2023-06-01-preview",
+      "name": "[parameters('registryName')]"
+    },
+    "webhook": {
+      "type": "Microsoft.ContainerRegistry/registries/webhooks",
+      "apiVersion": "2023-06-01-preview",
+      "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "actions": "[parameters('action')]",
+        "customHeaders": "[parameters('customHeaders')]",
+        "scope": "[parameters('scope')]",
+        "serviceUri": "[parameters('serviceUri')]",
+        "status": "[parameters('status')]"
+      },
+      "dependsOn": [
+        "registry"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the webhook."
+      },
+      "value": "[resourceId('Microsoft.ContainerRegistry/registries/webhooks', parameters('registryName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the webhook."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure container registry."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "actions": {
+      "type": "array",
+      "metadata": {
+        "description": "The actions of the webhook."
+      },
+      "value": "[reference('webhook').actions]"
+    },
+    "status": {
+      "type": "string",
+      "metadata": {
+        "description": "The status of the webhook."
+      },
+      "value": "[reference('webhook').status]"
+    },
+    "provistioningState": {
+      "type": "string",
+      "metadata": {
+        "description": "The provisioning state of the webhook."
+      },
+      "value": "[reference('webhook').provisioningState]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('webhook', '2023-06-01-preview', 'full').location]"
+    }
+  }
+}

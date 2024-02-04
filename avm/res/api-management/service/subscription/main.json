@@ -1,0 +1,119 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "8462322691003694396"
+    },
+    "name": "API Management Service Subscriptions",
+    "description": "This module deploys an API Management Service Subscription.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "allowTracing": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Determines whether tracing can be enabled."
+      }
+    },
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "ownerId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. User (user ID path) for whom subscription is being created in form /users/{userId}."
+      }
+    },
+    "primaryKey": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Primary subscription key. If not specified during request key will be generated automatically."
+      }
+    },
+    "scope": {
+      "type": "string",
+      "defaultValue": "/apis",
+      "metadata": {
+        "description": "Optional. Scope type to choose between a product, \"allAPIs\" or a specific API. Scope like \"/products/{productId}\" or \"/apis\" or \"/apis/{apiId}\"."
+      }
+    },
+    "secondaryKey": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Secondary subscription key. If not specified during request key will be generated automatically."
+      }
+    },
+    "state": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are \"*\" active \"?\" the subscription is active, \"*\" suspended \"?\" the subscription is blocked, and the subscriber cannot call any APIs of the product, * submitted ? the subscription request has been made by the developer, but has not yet been approved or rejected, * rejected ? the subscription request has been denied by an administrator, * cancelled ? the subscription has been cancelled by the developer or administrator, * expired ? the subscription reached its expiration date and was deactivated. - suspended, active, expired, submitted, rejected, cancelled."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Subscription name."
+      }
+    }
+  },
+  "resources": {
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2021-08-01",
+      "name": "[parameters('apiManagementServiceName')]"
+    },
+    "subscription": {
+      "type": "Microsoft.ApiManagement/service/subscriptions",
+      "apiVersion": "2021-08-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+      "properties": {
+        "scope": "[parameters('scope')]",
+        "displayName": "[parameters('name')]",
+        "ownerId": "[parameters('ownerId')]",
+        "primaryKey": "[parameters('primaryKey')]",
+        "secondaryKey": "[parameters('secondaryKey')]",
+        "state": "[parameters('state')]",
+        "allowTracing": "[parameters('allowTracing')]"
+      },
+      "dependsOn": [
+        "service"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the API management service subscription."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/subscriptions', parameters('apiManagementServiceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the API management service subscription."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the API management service subscription was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
