@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using CMK '
+metadata description = 'This instance deploys the module with a customer-managed key (CMK).'
+
 // ========== //
 // Parameters //
 // ========== //

@@ -28,9 +28,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/container-instance/container-group:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Encr](#example-2-encr)
+- [Using CMK ](#example-2-using-cmk)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [Private](#example-4-private)
+- [Using private network](#example-4-using-private-network)
 - [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -137,7 +137,10 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 </details>
 <p>
 
-### Example 2: _Encr_
+### Example 2: _Using CMK _
+
+This instance deploys the module with a customer-managed key (CMK).
+
 
 <details>
 
@@ -546,7 +549,10 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 </details>
 <p>
 
-### Example 4: _Private_
+### Example 4: _Using private network_
+
+This instance deploys the module within a virtual network.
+
 
 <details>
 

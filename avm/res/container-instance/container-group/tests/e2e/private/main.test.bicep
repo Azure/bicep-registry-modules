@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using private network'
+metadata description = 'This instance deploys the module within a virtual network.'
+
 // ========== //
 // Parameters //
 // ========== //
