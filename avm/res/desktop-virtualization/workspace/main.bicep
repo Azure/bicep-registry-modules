@@ -94,7 +94,7 @@ module workspace_privateEndpoints 'br/public:avm-res-network-privateendpoint:0.1
   name: '${uniqueString(deployment().name, location)}-Workspace-PrivateEndpoint-${index}'
   params: {
     groupIds: [
-      privateEndpoint.?service
+      privateEndpoint.service
     ]
     name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.?service}-${index}'
     serviceResourceId: workspace.id
