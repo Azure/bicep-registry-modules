@@ -97,7 +97,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-splhmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-splhmax'
   params: {
     // Required parameters
     name: 'splhmax001'
@@ -223,7 +223,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-splhwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-splhwaf'
   params: {
     // Required parameters
     name: 'splhwaf001'
