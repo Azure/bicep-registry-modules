@@ -199,7 +199,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
 }
 
 module hostPool_privateEndpoints 'br/public:avm-res-network-privateendpoint:0.1.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-Workspace-PrivateEndpoint-${index}'
+  name: '${uniqueString(deployment().name, location)}-HostPool-PrivateEndpoint-${index}'
   params: {
     groupIds: [
       privateEndpoint.?service ?? 'connection'
