@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "14533830287443568216"
+      "templateHash": "18263440688499285591"
     },
     "name": "Application Insights",
     "description": "This component deploys an Application Insights instance.",
@@ -210,6 +210,34 @@
         "description": "Required. Resource ID of the log analytics workspace which the data will be ingested to. This property is required to create an application with this API version. Applications from older versions will not have this property."
       }
     },
+    "disableIpMasking": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Disable IP masking. Default value is set to true."
+      }
+    },
+    "disableLocalAuth": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Disable Non-AAD based Auth. Default value is set to false."
+      }
+    },
+    "forceCustomerStorageForProfiler": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Force users to create their own storage account for profiler and debugger."
+      }
+    },
+    "linkedStorageAccountResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Linked storage account resource ID."
+      }
+    },
     "publicNetworkAccessForIngestion": {
       "type": "string",
       "defaultValue": "Enabled",
@@ -339,6 +367,9 @@
       "kind": "[parameters('kind')]",
       "properties": {
         "Application_Type": "[parameters('applicationType')]",
+        "DisableIpMasking": "[parameters('disableIpMasking')]",
+        "DisableLocalAuth": "[parameters('disableLocalAuth')]",
+        "ForceCustomerStorageForProfiler": "[parameters('forceCustomerStorageForProfiler')]",
         "WorkspaceResourceId": "[parameters('workspaceResourceId')]",
         "publicNetworkAccessForIngestion": "[parameters('publicNetworkAccessForIngestion')]",
         "publicNetworkAccessForQuery": "[parameters('publicNetworkAccessForQuery')]",
@@ -386,6 +417,90 @@
         "logs": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'AllLogs', 'enabled', true())))]",
         "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
         "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+      },
+      "dependsOn": [
+        "appInsights"
+      ]
+    },
+    "linkedStorageAccount": {
+      "condition": "[not(empty(parameters('linkedStorageAccountResourceId')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-appInsights-linkedStorageAccount', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "appInsightsName": {
+            "value": "[parameters('name')]"
+          },
+          "storageAccountResourceId": {
+            "value": "[parameters('linkedStorageAccountResourceId')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.24.24.22086",
+              "templateHash": "15481388144279509267"
+            },
+            "name": "Application Insights Linked Storage Account",
+            "description": "This component deploys an Application Insights Linked Storage Account.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "appInsightsName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Application Insights instance. Required if the template is used in a standalone deployment."
+              }
+            },
+            "storageAccountResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Linked storage account resource ID."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "microsoft.insights/components/linkedStorageAccounts",
+              "apiVersion": "2020-03-01-preview",
+              "name": "[format('{0}/{1}', parameters('appInsightsName'), 'ServiceProfiler')]",
+              "properties": {
+                "linkedStorageAccount": "[parameters('storageAccountResourceId')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Linked Storage Account."
+              },
+              "value": "ServiceProfiler"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Linked Storage Account."
+              },
+              "value": "[resourceId('microsoft.insights/components/linkedStorageAccounts', parameters('appInsightsName'), 'ServiceProfiler')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the agent pool was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
       },
       "dependsOn": [
         "appInsights"
