@@ -8,13 +8,13 @@ param applicationGroupName string
 @sys.description('Required. Name of the Application to be created in the Application Group.')
 param name string
 
-@sys.description('Optional. Description of Application..')
+@sys.description('Optional. Description of the Application.')
 param description string = ''
 
-@sys.description('Required. Friendly name of Application..')
+@sys.description('Required. Friendly name of the Application.')
 param friendlyName string
 
-@sys.description('Required. Specifies a path for the executable file for the application.')
+@sys.description('Required. Specifies a path for the executable file for the Application.')
 param filePath string
 
 @allowed([
@@ -22,10 +22,10 @@ param filePath string
   'DoNotAllow'
   'Require'
 ])
-@sys.description('Optional. Specifies whether this published application can be launched with command-line arguments provided by the client, command-line arguments specified at publish time, or no command-line arguments at all.')
+@sys.description('Optional. Specifies whether this published Application can be launched with command-line arguments provided by the client, command-line arguments specified at publish time, or no command-line arguments at all.')
 param commandLineSetting string = 'DoNotAllow'
 
-@sys.description('Optional. Command-Line Arguments for Application.')
+@sys.description('Optional. Command-Line Arguments for the Application.')
 param commandLineArguments string = ''
 
 @sys.description('Optional. Specifies whether to show the RemoteApp program in the RD Web Access server.')
@@ -56,11 +56,11 @@ resource application 'Microsoft.DesktopVirtualization/applicationGroups/applicat
   }
 }
 
-@sys.description('The resource ID of the application.')
+@sys.description('The resource ID of the Application.')
 output resourceId string = application.id
 
-@sys.description('The name of the resource group the application was created in.')
+@sys.description('The name of the resource group the Application was created in.')
 output resourceGroupName string = resourceGroup().name
 
-@sys.description('The name of the application.')
+@sys.description('The name of the Application.')
 output name string = application.name
