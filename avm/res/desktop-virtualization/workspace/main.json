@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "3430935804600012615"
+      "templateHash": "9049023410320526695"
     },
     "name": "Workspace",
     "description": "This module deploys an Azure Virtual Desktop Workspace.",
@@ -579,7 +579,7 @@
         "parameters": {
           "groupIds": {
             "value": [
-              "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service')]"
+              "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service]"
             ]
           },
           "name": {
