@@ -285,10 +285,10 @@ Describe 'Module tests' -Tag 'Module' {
       $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
 
       $readmeFileTestCases += @{
-        moduleFolderName = $resourceTypeIdentifier
-        templateContent  = $builtTestFileMap[$templateFilePath]
-        templateFilePath = $templateFilePath
-        readMeFilePath   = Join-Path -Path $moduleFolderPath 'README.md'
+        moduleFolderName    = $resourceTypeIdentifier
+        templateFileContent = $builtTestFileMap[$templateFilePath]
+        templateFilePath    = $templateFilePath
+        readMeFilePath      = Join-Path -Path $moduleFolderPath 'README.md'
       }
     }
 
@@ -307,7 +307,7 @@ Describe 'Module tests' -Tag 'Module' {
       . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
 
       # Apply update with already compiled template content
-      Set-ModuleReadMe -TemplateFilePath $templateFilePath -TemplateFileContent $templateFileContent
+      Set-ModuleReadMe -TemplateFilePath $templateFilePath -PreLoadedContent @{ TemplateFileContent = $templateFileContent }
 
       # Get hash after 'update'
       $fileHashAfter = (Get-FileHash $readMeFilePath).Hash
@@ -498,6 +498,18 @@ Describe 'Module tests' -Tag 'Module' {
             $locationParameter.defaultValue | Should -BeIn @('[resourceGroup().Location]', 'global')
           }
         }
+      }
+
+      It '[<moduleFolderName>] The telemetry parameter should be present & have the expected type, default value & metadata description.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+
+        param(
+          [hashtable] $templateFileParameters
+        )
+
+        $templateFileParameters.PSBase.Keys | Should -Contain 'enableTelemetry'
+        $templateFileParameters.enableTelemetry.type | Should -Be 'bool'
+        $templateFileParameters.enableTelemetry.defaultValue | Should -Be 'true'
+        $templateFileParameters.enableTelemetry.metadata.description | Should -Be 'Optional. Enable/Disable usage telemetry for module.'
       }
 
       It '[<moduleFolderName>] Parameter & UDT names should be camel-cased (no dashes or underscores and must start with lower-case letter).' -TestCases $moduleFolderTestCases {
@@ -692,9 +704,9 @@ Describe 'Module tests' -Tag 'Module' {
               $implementedSchema = $templateFileContentBicep[$implementedSchemaStartIndex..$implementedSchemaEndIndex]
 
               try {
-                $rawReponse = Invoke-WebRequest -Uri $expectedUdtUrl
-                if (($rawReponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
-                  $expectedSchemaFull = $rawReponse.Content -split '\n'
+                $rawResponse = Invoke-WebRequest -Uri $expectedUdtUrl
+                if (($rawResponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
+                  $expectedSchemaFull = $rawResponse.Content -split '\n'
                 } else {
                   throw "Failed to fetch schema from [$expectedUdtUrl]. Skipping schema check"
                 }
@@ -1081,6 +1093,93 @@ Describe 'Module tests' -Tag 'Module' {
         $outputs | Should -Contain 'systemAssignedMIPrincipalId'
       }
     }
+  }
+}
+
+Describe 'Governance tests' {
+
+  $governanceTestCases = [System.Collections.ArrayList] @()
+  foreach ($moduleFolderPath in $moduleFolderPaths) {
+
+    $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
+    $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}')[1]
+
+    $isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+    if ($isTopLevelModule) {
+
+      $governanceTestCases += @{
+        relativeModulePath = $relativeModulePath
+        repoRootPath       = $repoRootPath
+        moduleFolderName   = $resourceTypeIdentifier
+      }
+    }
+  }
+
+  It '[<moduleFolderName>] Owning team should be specified correctly in CODEWONERS file.' -TestCases $governanceTestCases {
+
+    param(
+      [string] $relativeModulePath,
+      [string] $repoRootPath
+    )
+
+    $codeownersFilePath = Join-Path $repoRootPath '.github' 'CODEOWNERS'
+    $codeOwnersContent = Get-Content $codeownersFilePath
+
+    $formattedEntry = $relativeModulePath -replace '\\', '\/'
+    $moduleLine = $codeOwnersContent | Where-Object { $_ -match "^\s*\/$formattedEntry\/" }
+
+    $expectedEntry = "/{0}/ @Azure/{1}-module-owners-bicep @Azure/avm-core-team-technical-bicep" -f ($relativeModulePath -replace '\\', '/'), ($relativeModulePath -replace '-' -replace '[\\|\/]', '-')
+
+    # Line should exist
+    $moduleLine | Should -Not -BeNullOrEmpty -Because "the module should be listed in the [CODEOWNERS](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file) file as [/$expectedEntry]."
+
+    # Line should be correct
+    $moduleLine | Should -Be $expectedEntry -Because "the module should match the expected format as documented [here](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file)."
+  }
+
+
+  It '[<moduleFolderName>] Module identifier should be listed in issue template in the correct alphabetical position.' -TestCases $governanceTestCases {
+
+    param(
+      [string] $relativeModulePath,
+      [string] $repoRootPath
+    )
+
+    $issueTemplatePath = Join-Path $repoRootPath '.github' 'ISSUE_TEMPLATE' 'avm_module_issue.yml'
+    $issueTemplateContent = Get-Content $issueTemplatePath
+
+    # Identify listed modules
+    $startIndex = 0
+    while ($issueTemplateContent[$startIndex] -notmatch '^\s*- "Other, as defined below\.\.\."' -and $startIndex -ne $issueTemplateContent.Length) {
+      $startIndex++
+    }
+    $startIndex++ # Go one further than dummy value line
+
+    $endIndex = $startIndex
+    while ($issueTemplateContent[$endIndex] -match '.*- "avm\/.*' -and $endIndex -ne $issueTemplateContent.Length) {
+      $endIndex++
+    }
+    $endIndex-- # Go one back to last module line
+
+    $listedModules = $issueTemplateContent[$startIndex..$endIndex] | ForEach-Object { $_ -replace '.*- "(avm\/.*)".*', '$1' }
+
+    # Should exist
+    $listedModules | Should -Contain ($relativeModulePath -replace '\\', '/') -Because 'the module should be listed in the issue template in the correct alphabetical position ([ref](https://azure.github.io/Azure-Verified-Modules/specs/bicep/#id-bcpnfr15---category-contributionsupport---avm-module-issue-template-file)).'
+
+    # Should not be commented
+    $entry = $issueTemplateContent | Where-Object { $_ -match ('.*- "{0}".*' -f $relativeModulePath -replace '\\', '\/') }
+    $entry.Trim() | Should -Not -Match '^\s*#.*' -Because 'the module should not be commented out in the issue template.'
+
+    # Should be at correct location
+    $incorrectLines = @()
+    foreach ($finding in (Compare-Object $listedModules ($listedModules | Sort-Object) -SyncWindow 0)) {
+      if ($finding.SideIndicator -eq '<=') {
+        $incorrectLines += $finding.InputObject
+      }
+    }
+    $incorrectLines = $incorrectLines | Sort-Object -Unique
+
+    $incorrectLines.Count | Should -Be 0 -Because ('the number of modules that are not in the correct alphabetical order in the issue template should be zero ([ref](https://azure.github.io/Azure-Verified-Modules/specs/bicep/#id-bcpnfr15---category-contributionsupport---avm-module-issue-template-file)).</br>However, the following incorrectly located lines were found:</br><pre>{0}</pre>' -f ($incorrectLines -join '</br>'))
   }
 }
 

@@ -41,7 +41,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module solution 'br/public:avm/res/operations-management/solution:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-omsmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-omsmin'
   params: {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
@@ -93,7 +93,7 @@ This instance deploys the module with a Microsoft solution.
 
 ```bicep
 module solution 'br/public:avm/res/operations-management/solution:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-omsms'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-omsms'
   params: {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
@@ -153,7 +153,7 @@ This instance deploys the module with a third party (Non-Microsoft) solution.
 
 ```bicep
 module solution 'br/public:avm/res/operations-management/solution:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-omsnonms'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-omsnonms'
   params: {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
@@ -213,7 +213,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module solution 'br/public:avm/res/operations-management/solution:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-omswaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-omswaf'
   params: {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
