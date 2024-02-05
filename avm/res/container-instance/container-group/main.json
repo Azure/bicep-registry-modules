@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "2417655979671650384"
+      "templateHash": "10448424693593626263"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group.",
@@ -92,6 +92,190 @@
         }
       },
       "nullable": true
+    },
+    "containerType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the container instance."
+            }
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "image": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The name of the container source image."
+                }
+              },
+              "livenessProbe": {
+                "type": "object",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The liveness probe."
+                }
+              },
+              "ports": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "port": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Required. The port number exposed on the container instance."
+                      }
+                    },
+                    "protocol": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The protocol associated with the port number."
+                      }
+                    }
+                  }
+                }
+              },
+              "resources": {
+                "type": "object",
+                "properties": {
+                  "requests": {
+                    "type": "object",
+                    "properties": {
+                      "cpu": {
+                        "type": "int"
+                      },
+                      "gpu": {
+                        "type": "object",
+                        "properties": {
+                          "count": {
+                            "type": "int"
+                          },
+                          "sku": {
+                            "type": "string"
+                          }
+                        },
+                        "nullable": true
+                      },
+                      "memoryInGB": {
+                        "type": "int"
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. The resource requests of this container instance.."
+                    }
+                  },
+                  "limits": {
+                    "type": "object",
+                    "properties": {
+                      "cpu": {
+                        "type": "int"
+                      },
+                      "gpu": {
+                        "type": "object",
+                        "properties": {
+                          "count": {
+                            "type": "int"
+                          },
+                          "sku": {
+                            "type": "string"
+                          }
+                        },
+                        "nullable": true
+                      },
+                      "memoryInGB": {
+                        "type": "string"
+                      }
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The resource limits of this container instance.."
+                    }
+                  }
+                }
+              },
+              "volumeMounts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "mountPath": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The volume mounts within the container instance."
+                }
+              },
+              "command": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The command to execute within the container instance."
+                }
+              },
+              "environmentVariables": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "secureValue": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "value": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The environment variables to set in the container instance."
+                }
+              }
+            },
+            "metadata": {
+              "description": "Required. The properties of the container instance."
+            }
+          }
+        }
+      }
+    },
+    "ipAddressPortsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "port": {
+            "type": "int",
+            "metadata": {
+              "description": "Required. The port number exposed on the container instance."
+            }
+          },
+          "protocol": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The protocol associated with the port number."
+            }
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -102,14 +286,13 @@
       }
     },
     "containers": {
-      "type": "array",
+      "$ref": "#/definitions/containerType",
       "metadata": {
         "description": "Required. The containers and their respective config within the container group."
       }
     },
     "ipAddressPorts": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/ipAddressPortsType",
       "metadata": {
         "description": "Conditional. Ports to open on the public IP address. Must include all ports assigned on container level. Required if `ipAddressType` is set to `public`."
       }
@@ -233,11 +416,11 @@
         "description": "Optional. Tags of the resource."
       }
     },
-    "enableDefaultTelemetry": {
+    "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "sku": {
@@ -275,17 +458,24 @@
         "cMKKeyVault"
       ]
     },
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.containerinstance-containergroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
-          "resources": []
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
         }
       }
     },
@@ -309,7 +499,7 @@
     },
     "containergroup": {
       "type": "Microsoft.ContainerInstance/containerGroups",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2023-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
@@ -369,14 +559,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('containergroup', '2022-09-01', 'full').identity, 'principalId')), reference('containergroup', '2022-09-01', 'full').identity.principalId, '')]"
+      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('containergroup', '2023-05-01', 'full').identity, 'principalId')), reference('containergroup', '2023-05-01', 'full').identity.principalId, '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('containergroup', '2022-09-01', 'full').location]"
+      "value": "[reference('containergroup', '2023-05-01', 'full').location]"
     }
   }
 }

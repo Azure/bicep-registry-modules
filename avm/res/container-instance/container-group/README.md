@@ -17,7 +17,7 @@ This module deploys a Container Instance Container Group.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.ContainerInstance/containerGroups` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerInstance/2022-09-01/containerGroups) |
+| `Microsoft.ContainerInstance/containerGroups` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerInstance/2023-05-01/containerGroups) |
 
 ## Usage examples
 
@@ -54,7 +54,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
           ports: [
             {
-              port: '443'
+              port: 443
               protocol: 'Tcp'
             }
           ]
@@ -67,15 +67,15 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       }
     ]
-    name: 'cicgmin001'
-    // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     ipAddressPorts: [
       {
         port: 443
         protocol: 'Tcp'
       }
     ]
+    name: 'cicgmin001'
+    // Non-required parameters
+    location: '<location>'
   }
 }
 ```
@@ -101,7 +101,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "image": "mcr.microsoft.com/azuredocs/aci-helloworld",
             "ports": [
               {
-                "port": "443",
+                "port": 443,
                 "protocol": "Tcp"
               }
             ],
@@ -115,13 +115,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       ]
     },
-    "name": {
-      "value": "cicgmin001"
-    },
-    // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "ipAddressPorts": {
       "value": [
         {
@@ -129,6 +122,13 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           "protocol": "Tcp"
         }
       ]
+    },
+    "name": {
+      "value": "cicgmin001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -157,11 +157,11 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
           ports: [
             {
-              port: '80'
+              port: 80
               protocol: 'Tcp'
             }
             {
-              port: '443'
+              port: 443
               protocol: 'Tcp'
             }
           ]
@@ -181,7 +181,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
           ports: [
             {
-              port: '8080'
+              port: 8080
               protocol: 'Tcp'
             }
           ]
@@ -194,14 +194,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       }
     ]
-    name: 'cicgenc001'
-    // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     ipAddressPorts: [
       {
         port: 80
@@ -212,6 +204,14 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         protocol: 'Tcp'
       }
     ]
+    name: 'cicgenc001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -254,11 +254,11 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "image": "mcr.microsoft.com/azuredocs/aci-helloworld",
             "ports": [
               {
-                "port": "80",
+                "port": 80,
                 "protocol": "Tcp"
               },
               {
-                "port": "443",
+                "port": 443,
                 "protocol": "Tcp"
               }
             ],
@@ -278,7 +278,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "image": "mcr.microsoft.com/azuredocs/aci-helloworld",
             "ports": [
               {
-                "port": "8080",
+                "port": 8080,
                 "protocol": "Tcp"
               }
             ],
@@ -289,6 +289,18 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
               }
             }
           }
+        }
+      ]
+    },
+    "ipAddressPorts": {
+      "value": [
+        {
+          "port": 80,
+          "protocol": "Tcp"
+        },
+        {
+          "port": 443,
+          "protocol": "Tcp"
         }
       ]
     },
@@ -303,20 +315,8 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
-    "ipAddressPorts": {
-      "value": [
-        {
-          "port": 80,
-          "protocol": "Tcp"
-        },
-        {
-          "port": 443,
-          "protocol": "Tcp"
-        }
-      ]
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -369,11 +369,11 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
           ports: [
             {
-              port: '80'
+              port: 80
               protocol: 'Tcp'
             }
             {
-              port: '443'
+              port: 443
               protocol: 'Tcp'
             }
           ]
@@ -393,7 +393,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
           ports: [
             {
-              port: '8080'
+              port: 8080
               protocol: 'Tcp'
             }
           ]
@@ -406,9 +406,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       }
     ]
-    name: 'cicgmax001'
-    // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     ipAddressPorts: [
       {
         port: 80
@@ -419,6 +416,9 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         protocol: 'Tcp'
       }
     ]
+    name: 'cicgmax001'
+    // Non-required parameters
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -461,11 +461,11 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "image": "mcr.microsoft.com/azuredocs/aci-helloworld",
             "ports": [
               {
-                "port": "80",
+                "port": 80,
                 "protocol": "Tcp"
               },
               {
-                "port": "443",
+                "port": 443,
                 "protocol": "Tcp"
               }
             ],
@@ -485,7 +485,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "image": "mcr.microsoft.com/azuredocs/aci-helloworld",
             "ports": [
               {
-                "port": "8080",
+                "port": 8080,
                 "protocol": "Tcp"
               }
             ],
@@ -499,13 +499,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       ]
     },
-    "name": {
-      "value": "cicgmax001"
-    },
-    // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "ipAddressPorts": {
       "value": [
         {
@@ -517,6 +510,13 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           "protocol": "Tcp"
         }
       ]
+    },
+    "name": {
+      "value": "cicgmax001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -566,11 +566,11 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
           ports: [
             {
-              port: '80'
+              port: 80
               protocol: 'Tcp'
             }
             {
-              port: '443'
+              port: 443
               protocol: 'Tcp'
             }
           ]
@@ -596,7 +596,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
           ports: [
             {
-              port: '8080'
+              port: 8080
               protocol: 'Tcp'
             }
           ]
@@ -609,9 +609,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       }
     ]
-    name: 'cicgprivate001'
-    // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     ipAddressPorts: [
       {
         port: 80
@@ -622,11 +619,14 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         protocol: 'Tcp'
       }
       {
-        port: '8080'
+        port: 8080
         protocol: 'Tcp'
       }
     ]
+    name: 'cicgprivate001'
+    // Non-required parameters
     ipAddressType: 'Private'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -676,11 +676,11 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "image": "mcr.microsoft.com/azuredocs/aci-helloworld",
             "ports": [
               {
-                "port": "80",
+                "port": 80,
                 "protocol": "Tcp"
               },
               {
-                "port": "443",
+                "port": 443,
                 "protocol": "Tcp"
               }
             ],
@@ -706,7 +706,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "image": "mcr.microsoft.com/azuredocs/aci-helloworld",
             "ports": [
               {
-                "port": "8080",
+                "port": 8080,
                 "protocol": "Tcp"
               }
             ],
@@ -720,13 +720,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       ]
     },
-    "name": {
-      "value": "cicgprivate001"
-    },
-    // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "ipAddressPorts": {
       "value": [
         {
@@ -738,13 +731,20 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           "protocol": "Tcp"
         },
         {
-          "port": "8080",
+          "port": 8080,
           "protocol": "Tcp"
         }
       ]
     },
+    "name": {
+      "value": "cicgprivate001"
+    },
+    // Non-required parameters
     "ipAddressType": {
       "value": "Private"
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -808,11 +808,11 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
           ports: [
             {
-              port: '80'
+              port: 80
               protocol: 'Tcp'
             }
             {
-              port: '443'
+              port: 443
               protocol: 'Tcp'
             }
           ]
@@ -832,7 +832,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
           ports: [
             {
-              port: '8080'
+              port: 8080
               protocol: 'Tcp'
             }
           ]
@@ -845,9 +845,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       }
     ]
-    name: 'cicgwaf001'
-    // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     ipAddressPorts: [
       {
         port: 80
@@ -858,6 +855,9 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         protocol: 'Tcp'
       }
     ]
+    name: 'cicgwaf001'
+    // Non-required parameters
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -900,11 +900,11 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "image": "mcr.microsoft.com/azuredocs/aci-helloworld",
             "ports": [
               {
-                "port": "80",
+                "port": 80,
                 "protocol": "Tcp"
               },
               {
-                "port": "443",
+                "port": 443,
                 "protocol": "Tcp"
               }
             ],
@@ -924,7 +924,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "image": "mcr.microsoft.com/azuredocs/aci-helloworld",
             "ports": [
               {
-                "port": "8080",
+                "port": 8080,
                 "protocol": "Tcp"
               }
             ],
@@ -938,13 +938,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       ]
     },
-    "name": {
-      "value": "cicgwaf001"
-    },
-    // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "ipAddressPorts": {
       "value": [
         {
@@ -956,6 +949,13 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           "protocol": "Tcp"
         }
       ]
+    },
+    "name": {
+      "value": "cicgwaf001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -1010,7 +1010,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 | [`dnsNameLabel`](#parameter-dnsnamelabel) | string | The Dns name label for the resource. |
 | [`dnsNameServers`](#parameter-dnsnameservers) | array | List of dns servers used by the containers for lookups. |
 | [`dnsSearchDomains`](#parameter-dnssearchdomains) | string | DNS search domain which will be appended to each DNS lookup. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`imageRegistryCredentials`](#parameter-imageregistrycredentials) | array | The image registry credentials by which the container group is created from. |
 | [`initContainers`](#parameter-initcontainers) | array | A list of container definitions which will be executed before the application container starts. |
 | [`ipAddressType`](#parameter-ipaddresstype) | string | Specifies if the IP is exposed to the public internet or private VNET. - Public or Private. |
@@ -1031,6 +1031,27 @@ The containers and their respective config within the container group.
 - Required: Yes
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-containersname) | string | The name of the container instance. |
+| [`properties`](#parameter-containersproperties) | object | The properties of the container instance. |
+
+### Parameter: `containers.name`
+
+The name of the container instance.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.properties`
+
+The properties of the container instance.
+
+- Required: Yes
+- Type: object
+
 ### Parameter: `name`
 
 Name for the container group.
@@ -1042,8 +1063,29 @@ Name for the container group.
 
 Ports to open on the public IP address. Must include all ports assigned on container level. Required if `ipAddressType` is set to `public`.
 
-- Required: No
+- Required: Yes
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`port`](#parameter-ipaddressportsport) | int | The port number exposed on the container instance. |
+| [`protocol`](#parameter-ipaddressportsprotocol) | string | The protocol associated with the port number. |
+
+### Parameter: `ipAddressPorts.port`
+
+The port number exposed on the container instance.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `ipAddressPorts.protocol`
+
+The protocol associated with the port number.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `autoGeneratedDomainNameLabelScope`
 
@@ -1133,9 +1175,9 @@ DNS search domain which will be appended to each DNS lookup.
 - Required: No
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool

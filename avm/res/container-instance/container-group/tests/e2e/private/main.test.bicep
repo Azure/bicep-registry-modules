@@ -14,11 +14,8 @@ param location string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'cicgprivate'
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -35,6 +32,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
+    location: location
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
@@ -49,7 +47,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    enableDefaultTelemetry: enableDefaultTelemetry
+    location: location
     name: '${namePrefix}${serviceShort}001'
     lock: {
       kind: 'CanNotDelete'
@@ -64,11 +62,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
           ports: [
             {
-              port: '80'
+              port: 80
               protocol: 'Tcp'
             }
             {
-              port: '443'
+              port: 443
               protocol: 'Tcp'
             }
           ]
@@ -94,7 +92,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
           ports: [
             {
-              port: '8080'
+              port: 8080
               protocol: 'Tcp'
             }
           ]
@@ -119,7 +117,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       }
       {
         protocol: 'Tcp'
-        port: '8080'
+        port: 8080
       }
     ]
     subnetId: nestedDependencies.outputs.subnetResourceId

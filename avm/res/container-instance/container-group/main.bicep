@@ -6,10 +6,10 @@ metadata owner = 'Azure/module-maintainers'
 param name string
 
 @description('Required. The containers and their respective config within the container group.')
-param containers array
+param containers containerType
 
 @description('Conditional. Ports to open on the public IP address. Must include all ports assigned on container level. Required if `ipAddressType` is set to `public`.')
-param ipAddressPorts array?
+param ipAddressPorts ipAddressPortsType
 
 @description('Optional. The operating system type required by the containers in the container group. - Windows or Linux.')
 param osType string = 'Linux'
@@ -72,8 +72,8 @@ param managedIdentities managedIdentitiesType
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 @description('Optional. The container group SKU.')
 @allowed([
@@ -92,14 +92,21 @@ var identity = !empty(managedIdentities) ? {
   userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
 } : null
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.containerinstance-containergroup.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  location: location
   properties: {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
       contentVersion: '1.0.0.0'
       resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
     }
   }
 }
@@ -118,7 +125,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   scope: resourceGroup(split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2], split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4])
 }
 
-resource containergroup 'Microsoft.ContainerInstance/containerGroups@2022-09-01' = {
+resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01' = {
   name: name
   location: location
   identity: identity
@@ -216,3 +223,72 @@ type customerManagedKeyType = {
   @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
   userAssignedIdentityResourceId: string?
 }?
+
+type containerType = {
+  @description('Required. The name of the container instance.')
+  name: string
+
+  @description('Required. The properties of the container instance.')
+  properties: {
+
+    @description('Required. The name of the container source image.')
+    image: string
+
+    @description('Optional. The liveness probe.')
+    livenessProbe: {}?
+
+    ports: {
+      @description('Required. The port number exposed on the container instance.')
+      port: int
+
+      @description('Required. The protocol associated with the port number.')
+      protocol: string
+    }[]
+
+    resources: {
+      @description('Required. The resource requests of this container instance..')
+      requests: {
+        cpu: int
+        gpu: {
+          count: int
+          sku: string
+        }?
+        memoryInGB: int
+      }
+
+      @description('Optional. The resource limits of this container instance..')
+      limits: {
+        cpu: int
+        gpu: {
+          count: int
+          sku: string
+        }?
+        memoryInGB: string
+      }?
+    }
+
+    @description('Optional. The volume mounts within the container instance.')
+    volumeMounts: {
+      name: string
+      mountPath: string
+    }[]?
+
+    @description('Optional. The command to execute within the container instance.')
+    command: string[]?
+
+    @description('Optional. The environment variables to set in the container instance.')
+    environmentVariables: {
+      name: string
+      secureValue: string?
+      value: string?
+    }[]?
+  }
+}[]
+
+type ipAddressPortsType = {
+  @description('Required. The port number exposed on the container instance.')
+  port: int
+
+  @description('Required. The protocol associated with the port number.')
+  protocol: string
+}[]
