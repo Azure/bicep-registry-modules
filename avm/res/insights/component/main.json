@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "4904899500252762566"
+      "templateHash": "18263440688499285591"
     },
     "name": "Application Insights",
     "description": "This component deploys an Application Insights instance.",
@@ -426,7 +426,7 @@
       "condition": "[not(empty(parameters('linkedStorageAccountResourceId')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-linkedStorageAccount', parameters('name'))]",
+      "name": "[format('{0}-appInsights-linkedStorageAccount', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
