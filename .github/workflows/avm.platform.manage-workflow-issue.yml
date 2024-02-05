@@ -1,0 +1,35 @@
+name: "avm.platform.manage-workflow-issue"
+
+on:
+  schedule:
+    - cron: "30 5 * * *" # Every day at 5:30 am
+
+jobs:
+  manage-issues:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        name: Manage issues
+        shell: pwsh
+        run: |
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Set-AvmGithubIssueForWorkflow.ps1')
+
+          $functionInput = @{
+            Repo              = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
+            LimitNumberOfRuns = 500
+            LimitInDays       = 2
+            IgnoreWorkflows   = @()
+          }
+
+          Write-Verbose "Invoke task with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+          Set-AvmGithubIssueForWorkflow @functionInput -Verbose # -WhatIf

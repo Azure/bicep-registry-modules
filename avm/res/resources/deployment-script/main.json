@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "3543265320789085006"
+      "version": "0.23.1.45101",
+      "templateHash": "8734511554398837213"
     },
     "name": "Deployment Scripts",
     "description": "This module deploys Deployment Scripts.",
@@ -208,7 +208,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network."
+        "description": "Optional. List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network. When using a private network, the `Storage File Data Privileged Contributor` role needs to be assigned to the user-assigned managed identity and the deployment principal needs to have permissions to list the storage account keys. Also, Shared-Keys must not be disabled on the used storage account [ref](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet)."
       }
     },
     "arguments": {
@@ -394,7 +394,7 @@
         "azPowerShellVersion": "[if(equals(parameters('kind'), 'AzurePowerShell'), parameters('azPowerShellVersion'), null())]",
         "azCliVersion": "[if(equals(parameters('kind'), 'AzureCLI'), parameters('azCliVersion'), null())]",
         "containerSettings": "[if(not(empty(variables('containerSettings'))), variables('containerSettings'), null())]",
-        "storageAccountSettings": "[if(not(empty(parameters('storageAccountResourceId'))), if(not(empty(parameters('storageAccountResourceId'))), createObject('storageAccountKey', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '//'), '/')[2], split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), 'dummyAccount'), '/'))), '2023-01-01').keys[0].value, 'storageAccountName', last(split(parameters('storageAccountResourceId'), '/'))), null()), null())]",
+        "storageAccountSettings": "[if(not(empty(parameters('storageAccountResourceId'))), if(not(empty(parameters('storageAccountResourceId'))), createObject('storageAccountKey', if(empty(parameters('subnetResourceIds')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '//'), '/')[2], split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), 'dummyAccount'), '/'))), '2023-01-01').keys[0].value, null()), 'storageAccountName', last(split(parameters('storageAccountResourceId'), '/'))), null()), null())]",
         "arguments": "[parameters('arguments')]",
         "environmentVariables": "[if(not(empty(parameters('environmentVariables'))), parameters('environmentVariables').secureList, createArray())]",
         "scriptContent": "[if(not(empty(parameters('scriptContent'))), parameters('scriptContent'), null())]",

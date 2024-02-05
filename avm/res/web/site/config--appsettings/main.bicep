@@ -45,13 +45,13 @@ resource app 'Microsoft.Web/sites@2022-09-01' existing = {
 }
 
 resource appInsight 'Microsoft.Insights/components@2020-02-02' existing = if (!empty(appInsightResourceId)) {
-  name: last(split(appInsightResourceId ?? '', '/'))!
-  scope: resourceGroup(split(appInsightResourceId ?? '', '/')[2], split(appInsightResourceId ?? '', '/')[4])
+  name: last(split(appInsightResourceId ?? 'dummyName', '/'))
+  scope: resourceGroup(split(appInsightResourceId ?? '//', '/')[2], split(appInsightResourceId ?? '////', '/')[4])
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing = if (!empty(storageAccountResourceId)) {
-  name: last(split(storageAccountResourceId ?? '', '/'))!
-  scope: resourceGroup(split(storageAccountResourceId ?? '', '/')[2], split(storageAccountResourceId ?? '', '/')[4])
+  name: last(split(storageAccountResourceId ?? 'dummyName', '/'))
+  scope: resourceGroup(split(storageAccountResourceId ?? '//', '/')[2], split(storageAccountResourceId ?? '////', '/')[4])
 }
 
 resource appSettings 'Microsoft.Web/sites/config@2022-09-01' = {

@@ -17,6 +17,7 @@ This component deploys an Application Insights instance.
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/components` | [2020-02-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-02-02/components) |
+| `microsoft.insights/components/linkedStorageAccounts` | [2020-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2020-03-01-preview/components/linkedStorageAccounts) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 
 ## Usage examples
@@ -42,7 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module component 'br/public:avm/res/insights/component:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-icmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-icmin'
   params: {
     // Required parameters
     name: 'icmin001'
@@ -94,7 +95,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module component 'br/public:avm/res/insights/component:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-icmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-icmax'
   params: {
     // Required parameters
     name: 'icmax001'
@@ -114,6 +115,10 @@ module component 'br/public:avm/res/insights/component:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    disableIpMasking: false
+    disableLocalAuth: true
+    forceCustomerStorageForProfiler: true
+    linkedStorageAccountResourceId: '<linkedStorageAccountResourceId>'
     location: '<location>'
     roleAssignments: [
       {
@@ -177,6 +182,18 @@ module component 'br/public:avm/res/insights/component:<version>' = {
         }
       ]
     },
+    "disableIpMasking": {
+      "value": false
+    },
+    "disableLocalAuth": {
+      "value": true
+    },
+    "forceCustomerStorageForProfiler": {
+      "value": true
+    },
+    "linkedStorageAccountResourceId": {
+      "value": "<linkedStorageAccountResourceId>"
+    },
     "location": {
       "value": "<location>"
     },
@@ -224,7 +241,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module component 'br/public:avm/res/insights/component:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-icwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-icwaf'
   params: {
     // Required parameters
     name: 'icwaf001'
@@ -323,8 +340,12 @@ module component 'br/public:avm/res/insights/component:<version>' = {
 | :-- | :-- | :-- |
 | [`applicationType`](#parameter-applicationtype) | string | Application type. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`disableIpMasking`](#parameter-disableipmasking) | bool | Disable IP masking. Default value is set to true. |
+| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Disable Non-AAD based Auth. Default value is set to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`forceCustomerStorageForProfiler`](#parameter-forcecustomerstorageforprofiler) | bool | Force users to create their own storage account for profiler and debugger. |
 | [`kind`](#parameter-kind) | string | The kind of application that this component refers to, used to customize UI. This value is a freeform string, values should typically be one of the following: web, ios, other, store, java, phone. |
+| [`linkedStorageAccountResourceId`](#parameter-linkedstorageaccountresourceid) | string | Linked storage account resource ID. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`publicNetworkAccessForIngestion`](#parameter-publicnetworkaccessforingestion) | string | The network access type for accessing Application Insights ingestion. - Enabled or Disabled. |
 | [`publicNetworkAccessForQuery`](#parameter-publicnetworkaccessforquery) | string | The network access type for accessing Application Insights query. - Enabled or Disabled. |
@@ -453,6 +474,22 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
+### Parameter: `disableIpMasking`
+
+Disable IP masking. Default value is set to true.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `disableLocalAuth`
+
+Disable Non-AAD based Auth. Default value is set to false.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -461,9 +498,25 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `forceCustomerStorageForProfiler`
+
+Force users to create their own storage account for profiler and debugger.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `kind`
 
 The kind of application that this component refers to, used to customize UI. This value is a freeform string, values should typically be one of the following: web, ios, other, store, java, phone.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `linkedStorageAccountResourceId`
+
+Linked storage account resource ID.
 
 - Required: No
 - Type: string
