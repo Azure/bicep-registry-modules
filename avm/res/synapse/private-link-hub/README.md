@@ -51,7 +51,10 @@ This instance deploys the module with the minimum set of required parameters.
 module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-splhmin'
   params: {
+    // Required parameters
     name: 'splhmin001'
+    // Non-required parameters
+    location: '<location>'
   }
 }
 ```
@@ -68,8 +71,13 @@ module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "splhmin001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -94,6 +102,7 @@ module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
     // Required parameters
     name: 'splhmax001'
     // Non-required parameters
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -150,6 +159,9 @@ module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
       "value": "splhmax001"
     },
     // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
     "lock": {
       "value": {
         "kind": "CanNotDelete",
@@ -216,6 +228,7 @@ module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
     // Required parameters
     name: 'splhwaf001'
     // Non-required parameters
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -272,6 +285,9 @@ module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
       "value": "splhwaf001"
     },
     // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
     "lock": {
       "value": {
         "kind": "CanNotDelete",
