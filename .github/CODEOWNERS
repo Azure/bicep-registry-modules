@@ -40,9 +40,9 @@
 /avm/res/data-protection/backup-vault/ @Azure/avm-res-dataprotection-backupvault-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/db-for-my-sql/flexible-server/ @Azure/avm-res-dbformysql-flexibleserver-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/db-for-postgre-sql/flexible-server/ @Azure/avm-res-dbforpostgresql-flexibleserver-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/desktop-virtualization/application-group/ @Azure/avm-res-desktopvirtualization-applicationgroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/desktop-virtualization/application-group/ @Azure/avm-res-desktopvirtualization-applicationgroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/desktop-virtualization/host-pool/ @Azure/avm-res-desktopvirtualization-hostpool-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/desktop-virtualization/scaling-plan/ @Azure/avm-res-desktopvirtualization-scalingplan-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/desktop-virtualization/scaling-plan/ @Azure/avm-res-desktopvirtualization-scalingplan-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/desktop-virtualization/workspace/ @Azure/avm-res-desktopvirtualization-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/dev-center/devcenter/ @Azure/avm-res-devcenter-devcenter-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/dev-test-lab/lab/ @Azure/avm-res-devtestlab-lab-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -90,7 +90,7 @@
 /avm/res/network/firewall-policy/ @Azure/avm-res-network-firewallpolicy-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/front-door/ @Azure/avm-res-network-frontdoor-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/front-door-web-application-firewall-policy/ @Azure/avm-res-network-frontdoorwebapplicationfirewallpolicy-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/network/ip-group/ @Azure/avm-res-network-ipgroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/network/ip-group/ @Azure/avm-res-network-ipgroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/load-balancer/ @Azure/avm-res-network-loadbalancer-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/local-network-gateway/ @Azure/avm-res-network-localnetworkgateway-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/nat-gateway/ @Azure/avm-res-network-natgateway-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -133,7 +133,7 @@
 /avm/res/storage/storage-account/ @Azure/avm-res-storage-storageaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/synapse/private-link-hub/ @Azure/avm-res-synapse-privatelinkhub-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/synapse/workspace/ @Azure/avm-res-synapse-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/virtual-machine-images/image-template/ @Azure/avm-res-virtualmachineimages-imagetemplate-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/virtual-machine-images/image-template/ @Azure/avm-res-virtualmachineimages-imagetemplate-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/web/connection/ @Azure/avm-res-web-connection-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/web/hosting-environment/ @Azure/avm-res-web-hostingenvironment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/web/serverfarm/ @Azure/avm-res-web-serverfarm-module-owners-bicep @Azure/avm-core-team-technical-bicep
