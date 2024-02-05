@@ -49,7 +49,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-splhmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-splhmin'
   params: {
     // Required parameters
     name: 'splhmin001'
