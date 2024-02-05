@@ -44,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cicgmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cicgmin'
   params: {
     // Required parameters
     containers: [
