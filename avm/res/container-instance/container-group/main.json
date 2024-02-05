@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "10448424693593626263"
+      "templateHash": "8542899703590066772"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group.",
@@ -463,7 +463,6 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
       "name": "[format('46d3xbcp.res.containerinstance-containergroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
-      "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",
         "template": {
