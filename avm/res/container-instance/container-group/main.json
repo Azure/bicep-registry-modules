@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "15991396372842757560"
+      "templateHash": "2417655979671650384"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group.",
@@ -109,7 +109,7 @@
     },
     "ipAddressPorts": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Conditional. Ports to open on the public IP address. Must include all ports assigned on container level. Required if `ipAddressType` is set to `public`."
       }
@@ -146,7 +146,7 @@
     },
     "imageRegistryCredentials": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The image registry credentials by which the container group is created from."
       }
@@ -174,42 +174,42 @@
     },
     "dnsNameLabel": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The Dns name label for the resource."
       }
     },
     "dnsNameServers": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of dns servers used by the containers for lookups."
       }
     },
     "dnsSearchDomains": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. DNS search domain which will be appended to each DNS lookup."
       }
     },
     "initContainers": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. A list of container definitions which will be executed before the application container starts."
       }
     },
     "subnetId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Resource ID of the subnet. Only specify when ipAddressType is Private."
       }
     },
     "volumes": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to your containergroup."
       }
