@@ -147,8 +147,6 @@ var builtInRoleNames = {
   'Managed Applications Reader': '/providers/Microsoft.Authorization/roleDefinitions/b9331d33-8a36-4f8c-b097-4f54124fdb44'
 }
 
-var tokenExpirationTime = dateTimeAdd(baseTime, tokenValidityLength)
-
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   name: take('46d3xbcp.res.desktopvirtualization-hostpool.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}', 64)
   properties: {
@@ -184,7 +182,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
     startVMOnConnect: startVMOnConnect
     validationEnvironment: validationEnvironment
     registrationInfo: {
-      expirationTime: tokenExpirationTime
+      expirationTime: dateTimeAdd(baseTime, tokenValidityLength)
       token: null
       registrationTokenOperation: 'Update'
     }
@@ -199,7 +197,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
 }
 
 module hostPool_privateEndpoints 'br/public:avm-res-network-privateendpoint:0.1.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-Workspace-PrivateEndpoint-${index}'
+  name: '${uniqueString(deployment().name, location)}-HostPool-PrivateEndpoint-${index}'
   params: {
     groupIds: [
       privateEndpoint.?service ?? 'connection'

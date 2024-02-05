@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "12873830842417325184"
+      "templateHash": "18339243803083632538"
     },
     "name": "Azure Virtual Desktop Host Pool",
     "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -190,7 +190,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The service (sub-) type to deploy the private endpoint for. For example \"vault\" or \"blob\"."
+              "description": "Optional. The service (sub-) type to deploy the private endpoint for. For example \"connection\"."
             }
           },
           "subnetResourceId": {
@@ -619,8 +619,7 @@
       "Managed Application Contributor Role": "/providers/Microsoft.Authorization/roleDefinitions/641177b8-a67a-45b9-a033-47bc880bb21e",
       "Managed Application Operator Role": "/providers/Microsoft.Authorization/roleDefinitions/c7393b34-138c-406f-901b-d8cf2b17e6ae",
       "Managed Applications Reader": "/providers/Microsoft.Authorization/roleDefinitions/b9331d33-8a36-4f8c-b097-4f54124fdb44"
-    },
-    "tokenExpirationTime": "[dateTimeAdd(parameters('baseTime'), parameters('tokenValidityLength'))]"
+    }
   },
   "resources": {
     "avmTelemetry": {
@@ -662,7 +661,7 @@
         "startVMOnConnect": "[parameters('startVMOnConnect')]",
         "validationEnvironment": "[parameters('validationEnvironment')]",
         "registrationInfo": {
-          "expirationTime": "[variables('tokenExpirationTime')]",
+          "expirationTime": "[dateTimeAdd(parameters('baseTime'), parameters('tokenValidityLength'))]",
           "token": null,
           "registrationTokenOperation": "Update"
         },
@@ -740,7 +739,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-Workspace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-HostPool-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
