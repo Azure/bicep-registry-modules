@@ -57,10 +57,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: networkManagerName
     location: location
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     networkManagerScopeAccesses: [
       'Connectivity'
       'SecurityAdmin'

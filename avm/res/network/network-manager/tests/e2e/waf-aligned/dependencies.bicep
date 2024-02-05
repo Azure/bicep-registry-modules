@@ -13,11 +13,6 @@ param virtualNetworkSpoke2Name string
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
-  name: managedIdentityName
-  location: location
-}
-
 var addressPrefixHub = '10.0.0.0/16'
 var addressPrefixSpoke1 = '172.16.0.0/12'
 var addressPrefixSpoke2 = '192.168.0.0/16'
@@ -82,9 +77,6 @@ resource virtualNetworkSpoke2 'Microsoft.Network/virtualNetworks@2023-04-01' = {
     ]
   }
 }
-
-@description('The principal ID of the created Managed Identity.')
-output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 
 @description('The resource ID of the created Hub Virtual Network.')
 output virtualNetworkHubId string = virtualNetworkHub.id

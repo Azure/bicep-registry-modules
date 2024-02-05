@@ -642,10 +642,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
       }
     ]
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     networkGroups: [
       {
         description: 'network-group-spokes description'
@@ -856,12 +852,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "networkGroups": {
       "value": [
