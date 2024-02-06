@@ -1384,9 +1384,14 @@ Address prefix for Managed virtual network.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
+| `managedResourceGroupId` | string | The resource ID of the managed resource group. |
+| `managedResourceGroupName` | string | The name of the managed resource group. |
 | `name` | string | The name of the deployed databricks workspace. |
+| `privateEndpoints` | array | The private endpoints for the Databricks Workspace. |
 | `resourceGroupName` | string | The resource group of the deployed databricks workspace. |
 | `resourceId` | string | The resource ID of the deployed databricks workspace. |
+| `storageAccountId` | string | The resource ID of the DBFS storage account. |
+| `storageAccountName` | string | The name of the DBFS storage account. |
 
 ## Cross-referenced modules
 
