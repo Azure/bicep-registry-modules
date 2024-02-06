@@ -1,0 +1,2865 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.23.1.45101",
+      "templateHash": "995975405658769372"
+    },
+    "name": "Recovery Services Vaults",
+    "description": "This module deploys a Recovery Services Vault.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "managedIdentitiesType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "roleAssignmentType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "roleDefinitionIdOrName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+            }
+          },
+          "principalId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+            }
+          },
+          "principalType": {
+            "type": "string",
+            "allowedValues": [
+              "Device",
+              "ForeignGroup",
+              "Group",
+              "ServicePrincipal",
+              "User"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The principal type of the assigned principal ID."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The description of the role assignment."
+            }
+          },
+          "condition": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+            }
+          },
+          "conditionVersion": {
+            "type": "string",
+            "allowedValues": [
+              "2.0"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Version of the condition."
+            }
+          },
+          "delegatedManagedIdentityResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The Resource Id of the delegated managed identity resource."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "privateEndpointType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the private endpoint."
+            }
+          },
+          "location": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The location to deploy the private endpoint to."
+            }
+          },
+          "service": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The service (sub-) type to deploy the private endpoint for. For example \"vault\" or \"blob\"."
+            }
+          },
+          "subnetResourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+            }
+          },
+          "privateDnsZoneGroupName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided."
+            }
+          },
+          "privateDnsZoneResourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones."
+            }
+          },
+          "customDnsConfigs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "fqdn": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Required. Fqdn that resolves to private endpoint ip address."
+                  }
+                },
+                "ipAddresses": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of private ip addresses of the private endpoint."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Custom DNS configurations."
+            }
+          },
+          "ipConfigurations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the resource that is unique within a resource group."
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "groupId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                      }
+                    },
+                    "memberName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
+                      }
+                    },
+                    "privateIPAddress": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. A private ip address obtained from the private endpoint's subnet."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Properties of private endpoint IP configurations."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
+            }
+          },
+          "applicationSecurityGroupResourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
+            }
+          },
+          "customNetworkInterfaceName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The custom name of the network interface attached to the private endpoint."
+            }
+          },
+          "lock": {
+            "$ref": "#/definitions/lockType",
+            "metadata": {
+              "description": "Optional. Specify the type of lock."
+            }
+          },
+          "roleAssignments": {
+            "$ref": "#/definitions/roleAssignmentType",
+            "metadata": {
+              "description": "Optional. Array of role assignments to create."
+            }
+          },
+          "tags": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
+            }
+          },
+          "manualPrivateLinkServiceConnections": {
+            "type": "array",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Manual PrivateLink Service Connections."
+            }
+          },
+          "enableTelemetry": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Enable/Disable usage telemetry for module."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "diagnosticSettingType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of diagnostic setting."
+            }
+          },
+          "logCategoriesAndGroups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                  }
+                },
+                "categoryGroup": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+            }
+          },
+          "metricCategories": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+            }
+          },
+          "logAnalyticsDestinationType": {
+            "type": "string",
+            "allowedValues": [
+              "AzureDiagnostics",
+              "Dedicated"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+            }
+          },
+          "workspaceResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "storageAccountResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "eventHubAuthorizationRuleResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+            }
+          },
+          "eventHubName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "marketplacePartnerResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+            }
+          }
+        }
+      },
+      "nullable": true
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Azure Recovery Service Vault."
+      }
+    },
+    "backupStorageConfig": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The storage configuration for the Azure Recovery Service Vault."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "backupPolicies": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of all backup policies."
+      }
+    },
+    "backupConfig": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The backup configuration."
+      }
+    },
+    "protectionContainers": {
+      "type": "array",
+      "defaultValue": [],
+      "minLength": 0,
+      "metadata": {
+        "description": "Optional. List of all protection containers."
+      }
+    },
+    "replicationFabrics": {
+      "type": "array",
+      "defaultValue": [],
+      "minLength": 0,
+      "metadata": {
+        "description": "Optional. List of all replication fabrics."
+      }
+    },
+    "replicationPolicies": {
+      "type": "array",
+      "defaultValue": [],
+      "minLength": 0,
+      "metadata": {
+        "description": "Optional. List of all replication policies."
+      }
+    },
+    "replicationAlertSettings": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Replication alert settings."
+      }
+    },
+    "diagnosticSettings": {
+      "$ref": "#/definitions/diagnosticSettingType",
+      "metadata": {
+        "description": "Optional. The diagnostic settings of the service."
+      }
+    },
+    "roleAssignments": {
+      "$ref": "#/definitions/roleAssignmentType",
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentitiesType",
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the Recovery Service Vault resource."
+      }
+    },
+    "privateEndpoints": {
+      "$ref": "#/definitions/privateEndpointType",
+      "metadata": {
+        "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
+      }
+    },
+    "monitoringSettings": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Monitoring Settings of the vault."
+      }
+    },
+    "securitySettings": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Security Settings of the vault."
+      }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled."
+      }
+    }
+  },
+  "variables": {
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "enableReferencedModulesTelemetry": false,
+    "builtInRoleNames": {
+      "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
+      "Backup Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')]",
+      "Backup Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a795c7a0-d4a2-40c1-ae25-d81f01202912')]",
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Site Recovery Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6670b86e-a3f7-4917-ac9b-5d6ab1be4567')]",
+      "Site Recovery Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '494ae006-db33-4328-bf46-533a6560a3ca')]",
+      "Site Recovery Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'dbaa88c4-0c30-4179-9fb3-46319faa6149')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+    }
+  },
+  "resources": {
+    "defaultTelemetry": {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    "rsv": {
+      "type": "Microsoft.RecoveryServices/vaults",
+      "apiVersion": "2023-01-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "identity": "[variables('identity')]",
+      "sku": {
+        "name": "RS0",
+        "tier": "Standard"
+      },
+      "properties": {
+        "monitoringSettings": "[if(not(empty(parameters('monitoringSettings'))), parameters('monitoringSettings'), null())]",
+        "securitySettings": "[if(not(empty(parameters('securitySettings'))), parameters('securitySettings'), null())]",
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
+      }
+    },
+    "rsv_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.RecoveryServices/vaults/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "rsv"
+      ]
+    },
+    "rsv_diagnosticSettings": {
+      "copy": {
+        "name": "rsv_diagnosticSettings",
+        "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
+      },
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[format('Microsoft.RecoveryServices/vaults/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+      "properties": {
+        "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+        "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+        "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+        "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+        "metrics": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]",
+        "logs": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'AllLogs', 'enabled', true())))]",
+        "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+        "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+      },
+      "dependsOn": [
+        "rsv"
+      ]
+    },
+    "rsv_roleAssignments": {
+      "copy": {
+        "name": "rsv_roleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.RecoveryServices/vaults/{0}', parameters('name'))]",
+      "name": "[guid(resourceId('Microsoft.RecoveryServices/vaults', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "properties": {
+        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "rsv"
+      ]
+    },
+    "rsv_replicationFabrics": {
+      "copy": {
+        "name": "rsv_replicationFabrics",
+        "count": "[length(parameters('replicationFabrics'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-RSV-Fabric-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "recoveryVaultName": {
+            "value": "[parameters('name')]"
+          },
+          "name": "[if(contains(parameters('replicationFabrics')[copyIndex()], 'name'), createObject('value', parameters('replicationFabrics')[copyIndex()].name), createObject('value', parameters('replicationFabrics')[copyIndex()].location))]",
+          "location": {
+            "value": "[parameters('replicationFabrics')[copyIndex()].location]"
+          },
+          "replicationContainers": "[if(contains(parameters('replicationFabrics')[copyIndex()], 'replicationContainers'), createObject('value', parameters('replicationFabrics')[copyIndex()].replicationContainers), createObject('value', createArray()))]",
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "141571686653146888"
+            },
+            "name": "Recovery Services Vault Replication Fabrics",
+            "description": "This module deploys a Replication Fabric for Azure to Azure disaster recovery scenario of Azure Site Recovery.\n\n> Note: this module currently support only the `instanceType: 'Azure'` scenario.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "recoveryVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Required. The recovery location the fabric represents."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "[parameters('location')]",
+              "metadata": {
+                "description": "Optional. The name of the fabric."
+              }
+            },
+            "replicationContainers": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. Replication containers to create."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            }
+          },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}-rsvPolicy', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.RecoveryServices/vaults/replicationFabrics",
+              "apiVersion": "2022-10-01",
+              "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
+              "properties": {
+                "customDetails": {
+                  "instanceType": "Azure",
+                  "location": "[parameters('location')]"
+                }
+              }
+            },
+            {
+              "copy": {
+                "name": "fabric_replicationContainers",
+                "count": "[length(parameters('replicationContainers'))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-RCont-{1}', deployment().name, copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[parameters('replicationContainers')[copyIndex()].name]"
+                  },
+                  "recoveryVaultName": {
+                    "value": "[parameters('recoveryVaultName')]"
+                  },
+                  "replicationFabricName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "replicationContainerMappings": "[if(contains(parameters('replicationContainers')[copyIndex()], 'replicationContainerMappings'), createObject('value', parameters('replicationContainers')[copyIndex()].replicationContainerMappings), createObject('value', createArray()))]",
+                  "enableDefaultTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.23.1.45101",
+                      "templateHash": "10595314903369272974"
+                    },
+                    "name": "Recovery Services Vault Replication Fabric Replication Protection Containers",
+                    "description": "This module deploys a Recovery Services Vault Replication Protection Container.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "recoveryVaultName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "replicationFabricName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent Replication Fabric. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the replication container."
+                      }
+                    },
+                    "replicationContainerMappings": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "Optional. Replication containers mappings to create."
+                      }
+                    },
+                    "enableDefaultTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "enableReferencedModulesTelemetry": false
+                  },
+                  "resources": [
+                    {
+                      "condition": "[parameters('enableDefaultTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2021-04-01",
+                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}-rsvPolicy', uniqueString(deployment().name))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": []
+                        }
+                      }
+                    },
+                    {
+                      "type": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers",
+                      "apiVersion": "2022-10-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name'))]",
+                      "properties": {
+                        "providerSpecificInput": [
+                          {
+                            "instanceType": "A2A"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "copy": {
+                        "name": "fabric_container_containerMappings",
+                        "count": "[length(parameters('replicationContainerMappings'))]"
+                      },
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('{0}-Map-{1}', deployment().name, copyIndex())]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "name": "[if(contains(parameters('replicationContainerMappings')[copyIndex()], 'name'), createObject('value', parameters('replicationContainerMappings')[copyIndex()].name), createObject('value', ''))]",
+                          "policyId": "[if(contains(parameters('replicationContainerMappings')[copyIndex()], 'policyId'), createObject('value', parameters('replicationContainerMappings')[copyIndex()].policyId), createObject('value', ''))]",
+                          "policyName": "[if(contains(parameters('replicationContainerMappings')[copyIndex()], 'policyName'), createObject('value', parameters('replicationContainerMappings')[copyIndex()].policyName), createObject('value', ''))]",
+                          "recoveryVaultName": {
+                            "value": "[parameters('recoveryVaultName')]"
+                          },
+                          "replicationFabricName": {
+                            "value": "[parameters('replicationFabricName')]"
+                          },
+                          "sourceProtectionContainerName": {
+                            "value": "[parameters('name')]"
+                          },
+                          "targetProtectionContainerId": "[if(contains(parameters('replicationContainerMappings')[copyIndex()], 'targetProtectionContainerId'), createObject('value', parameters('replicationContainerMappings')[copyIndex()].targetProtectionContainerId), createObject('value', ''))]",
+                          "targetContainerFabricName": "[if(contains(parameters('replicationContainerMappings')[copyIndex()], 'targetContainerFabricName'), createObject('value', parameters('replicationContainerMappings')[copyIndex()].targetContainerFabricName), createObject('value', parameters('replicationFabricName')))]",
+                          "targetContainerName": "[if(contains(parameters('replicationContainerMappings')[copyIndex()], 'targetContainerName'), createObject('value', parameters('replicationContainerMappings')[copyIndex()].targetContainerName), createObject('value', ''))]",
+                          "enableDefaultTelemetry": {
+                            "value": "[variables('enableReferencedModulesTelemetry')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.23.1.45101",
+                              "templateHash": "13334445778984042102"
+                            },
+                            "name": "Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings",
+                            "description": "This module deploys a Recovery Services Vault (RSV) Replication Protection Container Mapping.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",
+                            "owner": "Azure/module-maintainers"
+                          },
+                          "parameters": {
+                            "recoveryVaultName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "replicationFabricName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Conditional. The name of the parent Replication Fabric. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "sourceProtectionContainerName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Conditional. The name of the parent source Replication container. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "targetProtectionContainerId": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. Resource ID of the target Replication container. Must be specified if targetContainerName is not. If specified, targetContainerFabricName and targetContainerName will be ignored."
+                              }
+                            },
+                            "targetContainerFabricName": {
+                              "type": "string",
+                              "defaultValue": "[parameters('replicationFabricName')]",
+                              "metadata": {
+                                "description": "Optional. Name of the fabric containing the target container. If targetProtectionContainerId is specified, this parameter will be ignored."
+                              }
+                            },
+                            "targetContainerName": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. Name of the target container. Must be specified if targetProtectionContainerId is not. If targetProtectionContainerId is specified, this parameter will be ignored."
+                              }
+                            },
+                            "policyId": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. Resource ID of the replication policy. If defined, policyName will be ignored."
+                              }
+                            },
+                            "policyName": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. Name of the replication policy. Will be ignored if policyId is also specified."
+                              }
+                            },
+                            "name": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. The name of the replication container mapping. If not provided, it will be automatically generated as `<source_container_name>-<target_container_name>`."
+                              }
+                            },
+                            "enableDefaultTelemetry": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+                              }
+                            }
+                          },
+                          "variables": {
+                            "policyResourceId": "[if(not(equals(parameters('policyId'), '')), parameters('policyId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationPolicies', parameters('recoveryVaultName'), parameters('policyName')))]",
+                            "targetProtectionContainerResourceId": "[if(not(equals(parameters('targetProtectionContainerId'), '')), parameters('targetProtectionContainerId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers', parameters('recoveryVaultName'), parameters('targetContainerFabricName'), parameters('targetContainerName')))]",
+                            "mappingName": "[if(not(empty(parameters('name'))), parameters('name'), format('{0}-{1}', parameters('sourceProtectionContainerName'), split(variables('targetProtectionContainerResourceId'), '/')[10]))]"
+                          },
+                          "resources": [
+                            {
+                              "condition": "[parameters('enableDefaultTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2021-04-01",
+                              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}-rsvPolicy', uniqueString(deployment().name))]",
+                              "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": []
+                                }
+                              }
+                            },
+                            {
+                              "type": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings",
+                              "apiVersion": "2022-10-01",
+                              "name": "[format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName'))]",
+                              "properties": {
+                                "targetProtectionContainerId": "[variables('targetProtectionContainerResourceId')]",
+                                "policyId": "[variables('policyResourceId')]",
+                                "providerSpecificInput": {
+                                  "instanceType": "A2A"
+                                }
+                              }
+                            }
+                          ],
+                          "outputs": {
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the replication container."
+                              },
+                              "value": "[format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName'))]"
+                            },
+                            "resourceId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource ID of the replication container."
+                              },
+                              "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings', split(format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName')), '/')[0], split(format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName')), '/')[1], split(format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName')), '/')[2], split(format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName')), '/')[3])]"
+                            },
+                            "resourceGroupName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the resource group the replication container was created in."
+                              },
+                              "value": "[resourceGroup().name]"
+                            }
+                          }
+                        }
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers', split(format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name')), '/')[0], split(format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name')), '/')[1], split(format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name')), '/')[2])]"
+                      ]
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the replication container."
+                      },
+                      "value": "[format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name'))]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the replication container."
+                      },
+                      "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers', split(format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name')), '/')[0], split(format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name')), '/')[1], split(format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name')), '/')[2])]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the replication container was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics', split(format('{0}/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[0], split(format('{0}/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[1])]"
+              ]
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the replication fabric."
+              },
+              "value": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the replication fabric."
+              },
+              "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics', split(format('{0}/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[0], split(format('{0}/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[1])]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the replication fabric was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "rsv",
+        "rsv_replicationPolicies"
+      ]
+    },
+    "rsv_replicationPolicies": {
+      "copy": {
+        "name": "rsv_replicationPolicies",
+        "count": "[length(parameters('replicationPolicies'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-RSV-Policy-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('replicationPolicies')[copyIndex()].name]"
+          },
+          "recoveryVaultName": {
+            "value": "[parameters('name')]"
+          },
+          "appConsistentFrequencyInMinutes": "[if(contains(parameters('replicationPolicies')[copyIndex()], 'appConsistentFrequencyInMinutes'), createObject('value', parameters('replicationPolicies')[copyIndex()].appConsistentFrequencyInMinutes), createObject('value', 60))]",
+          "crashConsistentFrequencyInMinutes": "[if(contains(parameters('replicationPolicies')[copyIndex()], 'crashConsistentFrequencyInMinutes'), createObject('value', parameters('replicationPolicies')[copyIndex()].crashConsistentFrequencyInMinutes), createObject('value', 5))]",
+          "multiVmSyncStatus": "[if(contains(parameters('replicationPolicies')[copyIndex()], 'multiVmSyncStatus'), createObject('value', parameters('replicationPolicies')[copyIndex()].multiVmSyncStatus), createObject('value', 'Enable'))]",
+          "recoveryPointHistory": "[if(contains(parameters('replicationPolicies')[copyIndex()], 'recoveryPointHistory'), createObject('value', parameters('replicationPolicies')[copyIndex()].recoveryPointHistory), createObject('value', 1440))]",
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "7511225868129156252"
+            },
+            "name": "Recovery Services Vault Replication Policies",
+            "description": "This module deploys a Recovery Services Vault Replication Policy for Disaster Recovery scenario.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "recoveryVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the replication policy."
+              }
+            },
+            "appConsistentFrequencyInMinutes": {
+              "type": "int",
+              "defaultValue": 60,
+              "metadata": {
+                "description": "Optional. The app consistent snapshot frequency (in minutes)."
+              }
+            },
+            "crashConsistentFrequencyInMinutes": {
+              "type": "int",
+              "defaultValue": 5,
+              "metadata": {
+                "description": "Optional. The crash consistent snapshot frequency (in minutes)."
+              }
+            },
+            "multiVmSyncStatus": {
+              "type": "string",
+              "defaultValue": "Enable",
+              "allowedValues": [
+                "Enable",
+                "Disable"
+              ],
+              "metadata": {
+                "description": "Optional. A value indicating whether multi-VM sync has to be enabled."
+              }
+            },
+            "recoveryPointHistory": {
+              "type": "int",
+              "defaultValue": 1440,
+              "metadata": {
+                "description": "Optional. The duration in minutes until which the recovery points need to be stored."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}-rsvPolicy', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.RecoveryServices/vaults/replicationPolicies",
+              "apiVersion": "2022-10-01",
+              "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
+              "properties": {
+                "providerSpecificInput": {
+                  "instanceType": "A2A",
+                  "appConsistentFrequencyInMinutes": "[parameters('appConsistentFrequencyInMinutes')]",
+                  "crashConsistentFrequencyInMinutes": "[parameters('crashConsistentFrequencyInMinutes')]",
+                  "multiVmSyncStatus": "[parameters('multiVmSyncStatus')]",
+                  "recoveryPointHistory": "[parameters('recoveryPointHistory')]"
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the replication policy."
+              },
+              "value": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the replication policy."
+              },
+              "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationPolicies', split(format('{0}/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[0], split(format('{0}/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[1])]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the replication policy was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "rsv"
+      ]
+    },
+    "rsv_backupStorageConfiguration": {
+      "condition": "[not(empty(parameters('backupStorageConfig')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-RSV-BackupStorageConfig', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "recoveryVaultName": {
+            "value": "[parameters('name')]"
+          },
+          "storageModelType": {
+            "value": "[parameters('backupStorageConfig').storageModelType]"
+          },
+          "crossRegionRestoreFlag": {
+            "value": "[parameters('backupStorageConfig').crossRegionRestoreFlag]"
+          },
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "9499262871851480671"
+            },
+            "name": "Recovery Services Vault Backup Storage Config",
+            "description": "This module deploys a Recovery Service Vault Backup Storage Configuration.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "recoveryVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "vaultstorageconfig",
+              "metadata": {
+                "description": "Optional. The name of the backup storage config."
+              }
+            },
+            "storageModelType": {
+              "type": "string",
+              "defaultValue": "GeoRedundant",
+              "allowedValues": [
+                "GeoRedundant",
+                "LocallyRedundant",
+                "ReadAccessGeoZoneRedundant",
+                "ZoneRedundant"
+              ],
+              "metadata": {
+                "description": "Optional. Change Vault Storage Type (Works if vault has not registered any backup instance)."
+              }
+            },
+            "crossRegionRestoreFlag": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Opt in details of Cross Region Restore feature."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.RecoveryServices/vaults/backupstorageconfig",
+              "apiVersion": "2023-01-01",
+              "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
+              "properties": {
+                "storageModelType": "[parameters('storageModelType')]",
+                "crossRegionRestoreFlag": "[parameters('crossRegionRestoreFlag')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the backup storage config."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the backup storage config."
+              },
+              "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupstorageconfig', parameters('recoveryVaultName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the backup storage configuration was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "rsv"
+      ]
+    },
+    "rsv_backupFabric_protectionContainers": {
+      "copy": {
+        "name": "rsv_backupFabric_protectionContainers",
+        "count": "[length(parameters('protectionContainers'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-RSV-ProtectionContainers-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "recoveryVaultName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('protectionContainers')[copyIndex()].name]"
+          },
+          "sourceResourceId": {
+            "value": "[parameters('protectionContainers')[copyIndex()].sourceResourceId]"
+          },
+          "friendlyName": {
+            "value": "[parameters('protectionContainers')[copyIndex()].friendlyName]"
+          },
+          "backupManagementType": {
+            "value": "[parameters('protectionContainers')[copyIndex()].backupManagementType]"
+          },
+          "containerType": {
+            "value": "[parameters('protectionContainers')[copyIndex()].containerType]"
+          },
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
+          "protectedItems": "[if(contains(parameters('protectionContainers')[copyIndex()], 'protectedItems'), createObject('value', parameters('protectionContainers')[copyIndex()].protectedItems), createObject('value', createArray()))]",
+          "location": {
+            "value": "[parameters('location')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "13622946234752234891"
+            },
+            "name": "Recovery Services Vault Protection Container",
+            "description": "This module deploys a Recovery Services Vault Protection Container.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "recoveryVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Azure Recovery Service Vault Protection Container."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "backupManagementType": {
+              "type": "string",
+              "defaultValue": "",
+              "allowedValues": [
+                "AzureBackupServer",
+                "AzureIaasVM",
+                "AzureSql",
+                "AzureStorage",
+                "AzureWorkload",
+                "DPM",
+                "DefaultBackup",
+                "Invalid",
+                "MAB",
+                ""
+              ],
+              "metadata": {
+                "description": "Optional. Backup management type to execute the current Protection Container job."
+              }
+            },
+            "sourceResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Resource ID of the target resource for the Protection Container."
+              }
+            },
+            "friendlyName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Friendly name of the Protection Container."
+              }
+            },
+            "protectedItems": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. Protected items to register in the container."
+              }
+            },
+            "containerType": {
+              "type": "string",
+              "defaultValue": "",
+              "allowedValues": [
+                "AzureBackupServerContainer",
+                "AzureSqlContainer",
+                "GenericContainer",
+                "Microsoft.ClassicCompute/virtualMachines",
+                "Microsoft.Compute/virtualMachines",
+                "SQLAGWorkLoadContainer",
+                "StorageContainer",
+                "VMAppContainer",
+                "Windows",
+                ""
+              ],
+              "metadata": {
+                "description": "Optional. Type of the container."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            }
+          },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers",
+              "apiVersion": "2023-01-01",
+              "name": "[format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name'))]",
+              "properties": {
+                "sourceResourceId": "[if(not(empty(parameters('sourceResourceId'))), parameters('sourceResourceId'), null())]",
+                "friendlyName": "[if(not(empty(parameters('friendlyName'))), parameters('friendlyName'), null())]",
+                "backupManagementType": "[if(not(empty(parameters('backupManagementType'))), parameters('backupManagementType'), null())]",
+                "containerType": "[if(not(empty(parameters('containerType'))), parameters('containerType'), null())]"
+              }
+            },
+            {
+              "copy": {
+                "name": "protectionContainer_protectedItems",
+                "count": "[length(parameters('protectedItems'))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-ProtectedItem-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "policyId": {
+                    "value": "[parameters('protectedItems')[copyIndex()].policyId]"
+                  },
+                  "name": {
+                    "value": "[parameters('protectedItems')[copyIndex()].name]"
+                  },
+                  "protectedItemType": {
+                    "value": "[parameters('protectedItems')[copyIndex()].protectedItemType]"
+                  },
+                  "protectionContainerName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "recoveryVaultName": {
+                    "value": "[parameters('recoveryVaultName')]"
+                  },
+                  "sourceResourceId": {
+                    "value": "[parameters('protectedItems')[copyIndex()].sourceResourceId]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "enableDefaultTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.23.1.45101",
+                      "templateHash": "9921011786088905122"
+                    },
+                    "name": "Recovery Service Vaults Protection Container Protected Item",
+                    "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Name of the resource."
+                      }
+                    },
+                    "protectionContainerName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. Name of the Azure Recovery Service Vault Protection Container. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "recoveryVaultName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]",
+                      "metadata": {
+                        "description": "Optional. Location for all resources."
+                      }
+                    },
+                    "protectedItemType": {
+                      "type": "string",
+                      "allowedValues": [
+                        "AzureFileShareProtectedItem",
+                        "AzureVmWorkloadSAPAseDatabase",
+                        "AzureVmWorkloadSAPHanaDatabase",
+                        "AzureVmWorkloadSQLDatabase",
+                        "DPMProtectedItem",
+                        "GenericProtectedItem",
+                        "MabFileFolderProtectedItem",
+                        "Microsoft.ClassicCompute/virtualMachines",
+                        "Microsoft.Compute/virtualMachines",
+                        "Microsoft.Sql/servers/databases"
+                      ],
+                      "metadata": {
+                        "description": "Required. The backup item type."
+                      }
+                    },
+                    "policyId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. ID of the backup policy with which this item is backed up."
+                      }
+                    },
+                    "sourceResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Resource ID of the resource to back up."
+                      }
+                    },
+                    "enableDefaultTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "condition": "[parameters('enableDefaultTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2021-04-01",
+                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": []
+                        }
+                      }
+                    },
+                    {
+                      "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
+                      "apiVersion": "2023-01-01",
+                      "name": "[format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name'))]",
+                      "location": "[parameters('location')]",
+                      "properties": {
+                        "protectedItemType": "[parameters('protectedItemType')]",
+                        "policyId": "[parameters('policyId')]",
+                        "sourceResourceId": "[parameters('sourceResourceId')]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the Resource Group the protected item was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the protected item."
+                      },
+                      "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems', split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[0], split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[1], split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[2], split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[3])]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The Name of the protected item."
+                      },
+                      "value": "[format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name'))]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers', split(format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[0], split(format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[1], split(format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[2])]"
+              ]
+            }
+          ],
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the Protection Container was created in."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Protection Container."
+              },
+              "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers', split(format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[0], split(format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[1], split(format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[2])]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The Name of the Protection Container."
+              },
+              "value": "[format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name'))]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "rsv"
+      ]
+    },
+    "rsv_backupPolicies": {
+      "copy": {
+        "name": "rsv_backupPolicies",
+        "count": "[length(parameters('backupPolicies'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-RSV-BackupPolicy-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "recoveryVaultName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('backupPolicies')[copyIndex()].name]"
+          },
+          "properties": {
+            "value": "[parameters('backupPolicies')[copyIndex()].properties]"
+          },
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "4289896830796340565"
+            },
+            "name": "Recovery Services Vault Backup Policies",
+            "description": "This module deploys a Recovery Services Vault Backup Policy.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "recoveryVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Azure Recovery Service Vault Backup Policy."
+              }
+            },
+            "properties": {
+              "type": "object",
+              "metadata": {
+                "description": "Required. Configuration of the Azure Recovery Service Vault Backup Policy."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.RecoveryServices/vaults/backupPolicies",
+              "apiVersion": "2023-01-01",
+              "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
+              "properties": "[parameters('properties')]"
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the backup policy."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the backup policy."
+              },
+              "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', parameters('recoveryVaultName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the backup policy was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "rsv"
+      ]
+    },
+    "rsv_backupConfig": {
+      "condition": "[not(empty(parameters('backupConfig')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-RSV-BackupConfig', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "recoveryVaultName": {
+            "value": "[parameters('name')]"
+          },
+          "name": "[if(contains(parameters('backupConfig'), 'name'), createObject('value', parameters('backupConfig').name), createObject('value', 'vaultconfig'))]",
+          "enhancedSecurityState": "[if(contains(parameters('backupConfig'), 'enhancedSecurityState'), createObject('value', parameters('backupConfig').enhancedSecurityState), createObject('value', 'Enabled'))]",
+          "resourceGuardOperationRequests": "[if(contains(parameters('backupConfig'), 'resourceGuardOperationRequests'), createObject('value', parameters('backupConfig').resourceGuardOperationRequests), createObject('value', createArray()))]",
+          "softDeleteFeatureState": "[if(contains(parameters('backupConfig'), 'softDeleteFeatureState'), createObject('value', parameters('backupConfig').softDeleteFeatureState), createObject('value', 'Enabled'))]",
+          "storageModelType": "[if(contains(parameters('backupConfig'), 'storageModelType'), createObject('value', parameters('backupConfig').storageModelType), createObject('value', 'GeoRedundant'))]",
+          "storageType": "[if(contains(parameters('backupConfig'), 'storageType'), createObject('value', parameters('backupConfig').storageType), createObject('value', 'GeoRedundant'))]",
+          "storageTypeState": "[if(contains(parameters('backupConfig'), 'storageTypeState'), createObject('value', parameters('backupConfig').storageTypeState), createObject('value', 'Locked'))]",
+          "isSoftDeleteFeatureStateEditable": "[if(contains(parameters('backupConfig'), 'isSoftDeleteFeatureStateEditable'), createObject('value', parameters('backupConfig').isSoftDeleteFeatureStateEditable), createObject('value', true()))]",
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "12267998063539265813"
+            },
+            "name": "Recovery Services Vault Backup Config",
+            "description": "This module deploys a Recovery Services Vault Backup Config.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "recoveryVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "vaultconfig",
+              "metadata": {
+                "description": "Optional. Name of the Azure Recovery Service Vault Backup Policy."
+              }
+            },
+            "enhancedSecurityState": {
+              "type": "string",
+              "defaultValue": "Enabled",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "metadata": {
+                "description": "Optional. Enable this setting to protect hybrid backups against accidental deletes and add additional layer of authentication for critical operations."
+              }
+            },
+            "resourceGuardOperationRequests": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. ResourceGuard Operation Requests."
+              }
+            },
+            "softDeleteFeatureState": {
+              "type": "string",
+              "defaultValue": "Enabled",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "metadata": {
+                "description": "Optional. Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes."
+              }
+            },
+            "storageModelType": {
+              "type": "string",
+              "defaultValue": "GeoRedundant",
+              "allowedValues": [
+                "GeoRedundant",
+                "LocallyRedundant",
+                "ReadAccessGeoZoneRedundant",
+                "ZoneRedundant"
+              ],
+              "metadata": {
+                "description": "Optional. Storage type."
+              }
+            },
+            "storageType": {
+              "type": "string",
+              "defaultValue": "GeoRedundant",
+              "allowedValues": [
+                "GeoRedundant",
+                "LocallyRedundant",
+                "ReadAccessGeoZoneRedundant",
+                "ZoneRedundant"
+              ],
+              "metadata": {
+                "description": "Optional. Storage type."
+              }
+            },
+            "storageTypeState": {
+              "type": "string",
+              "defaultValue": "Locked",
+              "allowedValues": [
+                "Locked",
+                "Unlocked"
+              ],
+              "metadata": {
+                "description": "Optional. Once a machine is registered against a resource, the storageTypeState is always Locked."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            },
+            "isSoftDeleteFeatureStateEditable": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Is soft delete feature state editable."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.RecoveryServices/vaults/backupconfig",
+              "apiVersion": "2023-01-01",
+              "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
+              "properties": {
+                "enhancedSecurityState": "[parameters('enhancedSecurityState')]",
+                "resourceGuardOperationRequests": "[parameters('resourceGuardOperationRequests')]",
+                "softDeleteFeatureState": "[parameters('softDeleteFeatureState')]",
+                "storageModelType": "[parameters('storageModelType')]",
+                "storageType": "[parameters('storageType')]",
+                "storageTypeState": "[parameters('storageTypeState')]",
+                "isSoftDeleteFeatureStateEditable": "[parameters('isSoftDeleteFeatureStateEditable')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the backup config."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the backup config."
+              },
+              "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupconfig', parameters('recoveryVaultName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the backup config was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "rsv"
+      ]
+    },
+    "rsv_replicationAlertSettings": {
+      "condition": "[not(empty(parameters('replicationAlertSettings')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-RSV-replicationAlertSettings', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "defaultAlertSetting"
+          },
+          "recoveryVaultName": {
+            "value": "[parameters('name')]"
+          },
+          "customEmailAddresses": "[if(contains(parameters('replicationAlertSettings'), 'customEmailAddresses'), createObject('value', parameters('replicationAlertSettings').customEmailAddresses), createObject('value', createArray()))]",
+          "locale": "[if(contains(parameters('replicationAlertSettings'), 'locale'), createObject('value', parameters('replicationAlertSettings').locale), createObject('value', ''))]",
+          "sendToOwners": "[if(contains(parameters('replicationAlertSettings'), 'sendToOwners'), createObject('value', parameters('replicationAlertSettings').sendToOwners), createObject('value', 'Send'))]",
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "9038487209624086059"
+            },
+            "name": "Recovery Services Vault Replication Alert Settings",
+            "description": "This module deploys a Recovery Services Vault Replication Alert Settings.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "recoveryVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "defaultAlertSetting",
+              "metadata": {
+                "description": "Optional. The name of the replication Alert Setting."
+              }
+            },
+            "customEmailAddresses": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. Comma separated list of custom email address for sending alert emails."
+              }
+            },
+            "locale": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The locale for the email notification."
+              }
+            },
+            "sendToOwners": {
+              "type": "string",
+              "defaultValue": "Send",
+              "allowedValues": [
+                "DoNotSend",
+                "Send"
+              ],
+              "metadata": {
+                "description": "Optional. The value indicating whether to send email to subscription administrator."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.RecoveryServices/vaults/replicationAlertSettings",
+              "apiVersion": "2022-10-01",
+              "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
+              "properties": {
+                "customEmailAddresses": "[if(not(empty(parameters('customEmailAddresses'))), parameters('customEmailAddresses'), null())]",
+                "locale": "[parameters('locale')]",
+                "sendToOwners": "[parameters('sendToOwners')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the replication Alert Setting."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the replication alert setting was created."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the replication alert setting."
+              },
+              "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationAlertSettings', parameters('recoveryVaultName'), parameters('name'))]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "rsv"
+      ]
+    },
+    "rsv_privateEndpoints": {
+      "copy": {
+        "name": "rsv_privateEndpoints",
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-rsv-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "groupIds": {
+            "value": [
+              "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'AzureSiteRecovery')]"
+            ]
+          },
+          "name": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.RecoveryServices/vaults', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'AzureSiteRecovery'), copyIndex()))]"
+          },
+          "serviceResourceId": {
+            "value": "[resourceId('Microsoft.RecoveryServices/vaults', parameters('name'))]"
+          },
+          "subnetResourceId": {
+            "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
+          },
+          "enableDefaultTelemetry": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableDefaultTelemetry'), variables('enableReferencedModulesTelemetry'))]"
+          },
+          "location": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
+          },
+          "lock": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
+          },
+          "privateDnsZoneGroupName": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroupName')]"
+          },
+          "privateDnsZoneResourceIds": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneResourceIds')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "manualPrivateLinkServiceConnections": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections')]"
+          },
+          "customDnsConfigs": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
+          },
+          "ipConfigurations": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'ipConfigurations')]"
+          },
+          "applicationSecurityGroupResourceIds": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'applicationSecurityGroupResourceIds')]"
+          },
+          "customNetworkInterfaceName": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customNetworkInterfaceName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "6873008238043407177"
+            },
+            "name": "Private Endpoints",
+            "description": "This module deploys a Private Endpoint.",
+            "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "roleAssignmentType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "roleDefinitionIdOrName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+                    }
+                  },
+                  "principalId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                    }
+                  },
+                  "principalType": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Device",
+                      "ForeignGroup",
+                      "Group",
+                      "ServicePrincipal",
+                      "User"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The principal type of the assigned principal ID."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The description of the role assignment."
+                    }
+                  },
+                  "condition": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                    }
+                  },
+                  "conditionVersion": {
+                    "type": "string",
+                    "allowedValues": [
+                      "2.0"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Version of the condition."
+                    }
+                  },
+                  "delegatedManagedIdentityResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The Resource Id of the delegated managed identity resource."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "ipConfigurationsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the resource that is unique within a resource group."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "groupId": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "memberName": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "privateIPAddress": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. A private ip address obtained from the private endpoint's subnet."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of private endpoint IP configurations."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "customDnsConfigType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "fqdn": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Fqdn that resolves to private endpoint ip address."
+                    }
+                  },
+                  "ipAddresses": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "metadata": {
+                      "description": "Required. A list of private ip addresses of the private endpoint."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the private endpoint resource to create."
+              }
+            },
+            "subnetResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+              }
+            },
+            "serviceResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Resource ID of the resource that needs to be connected to the network."
+              }
+            },
+            "applicationSecurityGroupResourceIds": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
+              }
+            },
+            "customNetworkInterfaceName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The custom name of the network interface attached to the private endpoint."
+              }
+            },
+            "ipConfigurations": {
+              "$ref": "#/definitions/ipConfigurationsType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
+              }
+            },
+            "groupIds": {
+              "type": "array",
+              "metadata": {
+                "description": "Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to."
+              }
+            },
+            "privateDnsZoneGroupName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
+              }
+            },
+            "privateDnsZoneResourceIds": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all Resources."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "roleAssignments": {
+              "$ref": "#/definitions/roleAssignmentType",
+              "metadata": {
+                "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
+              }
+            },
+            "customDnsConfigs": {
+              "$ref": "#/definitions/customDnsConfigType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Custom DNS configurations."
+              }
+            },
+            "manualPrivateLinkServiceConnections": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Manual PrivateLink Service Connections."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            }
+          },
+          "variables": {
+            "enableReferencedModulesTelemetry": false,
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
+              "DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314')]",
+              "Domain Services Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'eeaeda52-9324-47f6-8069-5d5bade478b2')]",
+              "Domain Services Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '361898ef-9ed1-48c2-849c-a832951106bb')]",
+              "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
+            }
+          },
+          "resources": {
+            "defaultTelemetry": {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            "privateEndpoint": {
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2023-04-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "applicationSecurityGroups",
+                    "count": "[length(coalesce(parameters('applicationSecurityGroupResourceIds'), createArray()))]",
+                    "input": {
+                      "id": "[coalesce(parameters('applicationSecurityGroupResourceIds'), createArray())[copyIndex('applicationSecurityGroups')]]"
+                    }
+                  }
+                ],
+                "customDnsConfigs": "[parameters('customDnsConfigs')]",
+                "customNetworkInterfaceName": "[coalesce(parameters('customNetworkInterfaceName'), '')]",
+                "ipConfigurations": "[coalesce(parameters('ipConfigurations'), createArray())]",
+                "manualPrivateLinkServiceConnections": "[coalesce(parameters('manualPrivateLinkServiceConnections'), createArray())]",
+                "privateLinkServiceConnections": [
+                  {
+                    "name": "[parameters('name')]",
+                    "properties": {
+                      "privateLinkServiceId": "[parameters('serviceResourceId')]",
+                      "groupIds": "[parameters('groupIds')]"
+                    }
+                  }
+                ],
+                "subnet": {
+                  "id": "[parameters('subnetResourceId')]"
+                }
+              }
+            },
+            "privateEndpoint_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "privateEndpoint"
+              ]
+            },
+            "privateEndpoint_roleAssignments": {
+              "copy": {
+                "name": "privateEndpoint_roleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+              "name": "[guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+              "properties": {
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "privateEndpoint"
+              ]
+            },
+            "privateEndpoint_privateDnsZoneGroup": {
+              "condition": "[not(empty(parameters('privateDnsZoneResourceIds')))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-PrivateEndpoint-PrivateDnsZoneGroup', uniqueString(deployment().name))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[coalesce(parameters('privateDnsZoneGroupName'), 'default')]"
+                  },
+                  "privateDNSResourceIds": {
+                    "value": "[coalesce(parameters('privateDnsZoneResourceIds'), createArray())]"
+                  },
+                  "privateEndpointName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "enableDefaultTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.23.1.45101",
+                      "templateHash": "17578977753131828304"
+                    },
+                    "name": "Private Endpoint Private DNS Zone Groups",
+                    "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "privateEndpointName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent private endpoint. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "privateDNSResourceIds": {
+                      "type": "array",
+                      "minLength": 1,
+                      "maxLength": 5,
+                      "metadata": {
+                        "description": "Required. Array of private DNS zone resource IDs. A DNS zone group can support up to 5 DNS zones."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "default",
+                      "metadata": {
+                        "description": "Optional. The name of the private DNS zone group."
+                      }
+                    },
+                    "enableDefaultTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "copy": [
+                      {
+                        "name": "privateDnsZoneConfigs",
+                        "count": "[length(parameters('privateDNSResourceIds'))]",
+                        "input": {
+                          "name": "[last(split(parameters('privateDNSResourceIds')[copyIndex('privateDnsZoneConfigs')], '/'))]",
+                          "properties": {
+                            "privateDnsZoneId": "[parameters('privateDNSResourceIds')[copyIndex('privateDnsZoneConfigs')]]"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "resources": [
+                    {
+                      "condition": "[parameters('enableDefaultTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2021-04-01",
+                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": []
+                        }
+                      }
+                    },
+                    {
+                      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+                      "apiVersion": "2023-04-01",
+                      "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
+                      "properties": {
+                        "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigs')]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the private endpoint DNS zone group."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the private endpoint DNS zone group."
+                      },
+                      "value": "[resourceId('Microsoft.Network/privateEndpoints/privateDnsZoneGroups', parameters('privateEndpointName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the private endpoint DNS zone group was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "privateEndpoint"
+              ]
+            }
+          },
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the private endpoint was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the private endpoint."
+              },
+              "value": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the private endpoint."
+              },
+              "value": "[parameters('name')]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('privateEndpoint', '2023-04-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "rsv"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the recovery services vault."
+      },
+      "value": "[resourceId('Microsoft.RecoveryServices/vaults', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the recovery services vault was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The Name of the recovery services vault."
+      },
+      "value": "[parameters('name')]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('rsv', '2023-01-01', 'full').identity, 'principalId')), reference('rsv', '2023-01-01', 'full').identity.principalId, '')]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('rsv', '2023-01-01', 'full').location]"
+    }
+  }
+}
