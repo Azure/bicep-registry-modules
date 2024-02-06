@@ -56,7 +56,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-swmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-swmin'
   params: {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
@@ -116,7 +116,7 @@ This instance deploys the module using Customer-Managed-Keys using a System-Assi
 
 ```bicep
 module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-swensa'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-swensa'
   params: {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
@@ -190,7 +190,7 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-swenua'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-swenua'
   params: {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
@@ -274,7 +274,7 @@ This instance deploys the module using a managed Vnet.
 
 ```bicep
 module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-swmanv'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-swmanv'
   params: {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
@@ -362,7 +362,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-swmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-swmax'
   params: {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
@@ -558,7 +558,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-swwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-swwaf'
   params: {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
