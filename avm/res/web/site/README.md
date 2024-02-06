@@ -1121,8 +1121,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 | [`clientAffinityEnabled`](#parameter-clientaffinityenabled) | bool | If client affinity is enabled. |
 | [`clientCertEnabled`](#parameter-clientcertenabled) | bool | To enable client certificate authentication (TLS mutual authentication). |
 | [`clientCertExclusionPaths`](#parameter-clientcertexclusionpaths) | string | Client certificate authentication comma-separated exclusion paths. |
-| [`clientCertMode`](#parameter-clientcertmode) | string | This composes with ClientCertEnabled setting.<li> ClientCertEnabled=false means ClientCert is ignored.<li> ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.<li> ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.<p>
- |
+| [`clientCertMode`](#parameter-clientcertmode) | string | This composes with ClientCertEnabled setting.<li>ClientCertEnabled=false means ClientCert is ignored.<li>ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.<li>ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.<p> |
 | [`cloningInfo`](#parameter-cloninginfo) | object | If specified during app creation, the app is cloned from a source app. |
 | [`containerSize`](#parameter-containersize) | int | Size of the function container. |
 | [`customDomainVerificationId`](#parameter-customdomainverificationid) | string | Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification. |
@@ -1156,7 +1155,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 
 ### Parameter: `kind`
 
-Required. Type of site to deploy.
+Type of site to deploy.
 
 - Required: Yes
 - Type: string
@@ -1173,56 +1172,56 @@ Required. Type of site to deploy.
 
 ### Parameter: `name`
 
-Required. Name of the site.
+Name of the site.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `serverFarmResourceId`
 
-Required. The resource ID of the app service plan to use for the site.
+The resource ID of the app service plan to use for the site.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `appInsightResourceId`
 
-Optional. Resource ID of the app insight to leverage for this resource.
+Resource ID of the app insight to leverage for this resource.
 
 - Required: No
 - Type: string
 
 ### Parameter: `appServiceEnvironmentResourceId`
 
-Optional. The resource ID of the app service environment to use for this resource.
+The resource ID of the app service environment to use for this resource.
 
 - Required: No
 - Type: string
 
 ### Parameter: `appSettingsKeyValuePairs`
 
-Optional. The app settings-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING.
+The app settings-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING.
 
 - Required: No
 - Type: object
 
 ### Parameter: `authSettingV2Configuration`
 
-Optional. The auth settings V2 configuration.
+The auth settings V2 configuration.
 
 - Required: No
 - Type: object
 
 ### Parameter: `basicPublishingCredentialsPolicies`
 
-Optional. The site publishing credential policy names which are associated with the sites.
+The site publishing credential policy names which are associated with the sites.
 
 - Required: No
 - Type: array
 
 ### Parameter: `clientAffinityEnabled`
 
-Optional. If client affinity is enabled.
+If client affinity is enabled.
 
 - Required: No
 - Type: bool
@@ -1230,7 +1229,7 @@ Optional. If client affinity is enabled.
 
 ### Parameter: `clientCertEnabled`
 
-Optional. To enable client certificate authentication (TLS mutual authentication).
+To enable client certificate authentication (TLS mutual authentication).
 
 - Required: No
 - Type: bool
@@ -1238,14 +1237,14 @@ Optional. To enable client certificate authentication (TLS mutual authentication
 
 ### Parameter: `clientCertExclusionPaths`
 
-Optional. Client certificate authentication comma-separated exclusion paths.
+Client certificate authentication comma-separated exclusion paths.
 
 - Required: No
 - Type: string
 
 ### Parameter: `clientCertMode`
 
-Optional. This composes with ClientCertEnabled setting.<li> ClientCertEnabled=false means ClientCert is ignored.<li> ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.<li> ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.<p>
+This composes with ClientCertEnabled setting.<li>ClientCertEnabled=false means ClientCert is ignored.<li>ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.<li>ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.<p>
 
 - Required: No
 - Type: string
@@ -1261,35 +1260,35 @@ Optional. This composes with ClientCertEnabled setting.<li> ClientCertEnabled=fa
 
 ### Parameter: `cloningInfo`
 
-Optional. If specified during app creation, the app is cloned from a source app.
+If specified during app creation, the app is cloned from a source app.
 
 - Required: No
 - Type: object
 
 ### Parameter: `containerSize`
 
-Optional. Size of the function container.
+Size of the function container.
 
 - Required: No
 - Type: int
 
 ### Parameter: `customDomainVerificationId`
 
-Optional. Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification.
+Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification.
 
 - Required: No
 - Type: string
 
 ### Parameter: `dailyMemoryTimeQuota`
 
-Optional. Maximum allowed daily memory-time quota (applicable on dynamic apps only).
+Maximum allowed daily memory-time quota (applicable on dynamic apps only).
 
 - Required: No
 - Type: int
 
 ### Parameter: `diagnosticSettings`
 
-Optional. The diagnostic settings of the service.
+The diagnostic settings of the service.
 
 - Required: No
 - Type: array
@@ -1310,21 +1309,21 @@ Optional. The diagnostic settings of the service.
 
 ### Parameter: `diagnosticSettings.eventHubAuthorizationRuleResourceId`
 
-Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
 
 - Required: No
 - Type: string
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
-Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
-Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
 
 - Required: No
 - Type: string
@@ -1338,49 +1337,49 @@ Optional. A string indicating whether the export to Log Analytics should use the
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
-Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
 
 - Required: No
 - Type: array
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
-Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
 
 - Required: No
 - Type: string
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
-Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to '' to disable metric collection.
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to '' to disable metric collection.
 
 - Required: No
 - Type: array
 
 ### Parameter: `diagnosticSettings.name`
 
-Optional. The name of diagnostic setting.
+The name of diagnostic setting.
 
 - Required: No
 - Type: string
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
-Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
-Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
 ### Parameter: `enabled`
 
-Optional. Setting this value to false disables the app (takes the app offline).
+Setting this value to false disables the app (takes the app offline).
 
 - Required: No
 - Type: bool
@@ -1388,7 +1387,7 @@ Optional. Setting this value to false disables the app (takes the app offline).
 
 ### Parameter: `enableTelemetry`
 
-Optional. Enable/Disable usage telemetry for module.
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -1396,14 +1395,14 @@ Optional. Enable/Disable usage telemetry for module.
 
 ### Parameter: `hostNameSslStates`
 
-Optional. Hostname SSL states are used to manage the SSL bindings for app's hostnames.
+Hostname SSL states are used to manage the SSL bindings for app's hostnames.
 
 - Required: No
 - Type: array
 
 ### Parameter: `httpsOnly`
 
-Optional. Configures a site to accept only HTTPS requests. Issues redirect for HTTP requests.
+Configures a site to accept only HTTPS requests. Issues redirect for HTTP requests.
 
 - Required: No
 - Type: bool
@@ -1411,14 +1410,14 @@ Optional. Configures a site to accept only HTTPS requests. Issues redirect for H
 
 ### Parameter: `hybridConnectionRelays`
 
-Optional. Names of hybrid connection relays to connect app with.
+Names of hybrid connection relays to connect app with.
 
 - Required: No
 - Type: array
 
 ### Parameter: `hyperV`
 
-Optional. Hyper-V sandbox.
+Hyper-V sandbox.
 
 - Required: No
 - Type: bool
@@ -1426,14 +1425,14 @@ Optional. Hyper-V sandbox.
 
 ### Parameter: `keyVaultAccessIdentityResourceId`
 
-Optional. The resource ID of the assigned identity to be used to access a key vault with.
+The resource ID of the assigned identity to be used to access a key vault with.
 
 - Required: No
 - Type: string
 
 ### Parameter: `location`
 
-Optional. Location for all Resources.
+Location for all Resources.
 
 - Required: No
 - Type: string
@@ -1441,7 +1440,7 @@ Optional. Location for all Resources.
 
 ### Parameter: `lock`
 
-Optional. The lock settings of the service.
+The lock settings of the service.
 
 - Required: No
 - Type: object
@@ -1455,7 +1454,7 @@ Optional. The lock settings of the service.
 
 ### Parameter: `lock.kind`
 
-Optional. Specify the type of lock.
+Specify the type of lock.
 
 - Required: No
 - Type: string
@@ -1470,14 +1469,14 @@ Optional. Specify the type of lock.
 
 ### Parameter: `lock.name`
 
-Optional. Specify the name of lock.
+Specify the name of lock.
 
 - Required: No
 - Type: string
 
 ### Parameter: `managedIdentities`
 
-Optional. The managed identity definition for this resource.
+The managed identity definition for this resource.
 
 - Required: No
 - Type: object
@@ -1491,21 +1490,21 @@ Optional. The managed identity definition for this resource.
 
 ### Parameter: `managedIdentities.systemAssigned`
 
-Optional. Enables system assigned managed identity on the resource.
+Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-Optional. The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
 
 ### Parameter: `privateEndpoints`
 
-Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
+Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
 
 - Required: No
 - Type: array
@@ -1537,56 +1536,56 @@ Optional. Configuration details for private endpoints. For security reasons, it 
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
-Required. Resource ID of the subnet where the endpoint needs to be created.
+Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
-Optional. Application security groups in which the private endpoint IP configuration is included.
+Application security groups in which the private endpoint IP configuration is included.
 
 - Required: No
 - Type: array
 
 ### Parameter: `privateEndpoints.customDnsConfigs`
 
-Optional. Custom DNS configurations.
+Custom DNS configurations.
 
 - Required: No
 - Type: array
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
-Optional. The custom name of the network interface attached to the private endpoint.
+The custom name of the network interface attached to the private endpoint.
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.enableTelemetry`
 
-Optional. Enable/Disable usage telemetry for module.
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
-Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.
+A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.
 
 - Required: No
 - Type: array
 
 ### Parameter: `privateEndpoints.location`
 
-Optional. The location to deploy the private endpoint to.
+The location to deploy the private endpoint to.
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.lock`
 
-Optional. Specify the type of lock.
+Specify the type of lock.
 
 - Required: No
 - Type: object
@@ -1600,7 +1599,7 @@ Optional. Specify the type of lock.
 
 ### Parameter: `privateEndpoints.lock.kind`
 
-Optional. Specify the type of lock.
+Specify the type of lock.
 
 - Required: No
 - Type: string
@@ -1615,42 +1614,42 @@ Optional. Specify the type of lock.
 
 ### Parameter: `privateEndpoints.lock.name`
 
-Optional. Specify the name of lock.
+Specify the name of lock.
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.manualPrivateLinkServiceConnections`
 
-Optional. Manual PrivateLink Service Connections.
+Manual PrivateLink Service Connections.
 
 - Required: No
 - Type: array
 
 ### Parameter: `privateEndpoints.name`
 
-Optional. The name of the private endpoint.
+The name of the private endpoint.
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroupName`
 
-Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.
+The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.privateDnsZoneResourceIds`
 
-Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.
+The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.
 
 - Required: No
 - Type: array
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
-Optional. Array of role assignments to create.
+Array of role assignments to create.
 
 - Required: No
 - Type: array
@@ -1674,28 +1673,28 @@ Optional. Array of role assignments to create.
 
 ### Parameter: `privateEndpoints.roleAssignments.principalId`
 
-Required. The principal ID of the principal (user/group/identity) to assign the role to.
+The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
-Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `privateEndpoints.roleAssignments.condition`
 
-Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.roleAssignments.conditionVersion`
 
-Optional. Version of the condition.
+Version of the condition.
 
 - Required: No
 - Type: string
@@ -1708,21 +1707,21 @@ Optional. Version of the condition.
 
 ### Parameter: `privateEndpoints.roleAssignments.delegatedManagedIdentityResourceId`
 
-Optional. The Resource Id of the delegated managed identity resource.
+The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
-Optional. The description of the role assignment.
+The description of the role assignment.
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
-Optional. The principal type of the assigned principal ID.
+The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
@@ -1739,21 +1738,21 @@ Optional. The principal type of the assigned principal ID.
 
 ### Parameter: `privateEndpoints.service`
 
-Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".
+The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.tags`
 
-Optional. Tags to be applied on all resources/resource groups in this deployment.
+Tags to be applied on all resources/resource groups in this deployment.
 
 - Required: No
 - Type: object
 
 ### Parameter: `publicNetworkAccess`
 
-Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.
+Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.
 
 - Required: No
 - Type: string
@@ -1767,7 +1766,7 @@ Optional. Whether or not public network access is allowed for this resource. For
 
 ### Parameter: `redundancyMode`
 
-Optional. Site redundancy mode.
+Site redundancy mode.
 
 - Required: No
 - Type: string
@@ -1785,7 +1784,7 @@ Optional. Site redundancy mode.
 
 ### Parameter: `roleAssignments`
 
-Optional. Array of role assignments to create.
+Array of role assignments to create.
 
 - Required: No
 - Type: array
@@ -1809,28 +1808,28 @@ Optional. Array of role assignments to create.
 
 ### Parameter: `roleAssignments.principalId`
 
-Required. The principal ID of the principal (user/group/identity) to assign the role to.
+The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
-Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `roleAssignments.condition`
 
-Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.conditionVersion`
 
-Optional. Version of the condition.
+Version of the condition.
 
 - Required: No
 - Type: string
@@ -1843,21 +1842,21 @@ Optional. Version of the condition.
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
-Optional. The Resource Id of the delegated managed identity resource.
+The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.description`
 
-Optional. The description of the role assignment.
+The description of the role assignment.
 
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.principalType`
 
-Optional. The principal type of the assigned principal ID.
+The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
@@ -1874,7 +1873,7 @@ Optional. The principal type of the assigned principal ID.
 
 ### Parameter: `scmSiteAlsoStopped`
 
-Optional. Stop SCM (KUDU) site when the app is stopped.
+Stop SCM (KUDU) site when the app is stopped.
 
 - Required: No
 - Type: bool
@@ -1882,7 +1881,7 @@ Optional. Stop SCM (KUDU) site when the app is stopped.
 
 ### Parameter: `setAzureWebJobsDashboard`
 
-Optional. For function apps. If true the app settings "AzureWebJobsDashboard" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons.
+For function apps. If true the app settings "AzureWebJobsDashboard" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons.
 
 - Required: No
 - Type: bool
@@ -1890,21 +1889,21 @@ Optional. For function apps. If true the app settings "AzureWebJobsDashboard" wi
 
 ### Parameter: `siteConfig`
 
-Optional. The site config object.
+The site config object.
 
 - Required: No
 - Type: object
 
 ### Parameter: `slots`
 
-Optional. Configuration for deployment slots for an app.
+Configuration for deployment slots for an app.
 
 - Required: No
 - Type: array
 
 ### Parameter: `storageAccountRequired`
 
-Optional. Checks if Customer provided storage account is required.
+Checks if Customer provided storage account is required.
 
 - Required: No
 - Type: bool
@@ -1912,28 +1911,28 @@ Optional. Checks if Customer provided storage account is required.
 
 ### Parameter: `storageAccountResourceId`
 
-Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.
+Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.
 
 - Required: No
 - Type: string
 
 ### Parameter: `tags`
 
-Optional. Tags of the resource.
+Tags of the resource.
 
 - Required: No
 - Type: object
 
 ### Parameter: `virtualNetworkSubnetId`
 
-Optional. Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}.
+Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}.
 
 - Required: No
 - Type: string
 
 ### Parameter: `vnetContentShareEnabled`
 
-Optional. To enable accessing content over virtual network.
+To enable accessing content over virtual network.
 
 - Required: No
 - Type: bool
@@ -1941,7 +1940,7 @@ Optional. To enable accessing content over virtual network.
 
 ### Parameter: `vnetImagePullEnabled`
 
-Optional. To enable pulling image over Virtual Network.
+To enable pulling image over Virtual Network.
 
 - Required: No
 - Type: bool
@@ -1949,7 +1948,7 @@ Optional. To enable pulling image over Virtual Network.
 
 ### Parameter: `vnetRouteAllEnabled`
 
-Optional. Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied.
+Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied.
 
 - Required: No
 - Type: bool
