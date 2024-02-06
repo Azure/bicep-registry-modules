@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "6109386818166854532"
+      "templateHash": "18411085271975263355"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -557,7 +557,7 @@
       }
     },
     "sqlAdministratorLoginPassword": {
-      "type": "string",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Optional. Password for administrator access to the workspace's SQL pools. If you don't provide a password, one will be automatically generated. You can change the password later."
@@ -1753,7 +1753,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(contains(reference('workspace', '2021-06-01', 'full').identity, 'principalId'), reference('workspace', '2021-06-01', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('workspace', '2021-06-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",

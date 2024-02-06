@@ -755,7 +755,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Enable or Disable public network access to workspace. |
 | [`purviewResourceID`](#parameter-purviewresourceid) | string | Purview Resource ID. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`sqlAdministratorLoginPassword`](#parameter-sqladministratorloginpassword) | string | Password for administrator access to the workspace's SQL pools. If you don't provide a password, one will be automatically generated. You can change the password later. |
+| [`sqlAdministratorLoginPassword`](#parameter-sqladministratorloginpassword) | securestring | Password for administrator access to the workspace's SQL pools. If you don't provide a password, one will be automatically generated. You can change the password later. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`workspaceRepositoryConfiguration`](#parameter-workspacerepositoryconfiguration) | object | Git integration settings. |
 
@@ -1436,7 +1436,7 @@ The principal type of the assigned principal ID.
 Password for administrator access to the workspace's SQL pools. If you don't provide a password, one will be automatically generated. You can change the password later.
 
 - Required: No
-- Type: string
+- Type: securestring
 - Default: `''`
 
 ### Parameter: `tags`
