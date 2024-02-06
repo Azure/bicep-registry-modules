@@ -22,8 +22,8 @@ This module deploys an Azure Virtual Desktop Application Group Application.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`filePath`](#parameter-filepath) | string | Specifies a path for the executable file for the application. |
-| [`friendlyName`](#parameter-friendlyname) | string | Friendly name of Application.. |
+| [`filePath`](#parameter-filepath) | string | Specifies a path for the executable file for the Application. |
+| [`friendlyName`](#parameter-friendlyname) | string | Friendly name of the Application. |
 | [`name`](#parameter-name) | string | Name of the Application to be created in the Application Group. |
 
 **Conditional parameters**
@@ -36,23 +36,23 @@ This module deploys an Azure Virtual Desktop Application Group Application.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`commandLineArguments`](#parameter-commandlinearguments) | string | Command-Line Arguments for Application. |
-| [`commandLineSetting`](#parameter-commandlinesetting) | string | Specifies whether this published application can be launched with command-line arguments provided by the client, command-line arguments specified at publish time, or no command-line arguments at all. |
-| [`description`](#parameter-description) | string | Description of Application.. |
+| [`commandLineArguments`](#parameter-commandlinearguments) | string | Command-Line Arguments for the Application. |
+| [`commandLineSetting`](#parameter-commandlinesetting) | string | Specifies whether this published Application can be launched with command-line arguments provided by the client, command-line arguments specified at publish time, or no command-line arguments at all. |
+| [`description`](#parameter-description) | string | Description of the Application. |
 | [`iconIndex`](#parameter-iconindex) | int | Index of the icon. |
 | [`iconPath`](#parameter-iconpath) | string | Path to icon. |
 | [`showInPortal`](#parameter-showinportal) | bool | Specifies whether to show the RemoteApp program in the RD Web Access server. |
 
 ### Parameter: `filePath`
 
-Specifies a path for the executable file for the application.
+Specifies a path for the executable file for the Application.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `friendlyName`
 
-Friendly name of Application..
+Friendly name of the Application.
 
 - Required: Yes
 - Type: string
@@ -73,7 +73,7 @@ The name of the parent Application Group to create the application(s) in. Requir
 
 ### Parameter: `commandLineArguments`
 
-Command-Line Arguments for Application.
+Command-Line Arguments for the Application.
 
 - Required: No
 - Type: string
@@ -81,7 +81,7 @@ Command-Line Arguments for Application.
 
 ### Parameter: `commandLineSetting`
 
-Specifies whether this published application can be launched with command-line arguments provided by the client, command-line arguments specified at publish time, or no command-line arguments at all.
+Specifies whether this published Application can be launched with command-line arguments provided by the client, command-line arguments specified at publish time, or no command-line arguments at all.
 
 - Required: No
 - Type: string
@@ -97,7 +97,7 @@ Specifies whether this published application can be launched with command-line a
 
 ### Parameter: `description`
 
-Description of Application..
+Description of the Application.
 
 - Required: No
 - Type: string
@@ -132,9 +132,9 @@ Specifies whether to show the RemoteApp program in the RD Web Access server.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the application. |
-| `resourceGroupName` | string | The name of the resource group the application was created in. |
-| `resourceId` | string | The resource ID of the application. |
+| `name` | string | The name of the Application. |
+| `resourceGroupName` | string | The name of the resource group the Application was created in. |
+| `resourceId` | string | The resource ID of the Application. |
 
 ## Cross-referenced modules
 
