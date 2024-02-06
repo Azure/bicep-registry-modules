@@ -306,7 +306,7 @@ function Set-DefinitionSection {
             }
 
             $isRequired = (Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $parameter) ? 'Yes' : 'No'
-            $description = $parameter.ContainsKey('metadata') ? $parameter['metadata']['description'].Replace("`n- ", '<li>').Replace("`r`n", '<p>').Replace("`n", '<p>') : $null
+            $description = $parameter.ContainsKey('metadata') ? $parameter['metadata']['description'].substring("$category. ".Length).Replace("`n- ", '<li>').Replace("`r`n", '<p>').Replace("`n", '<p>') : $null
             #####################
             #   Table content   #
             #####################
