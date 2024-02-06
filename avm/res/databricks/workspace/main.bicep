@@ -288,7 +288,7 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
   scope: workspace
 }]
 
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.3' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-Databricks-PrivateEndpoint-${index}'
   params: {
     privateLinkServiceConnections: [
