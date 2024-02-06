@@ -148,7 +148,7 @@ This instance deploys the module with a customer-managed key (CMK).
 
 ```bicep
 module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cicgenc'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cicgenc'
   params: {
     // Required parameters
     containers: [
@@ -360,7 +360,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cicgmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cicgmax'
   params: {
     // Required parameters
     containers: [
@@ -560,7 +560,7 @@ This instance deploys the module within a virtual network.
 
 ```bicep
 module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cicgprivate'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cicgprivate'
   params: {
     // Required parameters
     containers: [
@@ -802,7 +802,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cicgwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cicgwaf'
   params: {
     // Required parameters
     containers: [
