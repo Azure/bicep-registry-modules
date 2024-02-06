@@ -65,7 +65,6 @@ configuration:
       "disablepassword",
       "sync*passwords",
       "sqlAdministratorLogin",
-      "sqlAdministratorLoginPassword",
       "tokenname",
     ]
 
