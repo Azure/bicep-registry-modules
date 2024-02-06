@@ -47,19 +47,17 @@ Function Get-AvmCsvData {
 
   # Convert the CSV content to a PowerShell object
   $formattedBicepFullCsv = ConvertFrom-CSV $unfilteredCSV.Content
-  # Filter the CSV data where the ModuleStatus is 'Module Available :green_circle:'
-  $filterCsvAvailableBicepModule = $formattedBicepFullCsv | Where-Object { $_.ModuleStatus -eq 'Module Available :green_circle:' }
 
   # Loop through each item in the filtered data
-  foreach ($item in $filterCsvAvailableBicepModule) {
+  foreach ($item in $formattedBicepFullCsv) {
     # Remove '@Azure/' from the ModuleOwnersGHTeam property
     $item.ModuleOwnersGHTeam = $item.ModuleOwnersGHTeam -replace '@Azure/', ''
     # Remove '@Azure/' from the ModuleContributorsGHTeam property
     $item.ModuleContributorsGHTeam = $item.ModuleContributorsGHTeam -replace '@Azure/', ''
   }
 
-  # Return the filtered and modified data
-  return $filterCsvAvailableBicepModule
+  # Return the modified data
+  return $formattedBicepFullCsv
 }
 
 <#
