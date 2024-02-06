@@ -165,7 +165,7 @@ body:
         # - "avm/res/sql/managed-instance"
         - "avm/res/sql/server"
         - "avm/res/storage/storage-account"
-        # - "avm/res/synapse/private-link-hub"
+        - "avm/res/synapse/private-link-hub"
         - "avm/res/synapse/workspace"
         - "avm/res/virtual-machine-images/image-template"
         # - "avm/res/web/connection"
