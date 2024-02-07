@@ -45,8 +45,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
   name: '${uniqueString(deployment().name, resourceLocation)}-test-nplsmin'
   params: {
     // Required parameters
-    name: 'nplsmin001'
-    // Non-required parameters
     ipConfigurations: [
       {
         name: 'nplsmin01'
@@ -62,6 +60,8 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         id: '<id>'
       }
     ]
+    name: 'nplsmin001'
+    // Non-required parameters
     location: '<location>'
   }
 }
@@ -80,10 +80,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "nplsmin001"
-    },
-    // Non-required parameters
     "ipConfigurations": {
       "value": [
         {
@@ -103,6 +99,10 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         }
       ]
     },
+    "name": {
+      "value": "nplsmin001"
+    },
+    // Non-required parameters
     "location": {
       "value": "<location>"
     }
@@ -127,18 +127,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
   name: '${uniqueString(deployment().name, resourceLocation)}-test-nplsmax'
   params: {
     // Required parameters
-    name: 'nplsmax001'
-    // Non-required parameters
-    autoApproval: {
-      subscriptions: [
-        '*'
-      ]
-    }
-    enableProxyProtocol: true
-    fqdns: [
-      'nplsmax.plsfqdn01.azure.privatelinkservice'
-      'nplsmax.plsfqdn02.azure.privatelinkservice'
-    ]
     ipConfigurations: [
       {
         name: 'nplsmax01'
@@ -155,6 +143,18 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
       {
         id: '<id>'
       }
+    ]
+    name: 'nplsmax001'
+    // Non-required parameters
+    autoApproval: {
+      subscriptions: [
+        '*'
+      ]
+    }
+    enableProxyProtocol: true
+    fqdns: [
+      'nplsmax.plsfqdn01.azure.privatelinkservice'
+      'nplsmax.plsfqdn02.azure.privatelinkservice'
     ]
     location: '<location>'
     lock: {
@@ -195,26 +195,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "nplsmax001"
-    },
-    // Non-required parameters
-    "autoApproval": {
-      "value": {
-        "subscriptions": [
-          "*"
-        ]
-      }
-    },
-    "enableProxyProtocol": {
-      "value": true
-    },
-    "fqdns": {
-      "value": [
-        "nplsmax.plsfqdn01.azure.privatelinkservice",
-        "nplsmax.plsfqdn02.azure.privatelinkservice"
-      ]
-    },
     "ipConfigurations": {
       "value": [
         {
@@ -234,6 +214,26 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         {
           "id": "<id>"
         }
+      ]
+    },
+    "name": {
+      "value": "nplsmax001"
+    },
+    // Non-required parameters
+    "autoApproval": {
+      "value": {
+        "subscriptions": [
+          "*"
+        ]
+      }
+    },
+    "enableProxyProtocol": {
+      "value": true
+    },
+    "fqdns": {
+      "value": [
+        "nplsmax.plsfqdn01.azure.privatelinkservice",
+        "nplsmax.plsfqdn02.azure.privatelinkservice"
       ]
     },
     "location": {
@@ -289,18 +289,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
   name: '${uniqueString(deployment().name, resourceLocation)}-test-nplswaf'
   params: {
     // Required parameters
-    name: 'nplswaf001'
-    // Non-required parameters
-    autoApproval: {
-      subscriptions: [
-        '*'
-      ]
-    }
-    enableProxyProtocol: true
-    fqdns: [
-      'nplswaf.plsfqdn01.azure.privatelinkservice'
-      'nplswaf.plsfqdn02.azure.privatelinkservice'
-    ]
     ipConfigurations: [
       {
         name: 'nplswaf01'
@@ -317,6 +305,18 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
       {
         id: '<id>'
       }
+    ]
+    name: 'nplswaf001'
+    // Non-required parameters
+    autoApproval: {
+      subscriptions: [
+        '*'
+      ]
+    }
+    enableProxyProtocol: true
+    fqdns: [
+      'nplswaf.plsfqdn01.azure.privatelinkservice'
+      'nplswaf.plsfqdn02.azure.privatelinkservice'
     ]
     location: '<location>'
     tags: {
@@ -346,26 +346,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "nplswaf001"
-    },
-    // Non-required parameters
-    "autoApproval": {
-      "value": {
-        "subscriptions": [
-          "*"
-        ]
-      }
-    },
-    "enableProxyProtocol": {
-      "value": true
-    },
-    "fqdns": {
-      "value": [
-        "nplswaf.plsfqdn01.azure.privatelinkservice",
-        "nplswaf.plsfqdn02.azure.privatelinkservice"
-      ]
-    },
     "ipConfigurations": {
       "value": [
         {
@@ -385,6 +365,26 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         {
           "id": "<id>"
         }
+      ]
+    },
+    "name": {
+      "value": "nplswaf001"
+    },
+    // Non-required parameters
+    "autoApproval": {
+      "value": {
+        "subscriptions": [
+          "*"
+        ]
+      }
+    },
+    "enableProxyProtocol": {
+      "value": true
+    },
+    "fqdns": {
+      "value": [
+        "nplswaf.plsfqdn01.azure.privatelinkservice",
+        "nplswaf.plsfqdn02.azure.privatelinkservice"
       ]
     },
     "location": {
@@ -418,6 +418,8 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`ipConfigurations`](#parameter-ipconfigurations) | array | An array of private link service IP configurations. At least one IP configuration is required on the private link service. |
+| [`loadBalancerFrontendIpConfigurations`](#parameter-loadbalancerfrontendipconfigurations) | array | An array of references to the load balancer IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. At least one load balancer frontend IP configuration is required on the private link service. |
 | [`name`](#parameter-name) | string | Name of the private link service to create. |
 
 **Optional parameters**
@@ -429,13 +431,25 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`extendedLocation`](#parameter-extendedlocation) | object | The extended location of the load balancer. |
 | [`fqdns`](#parameter-fqdns) | array | The list of Fqdn. |
-| [`ipConfigurations`](#parameter-ipconfigurations) | array | An array of private link service IP configurations. |
-| [`loadBalancerFrontendIpConfigurations`](#parameter-loadbalancerfrontendipconfigurations) | array | An array of references to the load balancer IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 | [`visibility`](#parameter-visibility) | object | Controls the exposure settings for your Private Link service. Service providers can choose to limit the exposure to their service to subscriptions with Azure role-based access control (Azure RBAC) permissions, a restricted set of subscriptions, or all Azure subscriptions. |
+
+### Parameter: `ipConfigurations`
+
+An array of private link service IP configurations. At least one IP configuration is required on the private link service.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `loadBalancerFrontendIpConfigurations`
+
+An array of references to the load balancer IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. At least one load balancer frontend IP configuration is required on the private link service.
+
+- Required: Yes
+- Type: array
 
 ### Parameter: `name`
 
@@ -479,22 +493,6 @@ The extended location of the load balancer.
 ### Parameter: `fqdns`
 
 The list of Fqdn.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-### Parameter: `ipConfigurations`
-
-An array of private link service IP configurations.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-### Parameter: `loadBalancerFrontendIpConfigurations`
-
-An array of references to the load balancer IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations.
 
 - Required: No
 - Type: array

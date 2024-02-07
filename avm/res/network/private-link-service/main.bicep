@@ -14,6 +14,12 @@ param lock lockType
 @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
 param tags object?
 
+@description('Required. An array of private link service IP configurations. At least one IP configuration is required on the private link service.')
+param ipConfigurations array
+
+@description('Required. An array of references to the load balancer IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. At least one load balancer frontend IP configuration is required on the private link service.')
+param loadBalancerFrontendIpConfigurations array
+
 @description('Optional. The extended location of the load balancer.')
 param extendedLocation object = {}
 
@@ -25,12 +31,6 @@ param enableProxyProtocol bool = false
 
 @description('Optional. The list of Fqdn.')
 param fqdns array = []
-
-@description('Optional. An array of private link service IP configurations.')
-param ipConfigurations array = []
-
-@description('Optional. An array of references to the load balancer IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations.')
-param loadBalancerFrontendIpConfigurations array = []
 
 @description('Optional. Controls the exposure settings for your Private Link service. Service providers can choose to limit the exposure to their service to subscriptions with Azure role-based access control (Azure RBAC) permissions, a restricted set of subscriptions, or all Azure subscriptions.')
 param visibility object = {}
