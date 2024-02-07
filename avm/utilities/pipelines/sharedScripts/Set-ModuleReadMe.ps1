@@ -306,14 +306,14 @@ function Set-DefinitionSection {
             }
 
             $isRequired = (Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $parameter) ? 'Yes' : 'No'
-            $description = $parameter.ContainsKey('metadata') ? $parameter['metadata']['description'] : $null
+            $description = $parameter.ContainsKey('metadata') ? $parameter['metadata']['description'].substring("$category. ".Length).Replace("`n- ", '<li>').Replace("`r`n", '<p>').Replace("`n", '<p>') : $null
 
             #####################
             #   Table content   #
             #####################
 
             # build table for definition properties
-            $tableSectionContent += ('| [`{0}`]({1}) | {2} | {3} |' -f $parameter.name, $paramIdentifierLink, $type, $description.substring("$category. ".Length))
+            $tableSectionContent += ('| [`{0}`]({1}) | {2} | {3} |' -f $parameter.name, $paramIdentifierLink, $type, $description)
 
             ####################
             #   List content   #
@@ -394,7 +394,7 @@ function Set-DefinitionSection {
             $listSectionContent += @(
                 $paramHeader,
             ($parameter.ContainsKey('metadata') ? '' : $null),
-            ($parameter.ContainsKey('metadata') ? $parameter['metadata']['description'].substring("$category. ".Length) : $null),
+                $description
             ($parameter.ContainsKey('metadata') ? '' : $null),
             ('- Required: {0}' -f $isRequired),
             ('- Type: {0}' -f $type),

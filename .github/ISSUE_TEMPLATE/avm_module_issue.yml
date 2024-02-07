@@ -95,7 +95,7 @@ body:
         - "avm/res/insights/data-collection-rule"
         - "avm/res/insights/diagnostic-setting"
         - "avm/res/insights/metric-alert"
-        # - "avm/res/insights/private-link-scope"
+        - "avm/res/insights/private-link-scope"
         - "avm/res/insights/scheduled-query-rule"
         - "avm/res/insights/webtest"
         - "avm/res/key-vault/vault"
