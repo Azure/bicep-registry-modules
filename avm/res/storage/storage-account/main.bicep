@@ -540,7 +540,7 @@ type networkAclsType = {
   ipRules: array?
 
   @description('Required. Specifies the default action of allow or deny when no other rules match.')
-  defaultAction: ('Allow' | 'Deny')?
+  defaultAction: ('Allow' | 'Deny')? 
 }?
 
 

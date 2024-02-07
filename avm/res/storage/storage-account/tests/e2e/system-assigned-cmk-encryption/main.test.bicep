@@ -57,6 +57,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     location: resourceLocation
     name: nestedDependencies.outputs.storageAccountName
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
     privateEndpoints: [
       {
         service: 'blob'

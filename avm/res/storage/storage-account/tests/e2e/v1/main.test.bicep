@@ -43,5 +43,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     location: resourceLocation
     name: '${namePrefix}${serviceShort}001'
     kind: 'Storage'
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
   }
 }]
