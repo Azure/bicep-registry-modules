@@ -68,7 +68,7 @@ param privateEndpoints privateEndpointType
 @description('Optional. The Storage Account ManagementPolicies Rules.')
 param managementPolicyRules array?
 
-@description('Optional. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
+@description('Required. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
 param networkAcls networkAclsType
 
 @description('Optional. A Boolean indicating whether or not the service applies a secondary layer of encryption with platform managed keys for data at rest. For security reasons, it is recommended to set it to true.')
@@ -531,7 +531,7 @@ type networkAclsType = {
   resourceAccessRules: array?
 
   @description('Required. Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging,Metrics,AzureServices (For example, "Logging, Metrics"), or None to bypass none of those traffics.')
-  bypass: ('None' | 'AzureServices' | 'Logging' | 'Metrics' | 'AzureServices, Logging' | 'AzureServices, Metrics' | 'AzureServices, Logging, Metrics' | 'Logging, Metrics')?
+  bypass: ('None' | 'AzureServices' | 'Logging' | 'Metrics' | 'AzureServices, Logging' | 'AzureServices, Metrics' | 'AzureServices, Logging, Metrics' | 'Logging, Metrics')
 
   @description('Optional. Sets the virtual network rules.')
   virtualNetworkRules: array?
@@ -540,7 +540,7 @@ type networkAclsType = {
   ipRules: array?
 
   @description('Required. Specifies the default action of allow or deny when no other rules match.')
-  defaultAction: ('Allow' | 'Deny')? 
+  defaultAction: ('Allow' | 'Deny')
 }?
 
 
