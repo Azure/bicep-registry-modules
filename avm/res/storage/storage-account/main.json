@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "14649411959275304076"
+      "templateHash": "631937264961119905"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -177,8 +177,7 @@
             "description": "Required. Specifies the default action of allow or deny when no other rules match."
           }
         }
-      },
-      "nullable": true
+      }
     },
     "privateEndpointType": {
       "type": "array",
@@ -584,6 +583,10 @@
     },
     "networkAcls": {
       "$ref": "#/definitions/networkAclsType",
+      "defaultValue": {
+        "bypass": "AzureServices",
+        "defaultAction": "Deny"
+      },
       "metadata": {
         "description": "Required. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny."
       }

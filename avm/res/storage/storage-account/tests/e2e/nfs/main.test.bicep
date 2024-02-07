@@ -44,10 +44,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     name: '${namePrefix}${serviceShort}001'
     skuName: 'Premium_LRS'
     kind: 'FileStorage'
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-    }
     fileServices: {
       shares: [
         {

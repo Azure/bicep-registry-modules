@@ -67,10 +67,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     name: 'ssamin001'
     // Non-required parameters
     allowBlobPublicAccess: false
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-    }
   }
 }
 ```
@@ -94,12 +90,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     // Non-required parameters
     "allowBlobPublicAccess": {
       "value": false
-    },
-    "networkAcls": {
-      "value": {
-        "bypass": "AzureServices",
-        "defaultAction": "Deny"
-      }
     }
   }
 }
@@ -904,10 +894,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     }
     kind: 'FileStorage'
     location: '<location>'
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-    }
     skuName: 'Premium_LRS'
   }
 }
@@ -945,12 +931,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "networkAcls": {
-      "value": {
-        "bypass": "AzureServices",
-        "defaultAction": "Deny"
-      }
     },
     "skuName": {
       "value": "Premium_LRS"
@@ -993,10 +973,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     location: '<location>'
     managedIdentities: {
       systemAssigned: true
-    }
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
     }
     privateEndpoints: [
       {
@@ -1050,12 +1026,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     "managedIdentities": {
       "value": {
         "systemAssigned": true
-      }
-    },
-    "networkAcls": {
-      "value": {
-        "bypass": "AzureServices",
-        "defaultAction": "Deny"
       }
     },
     "privateEndpoints": {
@@ -1214,10 +1184,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     // Non-required parameters
     kind: 'Storage'
     location: '<location>'
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-    }
   }
 }
 ```
@@ -1244,12 +1210,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "networkAcls": {
-      "value": {
-        "bypass": "AzureServices",
-        "defaultAction": "Deny"
-      }
     }
   }
 }
@@ -1882,6 +1842,13 @@ Networks ACLs, this value contains IPs to whitelist and/or Subnet information. I
 
 - Required: No
 - Type: object
+- Default:
+  ```Bicep
+  {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+  }
+  ```
 
 **Required parameters**
 
