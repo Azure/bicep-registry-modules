@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "9272953787395270624"
+      "templateHash": "2099006126165213377"
     },
     "name": "Private Link Services",
     "description": "This module deploys a Private Link Service.",
@@ -132,6 +132,18 @@
         "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
       }
     },
+    "ipConfigurations": {
+      "type": "array",
+      "metadata": {
+        "description": "Required. An array of private link service IP configurations. At least one IP configuration is required on the private link service."
+      }
+    },
+    "loadBalancerFrontendIpConfigurations": {
+      "type": "array",
+      "metadata": {
+        "description": "Required. An array of references to the load balancer IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. At least one load balancer frontend IP configuration is required on the private link service."
+      }
+    },
     "extendedLocation": {
       "type": "object",
       "defaultValue": {},
@@ -158,20 +170,6 @@
       "defaultValue": [],
       "metadata": {
         "description": "Optional. The list of Fqdn."
-      }
-    },
-    "ipConfigurations": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. An array of private link service IP configurations."
-      }
-    },
-    "loadBalancerFrontendIpConfigurations": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. An array of references to the load balancer IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations."
       }
     },
     "visibility": {
