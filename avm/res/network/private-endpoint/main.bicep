@@ -141,6 +141,9 @@ output name string = privateEndpoint.name
 @description('The location the resource was deployed into.')
 output location string = privateEndpoint.location
 
+@description('The group Id for the private endpoint Group.')
+output groupId string = privateEndpoint.properties.privateLinkServiceConnections[0].properties.groupIds[0]
+
 // ================ //
 // Definitions      //
 // ================ //
