@@ -105,7 +105,7 @@ Each template should include the following 3 parameters: `location`, `prefix` an
 ##### Outputs
 
 - The `name` output should link to the `name` parameter.
-- THe `id` output should link to the main resource of the deployment. Additional ID parameters may be provided.
+- The `id` output should link to the main resource of the deployment. Additional ID parameters may be provided.
 
 ##### Zone Redundancy
 
