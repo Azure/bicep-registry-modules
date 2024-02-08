@@ -71,18 +71,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         }
       }
     ]
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Reader'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalType: 'ServicePrincipal'
-      }
-    ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
