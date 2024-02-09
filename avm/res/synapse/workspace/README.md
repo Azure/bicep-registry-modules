@@ -583,6 +583,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    initialWorkspaceAdminObjectID: '<initialWorkspaceAdminObjectID>'
     integrationRuntimes: [
       {
         name: 'shir01'
@@ -603,6 +604,23 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           'hidden-title': 'This is visible in the resource name'
           Role: 'DeploymentValidation'
         }
+      }
+    ]
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Contributor'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     tags: {
@@ -659,6 +677,9 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         }
       ]
     },
+    "initialWorkspaceAdminObjectID": {
+      "value": "<initialWorkspaceAdminObjectID>"
+    },
     "integrationRuntimes": {
       "value": [
         {
@@ -686,6 +707,25 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           }
+        }
+      ]
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Contributor"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
