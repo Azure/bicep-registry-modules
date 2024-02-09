@@ -70,7 +70,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     defaultDataLakeStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
     defaultDataLakeStorageFilesystem: nestedDependencies.outputs.storageContainerName
     sqlAdministratorLogin: 'synwsadmin'
-    initialWorkspaceAdminObjectID: nestedDependencies.outputs.managedIdentityPrincipalId
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [

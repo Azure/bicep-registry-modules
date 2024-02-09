@@ -583,7 +583,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    initialWorkspaceAdminObjectID: '<initialWorkspaceAdminObjectID>'
     integrationRuntimes: [
       {
         name: 'shir01'
@@ -659,9 +658,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "initialWorkspaceAdminObjectID": {
-      "value": "<initialWorkspaceAdminObjectID>"
     },
     "integrationRuntimes": {
       "value": [
