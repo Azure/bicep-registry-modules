@@ -1081,6 +1081,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -1136,6 +1140,12 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
+      }
+    },
+    "networkAcls": {
+      "value": {
+        "bypass": "AzureServices",
+        "defaultAction": "Deny"
       }
     },
     "privateEndpoints": {
@@ -1770,6 +1780,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Storage Account. |
+| [`networkAcls`](#parameter-networkacls) | object | Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny. |
 
 **Conditional parameters**
 
@@ -1807,7 +1818,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`managementPolicyRules`](#parameter-managementpolicyrules) | array | The Storage Account ManagementPolicies Rules. |
 | [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | Set the minimum TLS version on request to storage. |
-| [`networkAcls`](#parameter-networkacls) | object | Networks ACLs, this value contains IPs to whitelist and/or Subnet information. For security reasons, it is recommended to set the DefaultAction Deny. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. |
 | [`queueServices`](#parameter-queueservices) | object | Queue service and queues to create. |
@@ -1825,6 +1835,90 @@ Name of the Storage Account.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `networkAcls`
+
+Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bypass`](#parameter-networkaclsbypass) | string | Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging,Metrics,AzureServices (For example, "Logging, Metrics"), or None to bypass none of those traffics. |
+| [`defaultAction`](#parameter-networkaclsdefaultaction) | string | Specifies the default action of allow or deny when no other rules match. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipRules`](#parameter-networkaclsiprules) | array | Sets the IP ACL rules. |
+| [`resourceAccessRules`](#parameter-networkaclsresourceaccessrules) | array | Sets the resource access rules. |
+| [`virtualNetworkRules`](#parameter-networkaclsvirtualnetworkrules) | array | Sets the virtual network rules. |
+
+### Parameter: `networkAcls.bypass`
+
+Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging,Metrics,AzureServices (For example, "Logging, Metrics"), or None to bypass none of those traffics.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureServices'
+    'AzureServices, Logging'
+    'AzureServices, Logging, Metrics'
+    'AzureServices, Metrics'
+    'Logging'
+    'Logging, Metrics'
+    'Metrics'
+    'None'
+  ]
+  ```
+
+### Parameter: `networkAcls.defaultAction`
+
+Specifies the default action of allow or deny when no other rules match.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Deny'
+  ]
+  ```
+
+### Parameter: `networkAcls.ipRules`
+
+Sets the IP ACL rules.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkAcls.resourceAccessRules`
+
+Sets the resource access rules.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkAcls.virtualNetworkRules`
+
+Sets the virtual network rules.
+
+- Required: No
+- Type: array
 
 ### Parameter: `accessTier`
 
@@ -2252,23 +2346,6 @@ Set the minimum TLS version on request to storage.
     'TLS1_1'
     'TLS1_2'
   ]
-  ```
-
-### Parameter: `networkAcls`
-
-Networks ACLs, this value contains IPs to whitelist and/or Subnet information. For security reasons, it is recommended to set the DefaultAction Deny.
-
-- Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-      ipRules: []
-      resourceAccessRules: []
-      virtualNetworkRules: []
-  }
   ```
 
 ### Parameter: `privateEndpoints`

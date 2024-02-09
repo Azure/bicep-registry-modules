@@ -1,6 +1,6 @@
-# Data Factories `[Microsoft.DataFactory/factories]`
+# Azure Virtual Desktop Host Pool `[Microsoft.DesktopVirtualization/hostPools]`
 
-This module deploys a Data Factory.
+This module deploys an Azure Virtual Desktop Host Pool
 
 ## Navigation
 
@@ -9,7 +9,6 @@ This module deploys a Data Factory.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
-- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -18,10 +17,7 @@ This module deploys a Data Factory.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DataFactory/factories` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories) |
-| `Microsoft.DataFactory/factories/integrationRuntimes` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/integrationRuntimes) |
-| `Microsoft.DataFactory/factories/managedVirtualNetworks` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/managedVirtualNetworks) |
-| `Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/managedVirtualNetworks/managedPrivateEndpoints) |
+| `Microsoft.DesktopVirtualization/hostPools` | [2023-09-05](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2023-09-05/hostPools) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
@@ -32,11 +28,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/data-factory/factory:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/desktop-virtualization/host-pool:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using Private Endpoints](#example-3-using-private-endpoints)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -48,11 +45,11 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module factory 'br/public:avm/res/data-factory/factory:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dffmin'
+module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvhpmin'
   params: {
     // Required parameters
-    name: 'dffmin001'
+    name: 'dvhpmin002'
     // Non-required parameters
     location: '<location>'
   }
@@ -73,7 +70,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dffmin001"
+      "value": "dvhpmin002"
     },
     // Non-required parameters
     "location": {
@@ -96,24 +93,36 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module factory 'br/public:avm/res/data-factory/factory:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dffmax'
+module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvhpmax'
   params: {
     // Required parameters
-    name: 'dffmax001'
+    name: 'dvhpmax001'
     // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    agentUpdate: {
+      maintenanceWindows: [
+        {
+          dayOfWeek: 'Friday'
+          hour: 7
+        }
+        {
+          dayOfWeek: 'Saturday'
+          hour: 8
+        }
+      ]
+      maintenanceWindowTimeZone: 'Alaskan Standard Time'
+      type: 'Scheduled'
+      useSessionHostLocalTime: false
     }
+    customRdpProperty: 'audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2;'
+    description: 'My first AVD Host Pool'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
-        metricCategories: [
+        logCategoriesAndGroups: [
           {
-            category: 'AllMetrics'
+            categoryGroup: 'allLogs'
           }
         ]
         name: 'customSetting'
@@ -121,63 +130,26 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    gitConfigureLater: true
-    globalParameters: {
-      testParameter1: {
-        type: 'String'
-        value: 'testValue1'
-      }
-    }
-    integrationRuntimes: [
-      {
-        managedVirtualNetworkName: 'default'
-        name: 'AutoResolveIntegrationRuntime'
-        type: 'Managed'
-        typeProperties: {
-          computeProperties: {
-            location: 'AutoResolve'
-          }
-        }
-      }
-      {
-        name: 'TestRuntime'
-        type: 'SelfHosted'
-      }
-    ]
+    enableTelemetry: true
+    friendlyName: 'AVDv2'
+    hostPoolType: 'Pooled'
+    loadBalancerType: 'BreadthFirst'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    managedPrivateEndpoints: [
-      {
-        fqdns: [
-          '<storageAccountBlobEndpoint>'
-        ]
-        groupId: 'blob'
-        name: '<name>'
-        privateLinkResourceId: '<privateLinkResourceId>'
-      }
-    ]
-    managedVirtualNetworkName: 'default'
+    maxSessionLimit: 99999
+    personalDesktopAssignmentType: 'Automatic'
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
         subnetResourceId: '<subnetResourceId>'
-        tags: {
-          application: 'CARML'
-          'hidden-title': 'This is visible in the resource name'
-        }
       }
     ]
+    publicNetworkAccess: 'Disabled'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -200,6 +172,23 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    vmTemplate: {
+      customImageId: '<customImageId>'
+      domain: 'domainname.onmicrosoft.com'
+      galleryImageOffer: 'office-365'
+      galleryImagePublisher: 'microsoftwindowsdesktop'
+      galleryImageSKU: '20h1-evd-o365pp'
+      imageType: 'Gallery'
+      imageUri: '<imageUri>'
+      namePrefix: 'avdv2'
+      osDiskType: 'StandardSSD_LRS'
+      useManagedDisks: true
+      vmSize: {
+        cores: 2
+        id: 'Standard_D2s_v3'
+        ram: 8
+      }
+    }
   }
 }
 ```
@@ -218,24 +207,40 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dffmax001"
+      "value": "dvhpmax001"
     },
     // Non-required parameters
-    "customerManagedKey": {
+    "agentUpdate": {
       "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+        "maintenanceWindows": [
+          {
+            "dayOfWeek": "Friday",
+            "hour": 7
+          },
+          {
+            "dayOfWeek": "Saturday",
+            "hour": 8
+          }
+        ],
+        "maintenanceWindowTimeZone": "Alaskan Standard Time",
+        "type": "Scheduled",
+        "useSessionHostLocalTime": false
       }
+    },
+    "customRdpProperty": {
+      "value": "audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2;"
+    },
+    "description": {
+      "value": "My first AVD Host Pool"
     },
     "diagnosticSettings": {
       "value": [
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
-          "metricCategories": [
+          "logCategoriesAndGroups": [
             {
-              "category": "AllMetrics"
+              "categoryGroup": "allLogs"
             }
           ],
           "name": "customSetting",
@@ -244,34 +249,17 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         }
       ]
     },
-    "gitConfigureLater": {
+    "enableTelemetry": {
       "value": true
     },
-    "globalParameters": {
-      "value": {
-        "testParameter1": {
-          "type": "String",
-          "value": "testValue1"
-        }
-      }
+    "friendlyName": {
+      "value": "AVDv2"
     },
-    "integrationRuntimes": {
-      "value": [
-        {
-          "managedVirtualNetworkName": "default",
-          "name": "AutoResolveIntegrationRuntime",
-          "type": "Managed",
-          "typeProperties": {
-            "computeProperties": {
-              "location": "AutoResolve"
-            }
-          }
-        },
-        {
-          "name": "TestRuntime",
-          "type": "SelfHosted"
-        }
-      ]
+    "hostPoolType": {
+      "value": "Pooled"
+    },
+    "loadBalancerType": {
+      "value": "BreadthFirst"
     },
     "location": {
       "value": "<location>"
@@ -282,28 +270,11 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         "name": "myCustomLockName"
       }
     },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
+    "maxSessionLimit": {
+      "value": 99999
     },
-    "managedPrivateEndpoints": {
-      "value": [
-        {
-          "fqdns": [
-            "<storageAccountBlobEndpoint>"
-          ],
-          "groupId": "blob",
-          "name": "<name>",
-          "privateLinkResourceId": "<privateLinkResourceId>"
-        }
-      ]
-    },
-    "managedVirtualNetworkName": {
-      "value": "default"
+    "personalDesktopAssignmentType": {
+      "value": "Automatic"
     },
     "privateEndpoints": {
       "value": [
@@ -311,13 +282,12 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "application": "CARML",
-            "hidden-title": "This is visible in the resource name"
-          }
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
     },
     "roleAssignments": {
       "value": [
@@ -344,6 +314,25 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "vmTemplate": {
+      "value": {
+        "customImageId": "<customImageId>",
+        "domain": "domainname.onmicrosoft.com",
+        "galleryImageOffer": "office-365",
+        "galleryImagePublisher": "microsoftwindowsdesktop",
+        "galleryImageSKU": "20h1-evd-o365pp",
+        "imageType": "Gallery",
+        "imageUri": "<imageUri>",
+        "namePrefix": "avdv2",
+        "osDiskType": "StandardSSD_LRS",
+        "useManagedDisks": true,
+        "vmSize": {
+          "cores": 2,
+          "id": "Standard_D2s_v3",
+          "ram": 8
+        }
+      }
     }
   }
 }
@@ -352,7 +341,77 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _Using Private Endpoints_
+
+This instance deploys the module with Private Endpoints.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvhppe'
+  params: {
+    // Required parameters
+    name: 'dvhppe001'
+    // Non-required parameters
+    location: '<location>'
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dvhppe001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -362,11 +421,11 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module factory 'br/public:avm/res/data-factory/factory:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dffwaf'
+module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvhpwaf'
   params: {
     // Required parameters
-    name: 'dffwaf001'
+    name: 'dvhpwaf002'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -374,13 +433,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         eventHubName: '<eventHubName>'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    gitConfigureLater: true
-    integrationRuntimes: [
-      {
-        name: 'TestRuntime'
-        type: 'SelfHosted'
       }
     ]
     location: '<location>'
@@ -407,7 +459,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dffwaf001"
+      "value": "dvhpwaf002"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -417,17 +469,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           "eventHubName": "<eventHubName>",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "gitConfigureLater": {
-      "value": true
-    },
-    "integrationRuntimes": {
-      "value": [
-        {
-          "name": "TestRuntime",
-          "type": "SelfHosted"
         }
       ]
     },
@@ -455,91 +496,80 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the Azure Factory to create. |
+| [`name`](#parameter-name) | string | Name of the scaling plan. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
+| [`agentUpdate`](#parameter-agentupdate) | object | The session host configuration for updating agent, monitoring agent, and stack component. |
+| [`customRdpProperty`](#parameter-customrdpproperty) | string | Host Pool RDP properties. |
+| [`description`](#parameter-description) | string | Description of the scaling plan. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`gitAccountName`](#parameter-gitaccountname) | string | The account name. |
-| [`gitCollaborationBranch`](#parameter-gitcollaborationbranch) | string | The collaboration branch name. Default is 'main'. |
-| [`gitConfigureLater`](#parameter-gitconfigurelater) | bool | Boolean to define whether or not to configure git during template deployment. |
-| [`gitDisablePublish`](#parameter-gitdisablepublish) | bool | Disable manual publish operation in ADF studio to favor automated publish. |
-| [`gitHostName`](#parameter-githostname) | string | The GitHub Enterprise Server host (prefixed with 'https://'). Only relevant for 'FactoryGitHubConfiguration'. |
-| [`gitProjectName`](#parameter-gitprojectname) | string | The project name. Only relevant for 'FactoryVSTSConfiguration'. |
-| [`gitRepositoryName`](#parameter-gitrepositoryname) | string | The repository name. |
-| [`gitRepoType`](#parameter-gitrepotype) | string | Repository type - can be 'FactoryVSTSConfiguration' or 'FactoryGitHubConfiguration'. Default is 'FactoryVSTSConfiguration'. |
-| [`gitRootFolder`](#parameter-gitrootfolder) | string | The root folder path name. Default is '/'. |
-| [`globalParameters`](#parameter-globalparameters) | object | List of Global Parameters for the factory. |
-| [`integrationRuntimes`](#parameter-integrationruntimes) | array | An array of objects for the configuration of an Integration Runtime. |
-| [`location`](#parameter-location) | string | Location for all Resources. |
+| [`friendlyName`](#parameter-friendlyname) | string | Friendly name of the scaling plan. |
+| [`hostPoolType`](#parameter-hostpooltype) | string | Set this parameter to Personal if you would like to enable Persistent Desktop experience. Defaults to Pooled. |
+| [`loadBalancerType`](#parameter-loadbalancertype) | string | Type of load balancer algorithm. |
+| [`location`](#parameter-location) | string | Location of the scaling plan. Defaults to resource group location. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`managedPrivateEndpoints`](#parameter-managedprivateendpoints) | array | An array of managed private endpoints objects created in the Data Factory managed virtual network. |
-| [`managedVirtualNetworkName`](#parameter-managedvirtualnetworkname) | string | The name of the Managed Virtual Network. |
-| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration Details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
+| [`maxSessionLimit`](#parameter-maxsessionlimit) | int | Maximum number of sessions. |
+| [`personalDesktopAssignmentType`](#parameter-personaldesktopassignmenttype) | string | Set the type of assignment for a Personal Host Pool type. |
+| [`preferredAppGroupType`](#parameter-preferredappgrouptype) | string | The type of preferred application group type, default to Desktop Application Group. |
+| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Set public network access. |
+| [`ring`](#parameter-ring) | int | The ring number of HostPool. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`ssoadfsAuthority`](#parameter-ssoadfsauthority) | string | URL to customer ADFS server for signing WVD SSO certificates. |
+| [`ssoClientId`](#parameter-ssoclientid) | string | ClientId for the registered Relying Party used to issue WVD SSO certificates. |
+| [`ssoClientSecretKeyVaultPath`](#parameter-ssoclientsecretkeyvaultpath) | string | Path to Azure KeyVault storing the secret used for communication to ADFS. |
+| [`ssoSecretType`](#parameter-ssosecrettype) | string | The type of single sign on Secret Type. |
+| [`startVMOnConnect`](#parameter-startvmonconnect) | bool | Enable Start VM on connect to allow users to start the virtual machine from a deallocated state. Important: Custom RBAC role required to power manage VMs. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`tokenValidityLength`](#parameter-tokenvaliditylength) | string | Host Pool token validity length. Usage: 'PT8H' - valid for 8 hours; 'P5D' - valid for 5 days; 'P1Y' - valid for 1 year. When not provided, the token will be valid for 8 hours. |
+| [`validationEnvironment`](#parameter-validationenvironment) | bool | Validation host pools allows you to test service changes before they are deployed to production. When set to true, the Host Pool will be deployed in a validation 'ring' (environment) that receives all the new features (might be less stable). Defaults to false that stands for the stable, production-ready environment. |
+| [`vmTemplate`](#parameter-vmtemplate) | object | The necessary information for adding more VMs to this Host Pool. |
+
+**Generated parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`baseTime`](#parameter-basetime) | string | Do not provide a value! This date value is used to generate a registration token. |
 
 ### Parameter: `name`
 
-The name of the Azure Factory to create.
+Name of the scaling plan.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `customerManagedKey`
+### Parameter: `agentUpdate`
 
-The customer managed key definition.
+The session host configuration for updating agent, monitoring agent, and stack component.
 
 - Required: No
 - Type: object
+- Default:
+  ```Bicep
+  {
+      useSessionHostLocalTime: true
+  }
+  ```
 
-**Required parameters**
+### Parameter: `customRdpProperty`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
-| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
-| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
-
-### Parameter: `customerManagedKey.keyName`
-
-The name of the customer managed key to use for encryption.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `customerManagedKey.keyVaultResourceId`
-
-The resource ID of a key vault to reference a customer managed key for encryption from.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `customerManagedKey.keyVersion`
-
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+Host Pool RDP properties.
 
 - Required: No
 - Type: string
+- Default: `'audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2;'`
 
-### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
+### Parameter: `description`
 
-User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+Description of the scaling plan.
 
 - Required: No
 - Type: string
+- Default: `''`
 
 ### Parameter: `diagnosticSettings`
 
@@ -557,7 +587,6 @@ The diagnostic settings of the service.
 | [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to '' to disable metric collection. |
 | [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
@@ -604,13 +633,6 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 - Required: No
 - Type: string
 
-### Parameter: `diagnosticSettings.metricCategories`
-
-The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to '' to disable metric collection.
-
-- Required: No
-- Type: array
-
 ### Parameter: `diagnosticSettings.name`
 
 The name of diagnostic setting.
@@ -640,97 +662,48 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `gitAccountName`
+### Parameter: `friendlyName`
 
-The account name.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitCollaborationBranch`
-
-The collaboration branch name. Default is 'main'.
-
-- Required: No
-- Type: string
-- Default: `'main'`
-
-### Parameter: `gitConfigureLater`
-
-Boolean to define whether or not to configure git during template deployment.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `gitDisablePublish`
-
-Disable manual publish operation in ADF studio to favor automated publish.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `gitHostName`
-
-The GitHub Enterprise Server host (prefixed with 'https://'). Only relevant for 'FactoryGitHubConfiguration'.
+Friendly name of the scaling plan.
 
 - Required: No
 - Type: string
 - Default: `''`
 
-### Parameter: `gitProjectName`
+### Parameter: `hostPoolType`
 
-The project name. Only relevant for 'FactoryVSTSConfiguration'.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitRepositoryName`
-
-The repository name.
+Set this parameter to Personal if you would like to enable Persistent Desktop experience. Defaults to Pooled.
 
 - Required: No
 - Type: string
-- Default: `''`
+- Default: `'Pooled'`
+- Allowed:
+  ```Bicep
+  [
+    'Personal'
+    'Pooled'
+  ]
+  ```
 
-### Parameter: `gitRepoType`
+### Parameter: `loadBalancerType`
 
-Repository type - can be 'FactoryVSTSConfiguration' or 'FactoryGitHubConfiguration'. Default is 'FactoryVSTSConfiguration'.
+Type of load balancer algorithm.
 
 - Required: No
 - Type: string
-- Default: `'FactoryVSTSConfiguration'`
-
-### Parameter: `gitRootFolder`
-
-The root folder path name. Default is '/'.
-
-- Required: No
-- Type: string
-- Default: `'/'`
-
-### Parameter: `globalParameters`
-
-List of Global Parameters for the factory.
-
-- Required: No
-- Type: object
-- Default: `{}`
-
-### Parameter: `integrationRuntimes`
-
-An array of objects for the configuration of an Integration Runtime.
-
-- Required: No
-- Type: array
-- Default: `[]`
+- Default: `'BreadthFirst'`
+- Allowed:
+  ```Bicep
+  [
+    'BreadthFirst'
+    'DepthFirst'
+    'Persistent'
+  ]
+  ```
 
 ### Parameter: `location`
 
-Location for all Resources.
+Location of the scaling plan. Defaults to resource group location.
 
 - Required: No
 - Type: string
@@ -772,53 +745,49 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `managedIdentities`
+### Parameter: `maxSessionLimit`
 
-The managed identity definition for this resource.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
-
-### Parameter: `managedIdentities.systemAssigned`
-
-Enables system assigned managed identity on the resource.
+Maximum number of sessions.
 
 - Required: No
-- Type: bool
+- Type: int
+- Default: `99999`
 
-### Parameter: `managedIdentities.userAssignedResourceIds`
+### Parameter: `personalDesktopAssignmentType`
 
-The resource ID(s) to assign to the resource.
-
-- Required: No
-- Type: array
-
-### Parameter: `managedPrivateEndpoints`
-
-An array of managed private endpoints objects created in the Data Factory managed virtual network.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-### Parameter: `managedVirtualNetworkName`
-
-The name of the Managed Virtual Network.
+Set the type of assignment for a Personal Host Pool type.
 
 - Required: No
 - Type: string
 - Default: `''`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'Automatic'
+    'Direct'
+  ]
+  ```
+
+### Parameter: `preferredAppGroupType`
+
+The type of preferred application group type, default to Desktop Application Group.
+
+- Required: No
+- Type: string
+- Default: `'Desktop'`
+- Allowed:
+  ```Bicep
+  [
+    'Desktop'
+    'None'
+    'RailApplications'
+  ]
+  ```
 
 ### Parameter: `privateEndpoints`
 
-Configuration Details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
+Configuration details for private endpoints.
 
 - Required: No
 - Type: array
@@ -842,10 +811,10 @@ Configuration Details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualPrivateLinkServiceConnections`](#parameter-privateendpointsmanualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
+| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
-| [`service`](#parameter-privateendpointsservice) | string | The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
+| [`service`](#parameter-privateendpointsservice) | string | The service (sub-) type to deploy the private endpoint for. For example "connection". |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
 ### Parameter: `privateEndpoints.subnetResourceId`
@@ -949,7 +918,7 @@ The name of the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroupName`
 
-The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.
+The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
 
 - Required: No
 - Type: string
@@ -1052,7 +1021,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `privateEndpoints.service`
 
-The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".
+The service (sub-) type to deploy the private endpoint for. For example "connection".
 
 - Required: No
 - Type: string
@@ -1066,19 +1035,28 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 ### Parameter: `publicNetworkAccess`
 
-Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.
+Set public network access.
 
 - Required: No
 - Type: string
-- Default: `''`
+- Default: `'Enabled'`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
+    'EnabledForClientsOnly'
+    'EnabledForSessionHostsOnly'
   ]
   ```
+
+### Parameter: `ring`
+
+The ring number of HostPool.
+
+- Required: No
+- Type: int
+- Default: `-1`
 
 ### Parameter: `roleAssignments`
 
@@ -1169,6 +1147,56 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `ssoadfsAuthority`
+
+URL to customer ADFS server for signing WVD SSO certificates.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `ssoClientId`
+
+ClientId for the registered Relying Party used to issue WVD SSO certificates.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `ssoClientSecretKeyVaultPath`
+
+Path to Azure KeyVault storing the secret used for communication to ADFS.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `ssoSecretType`
+
+The type of single sign on Secret Type.
+
+- Required: No
+- Type: string
+- Default: `''`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'Certificate'
+    'CertificateInKeyVault'
+    'SharedKey'
+    'SharedKeyInKeyVault'
+  ]
+  ```
+
+### Parameter: `startVMOnConnect`
+
+Enable Start VM on connect to allow users to start the virtual machine from a deallocated state. Important: Custom RBAC role required to power manage VMs.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -1176,16 +1204,47 @@ Tags of the resource.
 - Required: No
 - Type: object
 
+### Parameter: `tokenValidityLength`
+
+Host Pool token validity length. Usage: 'PT8H' - valid for 8 hours; 'P5D' - valid for 5 days; 'P1Y' - valid for 1 year. When not provided, the token will be valid for 8 hours.
+
+- Required: No
+- Type: string
+- Default: `'PT8H'`
+
+### Parameter: `validationEnvironment`
+
+Validation host pools allows you to test service changes before they are deployed to production. When set to true, the Host Pool will be deployed in a validation 'ring' (environment) that receives all the new features (might be less stable). Defaults to false that stands for the stable, production-ready environment.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `vmTemplate`
+
+The necessary information for adding more VMs to this Host Pool.
+
+- Required: No
+- Type: object
+- Default: `{}`
+
+### Parameter: `baseTime`
+
+Do not provide a value! This date value is used to generate a registration token.
+
+- Required: No
+- Type: string
+- Default: `[utcNow('u')]`
+
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `location` | string | The location the resource was deployed into. |
-| `name` | string | The Name of the Azure Data Factory instance. |
-| `resourceGroupName` | string | The name of the Resource Group with the Data factory. |
-| `resourceId` | string | The Resource ID of the Data factory. |
-| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+| `location` | string | The location of the host pool. |
+| `name` | string | The name of the host pool. |
+| `resourceGroupName` | string | The name of the resource group the host pool was created in. |
+| `resourceId` | string | The resource ID of the host pool. |
 
 ## Cross-referenced modules
 
@@ -1193,59 +1252,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.3.2` | Remote reference |
-
-## Notes
-
-### Parameter Usage: `managedPrivateEndpoints`
-
-To use Managed Private Endpoints the following dependencies must be deployed:
-
-- The `managedVirtualNetworkName` property must be set to allow provisioning of a managed virtual network in Azure Data Factory.
-- Destination private link resource must be created before and permissions allow requesting a private link connection to that resource.
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"managedPrivateEndpoints": {
-    "value": [
-        {
-            "name": "mystorageaccount-managed-privateEndpoint", // Required: The managed private endpoint resource name
-            "groupId": "blob", // Required: The groupId to which the managed private endpoint is created
-            "fqdns": [
-                "mystorageaccount.blob.core.windows.net" // Required: Fully qualified domain names
-            ],
-            "privateLinkResourceId": "/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg/providers/Microsoft.Storage/storageAccounts/mystorageaccount"
-            // Required: The ARM resource ID of the resource to which the managed private endpoint is created.
-        }
-    ]
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-managedPrivateEndpoints:  [
-    // Example showing all available fields
-    {
-        name: 'mystorageaccount-managed-privateEndpoint' // Required: The managed private endpoint resource name
-        groupId: 'blob' // Required: The groupId to which the managed private endpoint is created
-        fqdns: [
-          'mystorageaccount.blob.core.windows.net' // Required: Fully qualified domain names
-        ]
-        privateLinkResourceId: '/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg/providers/Microsoft.Storage/storageAccounts/mystorageaccount'
-    } // Required: The ARM resource ID of the resource to which the managed private endpoint is created.
-]
-```
-
-</details>
-<p>
+| `br/public:avm-res-network-privateendpoint:0.1.1` | Remote reference |
 
 ## Data Collection
 
