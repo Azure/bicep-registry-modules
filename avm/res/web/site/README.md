@@ -1121,11 +1121,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 | [`clientAffinityEnabled`](#parameter-clientaffinityenabled) | bool | If client affinity is enabled. |
 | [`clientCertEnabled`](#parameter-clientcertenabled) | bool | To enable client certificate authentication (TLS mutual authentication). |
 | [`clientCertExclusionPaths`](#parameter-clientcertexclusionpaths) | string | Client certificate authentication comma-separated exclusion paths. |
-| [`clientCertMode`](#parameter-clientcertmode) | string | This composes with ClientCertEnabled setting.
-- ClientCertEnabled=false means ClientCert is ignored.
-- ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.
-- ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.
- |
+| [`clientCertMode`](#parameter-clientcertmode) | string | This composes with ClientCertEnabled setting.<li>ClientCertEnabled=false means ClientCert is ignored.<li>ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.<li>ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.<p> |
 | [`cloningInfo`](#parameter-cloninginfo) | object | If specified during app creation, the app is cloned from a source app. |
 | [`containerSize`](#parameter-containersize) | int | Size of the function container. |
 | [`customDomainVerificationId`](#parameter-customdomainverificationid) | string | Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification. |
@@ -1248,11 +1244,7 @@ Client certificate authentication comma-separated exclusion paths.
 
 ### Parameter: `clientCertMode`
 
-This composes with ClientCertEnabled setting.
-- ClientCertEnabled=false means ClientCert is ignored.
-- ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.
-- ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.
-
+This composes with ClientCertEnabled setting.<li>ClientCertEnabled=false means ClientCert is ignored.<li>ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.<li>ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.<p>
 
 - Required: No
 - Type: string

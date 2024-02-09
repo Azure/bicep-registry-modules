@@ -2,31 +2,31 @@ metadata name = 'Azure Virtual Desktop Scaling Plan'
 metadata description = 'This module deploys an Azure Virtual Desktop Scaling Plan.'
 metadata owner = 'Azure/module-maintainers'
 
-@sys.description('Required. Name of the scaling plan.')
+@sys.description('Required. Name of the Scaling Plan.')
 param name string
 
-@sys.description('Optional. Location of the scaling plan. Defaults to resource group location.')
+@sys.description('Optional. Location of the Scaling Plan. Defaults to resource group location.')
 param location string = resourceGroup().location
 
-@sys.description('Optional. Friendly name of the scaling plan.')
+@sys.description('Optional. Friendly name of the Scaling Plan.')
 param friendlyName string = name
 
-@sys.description('Optional. Time zone of the scaling plan. Defaults to UTC.')
+@sys.description('Optional. Time zone of the Scaling Plan. Defaults to UTC.')
 param timeZone string = 'UTC'
 
-@sys.description('Optional. Host pool type of the scaling plan.')
+@sys.description('Optional. Host pool type of the Scaling Plan.')
 param hostPoolType string = 'Pooled'
 
-@sys.description('Optional. Exclusion tag to be used for exclusion of VMs from scaling plan.')
+@sys.description('Optional. Exclusion tag to be used for exclusion of VMs from Scaling Plan.')
 param exclusionTag string = ''
 
-@sys.description('Optional. Schedules of the scaling plan.')
+@sys.description('Optional. Schedules of the Scaling Plan.')
 param schedules array = []
 
-@sys.description('Optional. Host pool references of the scaling plan.')
+@sys.description('Optional. Host pool references of the Scaling Plan.')
 param hostPoolReferences array = []
 
-@sys.description('Optional. Description of the scaling plan.')
+@sys.description('Optional. Description of the Scaling Plan.')
 param description string = name
 
 @sys.description('Optional. Tags of the resource.')
@@ -141,16 +141,16 @@ resource scalingPlan_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2
   scope: scalingPlan
 }]
 
-@sys.description('The resource ID of the scaling plan.')
+@sys.description('The resource ID of the Scaling Plan.')
 output resourceId string = scalingPlan.id
 
-@sys.description('The name of the resource group the scaling plan was created in.')
+@sys.description('The name of the resource group the Scaling Plan was created in.')
 output resourceGroupName string = resourceGroup().name
 
-@sys.description('The name of the scaling plan.')
+@sys.description('The name of the Scaling Plan.')
 output name string = scalingPlan.name
 
-@sys.description('The location of the scaling plan.')
+@sys.description('The location of the Scaling Plan.')
 output location string = scalingPlan.location
 
 // ================ //
