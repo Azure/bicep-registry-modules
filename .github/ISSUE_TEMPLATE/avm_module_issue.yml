@@ -77,7 +77,7 @@ body:
         - "avm/res/desktop-virtualization/application-group"
         # - "avm/res/desktop-virtualization/host-pool"
         - "avm/res/desktop-virtualization/scaling-plan"
-        # - "avm/res/desktop-virtualization/workspace"
+        - "avm/res/desktop-virtualization/workspace"
         # - "avm/res/dev-center/devcenter"
         # - "avm/res/dev-test-lab/lab"
         # - "avm/res/digital-twins/digital-twins-instance"
