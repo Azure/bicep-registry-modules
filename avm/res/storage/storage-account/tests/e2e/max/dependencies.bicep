@@ -37,6 +37,9 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
 resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: 'privatelink.blob.${environment().suffixes.storage}'
   location: 'global'
+  dependsOn: [
+    virtualNetwork
+  ]
 
   resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
     name: '${virtualNetwork.name}-vnetlink'

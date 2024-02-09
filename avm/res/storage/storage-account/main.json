@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "3807395495755723225"
+      "version": "0.25.3.34343",
+      "templateHash": "631937264961119905"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -126,6 +126,58 @@
         }
       },
       "nullable": true
+    },
+    "networkAclsType": {
+      "type": "object",
+      "properties": {
+        "resourceAccessRules": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Sets the resource access rules."
+          }
+        },
+        "bypass": {
+          "type": "string",
+          "allowedValues": [
+            "AzureServices",
+            "AzureServices, Logging",
+            "AzureServices, Logging, Metrics",
+            "AzureServices, Metrics",
+            "Logging",
+            "Logging, Metrics",
+            "Metrics",
+            "None"
+          ],
+          "metadata": {
+            "description": "Required. Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging,Metrics,AzureServices (For example, \"Logging, Metrics\"), or None to bypass none of those traffics."
+          }
+        },
+        "virtualNetworkRules": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Sets the virtual network rules."
+          }
+        },
+        "ipRules": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Sets the IP ACL rules."
+          }
+        },
+        "defaultAction": {
+          "type": "string",
+          "allowedValues": [
+            "Allow",
+            "Deny"
+          ],
+          "metadata": {
+            "description": "Required. Specifies the default action of allow or deny when no other rules match."
+          }
+        }
+      }
     },
     "privateEndpointType": {
       "type": "array",
@@ -530,16 +582,13 @@
       }
     },
     "networkAcls": {
-      "type": "object",
+      "$ref": "#/definitions/networkAclsType",
       "defaultValue": {
-        "resourceAccessRules": [],
         "bypass": "AzureServices",
-        "virtualNetworkRules": [],
-        "ipRules": [],
         "defaultAction": "Deny"
       },
       "metadata": {
-        "description": "Optional. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. For security reasons, it is recommended to set the DefaultAction Deny."
+        "description": "Required. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny."
       }
     },
     "requireInfrastructureEncryption": {
@@ -1624,8 +1673,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "17360500138014235250"
+              "version": "0.25.3.34343",
+              "templateHash": "3500765950730474634"
             },
             "name": "Storage Account Management Policies",
             "description": "This module deploys a Storage Account Management Policy.",
@@ -1734,8 +1783,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "414567084253124464"
+              "version": "0.25.3.34343",
+              "templateHash": "10424013943333306181"
             },
             "name": "Storage Account Local Users",
             "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication.",
@@ -1952,8 +2001,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "6670506366627013721"
+              "version": "0.25.3.34343",
+              "templateHash": "1767452448979292347"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service.",
@@ -2318,8 +2367,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "1429761296615247722"
+                      "version": "0.25.3.34343",
+                      "templateHash": "4692605911774255516"
                     },
                     "name": "Storage Account Blob Containers",
                     "description": "This module deploys a Storage Account Blob Container.",
@@ -2587,8 +2636,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.24.24.22086",
-                              "templateHash": "15441426428461937893"
+                              "version": "0.25.3.34343",
+                              "templateHash": "18172078163140627549"
                             },
                             "name": "Storage Account Blob Container Immutability Policies",
                             "description": "This module deploys a Storage Account Blob Container Immutability Policy.",
@@ -2766,8 +2815,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "685043578297461233"
+              "version": "0.25.3.34343",
+              "templateHash": "525431657620027128"
             },
             "name": "Storage Account File Share Services",
             "description": "This module deploys a Storage Account File Share Service.",
@@ -3015,8 +3064,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "11243515252529303304"
+                      "version": "0.25.3.34343",
+                      "templateHash": "17147893039694736501"
                     },
                     "name": "Storage Account File Shares",
                     "description": "This module deploys a Storage Account File Share.",
@@ -3215,8 +3264,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.24.24.22086",
-                              "templateHash": "17643632023108067837"
+                              "version": "0.25.3.34343",
+                              "templateHash": "7361754328987495524"
                             }
                           },
                           "parameters": {
@@ -3484,8 +3533,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "9901414791831714811"
+              "version": "0.25.3.34343",
+              "templateHash": "4596144758979274883"
             },
             "name": "Storage Account Queue Services",
             "description": "This module deploys a Storage Account Queue Service.",
@@ -3697,8 +3746,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "11104056744955032379"
+                      "version": "0.25.3.34343",
+                      "templateHash": "15723904499918946832"
                     },
                     "name": "Storage Account Queues",
                     "description": "This module deploys a Storage Account Queue.",
@@ -3954,8 +4003,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "4432761872900647010"
+              "version": "0.25.3.34343",
+              "templateHash": "11627405660929516603"
             },
             "name": "Storage Account Table Services",
             "description": "This module deploys a Storage Account Table Service.",
@@ -4164,8 +4213,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "981180809348713884"
+                      "version": "0.25.3.34343",
+                      "templateHash": "1839032011015561279"
                     },
                     "name": "Storage Account Table",
                     "description": "This module deploys a Storage Account Table.",
