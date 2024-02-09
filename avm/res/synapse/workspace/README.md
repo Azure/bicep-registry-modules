@@ -583,7 +583,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    initialWorkspaceAdminObjectID: '<initialWorkspaceAdminObjectID>'
     integrationRuntimes: [
       {
         name: 'shir01'
@@ -591,11 +590,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       }
     ]
     location: '<location>'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     managedVirtualNetwork: true
     privateEndpoints: [
       {
@@ -665,9 +659,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         }
       ]
     },
-    "initialWorkspaceAdminObjectID": {
-      "value": "<initialWorkspaceAdminObjectID>"
-    },
     "integrationRuntimes": {
       "value": [
         {
@@ -678,13 +669,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
     },
     "managedVirtualNetwork": {
       "value": true
