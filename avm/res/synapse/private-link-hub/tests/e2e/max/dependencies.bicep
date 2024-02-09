@@ -1,5 +1,8 @@
-@description('Optional. The location to deploy resources to.')
+@description('Optional. The location to deploy to.')
 param location string = resourceGroup().location
+
+@description('Required. The name of the Network Security Group to create.')
+param networkSecurityGroupName string
 
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
@@ -8,6 +11,12 @@ param virtualNetworkName string
 param managedIdentityName string
 
 var addressPrefix = '10.0.0.0/16'
+
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
+  name: networkSecurityGroupName
+  location: location
+  properties: {}
+}
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   name: virtualNetworkName
@@ -23,11 +32,11 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         name: 'defaultSubnet'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 16, 0)
-          serviceEndpoints: [
-            {
-              service: 'Microsoft.Storage'
-            }
-          ]
+          networkSecurityGroup: {
+            id: networkSecurityGroup.id
+          }
+          privateEndpointNetworkPolicies: 'Disabled'
+          privateLinkServiceNetworkPolicies: 'Enabled'
         }
       }
     ]
@@ -35,11 +44,8 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
 }
 
 resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink.blob.${environment().suffixes.storage}'
+  name: 'privatelink.azuresynapse.net'
   location: 'global'
-  dependsOn: [
-    virtualNetwork
-  ]
 
   resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
     name: '${virtualNetwork.name}-vnetlink'
@@ -61,11 +67,8 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
-@description('The principal ID of the created Managed Identity.')
-output managedIdentityPrincipalId string = managedIdentity.properties.principalId
-
-@description('The resource ID of the created Managed Identity.')
-output managedIdentityResourceId string = managedIdentity.id
-
 @description('The resource ID of the created Private DNS Zone.')
 output privateDNSZoneResourceId string = privateDNSZone.id
+
+@description('The principal ID of the created Managed Identity.')
+output managedIdentityPrincipalId string = managedIdentity.properties.principalId
