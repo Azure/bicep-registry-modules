@@ -70,18 +70,14 @@ jobs:
   #   Call reusable workflow   #
   ##############################
   call-workflow-passing-data:
-    name: "Run"
-    permissions:
-      id-token: write # For OIDC
-      contents: write # For release tags
+    name: 'Module'
     needs:
       - job_initialize_pipeline
-    uses: ./.github/workflows/avm.template.module.yml
+    uses: ./.github/workflows/template.module.yml
     with:
-      workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
-      moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
-      psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
-      modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath}}"
+      workflowInput: '${{ needs.job_initialize_pipeline.outputs.workflowInput }}'
+      moduleTestFilePaths: '${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}'
+      modulePath: '${{ needs.job_initialize_pipeline.outputs.modulePath}}'
     secrets: inherit
 
 
