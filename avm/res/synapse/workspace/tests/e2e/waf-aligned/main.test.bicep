@@ -36,7 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     location: resourceLocation
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    //managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
   }
@@ -70,12 +70,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     defaultDataLakeStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
     defaultDataLakeStorageFilesystem: nestedDependencies.outputs.storageContainerName
     sqlAdministratorLogin: 'synwsadmin'
-    initialWorkspaceAdminObjectID: nestedDependencies.outputs.managedIdentityPrincipalId
-    managedIdentities: {
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
+    // initialWorkspaceAdminObjectID: nestedDependencies.outputs.managedIdentityPrincipalId
+    // managedIdentities: {
+    //   userAssignedResourceIds: [
+    //     nestedDependencies.outputs.managedIdentityResourceId
+    //   ]
+    // }
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
