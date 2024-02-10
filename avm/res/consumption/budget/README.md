@@ -110,6 +110,10 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
       'dummy@contoso.com'
     ]
     location: '<location>'
+    resourceGroupFilter: [
+      'rg-group1'
+      'rg-group2'
+    ]
     thresholds: [
       50
       75
@@ -148,6 +152,12 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
     },
     "location": {
       "value": "<location>"
+    },
+    "resourceGroupFilter": {
+      "value": [
+        "rg-group1",
+        "rg-group2"
+      ]
     },
     "thresholds": {
       "value": [
@@ -258,6 +268,8 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 | [`actionGroups`](#parameter-actiongroups) | array | List of action group resource IDs that will receive the alert. Required if neither `contactEmails` nor `contactEmails` was provided. |
 | [`contactEmails`](#parameter-contactemails) | array | The list of email addresses to send the budget notification to when the thresholds are exceeded. Required if neither `contactRoles` nor `actionGroups` was provided. |
 | [`contactRoles`](#parameter-contactroles) | array | The list of contact roles to send the budget notification to when the thresholds are exceeded. Required if neither `contactEmails` nor `actionGroups` was provided. |
+| [`filter`](#parameter-filter) | object |  The filter to use for restricting which resources are considered within the budget. |
+| [`resourceGroupFilter`](#parameter-resourcegroupfilter) | array |  The list of resource groups that contain the resources that are to be considered within the budget.  Only considered if `filter` is not specified. |
 
 **Optional parameters**
 
@@ -304,6 +316,22 @@ The list of email addresses to send the budget notification to when the threshol
 ### Parameter: `contactRoles`
 
 The list of contact roles to send the budget notification to when the thresholds are exceeded. Required if neither `contactEmails` nor `actionGroups` was provided.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `filter`
+
+ The filter to use for restricting which resources are considered within the budget.
+
+- Required: No
+- Type: object
+- Default: `{}`
+
+### Parameter: `resourceGroupFilter`
+
+ The list of resource groups that contain the resources that are to be considered within the budget.  Only considered if `filter` is not specified.
 
 - Required: No
 - Type: array
