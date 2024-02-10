@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "11224765230513420011"
+      "version": "0.25.3.34343",
+      "templateHash": "3543105368294233085"
     },
     "name": "Local Network Gateways",
     "description": "This module deploys a Local Network Gateway.",

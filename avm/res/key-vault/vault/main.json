@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "7898864082424535516"
+      "templateHash": "18403848016814987391"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -48,14 +48,14 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Enable or disable the category explicitely. Default is 'true'."
+                    "description": "Optional. Enable or disable the category explicitely. Default is `true`."
                   }
                 }
               }
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
             }
           },
           "metricCategories": {
@@ -73,14 +73,14 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Enable or disable the category explicitely. Default is 'true'."
+                    "description": "Optional. Enable or disable the category explicitely. Default is `true`."
                   }
                 }
               }
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to '' to disable metric collection."
+              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
             }
           },
           "logAnalyticsDestinationType": {
@@ -641,7 +641,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Rules governing the accessibility of the resouce from specific network locations."
+        "description": "Optional. Rules governing the accessibility of the resource from specific network locations."
       }
     },
     "publicNetworkAccess": {

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "12022767093866974773"
+      "version": "0.25.3.34343",
+      "templateHash": "8872380436916666599"
     },
     "name": "Static Web Apps",
     "description": "This module deploys a Static Web App.",
@@ -588,8 +588,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "7695569913720977108"
+              "version": "0.25.3.34343",
+              "templateHash": "14080804462842386980"
             },
             "name": "Static Web App Site Linked Backends",
             "description": "This module deploys a Custom Function App into a Static Web App Site using the Linked Backends property.",
@@ -690,8 +690,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "12360558347482884602"
+              "version": "0.25.3.34343",
+              "templateHash": "12885668566372288872"
             },
             "name": "Static Web App Site Config",
             "description": "This module deploys a Static Web App Site Config.",
@@ -785,8 +785,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "12360558347482884602"
+              "version": "0.25.3.34343",
+              "templateHash": "12885668566372288872"
             },
             "name": "Static Web App Site Config",
             "description": "This module deploys a Static Web App Site Config.",
@@ -881,8 +881,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "15929667345294936427"
+              "version": "0.25.3.34343",
+              "templateHash": "17269026542885996268"
             },
             "name": "Static Web App Site Custom Domains",
             "description": "This module deploys a Static Web App Site Custom Domain.",

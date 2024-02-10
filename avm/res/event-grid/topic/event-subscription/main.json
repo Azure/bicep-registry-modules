@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "15563150221070279509"
+      "version": "0.25.3.34343",
+      "templateHash": "13080614565240380464"
     },
     "name": "EventGrid Topic Event Subscriptions",
     "description": "This module deploys an Event Grid Topic Event Subscription.",
