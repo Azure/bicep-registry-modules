@@ -314,20 +314,6 @@ function Set-DefinitionSection {
                 $rawAllowedValues = $parameter.allowedValues
             }
 
-
-            # if ($definition.ContainsKey('items') -and $definition['items'].ContainsKey('properties')) {
-            #     $childProperties = $definition['items']['properties']
-            #     $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
-
-            #     $listSectionContent += $sectionContent
-
-            # } elseif ($definition.type -eq 'object' -and $definition['properties']) {
-            #     $childProperties = $definition['properties']
-            #     $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
-
-            #     $listSectionContent += $sectionContent
-            # }
-
             $isRequired = (Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $parameter) ? 'Yes' : 'No'
             $description = $parameter.ContainsKey('metadata') ? $parameter['metadata']['description'].substring("$category. ".Length).Replace("`n- ", '<li>').Replace("`r`n", '<p>').Replace("`n", '<p>') : $null
 
