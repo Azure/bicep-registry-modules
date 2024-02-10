@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "14996821705072365605"
+      "templateHash": "15524934084673736158"
     },
     "name": "Consumption Budgets",
     "description": "This module deploys a Consumption Budget for Subscriptions.",
@@ -99,6 +100,23 @@
         "description": "Conditional. List of action group resource IDs that will receive the alert. Required if neither `contactEmails` nor `contactEmails` was provided."
       }
     },
+    "filter": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Conditional.  The filter to use for restricting which resources are considered within the budget."
+      }
+    },
+    "resourceGroupFilter": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Conditional.  The list of resource groups that contain the resources that are to be considered within the budget.  Only considered if `filter` is not specified."
+      }
+    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -132,10 +150,18 @@
         }
       }
     ],
-    "notifications": "[json(replace(replace(replace(string(variables('notificationsArray')), '[{', '{'), '}]', '}'), '}},{', '},'))]"
+    "notifications": "[json(replace(replace(replace(string(variables('notificationsArray')), '[{', '{'), '}]', '}'), '}},{', '},'))]",
+    "filterByResourceGroups": {
+      "dimensions": {
+        "name": "ResourceGroupName",
+        "operator": "In",
+        "values": "[parameters('resourceGroupFilter')]"
+      }
+    },
+    "budgetFilter": "[if(not(empty(parameters('filter'))), parameters('filter'), if(not(empty(parameters('resourceGroupFilter'))), variables('filterByResourceGroups'), createObject()))]"
   },
-  "resources": [
-    {
+  "resources": {
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
@@ -156,7 +182,7 @@
         }
       }
     },
-    {
+    "budget": {
       "type": "Microsoft.Consumption/budgets",
       "apiVersion": "2023-11-01",
       "name": "[parameters('name')]",
@@ -168,11 +194,11 @@
           "startDate": "[parameters('startDate')]",
           "endDate": "[parameters('endDate')]"
         },
-        "filter": {},
+        "filter": "[variables('budgetFilter')]",
         "notifications": "[variables('notifications')]"
       }
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",
