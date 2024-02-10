@@ -134,7 +134,7 @@ body:
         # - "avm/res/network/network-watcher"
         - "avm/res/network/private-dns-zone"
         - "avm/res/network/private-endpoint"
-        # - "avm/res/network/private-link-service"
+        - "avm/res/network/private-link-service"
         - "avm/res/network/public-ip-address"
         - "avm/res/network/public-ip-prefix"
         - "avm/res/network/route-table"
