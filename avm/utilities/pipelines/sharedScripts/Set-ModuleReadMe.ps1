@@ -301,11 +301,11 @@ function Set-DefinitionSection {
                 $rawAllowedValues = $definition['allowedValues']
             } elseif ($parameter.Keys -contains 'items' -and $parameter.items.type -in @('object', 'array')) {
                 # Array has nested non-primitive type (array/object)
-                $definition = $parameter.items.properties
+                $definition = $parameter
                 $type = $parameter.type
                 $rawAllowedValues = $parameter.allowedValues
             } elseif ($parameter.type -eq 'object') {
-                $definition = $parameter.properties
+                $definition = $parameter
                 $type = $parameter.type
                 $rawAllowedValues = $parameter.allowedValues
             } else {
