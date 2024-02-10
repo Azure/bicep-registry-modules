@@ -53,6 +53,12 @@ param contactRoles array = []
 @description('Conditional. List of action group resource IDs that will receive the alert. Required if neither `contactEmails` nor `contactEmails` was provided.')
 param actionGroups array = []
 
+@description('Conditional.  The filter to use for restricting which resources are considered within the budget.')
+param filter object = {}
+
+@description('Conditional.  The list of resource groups that contain the resources that are to be considered within the budget.  Only considered if `filter` is not specified.')
+param resourceGroupFilter string[] = []
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -72,6 +78,16 @@ var notificationsArray = [for threshold in thresholds: {
 }]
 
 var notifications = json(replace(replace(replace(string(notificationsArray), '[{', '{'), '}]', '}'), '}},{', '},'))
+
+var filterByResourceGroups = {
+  dimensions: {
+    name: 'ResourceGroupName'
+    operator: 'In'
+    values: resourceGroupFilter
+  }
+}
+
+var budgetFilter = !empty(filter) ? filter : (!empty(resourceGroupFilter) ? filterByResourceGroups : {})
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.consumption-budget.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -102,7 +118,7 @@ resource budget 'Microsoft.Consumption/budgets@2023-11-01' = {
       startDate: startDate
       endDate: endDate
     }
-    filter: {}
+    filter: budgetFilter
     notifications: notifications
   }
 }

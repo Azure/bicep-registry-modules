@@ -1,11 +1,6 @@
-# Azure Health Bots `[Microsoft.HealthBot/healthBots]`
+# Private Link Services `[Microsoft.Network/privateLinkServices]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
-This module deploys an Azure Health Bot.
+This module deploys a Private Link Service.
 
 ## Navigation
 
@@ -22,7 +17,7 @@ This module deploys an Azure Health Bot.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.HealthBot/healthBots` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HealthBot/2022-08-08/healthBots) |
+| `Microsoft.Network/privateLinkServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateLinkServices) |
 
 ## Usage examples
 
@@ -30,7 +25,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/health-bot/health-bot:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/private-link-service:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -46,12 +41,26 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-hbhbmin'
+module privateLinkService 'br/public:avm/res/network/private-link-service:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nplsmin'
   params: {
     // Required parameters
-    name: 'hbhbmin002'
-    sku: 'F0'
+    ipConfigurations: [
+      {
+        name: 'nplsmin01'
+        properties: {
+          subnet: {
+            id: '<id>'
+          }
+        }
+      }
+    ]
+    loadBalancerFrontendIpConfigurations: [
+      {
+        id: '<id>'
+      }
+    ]
+    name: 'nplsmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -71,11 +80,27 @@ module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "hbhbmin002"
+    "ipConfigurations": {
+      "value": [
+        {
+          "name": "nplsmin01",
+          "properties": {
+            "subnet": {
+              "id": "<id>"
+            }
+          }
+        }
+      ]
     },
-    "sku": {
-      "value": "F0"
+    "loadBalancerFrontendIpConfigurations": {
+      "value": [
+        {
+          "id": "<id>"
+        }
+      ]
+    },
+    "name": {
+      "value": "nplsmin001"
     },
     // Non-required parameters
     "location": {
@@ -98,22 +123,43 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-hbhbmax'
+module privateLinkService 'br/public:avm/res/network/private-link-service:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nplsmax'
   params: {
     // Required parameters
-    name: 'hbhbmax002'
-    sku: 'F0'
+    ipConfigurations: [
+      {
+        name: 'nplsmax01'
+        properties: {
+          primary: true
+          privateIPAllocationMethod: 'Dynamic'
+          subnet: {
+            id: '<id>'
+          }
+        }
+      }
+    ]
+    loadBalancerFrontendIpConfigurations: [
+      {
+        id: '<id>'
+      }
+    ]
+    name: 'nplsmax001'
     // Non-required parameters
+    autoApproval: {
+      subscriptions: [
+        '*'
+      ]
+    }
+    enableProxyProtocol: true
+    fqdns: [
+      'nplsmax.plsfqdn01.azure.privatelinkservice'
+      'nplsmax.plsfqdn02.azure.privatelinkservice'
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
     }
     roleAssignments: [
       {
@@ -137,6 +183,11 @@ module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    visibility: {
+      subscriptions: [
+        '<subscriptionId>'
+      ]
+    }
   }
 }
 ```
@@ -154,13 +205,47 @@ module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "hbhbmax002"
+    "ipConfigurations": {
+      "value": [
+        {
+          "name": "nplsmax01",
+          "properties": {
+            "primary": true,
+            "privateIPAllocationMethod": "Dynamic",
+            "subnet": {
+              "id": "<id>"
+            }
+          }
+        }
+      ]
     },
-    "sku": {
-      "value": "F0"
+    "loadBalancerFrontendIpConfigurations": {
+      "value": [
+        {
+          "id": "<id>"
+        }
+      ]
+    },
+    "name": {
+      "value": "nplsmax001"
     },
     // Non-required parameters
+    "autoApproval": {
+      "value": {
+        "subscriptions": [
+          "*"
+        ]
+      }
+    },
+    "enableProxyProtocol": {
+      "value": true
+    },
+    "fqdns": {
+      "value": [
+        "nplsmax.plsfqdn01.azure.privatelinkservice",
+        "nplsmax.plsfqdn02.azure.privatelinkservice"
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -168,13 +253,6 @@ module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
       }
     },
     "roleAssignments": {
@@ -202,6 +280,13 @@ module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "visibility": {
+      "value": {
+        "subscriptions": [
+          "<subscriptionId>"
+        ]
+      }
     }
   }
 }
@@ -220,22 +305,49 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-hbhbwaf'
+module privateLinkService 'br/public:avm/res/network/private-link-service:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nplswaf'
   params: {
     // Required parameters
-    name: 'hbhbwaf002'
-    sku: 'F0'
+    ipConfigurations: [
+      {
+        name: 'nplswaf01'
+        properties: {
+          primary: true
+          privateIPAllocationMethod: 'Dynamic'
+          subnet: {
+            id: '<id>'
+          }
+        }
+      }
+    ]
+    loadBalancerFrontendIpConfigurations: [
+      {
+        id: '<id>'
+      }
+    ]
+    name: 'nplswaf001'
     // Non-required parameters
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+    autoApproval: {
+      subscriptions: [
+        '*'
+      ]
     }
+    enableProxyProtocol: true
+    fqdns: [
+      'nplswaf.plsfqdn01.azure.privatelinkservice'
+      'nplswaf.plsfqdn02.azure.privatelinkservice'
+    ]
+    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
+    }
+    visibility: {
+      subscriptions: [
+        '<subscriptionId>'
+      ]
     }
   }
 }
@@ -254,27 +366,62 @@ module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "hbhbwaf002"
+    "ipConfigurations": {
+      "value": [
+        {
+          "name": "nplswaf01",
+          "properties": {
+            "primary": true,
+            "privateIPAllocationMethod": "Dynamic",
+            "subnet": {
+              "id": "<id>"
+            }
+          }
+        }
+      ]
     },
-    "sku": {
-      "value": "F0"
+    "loadBalancerFrontendIpConfigurations": {
+      "value": [
+        {
+          "id": "<id>"
+        }
+      ]
+    },
+    "name": {
+      "value": "nplswaf001"
     },
     // Non-required parameters
+    "autoApproval": {
+      "value": {
+        "subscriptions": [
+          "*"
+        ]
+      }
+    },
+    "enableProxyProtocol": {
+      "value": true
+    },
+    "fqdns": {
+      "value": [
+        "nplswaf.plsfqdn01.azure.privatelinkservice",
+        "nplswaf.plsfqdn02.azure.privatelinkservice"
+      ]
+    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
+      }
+    },
+    "visibility": {
+      "value": {
+        "subscriptions": [
+          "<subscriptionId>"
+        ]
       }
     }
   }
@@ -291,41 +438,61 @@ module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the resource. |
-| [`sku`](#parameter-sku) | string | The name of the Azure Health Bot SKU. |
+| [`ipConfigurations`](#parameter-ipconfigurations) | array | An array of private link service IP configurations. At least one IP configuration is required on the private link service. |
+| [`loadBalancerFrontendIpConfigurations`](#parameter-loadbalancerfrontendipconfigurations) | array | An array of references to the load balancer IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. At least one load balancer frontend IP configuration is required on the private link service. |
+| [`name`](#parameter-name) | string | Name of the private link service to create. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`autoApproval`](#parameter-autoapproval) | object | The auto-approval list of the private link service. |
+| [`enableProxyProtocol`](#parameter-enableproxyprotocol) | bool | Lets the service provider use tcp proxy v2 to retrieve connection information about the service consumer. Service Provider is responsible for setting up receiver configs to be able to parse the proxy protocol v2 header. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`location`](#parameter-location) | string | Location for all resources. |
+| [`extendedLocation`](#parameter-extendedlocation) | object | The extended location of the load balancer. |
+| [`fqdns`](#parameter-fqdns) | array | The list of Fqdn. |
+| [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`tags`](#parameter-tags) | object | Tags to be applied on all resources/resource groups in this deployment. |
+| [`visibility`](#parameter-visibility) | object | Controls the exposure settings for your Private Link service. Service providers can choose to limit the exposure to their service to subscriptions with Azure role-based access control (Azure RBAC) permissions, a restricted set of subscriptions, or all Azure subscriptions. |
+
+### Parameter: `ipConfigurations`
+
+An array of private link service IP configurations. At least one IP configuration is required on the private link service.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `loadBalancerFrontendIpConfigurations`
+
+An array of references to the load balancer IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. At least one load balancer frontend IP configuration is required on the private link service.
+
+- Required: Yes
+- Type: array
 
 ### Parameter: `name`
 
-Name of the resource.
+Name of the private link service to create.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `sku`
+### Parameter: `autoApproval`
 
-The name of the Azure Health Bot SKU.
+The auto-approval list of the private link service.
 
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'C0'
-    'F0'
-    'S1'
-  ]
-  ```
+- Required: No
+- Type: object
+- Default: `{}`
+
+### Parameter: `enableProxyProtocol`
+
+Lets the service provider use tcp proxy v2 to retrieve connection information about the service consumer. Service Provider is responsible for setting up receiver configs to be able to parse the proxy protocol v2 header.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
@@ -335,9 +502,25 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `extendedLocation`
+
+The extended location of the load balancer.
+
+- Required: No
+- Type: object
+- Default: `{}`
+
+### Parameter: `fqdns`
+
+The list of Fqdn.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
 ### Parameter: `location`
 
-Location for all resources.
+Location for all Resources.
 
 - Required: No
 - Type: string
@@ -378,26 +561,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-
-### Parameter: `managedIdentities`
-
-The managed identity definition for this resource.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
-
-### Parameter: `managedIdentities.userAssignedResourceIds`
-
-The resource ID(s) to assign to the resource.
-
-- Required: Yes
-- Type: array
 
 ### Parameter: `roleAssignments`
 
@@ -490,10 +653,18 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `tags`
 
-Tags of the resource.
+Tags to be applied on all resources/resource groups in this deployment.
 
 - Required: No
 - Type: object
+
+### Parameter: `visibility`
+
+Controls the exposure settings for your Private Link service. Service providers can choose to limit the exposure to their service to subscriptions with Azure role-based access control (Azure RBAC) permissions, a restricted set of subscriptions, or all Azure subscriptions.
+
+- Required: No
+- Type: object
+- Default: `{}`
 
 
 ## Outputs
@@ -501,9 +672,9 @@ Tags of the resource.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the health bot. |
-| `resourceGroupName` | string | The resource group the health bot was deployed into. |
-| `resourceId` | string | The resource ID of the health bot. |
+| `name` | string | The name of the private link service. |
+| `resourceGroupName` | string | The resource group the private link service was deployed into. |
+| `resourceId` | string | The resource ID of the private link service. |
 
 ## Cross-referenced modules
 
