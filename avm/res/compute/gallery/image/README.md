@@ -43,14 +43,8 @@ This module deploys an Azure Compute Gallery Image Definition.
 | [`endOfLife`](#parameter-endoflife) | string | The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z. |
 | [`eula`](#parameter-eula) | string | The Eula agreement for the gallery Image Definition. Has to be a valid URL. |
 | [`excludedDiskTypes`](#parameter-excludeddisktypes) | array | List of the excluded disk types (e.g., Standard_LRS). |
-| [`hyperVGeneration`](#parameter-hypervgeneration) | string | The hypervisor generation of the Virtual Machine.
-- If this value is not specified, then it is determined by the securityType parameter.
-- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.
- |
-| [`isAcceleratedNetworkSupported`](#parameter-isacceleratednetworksupported) | bool | Specify if the image supports accelerated networking.
-Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.
-This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.
- |
+| [`hyperVGeneration`](#parameter-hypervgeneration) | string | The hypervisor generation of the Virtual Machine.<li>If this value is not specified, then it is determined by the securityType parameter.<li>If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.<p> |
+| [`isAcceleratedNetworkSupported`](#parameter-isacceleratednetworksupported) | bool | Specify if the image supports accelerated networking.<p>Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.<p>This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.<p> |
 | [`isHibernateSupported`](#parameter-ishibernatesupported) | bool | Specifiy if the image supports hibernation. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`maxRecommendedMemory`](#parameter-maxrecommendedmemory) | int | The maximum amount of RAM in GB recommended for this image. |
@@ -148,10 +142,7 @@ List of the excluded disk types (e.g., Standard_LRS).
 
 ### Parameter: `hyperVGeneration`
 
-The hypervisor generation of the Virtual Machine.
-- If this value is not specified, then it is determined by the securityType parameter.
-- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.
-
+The hypervisor generation of the Virtual Machine.<li>If this value is not specified, then it is determined by the securityType parameter.<li>If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.<p>
 
 - Required: No
 - Type: string
@@ -165,10 +156,7 @@ The hypervisor generation of the Virtual Machine.
 
 ### Parameter: `isAcceleratedNetworkSupported`
 
-Specify if the image supports accelerated networking.
-Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.
-This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.
-
+Specify if the image supports accelerated networking.<p>Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.<p>This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.<p>
 
 - Required: No
 - Type: bool

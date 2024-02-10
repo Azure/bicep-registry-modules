@@ -65,6 +65,9 @@ configuration:
       "disablepassword",
       "sync*passwords",
       "tokenname",
+      "ssoClientSecretKeyVaultPath",
+      "ssoSecretType",
+      "tokenValidityLength"
     ]
 
 rule:
