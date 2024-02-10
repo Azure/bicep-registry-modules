@@ -110,8 +110,6 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
       'dummy@contoso.com'
     ]
     location: '<location>'
-    // Note that you should only specify one of filter or resourceGroupFilter
-    // The filter param takes precedence.
     resourceGroupFilter: [
       'rg-group1'
       'rg-group2'
@@ -155,8 +153,6 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
     "location": {
       "value": "<location>"
     },
-    // Note that you should only specify one of filter or resourceGroupFilter
-    // The filter param takes precedence.
     "resourceGroupFilter": {
       "value": [
         "rg-group1",
@@ -272,8 +268,8 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 | [`actionGroups`](#parameter-actiongroups) | array | List of action group resource IDs that will receive the alert. Required if neither `contactEmails` nor `contactEmails` was provided. |
 | [`contactEmails`](#parameter-contactemails) | array | The list of email addresses to send the budget notification to when the thresholds are exceeded. Required if neither `contactRoles` nor `actionGroups` was provided. |
 | [`contactRoles`](#parameter-contactroles) | array | The list of contact roles to send the budget notification to when the thresholds are exceeded. Required if neither `contactEmails` nor `actionGroups` was provided. |
-| [`filter`](#parameter-filter) | object | The filter used to limit what resources are considered within the budget. |
-| [`resourceGroupFilter`](#parameter-resourceGroupFilter) | string\[\] | If `filter` is not specified, specify the list of resource groups that contain the resources that should be considered within the budget. |
+| [`filter`](#parameter-filter) | object |  The filter to use for restricting which resources are considered within the budget. |
+| [`resourceGroupFilter`](#parameter-resourcegroupfilter) | array |  The list of resource groups that contain the resources that are to be considered within the budget.  Only considered if `filter` is not specified. |
 
 **Optional parameters**
 
@@ -325,6 +321,22 @@ The list of contact roles to send the budget notification to when the thresholds
 - Type: array
 - Default: `[]`
 
+### Parameter: `filter`
+
+ The filter to use for restricting which resources are considered within the budget.
+
+- Required: No
+- Type: object
+- Default: `{}`
+
+### Parameter: `resourceGroupFilter`
+
+ The list of resource groups that contain the resources that are to be considered within the budget.  Only considered if `filter` is not specified.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
 ### Parameter: `category`
 
 The category of the budget, whether the budget tracks cost or usage.
@@ -356,14 +368,6 @@ The end date for the budget. If not provided, it will default to 10 years from t
 - Type: string
 - Default: `''`
 
-### Parameter: `filter`
-
-The filter to limit which resources are considered within the budget.
-
-- Required: No
-- Type: object
-- Default: `{}` (indicating all resources in the subscription)
-
 ### Parameter: `location`
 
 Location deployment metadata.
@@ -390,14 +394,6 @@ The time covered by a budget. Tracking of the amount will be reset based on the 
     'Quarterly'
   ]
   ```
-
-### Parameter: `resourceGroupFilter`
-
-The list of resource groups that contain the resources under consideration for this budget.  Only considered if `filter` is not specified.
-
-- Required: No
-- Type: string[]
-- Default: `[]`
 
 ### Parameter: `startDate`
 
