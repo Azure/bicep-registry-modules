@@ -41,9 +41,9 @@
 /avm/res/db-for-my-sql/flexible-server/ @Azure/avm-res-dbformysql-flexibleserver-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/db-for-postgre-sql/flexible-server/ @Azure/avm-res-dbforpostgresql-flexibleserver-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/desktop-virtualization/application-group/ @Azure/avm-res-desktopvirtualization-applicationgroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/desktop-virtualization/host-pool/ @Azure/avm-res-desktopvirtualization-hostpool-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/desktop-virtualization/host-pool/ @Azure/avm-res-desktopvirtualization-hostpool-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/desktop-virtualization/scaling-plan/ @Azure/avm-res-desktopvirtualization-scalingplan-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/desktop-virtualization/workspace/ @Azure/avm-res-desktopvirtualization-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/desktop-virtualization/workspace/ @Azure/avm-res-desktopvirtualization-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/dev-center/devcenter/ @Azure/avm-res-devcenter-devcenter-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/dev-test-lab/lab/ @Azure/avm-res-devtestlab-lab-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/digital-twins/digital-twins-instance/ @Azure/avm-res-digitaltwins-digitaltwinsinstance-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -61,7 +61,7 @@
 /avm/res/insights/data-collection-rule/ @Azure/avm-res-insights-datacollectionrule-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/diagnostic-setting/ @Azure/avm-res-insights-diagnosticsetting-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/metric-alert/ @Azure/avm-res-insights-metricalert-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/insights/private-link-scope/ @Azure/avm-res-insights-privatelinkscope-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/insights/private-link-scope/ @Azure/avm-res-insights-privatelinkscope-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/scheduled-query-rule/ @Azure/avm-res-insights-scheduledqueryrule-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/webtest/ @Azure/avm-res-insights-webtest-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/key-vault/vault/ @Azure/avm-res-keyvault-vault-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -100,7 +100,7 @@
 #/avm/res/network/network-watcher/ @Azure/avm-res-network-networkwatcher-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/private-dns-zone/ @Azure/avm-res-network-privatednszone-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/private-endpoint/ @Azure/avm-res-network-privateendpoint-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/network/private-link-service/ @Azure/avm-res-network-privatelinkservice-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/network/private-link-service/ @Azure/avm-res-network-privatelinkservice-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/public-ip-address/ @Azure/avm-res-network-publicipaddress-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/public-ip-prefix/ @Azure/avm-res-network-publicipprefix-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/route-table/ @Azure/avm-res-network-routetable-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -131,7 +131,7 @@
 #/avm/res/sql/managed-instance/ @Azure/avm-res-sql-managedinstance-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/sql/server/ @Azure/avm-res-sql-server-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/storage/storage-account/ @Azure/avm-res-storage-storageaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/synapse/private-link-hub/ @Azure/avm-res-synapse-privatelinkhub-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/synapse/private-link-hub/ @Azure/avm-res-synapse-privatelinkhub-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/synapse/workspace/ @Azure/avm-res-synapse-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/virtual-machine-images/image-template/ @Azure/avm-res-virtualmachineimages-imagetemplate-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/web/connection/ @Azure/avm-res-web-connection-module-owners-bicep @Azure/avm-core-team-technical-bicep
