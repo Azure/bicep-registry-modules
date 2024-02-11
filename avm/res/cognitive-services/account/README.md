@@ -17,7 +17,7 @@ This module deploys a Cognitive Service.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.CognitiveServices/accounts` | [2022-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2022-12-01/accounts) |
+| `Microsoft.CognitiveServices/accounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
@@ -847,6 +847,7 @@ Kind of the Cognitive Services. Use 'Get-AzCognitiveServicesAccountSku' to deter
 - Allowed:
   ```Bicep
   [
+    'AIServices'
     'AnomalyDetector'
     'Bing.Autosuggest.v7'
     'Bing.CustomSearch'
@@ -856,16 +857,22 @@ Kind of the Cognitive Services. Use 'Get-AzCognitiveServicesAccountSku' to deter
     'CognitiveServices'
     'ComputerVision'
     'ContentModerator'
+    'ContentSafety'
+    'ConversationalLanguageUnderstanding'
     'CustomVision.Prediction'
     'CustomVision.Training'
     'Face'
     'FormRecognizer'
+    'HealthInsights'
     'ImmersiveReader'
     'Internal.AllInOne'
+    'LanguageAuthoring'
     'LUIS'
     'LUIS.Authoring'
+    'MetricsAdvisor'
+    'OpenAI'
     'Personalizer'
-    'QnAMaker'
+    'QnAMaker.v2'
     'SpeechServices'
     'TextAnalytics'
     'TextTranslation'
