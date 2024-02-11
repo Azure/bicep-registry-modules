@@ -229,7 +229,6 @@ function Invoke-WorkflowsForBranch {
         }
     )
 
-
     $baseInputObject = @{
         PersonalAccessToken = $PersonalAccessToken
         RepositoryOwner     = $RepositoryOwner
