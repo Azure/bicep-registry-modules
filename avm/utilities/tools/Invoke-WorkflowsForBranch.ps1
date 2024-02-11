@@ -246,8 +246,8 @@ function Invoke-WorkflowsForBranch {
         # Get diff
         $diff = git diff 'main' --name-only
 
+        # Identify pipeline names
         $pipelineNames = [System.Collections.ArrayList]@()
-
         $pipelineNames = $diff | ForEach-Object {
             $folderPath = Split-Path $_ -Parent
             $pipelineFileName = Get-PipelineFileName -ResourceIdentifier $folderPath
@@ -256,6 +256,7 @@ function Invoke-WorkflowsForBranch {
             }
         } | Select-Object -Unique
 
+        # Filter workflows
         $workflows = $workflows | Where-Object { $pipelineNames -contains (Split-Path $_.path -Leaf) }
 
         Write-Verbose ("As per 'diff', filtered workflows down to [{0}]" -f $workflows.Count)
