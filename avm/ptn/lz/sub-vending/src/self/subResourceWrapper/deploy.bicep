@@ -318,7 +318,7 @@ module moveSubscriptionToManagementGroup '../Microsoft.Management/managementGrou
   }
 }
 
-module tagSubscription '../../carml/v0.6.0/Microsoft.Resources/tags/deploy.bicep' = if (!empty(subscriptionTags)) {
+module tagSubscription '../../resources/Microsoft.Resources/tags/deploy.bicep' = if (!empty(subscriptionTags)) {
   scope: subscription(subscriptionId)
   name: deploymentNames.tagSubscription
   params: {
@@ -343,7 +343,7 @@ module createResourceGroupForLzNetworking 'br/public:avm/res/resources/resource-
   }
 }
 
-module tagResourceGroup '../../carml/v0.6.0/Microsoft.Resources/tags/deploy.bicep' = if (virtualNetworkEnabled && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName) && !empty(virtualNetworkResourceGroupTags)) {
+module tagResourceGroup '../../resources/Microsoft.Resources/tags/deploy.bicep' = if (virtualNetworkEnabled && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName) && !empty(virtualNetworkResourceGroupTags)) {
   dependsOn: [
     createResourceGroupForLzNetworking
   ]
@@ -389,7 +389,7 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (virt
   }
 }
 
-module createLzVirtualWanConnection '../../carml/v0.6.0/Microsoft.Network/virtualHubs/hubVirtualNetworkConnections/deploy.bicep' = if (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(virtualHubResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName) && !empty(virtualWanHubResourceGroupName) && !empty(virtualWanHubSubscriptionId)) {
+module createLzVirtualWanConnection '../../resources/Microsoft.Network/virtualHubs/hubVirtualNetworkConnections/deploy.bicep' = if (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(virtualHubResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName) && !empty(virtualWanHubResourceGroupName) && !empty(virtualWanHubSubscriptionId)) {
   dependsOn: [
     createResourceGroupForLzNetworking
     createLzVnet
@@ -414,7 +414,7 @@ module createLzVirtualWanConnection '../../carml/v0.6.0/Microsoft.Network/virtua
   }
 }
 
-module createLzRoleAssignmentsSub '../../carml/v0.6.0/Microsoft.Authorization/roleAssignments/deploy.bicep' = [for assignment in roleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(roleAssignmentsSubscription)) {
+module createLzRoleAssignmentsSub '../../resources/Microsoft.Authorization/roleAssignments/deploy.bicep' = [for assignment in roleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(roleAssignmentsSubscription)) {
   name: take('${deploymentNames.createLzRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}', 64)
   params: {
     location: virtualNetworkLocation
@@ -425,7 +425,7 @@ module createLzRoleAssignmentsSub '../../carml/v0.6.0/Microsoft.Authorization/ro
   }
 }]
 
-module createLzRoleAssignmentsRsgsSelf '../../carml/v0.6.0/Microsoft.Authorization/roleAssignments/deploy.bicep' = [for assignment in roleAssignmentsResourceGroupSelf: if (roleAssignmentEnabled && !empty(roleAssignmentsResourceGroupSelf)) {
+module createLzRoleAssignmentsRsgsSelf '../../resources/Microsoft.Authorization/roleAssignments/deploy.bicep' = [for assignment in roleAssignmentsResourceGroupSelf: if (roleAssignmentEnabled && !empty(roleAssignmentsResourceGroupSelf)) {
   dependsOn: [
     createResourceGroupForLzNetworking
   ]
@@ -440,7 +440,7 @@ module createLzRoleAssignmentsRsgsSelf '../../carml/v0.6.0/Microsoft.Authorizati
   }
 }]
 
-module createLzRoleAssignmentsRsgsNotSelf '../../carml/v0.6.0/Microsoft.Authorization/roleAssignments/deploy.bicep' = [for assignment in roleAssignmentsResourceGroupNotSelf: if (roleAssignmentEnabled && !empty(roleAssignmentsResourceGroupNotSelf)) {
+module createLzRoleAssignmentsRsgsNotSelf '../../resources/Microsoft.Authorization/roleAssignments/deploy.bicep' = [for assignment in roleAssignmentsResourceGroupNotSelf: if (roleAssignmentEnabled && !empty(roleAssignmentsResourceGroupNotSelf)) {
   name: take('${deploymentNames.createLzRoleAssignmentsRsgsNotSelf}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}', 64)
   params: {
     location: virtualNetworkLocation
@@ -475,7 +475,7 @@ module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-ident
   }
 }
 
-module createRoleAssignmentsDeploymentScript '../../carml/v0.6.0/Microsoft.Authorization/roleAssignments/deploy.bicep' = if (!empty(resourceProviders)) {
+module createRoleAssignmentsDeploymentScript '../../resources/Microsoft.Authorization/roleAssignments/deploy.bicep' = if (!empty(resourceProviders)) {
   name: take('${deploymentNames.createRoleAssignmentsDeploymentScript}', 64)
   params: {
     location: deploymentScriptLocation
@@ -486,7 +486,7 @@ module createRoleAssignmentsDeploymentScript '../../carml/v0.6.0/Microsoft.Autho
   }
 }
 
-module createRoleAssignmentsDeploymentScriptStorageAccount '../../carml/v0.6.0/Microsoft.Authorization/roleAssignments/deploy.bicep' = if (!empty(resourceProviders)) {
+module createRoleAssignmentsDeploymentScriptStorageAccount '../../resources/Microsoft.Authorization/roleAssignments/deploy.bicep' = if (!empty(resourceProviders)) {
   name: take('${deploymentNames.createRoleAssignmentsDeploymentScriptStorageAccount}', 64)
   params: {
     location: deploymentScriptLocation

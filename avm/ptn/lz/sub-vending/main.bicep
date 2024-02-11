@@ -456,7 +456,7 @@ For more information on the telemetry collected by this module, that is controll
 param disableTelemetry bool = false
 
 @sys.description('Guid for the deployment script resources names based on subscription Id.')
-var deploymentScriptResourcesSubGuid = substring((subscriptionAliasEnabled && empty(existingSubscriptionId)) ? createSubscription.outputs.subscriptionId : existingSubscriptionId,0,6)
+var deploymentScriptResourcesSubGuid = substring((subscriptionAliasEnabled && empty(existingSubscriptionId)) ? createSubscription.outputs.subscriptionId : existingSubscriptionId, 0, 6)
 
 @sys.description('The name of the resource group to create the deployment script for resource providers registration.')
 param deploymentScriptResourceGroupName string = 'rsg-${deployment().location}-ds'
@@ -480,10 +480,13 @@ param virtualNetworkDeploymentScriptAddressPrefix string = '192.168.0.0/24'
 @sys.description('The name of the storage account for the deployment script.')
 param deploymentScriptStorageAccountName string = 'stglzds${deployment().location}'
 
+@sys.description('The location of the deployment script. Use region shortnames e.g. uksouth, eastus, etc.')
+param deploymentScriptLocation string = deployment().location
+
 @metadata({
   example: {
-    'Microsoft.Compute' : ['InGuestHotPatchVMPreview']
-    'Microsoft.Storage' : []
+    'Microsoft.Compute': [ 'InGuestHotPatchVMPreview' ]
+    'Microsoft.Storage': []
   }
 
 })
@@ -560,71 +563,71 @@ An object of resource providers and resource providers features to register. If 
 }`
 ''')
 param resourceProviders object = {
-  'Microsoft.ApiManagement'             : []
-    'Microsoft.AppPlatform'             : []
-    'Microsoft.Authorization'           : []
-    'Microsoft.Automation'              : []
-    'Microsoft.AVS'                     : []
-    'Microsoft.Blueprint'               : []
-    'Microsoft.BotService'              : []
-    'Microsoft.Cache'                   : []
-    'Microsoft.Cdn'                     : []
-    'Microsoft.CognitiveServices'       : []
-    'Microsoft.Compute'                 : []
-    'Microsoft.ContainerInstance'       : []
-    'Microsoft.ContainerRegistry'       : []
-    'Microsoft.ContainerService'        : []
-    'Microsoft.CostManagement'          : []
-    'Microsoft.CustomProviders'         : []
-    'Microsoft.Databricks'              : []
-    'Microsoft.DataLakeAnalytics'       : []
-    'Microsoft.DataLakeStore'           : []
-    'Microsoft.DataMigration'           : []
-    'Microsoft.DataProtection'          : []
-    'Microsoft.DBforMariaDB'            : []
-    'Microsoft.DBforMySQL'              : []
-    'Microsoft.DBforPostgreSQL'         : []
-    'Microsoft.DesktopVirtualization'   : []
-    'Microsoft.Devices'                 : []
-    'Microsoft.DevTestLab'              : []
-    'Microsoft.DocumentDB'              : []
-    'Microsoft.EventGrid'               : []
-    'Microsoft.EventHub'                : []
-    'Microsoft.HDInsight'               : []
-    'Microsoft.HealthcareApis'          : []
-    'Microsoft.GuestConfiguration'      : []
-    'Microsoft.KeyVault'                : []
-    'Microsoft.Kusto'                   : []
-    'microsoft.insights'                : []
-    'Microsoft.Logic'                   : []
-    'Microsoft.MachineLearningServices' : []
-    'Microsoft.Maintenance'             : []
-    'Microsoft.ManagedIdentity'         : []
-    'Microsoft.ManagedServices'         : []
-    'Microsoft.Management'              : []
-    'Microsoft.Maps'                    : []
-    'Microsoft.MarketplaceOrdering'     : []
-    'Microsoft.Media'                   : []
-    'Microsoft.MixedReality'            : []
-    'Microsoft.Network'                 : []
-    'Microsoft.NotificationHubs'        : []
-    'Microsoft.OperationalInsights'     : []
-    'Microsoft.OperationsManagement'    : []
-    'Microsoft.PolicyInsights'          : []
-    'Microsoft.PowerBIDedicated'        : []
-    'Microsoft.Relay'                   : []
-    'Microsoft.RecoveryServices'        : []
-    'Microsoft.Resources'               : []
-    'Microsoft.Search'                  : []
-    'Microsoft.Security'                : []
-    'Microsoft.SecurityInsights'        : []
-    'Microsoft.ServiceBus'              : []
-    'Microsoft.ServiceFabric'           : []
-    'Microsoft.Sql'                     : []
-    'Microsoft.Storage'                 : []
-    'Microsoft.StreamAnalytics'         : []
-    'Microsoft.TimeSeriesInsights'      : []
-    'Microsoft.Web'                     : []
+  'Microsoft.ApiManagement': []
+  'Microsoft.AppPlatform': []
+  'Microsoft.Authorization': []
+  'Microsoft.Automation': []
+  'Microsoft.AVS': []
+  'Microsoft.Blueprint': []
+  'Microsoft.BotService': []
+  'Microsoft.Cache': []
+  'Microsoft.Cdn': []
+  'Microsoft.CognitiveServices': []
+  'Microsoft.Compute': []
+  'Microsoft.ContainerInstance': []
+  'Microsoft.ContainerRegistry': []
+  'Microsoft.ContainerService': []
+  'Microsoft.CostManagement': []
+  'Microsoft.CustomProviders': []
+  'Microsoft.Databricks': []
+  'Microsoft.DataLakeAnalytics': []
+  'Microsoft.DataLakeStore': []
+  'Microsoft.DataMigration': []
+  'Microsoft.DataProtection': []
+  'Microsoft.DBforMariaDB': []
+  'Microsoft.DBforMySQL': []
+  'Microsoft.DBforPostgreSQL': []
+  'Microsoft.DesktopVirtualization': []
+  'Microsoft.Devices': []
+  'Microsoft.DevTestLab': []
+  'Microsoft.DocumentDB': []
+  'Microsoft.EventGrid': []
+  'Microsoft.EventHub': []
+  'Microsoft.HDInsight': []
+  'Microsoft.HealthcareApis': []
+  'Microsoft.GuestConfiguration': []
+  'Microsoft.KeyVault': []
+  'Microsoft.Kusto': []
+  'microsoft.insights': []
+  'Microsoft.Logic': []
+  'Microsoft.MachineLearningServices': []
+  'Microsoft.Maintenance': []
+  'Microsoft.ManagedIdentity': []
+  'Microsoft.ManagedServices': []
+  'Microsoft.Management': []
+  'Microsoft.Maps': []
+  'Microsoft.MarketplaceOrdering': []
+  'Microsoft.Media': []
+  'Microsoft.MixedReality': []
+  'Microsoft.Network': []
+  'Microsoft.NotificationHubs': []
+  'Microsoft.OperationalInsights': []
+  'Microsoft.OperationsManagement': []
+  'Microsoft.PolicyInsights': []
+  'Microsoft.PowerBIDedicated': []
+  'Microsoft.Relay': []
+  'Microsoft.RecoveryServices': []
+  'Microsoft.Resources': []
+  'Microsoft.Search': []
+  'Microsoft.Security': []
+  'Microsoft.SecurityInsights': []
+  'Microsoft.ServiceBus': []
+  'Microsoft.ServiceFabric': []
+  'Microsoft.Sql': []
+  'Microsoft.Storage': []
+  'Microsoft.StreamAnalytics': []
+  'Microsoft.TimeSeriesInsights': []
+  'Microsoft.Web': []
 }
 
 // VARIABLES
@@ -700,6 +703,7 @@ module createSubscriptionResources 'src/self/subResourceWrapper/deploy.bicep' = 
     deploymentScriptManagedIdentityName: '${deploymentScriptManagedIdentityName}-${deploymentScriptResourcesSubGuid}'
     resourceProviders: resourceProviders
     deploymentScriptVirtualNetworkName: deploymentScriptVirtualNetworkName
+    deploymentScriptLocation: deploymentScriptLocation
     deploymentScriptNetworkSecurityGroupName: deploymentScriptNetworkSecurityGroupName
     virtualNetworkDeploymentScriptAddressPrefix: virtualNetworkDeploymentScriptAddressPrefix
     deploymentScriptStorageAccountName: '${deploymentScriptStorageAccountName}${deploymentScriptResourcesSubGuid}'
@@ -725,4 +729,3 @@ output failedResourceProviders string = !empty(resourceProviders) ? createSubscr
 
 @sys.description('The resource providers features that failed to register')
 output failedResourceProvidersFeatures string = !empty(resourceProviders) ? createSubscriptionResources.outputs.failedFeatures : ''
-
