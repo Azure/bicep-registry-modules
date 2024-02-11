@@ -446,13 +446,7 @@ Each object must contain the following `keys`:
 ''')
 param roleAssignments array = []
 
-@metadata({
-  example: false
-})
-@description('''Optional. Disable telemetry collection by this module.
-
-For more information on the telemetry collected by this module, that is controlled by this parameter, see this page in the wiki: [Telemetry Tracking Using Customer Usage Attribution (PID)](https://github.com/Azure/bicep-lz-vending/wiki/Telemetry).
-''')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param disableTelemetry bool = false
 
 @description('Optional. Guid for the deployment script resources names based on subscription Id.')
@@ -653,6 +647,24 @@ resource moduleTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (!dis
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
       contentVersion: '1.0.0.0'
       resources: []
+    }
+  }
+}
+
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (!disableTelemetry) {
+  name: '46d3xbcp.ptn.lz-subvending.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, virtualNetworkLocation), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
     }
   }
 }
