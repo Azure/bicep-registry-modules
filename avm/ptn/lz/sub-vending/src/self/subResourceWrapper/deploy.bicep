@@ -354,6 +354,7 @@ module tagResourceGroup '../../resources/Microsoft.Resources/tags/deploy.bicep' 
     resourceGroupName: virtualNetworkResourceGroupName
     onlyUpdate: true
     tags: virtualNetworkResourceGroupTags
+    location: virtualNetworkLocation
     enableDefaultTelemetry: enableTelemetryForCarml
   }
 }
