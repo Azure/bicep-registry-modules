@@ -66,6 +66,9 @@ configuration:
       "sync*passwords",
       "sqlAdministratorLogin",
       "tokenname",
+      "ssoClientSecretKeyVaultPath",
+      "ssoSecretType",
+      "tokenValidityLength"
     ]
 
 rule:
