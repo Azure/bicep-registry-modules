@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "11044466747900946790"
+      "templateHash": "2482892338912812073"
     },
     "name": "Storage Account Table Services",
     "description": "This module deploys a Storage Account Table Service.",
@@ -48,7 +48,7 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                   }
                 }
               }
@@ -73,7 +73,7 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                   }
                 }
               }

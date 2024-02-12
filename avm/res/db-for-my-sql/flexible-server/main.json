@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "4309870359734205403"
+      "templateHash": "5070880132858526432"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server.",
@@ -154,7 +154,7 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                   }
                 }
               }
@@ -179,7 +179,7 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                   }
                 }
               }

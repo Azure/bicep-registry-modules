@@ -288,7 +288,7 @@ type diagnosticSettingType = {
     @sys.description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
     categoryGroup: string?
 
-    @sys.description('Optional. Enable or disable the category explicitely. Default is `true`.')
+    @sys.description('Optional. Enable or disable the category explicitly. Default is `true`.')
     enabled: bool?
   }[]?
 

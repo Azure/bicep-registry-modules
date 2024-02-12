@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "16117065893105563253"
+      "templateHash": "12577219942476534061"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -470,7 +470,7 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                   }
                 }
               }
@@ -495,7 +495,7 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                   }
                 }
               }

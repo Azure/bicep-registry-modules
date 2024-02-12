@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "9593734824753042287"
+      "templateHash": "3851332826457388554"
     },
     "name": "Event Grid Topics",
     "description": "This module deploys an Event Grid Topic.",
@@ -337,7 +337,7 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                   }
                 }
               }
@@ -362,7 +362,7 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                   }
                 }
               }

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "14301581030191939132"
+      "templateHash": "17738501393807421068"
     },
     "name": "Batch Accounts",
     "description": "This module deploys a Batch Account.",
@@ -48,7 +48,7 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                   }
                 }
               }
@@ -73,7 +73,7 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                   }
                 }
               }

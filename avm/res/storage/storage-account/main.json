@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "12722808619791788681"
+      "templateHash": "8976807612954275605"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -380,7 +380,7 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                   }
                 }
               }
@@ -2019,7 +2019,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.3.34343",
-              "templateHash": "12009349779499745931"
+              "templateHash": "15608511572128600175"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service.",
@@ -2061,7 +2061,7 @@
                           "type": "bool",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
@@ -2086,7 +2086,7 @@
                           "type": "bool",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
@@ -2865,7 +2865,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.3.34343",
-              "templateHash": "12959273491277679616"
+              "templateHash": "4598732349199400100"
             },
             "name": "Storage Account File Share Services",
             "description": "This module deploys a Storage Account File Share Service.",
@@ -2907,7 +2907,7 @@
                           "type": "bool",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
@@ -2932,7 +2932,7 @@
                           "type": "bool",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
@@ -3615,7 +3615,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.3.34343",
-              "templateHash": "8352559756029835459"
+              "templateHash": "3078597772679428481"
             },
             "name": "Storage Account Queue Services",
             "description": "This module deploys a Storage Account Queue Service.",
@@ -3657,7 +3657,7 @@
                           "type": "bool",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
@@ -3682,7 +3682,7 @@
                           "type": "bool",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
@@ -4117,7 +4117,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.3.34343",
-              "templateHash": "11044466747900946790"
+              "templateHash": "2482892338912812073"
             },
             "name": "Storage Account Table Services",
             "description": "This module deploys a Storage Account Table Service.",
@@ -4159,7 +4159,7 @@
                           "type": "bool",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
@@ -4184,7 +4184,7 @@
                           "type": "bool",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }

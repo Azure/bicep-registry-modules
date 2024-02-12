@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "5098364109190946056"
+      "templateHash": "12572547687907198943"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -634,7 +634,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.3.34343",
-              "templateHash": "8671758426958092851"
+              "templateHash": "14132869076069805910"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database.",
@@ -676,7 +676,7 @@
                           "type": "bool",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
@@ -701,7 +701,7 @@
                           "type": "bool",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }

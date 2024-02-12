@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "9060359770236805592"
+      "templateHash": "17985136477940625583"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer.",
@@ -40,7 +40,7 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                   }
                 }
               }

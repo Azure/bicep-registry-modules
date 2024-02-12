@@ -106,7 +106,7 @@ type logCategoriesAndGroupsType = {
   @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `AllLogs` to collect all logs.')
   categoryGroup: string?
 
-  @description('Optional. Enable or disable the category explicitely. Default is `true`.')
+  @description('Optional. Enable or disable the category explicitly. Default is `true`.')
   enabled: bool?
 }[]?
 
@@ -115,6 +115,6 @@ type metricCategoriesType = {
   @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
   category: string
 
-  @description('Optional. Enable or disable the category explicitely. Default is `true`.')
+  @description('Optional. Enable or disable the category explicitly. Default is `true`.')
   enabled: bool?
 }[]?

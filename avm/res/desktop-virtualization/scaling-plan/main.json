@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "2769331589754760985"
+      "templateHash": "7708203574463935253"
     },
     "name": "Azure Virtual Desktop Scaling Plan",
     "description": "This module deploys an Azure Virtual Desktop Scaling Plan.",
@@ -139,7 +139,7 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Enable or disable the category explicitely. Default is `true`."
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                   }
                 }
               }
