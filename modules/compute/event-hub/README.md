@@ -36,7 +36,7 @@ This module deploys Microsoft.data event clusters, event namespaces, event hubs 
 ### Example 1
 
 ```bicep
-module evh 'br/public:compute/event-hub:2.0.2' = {
+module evh 'br/public:compute/event-hub:2.0.3' = {
   name: 'evh-${uniqueString(deployment().name, 'eastus2')}'
   params: {
     location: 'eastus2'
@@ -108,7 +108,7 @@ module evh 'br/public:compute/event-hub:2.0.2' = {
 ### Example 2
 
 ```bicep
-module evhns 'br/public:compute/event-hub:2.0.2' = {
+module evhns 'br/public:compute/event-hub:2.0.3' = {
   name: 'evhns-${uniqueString(deployment().name, 'eastus')}'
   params: {
     location: 'eastus'
@@ -154,7 +154,7 @@ module evhns 'br/public:compute/event-hub:2.0.2' = {
 ### Example 3
 
 ```bicep
-module evhns 'br/public:compute/event-hub:2.0.2' = {
+module evhns 'br/public:compute/event-hub:2.0.3' = {
   name: 'evhns-${uniqueString(deployment().name, 'eastus')}'
   params: {
     location: 'eastus'
@@ -220,7 +220,7 @@ module evhns 'br/public:compute/event-hub:2.0.2' = {
 ### Example 4
 
 ```bicep
-module eventhubnamespace 'br/public:compute/event-hub:2.0.2' = {
+module eventhubnamespace 'br/public:compute/event-hub:2.0.3' = {
   name: 'evhns-${uniqueString(deployment().name, 'eastus')}'
   params: {
     location: 'eastus'
