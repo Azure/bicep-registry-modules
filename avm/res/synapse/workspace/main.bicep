@@ -70,7 +70,7 @@ param purviewResourceID string = ''
 param sqlAdministratorLogin string
 
 @description('Optional. Password for administrator access to the workspace\'s SQL pools. If you don\'t provide a password, one will be automatically generated. You can change the password later.')
-//@secure()
+@secure()
 param sqlAdministratorLoginPassword string = ''
 
 @description('Optional. Git integration settings.')
@@ -168,9 +168,11 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
         } : {
           useSystemAssignedIdentity: empty(customerManagedKey.?userAssignedIdentityResourceId)
         }
+
         identity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? {
           userAssignedIdentity: cMKUserAssignedIdentity.id
         } : null
+
         key: {
           keyVaultUrl: cMKKeyVault::cMKKey.properties.keyUri
           name: customerManagedKey!.keyName
