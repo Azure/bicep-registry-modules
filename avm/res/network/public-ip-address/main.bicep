@@ -230,8 +230,9 @@ type dnsSettingsType = {
 }
 
 type ddosSettingsType = {
-  @description('Required. The DDoS protection plan ID associated with the public IP address.')
+  @description('Required. The DDoS protection plan associated with the public IP address.')
   ddosProtectionPlan: {
+    @description('Required. The resource ID of the DDOS protection plan associated with the public IP address.')
     id: string
   }
   @description('Required. The DDoS protection policy customizations.')
