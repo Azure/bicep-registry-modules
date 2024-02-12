@@ -1,13 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "1.10-experimental",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.19.5.34762",
-      "templateHash": "11119322536328847528"
+      "version": "0.25.53.49325",
+      "templateHash": "1835901376892868247"
     },
     "name": "Azure Cache for Redis",
     "description": "This module deploys Azure Cache for Redis(Microsoft.Cache/redis) and optionally available integrations.",
@@ -285,11 +284,11 @@
       "properties": {
         "name": {
           "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
           "metadata": {
             "description": "The resource name."
-          },
-          "maxLength": 128,
-          "minLength": 1
+          }
         },
         "startIpAddress": {
           "type": "string",
@@ -344,14 +343,14 @@
     "skuName": {
       "type": "string",
       "defaultValue": "Basic",
-      "metadata": {
-        "description": "Optional. The type of Redis cache to deploy."
-      },
       "allowedValues": [
         "Basic",
         "Premium",
         "Standard"
-      ]
+      ],
+      "metadata": {
+        "description": "Optional. The type of Redis cache to deploy."
+      }
     },
     "enableNonSslPort": {
       "type": "bool",
@@ -363,14 +362,14 @@
     "minimumTlsVersion": {
       "type": "string",
       "defaultValue": "1.2",
-      "metadata": {
-        "description": "Optional. Requires clients to use a specified TLS version (or higher) to connect."
-      },
       "allowedValues": [
         "1.0",
         "1.1",
         "1.2"
-      ]
+      ],
+      "metadata": {
+        "description": "Optional. Requires clients to use a specified TLS version (or higher) to connect."
+      }
     },
     "publicNetworkAccess": {
       "type": "string",
@@ -394,20 +393,17 @@
     "redisVersion": {
       "type": "string",
       "defaultValue": "6.0",
-      "metadata": {
-        "description": "Optional. Redis version. Only major version will be used in PUT/PATCH request with current valid values: (4, 6)."
-      },
       "allowedValues": [
         "4.0",
         "6.0"
-      ]
+      ],
+      "metadata": {
+        "description": "Optional. Redis version. Only major version will be used in PUT/PATCH request with current valid values: (4, 6)."
+      }
     },
     "capacity": {
       "type": "int",
       "defaultValue": 1,
-      "metadata": {
-        "description": "Optional. The size of the Redis cache to deploy. Valid values: for C (Basic/Standard) family (0, 1, 2, 3, 4, 5, 6), for P (Premium) family (1, 2, 3, 4)."
-      },
       "allowedValues": [
         0,
         1,
@@ -416,7 +412,10 @@
         4,
         5,
         6
-      ]
+      ],
+      "metadata": {
+        "description": "Optional. The size of the Redis cache to deploy. Valid values: for C (Basic/Standard) family (0, 1, 2, 3, 4, 5, 6), for P (Premium) family (1, 2, 3, 4)."
+      }
     },
     "shardCount": {
       "type": "int",
@@ -428,18 +427,18 @@
     "replicasPerMaster": {
       "type": "int",
       "defaultValue": 1,
+      "minValue": 1,
       "metadata": {
         "description": "Optional. Amount of replicas to create per master for this Redis Cache."
-      },
-      "minValue": 1
+      }
     },
     "replicasPerPrimary": {
       "type": "int",
       "defaultValue": 1,
+      "minValue": 1,
       "metadata": {
         "description": "Optional. Amount of replicas to create per primary for this Redis Cache."
-      },
-      "minValue": 1
+      }
     },
     "staticIP": {
       "type": "string",
@@ -648,14 +647,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "13037231207085822473"
+              "version": "0.25.53.49325",
+              "templateHash": "1448845482678791875"
             }
           },
           "parameters": {
@@ -695,14 +692,8 @@
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
             }
           },
-          "resources": {
-            "redisCache": {
-              "existing": true,
-              "type": "Microsoft.Cache/redis",
-              "apiVersion": "2021-06-01",
-              "name": "[last(split(parameters('resourceId'), '/'))]"
-            },
-            "roleAssignment": {
+          "resources": [
+            {
               "copy": {
                 "name": "roleAssignment",
                 "count": "[length(parameters('principalIds'))]"
@@ -718,7 +709,7 @@
                 "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
               }
             }
-          }
+          ]
         }
       },
       "dependsOn": [
@@ -751,14 +742,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "8205690049017443365"
+              "version": "0.25.53.49325",
+              "templateHash": "3622504043501225521"
             }
           },
           "parameters": {
@@ -791,8 +780,8 @@
               }
             ]
           },
-          "resources": {
-            "privateEndpoint": {
+          "resources": [
+            {
               "copy": {
                 "name": "privateEndpoint",
                 "count": "[length(variables('varPrivateEndpoints'))]",
@@ -813,7 +802,7 @@
                 "customNetworkInterfaceName": "[variables('varPrivateEndpoints')[copyIndex()].customNetworkInterfaceName]"
               }
             },
-            "privateDnsZoneGroup": {
+            {
               "copy": {
                 "name": "privateDnsZoneGroup",
                 "count": "[length(variables('varPrivateEndpoints'))]",
@@ -838,10 +827,10 @@
                 ]
               },
               "dependsOn": [
-                "[format('privateEndpoint[{0}]', copyIndex())]"
+                "[resourceId('Microsoft.Network/privateEndpoints', format('{0}-{1}', variables('varPrivateEndpoints')[copyIndex()].name, uniqueString(variables('varPrivateEndpoints')[copyIndex()].name, variables('varPrivateEndpoints')[copyIndex()].subnetId, variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId)))]"
               ]
             }
-          }
+          ]
         }
       },
       "dependsOn": [
@@ -868,14 +857,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "7117239157057788955"
+              "version": "0.25.53.49325",
+              "templateHash": "13208677707449792279"
             }
           },
           "definitions": {
@@ -932,7 +920,10 @@
               "name": "[format('{0}/{1}', parameters('redisCacheName'), 'default')]",
               "properties": {
                 "scheduleEntries": "[parameters('redisPatchSchedule')]"
-              }
+              },
+              "dependsOn": [
+                "redisCacheReference"
+              ]
             }
           }
         }
