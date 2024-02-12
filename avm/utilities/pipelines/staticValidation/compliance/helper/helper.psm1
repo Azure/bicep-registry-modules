@@ -226,6 +226,9 @@ function Resolve-ReadMeParameterList {
     # Add name as property for later reference
     $TemplateFileContent.parameters.Keys | ForEach-Object { $TemplateFileContent.parameters[$_]['name'] = $_ }
     [array] $parameters = $TemplateFileContent.parameters.Values | Sort-Object -Property 'Name' -Culture 'en-US'
+  } elseif ($parameter.Keys -contains 'items' -and $parameter.items.type -in @('object', 'array') -or $parameter.type -eq 'object') {
+    # Array has nested non-primitive type (array/object)
+    $definition = $parameter
   } else {
     # Add name as property for later reference
     $Properties.Keys | ForEach-Object { $Properties[$_]['name'] = $_ }
