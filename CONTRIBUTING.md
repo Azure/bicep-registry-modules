@@ -10,7 +10,7 @@ The following instructions are created to help with the development of Bicep pub
 
 - Create a fork of the [Azure/bicep-registry-modules](https://github.com/Azure/bicep-registry-modules) repository and clone the fork to your local machine.
 - Install [.NET 7.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/7.0/runtime)
-- Install the [Bicep registry module](https://www.nuget.org/packages/Azure.Bicep.RegistryModuleTool/) tool by running:
+- Install the [Bicep registry module](https://www.nuget.org/packages/Azure.Bicep.RegistryModuleTool/) tool (`brm`) by running:
   - `dotnet tool install --global Azure.Bicep.RegistryModuleTool`
 - If already installed, update the Bicep registry module tool to the latest version by running:
   - `dotnet tool update --global Azure.Bicep.RegistryModuleTool`
