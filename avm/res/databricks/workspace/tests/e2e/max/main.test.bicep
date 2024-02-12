@@ -23,7 +23,6 @@ param baseTime string = utcNow('u')
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-var AzureDatabricksEnterpriseAppObjectId = '#_AzureDatabricksEnterpriseAppObjectId_#'
 // ============ //
 // Dependencies //
 // ============ //
@@ -51,7 +50,6 @@ module nestedDependencies 'dependencies.bicep' = {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     keyVaultDiskName: 'dep-${namePrefix}-kve-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
-    AzureDatabricksEnterpriseAppObjectId: AzureDatabricksEnterpriseAppObjectId
   }
 }
 
