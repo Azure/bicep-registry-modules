@@ -1,13 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "1.10-experimental",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.19.5.34762",
-      "templateHash": "13506265071276900614"
+      "version": "0.25.53.49325",
+      "templateHash": "12403473348012504908"
     },
     "name": "Azure Event-Hub",
     "description": "This module deploys Microsoft.data event clusters, event namespaces, event hubs and associated configurations.",
@@ -841,14 +840,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "16560230268819578887"
+              "version": "0.25.53.49325",
+              "templateHash": "6841447314704027454"
             }
           },
           "parameters": {
@@ -862,14 +859,8 @@
               "type": "array"
             }
           },
-          "resources": {
-            "namespace": {
-              "existing": true,
-              "type": "Microsoft.EventHub/namespaces",
-              "apiVersion": "2022-10-01-preview",
-              "name": "[parameters('namespaceName')]"
-            },
-            "namespaceAuthorizationRule": {
+          "resources": [
+            {
               "type": "Microsoft.EventHub/namespaces/authorizationRules",
               "apiVersion": "2022-10-01-preview",
               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
@@ -877,7 +868,7 @@
                 "rights": "[parameters('rights')]"
               }
             }
-          }
+          ]
         }
       },
       "dependsOn": [
@@ -919,14 +910,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "10570742932814464407"
+              "version": "0.25.53.49325",
+              "templateHash": "15231806415130166596"
             }
           },
           "parameters": {
@@ -971,14 +960,8 @@
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
             }
           },
-          "resources": {
-            "namespace": {
-              "existing": true,
-              "type": "Microsoft.EventHub/namespaces",
-              "apiVersion": "2022-10-01-preview",
-              "name": "[parameters('namespaceName')]"
-            },
-            "roleAssignment": {
+          "resources": [
+            {
               "copy": {
                 "name": "roleAssignment",
                 "count": "[length(parameters('principalIds'))]"
@@ -994,7 +977,7 @@
                 "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
               }
             }
-          }
+          ]
         }
       },
       "dependsOn": [
@@ -1027,14 +1010,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "14264603254199121226"
+              "version": "0.25.53.49325",
+              "templateHash": "6888930645737979048"
             }
           },
           "parameters": {
@@ -1049,14 +1030,8 @@
               "defaultValue": ""
             }
           },
-          "resources": {
-            "namespace": {
-              "existing": true,
-              "type": "Microsoft.EventHub/namespaces",
-              "apiVersion": "2022-10-01-preview",
-              "name": "[parameters('namespaceName')]"
-            },
-            "disasterRecoveryConfig": {
+          "resources": [
+            {
               "type": "Microsoft.EventHub/namespaces/disasterRecoveryConfigs",
               "apiVersion": "2022-10-01-preview",
               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
@@ -1065,7 +1040,7 @@
                 "alternateName": "alternateName"
               }
             }
-          }
+          ]
         }
       },
       "dependsOn": [
@@ -1143,14 +1118,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "168464517665905008"
+              "version": "0.25.53.49325",
+              "templateHash": "1562586707201605786"
             }
           },
           "parameters": {
@@ -1239,20 +1212,14 @@
               }
             }
           },
-          "resources": {
-            "namespace": {
-              "existing": true,
-              "type": "Microsoft.EventHub/namespaces",
-              "apiVersion": "2022-10-01-preview",
-              "name": "[parameters('namespaceName')]"
-            },
-            "eventHub": {
+          "resources": [
+            {
               "type": "Microsoft.EventHub/namespaces/eventhubs",
               "apiVersion": "2022-10-01-preview",
               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
               "properties": "[if(parameters('captureDescriptionEnabled'), variables('eventHubPropertiesWithCapture'), variables('eventHubPropertiesSimple'))]"
             },
-            "eventHub_roleAssignments": {
+            {
               "copy": {
                 "name": "eventHub_roleAssignments",
                 "count": "[length(parameters('roleAssignments'))]"
@@ -1290,14 +1257,12 @@
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "languageVersion": "1.10-experimental",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
-                    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.19.5.34762",
-                      "templateHash": "14896444724696374233"
+                      "version": "0.25.53.49325",
+                      "templateHash": "9474647522430459943"
                     }
                   },
                   "parameters": {
@@ -1345,20 +1310,8 @@
                       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
                     }
                   },
-                  "resources": {
-                    "namespace": {
-                      "existing": true,
-                      "type": "Microsoft.EventHub/namespaces",
-                      "apiVersion": "2022-10-01-preview",
-                      "name": "[parameters('namespaceName')]"
-                    },
-                    "eventHub": {
-                      "existing": true,
-                      "type": "Microsoft.EventHub/namespaces/eventhubs",
-                      "apiVersion": "2022-10-01-preview",
-                      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('eventHubName'))]"
-                    },
-                    "roleAssignment": {
+                  "resources": [
+                    {
                       "copy": {
                         "name": "roleAssignment",
                         "count": "[length(parameters('principalIds'))]"
@@ -1374,11 +1327,11 @@
                         "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
                       }
                     }
-                  }
+                  ]
                 }
               }
             }
-          }
+          ]
         }
       },
       "dependsOn": [
@@ -1414,14 +1367,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "3736679263237493437"
+              "version": "0.25.53.49325",
+              "templateHash": "2953236531163601879"
             }
           },
           "parameters": {
@@ -1438,20 +1389,8 @@
               "type": "array"
             }
           },
-          "resources": {
-            "namespace": {
-              "existing": true,
-              "type": "Microsoft.EventHub/namespaces",
-              "apiVersion": "2022-10-01-preview",
-              "name": "[parameters('namespaceName')]"
-            },
-            "eventhub": {
-              "existing": true,
-              "type": "Microsoft.EventHub/namespaces/eventhubs",
-              "apiVersion": "2022-10-01-preview",
-              "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('eventHubName'))]"
-            },
-            "eventHubAuthorizationRule": {
+          "resources": [
+            {
               "type": "Microsoft.EventHub/namespaces/eventhubs/authorizationRules",
               "apiVersion": "2022-10-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('eventHubName'), parameters('name'))]",
@@ -1459,7 +1398,7 @@
                 "rights": "[parameters('rights')]"
               }
             }
-          }
+          ]
         }
       },
       "dependsOn": [
@@ -1495,14 +1434,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "250162708936612016"
+              "version": "0.25.53.49325",
+              "templateHash": "6424959333559739642"
             }
           },
           "parameters": {
@@ -1519,20 +1456,8 @@
               "type": "string"
             }
           },
-          "resources": {
-            "namespace::eventhub": {
-              "existing": true,
-              "type": "Microsoft.EventHub/namespaces/eventhubs",
-              "apiVersion": "2022-10-01-preview",
-              "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('eventHubName'))]"
-            },
-            "namespace": {
-              "existing": true,
-              "type": "Microsoft.EventHub/namespaces",
-              "apiVersion": "2022-10-01-preview",
-              "name": "[parameters('namespaceName')]"
-            },
-            "consumerGroup": {
+          "resources": [
+            {
               "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
               "apiVersion": "2022-10-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('eventHubName'), parameters('name'))]",
@@ -1540,7 +1465,7 @@
                 "userMetadata": "[if(not(empty(parameters('userMetadata'))), parameters('userMetadata'), null())]"
               }
             }
-          }
+          ]
         }
       },
       "dependsOn": [
@@ -1588,14 +1513,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "1483698508983111743"
+              "version": "0.25.53.49325",
+              "templateHash": "17591765781632519234"
             }
           },
           "parameters": {
@@ -1624,14 +1547,8 @@
               "type": "array"
             }
           },
-          "resources": {
-            "namespace": {
-              "existing": true,
-              "type": "Microsoft.EventHub/namespaces",
-              "apiVersion": "2022-10-01-preview",
-              "name": "[parameters('namespaceName')]"
-            },
-            "namespace_diagnosticSettings": {
+          "resources": [
+            {
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
               "scope": "[format('Microsoft.EventHub/namespaces/{0}', parameters('namespaceName'))]",
@@ -1645,7 +1562,7 @@
                 "logs": "[parameters('logsSettings')]"
               }
             }
-          }
+          ]
         }
       },
       "dependsOn": [
@@ -1693,14 +1610,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "11271554108121564487"
+              "version": "0.25.53.49325",
+              "templateHash": "14212106487077477297"
             }
           },
           "parameters": {
@@ -1729,8 +1644,8 @@
               "type": "string"
             }
           },
-          "resources": {
-            "privateEndpoint::privateDnsZoneGroup": {
+          "resources": [
+            {
               "condition": "[not(empty(parameters('privateDnsZoneId')))]",
               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
               "apiVersion": "2022-05-01",
@@ -1746,16 +1661,10 @@
                 ]
               },
               "dependsOn": [
-                "privateEndpoint"
+                "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]"
               ]
             },
-            "namespace": {
-              "existing": true,
-              "type": "Microsoft.EventHub/namespaces",
-              "apiVersion": "2022-10-01-preview",
-              "name": "[parameters('namespaceName')]"
-            },
-            "privateEndpoint": {
+            {
               "type": "Microsoft.Network/privateEndpoints",
               "apiVersion": "2022-05-01",
               "name": "[parameters('name')]",
@@ -1769,7 +1678,7 @@
                 }
               }
             }
-          }
+          ]
         }
       },
       "dependsOn": [
