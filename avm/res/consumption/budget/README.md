@@ -110,6 +110,10 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
       'dummy@contoso.com'
     ]
     location: '<location>'
+    resourceGroupFilter: [
+      'rg-group1'
+      'rg-group2'
+    ]
     thresholds: [
       50
       75
@@ -148,6 +152,12 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
     },
     "location": {
       "value": "<location>"
+    },
+    "resourceGroupFilter": {
+      "value": [
+        "rg-group1",
+        "rg-group2"
+      ]
     },
     "thresholds": {
       "value": [
@@ -266,8 +276,10 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 | [`category`](#parameter-category) | string | The category of the budget, whether the budget tracks cost or usage. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`endDate`](#parameter-enddate) | string | The end date for the budget. If not provided, it will default to 10 years from the start date. |
+| [`filter`](#parameter-filter) | object | The filter to use for restricting which resources are considered within the budget. |
 | [`location`](#parameter-location) | string | Location deployment metadata. |
 | [`resetPeriod`](#parameter-resetperiod) | string | The time covered by a budget. Tracking of the amount will be reset based on the time grain. BillingMonth, BillingQuarter, and BillingAnnual are only supported by WD customers. |
+| [`resourceGroupFilter`](#parameter-resourcegroupfilter) | array | The list of resource groups that contain the resources that are to be considered within the budget. |
 | [`startDate`](#parameter-startdate) | string | The start date for the budget. Start date should be the first day of the month and cannot be in the past (except for the current month). |
 | [`thresholds`](#parameter-thresholds) | array | Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000. |
 
@@ -291,7 +303,6 @@ List of action group resource IDs that will receive the alert. Required if neith
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `contactEmails`
 
@@ -299,7 +310,6 @@ The list of email addresses to send the budget notification to when the threshol
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `contactRoles`
 
@@ -307,7 +317,6 @@ The list of contact roles to send the budget notification to when the thresholds
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `category`
 
@@ -340,6 +349,13 @@ The end date for the budget. If not provided, it will default to 10 years from t
 - Type: string
 - Default: `''`
 
+### Parameter: `filter`
+
+The filter to use for restricting which resources are considered within the budget.
+
+- Required: No
+- Type: object
+
 ### Parameter: `location`
 
 Location deployment metadata.
@@ -366,6 +382,14 @@ The time covered by a budget. Tracking of the amount will be reset based on the 
     'Quarterly'
   ]
   ```
+
+### Parameter: `resourceGroupFilter`
+
+The list of resource groups that contain the resources that are to be considered within the budget.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `startDate`
 
