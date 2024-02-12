@@ -45,7 +45,7 @@ This Bicep Module simplifies the deployment of a Azure App Configuration resourc
 An example of how to deploy Azure App Configuration resource using the minimum required parameters.
 
 ```bicep
-module appConfiguration 'br/public:app/app-configuration:1.1.2' = {
+module appConfiguration 'br/public:app/app-configuration:1.1.3' = {
   name: 'appconf-${uniqueString(deployment().name, location)}-deployment'
   params: {
     prefix: 'appconf-test01'
@@ -62,7 +62,7 @@ output appConfigurationResourceId string = appConfiguration.outputs.id
 An example of how to deploy a _Standard_ SKU enabled app configuration along with _role assignments_ access.
 
 ```bicep
-module appConfiguration 'br/public:app/app-configuration:1.1.2' = {
+module appConfiguration 'br/public:app/app-configuration:1.1.3' = {
   name: 'appconf-${uniqueString(deployment().name, location)}-deployment'
   params: {
     prefix: 'appconf-test02'
@@ -91,7 +91,7 @@ output appConfigurationResourceId string = appConfiguration.outputs.id
 An example of how to deploy app configuration along with multiple geo located _replicas_ and _private endpoints_.
 
 ```bicep
-module appConfiguration 'br/public:app/app-configuration:1.1.2' = {
+module appConfiguration 'br/public:app/app-configuration:1.1.3' = {
   name: 'appconf-${uniqueString(deployment().name, location)}-deployment'
   params: {
     prefix: 'appconf-test03'
@@ -137,7 +137,7 @@ output systemAssignedIdentityPrincipalId string = appConfigurationResourceId.out
 An example of how to deploy _key based data encryption_ enabled app configuration. Please note `userAssignedIdentity` must have added to keyvault access policies with `get`, `wrapkey` and `unwrapkey` permissions.
 
 ```bicep
-module appConfiguration 'br/public:app/app-configuration:1.1.2' = {
+module appConfiguration 'br/public:app/app-configuration:1.1.3' = {
   name: 'appconf-${uniqueString(deployment().name, location)}-deployment'
   params: {
     prefix: 'appconf-test05'
