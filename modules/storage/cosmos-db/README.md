@@ -69,7 +69,7 @@ It allows for the creation of a new Cosmos DB account or use of an existing one 
 An example of how to deploy Azure Cosmosdb Account with _Apache Cassanda backend_ using the minimum required parameters.
 
 ```bicep
-module cosmosDbAccount 'br/public:storage/cosmos-db:3.0.2' = {
+module cosmosDbAccount 'br/public:storage/cosmos-db:3.0.3' = {
  name: 'cosmosdb-${uniqueString(deployment().name, resourceGroup().location)}-deployment'
   params: {
     backendApi = 'cassandra'
@@ -84,7 +84,7 @@ output cosmosDbAccountResourceId string = cosmosDbAccount.outputs.id
 An example of how to deploy a _multi-region_ enabled cassandra backend Cosmosdb account along with access _role assignments_ and _zone redundancy_ for one of secondary locations.
 
 ```bicep
-module cosmosCassandraDb 'br/public:storage/cosmos-db:3.0.2' = {
+module cosmosCassandraDb 'br/public:storage/cosmos-db:3.0.3' = {
   name: 'cosmosdb-${uniqueString(deployment().name, resourceGroup().location)}-deployment'
   params: {
     location: 'eastus'
@@ -150,11 +150,11 @@ output cosmosCassandraDbResourceId string = cosmosCassandraDb.outputs.id
 ```
 
 > **Importanat note on setting up throughput parameters**<br><br>
-> 
+>
 > Throughtput can be povisioned for both Keyspaces and tables within it or just for Tables. Provisioned throughput at the keyspace level will be shared across all tables within the keyspace.
-> 
+>
 > You can optionally provision dedicated throughput for a table within a keyspace that has throughput provisioned. This dedicated throughput amount will not be shared with other tables in the keyspace and does not count towards the throughput you provisioned for the keyspace. This throughput amount will be billed in addition to the throughput amount you provisioned at the keyspace level.
-> 
+>
 > This is applicable for all other backend api type Cosmos DB account resources.
 
 ### Example 3
@@ -162,7 +162,7 @@ output cosmosCassandraDbResourceId string = cosmosCassandraDb.outputs.id
 An example of how to deploy a SQL Databses with Containers with _CORS Policies_, _totalThroughputLimit_ and different _defaultConsistencyLevel_ options.
 
 ```bicep
-module cosmosSqlDb 'br/public:storage/cosmos-db:3.0.2' = {
+module cosmosSqlDb 'br/public:storage/cosmos-db:3.0.3' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     name: 'cosmosdb-${uniqueString(deployment().name, location)}'
@@ -260,7 +260,7 @@ output cosmosSqlDbResourceId string = cosmosSqlDb.outputs.id
 An example of how to deploy a MongoDB Databases with collections with _CORS Policies_, extra non-default _capabilities_ options and with _systemAssigned managed identity_ enabled.
 
 ```bicep
-module cosmosMongoDb 'br/public:storage/cosmos-db:3.0.2' = {
+module cosmosMongoDb 'br/public:storage/cosmos-db:3.0.3' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'eastus'
@@ -321,7 +321,7 @@ output systemAssignedIdentityPrincipalId string = cosmosMongoDb.outputs.systemAs
 An example of how to deploy a Cosmmos DB Tables with networking IP and VNet firewall bypass rules.
 
 ```bicep
-module cosmosTable 'br/public:storage/cosmos-db:3.0.2' = {
+module cosmosTable 'br/public:storage/cosmos-db:3.0.3' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
@@ -367,7 +367,7 @@ output cosmosTableDbResourceId string = cosmosTable.outputs.id
 An example of how to deploy a Gremlin DB with graphs along with _private endpoints_.
 
 ```bicep
-module cosmosGremlinDb 'br/public:storage/cosmos-db:3.0.2' = {
+module cosmosGremlinDb 'br/public:storage/cosmos-db:3.0.3' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
@@ -419,7 +419,7 @@ output cosmosGremlinDbResourceId string = cosmosGremlinDb.outputs.id
 An example of how to deploy a Cosmos DB account with sqlRoleDefinitions and sqlRoleAssignments.
 
 ```bicep
-module cosmosDb 'br/public:storage/cosmos-db:3.0.2' = {
+module cosmosDb 'br/public:storage/cosmos-db:3.0.3' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
