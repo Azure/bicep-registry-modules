@@ -179,7 +179,7 @@ type inboundEndpointType = {
   @description('Optional. Location for all resources.')
   location: string?
 
-  @description('Optional.	Private IP address of the IP configuration.')
+  @description('Optional. Private IP address of the IP configuration.')
   privateIpAddress: string?
 
   @description('Optional. Private IP address allocation method.')
