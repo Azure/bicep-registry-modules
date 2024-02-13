@@ -288,8 +288,8 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
   scope: workspace
 }]
 
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-KeyVault-PrivateEndpoint-${index}'
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.3' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+  name: '${uniqueString(deployment().name, location)}-Databricks-PrivateEndpoint-${index}'
   params: {
     privateLinkServiceConnections: [
       {
@@ -330,6 +330,24 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = workspace.location
+
+@description('The resource ID of the managed resource group.')
+output managedResourceGroupId string = workspace.properties.managedResourceGroupId
+
+@description('The name of the managed resource group.')
+output managedResourceGroupName string = last(split(workspace.properties.managedResourceGroupId, '/'))
+
+@description('The name of the DBFS storage account.')
+output storageAccountName string = workspace.properties.parameters.storageAccountName.value
+
+@description('The resource ID of the DBFS storage account.')
+output storageAccountId string = resourceId(last(split(workspace.properties.managedResourceGroupId, '/')), 'microsoft.storage/storageAccounts', workspace.properties.parameters.storageAccountName.value)
+
+@description('The private endpoints for the Databricks Workspace.')
+output privateEndpoints array = [for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+  name: workspace_privateEndpoints[i].outputs.name
+  resourceId: workspace_privateEndpoints[i].outputs.resourceId
+}]
 
 // =============== //
 //   Definitions   //
