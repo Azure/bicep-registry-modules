@@ -65,7 +65,7 @@ This module requires the namespace 'Microsoft.DBforMySQL' to be registered  for 
 This example deploys a MySQL Single Server database.
 
 ```bicep
-module test01 'br/public:database/mysql-single-server:1.0.2' = {
+module test01 'br/public:database/mysql-single-server:1.0.3' = {
   name: 'test01-${serverName}'
   params: {
     prefix: 'mysql-test01'
@@ -81,7 +81,7 @@ module test01 'br/public:database/mysql-single-server:1.0.2' = {
 This example deploys a MySQL Single Server database with login and password with the sku name and firewall rules , server configurations and private endpoints.
 
 ```bicep
-module test02 'br/public:database/mysql-single-server:1.0.2' = {
+module test02 'br/public:database/mysql-single-server:1.0.3' = {
   name: 'mysqldb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     prefix: 'mysql-test02'
@@ -131,7 +131,7 @@ module test02 'br/public:database/mysql-single-server:1.0.2' = {
 This example deploys a MySQL Single Server database with Role Assignments.
 
 ```bicep
-module test03 'br/public:database/mysql-single-server:1.0.2' = {
+module test03 'br/public:database/mysql-single-server:1.0.3' = {
   name: 'mysqldb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     prefix: 'mysql-test04'
