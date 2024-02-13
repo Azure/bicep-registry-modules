@@ -5,10 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "10338536974732609931"
+      "templateHash": "487696193878938358"
     },
     "name": "Management Groups",
-    "description": "This template will prepare the management group structure based on the provided parameter.\r\n\r\nThis module has some known **limitations**:\r\n- It's not possible to change the display name of the root management group (the one that has the tenant GUID as ID)\r\n- It can't manage the Root (/) management group",
+    "description": "This template will prepare the management group structure based on the provided parameter.\n\nThis module has some known **limitations**:\n- It's not possible to change the display name of the root management group (the one that has the tenant GUID as ID)\n- It can't manage the Root (/) management group",
     "owner": "Azure/module-maintainers"
   },
   "parameters": {
@@ -53,6 +53,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
       "name": "[format('46d3xbcp.res.management-managementgroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",
         "template": {
