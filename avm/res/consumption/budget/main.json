@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "15524934084673736158"
+      "version": "0.25.3.34343",
+      "templateHash": "12939685653321530130"
     },
     "name": "Consumption Budgets",
     "description": "This module deploys a Consumption Budget for Subscriptions.",
@@ -81,30 +81,30 @@
     },
     "contactEmails": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The list of email addresses to send the budget notification to when the thresholds are exceeded. Required if neither `contactRoles` nor `actionGroups` was provided."
       }
     },
     "contactRoles": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The list of contact roles to send the budget notification to when the thresholds are exceeded. Required if neither `contactEmails` nor `actionGroups` was provided."
       }
     },
     "actionGroups": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Conditional. List of action group resource IDs that will receive the alert. Required if neither `contactEmails` nor `contactEmails` was provided."
       }
     },
     "filter": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
-        "description": "Conditional.  The filter to use for restricting which resources are considered within the budget."
+        "description": "Optional. The filter to use for restricting which resources are considered within the budget."
       }
     },
     "resourceGroupFilter": {
@@ -114,7 +114,7 @@
       },
       "defaultValue": [],
       "metadata": {
-        "description": "Conditional.  The list of resource groups that contain the resources that are to be considered within the budget.  Only considered if `filter` is not specified."
+        "description": "Optional. The list of resource groups that contain the resources that are to be considered within the budget."
       }
     },
     "enableTelemetry": {
@@ -142,23 +142,14 @@
             "enabled": true,
             "operator": "GreaterThan",
             "threshold": "[parameters('thresholds')[copyIndex('notificationsArray')]]",
-            "contactEmails": "[if(not(empty(parameters('contactEmails'))), array(parameters('contactEmails')), null())]",
-            "contactRoles": "[if(not(empty(parameters('contactRoles'))), array(parameters('contactRoles')), null())]",
-            "contactGroups": "[if(not(empty(parameters('actionGroups'))), array(parameters('actionGroups')), null())]",
+            "contactEmails": "[parameters('contactEmails')]",
+            "contactRoles": "[parameters('contactRoles')]",
+            "contactGroups": "[parameters('actionGroups')]",
             "thresholdType": "Actual"
           }
         }
       }
-    ],
-    "notifications": "[json(replace(replace(replace(string(variables('notificationsArray')), '[{', '{'), '}]', '}'), '}},{', '},'))]",
-    "filterByResourceGroups": {
-      "dimensions": {
-        "name": "ResourceGroupName",
-        "operator": "In",
-        "values": "[parameters('resourceGroupFilter')]"
-      }
-    },
-    "budgetFilter": "[if(not(empty(parameters('filter'))), parameters('filter'), if(not(empty(parameters('resourceGroupFilter'))), variables('filterByResourceGroups'), createObject()))]"
+    ]
   },
   "resources": {
     "avmTelemetry": {
@@ -194,8 +185,8 @@
           "startDate": "[parameters('startDate')]",
           "endDate": "[parameters('endDate')]"
         },
-        "filter": "[variables('budgetFilter')]",
-        "notifications": "[variables('notifications')]"
+        "filter": "[coalesce(parameters('filter'), if(not(empty(parameters('resourceGroupFilter'))), createObject('dimensions', createObject('name', 'ResourceGroupName', 'operator', 'In', 'values', parameters('resourceGroupFilter'))), createObject()))]",
+        "notifications": "[json(replace(replace(replace(string(variables('notificationsArray')), '[{', '{'), '}]', '}'), '}},{', '},'))]"
       }
     }
   },
