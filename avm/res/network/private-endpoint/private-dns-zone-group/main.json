@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.3.34343",
-      "templateHash": "10284814318909891594"
+      "version": "0.25.53.49325",
+      "templateHash": "11244630631275470040"
     },
     "name": "Private Endpoint Private DNS Zone Groups",
     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",

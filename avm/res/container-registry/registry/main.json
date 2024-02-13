@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.3.34343",
-      "templateHash": "13876987491487815663"
+      "version": "0.25.53.49325",
+      "templateHash": "3316618601179718411"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR).",
@@ -935,8 +935,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "311251107602369690"
+              "version": "0.25.53.49325",
+              "templateHash": "10714256463183699741"
             },
             "name": "Azure Container Registry (ACR) Replications",
             "description": "This module deploys an Azure Container Registry (ACR) Replication.",
@@ -1083,8 +1083,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "512724197528542657"
+              "version": "0.25.53.49325",
+              "templateHash": "6942960102258463312"
             },
             "name": "Container Registries Cache",
             "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache)).",
@@ -1224,8 +1224,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "12165935849421151394"
+              "version": "0.25.53.49325",
+              "templateHash": "3986666280667981658"
             },
             "name": "Azure Container Registry (ACR) Webhooks",
             "description": "This module deploys an Azure Container Registry (ACR) Webhook.",

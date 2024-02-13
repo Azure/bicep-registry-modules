@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.3.34343",
-      "templateHash": "18107256682672047006"
+      "version": "0.25.53.49325",
+      "templateHash": "13095982235255644248"
     },
     "name": "Event Grid Domains",
     "description": "This module deploys an Event Grid Domain.",
@@ -684,8 +684,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "15101614587967195893"
+              "version": "0.25.53.49325",
+              "templateHash": "3346602576302560002"
             },
             "name": "Event Grid Domain Topics",
             "description": "This module deploys an Event Grid Domain Topic.",

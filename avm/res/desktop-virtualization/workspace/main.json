@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.3.34343",
-      "templateHash": "895566575656984974"
+      "version": "0.25.53.49325",
+      "templateHash": "766515891271497405"
     },
     "name": "Workspace",
     "description": "This module deploys an Azure Virtual Desktop Workspace.",

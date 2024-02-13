@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.3.34343",
-      "templateHash": "8217097608182367560"
+      "version": "0.25.53.49325",
+      "templateHash": "14608365683973460476"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -841,8 +841,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "7630540187280552444"
+              "version": "0.25.53.49325",
+              "templateHash": "3371007626132936503"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account.",
@@ -956,8 +956,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.3.34343",
-                      "templateHash": "16712825000255049285"
+                      "version": "0.25.53.49325",
+                      "templateHash": "15407611441750959399"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
@@ -1196,8 +1196,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "13014525800203339858"
+              "version": "0.25.53.49325",
+              "templateHash": "5538920636867167805"
             },
             "name": "DocumentDB Database Account MongoDB Databases",
             "description": "This module deploys a MongoDB Database within a CosmosDB Account.",
@@ -1299,8 +1299,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.3.34343",
-                      "templateHash": "2137545087815156471"
+                      "version": "0.25.53.49325",
+                      "templateHash": "12727124123085683569"
                     },
                     "name": "DocumentDB Database Account MongoDB Database Collections",
                     "description": "This module deploys a MongoDB Database Collection.",
@@ -1455,8 +1455,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "2620116048163770831"
+              "version": "0.25.53.49325",
+              "templateHash": "5227237801347888732"
             },
             "name": "DocumentDB Database Account Gremlin Databases",
             "description": "This module deploys a Gremlin Database within a CosmosDB Account.",
@@ -1559,8 +1559,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.3.34343",
-                      "templateHash": "11800458048584748762"
+                      "version": "0.25.53.49325",
+                      "templateHash": "4078462189838201163"
                     },
                     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
                     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph.",

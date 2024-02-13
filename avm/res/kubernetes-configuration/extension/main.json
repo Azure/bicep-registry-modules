@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.3.34343",
-      "templateHash": "5816843205020067570"
+      "version": "0.25.53.49325",
+      "templateHash": "7131693872347776073"
     },
     "name": "Kubernetes Configuration Extensions",
     "description": "This module deploys a Kubernetes Configuration Extension.",

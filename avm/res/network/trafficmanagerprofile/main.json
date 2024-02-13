@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.3.34343",
-      "templateHash": "9652571930234249515"
+      "version": "0.25.53.49325",
+      "templateHash": "1216778685608382825"
     },
     "name": "Traffic Manager Profiles",
     "description": "This module deploys a Traffic Manager Profile.",

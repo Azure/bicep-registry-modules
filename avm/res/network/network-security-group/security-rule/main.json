@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.3.34343",
-      "templateHash": "13187471718478298127"
+      "version": "0.25.53.49325",
+      "templateHash": "7870858269129613686"
     },
     "name": "Network Security Group (NSG) Security Rules",
     "description": "This module deploys a Network Security Group (NSG) Security Rule.",

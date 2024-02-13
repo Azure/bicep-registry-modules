@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.3.34343",
-      "templateHash": "1289206132616905028"
+      "version": "0.25.53.49325",
+      "templateHash": "789212919897780335"
     },
     "name": "Public DNS Zone TXT record",
     "description": "This module deploys a Public DNS Zone TXT record.",

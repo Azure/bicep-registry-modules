@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.3.34343",
-      "templateHash": "12007982294304437446"
+      "version": "0.25.53.49325",
+      "templateHash": "4216984327038707510"
     },
     "name": "Network Security Groups",
     "description": "This module deploys a Network security Group (NSG).",
@@ -446,8 +446,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "13187471718478298127"
+              "version": "0.25.53.49325",
+              "templateHash": "7870858269129613686"
             },
             "name": "Network Security Group (NSG) Security Rules",
             "description": "This module deploys a Network Security Group (NSG) Security Rule.",

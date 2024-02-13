@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.3.34343",
-      "templateHash": "6679462207730177782"
+      "version": "0.25.53.49325",
+      "templateHash": "3223894986476226816"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account.",
@@ -808,8 +808,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "16974084768052633136"
+              "version": "0.25.53.49325",
+              "templateHash": "4277151232699761913"
             },
             "name": "Automation Account Modules",
             "description": "This module deploys an Azure Automation Account Module.",
@@ -950,8 +950,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "18016608964363129425"
+              "version": "0.25.53.49325",
+              "templateHash": "15445244253525012229"
             },
             "name": "Automation Account Schedules",
             "description": "This module deploys an Azure Automation Account Schedule.",
@@ -1129,8 +1129,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "496131173776219979"
+              "version": "0.25.53.49325",
+              "templateHash": "16141039584915226874"
             },
             "name": "Automation Account Runbooks",
             "description": "This module deploys an Azure Automation Account Runbook.",
@@ -1329,8 +1329,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "4332102246287281922"
+              "version": "0.25.53.49325",
+              "templateHash": "4183701486282199551"
             },
             "name": "Automation Account Job Schedules",
             "description": "This module deploys an Azure Automation Account Job Schedule.",
@@ -1457,8 +1457,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "13384785842177007095"
+              "version": "0.25.53.49325",
+              "templateHash": "15605588341437540157"
             },
             "name": "Automation Account Variables",
             "description": "This module deploys an Azure Automation Account Variable.",
@@ -1572,8 +1572,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "11663267646157554374"
+              "version": "0.25.53.49325",
+              "templateHash": "14301767156435143002"
             },
             "name": "Log Analytics Workspace Linked Services",
             "description": "This module deploys a Log Analytics Workspace Linked Service.",
@@ -1891,8 +1891,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "2070824060765641934"
+              "version": "0.25.53.49325",
+              "templateHash": "6467431009828483672"
             },
             "name": "Automation Account Software Update Configurations",
             "description": "This module deploys an Azure Automation Account Software Update Configuration.",

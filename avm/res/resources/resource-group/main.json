@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.3.34343",
-      "templateHash": "9270283048409650013"
+      "version": "0.25.53.49325",
+      "templateHash": "4726997439042123327"
     },
     "name": "Resource Groups",
     "description": "This module deploys a Resource Group.",
@@ -202,8 +202,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "13813957460566649187"
+              "version": "0.25.53.49325",
+              "templateHash": "7668050384482764751"
             }
           },
           "definitions": {
@@ -288,8 +288,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "14770261067831997923"
+              "version": "0.25.53.49325",
+              "templateHash": "3156241559834375483"
             }
           },
           "definitions": {

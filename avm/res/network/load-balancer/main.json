@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.3.34343",
-      "templateHash": "17985136477940625583"
+      "version": "0.25.53.49325",
+      "templateHash": "5849926741790594100"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer.",
@@ -524,8 +524,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "3996360677853318769"
+              "version": "0.25.53.49325",
+              "templateHash": "16244632442901566911"
             },
             "name": "Load Balancer Backend Address Pools",
             "description": "This module deploys a Load Balancer Backend Address Pools.",
@@ -661,8 +661,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "6626472352066370240"
+              "version": "0.25.53.49325",
+              "templateHash": "17788406033422026149"
             },
             "name": "Load Balancer Inbound NAT Rules",
             "description": "This module deploys a Load Balancer Inbound NAT Rules.",

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.3.34343",
-      "templateHash": "14020843066497691877"
+      "version": "0.25.53.49325",
+      "templateHash": "12917492270750322539"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace.",
@@ -606,8 +606,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "4452476109501677814"
+              "version": "0.25.53.49325",
+              "templateHash": "4862843187650272248"
             },
             "name": "Log Analytics Workspace Storage Insight Configs",
             "description": "This module deploys a Log Analytics Workspace Storage Insight Config.",
@@ -746,8 +746,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "11663267646157554374"
+              "version": "0.25.53.49325",
+              "templateHash": "14301767156435143002"
             },
             "name": "Log Analytics Workspace Linked Services",
             "description": "This module deploys a Log Analytics Workspace Linked Service.",
@@ -868,8 +868,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "9809191679262736952"
+              "version": "0.25.53.49325",
+              "templateHash": "6713282874166856483"
             },
             "name": "Log Analytics Workspace Linked Storage Accounts",
             "description": "This module deploys a Log Analytics Workspace Linked Storage Account.",
@@ -983,8 +983,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "3250635283354969176"
+              "version": "0.25.53.49325",
+              "templateHash": "16347089515886811904"
             },
             "name": "Log Analytics Workspace Saved Searches",
             "description": "This module deploys a Log Analytics Workspace Saved Search.",
@@ -1143,8 +1143,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "5056330226963514962"
+              "version": "0.25.53.49325",
+              "templateHash": "12543023571728523937"
             },
             "name": "Log Analytics Workspace Data Exports",
             "description": "This module deploys a Log Analytics Workspace Data Export.",
@@ -1270,8 +1270,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "11188899192251009161"
+              "version": "0.25.53.49325",
+              "templateHash": "14032975851567807564"
             },
             "name": "Log Analytics Workspace Datasources",
             "description": "This module deploys a Log Analytics Workspace Data Source.",
@@ -1501,8 +1501,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "9181828459478566728"
+              "version": "0.25.53.49325",
+              "templateHash": "4932423807790181892"
             },
             "name": "Log Analytics Workspace Tables",
             "description": "This module deploys a Log Analytics Workspace Table.",

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.3.34343",
-      "templateHash": "17738501393807421068"
+      "version": "0.25.53.49325",
+      "templateHash": "2397736043296643387"
     },
     "name": "Batch Accounts",
     "description": "This module deploys a Batch Account.",
