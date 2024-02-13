@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "14336555752634825899"
+      "templateHash": "8700281441025836130"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -588,6 +588,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('privateEndpoint', '2023-04-01', 'full').location]"
+    },
+    "groupId": {
+      "type": "string",
+      "metadata": {
+        "description": "The group Id for the private endpoint Group."
+      },
+      "value": "[if(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties.groupIds[0], reference('privateEndpoint').privateLinkServiceConnections[0].properties.groupIds[0])]"
     }
   }
 }

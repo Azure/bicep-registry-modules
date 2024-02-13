@@ -7,6 +7,7 @@ param name string
 
 @description('Required. Kind of the Cognitive Services. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
 @allowed([
+  'AIServices'
   'AnomalyDetector'
   'Bing.Autosuggest.v7'
   'Bing.CustomSearch'
@@ -16,16 +17,22 @@ param name string
   'CognitiveServices'
   'ComputerVision'
   'ContentModerator'
+  'ContentSafety'
+  'ConversationalLanguageUnderstanding'
   'CustomVision.Prediction'
   'CustomVision.Training'
   'Face'
   'FormRecognizer'
+  'HealthInsights'
   'ImmersiveReader'
   'Internal.AllInOne'
   'LUIS'
   'LUIS.Authoring'
+  'LanguageAuthoring'
+  'MetricsAdvisor'
+  'OpenAI'
   'Personalizer'
-  'QnAMaker'
+  'QnAMaker.v2'
   'SpeechServices'
   'TextAnalytics'
   'TextTranslation'
@@ -189,7 +196,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   scope: resourceGroup(split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2], split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4])
 }
 
-resource cognitiveService 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
+resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   name: name
   kind: kind
   identity: identity

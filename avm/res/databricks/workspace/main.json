@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "2736010804297258797"
+      "templateHash": "7710672223855991692"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace.",
@@ -818,7 +818,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-KeyVault-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-Databricks-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -888,8 +888,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "2821141217598568122"
+              "version": "0.24.24.22086",
+              "templateHash": "5518855230364102370"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -938,7 +938,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -1016,7 +1016,7 @@
                       "privateIPAddress": {
                         "type": "string",
                         "metadata": {
-                          "description": "Required. A private ip address obtained from the private endpoint's subnet."
+                          "description": "Required. A private IP address obtained from the private endpoint's subnet."
                         }
                       }
                     },
@@ -1119,7 +1119,7 @@
                   "fqdn": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. Fqdn that resolves to private endpoint ip address."
+                      "description": "Required. Fqdn that resolves to private endpoint IP address."
                     }
                   },
                   "ipAddresses": {
@@ -1128,7 +1128,7 @@
                       "type": "string"
                     },
                     "metadata": {
-                      "description": "Required. A list of private ip addresses of the private endpoint."
+                      "description": "Required. A list of private IP addresses of the private endpoint."
                     }
                   }
                 }
@@ -1254,7 +1254,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.3.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1359,8 +1359,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "18168683629401652671"
+                      "version": "0.24.24.22086",
+                      "templateHash": "9321937464667207030"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -1508,6 +1508,47 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('workspace', '2023-02-01', 'full').location]"
+    },
+    "managedResourceGroupId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the managed resource group."
+      },
+      "value": "[reference('workspace').managedResourceGroupId]"
+    },
+    "managedResourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the managed resource group."
+      },
+      "value": "[last(split(reference('workspace').managedResourceGroupId, '/'))]"
+    },
+    "storageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the DBFS storage account."
+      },
+      "value": "[reference('workspace').parameters.storageAccountName.value]"
+    },
+    "storageAccountId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the DBFS storage account."
+      },
+      "value": "[resourceId(last(split(reference('workspace').managedResourceGroupId, '/')), 'microsoft.storage/storageAccounts', reference('workspace').parameters.storageAccountName.value)]"
+    },
+    "privateEndpoints": {
+      "type": "array",
+      "metadata": {
+        "description": "The private endpoints for the Databricks Workspace."
+      },
+      "copy": {
+        "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
+        "input": {
+          "name": "[reference(format('workspace_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('workspace_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]"
+        }
+      }
     }
   }
 }
