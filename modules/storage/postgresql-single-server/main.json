@@ -1,13 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "1.10-experimental",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.19.5.34762",
-      "templateHash": "16855669211188020065"
+      "version": "0.25.53.49325",
+      "templateHash": "1662678431898818602"
     },
     "name": "PostgreSQL Single Server",
     "description": "This module deploys PostgreSQL Single Server (Microsoft.DBforPostgreSQL/servers) and optionally available integrations.",
@@ -199,11 +198,11 @@
       "properties": {
         "name": {
           "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
           "metadata": {
             "description": "The resource name."
-          },
-          "maxLength": 128,
-          "minLength": 1
+          }
         },
         "startIpAddress": {
           "type": "string",
@@ -224,11 +223,11 @@
       "properties": {
         "name": {
           "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
           "metadata": {
             "description": "The resource name."
-          },
-          "maxLength": 128,
-          "minLength": 1
+          }
         },
         "ignoreMissingVnetServiceEndpoint": {
           "type": "bool",
@@ -289,11 +288,11 @@
     "serverName": {
       "type": "string",
       "defaultValue": "[parameters('name')]",
+      "minLength": 3,
+      "maxLength": 63,
       "metadata": {
         "description": "Optional. Override the name of the server."
-      },
-      "maxLength": 63,
-      "minLength": 3
+      }
     },
     "tags": {
       "type": "object",
@@ -310,17 +309,17 @@
     },
     "administratorLoginPassword": {
       "type": "securestring",
+      "minLength": 8,
+      "maxLength": 128,
       "metadata": {
         "description": "Required. The administrator login password for the SQL server. Can only be specified when the server is being created."
-      },
-      "maxLength": 128,
-      "minLength": 8
+      }
     },
     "backupRetentionDays": {
       "type": "int",
       "defaultValue": 35,
-      "maxValue": 35,
       "minValue": 7,
+      "maxValue": 35,
       "metadata": {
         "description": "Optional. The number of days a backup is retained."
       }
@@ -707,14 +706,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "12308055348995252367"
+              "version": "0.25.53.49325",
+              "templateHash": "7758610775852434142"
             }
           },
           "parameters": {
@@ -757,14 +754,8 @@
             },
             "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName')))]"
           },
-          "resources": {
-            "postgresServer": {
-              "existing": true,
-              "type": "Microsoft.DBforPostgreSQL/servers",
-              "apiVersion": "2017-12-01",
-              "name": "[parameters('serverName')]"
-            },
-            "roleAssignment": {
+          "resources": [
+            {
               "copy": {
                 "name": "roleAssignment",
                 "count": "[length(parameters('principalIds'))]"
@@ -780,7 +771,7 @@
                 "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
               }
             }
-          }
+          ]
         }
       },
       "dependsOn": [
@@ -809,14 +800,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "17584855190782240496"
+              "version": "0.25.53.49325",
+              "templateHash": "15210835296193665604"
             }
           },
           "definitions": {
