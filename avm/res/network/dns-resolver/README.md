@@ -388,6 +388,7 @@ Inbound Endpoints for DNS Private Resolver.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`location`](#parameter-inboundendpointslocation) | string | Location for all resources. |
+| [`privateIpAddress`](#parameter-inboundendpointsprivateipaddress) | string | Private IP address of the IP configuration. |
 | [`privateIpAllocationMethod`](#parameter-inboundendpointsprivateipallocationmethod) | string | Private IP address allocation method. |
 | [`tags`](#parameter-inboundendpointstags) | object | Tags for the resource. |
 
@@ -408,6 +409,13 @@ The reference to the subnet bound to the IP configuration.
 ### Parameter: `inboundEndpoints.location`
 
 Location for all resources.
+
+- Required: No
+- Type: string
+
+### Parameter: `inboundEndpoints.privateIpAddress`
+
+Private IP address of the IP configuration.
 
 - Required: No
 - Type: string
