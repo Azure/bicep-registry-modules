@@ -168,11 +168,6 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
         } : {
           useSystemAssignedIdentity: empty(customerManagedKey.?userAssignedIdentityResourceId)
         }
-
-        identity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? {
-          userAssignedIdentity: cMKUserAssignedIdentity.id
-        } : null
-
         key: {
           keyVaultUrl: cMKKeyVault::cMKKey.properties.keyUri
           name: customerManagedKey!.keyName
