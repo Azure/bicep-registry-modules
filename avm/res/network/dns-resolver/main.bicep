@@ -105,7 +105,6 @@ module dnsResolver_inboundEndpoints 'inbound-endpoint/main.bicep' = [for (inboun
     subnetResourceId: inboundEndpoint.subnetResourceId
     privateIpAddress: inboundEndpoint.?privateIpAddress
     privateIpAllocationMethod: inboundEndpoint.?privateIpAllocationMethod
-
   }
 }]
 
