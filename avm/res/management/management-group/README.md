@@ -14,6 +14,7 @@ This module has some known **limitations**:
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -27,7 +28,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/management.management-group:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/management/management-group:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -43,13 +44,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module managementGroup 'br:bicep/modules/management.management-group:1.0.0' = {
+module managementGroup 'br/public:avm/res/management/management-group:<version>' = {
   name: '${uniqueString(deployment().name)}-test-mmgmin'
   params: {
     // Required parameters
     name: 'mmgmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -71,8 +72,8 @@ module managementGroup 'br:bicep/modules/management.management-group:1.0.0' = {
       "value": "mmgmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -91,14 +92,14 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module managementGroup 'br:bicep/modules/management.management-group:1.0.0' = {
+module managementGroup 'br/public:avm/res/management/management-group:<version>' = {
   name: '${uniqueString(deployment().name)}-test-mmgmax'
   params: {
     // Required parameters
     name: 'mmgmax001'
     // Non-required parameters
     displayName: 'Test MG'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     parentId: '<parentId>'
   }
 }
@@ -124,8 +125,8 @@ module managementGroup 'br:bicep/modules/management.management-group:1.0.0' = {
     "displayName": {
       "value": "Test MG"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "parentId": {
       "value": "<parentId>"
@@ -147,14 +148,14 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module managementGroup 'br:bicep/modules/management.management-group:1.0.0' = {
+module managementGroup 'br/public:avm/res/management/management-group:<version>' = {
   name: '${uniqueString(deployment().name)}-test-mmgwaf'
   params: {
     // Required parameters
     name: 'mmgwaf001'
     // Non-required parameters
     displayName: 'Test MG'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     parentId: '<parentId>'
   }
 }
@@ -180,8 +181,8 @@ module managementGroup 'br:bicep/modules/management.management-group:1.0.0' = {
     "displayName": {
       "value": "Test MG"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "parentId": {
       "value": "<parentId>"
@@ -207,7 +208,7 @@ module managementGroup 'br:bicep/modules/management.management-group:1.0.0' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`displayName`](#parameter-displayname) | string | The friendly name of the management group. If no value is passed then this field will be set to the group ID. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location deployment metadata. |
 | [`parentId`](#parameter-parentid) | string | The management group parent ID. Defaults to current scope. |
 
@@ -226,9 +227,9 @@ The friendly name of the management group. If no value is passed then this field
 - Type: string
 - Default: `''`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -281,3 +282,7 @@ $TopMGID = "<The group ID of the management group here>"
 New-AzRoleAssignment -ObjectId $PrincipalID -Scope "/" -RoleDefinitionName "Automation Job Operator"
 New-AzRoleAssignment -ObjectId $PrincipalID -Scope "/providers/Microsoft.Management/managementGroups/$TopMGID" -RoleDefinitionName "Management Group Contributor"
 ```
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
