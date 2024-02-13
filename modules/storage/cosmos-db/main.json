@@ -1,13 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "1.10-experimental",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.19.5.34762",
-      "templateHash": "15356301695359649663"
+      "version": "0.25.53.49325",
+      "templateHash": "1489180575433166231"
     },
     "name": "Azure Cosmos DB",
     "description": "Bicep module for simplified deployment of Cosmos DB; enables VNet integration and offers flexible configuration options.",
@@ -124,10 +123,10 @@
         },
         "throughput": {
           "type": "int",
+          "minValue": 400,
           "metadata": {
             "description": "  When enableAutoScale is set to false, this parameter is the static throughput capability. 400 RU/s is the minimum for production workloads and must be set in increments of 100. The maxium is 100,000 unless a higher limit is requested via Azure Support.\n  When enableAutoScale is set to true, this parameter is the maximum of the autoscaled throughput capability. It would scale down to a minimum of 10% of this max throughput based on usage. It ranges from 1000 to 100,000 inclusive.\n  "
-          },
-          "minValue": 400
+          }
         }
       },
       "metadata": {
@@ -283,8 +282,7 @@
           "allowedValues": [
             "Hash",
             "Range",
-            "Spatial",
-            null
+            "Spatial"
           ],
           "nullable": true,
           "metadata": {
@@ -306,8 +304,7 @@
             "Number",
             "Point",
             "Polygon",
-            "String",
-            null
+            "String"
           ],
           "nullable": true,
           "metadata": {
@@ -355,8 +352,7 @@
           "type": "string",
           "allowedValues": [
             "ascending",
-            "descending",
-            null
+            "descending"
           ],
           "nullable": true,
           "metadata": {
@@ -384,8 +380,7 @@
             "LineString",
             "MultiPolygon",
             "Point",
-            "Polygon",
-            null
+            "Polygon"
           ],
           "nullable": true,
           "metadata": {
@@ -491,8 +486,7 @@
           "type": "string",
           "allowedValues": [
             "Custom",
-            "LastWriterWins",
-            null
+            "LastWriterWins"
           ],
           "nullable": true,
           "metadata": {
@@ -512,8 +506,7 @@
           "allowedValues": [
             "Hash",
             "MultiHash",
-            "Range",
-            null
+            "Range"
           ],
           "nullable": true,
           "metadata": {
@@ -867,8 +860,8 @@
         "maxStalenessPrefix": {
           "type": "int",
           "nullable": true,
-          "maxValue": 2147483647,
           "minValue": 10,
+          "maxValue": 2147483647,
           "metadata": {
             "description": "  When used with the Bounded Staleness consistency level, this value represents the time amount of staleness (in seconds) tolerated.\n  Required only when defaultConsistencyPolicy is set to 'BoundedStaleness'.\n  Valid ranges:\n  - Single Region: 10 to 2147483647\n  - Multi Region: 100000 to 2147483647.\n  "
           }
@@ -876,8 +869,8 @@
         "maxIntervalInSeconds": {
           "type": "int",
           "nullable": true,
-          "maxValue": 86400,
           "minValue": 5,
+          "maxValue": 86400,
           "metadata": {
             "description": "  When used with the Bounded Staleness consistency level, this value represents the number of stale requests tolerated.\n  Required only when defaultConsistencyPolicy is set to 'BoundedStaleness'.\n  Valid ranges:\n  - Single Region: 5 to 84600.\n  - Multi Region: 300 to 86400.\n  "
           }
@@ -1500,13 +1493,13 @@
     "networkAclBypass": {
       "type": "string",
       "defaultValue": "AzureServices",
-      "metadata": {
-        "description": "Indicates what services are allowed to bypass firewall checks."
-      },
       "allowedValues": [
         "AzureServices",
         "None"
-      ]
+      ],
+      "metadata": {
+        "description": "Indicates what services are allowed to bypass firewall checks."
+      }
     },
     "ipRules": {
       "type": "array",
@@ -1704,14 +1697,14 @@
     "lock": {
       "type": "string",
       "defaultValue": "NotSpecified",
-      "metadata": {
-        "description": "Specify the type of lock on Cosmos DB account resource."
-      },
       "allowedValues": [
         "CanNotDelete",
         "NotSpecified",
         "ReadOnly"
-      ]
+      ],
+      "metadata": {
+        "description": "Specify the type of lock on Cosmos DB account resource."
+      }
     },
     "consistencyPolicy": {
       "$ref": "#/definitions/consistencyPolicyType",
@@ -1735,14 +1728,14 @@
     "minimalTlsVersion": {
       "type": "string",
       "defaultValue": "Tls12",
-      "metadata": {
-        "description": "The minimum TLS version to support on this account."
-      },
       "allowedValues": [
         "Tls",
         "Tls11",
         "Tls12"
-      ]
+      ],
+      "metadata": {
+        "description": "The minimum TLS version to support on this account."
+      }
     },
     "enablePartitionMerge": {
       "type": "bool",
@@ -1921,14 +1914,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "15522634699029320922"
+              "version": "0.25.53.49325",
+              "templateHash": "9021586521470369436"
             }
           },
           "parameters": {
@@ -1942,8 +1933,8 @@
               "type": "object"
             }
           },
-          "resources": {
-            "cosmosDBAccount::cassandraKeyspaces::cassandraTables": {
+          "resources": [
+            {
               "copy": {
                 "name": "cassandraTables",
                 "count": "[length(coalesce(tryGet(parameters('keyspace'), 'tables'), createArray()))]"
@@ -1961,10 +1952,10 @@
               },
               "tags": "[coalesce(tryGet(coalesce(tryGet(parameters('keyspace'), 'tables'), createArray())[copyIndex()], 'tags'), createObject())]",
               "dependsOn": [
-                "cosmosDBAccount::cassandraKeyspaces"
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces', parameters('cosmosDBAccountName'), parameters('keyspace').name)]"
               ]
             },
-            "cosmosDBAccount::cassandraKeyspaces": {
+            {
               "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces",
               "apiVersion": "2023-04-15",
               "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), parameters('keyspace').name)]",
@@ -1975,14 +1966,8 @@
                 "options": "[if(or(parameters('enableServerless'), equals(tryGet(parameters('keyspace'), 'performance'), null())), null(), if(parameters('keyspace').performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', parameters('keyspace').performance.throughput)), createObject('throughput', parameters('keyspace').performance.throughput)))]"
               },
               "tags": "[coalesce(tryGet(parameters('keyspace'), 'tags'), createObject())]"
-            },
-            "cosmosDBAccount": {
-              "existing": true,
-              "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2023-04-15",
-              "name": "[parameters('cosmosDBAccountName')]"
             }
-          }
+          ]
         }
       },
       "dependsOn": [
@@ -2016,14 +2001,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "12084678724345651618"
+              "version": "0.25.53.49325",
+              "templateHash": "14758710095111361253"
             }
           },
           "parameters": {
@@ -2037,14 +2020,8 @@
               "type": "object"
             }
           },
-          "resources": {
-            "cosmosDBAccount": {
-              "existing": true,
-              "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2023-04-15",
-              "name": "[parameters('cosmosDBAccountName')]"
-            },
-            "sqlDatabase": {
+          "resources": [
+            {
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
               "apiVersion": "2022-11-15",
               "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), parameters('database').name)]",
@@ -2056,7 +2033,7 @@
                 "options": "[if(or(parameters('enableServerless'), equals(tryGet(parameters('database'), 'performance'), null())), null(), if(parameters('database').performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', parameters('database').performance.throughput)), createObject('throughput', parameters('database').performance.throughput)))]"
               }
             },
-            "sqlDatabaseContainers": {
+            {
               "copy": {
                 "name": "sqlDatabaseContainers",
                 "count": "[length(coalesce(tryGet(parameters('database'), 'containers'), createArray()))]"
@@ -2085,14 +2062,12 @@
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "languageVersion": "1.10-experimental",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
-                    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.19.5.34762",
-                      "templateHash": "503132590308591695"
+                      "version": "0.25.53.49325",
+                      "templateHash": "9804052326413399760"
                     }
                   },
                   "parameters": {
@@ -2109,8 +2084,8 @@
                       "type": "object"
                     }
                   },
-                  "resources": {
-                    "cosmosDBAccount::sqlDatabase::databaseContainers::databaseContainersStoredProcedures": {
+                  "resources": [
+                    {
                       "copy": {
                         "name": "databaseContainersStoredProcedures",
                         "count": "[length(coalesce(tryGet(parameters('container'), 'storedProcedures'), createArray()))]"
@@ -2127,10 +2102,10 @@
                         "options": "[if(or(parameters('enableServerless'), equals(tryGet(coalesce(tryGet(parameters('container'), 'storedProcedures'), createArray())[copyIndex()], 'performance'), null())), null(), if(coalesce(tryGet(parameters('container'), 'storedProcedures'), createArray())[copyIndex()].performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', coalesce(tryGet(parameters('container'), 'storedProcedures'), createArray())[copyIndex()].performance.throughput)), createObject('throughput', coalesce(tryGet(parameters('container'), 'storedProcedures'), createArray())[copyIndex()].performance.throughput)))]"
                       },
                       "dependsOn": [
-                        "cosmosDBAccount::sqlDatabase::databaseContainers"
+                        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('container').name)]"
                       ]
                     },
-                    "cosmosDBAccount::sqlDatabase::databaseContainers::databaseContainersUserDefinedFunction": {
+                    {
                       "copy": {
                         "name": "databaseContainersUserDefinedFunction",
                         "count": "[length(coalesce(tryGet(parameters('container'), 'userDefinedFunctions'), createArray()))]"
@@ -2146,10 +2121,10 @@
                         }
                       },
                       "dependsOn": [
-                        "cosmosDBAccount::sqlDatabase::databaseContainers"
+                        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('container').name)]"
                       ]
                     },
-                    "cosmosDBAccount::sqlDatabase::databaseContainers::databaseContainersTriggers": {
+                    {
                       "copy": {
                         "name": "databaseContainersTriggers",
                         "count": "[length(coalesce(tryGet(parameters('container'), 'triggers'), createArray()))]"
@@ -2167,10 +2142,10 @@
                         }
                       },
                       "dependsOn": [
-                        "cosmosDBAccount::sqlDatabase::databaseContainers"
+                        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('container').name)]"
                       ]
                     },
-                    "cosmosDBAccount::sqlDatabase::databaseContainers": {
+                    {
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
                       "apiVersion": "2023-04-15",
                       "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('container').name)]",
@@ -2186,27 +2161,15 @@
                         },
                         "options": "[if(or(parameters('enableServerless'), equals(tryGet(parameters('container'), 'performance'), null())), null(), if(parameters('container').performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', parameters('container').performance.throughput)), createObject('throughput', parameters('container').performance.throughput)))]"
                       }
-                    },
-                    "cosmosDBAccount::sqlDatabase": {
-                      "existing": true,
-                      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-                      "apiVersion": "2023-04-15",
-                      "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), parameters('databaseName'))]"
-                    },
-                    "cosmosDBAccount": {
-                      "existing": true,
-                      "type": "Microsoft.DocumentDB/databaseAccounts",
-                      "apiVersion": "2023-04-15",
-                      "name": "[parameters('cosmosDBAccountName')]"
                     }
-                  }
+                  ]
                 }
               },
               "dependsOn": [
-                "sqlDatabase"
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('cosmosDBAccountName'), parameters('database').name)]"
               ]
             }
-          }
+          ]
         }
       },
       "dependsOn": [
@@ -2240,14 +2203,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "18287492754499819717"
+              "version": "0.25.53.49325",
+              "templateHash": "13882920782217016819"
             }
           },
           "parameters": {
@@ -2262,8 +2223,8 @@
               "type": "object"
             }
           },
-          "resources": {
-            "cosmosDBAccount::mongodbDatabase::mongodbDatabaseCollections": {
+          "resources": [
+            {
               "copy": {
                 "name": "mongodbDatabaseCollections",
                 "count": "[length(coalesce(tryGet(parameters('database'), 'collections'), createArray()))]"
@@ -2281,10 +2242,10 @@
               },
               "tags": "[coalesce(tryGet(coalesce(tryGet(parameters('database'), 'collections'), createArray())[copyIndex()], 'tags'), createObject())]",
               "dependsOn": [
-                "cosmosDBAccount::mongodbDatabase"
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases', parameters('cosmosDBAccountName'), parameters('database').name)]"
               ]
             },
-            "cosmosDBAccount::mongodbDatabase": {
+            {
               "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases",
               "apiVersion": "2023-04-15",
               "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), parameters('database').name)]",
@@ -2295,14 +2256,8 @@
                 "options": "[if(or(parameters('enableServerless'), equals(tryGet(parameters('database'), 'performance'), null())), null(), if(parameters('database').performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', parameters('database').performance.throughput)), createObject('throughput', parameters('database').performance.throughput)))]"
               },
               "tags": "[coalesce(tryGet(parameters('database'), 'tags'), createObject())]"
-            },
-            "cosmosDBAccount": {
-              "existing": true,
-              "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2023-04-15",
-              "name": "[parameters('cosmosDBAccountName')]"
             }
-          }
+          ]
         }
       },
       "dependsOn": [
@@ -2336,14 +2291,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "352182291244014987"
+              "version": "0.25.53.49325",
+              "templateHash": "16473884894824595902"
             }
           },
           "parameters": {
@@ -2357,8 +2310,8 @@
               "type": "object"
             }
           },
-          "resources": {
-            "cosmosDBAccount::tables": {
+          "resources": [
+            {
               "type": "Microsoft.DocumentDB/databaseAccounts/tables",
               "apiVersion": "2023-04-15",
               "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), parameters('table').name)]",
@@ -2369,14 +2322,8 @@
                 },
                 "options": "[if(or(parameters('enableServerless'), equals(tryGet(parameters('table'), 'performance'), null())), null(), if(parameters('table').performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', parameters('table').performance.throughput)), createObject('throughput', parameters('table').performance.throughput)))]"
               }
-            },
-            "cosmosDBAccount": {
-              "existing": true,
-              "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2023-04-15",
-              "name": "[parameters('cosmosDBAccountName')]"
             }
-          }
+          ]
         }
       },
       "dependsOn": [
@@ -2410,14 +2357,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "14406191392985530497"
+              "version": "0.25.53.49325",
+              "templateHash": "406113516187532655"
             }
           },
           "parameters": {
@@ -2431,8 +2376,8 @@
               "type": "object"
             }
           },
-          "resources": {
-            "cosmosDBAccount::gremlinDatabase::gremlinDatabaseGraphs": {
+          "resources": [
+            {
               "copy": {
                 "name": "gremlinDatabaseGraphs",
                 "count": "[length(coalesce(tryGet(parameters('database'), 'graphs'), createArray()))]"
@@ -2452,10 +2397,10 @@
               },
               "tags": "[coalesce(tryGet(coalesce(tryGet(parameters('database'), 'graphs'), createArray())[copyIndex()], 'tags'), createObject())]",
               "dependsOn": [
-                "cosmosDBAccount::gremlinDatabase"
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/gremlinDatabases', parameters('cosmosDBAccountName'), parameters('database').name)]"
               ]
             },
-            "cosmosDBAccount::gremlinDatabase": {
+            {
               "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
               "apiVersion": "2023-04-15",
               "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), parameters('database').name)]",
@@ -2466,14 +2411,8 @@
                 "options": "[if(or(parameters('enableServerless'), equals(tryGet(parameters('database'), 'performance'), null())), null(), if(parameters('database').performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', parameters('database').performance.throughput)), createObject('throughput', parameters('database').performance.throughput)))]"
               },
               "tags": "[coalesce(tryGet(parameters('database'), 'tags'), createObject())]"
-            },
-            "cosmosDBAccount": {
-              "existing": true,
-              "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2023-04-15",
-              "name": "[parameters('cosmosDBAccountName')]"
             }
-          }
+          ]
         }
       },
       "dependsOn": [
@@ -2504,14 +2443,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "2516204004951964226"
+              "version": "0.25.53.49325",
+              "templateHash": "1807710888645856591"
             }
           },
           "parameters": {
@@ -2532,14 +2469,8 @@
             ],
             "assignableScopes": "[filter(variables('allScopes'), lambda('scope', not(empty(lambdaVariables('scope')))))]"
           },
-          "resources": {
-            "cosmosDBAccount": {
-              "existing": true,
-              "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2023-04-15",
-              "name": "[parameters('cosmosDBAccountName')]"
-            },
-            "sqlRoleDefinitions": {
+          "resources": [
+            {
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
               "apiVersion": "2023-04-15",
               "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), guid(parameters('cosmosDBAccountName'), parameters('role').name))]",
@@ -2550,7 +2481,7 @@
                 "permissions": "[tryGet(parameters('role'), 'permissions')]"
               }
             },
-            "sqlRoleAssignments": {
+            {
               "copy": {
                 "name": "sqlRoleAssignments",
                 "count": "[length(coalesce(tryGet(parameters('role'), 'assignments'), createArray()))]"
@@ -2564,10 +2495,10 @@
                 "scope": "[format('{0}{1}', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), coalesce(tryGet(coalesce(tryGet(parameters('role'), 'assignments'), createArray())[copyIndex()], 'scope'), ''))]"
               },
               "dependsOn": [
-                "sqlRoleDefinitions"
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDBAccountName'), guid(parameters('cosmosDBAccountName'), parameters('role').name))]"
               ]
             }
-          },
+          ],
           "outputs": {
             "roleDefinitionId": {
               "type": "string",
@@ -2610,14 +2541,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "17969280035918507949"
+              "version": "0.25.53.49325",
+              "templateHash": "11457641821300309771"
             }
           },
           "parameters": {
@@ -2634,8 +2563,8 @@
           "variables": {
             "manualApprovalEnabled": "[coalesce(tryGet(parameters('endpoint'), 'isManualApproval'), false())]"
           },
-          "resources": {
-            "privateEndpoint::privateDnsZoneGroup": {
+          "resources": [
+            {
               "condition": "[not(equals(tryGet(parameters('endpoint'), 'privateDnsZoneId'), null()))]",
               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
               "apiVersion": "2022-07-01",
@@ -2651,10 +2580,10 @@
                 ]
               },
               "dependsOn": [
-                "privateEndpoint"
+                "[resourceId('Microsoft.Network/privateEndpoints', parameters('endpoint').name)]"
               ]
             },
-            "privateEndpoint": {
+            {
               "type": "Microsoft.Network/privateEndpoints",
               "apiVersion": "2022-07-01",
               "name": "[parameters('endpoint').name]",
@@ -2668,7 +2597,7 @@
                 }
               }
             }
-          }
+          ]
         }
       },
       "dependsOn": [
