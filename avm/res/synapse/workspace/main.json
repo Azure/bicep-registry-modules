@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "9888573987770649830"
+      "version": "0.25.53.49325",
+      "templateHash": "13895345816421777976"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -557,7 +557,7 @@
       }
     },
     "sqlAdministratorLoginPassword": {
-      "type": "string",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Optional. Password for administrator access to the workspace's SQL pools. If you don't provide a password, one will be automatically generated. You can change the password later."
@@ -685,7 +685,7 @@
           "filesystem": "[parameters('defaultDataLakeStorageFilesystem')]",
           "createManagedPrivateEndpoint": "[if(parameters('managedVirtualNetwork'), parameters('defaultDataLakeStorageCreateManagedPrivateEndpoint'), null())]"
         },
-        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('cmk', createObject('kekIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), createObject('useSystemAssignedIdentity', empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))), 'identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null()), 'key', createObject('keyVaultUrl', reference('cMKKeyVault::cMKKey').keyUri, 'name', parameters('customerManagedKey').keyName))), null())]",
+        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('cmk', createObject('kekIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), createObject('useSystemAssignedIdentity', empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))), 'key', createObject('keyVaultUrl', reference('cMKKeyVault::cMKKey').keyUri, 'name', parameters('customerManagedKey').keyName))), null())]",
         "managedResourceGroupName": "[if(not(empty(parameters('managedResourceGroupName'))), parameters('managedResourceGroupName'), null())]",
         "managedVirtualNetwork": "[if(parameters('managedVirtualNetwork'), 'default', null())]",
         "managedVirtualNetworkSettings": "[if(parameters('managedVirtualNetwork'), createObject('allowedAadTenantIdsForLinking', parameters('allowedAadTenantIdsForLinking'), 'linkedAccessCheckOnTargetResource', parameters('linkedAccessCheckOnTargetResource'), 'preventDataExfiltration', parameters('preventDataExfiltration')), null())]",
@@ -789,8 +789,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "5925144887906209420"
+              "version": "0.25.53.49325",
+              "templateHash": "7739107907804712060"
             },
             "name": "Synapse Workspace Integration Runtimes",
             "description": "This module deploys a Synapse Workspace Integration Runtime.",
@@ -887,8 +887,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "17058954208193213785"
+              "version": "0.25.53.49325",
+              "templateHash": "16862202180408198277"
             }
           },
           "parameters": {
@@ -975,8 +975,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "15811131631744837887"
+              "version": "0.25.53.49325",
+              "templateHash": "2498604793784722860"
             },
             "name": "Synapse Workspaces Keys",
             "description": "This module deploys a Synapse Workspaces Key.",

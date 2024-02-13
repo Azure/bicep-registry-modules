@@ -36,7 +36,6 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     location: resourceLocation
-    //managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
   }
@@ -70,24 +69,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     defaultDataLakeStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
     defaultDataLakeStorageFilesystem: nestedDependencies.outputs.storageContainerName
     sqlAdministratorLogin: 'synwsadmin'
-    // initialWorkspaceAdminObjectID: nestedDependencies.outputs.managedIdentityPrincipalId
-    // roleAssignments: [
-    //   {
-    //     roleDefinitionIdOrName: 'Owner'
-    //     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-    //     principalType: 'ServicePrincipal'
-    //   }
-    //   {
-    //     roleDefinitionIdOrName: 'Contributor'
-    //     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-    //     principalType: 'ServicePrincipal'
-    //   }
-    //   {
-    //     roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'Reader')
-    //     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-    //     principalType: 'ServicePrincipal'
-    //   }
-    // ]
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [

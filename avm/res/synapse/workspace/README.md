@@ -38,9 +38,320 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/synapse/workspace:<version>`.
 
-- [Using large parameter set](#example-1-using-large-parameter-set)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
+- [Using encryption with Customer-Managed-Key](#example-3-using-encryption-with-customer-managed-key)
+- [Using managed Vnet](#example-4-using-managed-vnet)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Using large parameter set_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-swmin'
+  params: {
+    // Required parameters
+    defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
+    defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
+    name: 'swmin001'
+    sqlAdministratorLogin: 'synwsadmin'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "defaultDataLakeStorageAccountResourceId": {
+      "value": "<defaultDataLakeStorageAccountResourceId>"
+    },
+    "defaultDataLakeStorageFilesystem": {
+      "value": "<defaultDataLakeStorageFilesystem>"
+    },
+    "name": {
+      "value": "swmin001"
+    },
+    "sqlAdministratorLogin": {
+      "value": "synwsadmin"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using encryption with Customer-Managed-Key_
+
+This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity to access the Customer-Managed-Key secret.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-swensa'
+  params: {
+    // Required parameters
+    defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
+    defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
+    name: 'swensa001'
+    sqlAdministratorLogin: 'synwsadmin'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    encryptionActivateWorkspace: true
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "defaultDataLakeStorageAccountResourceId": {
+      "value": "<defaultDataLakeStorageAccountResourceId>"
+    },
+    "defaultDataLakeStorageFilesystem": {
+      "value": "<defaultDataLakeStorageFilesystem>"
+    },
+    "name": {
+      "value": "swensa001"
+    },
+    "sqlAdministratorLogin": {
+      "value": "synwsadmin"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "encryptionActivateWorkspace": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using encryption with Customer-Managed-Key_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-swenua'
+  params: {
+    // Required parameters
+    defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
+    defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
+    name: 'swenua001'
+    sqlAdministratorLogin: 'synwsadmin'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    location: '<location>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "defaultDataLakeStorageAccountResourceId": {
+      "value": "<defaultDataLakeStorageAccountResourceId>"
+    },
+    "defaultDataLakeStorageFilesystem": {
+      "value": "<defaultDataLakeStorageFilesystem>"
+    },
+    "name": {
+      "value": "swenua001"
+    },
+    "sqlAdministratorLogin": {
+      "value": "synwsadmin"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using managed Vnet_
+
+This instance deploys the module using a managed Vnet.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-swmanv'
+  params: {
+    // Required parameters
+    defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
+    defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
+    name: 'swmanv001'
+    sqlAdministratorLogin: 'synwsadmin'
+    // Non-required parameters
+    allowedAadTenantIdsForLinking: [
+      '<tenantId>'
+    ]
+    location: '<location>'
+    managedVirtualNetwork: true
+    preventDataExfiltration: true
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "defaultDataLakeStorageAccountResourceId": {
+      "value": "<defaultDataLakeStorageAccountResourceId>"
+    },
+    "defaultDataLakeStorageFilesystem": {
+      "value": "<defaultDataLakeStorageFilesystem>"
+    },
+    "name": {
+      "value": "swmanv001"
+    },
+    "sqlAdministratorLogin": {
+      "value": "synwsadmin"
+    },
+    // Non-required parameters
+    "allowedAadTenantIdsForLinking": {
+      "value": [
+        "<tenantId>"
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedVirtualNetwork": {
+      "value": true
+    },
+    "preventDataExfiltration": {
+      "value": true
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -236,6 +547,162 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 </details>
 <p>
 
+### Example 6: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-swwaf'
+  params: {
+    // Required parameters
+    defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
+    defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
+    name: 'swwaf001'
+    sqlAdministratorLogin: 'synwsadmin'
+    // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            category: 'SynapseRbacOperations'
+          }
+          {
+            category: 'SynapseLinkEvent'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    integrationRuntimes: [
+      {
+        name: 'shir01'
+        type: 'SelfHosted'
+      }
+    ]
+    location: '<location>'
+    managedVirtualNetwork: true
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'SQL'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "defaultDataLakeStorageAccountResourceId": {
+      "value": "<defaultDataLakeStorageAccountResourceId>"
+    },
+    "defaultDataLakeStorageFilesystem": {
+      "value": "<defaultDataLakeStorageFilesystem>"
+    },
+    "name": {
+      "value": "swwaf001"
+    },
+    "sqlAdministratorLogin": {
+      "value": "synwsadmin"
+    },
+    // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "category": "SynapseRbacOperations"
+            },
+            {
+              "category": "SynapseLinkEvent"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "integrationRuntimes": {
+      "value": [
+        {
+          "name": "shir01",
+          "type": "SelfHosted"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedVirtualNetwork": {
+      "value": true
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "SQL",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
 
 ## Parameters
 
@@ -272,7 +739,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Enable or Disable public network access to workspace. |
 | [`purviewResourceID`](#parameter-purviewresourceid) | string | Purview Resource ID. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`sqlAdministratorLoginPassword`](#parameter-sqladministratorloginpassword) | string | Password for administrator access to the workspace's SQL pools. If you don't provide a password, one will be automatically generated. You can change the password later. |
+| [`sqlAdministratorLoginPassword`](#parameter-sqladministratorloginpassword) | securestring | Password for administrator access to the workspace's SQL pools. If you don't provide a password, one will be automatically generated. You can change the password later. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`workspaceRepositoryConfiguration`](#parameter-workspacerepositoryconfiguration) | object | Git integration settings. |
 
@@ -431,6 +898,27 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs. |
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs.
+
+- Required: No
+- Type: string
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -648,6 +1136,27 @@ Custom DNS configurations.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint ip address. |
+| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private ip addresses of the private endpoint. |
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+Fqdn that resolves to private endpoint ip address.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
+
+A list of private ip addresses of the private endpoint.
+
+- Required: Yes
+- Type: array
+
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
 The custom name of the network interface attached to the private endpoint.
@@ -668,6 +1177,56 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsipconfigurationsname) | string | The name of the resource that is unique within a resource group. |
+| [`properties`](#parameter-privateendpointsipconfigurationsproperties) | object | Properties of private endpoint IP configurations. |
+
+### Parameter: `privateEndpoints.ipConfigurations.name`
+
+The name of the resource that is unique within a resource group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties`
+
+Properties of private endpoint IP configurations.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private ip address obtained from the private endpoint's subnet. |
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
+
+The member name of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
+
+A private ip address obtained from the private endpoint's subnet.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `privateEndpoints.location`
 
@@ -953,7 +1512,7 @@ The principal type of the assigned principal ID.
 Password for administrator access to the workspace's SQL pools. If you don't provide a password, one will be automatically generated. You can change the password later.
 
 - Required: No
-- Type: string
+- Type: securestring
 - Default: `''`
 
 ### Parameter: `tags`
