@@ -1,13 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "1.10-experimental",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.19.5.34762",
-      "templateHash": "595293575967895786"
+      "version": "0.25.53.49325",
+      "templateHash": "1984152061229242648"
     },
     "name": "mysql-single-server",
     "description": "This Bicep Module is used for the deployment of MySQL DB  Single Server with reusable set of parameters and resources.",
@@ -193,11 +192,11 @@
       "properties": {
         "name": {
           "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
           "metadata": {
             "description": "The resource name."
-          },
-          "maxLength": 128,
-          "minLength": 1
+          }
         },
         "startIpAddress": {
           "type": "string",
@@ -218,11 +217,11 @@
       "properties": {
         "name": {
           "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
           "metadata": {
             "description": "The resource name."
-          },
-          "maxLength": 128,
-          "minLength": 1
+          }
         },
         "ignoreMissingVnetServiceEndpoint": {
           "type": "bool",
@@ -323,8 +322,8 @@
     "backupRetentionDays": {
       "type": "int",
       "defaultValue": 35,
-      "maxValue": 35,
       "minValue": 7,
+      "maxValue": 35,
       "metadata": {
         "description": "Optional. The number of days a backup is retained."
       }
@@ -711,14 +710,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "5901804176008778240"
+              "version": "0.25.53.49325",
+              "templateHash": "15457746991884040283"
             }
           },
           "parameters": {
@@ -761,14 +758,8 @@
             },
             "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName')))]"
           },
-          "resources": {
-            "mysqlServer": {
-              "existing": true,
-              "type": "Microsoft.DBforMySQL/servers",
-              "apiVersion": "2017-12-01",
-              "name": "[parameters('serverName')]"
-            },
-            "roleAssignment": {
+          "resources": [
+            {
               "copy": {
                 "name": "roleAssignment",
                 "count": "[length(parameters('principalIds'))]"
@@ -784,7 +775,7 @@
                 "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
               }
             }
-          }
+          ]
         }
       },
       "dependsOn": [
@@ -813,14 +804,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "17584855190782240496"
+              "version": "0.25.53.49325",
+              "templateHash": "15210835296193665604"
             }
           },
           "definitions": {
