@@ -64,6 +64,8 @@ param managedOutboundIPCount int = 0
 @allowed([
   'loadBalancer'
   'userDefinedRouting'
+  'managedNATGateway'
+  'userAssignedNATGateway'
 ])
 param outboundType string = 'loadBalancer'
 

@@ -2981,6 +2981,8 @@ Specifies outbound (egress) routing method. - loadBalancer or userDefinedRouting
   ```Bicep
   [
     'loadBalancer'
+    'managedNATGateway'
+    'userAssignedNATGateway'
     'userDefinedRouting'
   ]
   ```
