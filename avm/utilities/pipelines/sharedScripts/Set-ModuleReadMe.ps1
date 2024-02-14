@@ -299,6 +299,11 @@ function Set-DefinitionSection {
                 $definition = $TemplateFileContent.definitions[$identifier]
                 $type = $definition['type']
                 $rawAllowedValues = $definition['allowedValues']
+            } elseif ($parameter.Keys -contains 'items' -and $parameter.items.type -in @('object', 'array') -or $parameter.type -eq 'object') {
+                # Array has nested non-primitive type (array/object)
+                $definition = $parameter
+                $type = $parameter.type
+                $rawAllowedValues = $parameter.allowedValues
             } else {
                 $definition = $null
                 $type = $parameter.type
