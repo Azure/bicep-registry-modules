@@ -549,36 +549,36 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the scaling plan. |
+| [`name`](#parameter-name) | string | Name of the Scaling Plan. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`description`](#parameter-description) | string | Description of the scaling plan. |
+| [`description`](#parameter-description) | string | Description of the Scaling Plan. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`exclusionTag`](#parameter-exclusiontag) | string | Exclusion tag to be used for exclusion of VMs from scaling plan. |
-| [`friendlyName`](#parameter-friendlyname) | string | Friendly name of the scaling plan. |
-| [`hostPoolReferences`](#parameter-hostpoolreferences) | array | Host pool references of the scaling plan. |
-| [`hostPoolType`](#parameter-hostpooltype) | string | Host pool type of the scaling plan. |
-| [`location`](#parameter-location) | string | Location of the scaling plan. Defaults to resource group location. |
+| [`exclusionTag`](#parameter-exclusiontag) | string | Exclusion tag to be used for exclusion of VMs from Scaling Plan. |
+| [`friendlyName`](#parameter-friendlyname) | string | Friendly name of the Scaling Plan. |
+| [`hostPoolReferences`](#parameter-hostpoolreferences) | array | Host pool references of the Scaling Plan. |
+| [`hostPoolType`](#parameter-hostpooltype) | string | Host pool type of the Scaling Plan. |
+| [`location`](#parameter-location) | string | Location of the Scaling Plan. Defaults to resource group location. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`schedules`](#parameter-schedules) | array | Schedules of the scaling plan. |
+| [`schedules`](#parameter-schedules) | array | Schedules of the Scaling Plan. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`timeZone`](#parameter-timezone) | string | Time zone of the scaling plan. Defaults to UTC. |
+| [`timeZone`](#parameter-timezone) | string | Time zone of the Scaling Plan. Defaults to UTC. |
 
 ### Parameter: `name`
 
-Name of the scaling plan.
+Name of the Scaling Plan.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `description`
 
-Description of the scaling plan.
+Description of the Scaling Plan.
 
 - Required: No
 - Type: string
@@ -639,6 +639,27 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 - Required: No
 - Type: array
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs. |
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs.
+
+- Required: No
+- Type: string
+
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
@@ -677,7 +698,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `exclusionTag`
 
-Exclusion tag to be used for exclusion of VMs from scaling plan.
+Exclusion tag to be used for exclusion of VMs from Scaling Plan.
 
 - Required: No
 - Type: string
@@ -685,7 +706,7 @@ Exclusion tag to be used for exclusion of VMs from scaling plan.
 
 ### Parameter: `friendlyName`
 
-Friendly name of the scaling plan.
+Friendly name of the Scaling Plan.
 
 - Required: No
 - Type: string
@@ -693,7 +714,7 @@ Friendly name of the scaling plan.
 
 ### Parameter: `hostPoolReferences`
 
-Host pool references of the scaling plan.
+Host pool references of the Scaling Plan.
 
 - Required: No
 - Type: array
@@ -701,7 +722,7 @@ Host pool references of the scaling plan.
 
 ### Parameter: `hostPoolType`
 
-Host pool type of the scaling plan.
+Host pool type of the Scaling Plan.
 
 - Required: No
 - Type: string
@@ -709,7 +730,7 @@ Host pool type of the scaling plan.
 
 ### Parameter: `location`
 
-Location of the scaling plan. Defaults to resource group location.
+Location of the Scaling Plan. Defaults to resource group location.
 
 - Required: No
 - Type: string
@@ -842,7 +863,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `schedules`
 
-Schedules of the scaling plan.
+Schedules of the Scaling Plan.
 
 - Required: No
 - Type: array
@@ -857,7 +878,7 @@ Tags of the resource.
 
 ### Parameter: `timeZone`
 
-Time zone of the scaling plan. Defaults to UTC.
+Time zone of the Scaling Plan. Defaults to UTC.
 
 - Required: No
 - Type: string
@@ -868,10 +889,10 @@ Time zone of the scaling plan. Defaults to UTC.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `location` | string | The location of the scaling plan. |
-| `name` | string | The name of the scaling plan. |
-| `resourceGroupName` | string | The name of the resource group the scaling plan was created in. |
-| `resourceId` | string | The resource ID of the scaling plan. |
+| `location` | string | The location of the Scaling Plan. |
+| `name` | string | The name of the Scaling Plan. |
+| `resourceGroupName` | string | The name of the resource group the Scaling Plan was created in. |
+| `resourceId` | string | The resource ID of the Scaling Plan. |
 
 ## Cross-referenced modules
 

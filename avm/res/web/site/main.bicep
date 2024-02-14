@@ -275,7 +275,7 @@ module app_slots 'slot/main.bicep' = [for (slot, index) in (slots ?? []): {
     appSettingsKeyValuePairs: slot.?appSettingsKeyValuePairs ?? appSettingsKeyValuePairs
     basicPublishingCredentialsPolicies: slot.?basicPublishingCredentialsPolicies ?? basicPublishingCredentialsPolicies
     lock: slot.?lock ?? lock
-    privateEndpoints: slot.?privateEndpoints ?? privateEndpoints
+    privateEndpoints: slot.?privateEndpoints ?? []
     tags: slot.?tags ?? tags
     clientCertEnabled: slot.?clientCertEnabled
     clientCertExclusionPaths: slot.?clientCertExclusionPaths
