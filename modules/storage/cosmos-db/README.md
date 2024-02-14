@@ -149,7 +149,7 @@ module cosmosCassandraDb 'br/public:storage/cosmos-db:3.0.3' = {
 output cosmosCassandraDbResourceId string = cosmosCassandraDb.outputs.id
 ```
 
-> **Importanat note on setting up throughput parameters**<br><br>
+> **Important note on setting up throughput parameters**<br><br>
 > 
 > Throughtput can be povisioned for both Keyspaces and tables within it or just for Tables. Provisioned throughput at the keyspace level will be shared across all tables within the keyspace.
 > 
