@@ -5,6 +5,9 @@ Set the location for the resource deployment.
 .DESCRIPTION
 This script is used to set the location for the resource deployment.
 
+.PARAMETER AllowedRegionsList
+Optional. The list of regions to be considered for the selection.
+
 .PARAMETER ExcludedRegions
 Optional. The list of regions to be excluded from the selection.
 
@@ -28,6 +31,14 @@ function Get-AzAvailableResourceLocation {
 
     [Parameter(Mandatory = $false)]
     [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.parent.FullName,
+
+    [Parameter(Mandatory = $false)]
+    [array] $AllowedRegionsList = @(
+      'eastus',
+      'uksouth',
+      'northeurope',
+      'eastasia' # Including as Edge Region for services like static-site
+    ),
 
     [Parameter(Mandatory = $true)]
     [string] $ModuleRoot,
@@ -85,13 +96,20 @@ function Get-AzAvailableResourceLocation {
     } |  Select-Object -ExpandProperty Location
     Write-Verbose "Available Locations: $($locations | ConvertTo-Json)"
 
+    $filteredAllowedLocations = @()
+    $filteredAllowedLocations = @($locations | Where-Object { $_ -in $AllowedRegionsList })
+    Write-Verbose "Filtered allowed locations: $($filteredAllowedLocations | ConvertTo-Json)"
 
-    $index = Get-Random -Maximum ($locations.Count)
-    Write-Verbose "Generated random index [$index]"
-
-    $location = $locations[$index]
-
+    if ($filteredAllowedLocations.Count -gt 0) {
+      $index = Get-Random -Maximum ($filteredAllowedLocations.Count)
+      Write-Verbose "Generated random index [$index]"
+      $location = $filteredAllowedLocations[$index]
+    }
+    else {
+      $location = $filteredAllowedLocations
+    }
   }
+
   Write-Verbose "Selected location [$location]" -Verbose
 
   return $location
