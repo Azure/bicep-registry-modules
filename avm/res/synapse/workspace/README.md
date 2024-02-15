@@ -204,11 +204,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
     location: '<location>'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -248,13 +243,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -288,11 +276,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     location: '<location>'
     managedVirtualNetwork: true
     preventDataExfiltration: true
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -336,13 +319,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     },
     "preventDataExfiltration": {
       "value": true
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
