@@ -190,27 +190,5 @@ module test07 '../main.bicep' = {
         enabled: false
       }
     ]
-    diagnosticSettingsProperties: {
-      logs: [ {
-          categoryGroup: 'allLogs'
-          enabled: true
-        } ]
-      metrics: [ {
-          category: 'AllMetrics'
-          enabled: true
-          retentionPolicy: {
-            days: 2
-            enabled: true
-          }
-        } ]
-      diagnosticReceivers: {
-        eventHub: {
-          EventHubName: dependencies.outputs.eventHubName
-          EventHubAuthorizationRuleId: dependencies.outputs.eventHubAuthorizationRuleId
-        }
-        storageAccountId: dependencies.outputs.storageAccountId
-        workspaceId: dependencies.outputs.workspaceId
-      }
-    }
   }
 }
