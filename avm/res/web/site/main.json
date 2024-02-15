@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "10377090959004552073"
+      "version": "0.25.3.34343",
+      "templateHash": "6247555250255274054"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -532,18 +532,18 @@
         "description": "Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions."
       }
     },
+    "storageAccountUseIdentityAuthentication": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'."
+      }
+    },
     "appInsightResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
         "description": "Optional. Resource ID of the app insight to leverage for this resource."
-      }
-    },
-    "setAzureWebJobsDashboard": {
-      "type": "bool",
-      "defaultValue": "[if(contains(parameters('kind'), 'functionapp'), true(), false())]",
-      "metadata": {
-        "description": "Optional. For function apps. If true the app settings \"AzureWebJobsDashboard\" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons."
       }
     },
     "appSettingsKeyValuePairs": {
@@ -869,11 +869,11 @@
           "storageAccountResourceId": {
             "value": "[parameters('storageAccountResourceId')]"
           },
+          "storageAccountUseIdentityAuthentication": {
+            "value": "[parameters('storageAccountUseIdentityAuthentication')]"
+          },
           "appInsightResourceId": {
             "value": "[parameters('appInsightResourceId')]"
-          },
-          "setAzureWebJobsDashboard": {
-            "value": "[parameters('setAzureWebJobsDashboard')]"
           },
           "appSettingsKeyValuePairs": {
             "value": "[parameters('appSettingsKeyValuePairs')]"
@@ -886,8 +886,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "16772310332668493999"
+              "version": "0.25.3.34343",
+              "templateHash": "9502632301530820463"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting.",
@@ -920,18 +920,18 @@
                 "description": "Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions."
               }
             },
+            "storageAccountUseIdentityAuthentication": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'."
+              }
+            },
             "appInsightResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
                 "description": "Optional. Resource ID of the app insight to leverage for this resource."
-              }
-            },
-            "setAzureWebJobsDashboard": {
-              "type": "bool",
-              "defaultValue": "[if(contains(parameters('kind'), 'functionapp'), true(), false())]",
-              "metadata": {
-                "description": "Optional. For function apps. If true the app settings \"AzureWebJobsDashboard\" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons."
               }
             },
             "appSettingsKeyValuePairs": {
@@ -972,7 +972,7 @@
               "apiVersion": "2022-09-01",
               "name": "[format('{0}/{1}', parameters('appName'), 'appsettings')]",
               "kind": "[parameters('kind')]",
-              "properties": "[union(coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(not(empty(parameters('storageAccountResourceId'))), union(createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value)), if(equals(parameters('setAzureWebJobsDashboard'), true()), createObject('AzureWebJobsDashboard', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value)), createObject())), createObject()), if(not(empty(parameters('appInsightResourceId'))), createObject('APPINSIGHTS_INSTRUMENTATIONKEY', reference('appInsight').InstrumentationKey, 'APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
+              "properties": "[union(coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), union(createObject('AzureWebJobsStorage__accountName', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), createObject('AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob)), createObject())), if(not(empty(parameters('appInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
               "dependsOn": [
                 "app",
                 "appInsight",
@@ -1036,8 +1036,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "14009865534133766790"
+              "version": "0.25.3.34343",
+              "templateHash": "5877813806737754480"
             },
             "name": "Site Auth Settings V2 Config",
             "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -1166,11 +1166,11 @@
           "storageAccountResourceId": {
             "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'storageAccountResourceId'), parameters('storageAccountResourceId'))]"
           },
+          "storageAccountUseIdentityAuthentication": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'storageAccountUseIdentityAuthentication'), parameters('storageAccountUseIdentityAuthentication'))]"
+          },
           "appInsightResourceId": {
             "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'appInsightResourceId'), parameters('appInsightResourceId'))]"
-          },
-          "setAzureWebJobsDashboard": {
-            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'setAzureWebJobsDashboard'), parameters('setAzureWebJobsDashboard'))]"
           },
           "authSettingV2Configuration": {
             "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'authSettingV2Configuration'), parameters('authSettingV2Configuration'))]"
@@ -1255,8 +1255,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "14287529092911845504"
+              "version": "0.25.3.34343",
+              "templateHash": "2062622499404603571"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -1761,18 +1761,18 @@
                 "description": "Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions."
               }
             },
+            "storageAccountUseIdentityAuthentication": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'."
+              }
+            },
             "appInsightResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
                 "description": "Optional. Resource ID of the app insight to leverage for this resource."
-              }
-            },
-            "setAzureWebJobsDashboard": {
-              "type": "bool",
-              "defaultValue": "[if(contains(parameters('kind'), 'functionapp'), true(), false())]",
-              "metadata": {
-                "description": "Optional. For function apps. If true the app settings \"AzureWebJobsDashboard\" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons."
               }
             },
             "appSettingsKeyValuePairs": {
@@ -2103,11 +2103,11 @@
                   "storageAccountResourceId": {
                     "value": "[parameters('storageAccountResourceId')]"
                   },
+                  "storageAccountUseIdentityAuthentication": {
+                    "value": "[parameters('storageAccountUseIdentityAuthentication')]"
+                  },
                   "appInsightResourceId": {
                     "value": "[parameters('appInsightResourceId')]"
-                  },
-                  "setAzureWebJobsDashboard": {
-                    "value": "[parameters('setAzureWebJobsDashboard')]"
                   },
                   "appSettingsKeyValuePairs": {
                     "value": "[parameters('appSettingsKeyValuePairs')]"
@@ -2120,8 +2120,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "9605115891306784861"
+                      "version": "0.25.3.34343",
+                      "templateHash": "6860876358735812393"
                     },
                     "name": "Site Slot App Settings",
                     "description": "This module deploys a Site Slot App Setting.",
@@ -2160,18 +2160,18 @@
                         "description": "Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions."
                       }
                     },
+                    "storageAccountUseIdentityAuthentication": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'."
+                      }
+                    },
                     "appInsightResourceId": {
                       "type": "string",
                       "nullable": true,
                       "metadata": {
                         "description": "Optional. Resource ID of the app insight to leverage for this resource."
-                      }
-                    },
-                    "setAzureWebJobsDashboard": {
-                      "type": "bool",
-                      "defaultValue": "[if(contains(parameters('kind'), 'functionapp'), true(), false())]",
-                      "metadata": {
-                        "description": "Optional. For function apps. If true the app settings \"AzureWebJobsDashboard\" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons."
                       }
                     },
                     "appSettingsKeyValuePairs": {
@@ -2221,7 +2221,7 @@
                       "apiVersion": "2022-09-01",
                       "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), 'appsettings')]",
                       "kind": "[parameters('kind')]",
-                      "properties": "[union(coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(not(empty(parameters('storageAccountResourceId'))), union(createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value)), if(equals(parameters('setAzureWebJobsDashboard'), true()), createObject('AzureWebJobsDashboard', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value)), createObject())), createObject()), if(not(empty(parameters('appInsightResourceId'))), createObject('APPINSIGHTS_INSTRUMENTATIONKEY', reference('appInsight').InstrumentationKey, 'APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
+                      "properties": "[union(coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), union(createObject('AzureWebJobsStorage__accountName', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), createObject('AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob)), createObject())), if(not(empty(parameters('appInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
                       "dependsOn": [
                         "appInsight",
                         "app::slot",
@@ -2289,8 +2289,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "7901002401130178704"
+                      "version": "0.25.3.34343",
+                      "templateHash": "6729579661025115910"
                     },
                     "name": "Site Slot Auth Settings V2 Config",
                     "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -2404,8 +2404,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "95340614388352354"
+                      "version": "0.25.3.34343",
+                      "templateHash": "13606726336252122473"
                     },
                     "name": "Web Site Slot Basic Publishing Credentials Policies",
                     "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy.",
@@ -2530,8 +2530,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "822472634155315347"
+                      "version": "0.25.3.34343",
+                      "templateHash": "5971949380374027462"
                     },
                     "name": "Web/Function Apps Slot Hybrid Connection Relay",
                     "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay.",
@@ -3357,8 +3357,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "10399361361481208001"
+              "version": "0.25.3.34343",
+              "templateHash": "16632485067550491380"
             },
             "name": "Web Site Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Basic Publishing Credentials Policy.",
@@ -3473,8 +3473,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "16924628128999801114"
+              "version": "0.25.3.34343",
+              "templateHash": "17607485445043187342"
             },
             "name": "Web/Function Apps Hybrid Connection Relay",
             "description": "This module deploys a Site Hybrid Connection Namespace Relay.",

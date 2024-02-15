@@ -267,12 +267,12 @@ module site 'br/public:avm/res/web/site:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    setAzureWebJobsDashboard: true
     siteConfig: {
       alwaysOn: true
       use32BitWorkerProcess: false
     }
     storageAccountResourceId: '<storageAccountResourceId>'
+    storageAccountUseIdentityAuthentication: true
   }
 }
 ```
@@ -465,9 +465,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
         }
       ]
     },
-    "setAzureWebJobsDashboard": {
-      "value": true
-    },
     "siteConfig": {
       "value": {
         "alwaysOn": true,
@@ -476,6 +473,9 @@ module site 'br/public:avm/res/web/site:<version>' = {
     },
     "storageAccountResourceId": {
       "value": "<storageAccountResourceId>"
+    },
+    "storageAccountUseIdentityAuthentication": {
+      "value": true
     }
   }
 }
@@ -849,6 +849,8 @@ module site 'br/public:avm/res/web/site:<version>' = {
             }
           ]
         }
+        storageAccountResourceId: '<storageAccountResourceId>'
+        storageAccountUseIdentityAuthentication: true
       }
       {
         basicPublishingCredentialsPolicies: [
@@ -860,8 +862,12 @@ module site 'br/public:avm/res/web/site:<version>' = {
           }
         ]
         name: 'slot2'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        storageAccountUseIdentityAuthentication: true
       }
     ]
+    storageAccountResourceId: '<storageAccountResourceId>'
+    storageAccountUseIdentityAuthentication: true
     vnetContentShareEnabled: true
     vnetImagePullEnabled: true
     vnetRouteAllEnabled: true
@@ -1067,7 +1073,9 @@ module site 'br/public:avm/res/web/site:<version>' = {
                 "value": "dotnetcore"
               }
             ]
-          }
+          },
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "storageAccountUseIdentityAuthentication": true
         },
         {
           "basicPublishingCredentialsPolicies": [
@@ -1078,9 +1086,17 @@ module site 'br/public:avm/res/web/site:<version>' = {
               "name": "scm"
             }
           ],
-          "name": "slot2"
+          "name": "slot2",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "storageAccountUseIdentityAuthentication": true
         }
       ]
+    },
+    "storageAccountResourceId": {
+      "value": "<storageAccountResourceId>"
+    },
+    "storageAccountUseIdentityAuthentication": {
+      "value": true
     },
     "vnetContentShareEnabled": {
       "value": true
@@ -1142,11 +1158,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
 | [`redundancyMode`](#parameter-redundancymode) | string | Site redundancy mode. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`scmSiteAlsoStopped`](#parameter-scmsitealsostopped) | bool | Stop SCM (KUDU) site when the app is stopped. |
-| [`setAzureWebJobsDashboard`](#parameter-setazurewebjobsdashboard) | bool | For function apps. If true the app settings "AzureWebJobsDashboard" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons. |
 | [`siteConfig`](#parameter-siteconfig) | object | The site config object. |
 | [`slots`](#parameter-slots) | array | Configuration for deployment slots for an app. |
 | [`storageAccountRequired`](#parameter-storageaccountrequired) | bool | Checks if Customer provided storage account is required. |
 | [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions. |
+| [`storageAccountUseIdentityAuthentication`](#parameter-storageaccountuseidentityauthentication) | bool | If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualNetworkSubnetId`](#parameter-virtualnetworksubnetid) | string | Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}. |
 | [`vnetContentShareEnabled`](#parameter-vnetcontentshareenabled) | bool | To enable accessing content over virtual network. |
@@ -1984,14 +2000,6 @@ Stop SCM (KUDU) site when the app is stopped.
 - Type: bool
 - Default: `False`
 
-### Parameter: `setAzureWebJobsDashboard`
-
-For function apps. If true the app settings "AzureWebJobsDashboard" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons.
-
-- Required: No
-- Type: bool
-- Default: `[if(contains(parameters('kind'), 'functionapp'), true(), false())]`
-
 ### Parameter: `siteConfig`
 
 The site config object.
@@ -2020,6 +2028,14 @@ Required if app of kind functionapp. Resource ID of the storage account to manag
 
 - Required: No
 - Type: string
+
+### Parameter: `storageAccountUseIdentityAuthentication`
+
+If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `tags`
 

@@ -60,11 +60,11 @@ param siteConfig object?
 @description('Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.')
 param storageAccountResourceId string?
 
+@description('Optional. If the provided storage account requires Identity based authentication (\'allowSharedKeyAccess\' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is \'Storage Blob Data Owner\'.')
+param storageAccountUseIdentityAuthentication bool = false
+
 @description('Optional. Resource ID of the app insight to leverage for this resource.')
 param appInsightResourceId string?
-
-@description('Optional. For function apps. If true the app settings "AzureWebJobsDashboard" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons.')
-param setAzureWebJobsDashboard bool = contains(kind, 'functionapp') ? true : false
 
 @description('Optional. The app settings-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING.')
 param appSettingsKeyValuePairs object?
@@ -234,8 +234,8 @@ module app_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettings
     appName: app.name
     kind: kind
     storageAccountResourceId: storageAccountResourceId
+    storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
     appInsightResourceId: appInsightResourceId
-    setAzureWebJobsDashboard: setAzureWebJobsDashboard
     appSettingsKeyValuePairs: appSettingsKeyValuePairs
   }
 }
@@ -267,8 +267,8 @@ module app_slots 'slot/main.bicep' = [for (slot, index) in (slots ?? []): {
     virtualNetworkSubnetId: slot.?virtualNetworkSubnetId ?? virtualNetworkSubnetId
     siteConfig: slot.?siteConfig ?? siteConfig
     storageAccountResourceId: slot.?storageAccountResourceId ?? storageAccountResourceId
+    storageAccountUseIdentityAuthentication: slot.?storageAccountUseIdentityAuthentication ?? storageAccountUseIdentityAuthentication
     appInsightResourceId: slot.?appInsightResourceId ?? appInsightResourceId
-    setAzureWebJobsDashboard: slot.?setAzureWebJobsDashboard ?? setAzureWebJobsDashboard
     authSettingV2Configuration: slot.?authSettingV2Configuration ?? authSettingV2Configuration
     diagnosticSettings: slot.?diagnosticSettings
     roleAssignments: slot.?roleAssignments ?? roleAssignments
