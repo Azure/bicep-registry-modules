@@ -1,13 +1,16 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "1.10-experimental",
+  "languageVersion": "2.1-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
+    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+    "_EXPERIMENTAL_FEATURES_ENABLED": [
+      "Extensibility"
+    ],
     "_generator": {
       "name": "bicep",
-      "version": "0.20.4.51522",
-      "templateHash": "14407591854696997315"
+      "version": "0.24.24.22086",
+      "templateHash": "6488362541201245086"
     },
     "name": "Azure Storage Account",
     "description": "This Bicep module creates a Storage Account with zone-redundancy, encryption, virtual network access, and TLS version.",
@@ -1428,6 +1431,16 @@
         "description": "Array of blob containers to be created for blobServices of Storage Account."
       }
     },
+    "tables": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Array of tables to be created in the Storage Account."
+      }
+    },
     "managementPolicyRules": {
       "type": "array",
       "items": {
@@ -1590,6 +1603,7 @@
       ]
     },
     "blobService": {
+      "condition": "[not(equals(parameters('blobContainers'), createArray()))]",
       "type": "Microsoft.Storage/storageAccounts/blobServices",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}/{1}', parameters('name'), 'default')]",
@@ -1609,6 +1623,29 @@
       "properties": "[coalesce(tryGet(parameters('blobContainers')[copyIndex()], 'properties'), createObject())]",
       "dependsOn": [
         "blobService"
+      ]
+    },
+    "tableService": {
+      "condition": "[not(equals(parameters('tables'), createArray()))]",
+      "type": "Microsoft.Storage/storageAccounts/tableServices",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}', parameters('name'), 'default')]",
+      "properties": {},
+      "dependsOn": [
+        "storageAccount"
+      ]
+    },
+    "table": {
+      "copy": {
+        "name": "table",
+        "count": "[length(parameters('tables'))]"
+      },
+      "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}/{2}', parameters('name'), 'default', parameters('tables')[copyIndex()])]",
+      "properties": {},
+      "dependsOn": [
+        "tableService"
       ]
     },
     "storageAccount_RoleAssignment": {
@@ -1673,14 +1710,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "57663108792819753"
+              "version": "0.24.24.22086",
+              "templateHash": "15228887594798096677"
             }
           },
           "definitions": {
@@ -1777,7 +1817,10 @@
                 ],
                 "sourceAccount": "[parameters('policy').sourceStorageAccountId]",
                 "destinationAccount": "[parameters('policy').destinationStorageAccountId]"
-              }
+              },
+              "dependsOn": [
+                "storageAccount"
+              ]
             }
           },
           "outputs": {
@@ -1822,14 +1865,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "57663108792819753"
+              "version": "0.24.24.22086",
+              "templateHash": "15228887594798096677"
             }
           },
           "definitions": {
@@ -1926,7 +1972,10 @@
                 ],
                 "sourceAccount": "[parameters('policy').sourceStorageAccountId]",
                 "destinationAccount": "[parameters('policy').destinationStorageAccountId]"
-              }
+              },
+              "dependsOn": [
+                "storageAccount"
+              ]
             }
           },
           "outputs": {
@@ -1974,14 +2023,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "6354356391494568367"
+              "version": "0.24.24.22086",
+              "templateHash": "17203430314904827210"
             }
           },
           "parameters": {

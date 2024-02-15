@@ -142,6 +142,9 @@ param blobServiceProperties blobServicePropertiesType = {}
 @description('Array of blob containers to be created for blobServices of Storage Account.')
 param blobContainers blobContainerType[] = []
 
+@description('Array of tables to be created in the Storage Account.')
+param tables string[] = []
+
 @description('Configuration for the blob inventory policy.')
 param managementPolicyRules managementPolicyRuleType[] = []
 
@@ -276,7 +279,7 @@ resource managementpolicy 'Microsoft.Storage/storageAccounts/managementPolicies@
   }
 }
 
-resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = if (blobContainers != []) {
   name: 'default'
   parent: storageAccount
   properties: blobServiceProperties
@@ -286,6 +289,18 @@ resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/container
   name: container.name
   parent: blobService
   properties: container.?properties ?? {}
+}]
+
+resource tableService 'Microsoft.Storage/storageAccounts/tableServices@2022-09-01' = if (tables != []) {
+  name: 'default'
+  parent: storageAccount
+  properties: {}
+}
+
+resource table 'Microsoft.Storage/storageAccounts/tableServices/tables@2022-09-01' = [for table in tables: {
+  name: table
+  parent: tableService
+  properties: {}
 }]
 
 module storageAccount_objectReplicationSourcePolicy 'modules/objectReplicationPolicy.bicep' = [for policy in objectReplicationSourcePolicyWithName: {

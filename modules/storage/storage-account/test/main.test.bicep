@@ -28,6 +28,10 @@ var names = {
     storage: take('st3sour${uniqueStoragename}', maxNameLength)
     containers: [ 'sourcecontainer1', 'sourcecontainer2' ]
   }
+  test4: {
+    storage: take('st4${uniqueStoragename}', maxNameLength)
+    tables: [ 'test4table1', 'test4table2' ]
+  }
 }
 
 module prereq 'prereq.test.bicep' = {
@@ -273,6 +277,18 @@ module test3Source '../main.bicep' = {
           }
         ]
       }
+    ]
+  }
+}
+
+module test4 '../main.bicep' = {
+  name: 'test4'
+  params: {
+    name: names.test4.storage
+    location: location
+    tables: [
+      names.test4.tables[0]
+      names.test4.tables[1]
     ]
   }
 }
