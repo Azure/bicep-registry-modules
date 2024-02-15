@@ -14,11 +14,11 @@ param prefix string = 'appconf'
 param name string = '${prefix}-${uniqueString(resourceGroup().id, subscription().id)}'
 
 @description('The SKU name of the configuration store.')
-@allowed(['Free', 'Standard'])
+@allowed([ 'Free', 'Standard' ])
 param skuName string = 'Free'
 
 @description('Indicates whether the configuration store need to be recovered.')
-@allowed(['Default', 'Recover'])
+@allowed([ 'Default', 'Recover' ])
 param createMode string = 'Default'
 
 @minValue(1)
@@ -27,7 +27,7 @@ param createMode string = 'Default'
 param softDeleteRetentionInDays int = 7
 
 @description('The Public Network Access setting of the App Configuration store. When Disabled, only requests from Private Endpoints can access the App Configuration store.')
-@allowed(['Enabled', 'Disabled'])
+@allowed([ 'Enabled', 'Disabled' ])
 param publicNetworkAccess string = 'Enabled'
 
 @description('Disables all authentication methods other than AAD authentication.')
@@ -39,6 +39,9 @@ param enablePurgeProtection bool = false
 @description('List of key-value pair to add in the appConfiguration.')
 param appConfigurationStoreKeyValues appConfigurationStoreKeyValueType[] = []
 
+@description('List of feature flags to add in the appConfiguration.')
+param appConfigurationStoreFeatureFlags appConfigurationStoreFeatureFlagType[] = []
+
 @description('The configuration used to encrypt the data in the configuration store.')
 param appConfigEncryption keyVaultPropertiesType = {}
 
@@ -49,14 +52,14 @@ param replicas array = []
 param tags object = {}
 
 @description('TSpecifies the type of Managed Service Identity that should be configured on this App Configuration. The type "SystemAssigned, UserAssigned" includes both an implicitly created identity and a set of user-assigned identities.')
-@allowed(['None', 'SystemAssigned', 'SystemAssigned,UserAssigned', 'UserAssigned'])
+@allowed([ 'None', 'SystemAssigned', 'SystemAssigned,UserAssigned', 'UserAssigned' ])
 param identityType string = 'None'
 
 @description('The list of user-assigned managed identities. The user identity dictionary key references will be ARM resource ids in the form: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}"')
 param userAssignedIdentities object = {}
 
 @description('Specify the type of lock on app conf resource.')
-@allowed(['CanNotDelete', 'NotSpecified', 'ReadOnly'])
+@allowed([ 'CanNotDelete', 'NotSpecified', 'ReadOnly' ])
 param lock string = 'NotSpecified'
 
 @description('Array of role assignment objects that contain the "roleDefinitionIdOrName" and "principalId" to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, provide either the display name of the role definition, or its fully qualified ID in the following format: "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11"')
@@ -110,7 +113,7 @@ resource appConfigurationReplicas 'Microsoft.AppConfiguration/configurationStore
   location: replica.location
 }]
 
-resource appConfigurationStoreKeyValue 'Microsoft.AppConfiguration/configurationStores/keyValues@2023-03-01' = [ for appConfig in appConfigurationStoreKeyValues: {
+resource appConfigurationStoreKeyValue 'Microsoft.AppConfiguration/configurationStores/keyValues@2023-03-01' = [for appConfig in appConfigurationStoreKeyValues: {
   name: appConfig.name
   parent: appConfiguration
   properties: {
@@ -120,18 +123,32 @@ resource appConfigurationStoreKeyValue 'Microsoft.AppConfiguration/configuration
   }
 }]
 
+resource appConfigurationStoreFeatureFlag 'Microsoft.AppConfiguration/configurationStores/keyValues@2023-03-01' = [for featureFlag in appConfigurationStoreFeatureFlags: {
+  parent: appConfiguration
+  name: '${replace(replace(uriComponent('.appconfig.featureflag/${featureFlag.name}'), '~', '~7E'), '%', '~')}$${featureFlag.label}'
+  properties: {
+    contentType: 'application/vnd.microsoft.appconfig.ff+json;charset=utf-8'
+    value: string({
+      #disable-next-line use-resource-id-functions
+      id: featureFlag.name
+      description: featureFlag.description
+      enabled: featureFlag.enabled
+    })
+  }
+}]
+
 // diagnostic settings
 @description('Provide appConfiguration diagnostic settings properties.')
 param diagnosticSettingsProperties diagnosticSettingsPropertiesType = {}
 
 @description('Enable appConfiguration diagnostic settings resource.')
-var enableAppConfigurationDiagnosticSettings  = (empty(diagnosticSettingsProperties.?diagnosticReceivers.?workspaceId) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?eventHub) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?storageAccountId) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?marketplacePartnerId)) ? false : true
+var enableAppConfigurationDiagnosticSettings = (empty(diagnosticSettingsProperties.?diagnosticReceivers.?workspaceId) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?eventHub) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?storageAccountId) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?marketplacePartnerId)) ? false : true
 
-resource appConfigurationDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if  (enableAppConfigurationDiagnosticSettings) {
+resource appConfigurationDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableAppConfigurationDiagnosticSettings) {
   name: '${name}-diagnostic-settings'
   properties: {
     eventHubAuthorizationRuleId: diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubAuthorizationRuleId
-    eventHubName:  diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubName
+    eventHubName: diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubName
     logAnalyticsDestinationType: diagnosticSettingsProperties.diagnosticReceivers.?logAnalyticsDestinationType
     logs: diagnosticSettingsProperties.?logs
     marketplacePartnerId: diagnosticSettingsProperties.diagnosticReceivers.?marketplacePartnerId
@@ -181,7 +198,6 @@ output name string = appConfiguration.name
 @description('Object Id of system assigned managed identity for app configuration (if enabled).')
 output systemAssignedIdentityPrincipalId string = contains(identityType, 'SystemAssigned') ? appConfiguration.identity.principalId : ''
 
-
 // user defined types
 @description('Create a key-value pair in appConfiguration.')
 type appConfigurationStoreKeyValueType = {
@@ -190,6 +206,15 @@ type appConfigurationStoreKeyValueType = {
   contentType: string?
   value: string?
   tags: object?
+}
+
+// user defined types
+@description('Create a key-value pair in appConfiguration.')
+type appConfigurationStoreFeatureFlagType = {
+  name: string
+  label: string
+  description: string?
+  enabled: bool
 }
 
 // user-defined types

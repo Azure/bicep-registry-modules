@@ -1,13 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "1.10-experimental",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.19.5.34762",
-      "templateHash": "1075095153312310718"
+      "version": "0.24.24.22086",
+      "templateHash": "10179728979488614719"
     },
     "name": "Azure App Configuration",
     "description": "Bicep module for simplified deployment Azure App Configuration resources and optionally available integrations.",
@@ -34,6 +33,27 @@
         "tags": {
           "type": "object",
           "nullable": true
+        }
+      },
+      "metadata": {
+        "description": "Create a key-value pair in appConfiguration."
+      }
+    },
+    "appConfigurationStoreFeatureFlagType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string",
+          "nullable": true
+        },
+        "enabled": {
+          "type": "bool"
         }
       },
       "metadata": {
@@ -225,11 +245,11 @@
       "properties": {
         "name": {
           "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
           "metadata": {
             "description": "The resource name."
-          },
-          "maxLength": 128,
-          "minLength": 1
+          }
         },
         "startIpAddress": {
           "type": "string",
@@ -250,11 +270,11 @@
       "properties": {
         "name": {
           "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
           "metadata": {
             "description": "The resource name."
-          },
-          "maxLength": 128,
-          "minLength": 1
+          }
         },
         "ignoreMissingVnetServiceEndpoint": {
           "type": "bool",
@@ -346,11 +366,11 @@
     "name": {
       "type": "string",
       "defaultValue": "[format('{0}-{1}', parameters('prefix'), uniqueString(resourceGroup().id, subscription().id))]",
+      "minLength": 5,
+      "maxLength": 50,
       "metadata": {
         "description": "Specifies the name of the App Configuration instance. Changing this forces a new resource to be created. It must me unique across Azure. Valid characters: Alphanumerics,underscores, and hyphens."
-      },
-      "maxLength": 50,
-      "minLength": 5
+      }
     },
     "skuName": {
       "type": "string",
@@ -377,11 +397,11 @@
     "softDeleteRetentionInDays": {
       "type": "int",
       "defaultValue": 7,
+      "minValue": 1,
+      "maxValue": 7,
       "metadata": {
         "description": "The amount of time in days that the configuration store will be retained when it is soft deleted.  This field only works for \"Standard\" sku."
-      },
-      "maxValue": 7,
-      "minValue": 1
+      }
     },
     "publicNetworkAccess": {
       "type": "string",
@@ -416,6 +436,16 @@
       "defaultValue": [],
       "metadata": {
         "description": "List of key-value pair to add in the appConfiguration."
+      }
+    },
+    "appConfigurationStoreFeatureFlags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/appConfigurationStoreFeatureFlagType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "List of feature flags to add in the appConfiguration."
       }
     },
     "appConfigEncryption": {
@@ -573,6 +603,22 @@
         "appConfiguration"
       ]
     },
+    "appConfigurationStoreFeatureFlag": {
+      "copy": {
+        "name": "appConfigurationStoreFeatureFlag",
+        "count": "[length(parameters('appConfigurationStoreFeatureFlags'))]"
+      },
+      "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
+      "apiVersion": "2023-03-01",
+      "name": "[format('{0}/{1}', parameters('name'), format('{0}${1}', replace(replace(uriComponent(format('.appconfig.featureflag/{0}', parameters('appConfigurationStoreFeatureFlags')[copyIndex()].name)), '~', '~7E'), '%', '~'), parameters('appConfigurationStoreFeatureFlags')[copyIndex()].label))]",
+      "properties": {
+        "contentType": "application/vnd.microsoft.appconfig.ff+json;charset=utf-8",
+        "value": "[string(createObject('id', parameters('appConfigurationStoreFeatureFlags')[copyIndex()].name, 'description', parameters('appConfigurationStoreFeatureFlags')[copyIndex()].description, 'enabled', parameters('appConfigurationStoreFeatureFlags')[copyIndex()].enabled))]"
+      },
+      "dependsOn": [
+        "appConfiguration"
+      ]
+    },
     "appConfigurationDiagnosticSettings": {
       "condition": "[variables('enableAppConfigurationDiagnosticSettings')]",
       "type": "Microsoft.Insights/diagnosticSettings",
@@ -640,14 +686,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "9269277903873652085"
+              "version": "0.24.24.22086",
+              "templateHash": "16632638229503138857"
             }
           },
           "parameters": {
@@ -688,14 +732,8 @@
             },
             "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName')))]"
           },
-          "resources": {
-            "appConfiguration": {
-              "existing": true,
-              "type": "Microsoft.AppConfiguration/configurationStores",
-              "apiVersion": "2023-03-01",
-              "name": "[last(split(parameters('resourceId'), '/'))]"
-            },
-            "roleAssignment": {
+          "resources": [
+            {
               "copy": {
                 "name": "roleAssignment",
                 "count": "[length(parameters('principalIds'))]"
@@ -711,7 +749,7 @@
                 "principalType": "[coalesce(parameters('principalType'), null())]"
               }
             }
-          }
+          ]
         }
       },
       "dependsOn": [
@@ -740,14 +778,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "17584855190782240496"
+              "version": "0.24.24.22086",
+              "templateHash": "5090534201139333344"
             }
           },
           "definitions": {

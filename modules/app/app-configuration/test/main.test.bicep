@@ -124,7 +124,6 @@ module test05 '../main.bicep' = {
   }
 }
 
-
 // Test 06 -  Configure key-values pair - diagnosticSettings
 module test06 '../main.bicep' = {
   name: 'test06-${uniqueName}'
@@ -132,42 +131,86 @@ module test06 '../main.bicep' = {
     prefix: 'appconf-test06'
     location: location
     skuName: 'Standard'
-    appConfigurationStoreKeyValues: [{
-      name: 'json-example'
-      value: '{"ObjectSetting":{"Targeting":{"Default":true,"Level":"Information"}}}'
-      tags: {
-        example: 'use a json'
+    appConfigurationStoreKeyValues: [ {
+        name: 'json-example'
+        value: '{"ObjectSetting":{"Targeting":{"Default":true,"Level":"Information"}}}'
+        tags: {
+          example: 'use a json'
+        }
+        contentType: 'application/json'
+      }, {
+        name: 'key-1'
+        value: 'value-1'
+        tags: {
+          example: 'use a key-value pair'
+        }
       }
-      contentType: 'application/json'
-    }, {
-      name: 'key-1'
-      value: 'value-1'
-      tags: {
-        example: 'use a key-value pair'
+    ]
+    diagnosticSettingsProperties: {
+      logs: [ {
+          categoryGroup: 'allLogs'
+          enabled: true
+        } ]
+      metrics: [ {
+          category: 'AllMetrics'
+          enabled: true
+          retentionPolicy: {
+            days: 2
+            enabled: true
+          }
+        } ]
+      diagnosticReceivers: {
+        eventHub: {
+          EventHubName: dependencies.outputs.eventHubName
+          EventHubAuthorizationRuleId: dependencies.outputs.eventHubAuthorizationRuleId
+        }
+        storageAccountId: dependencies.outputs.storageAccountId
+        workspaceId: dependencies.outputs.workspaceId
       }
-    }
-  ]
-  diagnosticSettingsProperties: {
-    logs: [{
-        categoryGroup: 'allLogs'
-        enabled: true
-    }]
-    metrics: [{
-      category: 'AllMetrics'
-      enabled: true
-      retentionPolicy: {
-        days: 2
-        enabled: true
-      }
-    }]
-    diagnosticReceivers: {
-      eventHub: {
-        EventHubName: dependencies.outputs.eventHubName
-        EventHubAuthorizationRuleId: dependencies.outputs.eventHubAuthorizationRuleId
-      }
-      storageAccountId: dependencies.outputs.storageAccountId
-      workspaceId: dependencies.outputs.workspaceId
     }
   }
+}
+
+// Test 07 -  Configure feature flags
+module test07 '../main.bicep' = {
+  name: 'test07-${uniqueName}'
+  params: {
+    prefix: 'appconf-test07'
+    location: location
+    skuName: 'Standard'
+    appConfigurationStoreFeatureFlags: [ {
+        name: 'key-1'
+        label: 'key-1'
+        description: 'First Feature Flag that is enabled'
+        enabled: true
+      }, {
+        name: 'key-2'
+        label: 'key-2'
+        description: 'Second Feature Flag that is disabled'
+        enabled: false
+      }
+    ]
+    diagnosticSettingsProperties: {
+      logs: [ {
+          categoryGroup: 'allLogs'
+          enabled: true
+        } ]
+      metrics: [ {
+          category: 'AllMetrics'
+          enabled: true
+          retentionPolicy: {
+            days: 2
+            enabled: true
+          }
+        } ]
+      diagnosticReceivers: {
+        eventHub: {
+          EventHubName: dependencies.outputs.eventHubName
+          EventHubAuthorizationRuleId: dependencies.outputs.eventHubAuthorizationRuleId
+        }
+        storageAccountId: dependencies.outputs.storageAccountId
+        workspaceId: dependencies.outputs.workspaceId
+      }
+    }
   }
 }
