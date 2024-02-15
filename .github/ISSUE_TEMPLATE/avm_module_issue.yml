@@ -107,7 +107,7 @@ body:
         - "avm/res/maintenance/maintenance-configuration"
         - "avm/res/managed-identity/user-assigned-identity"
         # - "avm/res/managed-services/registration-definition"
-        # - "avm/res/management/management-group"
+        - "avm/res/management/management-group"
         - "avm/res/net-app/net-app-account"
         # - "avm/res/network/application-gateway"
         # - "avm/res/network/application-gateway-web-application-firewall-policy"
