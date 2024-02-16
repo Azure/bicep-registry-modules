@@ -83,7 +83,7 @@ function Get-AzAvailableResourceLocation {
   Write-Verbose "Region list: $($resourceRegionList | ConvertTo-Json)"
 
   if ($resourceRegionList -eq "global" -or $null -eq $resourceRegionList) {
-    Write-Verbose "Resource is global, default region [$GlobalResourceGroupLocation] will be used for resource group creation"
+    Write-Verbose "Resource is global or does not have a location in the Resource Providers API, default region [$GlobalResourceGroupLocation] will be used for resource group creation"
     $location = $GlobalResourceGroupLocation # Set Location to resource group location. Globabl resources should have hardocded location in `main.bicep`
   }
   else {
