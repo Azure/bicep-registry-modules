@@ -157,7 +157,7 @@ module test06 '../main.bicep' = {
       enabled: true
       retentionPolicy: {
         days: 2
-        enabled: true
+        enabled: false
       }
     }]
     diagnosticReceivers: {
