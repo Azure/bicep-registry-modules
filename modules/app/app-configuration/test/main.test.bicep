@@ -131,30 +131,29 @@ module test06 '../main.bicep' = {
     prefix: 'appconf-test06'
     location: location
     skuName: 'Standard'
-    appConfigurationStoreKeyValues: [ {
-        name: 'json-example'
-        value: '{"ObjectSetting":{"Targeting":{"Default":true,"Level":"Information"}}}'
-        tags: {
-          example: 'use a json'
-        }
-        contentType: 'application/json'
-      }, {
-        name: 'key-1'
-        value: 'value-1'
-        tags: {
-          example: 'use a key-value pair'
-        }
+    appConfigurationStoreKeyValues: [{
+      name: 'json-example'
+      value: '{"ObjectSetting":{"Targeting":{"Default":true,"Level":"Information"}}}'
+      tags: {
+        example: 'use a json'
       }
-    ]
+      contentType: 'application/json'
+    }, {
+      name: 'key-1'
+      value: 'value-1'
+      tags: {
+        example: 'use a key-value pair'
+      }
+    }]
     diagnosticSettingsProperties: {
-      logs: [ {
-          categoryGroup: 'allLogs'
-          enabled: true
-        } ]
-      metrics: [ {
-          category: 'AllMetrics'
-          enabled: true
-        } ]
+      logs: [{
+        categoryGroup: 'allLogs'
+        enabled: true
+      }]
+      metrics: [{
+        category: 'AllMetrics'
+        enabled: true
+      }]
       diagnosticReceivers: {
         eventHub: {
           EventHubName: dependencies.outputs.eventHubName
@@ -174,17 +173,16 @@ module test07 '../main.bicep' = {
     prefix: 'appconf-test07'
     location: location
     skuName: 'Standard'
-    appConfigurationStoreFeatureFlags: [ {
-        name: 'key-1'
-        label: 'key-1'
-        description: 'First Feature Flag that is enabled'
-        enabled: true
-      }, {
-        name: 'key-2'
-        label: 'key-2'
-        description: 'Second Feature Flag that is disabled'
-        enabled: false
-      }
-    ]
+    appConfigurationStoreFeatureFlags: [{
+      name: 'key-1'
+      label: 'key-1'
+      description: 'First Feature Flag that is enabled'
+      enabled: true
+    }, {
+      name: 'key-2'
+      label: 'key-2'
+      description: 'Second Feature Flag that is disabled'
+      enabled: false
+    }]
   }
 }
