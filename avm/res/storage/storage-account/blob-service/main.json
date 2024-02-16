@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "6670506366627013721"
+      "version": "0.25.3.34343",
+      "templateHash": "1767452448979292347"
     },
     "name": "Storage Account blob Services",
     "description": "This module deploys a Storage Account Blob Service.",
@@ -371,8 +371,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "1429761296615247722"
+              "version": "0.25.3.34343",
+              "templateHash": "4692605911774255516"
             },
             "name": "Storage Account Blob Containers",
             "description": "This module deploys a Storage Account Blob Container.",
@@ -640,8 +640,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "15441426428461937893"
+                      "version": "0.25.3.34343",
+                      "templateHash": "18172078163140627549"
                     },
                     "name": "Storage Account Blob Container Immutability Policies",
                     "description": "This module deploys a Storage Account Blob Container Immutability Policy.",
