@@ -51,7 +51,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     name: 'nvhmin'
     virtualWanId: '<virtualWanId>'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
   }
 }
@@ -80,9 +79,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       "value": "<virtualWanId>"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     }
@@ -111,7 +107,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     name: 'nvhmax'
     virtualWanId: '<virtualWanId>'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     hubRouteTables: [
       {
         name: 'routeTable1'
@@ -175,9 +170,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       "value": "<virtualWanId>"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "hubRouteTables": {
       "value": [
         {
@@ -249,7 +241,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     name: 'nvhwaf'
     virtualWanId: '<virtualWanId>'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     hubRouteTables: [
       {
         name: 'routeTable1'
@@ -313,9 +304,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       "value": "<virtualWanId>"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "hubRouteTables": {
       "value": [
         {
@@ -602,7 +590,6 @@ VirtualRouter ASN.
 
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `virtualRouterIps`
 

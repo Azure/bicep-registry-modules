@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "13782086193329224680"
+      "templateHash": "7311871913704796331"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module.",
@@ -148,7 +148,7 @@
     },
     "virtualRouterAsn": {
       "type": "int",
-      "defaultValue": -1,
+      "nullable": true,
       "metadata": {
         "description": "Optional. VirtualRouter ASN."
       }
@@ -243,7 +243,7 @@
         "securityProviderName": "[parameters('securityProviderName')]",
         "sku": "[parameters('sku')]",
         "virtualHubRouteTableV2s": "[parameters('virtualHubRouteTableV2s')]",
-        "virtualRouterAsn": "[if(not(equals(parameters('virtualRouterAsn'), -1)), parameters('virtualRouterAsn'), null())]",
+        "virtualRouterAsn": "[parameters('virtualRouterAsn')]",
         "virtualRouterIps": "[if(not(empty(parameters('virtualRouterIps'))), parameters('virtualRouterIps'), null())]",
         "virtualWan": {
           "id": "[parameters('virtualWanId')]"

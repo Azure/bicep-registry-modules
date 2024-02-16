@@ -56,7 +56,7 @@ param sku string = 'Standard'
 param virtualHubRouteTableV2s array = []
 
 @description('Optional. VirtualRouter ASN.')
-param virtualRouterAsn int = -1
+param virtualRouterAsn int?
 
 @description('Optional. VirtualRouter IPs.')
 param virtualRouterIps array = []
@@ -125,7 +125,7 @@ resource virtualHub 'Microsoft.Network/virtualHubs@2022-11-01' = {
     securityProviderName: securityProviderName
     sku: sku
     virtualHubRouteTableV2s: virtualHubRouteTableV2s
-    virtualRouterAsn: virtualRouterAsn != -1 ? virtualRouterAsn : null
+    virtualRouterAsn: virtualRouterAsn
     virtualRouterIps: !empty(virtualRouterIps) ? virtualRouterIps : null
     virtualWan: {
       id: virtualWanId
