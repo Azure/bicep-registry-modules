@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "16966262699054894958"
+      "templateHash": "5256311106319509279"
     },
     "name": "Azure Virtual Desktop Application Group Application",
     "description": "This module deploys an Azure Virtual Desktop Application Group Application.",
@@ -28,19 +28,19 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Description of Application.."
+        "description": "Optional. Description of the Application."
       }
     },
     "friendlyName": {
       "type": "string",
       "metadata": {
-        "description": "Required. Friendly name of Application.."
+        "description": "Required. Friendly name of the Application."
       }
     },
     "filePath": {
       "type": "string",
       "metadata": {
-        "description": "Required. Specifies a path for the executable file for the application."
+        "description": "Required. Specifies a path for the executable file for the Application."
       }
     },
     "commandLineSetting": {
@@ -52,14 +52,14 @@
         "Require"
       ],
       "metadata": {
-        "description": "Optional. Specifies whether this published application can be launched with command-line arguments provided by the client, command-line arguments specified at publish time, or no command-line arguments at all."
+        "description": "Optional. Specifies whether this published Application can be launched with command-line arguments provided by the client, command-line arguments specified at publish time, or no command-line arguments at all."
       }
     },
     "commandLineArguments": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Command-Line Arguments for Application."
+        "description": "Optional. Command-Line Arguments for the Application."
       }
     },
     "showInPortal": {
@@ -105,21 +105,21 @@
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the application."
+        "description": "The resource ID of the Application."
       },
       "value": "[resourceId('Microsoft.DesktopVirtualization/applicationGroups/applications', parameters('applicationGroupName'), parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the resource group the application was created in."
+        "description": "The name of the resource group the Application was created in."
       },
       "value": "[resourceGroup().name]"
     },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the application."
+        "description": "The name of the Application."
       },
       "value": "[parameters('name')]"
     }

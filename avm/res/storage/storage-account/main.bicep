@@ -68,12 +68,9 @@ param privateEndpoints privateEndpointType
 @description('Optional. The Storage Account ManagementPolicies Rules.')
 param managementPolicyRules array?
 
-@description('Optional. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. For security reasons, it is recommended to set the DefaultAction Deny.')
-param networkAcls object = {
-  resourceAccessRules: []
+@description('Required. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
+param networkAcls networkAclsType = {
   bypass: 'AzureServices'
-  virtualNetworkRules: []
-  ipRules: []
   defaultAction: 'Deny'
 }
 
@@ -531,6 +528,24 @@ type roleAssignmentType = {
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
+
+type networkAclsType = {
+  @description('Optional. Sets the resource access rules.')
+  resourceAccessRules: array?
+
+  @description('Required. Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging,Metrics,AzureServices (For example, "Logging, Metrics"), or None to bypass none of those traffics.')
+  bypass: ('None' | 'AzureServices' | 'Logging' | 'Metrics' | 'AzureServices, Logging' | 'AzureServices, Metrics' | 'AzureServices, Logging, Metrics' | 'Logging, Metrics')
+
+  @description('Optional. Sets the virtual network rules.')
+  virtualNetworkRules: array?
+
+  @description('Optional. Sets the IP ACL rules.')
+  ipRules: array?
+
+  @description('Required. Specifies the default action of allow or deny when no other rules match.')
+  defaultAction: ('Allow' | 'Deny')
+}
+
 
 type privateEndpointType = {
   @description('Optional. The name of the private endpoint.')
