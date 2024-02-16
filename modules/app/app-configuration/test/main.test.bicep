@@ -154,10 +154,6 @@ module test06 '../main.bicep' = {
       metrics: [ {
           category: 'AllMetrics'
           enabled: true
-          retentionPolicy: {
-            days: 2
-            enabled: true
-          }
         } ]
       diagnosticReceivers: {
         eventHub: {
