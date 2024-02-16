@@ -96,18 +96,11 @@ function Get-AzAvailableResourceLocation {
     } |  Select-Object -ExpandProperty Location
     Write-Verbose "Available Locations: $($locations | ConvertTo-Json)"
 
-    $filteredAllowedLocations = @()
     $filteredAllowedLocations = @($locations | Where-Object { $_ -in $AllowedRegionsList })
     Write-Verbose "Filtered allowed locations: $($filteredAllowedLocations | ConvertTo-Json)"
-
-    if ($filteredAllowedLocations.Count -gt 0) {
-      $index = Get-Random -Maximum ($filteredAllowedLocations.Count)
-      Write-Verbose "Generated random index [$index]"
-      $location = $filteredAllowedLocations[$index]
-    }
-    else {
-      $location = $filteredAllowedLocations
-    }
+    $index = Get-Random -Maximum ($filteredAllowedLocations.Count)
+    Write-Verbose "Generated random index [$index]"
+    $location = $filteredAllowedLocations[$index]
   }
 
   Write-Verbose "Selected location [$location]" -Verbose
