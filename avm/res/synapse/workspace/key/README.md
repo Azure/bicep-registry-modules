@@ -1,6 +1,6 @@
-# Storage Account Management Policies `[Microsoft.Storage/storageAccounts/managementPolicies]`
+# Synapse Workspaces Keys `[Microsoft.Synapse/workspaces/keys]`
 
-This module deploys a Storage Account Management Policy.
+This module deploys a Synapse Workspaces Key.
 
 ## Navigation
 
@@ -14,7 +14,7 @@ This module deploys a Storage Account Management Policy.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Storage/storageAccounts/managementPolicies` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/managementPolicies) |
+| `Microsoft.Synapse/workspaces/keys` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/keys) |
 
 ## Parameters
 
@@ -22,24 +22,40 @@ This module deploys a Storage Account Management Policy.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`rules`](#parameter-rules) | array | The Storage Account ManagementPolicies Rules. |
+| [`isActiveCMK`](#parameter-isactivecmk) | bool | Used to activate the workspace after a customer managed key is provided. |
+| [`keyVaultResourceId`](#parameter-keyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+| [`name`](#parameter-name) | string | Encryption key name. |
 
 **Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`storageAccountName`](#parameter-storageaccountname) | string | The name of the parent Storage Account. Required if the template is used in a standalone deployment. |
+| [`workspaceName`](#parameter-workspacename) | string | The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment. |
 
-### Parameter: `rules`
+### Parameter: `isActiveCMK`
 
-The Storage Account ManagementPolicies Rules.
+Used to activate the workspace after a customer managed key is provided.
 
 - Required: Yes
-- Type: array
+- Type: bool
 
-### Parameter: `storageAccountName`
+### Parameter: `keyVaultResourceId`
 
-The name of the parent Storage Account. Required if the template is used in a standalone deployment.
+The resource ID of a key vault to reference a customer managed key for encryption from.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `name`
+
+Encryption key name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaceName`
+
+The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
@@ -49,9 +65,9 @@ The name of the parent Storage Account. Required if the template is used in a st
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the deployed management policy. |
-| `resourceGroupName` | string | The resource group of the deployed management policy. |
-| `resourceId` | string | The resource ID of the deployed management policy. |
+| `name` | string | The name of the deployed key. |
+| `resourceGroupName` | string | The resource group of the deployed key. |
+| `resourceId` | string | The resource ID of the deployed key. |
 
 ## Cross-referenced modules
 
