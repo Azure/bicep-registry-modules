@@ -295,7 +295,7 @@ runs:
         $moduleTestFolderPath = Split-Path $moduleTestFilePath
         $moduleTestFolderName = Split-Path $moduleTestFolderPath -Leaf
 
-        $deploymentOutputs = $env:deploymentOutput | ConvertFrom-Json -AsHashTable
+        $deploymentOutputs = '${{ steps.deploy_step.outputs.deploymentOutput }}' | ConvertFrom-Json -AsHashTable
 
         # --------------------- #
         # Invoke Pester test(s) #
