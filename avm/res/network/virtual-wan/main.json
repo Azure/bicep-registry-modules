@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "10385451554311751285"
+      "templateHash": "10343247439372300516"
     },
     "name": "Virtual WANs",
     "description": "This module deploys a Virtual WAN.",
@@ -236,9 +236,9 @@
         "virtualWan"
       ]
     },
-    "virtualWan_roleAssignments": {
+    "networkInterface_roleAssignments": {
       "copy": {
-        "name": "virtualWan_roleAssignments",
+        "name": "networkInterface_roleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
