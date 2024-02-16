@@ -104,7 +104,7 @@ resource appConfiguration 'Microsoft.AppConfiguration/configurationStores@2023-0
     type: identityType
     userAssignedIdentities: contains(identityType, 'UserAssigned') ? userAssignedIdentities : {}
   } : { type: identityType }
-  resource appConfigurationStoreFeatureFlag 'Microsoft.AppConfiguration/configurationStores/keyValues@2023-03-01' = [for featureFlag in appConfigurationStoreFeatureFlags: {
+  resource appConfigurationStoreFeatureFlag 'keyValues@2023-03-01' = [for featureFlag in appConfigurationStoreFeatureFlags: {
     name: '${replace(replace(uriComponent('.appconfig.featureflag/${featureFlag.name}'), '~', '~7E'), '%', '~')}$${featureFlag.label}'
     properties: {
       contentType: 'application/vnd.microsoft.appconfig.ff+json;charset=utf-8'
