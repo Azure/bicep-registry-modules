@@ -165,7 +165,7 @@ module test_03 '../main.bicep' = {
             enabled: true
             retentionPolicy: {
               days: 7
-              enabled: true
+              enabled: false
             }
           }
         ]
@@ -175,7 +175,7 @@ module test_03 '../main.bicep' = {
             enabled: true
             retentionPolicy: {
               days: 36
-              enabled: true
+              enabled: false
             }
           }
           {
