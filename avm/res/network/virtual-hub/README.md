@@ -385,6 +385,7 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`allowBranchToBranchTraffic`](#parameter-allowbranchtobranchtraffic) | bool | Flag to control transit for VirtualRouter hub. |
+| [`azureFirewallResourceId`](#parameter-azurefirewallresourceid) | string | Resource ID of the Azure Firewall to link to. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`expressRouteGatewayId`](#parameter-expressroutegatewayid) | string | Resource ID of the Express Route Gateway to link to. |
 | [`hubRouteTables`](#parameter-hubroutetables) | array | Route tables to create for the virtual hub. |
@@ -431,6 +432,14 @@ Flag to control transit for VirtualRouter hub.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `azureFirewallResourceId`
+
+Resource ID of the Azure Firewall to link to.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `enableTelemetry`
 

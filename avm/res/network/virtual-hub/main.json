@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "5993518052441737492"
+      "templateHash": "13782086193329224680"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module.",
@@ -71,6 +71,13 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Flag to control transit for VirtualRouter hub."
+      }
+    },
+    "azureFirewallResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Resource ID of the Azure Firewall to link to."
       }
     },
     "expressRouteGatewayId": {
@@ -227,6 +234,7 @@
       "properties": {
         "addressPrefix": "[parameters('addressPrefix')]",
         "allowBranchToBranchTraffic": "[parameters('allowBranchToBranchTraffic')]",
+        "azureFirewall": "[if(not(empty(parameters('azureFirewallResourceId'))), createObject('id', parameters('azureFirewallResourceId')), null())]",
         "expressRouteGateway": "[if(not(empty(parameters('expressRouteGatewayId'))), createObject('id', parameters('expressRouteGatewayId')), null())]",
         "p2SVpnGateway": "[if(not(empty(parameters('p2SVpnGatewayId'))), createObject('id', parameters('p2SVpnGatewayId')), null())]",
         "preferredRoutingGateway": "[if(not(empty(parameters('preferredRoutingGateway'))), parameters('preferredRoutingGateway'), null())]",
