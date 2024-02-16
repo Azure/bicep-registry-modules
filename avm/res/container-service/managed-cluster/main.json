@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "1159094459578769102"
+      "templateHash": "13952995488839714797"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -771,7 +771,7 @@
         "userAssignedNATGateway"
       ],
       "metadata": {
-        "description": "Optional. Specifies outbound (egress) routing method. - loadBalancer or userDefinedRouting."
+        "description": "Optional. Specifies outbound (egress) routing method. - loadBalancer, userDefinedRouting, managedNATGateway or userAssignedNATGateway"
       }
     },
     "skuTier": {
