@@ -104,6 +104,18 @@ resource appConfiguration 'Microsoft.AppConfiguration/configurationStores@2023-0
     type: identityType
     userAssignedIdentities: contains(identityType, 'UserAssigned') ? userAssignedIdentities : {}
   } : { type: identityType }
+  resource appConfigurationStoreFeatureFlag 'Microsoft.AppConfiguration/configurationStores/keyValues@2023-03-01' = [for featureFlag in appConfigurationStoreFeatureFlags: {
+    name: '${replace(replace(uriComponent('.appconfig.featureflag/${featureFlag.name}'), '~', '~7E'), '%', '~')}$${featureFlag.label}'
+    properties: {
+      contentType: 'application/vnd.microsoft.appconfig.ff+json;charset=utf-8'
+      value: string({
+        #disable-next-line use-resource-id-functions
+        id: featureFlag.name
+        description: featureFlag.description
+        enabled: featureFlag.enabled
+      })
+    }
+  }]
 }
 
 @batchSize(1)
@@ -120,20 +132,6 @@ resource appConfigurationStoreKeyValue 'Microsoft.AppConfiguration/configuration
     contentType: appConfig.?contentType
     tags: appConfig.?tags
     value: appConfig.?value
-  }
-}]
-
-resource appConfigurationStoreFeatureFlag 'Microsoft.AppConfiguration/configurationStores/keyValues@2023-03-01' = [for featureFlag in appConfigurationStoreFeatureFlags: {
-  parent: appConfiguration
-  name: '${replace(replace(uriComponent('.appconfig.featureflag/${featureFlag.name}'), '~', '~7E'), '%', '~')}$${featureFlag.label}'
-  properties: {
-    contentType: 'application/vnd.microsoft.appconfig.ff+json;charset=utf-8'
-    value: string({
-      #disable-next-line use-resource-id-functions
-      id: featureFlag.name
-      description: featureFlag.description
-      enabled: featureFlag.enabled
-    })
   }
 }]
 
