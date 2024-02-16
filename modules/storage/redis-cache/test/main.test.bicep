@@ -114,7 +114,7 @@ module test_03 '../main.bicep' = {
           category: 'ConnectedClientList'
           enabled: true
           retentionPolicy: {
-            enabled: true
+            enabled: false
             days: 30
           }
         }
@@ -124,7 +124,7 @@ module test_03 '../main.bicep' = {
           category: 'AllMetrics'
           enabled: true
           retentionPolicy: {
-            enabled: true
+            enabled: false
             days: 30
           }
         }
