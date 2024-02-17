@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "10812065346250705459"
+      "templateHash": "16377415942640023060"
     },
     "name": "DevTest Lab Policy Sets Policies",
     "description": "This module deploys a DevTest Lab Policy Sets Policy.\n\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings.",
@@ -33,7 +34,7 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Tags of the resource."
       }
@@ -98,8 +99,23 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "lab::policySets": {
+      "existing": true,
+      "type": "Microsoft.DevTestLab/labs/policysets",
+      "apiVersion": "2018-09-15",
+      "name": "[format('{0}/{1}', parameters('labName'), parameters('policySetName'))]",
+      "dependsOn": [
+        "lab"
+      ]
+    },
+    "lab": {
+      "existing": true,
+      "type": "Microsoft.DevTestLab/labs",
+      "apiVersion": "2018-09-15",
+      "name": "[parameters('labName')]"
+    },
+    "policy": {
       "type": "Microsoft.DevTestLab/labs/policysets/policies",
       "apiVersion": "2018-09-15",
       "name": "[format('{0}/{1}/{2}', parameters('labName'), parameters('policySetName'), parameters('name'))]",
@@ -111,9 +127,12 @@
         "factName": "[parameters('factName')]",
         "status": "[parameters('status')]",
         "threshold": "[parameters('threshold')]"
-      }
+      },
+      "dependsOn": [
+        "lab::policySets"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

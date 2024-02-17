@@ -14,7 +14,7 @@ param policySetName string = 'default'
 param name string
 
 @sys.description('Optional. Tags of the resource.')
-param tags object = {}
+param tags object?
 
 @sys.description('Optional. The description of the policy.')
 param description string = ''

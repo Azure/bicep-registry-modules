@@ -1,4 +1,4 @@
-# DevTest Labs `[Microsoft.DevTestLab/labs]`
+# DevTest Labs `[Microsoft.devtestlab/lab]`
 
 This module deploys a DevTest Lab.
 
