@@ -601,123 +601,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     }
     // Non-required parameters
     location: '<location>'
-    networkGroups: [
-      {
-        description: 'network-group-spokes description'
-        name: 'network-group-spokes'
-        staticMembers: [
-          {
-            name: 'virtualNetwork'
-            resourceId: '<resourceId>'
-          }
-        ]
-      }
-    ]
-    securityAdminConfigurations: [
-      {
-        applyOnNetworkIntentPolicyBasedServices: [
-          'AllowRulesOnly'
-        ]
-        description: 'description of the security admin config'
-        name: 'test-security-admin-config'
-        ruleCollections: [
-          {
-            appliesToGroups: [
-              {
-                networkGroupId: '<networkGroupId>'
-              }
-            ]
-            description: 'test-rule-collection-description'
-            name: 'test-rule-collection-1'
-            rules: [
-              {
-                access: 'Allow'
-                description: 'test-inbound-allow-rule-1-description'
-                direction: 'Inbound'
-                name: 'test-inbound-allow-rule-1'
-                priority: 150
-                protocol: 'Tcp'
-              }
-              {
-                access: 'Deny'
-                description: 'test-outbound-deny-rule-2-description'
-                direction: 'Outbound'
-                name: 'test-outbound-deny-rule-2'
-                priority: 200
-                protocol: 'Tcp'
-                sourcePortRanges: [
-                  '442-445'
-                  '80'
-                ]
-                sources: [
-                  {
-                    addressPrefix: 'AppService.WestEurope'
-                    addressPrefixType: 'ServiceTag'
-                  }
-                ]
-              }
-            ]
-          }
-          {
-            appliesToGroups: [
-              {
-                networkGroupId: '<networkGroupId>'
-              }
-            ]
-            description: 'test-rule-collection-description'
-            name: 'test-rule-collection-2'
-            rules: [
-              {
-                access: 'Allow'
-                description: 'test-inbound-allow-rule-3-description'
-                destinationPortRanges: [
-                  '442-445'
-                  '80'
-                ]
-                destinations: [
-                  {
-                    addressPrefix: '192.168.20.20'
-                    addressPrefixType: 'IPPrefix'
-                  }
-                ]
-                direction: 'Inbound'
-                name: 'test-inbound-allow-rule-3'
-                priority: 250
-                protocol: 'Tcp'
-              }
-              {
-                access: 'Allow'
-                description: 'test-inbound-allow-rule-4-description'
-                destinations: [
-                  {
-                    addressPrefix: '172.16.0.0/24'
-                    addressPrefixType: 'IPPrefix'
-                  }
-                  {
-                    addressPrefix: '172.16.1.0/24'
-                    addressPrefixType: 'IPPrefix'
-                  }
-                ]
-                direction: 'Inbound'
-                name: 'test-inbound-allow-rule-4'
-                priority: 260
-                protocol: 'Tcp'
-                sources: [
-                  {
-                    addressPrefix: '10.0.0.0/24'
-                    addressPrefixType: 'IPPrefix'
-                  }
-                  {
-                    addressPrefix: '100.100.100.100'
-                    addressPrefixType: 'IPPrefix'
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -759,127 +642,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "networkGroups": {
-      "value": [
-        {
-          "description": "network-group-spokes description",
-          "name": "network-group-spokes",
-          "staticMembers": [
-            {
-              "name": "virtualNetwork",
-              "resourceId": "<resourceId>"
-            }
-          ]
-        }
-      ]
-    },
-    "securityAdminConfigurations": {
-      "value": [
-        {
-          "applyOnNetworkIntentPolicyBasedServices": [
-            "AllowRulesOnly"
-          ],
-          "description": "description of the security admin config",
-          "name": "test-security-admin-config",
-          "ruleCollections": [
-            {
-              "appliesToGroups": [
-                {
-                  "networkGroupId": "<networkGroupId>"
-                }
-              ],
-              "description": "test-rule-collection-description",
-              "name": "test-rule-collection-1",
-              "rules": [
-                {
-                  "access": "Allow",
-                  "description": "test-inbound-allow-rule-1-description",
-                  "direction": "Inbound",
-                  "name": "test-inbound-allow-rule-1",
-                  "priority": 150,
-                  "protocol": "Tcp"
-                },
-                {
-                  "access": "Deny",
-                  "description": "test-outbound-deny-rule-2-description",
-                  "direction": "Outbound",
-                  "name": "test-outbound-deny-rule-2",
-                  "priority": 200,
-                  "protocol": "Tcp",
-                  "sourcePortRanges": [
-                    "442-445",
-                    "80"
-                  ],
-                  "sources": [
-                    {
-                      "addressPrefix": "AppService.WestEurope",
-                      "addressPrefixType": "ServiceTag"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "appliesToGroups": [
-                {
-                  "networkGroupId": "<networkGroupId>"
-                }
-              ],
-              "description": "test-rule-collection-description",
-              "name": "test-rule-collection-2",
-              "rules": [
-                {
-                  "access": "Allow",
-                  "description": "test-inbound-allow-rule-3-description",
-                  "destinationPortRanges": [
-                    "442-445",
-                    "80"
-                  ],
-                  "destinations": [
-                    {
-                      "addressPrefix": "192.168.20.20",
-                      "addressPrefixType": "IPPrefix"
-                    }
-                  ],
-                  "direction": "Inbound",
-                  "name": "test-inbound-allow-rule-3",
-                  "priority": 250,
-                  "protocol": "Tcp"
-                },
-                {
-                  "access": "Allow",
-                  "description": "test-inbound-allow-rule-4-description",
-                  "destinations": [
-                    {
-                      "addressPrefix": "172.16.0.0/24",
-                      "addressPrefixType": "IPPrefix"
-                    },
-                    {
-                      "addressPrefix": "172.16.1.0/24",
-                      "addressPrefixType": "IPPrefix"
-                    }
-                  ],
-                  "direction": "Inbound",
-                  "name": "test-inbound-allow-rule-4",
-                  "priority": 260,
-                  "protocol": "Tcp",
-                  "sources": [
-                    {
-                      "addressPrefix": "10.0.0.0/24",
-                      "addressPrefixType": "IPPrefix"
-                    },
-                    {
-                      "addressPrefix": "100.100.100.100",
-                      "addressPrefixType": "IPPrefix"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -920,7 +682,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`scopeConnections`](#parameter-scopeconnections) | array | Scope Connections to create for the network manager. Allows network manager to manage resources from another tenant. Supports management groups or subscriptions from another tenant. |
 | [`securityAdminConfigurations`](#parameter-securityadminconfigurations) | array | Security Admin Configurations, Rule Collections and Rules to create for the network manager. Azure Virtual Network Manager provides two different types of configurations you can deploy across your virtual networks, one of them being a SecurityAdmin configuration. A security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. You then associate the rule collection with the network groups that you want to apply the security admin rules to. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -1024,7 +786,7 @@ Specify the name of lock.
 
 ### Parameter: `roleAssignments`
 
-Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+Array of role assignments to create.
 
 - Required: No
 - Type: array
@@ -1034,7 +796,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 **Optional parameters**
 
@@ -1055,7 +817,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
-The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
