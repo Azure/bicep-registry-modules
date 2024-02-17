@@ -164,7 +164,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 resource lab 'Microsoft.DevTestLab/labs@2018-10-15-preview' = {
   name: name
   location: location
-  tags: tags
+  tags: tags ?? {}
   identity: identity
   properties: {
     artifactsStorageAccount: artifactsStorageAccount
