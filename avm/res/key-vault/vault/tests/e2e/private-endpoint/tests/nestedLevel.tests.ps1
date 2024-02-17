@@ -7,15 +7,15 @@
 ###########################
 
 param (
-    [Parameter(Mandatory)]
-    [hashtable] $DeploymentOutputs
+    [Parameter(Mandatory = $false)]
+    [hashtable] $TestInputData = @{}
 )
 
-Describe 'Validate key vault' {
+Describe 'Validate Key Vault' {
 
-    It 'Public endpoint disabled' {
+    It 'Public endpoint should be disabled' {
 
-        $keyVaultResourceId = $DeploymentOutputs.resourceId.Value
+        $keyVaultResourceId = $TestInputData.DeploymentOutputs.resourceId.Value
 
         $deployedResource = Get-AzResource -ResourceId $keyVaultResourceId
 

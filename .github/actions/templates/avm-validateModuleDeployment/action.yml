@@ -304,8 +304,10 @@ runs:
         $pesterConfiguration = @{
           Run    = @{
             Container = New-PesterContainer -Path $moduleTestFolderPath -Data @{
-              DeploymentOutputs    = $deploymentOutputs    # Passing in in case we want to directly validate data via the deployment's output
-              ModuleTestFolderPath = $moduleTestFolderPath # Passing in in case we want to access any data in the test folder / files
+              TestInputData = @{
+                DeploymentOutputs    = $deploymentOutputs    # Passing in in case we want to directly validate data via the deployment's output
+                ModuleTestFolderPath = $moduleTestFolderPath # Passing in in case we want to access any data in the test folder / files
+              }
             }
             PassThru  = $true
           }

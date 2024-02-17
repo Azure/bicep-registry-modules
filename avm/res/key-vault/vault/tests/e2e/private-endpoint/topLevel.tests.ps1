@@ -7,14 +7,11 @@
 ###########################
 
 param (
-    [Parameter(Mandatory)]
-    [string] $ModuleTestFolderPath,
-
-    [Parameter(Mandatory)]
-    [hashtable] $DeploymentOutputs
+    [Parameter(Mandatory = $false)]
+    [hashtable] $TestInputData = @{}
 )
 
-$keyVaultResourceId = $DeploymentOutputs.resourceId.Value
+$keyVaultResourceId = $TestInputData.DeploymentOutputs.resourceId.Value
 $testResourceGroup = ($keyVaultResourceId -split '\/')[4]
 $deployedPrivateEndpoints = Get-AzPrivateEndpoint -ResourceGroupName $testResourceGroup
 
