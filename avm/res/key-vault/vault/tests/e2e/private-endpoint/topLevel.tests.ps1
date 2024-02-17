@@ -33,7 +33,7 @@ Describe 'Validate private endpoint deployment' {
             $firstPrivateEndpointName = ($firstPrivateEndpointResourceId -split '\/')[-1]
 
             $roleAssignments = Get-AzRoleAssignment -ResourceName $firstPrivateEndpointName -ResourceType 'Microsoft.Network/privateEndpoints' -ResourceGroupName $testResourceGroup
-            $roleAssignments | Should -BeGreaterThan 0
+            $roleAssignments.Count | Should -BeGreaterThan 0
         }
     }
 }
