@@ -11,22 +11,23 @@ param (
     [hashtable] $TestInputData = @{}
 )
 
-$keyVaultResourceId = $TestInputData.DeploymentOutputs.resourceId.Value
-$testResourceGroup = ($keyVaultResourceId -split '\/')[4]
-$deployedPrivateEndpoints = Get-AzPrivateEndpoint -ResourceGroupName $testResourceGroup
-
 Describe 'Validate private endpoint deployment' {
 
     Context 'Validate sucessful deployment' {
 
+        It "Private endpoints should be deployed in resource group" {
 
-
-        It "Private endpoints should be deployed in resource group [$testResourceGroup]" {
-
+            $keyVaultResourceId = $TestInputData.DeploymentOutputs.resourceId.Value
+            $testResourceGroup = ($keyVaultResourceId -split '\/')[4]
+            $deployedPrivateEndpoints = Get-AzPrivateEndpoint -ResourceGroupName $testResourceGroup
             $deployedPrivateEndpoints.Count | Should -BeGreaterThan 0
         }
 
         It 'Private endpoint should have role assignment' {
+
+            $keyVaultResourceId = $TestInputData.DeploymentOutputs.resourceId.Value
+            $testResourceGroup = ($keyVaultResourceId -split '\/')[4]
+            $deployedPrivateEndpoints = Get-AzPrivateEndpoint -ResourceGroupName $testResourceGroup
 
             $firstPrivateEndpointResourceId = $deployedPrivateEndpoints[0].Id
             $firstPrivateEndpointName = ($firstPrivateEndpointResourceId -split '\/')[-1]
