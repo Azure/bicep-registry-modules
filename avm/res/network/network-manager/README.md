@@ -590,7 +590,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-nnmwaf'
   params: {
     // Required parameters
-    name: '<name>'
+    name: 'nnmwaf001'
     networkManagerScopeAccesses: [
       'SecurityAdmin'
     ]
@@ -624,7 +624,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "<name>"
+      "value": "nnmwaf001"
     },
     "networkManagerScopeAccesses": {
       "value": [

@@ -31,28 +31,16 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   location: resourceLocation
 }
 
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  params: {
-    virtualNetworkName: 'dep-${namePrefix}-vnetSpoke1-${serviceShort}'
-    location: resourceLocation
-  }
-}
-
 // ============== //
 // Test Execution //
 // ============== //
-
-var networkManagerName = '${namePrefix}${serviceShort}001'
-var networkManagerExpecetedResourceID = '${resourceGroup.id}/providers/Microsoft.Network/networkManagers/${networkManagerName}'
 
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
-    name: networkManagerName
+    name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
     networkManagerScopeAccesses: [
       'SecurityAdmin'
