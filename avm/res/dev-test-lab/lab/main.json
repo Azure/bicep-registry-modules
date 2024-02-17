@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "10679057106070890147"
+      "templateHash": "14280603523736907655"
     },
     "name": "DevTest Labs",
     "description": "This module deploys a DevTest Lab.",
@@ -487,10 +487,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "418188724139628409"
+              "templateHash": "11287766249629299296"
             },
             "name": "DevTest Lab Virtual Networks",
-            "description": "This module deploys a DevTest Lab Virtual Network.\n\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines.",
+            "description": "This module deploys a DevTest Lab Virtual Network.\r\n\r\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
@@ -613,9 +613,6 @@
           "name": {
             "value": "[parameters('policies')[copyIndex()].name]"
           },
-          "tags": {
-            "value": "[coalesce(tryGet(parameters('policies')[copyIndex()], 'tags'), parameters('tags'))]"
-          },
           "description": "[if(contains(parameters('policies')[copyIndex()], 'description'), createObject('value', parameters('policies')[copyIndex()].description), createObject('value', ''))]",
           "evaluatorType": {
             "value": "[parameters('policies')[copyIndex()].evaluatorType]"
@@ -631,16 +628,15 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "16377415942640023060"
+              "templateHash": "10698594726275977337"
             },
             "name": "DevTest Lab Policy Sets Policies",
-            "description": "This module deploys a DevTest Lab Policy Sets Policy.\n\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings.",
+            "description": "This module deploys a DevTest Lab Policy Sets Policy.\r\n\r\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
@@ -650,24 +646,10 @@
                 "description": "Conditional. The name of the parent lab. Required if the template is used in a standalone deployment."
               }
             },
-            "policySetName": {
-              "type": "string",
-              "defaultValue": "default",
-              "metadata": {
-                "description": "Optional. The name of the parent policy set."
-              }
-            },
             "name": {
               "type": "string",
               "metadata": {
                 "description": "Required. The name of the policy."
-              }
-            },
-            "tags": {
-              "type": "object",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Tags of the resource."
               }
             },
             "description": {
@@ -730,27 +712,11 @@
               }
             }
           },
-          "resources": {
-            "lab::policySets": {
-              "existing": true,
-              "type": "Microsoft.DevTestLab/labs/policysets",
-              "apiVersion": "2018-09-15",
-              "name": "[format('{0}/{1}', parameters('labName'), parameters('policySetName'))]",
-              "dependsOn": [
-                "lab"
-              ]
-            },
-            "lab": {
-              "existing": true,
-              "type": "Microsoft.DevTestLab/labs",
-              "apiVersion": "2018-09-15",
-              "name": "[parameters('labName')]"
-            },
-            "policy": {
+          "resources": [
+            {
               "type": "Microsoft.DevTestLab/labs/policysets/policies",
               "apiVersion": "2018-09-15",
-              "name": "[format('{0}/{1}/{2}', parameters('labName'), parameters('policySetName'), parameters('name'))]",
-              "tags": "[parameters('tags')]",
+              "name": "[format('{0}/{1}/{2}', parameters('labName'), 'default', parameters('name'))]",
               "properties": {
                 "description": "[parameters('description')]",
                 "evaluatorType": "[parameters('evaluatorType')]",
@@ -758,12 +724,9 @@
                 "factName": "[parameters('factName')]",
                 "status": "[parameters('status')]",
                 "threshold": "[parameters('threshold')]"
-              },
-              "dependsOn": [
-                "lab::policySets"
-              ]
+              }
             }
-          },
+          ],
           "outputs": {
             "name": {
               "type": "string",
@@ -777,7 +740,7 @@
               "metadata": {
                 "description": "The resource ID of the policy."
               },
-              "value": "[resourceId('Microsoft.DevTestLab/labs/policysets/policies', parameters('labName'), parameters('policySetName'), parameters('name'))]"
+              "value": "[resourceId('Microsoft.DevTestLab/labs/policysets/policies', parameters('labName'), 'default', parameters('name'))]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -836,10 +799,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "96187176657838206"
+              "templateHash": "4182242365142938009"
             },
             "name": "DevTest Lab Schedules",
-            "description": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines.",
+            "description": "This module deploys a DevTest Lab Schedule.\r\n\r\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
@@ -1036,10 +999,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "18438352233682084029"
+              "templateHash": "14991950879200072854"
             },
             "name": "DevTest Lab Notification Channels",
-            "description": "This module deploys a DevTest Lab Notification Channel.\n\nNotification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks.",
+            "description": "This module deploys a DevTest Lab Notification Channel.\r\n\r\nNotification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
@@ -1196,10 +1159,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "15843038393934364114"
+              "templateHash": "18357209878567475186"
             },
             "name": "DevTest Lab Artifact Sources",
-            "description": "This module deploys a DevTest Lab Artifact Source.\n\nAn artifact source allows you to create custom artifacts for the VMs in the lab, or use Azure Resource Manager templates to create a custom test environment. You must add a private Git repository for the artifacts or Resource Manager templates that your team creates. The repository can be hosted on GitHub or on Azure DevOps Services.",
+            "description": "This module deploys a DevTest Lab Artifact Source.\r\n\r\nAn artifact source allows you to create custom artifacts for the VMs in the lab, or use Azure Resource Manager templates to create a custom test environment. You must add a private Git repository for the artifacts or Resource Manager templates that your team creates. The repository can be hosted on GitHub or on Azure DevOps Services.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
@@ -1388,10 +1351,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "65674909664804563"
+              "templateHash": "6241669859255061806"
             },
             "name": "DevTest Lab Costs",
-            "description": "This module deploys a DevTest Lab Cost.\n\nManage lab costs by setting a spending target that can be viewed in the Monthly Estimated Cost Trend chart. DevTest Labs can send a notification when spending reaches the specified target threshold.",
+            "description": "This module deploys a DevTest Lab Cost.\r\n\r\nManage lab costs by setting a spending target that can be viewed in the Monthly Estimated Cost Trend chart. DevTest Labs can send a notification when spending reaches the specified target threshold.",
             "owner": "Azure/module-maintainers"
           },
           "parameters": {
