@@ -56,6 +56,7 @@ function Publish-ModuleFromTagToPBR {
     $moduleJsonFilePath
     '--target', ("br:{0}/public/bicep/{1}:{2}" -f $plainPublicRegistryServer, $moduleRelativeFolderPath, $targetVersion)
     '--documentationUri', $documentationUri
+    '--with-source'
     '--force'
   )
 
