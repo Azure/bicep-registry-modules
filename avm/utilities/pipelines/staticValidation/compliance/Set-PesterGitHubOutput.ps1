@@ -78,6 +78,11 @@ function Set-PesterGitHubOutput {
     [string] $BranchName
   )
 
+  # TODO: Remove output again. Just for debugging.
+  Write-Verbose '#############'
+  Write-Verbose ('{0}' -f ($PesterTestResults | ConvertTo-Json -Depth 99)) -Verbose
+  Write-Verbose '#############'
+
   $passedTests = $PesterTestResults.Passed
   $failedTests = $PesterTestResults.Failed
   $skippedTests = $PesterTestResults.Skipped
@@ -118,7 +123,6 @@ function Set-PesterGitHubOutput {
   )
 
   if ($failedTests.Count -gt 0) {
-    Write-Verbose 'Adding failed tests'
     $fileContent += [System.Collections.ArrayList]@(
       '| Name | Error | Source |',
       '| :-- | :-- | :-- |'
