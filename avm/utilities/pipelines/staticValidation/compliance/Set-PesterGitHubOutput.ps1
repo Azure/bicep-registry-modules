@@ -80,7 +80,7 @@ function Set-PesterGitHubOutput {
 
   # TODO: Remove output again. Just for debugging.
   Write-Verbose '#############'
-  Write-Verbose ('{0}' -f ($PesterTestResults | ConvertTo-Json -Depth 5)) -Verbose
+  Write-Verbose ('{0}' -f ($PesterTestResults | ConvertTo-Json -Depth 5 -Compress)) -Verbose
   Write-Verbose '#############'
 
   $passedTests = $PesterTestResults.Passed
