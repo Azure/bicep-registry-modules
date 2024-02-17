@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "11265646310605173849"
+      "templateHash": "10965910225445576168"
     },
     "name": "DevTest Labs",
     "description": "This module deploys a DevTest Lab.",
@@ -399,7 +399,7 @@
       "apiVersion": "2018-10-15-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
-      "tags": "[parameters('tags')]",
+      "tags": "[coalesce(parameters('tags'), createObject())]",
       "identity": "[variables('identity')]",
       "properties": {
         "artifactsStorageAccount": "[parameters('artifactsStorageAccount')]",
