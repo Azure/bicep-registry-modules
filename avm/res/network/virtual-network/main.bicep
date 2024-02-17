@@ -111,23 +111,23 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
       name: subnet.name
       properties: {
         addressPrefix: subnet.addressPrefix
-        addressPrefixes: contains(subnet, 'addressPrefixes') ? subnet.addressPrefixes : []
-        applicationGatewayIPConfigurations: contains(subnet, 'applicationGatewayIPConfigurations') ? subnet.applicationGatewayIPConfigurations : []
-        delegations: contains(subnet, 'delegations') ? subnet.delegations : []
-        ipAllocations: contains(subnet, 'ipAllocations') ? subnet.ipAllocations : []
-        natGateway: contains(subnet, 'natGatewayResourceId') ? {
+        addressPrefixes: contains(subnet, 'addressPrefixes') && !empty(subnet.addressPrefixes) ? subnet.addressPrefixes : []
+        applicationGatewayIPConfigurations: contains(subnet, 'applicationGatewayIPConfigurations') && !empty(subnet.applicationGatewayIPConfigurations) ? subnet.applicationGatewayIPConfigurations : []
+        delegations: contains(subnet, 'delegations') && !empty(subnet.delegations) ? subnet.delegations : []
+        ipAllocations: contains(subnet, 'ipAllocations') && !empty(subnet.ipAllocations) ? subnet.ipAllocations : []
+        natGateway: contains(subnet, 'natGatewayResourceId') && !empty(subnet.natGatewayResourceId) ? {
           id: subnet.natGatewayResourceId
         } : null
-        networkSecurityGroup: contains(subnet, 'networkSecurityGroupResourceId') ? {
+        networkSecurityGroup: contains(subnet, 'networkSecurityGroupResourceId') && !empty(subnet.networkSecurityGroupResourceId) ? {
           id: subnet.networkSecurityGroupResourceId
         } : null
-        privateEndpointNetworkPolicies: contains(subnet, 'privateEndpointNetworkPolicies') ? subnet.privateEndpointNetworkPolicies : null
-        privateLinkServiceNetworkPolicies: contains(subnet, 'privateLinkServiceNetworkPolicies') ? subnet.privateLinkServiceNetworkPolicies : null
-        routeTable: contains(subnet, 'routeTableResourceId') ? {
+        privateEndpointNetworkPolicies: contains(subnet, 'privateEndpointNetworkPolicies') && !empty(subnet.privateEndpointNetworkPolicies) ? subnet.privateEndpointNetworkPolicies : null
+        privateLinkServiceNetworkPolicies: contains(subnet, 'privateLinkServiceNetworkPolicies') && !empty(subnet.privateLinkServiceNetworkPolicies) ? subnet.privateLinkServiceNetworkPolicies : null
+        routeTable: contains(subnet, 'routeTableResourceId') && !empty(subnet.routeTableResourceId) ? {
           id: subnet.routeTableResourceId
         } : null
-        serviceEndpoints: contains(subnet, 'serviceEndpoints') ? subnet.serviceEndpoints : []
-        serviceEndpointPolicies: contains(subnet, 'serviceEndpointPolicies') ? subnet.serviceEndpointPolicies : []
+        serviceEndpoints: contains(subnet, 'serviceEndpoints') && !empty(subnet.serviceEndpoints) ? subnet.serviceEndpoints : []
+        serviceEndpointPolicies: contains(subnet, 'serviceEndpointPolicies') && !empty(subnet.serviceEndpointPolicies) ? subnet.serviceEndpointPolicies : []
       }
     }]
   }
