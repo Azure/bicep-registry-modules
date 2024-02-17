@@ -103,7 +103,7 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
     // Non-required parameters
     announcement: {
       enabled: 'Enabled'
-      expirationDate: '2026-12-30T13:00:00Z'
+      expirationDate: '2028-12-30T13:00:00Z'
       markdown: 'DevTest Lab announcement text. <br> New line. It also supports Markdown'
       title: 'DevTest announcement title'
     }
@@ -357,7 +357,7 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
     "announcement": {
       "value": {
         "enabled": "Enabled",
-        "expirationDate": "2026-12-30T13:00:00Z",
+        "expirationDate": "2028-12-30T13:00:00Z",
         "markdown": "DevTest Lab announcement text. <br> New line. It also supports Markdown",
         "title": "DevTest announcement title"
       }
@@ -661,7 +661,7 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
     // Non-required parameters
     announcement: {
       enabled: 'Enabled'
-      expirationDate: '2026-12-30T13:00:00Z'
+      expirationDate: '2028-12-30T13:00:00Z'
       markdown: 'DevTest Lab announcement text. <br> New line. It also supports Markdown'
       title: 'DevTest announcement title'
     }
@@ -685,7 +685,6 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
         uri: 'https://github.com/Azure/azure-devtestlab.git'
       }
     ]
-    artifactsStorageAccount: '<artifactsStorageAccount>'
     browserConnect: 'Enabled'
     costs: {
       cycleType: 'CalendarMonth'
@@ -695,14 +694,11 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
       thresholdValue100SendNotificationWhenExceeded: 'Enabled'
     }
     disableAutoUpgradeCseMinorVersion: true
-    encryptionDiskEncryptionSetId: '<encryptionDiskEncryptionSetId>'
-    encryptionType: 'EncryptionAtRestWithCustomerKey'
     environmentPermission: 'Contributor'
     extendedProperties: {
       RdpConnectionType: '7'
     }
     isolateLabResources: 'Enabled'
-    labStorageType: 'Premium'
     location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
@@ -894,7 +890,7 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
     "announcement": {
       "value": {
         "enabled": "Enabled",
-        "expirationDate": "2026-12-30T13:00:00Z",
+        "expirationDate": "2028-12-30T13:00:00Z",
         "markdown": "DevTest Lab announcement text. <br> New line. It also supports Markdown",
         "title": "DevTest announcement title"
       }
@@ -921,9 +917,6 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
         }
       ]
     },
-    "artifactsStorageAccount": {
-      "value": "<artifactsStorageAccount>"
-    },
     "browserConnect": {
       "value": "Enabled"
     },
@@ -939,12 +932,6 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
     "disableAutoUpgradeCseMinorVersion": {
       "value": true
     },
-    "encryptionDiskEncryptionSetId": {
-      "value": "<encryptionDiskEncryptionSetId>"
-    },
-    "encryptionType": {
-      "value": "EncryptionAtRestWithCustomerKey"
-    },
     "environmentPermission": {
       "value": "Contributor"
     },
@@ -955,9 +942,6 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
     },
     "isolateLabResources": {
       "value": "Enabled"
-    },
-    "labStorageType": {
-      "value": "Premium"
     },
     "location": {
       "value": "<location>"
@@ -1189,7 +1173,7 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
 | [`labStorageType`](#parameter-labstoragetype) | string | Type of storage used by the lab. It can be either Premium or Standard. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. DevTest Labs creates a system-assigned identity by default the first time it creates the lab environment. |
 | [`managementIdentitiesResourceIds`](#parameter-managementidentitiesresourceids) | array | The resource ID(s) to assign to the virtual machines associated with this lab. |
 | [`mandatoryArtifactsResourceIdsLinux`](#parameter-mandatoryartifactsresourceidslinux) | array | The ordered list of artifact resource IDs that should be applied on all Linux VM creations by default, prior to the artifacts specified by the user. |
 | [`mandatoryArtifactsResourceIdsWindows`](#parameter-mandatoryartifactsresourceidswindows) | array | The ordered list of artifact resource IDs that should be applied on all Windows VM creations by default, prior to the artifacts specified by the user. |
@@ -1403,7 +1387,7 @@ Specify the name of lock.
 
 ### Parameter: `managedIdentities`
 
-The managed identity definition for this resource.
+The managed identity definition for this resource. DevTest Labs creates a system-assigned identity by default the first time it creates the lab environment.
 
 - Required: No
 - Type: object
@@ -1412,11 +1396,11 @@ The managed identity definition for this resource.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Currently, a single user-assigned identity is supported per lab. |
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Currently, a single user-assigned identity is supported per lab.
 
 - Required: Yes
 - Type: array

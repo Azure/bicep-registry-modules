@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "12324429572135830668"
+      "templateHash": "10679057106070890147"
     },
     "name": "DevTest Labs",
     "description": "This module deploys a DevTest Lab.",
@@ -22,7 +22,7 @@
             "type": "string"
           },
           "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
+            "description": "Optional. The resource ID(s) to assign to the resource. Currently, a single user-assigned identity is supported per lab."
           }
         }
       },
@@ -232,7 +232,7 @@
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentitiesType",
       "metadata": {
-        "description": "Optional. The managed identity definition for this resource."
+        "description": "Optional. The managed identity definition for this resource. DevTest Labs creates a system-assigned identity by default the first time it creates the lab environment."
       }
     },
     "managementIdentitiesResourceIds": {

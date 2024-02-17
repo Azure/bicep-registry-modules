@@ -17,9 +17,6 @@ param resourceLocation string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'dtllwaf'
 
-@description('Generated. Used as a basis for unique resource names.')
-param baseTime string = utcNow('u')
-
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -39,10 +36,6 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
-    diskEncryptionSetName: 'dep-${namePrefix}-des-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: resourceLocation
   }
@@ -66,7 +59,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     }
     announcement: {
       enabled: 'Enabled'
-      expirationDate: '2026-12-30T13:00:00.000Z'
+      expirationDate: '2028-12-30T13:00:00.000Z'
       markdown: 'DevTest Lab announcement text. <br> New line. It also supports Markdown'
       title: 'DevTest announcement title'
     }
@@ -74,8 +67,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     extendedProperties: {
       RdpConnectionType: '7'
     }
-    labStorageType: 'Premium'
-    artifactsStorageAccount: nestedDependencies.outputs.storageAccountResourceId
     premiumDataDisks: 'Enabled'
     support: {
       enabled: 'Enabled'
@@ -93,8 +84,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     browserConnect: 'Enabled'
     disableAutoUpgradeCseMinorVersion: true
     isolateLabResources: 'Enabled'
-    encryptionType: 'EncryptionAtRestWithCustomerKey'
-    encryptionDiskEncryptionSetId: nestedDependencies.outputs.diskEncryptionSetResourceId
     virtualnetworks: [
       {
         name: nestedDependencies.outputs.virtualNetworkName

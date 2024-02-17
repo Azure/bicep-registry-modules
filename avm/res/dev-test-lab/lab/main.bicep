@@ -57,7 +57,7 @@ param premiumDataDisks string = 'Disabled'
 @description('Optional. The properties of any lab support message associated with this lab.')
 param support object = {}
 
-@description('Optional. The managed identity definition for this resource.')
+@description('Optional. The managed identity definition for this resource. DevTest Labs creates a system-assigned identity by default the first time it creates the lab environment.')
 param managedIdentities managedIdentitiesType
 
 @description('Optional. The resource ID(s) to assign to the virtual machines associated with this lab.')
@@ -325,7 +325,7 @@ output location string = lab.location
 // =============== //
 
 type managedIdentitiesType = {
-  @description('Optional. The resource ID(s) to assign to the resource.')
+  @description('Optional. The resource ID(s) to assign to the resource. Currently, a single user-assigned identity is supported per lab.')
   userAssignedResourceIds: string[]
 }?
 

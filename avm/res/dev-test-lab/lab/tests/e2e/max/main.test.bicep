@@ -87,7 +87,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     }
     announcement: {
       enabled: 'Enabled'
-      expirationDate: '2026-12-30T13:00:00.000Z'
+      expirationDate: '2028-12-30T13:00:00.000Z'
       markdown: 'DevTest Lab announcement text. <br> New line. It also supports Markdown'
       title: 'DevTest announcement title'
     }
