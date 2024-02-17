@@ -14,7 +14,7 @@ param (
     [hashtable] $DeploymentOutputs
 )
 
-$keyVaultResourceId = $DeploymentOutputs.resourceId
+$keyVaultResourceId = $DeploymentOutputs.resourceId.Value
 $testResourceGroup = ($keyVaultResourceId -split '\/')[4]
 $deployedPrivateEndpoints = Get-AzPrivateEndpoint -ResourceGroupName $testResourceGroup
 

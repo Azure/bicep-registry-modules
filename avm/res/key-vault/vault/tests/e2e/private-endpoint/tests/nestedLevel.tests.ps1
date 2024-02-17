@@ -15,7 +15,7 @@ Describe 'Validate key vault' {
 
     It 'Public endpoint disabled' {
 
-        $keyVaultResourceId = $DeploymentOutputs.resourceId
+        $keyVaultResourceId = $DeploymentOutputs.resourceId.Value
 
         $deployedResource = Get-AzResource -ResourceId $keyVaultResourceId
 
