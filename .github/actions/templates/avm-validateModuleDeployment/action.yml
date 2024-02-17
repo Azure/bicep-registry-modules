@@ -315,7 +315,8 @@ runs:
         }
 
         Write-Verbose 'Invoke test with' -Verbose
-        Write-Verbose ($pesterConfiguration | ConvertTo-Json -Depth 4 | Out-String) -Verbose
+        Write-Verbose ('Path(s): {0}' -f ($pesterConfiguration.Run.Container | Foreach-Object { ($_.Item.FullName -split '[\\|\/]tests[\\|\/]e2e[\\|\/]')[1] } | Convertto-Json)) -Verbose
+        Write-Verbose ('Data: {0}' -f ($pesterConfiguration.Run.Container.Data[0] | ConvertTo-Json)) -Verbose
 
         $testResults = Invoke-Pester -Configuration $pesterConfiguration
 
