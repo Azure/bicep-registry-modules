@@ -317,11 +317,12 @@ runs:
         }
 
         Write-Verbose 'Invoke test with' -Verbose
-        $foundTestPaths = $pesterConfiguration.Run.Container | Foreach-Object { ($_.Item.FullName -split '[\\|\/]tests[\\|\/]e2e[\\|\/]')[1] }
-        Write-Verbose ('Path(s): {0}' -f ($foundTestPaths | Convertto-Json)) -Verbose
-        Write-Verbose ('Data: {0}' -f ($pesterConfiguration.Run.Container.Data[0] | ConvertTo-Json)) -Verbose
+        $foundTestPaths = $pesterConfiguration.Run.Container | Where-Object { -not [String]::IsNullOrEmpty($_.Item.FullName) } | Foreach-Object { ($_.Item.FullName -split '[\\|\/]tests[\\|\/]e2e[\\|\/]')[1] }
 
         if($foundTestPaths.Count -gt 0) {
+          Write-Verbose ('Path(s): {0}' -f ($foundTestPaths | Convertto-Json)) -Verbose
+          Write-Verbose ('Data: {0}' -f ($pesterConfiguration.Run.Container.Data[0] | ConvertTo-Json)) -Verbose
+
           $testResults = Invoke-Pester -Configuration $pesterConfiguration
 
           # ----------------------------------------- #
@@ -342,6 +343,7 @@ runs:
 
           Write-Output ('{0}={1}' -f 'formattedPesterResultsPath', $functionInput.outputFilePath) >> $env:GITHUB_OUTPUT
         } else {
+          Write-Verbose 'Found no Pester test files (*.test.ps1) in test folder' -Verbose
           Write-Output ('{0}={1}' -f 'formattedPesterResultsPath', '') >> $env:GITHUB_OUTPUT
         }
     - name: "Output to GitHub job summaries"
