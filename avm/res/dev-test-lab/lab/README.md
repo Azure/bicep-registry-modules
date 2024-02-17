@@ -704,10 +704,6 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
     isolateLabResources: 'Enabled'
     labStorageType: 'Premium'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -965,12 +961,6 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "managedIdentities": {
       "value": {
