@@ -83,8 +83,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       'SecurityAdmin'
     ]
     networkManagerScopes: {
-      subscriptions: [
-        subscription().id
+      managementGroups: [
+        '/providers/Microsoft.Management/managementGroups/#_managementGroupId_#'
       ]
     }
     networkGroups: [

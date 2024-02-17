@@ -44,7 +44,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     location: resourceLocation
     networkManagerScopeAccesses: [
       'Connectivity'
-      'SecurityAdmin'
     ]
     networkManagerScopes: {
       subscriptions: [

@@ -55,7 +55,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     name: 'nnmmin001'
     networkManagerScopeAccesses: [
       'Connectivity'
-      'SecurityAdmin'
     ]
     networkManagerScopes: {
       subscriptions: [
@@ -86,8 +85,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     },
     "networkManagerScopeAccesses": {
       "value": [
-        "Connectivity",
-        "SecurityAdmin"
+        "Connectivity"
       ]
     },
     "networkManagerScopes": {
@@ -128,8 +126,8 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
       'SecurityAdmin'
     ]
     networkManagerScopes: {
-      subscriptions: [
-        '<id>'
+      managementGroups: [
+        '/providers/Microsoft.Management/managementGroups/#_managementGroupId_#'
       ]
     }
     // Non-required parameters
@@ -355,8 +353,8 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     },
     "networkManagerScopes": {
       "value": {
-        "subscriptions": [
-          "<id>"
+        "managementGroups": [
+          "/providers/Microsoft.Management/managementGroups/#_managementGroupId_#"
         ]
       }
     },
