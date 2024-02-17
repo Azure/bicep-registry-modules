@@ -35,10 +35,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    virtualNetworkHubName: 'dep-${namePrefix}-vnetHub-${serviceShort}'
-    virtualNetworkSpoke1Name: 'dep-${namePrefix}-vnetSpoke1-${serviceShort}'
-    virtualNetworkSpoke2Name: 'dep-${namePrefix}-vnetSpoke2-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnetSpoke1-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -58,7 +55,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     name: networkManagerName
     location: resourceLocation
     networkManagerScopeAccesses: [
-      'Connectivity'
       'SecurityAdmin'
     ]
     networkManagerScopes: {
@@ -72,60 +68,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         description: 'network-group-spokes description'
         staticMembers: [
           {
-            name: 'virtualNetworkSpoke1'
-            resourceId: nestedDependencies.outputs.virtualNetworkSpoke1Id
-          }
-          {
-            name: 'virtualNetworkSpoke2'
-            resourceId: nestedDependencies.outputs.virtualNetworkSpoke2Id
+            name: 'virtualNetwork'
+            resourceId: nestedDependencies.outputs.virtualNetworkResourceId
           }
         ]
-      }
-    ]
-    connectivityConfigurations: [
-      {
-        name: 'hubSpokeConnectivity'
-        description: 'hubSpokeConnectivity description'
-        connectivityTopology: 'HubAndSpoke'
-        hubs: [
-          {
-            resourceId: nestedDependencies.outputs.virtualNetworkHubId
-            resourceType: 'Microsoft.Network/virtualNetworks'
-          }
-        ]
-        deleteExistingPeering: 'True'
-        isGlobal: 'True'
-        appliesToGroups: [
-          {
-            networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
-            useHubGateway: 'False'
-            groupConnectivity: 'None'
-            isGlobal: 'False'
-          }
-        ]
-      }
-      {
-        name: 'MeshConnectivity'
-        description: 'MeshConnectivity description'
-        connectivityTopology: 'Mesh'
-        deleteExistingPeering: 'True'
-        isGlobal: 'True'
-        appliesToGroups: [
-          {
-            networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
-            useHubGateway: 'False'
-            groupConnectivity: 'None'
-            isGlobal: 'False'
-          }
-        ]
-      }
-    ]
-    scopeConnections: [
-      {
-        name: 'scope-connection-test'
-        description: 'description of the scope connection'
-        resourceId: subscription().id
-        tenantid: tenant().tenantId
       }
     ]
     securityAdminConfigurations: [

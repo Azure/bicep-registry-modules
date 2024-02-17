@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "16822987306632262707"
+      "templateHash": "8667076239659362336"
     },
     "name": "Network Managers",
     "description": "This module deploys a Network Manager.",
@@ -526,7 +526,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "17708391334167457119"
+              "templateHash": "16868761662321894920"
             },
             "name": "Network Manager Connectivity Configurations",
             "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
@@ -568,7 +568,7 @@
                 "Mesh"
               ],
               "metadata": {
-                "description": "Required. Connectivity topology type."
+                "description": "Required. Connectivity topology type. \"Mesh\" IS CURRENTLY A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION."
               }
             },
             "hubs": {

@@ -21,7 +21,7 @@ param appliesToGroups array = []
   'HubAndSpoke'
   'Mesh'
 ])
-@sys.description('Required. Connectivity topology type.')
+@sys.description('Required. Connectivity topology type. "Mesh" IS CURRENTLY A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION.')
 param connectivityTopology string
 
 @sys.description('Conditional. List of hub items. This will create peerings between the specified hub and the virtual networks in the network group specified. Required if connectivityTopology is of type "HubAndSpoke".')

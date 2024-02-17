@@ -592,7 +592,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     // Required parameters
     name: '<name>'
     networkManagerScopeAccesses: [
-      'Connectivity'
       'SecurityAdmin'
     ]
     networkManagerScopes: {
@@ -601,44 +600,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
       ]
     }
     // Non-required parameters
-    connectivityConfigurations: [
-      {
-        appliesToGroups: [
-          {
-            groupConnectivity: 'None'
-            isGlobal: 'False'
-            networkGroupId: '<networkGroupId>'
-            useHubGateway: 'False'
-          }
-        ]
-        connectivityTopology: 'HubAndSpoke'
-        deleteExistingPeering: 'True'
-        description: 'hubSpokeConnectivity description'
-        hubs: [
-          {
-            resourceId: '<resourceId>'
-            resourceType: 'Microsoft.Network/virtualNetworks'
-          }
-        ]
-        isGlobal: 'True'
-        name: 'hubSpokeConnectivity'
-      }
-      {
-        appliesToGroups: [
-          {
-            groupConnectivity: 'None'
-            isGlobal: 'False'
-            networkGroupId: '<networkGroupId>'
-            useHubGateway: 'False'
-          }
-        ]
-        connectivityTopology: 'Mesh'
-        deleteExistingPeering: 'True'
-        description: 'MeshConnectivity description'
-        isGlobal: 'True'
-        name: 'MeshConnectivity'
-      }
-    ]
     location: '<location>'
     networkGroups: [
       {
@@ -646,22 +607,10 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
         name: 'network-group-spokes'
         staticMembers: [
           {
-            name: 'virtualNetworkSpoke1'
-            resourceId: '<resourceId>'
-          }
-          {
-            name: 'virtualNetworkSpoke2'
+            name: 'virtualNetwork'
             resourceId: '<resourceId>'
           }
         ]
-      }
-    ]
-    scopeConnections: [
-      {
-        description: 'description of the scope connection'
-        name: 'scope-connection-test'
-        resourceId: '<resourceId>'
-        tenantid: '<tenantid>'
       }
     ]
     securityAdminConfigurations: [
@@ -796,7 +745,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     },
     "networkManagerScopeAccesses": {
       "value": [
-        "Connectivity",
         "SecurityAdmin"
       ]
     },
@@ -808,46 +756,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
       }
     },
     // Non-required parameters
-    "connectivityConfigurations": {
-      "value": [
-        {
-          "appliesToGroups": [
-            {
-              "groupConnectivity": "None",
-              "isGlobal": "False",
-              "networkGroupId": "<networkGroupId>",
-              "useHubGateway": "False"
-            }
-          ],
-          "connectivityTopology": "HubAndSpoke",
-          "deleteExistingPeering": "True",
-          "description": "hubSpokeConnectivity description",
-          "hubs": [
-            {
-              "resourceId": "<resourceId>",
-              "resourceType": "Microsoft.Network/virtualNetworks"
-            }
-          ],
-          "isGlobal": "True",
-          "name": "hubSpokeConnectivity"
-        },
-        {
-          "appliesToGroups": [
-            {
-              "groupConnectivity": "None",
-              "isGlobal": "False",
-              "networkGroupId": "<networkGroupId>",
-              "useHubGateway": "False"
-            }
-          ],
-          "connectivityTopology": "Mesh",
-          "deleteExistingPeering": "True",
-          "description": "MeshConnectivity description",
-          "isGlobal": "True",
-          "name": "MeshConnectivity"
-        }
-      ]
-    },
     "location": {
       "value": "<location>"
     },
@@ -858,24 +766,10 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
           "name": "network-group-spokes",
           "staticMembers": [
             {
-              "name": "virtualNetworkSpoke1",
-              "resourceId": "<resourceId>"
-            },
-            {
-              "name": "virtualNetworkSpoke2",
+              "name": "virtualNetwork",
               "resourceId": "<resourceId>"
             }
           ]
-        }
-      ]
-    },
-    "scopeConnections": {
-      "value": [
-        {
-          "description": "description of the scope connection",
-          "name": "scope-connection-test",
-          "resourceId": "<resourceId>",
-          "tenantid": "<tenantid>"
         }
       ]
     },
