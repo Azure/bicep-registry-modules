@@ -303,7 +303,7 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
 | [`allowBranchToBranchTraffic`](#parameter-allowbranchtobranchtraffic) | bool | True if branch to branch traffic is allowed. |
 | [`allowVnetToVnetTraffic`](#parameter-allowvnettovnettraffic) | bool | True if VNET to VNET traffic is allowed. |
 | [`disableVpnEncryption`](#parameter-disablevpnencryption) | bool | VPN encryption to be disabled or not. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location where all resources will be created. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -343,7 +343,7 @@ VPN encryption to be disabled or not.
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
