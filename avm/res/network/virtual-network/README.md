@@ -4,13 +4,13 @@ This module deploys a Virtual Network (vNet).
 
 ## Navigation
 
-- [Resource Types](#Resource-Types)
-- [Usage examples](#Usage-examples)
-- [Parameters](#Parameters)
-- [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
-- [Notes](#Notes)
-- [Data Collection](#Data-Collection)
+- [Resource Types](#resource-types)
+- [Usage examples](#usage-examples)
+- [Parameters](#parameters)
+- [Outputs](#outputs)
+- [Cross-referenced modules](#cross-referenced-modules)
+- [Notes](#notes)
+- [Data Collection](#data-collection)
 
 ## Resource Types
 
