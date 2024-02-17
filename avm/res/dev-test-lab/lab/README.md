@@ -48,7 +48,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dtllmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dtllmin'
   params: {
     // Required parameters
     name: 'dtllmin001'
@@ -96,7 +96,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dtllmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dtllmax'
   params: {
     // Required parameters
     name: 'dtllmax001'
@@ -654,7 +654,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dtllwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dtllwaf'
   params: {
     // Required parameters
     name: 'dtllwaf001'
