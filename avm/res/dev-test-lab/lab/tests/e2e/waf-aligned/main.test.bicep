@@ -59,10 +59,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceGroup.location
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     tags: {
       'hidden-title': 'This is visible in the resource name'
       resourceType: 'DevTest Lab'
