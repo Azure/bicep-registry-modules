@@ -11,7 +11,7 @@ param location string = resourceGroup().location
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
-@description('Optional. Array of role assignments to create.')
+@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalIds\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
 param roleAssignments roleAssignmentType
 
 @description('Optional. Tags of the resource.')
@@ -206,6 +206,7 @@ module lab_policies 'policyset/policy/main.bicep' = [for (policy, index) in poli
   params: {
     labName: lab.name
     name: policy.name
+
     description: contains(policy, 'description') ? policy.description : ''
     evaluatorType: policy.evaluatorType
     factData: contains(policy, 'factData') ? policy.factData : ''
@@ -314,7 +315,7 @@ output resourceId string = lab.id
 output name string = lab.name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = lab.service.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string = lab.identity.principalId
 
 @description('The location the resource was deployed into.')
 output location string = lab.location
