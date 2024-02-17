@@ -321,7 +321,7 @@ runs:
 
         if($foundTestPaths.Count -gt 0) {
           Write-Verbose ('Path(s): {0}' -f ($foundTestPaths | Convertto-Json)) -Verbose
-          Write-Verbose ('Data: {0}' -f ($pesterConfiguration.Run.Container.Data[0] | ConvertTo-Json)) -Verbose
+          Write-Verbose ('Data: {0}' -f ($pesterConfiguration.Run.Container.Data[0] | ConvertTo-Json -Depth 3)) -Verbose
 
           $testResults = Invoke-Pester -Configuration $pesterConfiguration
 
