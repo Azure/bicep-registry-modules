@@ -314,7 +314,7 @@ output resourceId string = lab.id
 output name string = lab.name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = contains(lab.identity, 'principalId') ? lab.identity.principalId : ''
+output systemAssignedMIPrincipalId string = lab.service.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = lab.location
