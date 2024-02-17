@@ -181,7 +181,7 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
-  @sys.description('Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.')
+  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
   @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
