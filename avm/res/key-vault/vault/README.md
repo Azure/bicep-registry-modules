@@ -41,8 +41,6 @@ The following section provides usage examples for the module, which were used to
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-
 
 
 <details>
@@ -51,7 +49,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kvvmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-kvvmin'
   params: {
     // Required parameters
     name: 'kvvmin002'
@@ -103,7 +101,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kvvmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-kvvmax'
   params: {
     // Required parameters
     name: 'kvvmax002'
@@ -613,7 +611,7 @@ This instance deploys the module with Private Endpoints.
 
 ```bicep
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kvvpe'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-kvvpe'
   params: {
     // Required parameters
     name: 'kvvpe001'
@@ -755,7 +753,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kvvwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-kvvwaf'
   params: {
     // Required parameters
     name: 'kvvwaf002'
@@ -1037,6 +1035,125 @@ Permissions the identity has for keys, secrets and certificates.
 - Required: Yes
 - Type: object
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certificates`](#parameter-accesspoliciespermissionscertificates) | array | Permissions to certificates. |
+| [`keys`](#parameter-accesspoliciespermissionskeys) | array | Permissions to keys. |
+| [`secrets`](#parameter-accesspoliciespermissionssecrets) | array | Permissions to secrets. |
+| [`storage`](#parameter-accesspoliciespermissionsstorage) | array | Permissions to storage accounts. |
+
+### Parameter: `accessPolicies.permissions.certificates`
+
+Permissions to certificates.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'all'
+    'backup'
+    'create'
+    'delete'
+    'deleteissuers'
+    'get'
+    'getissuers'
+    'import'
+    'list'
+    'listissuers'
+    'managecontacts'
+    'manageissuers'
+    'purge'
+    'recover'
+    'restore'
+    'setissuers'
+    'update'
+  ]
+  ```
+
+### Parameter: `accessPolicies.permissions.keys`
+
+Permissions to keys.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'all'
+    'backup'
+    'create'
+    'decrypt'
+    'delete'
+    'encrypt'
+    'get'
+    'getrotationpolicy'
+    'import'
+    'list'
+    'purge'
+    'recover'
+    'release'
+    'restore'
+    'rotate'
+    'setrotationpolicy'
+    'sign'
+    'unwrapKey'
+    'update'
+    'verify'
+    'wrapKey'
+  ]
+  ```
+
+### Parameter: `accessPolicies.permissions.secrets`
+
+Permissions to secrets.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'all'
+    'backup'
+    'delete'
+    'get'
+    'list'
+    'purge'
+    'recover'
+    'restore'
+    'set'
+  ]
+  ```
+
+### Parameter: `accessPolicies.permissions.storage`
+
+Permissions to storage accounts.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'all'
+    'backup'
+    'delete'
+    'deletesas'
+    'get'
+    'getsas'
+    'list'
+    'listsas'
+    'purge'
+    'recover'
+    'regeneratekey'
+    'restore'
+    'set'
+    'setsas'
+    'update'
+  ]
+  ```
+
 ### Parameter: `accessPolicies.applicationId`
 
 Application ID of the client making request on behalf of a principal.
@@ -1115,6 +1232,27 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 - Required: No
 - Type: array
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
@@ -1128,6 +1266,19 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+### Parameter: `diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -1317,6 +1468,27 @@ Custom DNS configurations.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
+| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+Fqdn that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
+
+A list of private IP addresses of the private endpoint.
+
+- Required: Yes
+- Type: array
+
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
 The custom name of the network interface attached to the private endpoint.
@@ -1337,6 +1509,56 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsipconfigurationsname) | string | The name of the resource that is unique within a resource group. |
+| [`properties`](#parameter-privateendpointsipconfigurationsproperties) | object | Properties of private endpoint IP configurations. |
+
+### Parameter: `privateEndpoints.ipConfigurations.name`
+
+The name of the resource that is unique within a resource group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties`
+
+Properties of private endpoint IP configurations.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
+
+The member name of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
+
+A private IP address obtained from the private endpoint's subnet.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `privateEndpoints.location`
 

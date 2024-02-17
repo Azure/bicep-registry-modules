@@ -1,0 +1,76 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "3740413409622743148"
+    },
+    "name": "DBforMySQL Flexible Server Databases",
+    "description": "This module deploys a DBforMySQL Flexible Server Database.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the database."
+      }
+    },
+    "flexibleServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent MySQL flexible server. Required if the template is used in a standalone deployment."
+      }
+    },
+    "collation": {
+      "type": "string",
+      "defaultValue": "utf8",
+      "metadata": {
+        "description": "Optional. The collation of the database."
+      }
+    },
+    "charset": {
+      "type": "string",
+      "defaultValue": "utf8_general_ci",
+      "metadata": {
+        "description": "Optional. The charset of the database."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DBforMySQL/flexibleServers/databases",
+      "apiVersion": "2022-01-01",
+      "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
+      "properties": {
+        "collation": "[if(not(empty(parameters('collation'))), parameters('collation'), null())]",
+        "charset": "[if(not(empty(parameters('charset'))), parameters('charset'), null())]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed database."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed database."
+      },
+      "value": "[resourceId('Microsoft.DBforMySQL/flexibleServers/databases', parameters('flexibleServerName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed database."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

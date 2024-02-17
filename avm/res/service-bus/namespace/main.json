@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "18066724538226124332"
+      "templateHash": "3819001479724310529"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -4042,7 +4042,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('serviceBusNamespace', '2022-10-01-preview', 'full').identity, 'principalId')), reference('serviceBusNamespace', '2022-10-01-preview', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('serviceBusNamespace', '2022-10-01-preview', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",

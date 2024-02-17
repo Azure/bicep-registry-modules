@@ -20,10 +20,6 @@ on:
         description: "Relative path to the module folder"
         required: true
 
-permissions:
-  id-token: write # For OIDC
-  contents: write # For release tags
-
 env:
   ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
   ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
@@ -101,7 +97,9 @@ jobs:
       - name: "Run deployment validation with test file [${{ matrix.testCases.path }}]"
         uses: ./.github/actions/templates/avm-validateModuleDeployment
         with:
+          modulePath: "${{ inputs.modulePath }}"
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
+          deploymentMetadataLocation: "WestEurope"
           subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"

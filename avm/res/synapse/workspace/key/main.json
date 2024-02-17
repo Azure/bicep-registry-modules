@@ -1,0 +1,74 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "2498604793784722860"
+    },
+    "name": "Synapse Workspaces Keys",
+    "description": "This module deploys a Synapse Workspaces Key.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Encryption key name."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "isActiveCMK": {
+      "type": "bool",
+      "metadata": {
+        "description": "Required. Used to activate the workspace after a customer managed key is provided."
+      }
+    },
+    "keyVaultResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Synapse/workspaces/keys",
+      "apiVersion": "2021-06-01",
+      "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
+      "properties": {
+        "isActiveCMK": "[parameters('isActiveCMK')]",
+        "keyVaultUrl": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultResourceId'), '/')[2], split(parameters('keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('name')), '2023-02-01').keyUri]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed key."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed key."
+      },
+      "value": "[resourceId('Microsoft.Synapse/workspaces/keys', parameters('workspaceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed key."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
