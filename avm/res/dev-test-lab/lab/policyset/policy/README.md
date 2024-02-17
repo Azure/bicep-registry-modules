@@ -41,9 +41,7 @@ DevTest lab policies are used to modify the lab settings such as only allowing c
 | :-- | :-- | :-- |
 | [`description`](#parameter-description) | string | The description of the policy. |
 | [`factData`](#parameter-factdata) | string | The fact data of the policy. |
-| [`policySetName`](#parameter-policysetname) | string | The name of the parent policy set. |
 | [`status`](#parameter-status) | string | The status of the policy. |
-| [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `evaluatorType`
 
@@ -118,14 +116,6 @@ The fact data of the policy.
 - Type: string
 - Default: `''`
 
-### Parameter: `policySetName`
-
-The name of the parent policy set.
-
-- Required: No
-- Type: string
-- Default: `'default'`
-
 ### Parameter: `status`
 
 The status of the policy.
@@ -140,13 +130,6 @@ The status of the policy.
     'Enabled'
   ]
   ```
-
-### Parameter: `tags`
-
-Tags of the resource.
-
-- Required: No
-- Type: object
 
 
 ## Outputs

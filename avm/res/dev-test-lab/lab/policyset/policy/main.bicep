@@ -7,14 +7,8 @@ metadata owner = 'Azure/module-maintainers'
 @sys.description('Conditional. The name of the parent lab. Required if the template is used in a standalone deployment.')
 param labName string
 
-@sys.description('Optional. The name of the parent policy set.')
-param policySetName string = 'default'
-
 @sys.description('Required. The name of the policy.')
 param name string
-
-@sys.description('Optional. Tags of the resource.')
-param tags object?
 
 @sys.description('Optional. The description of the policy.')
 param description string = ''
@@ -58,14 +52,13 @@ resource lab 'Microsoft.DevTestLab/labs@2018-09-15' existing = {
   name: labName
 
   resource policySets 'policysets@2018-09-15' existing = {
-    name: policySetName
+    name: 'default'
   }
 }
 
 resource policy 'Microsoft.DevTestLab/labs/policysets/policies@2018-09-15' = {
   name: name
   parent: lab::policySets
-  tags: tags
   properties: {
     description: description
     evaluatorType: evaluatorType

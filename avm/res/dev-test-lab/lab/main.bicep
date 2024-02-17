@@ -206,7 +206,6 @@ module lab_policies 'policyset/policy/main.bicep' = [for (policy, index) in poli
   params: {
     labName: lab.name
     name: policy.name
-    tags: policy.?tags ?? tags
     description: contains(policy, 'description') ? policy.description : ''
     evaluatorType: policy.evaluatorType
     factData: contains(policy, 'factData') ? policy.factData : ''

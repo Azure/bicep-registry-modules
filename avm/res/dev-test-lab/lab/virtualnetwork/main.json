@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "418188724139628409"
+      "templateHash": "11287766249629299296"
     },
     "name": "DevTest Lab Virtual Networks",
-    "description": "This module deploys a DevTest Lab Virtual Network.\n\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines.",
+    "description": "This module deploys a DevTest Lab Virtual Network.\r\n\r\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines.",
     "owner": "Azure/module-maintainers"
   },
   "parameters": {

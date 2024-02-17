@@ -1,15 +1,14 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "16377415942640023060"
+      "templateHash": "10698594726275977337"
     },
     "name": "DevTest Lab Policy Sets Policies",
-    "description": "This module deploys a DevTest Lab Policy Sets Policy.\n\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings.",
+    "description": "This module deploys a DevTest Lab Policy Sets Policy.\r\n\r\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings.",
     "owner": "Azure/module-maintainers"
   },
   "parameters": {
@@ -19,24 +18,10 @@
         "description": "Conditional. The name of the parent lab. Required if the template is used in a standalone deployment."
       }
     },
-    "policySetName": {
-      "type": "string",
-      "defaultValue": "default",
-      "metadata": {
-        "description": "Optional. The name of the parent policy set."
-      }
-    },
     "name": {
       "type": "string",
       "metadata": {
         "description": "Required. The name of the policy."
-      }
-    },
-    "tags": {
-      "type": "object",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Tags of the resource."
       }
     },
     "description": {
@@ -99,27 +84,11 @@
       }
     }
   },
-  "resources": {
-    "lab::policySets": {
-      "existing": true,
-      "type": "Microsoft.DevTestLab/labs/policysets",
-      "apiVersion": "2018-09-15",
-      "name": "[format('{0}/{1}', parameters('labName'), parameters('policySetName'))]",
-      "dependsOn": [
-        "lab"
-      ]
-    },
-    "lab": {
-      "existing": true,
-      "type": "Microsoft.DevTestLab/labs",
-      "apiVersion": "2018-09-15",
-      "name": "[parameters('labName')]"
-    },
-    "policy": {
+  "resources": [
+    {
       "type": "Microsoft.DevTestLab/labs/policysets/policies",
       "apiVersion": "2018-09-15",
-      "name": "[format('{0}/{1}/{2}', parameters('labName'), parameters('policySetName'), parameters('name'))]",
-      "tags": "[parameters('tags')]",
+      "name": "[format('{0}/{1}/{2}', parameters('labName'), 'default', parameters('name'))]",
       "properties": {
         "description": "[parameters('description')]",
         "evaluatorType": "[parameters('evaluatorType')]",
@@ -127,12 +96,9 @@
         "factName": "[parameters('factName')]",
         "status": "[parameters('status')]",
         "threshold": "[parameters('threshold')]"
-      },
-      "dependsOn": [
-        "lab::policySets"
-      ]
+      }
     }
-  },
+  ],
   "outputs": {
     "name": {
       "type": "string",
@@ -146,7 +112,7 @@
       "metadata": {
         "description": "The resource ID of the policy."
       },
-      "value": "[resourceId('Microsoft.DevTestLab/labs/policysets/policies', parameters('labName'), parameters('policySetName'), parameters('name'))]"
+      "value": "[resourceId('Microsoft.DevTestLab/labs/policysets/policies', parameters('labName'), 'default', parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
