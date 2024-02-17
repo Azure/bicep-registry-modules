@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "9955818138171456981"
+      "version": "0.25.53.49325",
+      "templateHash": "10812065346250705459"
     },
     "name": "DevTest Lab Policy Sets Policies",
     "description": "This module deploys a DevTest Lab Policy Sets Policy.\n\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings.",
