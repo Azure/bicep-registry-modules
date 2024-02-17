@@ -13,7 +13,7 @@ param location string = resourceGroup().location
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType
 
-@description('Optional. Array of role assignments to create.')
+@sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
 @sys.description('Optional. Tags of the resource.')
