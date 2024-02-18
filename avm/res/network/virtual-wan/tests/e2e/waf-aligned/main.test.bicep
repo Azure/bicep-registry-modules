@@ -54,10 +54,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     allowBranchToBranchTraffic: true
     allowVnetToVnetTraffic: true
     disableVpnEncryption: true
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     type: 'Basic'
     tags: {
       'hidden-title': 'This is visible in the resource name'

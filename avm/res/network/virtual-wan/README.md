@@ -221,10 +221,6 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
     allowVnetToVnetTraffic: true
     disableVpnEncryption: true
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -263,12 +259,6 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "tags": {
       "value": {
