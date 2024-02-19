@@ -140,7 +140,7 @@ body:
         - "avm/res/network/route-table"
         # - "avm/res/network/service-endpoint-policy"
         - "avm/res/network/trafficmanagerprofile"
-        # - "avm/res/network/virtual-hub"
+        - "avm/res/network/virtual-hub"
         - "avm/res/network/virtual-network"
         - "avm/res/network/virtual-network-gateway"
         # - "avm/res/network/virtual-wan"
