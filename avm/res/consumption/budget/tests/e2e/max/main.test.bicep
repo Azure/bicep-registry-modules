@@ -30,6 +30,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     contactEmails: [
       'dummy@contoso.com'
     ]
+    resourceGroupFilter: [
+      'rg-group1'
+      'rg-group2'
+    ]
     thresholds: [
       50
       75

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "2070450222731835934"
+      "version": "0.25.3.34343",
+      "templateHash": "12156978930562420802"
     },
     "name": "Public IP Addresses",
     "description": "This module deploys a Public IP Address.",
@@ -149,11 +149,14 @@
           "type": "object",
           "properties": {
             "id": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the DDOS protection plan associated with the public IP address."
+              }
             }
           },
           "metadata": {
-            "description": "Required. The DDoS protection plan ID associated with the public IP address."
+            "description": "Required. The DDoS protection plan associated with the public IP address."
           }
         },
         "protectionMode": {
@@ -437,7 +440,7 @@
     },
     "publicIpAddress": {
       "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2023-09-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -550,7 +553,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('publicIpAddress', '2023-04-01', 'full').location]"
+      "value": "[reference('publicIpAddress', '2023-09-01', 'full').location]"
     }
   }
 }

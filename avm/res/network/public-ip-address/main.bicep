@@ -97,7 +97,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
+resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2023-09-01' = {
   name: name
   location: location
   tags: tags
@@ -233,8 +233,9 @@ type dnsSettingsType = {
 }
 
 type ddosSettingsType = {
-  @description('Required. The DDoS protection plan ID associated with the public IP address.')
+  @description('Required. The DDoS protection plan associated with the public IP address.')
   ddosProtectionPlan: {
+    @description('Required. The resource ID of the DDOS protection plan associated with the public IP address.')
     id: string
   }
   @description('Required. The DDoS protection policy customizations.')
