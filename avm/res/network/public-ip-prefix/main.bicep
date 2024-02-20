@@ -2,7 +2,7 @@ metadata name = 'Public IP Prefixes'
 metadata description = 'This module deploys a Public IP Prefix.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. Name of the Public IP Prefix.')
+@description('Required. The name of the Public IP Prefix.')
 @minLength(1)
 param name string
 
@@ -23,7 +23,7 @@ param roleAssignments roleAssignmentType
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Optional. The customIpPrefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range.')
+@description('Optional. The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range.')
 param customIPPrefix object = {}
 
 @description('Optional. Enable/Disable usage telemetry for module.')
