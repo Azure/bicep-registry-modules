@@ -40,8 +40,8 @@ function Publish-ModuleFromTagToPBR {
   $targetVersion = Split-Path $ModuleReleaseTagName -Leaf
   $moduleRelativeFolderPath = $ModuleReleaseTagName -replace "\/$targetVersion$", ''
   $moduleFolderPath = Join-Path $repositoryRoot $moduleRelativeFolderPath
-  $moduleJsonFilePath = Join-Path $moduleFolderPath 'main.json'
-  Write-Verbose "Determined JSON template Path [$moduleJsonFilePath]"
+  $moduleBicepFilePath = Join-Path $moduleFolderPath 'main.bicep'
+  Write-Verbose "Determined Bicep template path [$moduleBicepFilePath]"
 
   # 2. Get the documentation link
   $documentationUri = Get-ModuleReadmeLink -TagName $ModuleReleaseTagName -ModuleFolderPath $moduleFolderPath
@@ -53,7 +53,7 @@ function Publish-ModuleFromTagToPBR {
   $plainPublicRegistryServer = ConvertFrom-SecureString $PublicRegistryServer -AsPlainText
 
   $publishInput = @(
-    $moduleJsonFilePath
+    $moduleBicepFilePath
     '--target', ("br:{0}/public/bicep/{1}:{2}" -f $plainPublicRegistryServer, $moduleRelativeFolderPath, $targetVersion)
     '--documentationUri', $documentationUri
     '--with-source'
