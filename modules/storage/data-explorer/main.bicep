@@ -145,7 +145,7 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2022-12-29' = {
   sku: {
     name: sku
     tier: tier
-    capacity: sku == 'Dev(No SLA)_Standard_D11_v2' || sku == 'Dev(No SLA)_Standard_D11_v2' ? 1 : numberOfNodes
+    capacity: sku == 'Dev(No SLA)_Standard_D11_v2' || sku == 'Dev(No SLA)_Standard_E2a_v4' ? 1 : numberOfNodes
   }
   tags: tags
   identity: (identityType == 'UserAssigned') ? {
