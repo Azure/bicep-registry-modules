@@ -1,6 +1,6 @@
-# Public IP Prefixes `[Microsoft.Network/publicIPPrefixes]`
+# Virtual WANs `[Microsoft.Network/virtualWans]`
 
-This module deploys a Public IP Prefix.
+This module deploys a Virtual WAN.
 
 ## Navigation
 
@@ -17,7 +17,7 @@ This module deploys a Public IP Prefix.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/publicIPPrefixes` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/publicIPPrefixes) |
+| `Microsoft.Network/virtualWans` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualWans) |
 
 ## Usage examples
 
@@ -25,7 +25,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/public-ip-prefix:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/virtual-wan:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -41,12 +41,11 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-npipmin'
+module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvwmin'
   params: {
     // Required parameters
-    name: 'npipmin001'
-    prefixLength: 28
+    name: 'nvwmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -67,10 +66,7 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "npipmin001"
-    },
-    "prefixLength": {
-      "value": 28
+      "value": "nvwmin001"
     },
     // Non-required parameters
     "location": {
@@ -93,13 +89,15 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-npipmax'
+module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvwmax'
   params: {
     // Required parameters
-    name: 'npipmax001'
-    prefixLength: 28
+    name: 'nvwmax001'
     // Non-required parameters
+    allowBranchToBranchTraffic: true
+    allowVnetToVnetTraffic: true
+    disableVpnEncryption: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -127,6 +125,7 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    type: 'Basic'
   }
 }
 ```
@@ -145,12 +144,18 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "npipmax001"
-    },
-    "prefixLength": {
-      "value": 28
+      "value": "nvwmax001"
     },
     // Non-required parameters
+    "allowBranchToBranchTraffic": {
+      "value": true
+    },
+    "allowVnetToVnetTraffic": {
+      "value": true
+    },
+    "disableVpnEncryption": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     },
@@ -185,6 +190,9 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "type": {
+      "value": "Basic"
     }
   }
 }
@@ -203,19 +211,22 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-npipwaf'
+module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvwwaf'
   params: {
     // Required parameters
-    name: 'npipwaf001'
-    prefixLength: 28
+    name: 'nvwwaf001'
     // Non-required parameters
+    allowBranchToBranchTraffic: true
+    allowVnetToVnetTraffic: true
+    disableVpnEncryption: true
     location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    type: 'Basic'
   }
 }
 ```
@@ -234,12 +245,18 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "npipwaf001"
-    },
-    "prefixLength": {
-      "value": 28
+      "value": "nvwwaf001"
     },
     // Non-required parameters
+    "allowBranchToBranchTraffic": {
+      "value": true
+    },
+    "allowVnetToVnetTraffic": {
+      "value": true
+    },
+    "disableVpnEncryption": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     },
@@ -249,6 +266,9 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "type": {
+      "value": "Basic"
     }
   }
 }
@@ -264,41 +284,52 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the Public IP Prefix. |
-| [`prefixLength`](#parameter-prefixlength) | int | Length of the Public IP Prefix. |
+| [`name`](#parameter-name) | string | Name of the Virtual WAN. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customIPPrefix`](#parameter-customipprefix) | object | The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range. |
+| [`allowBranchToBranchTraffic`](#parameter-allowbranchtobranchtraffic) | bool | True if branch to branch traffic is allowed. |
+| [`allowVnetToVnetTraffic`](#parameter-allowvnettovnettraffic) | bool | True if VNET to VNET traffic is allowed. |
+| [`disableVpnEncryption`](#parameter-disablevpnencryption) | bool | VPN encryption to be disabled or not. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`location`](#parameter-location) | string | Location for all resources. |
+| [`location`](#parameter-location) | string | Location where all resources will be created. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`type`](#parameter-type) | string | The type of the Virtual WAN. |
 
 ### Parameter: `name`
 
-The name of the Public IP Prefix.
+Name of the Virtual WAN.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `prefixLength`
+### Parameter: `allowBranchToBranchTraffic`
 
-Length of the Public IP Prefix.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `customIPPrefix`
-
-The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range.
+True if branch to branch traffic is allowed.
 
 - Required: No
-- Type: object
-- Default: `{}`
+- Type: bool
+- Default: `False`
+
+### Parameter: `allowVnetToVnetTraffic`
+
+True if VNET to VNET traffic is allowed.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `disableVpnEncryption`
+
+VPN encryption to be disabled or not.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
@@ -310,7 +341,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `location`
 
-Location for all resources.
+Location where all resources will be created.
 
 - Required: No
 - Type: string
@@ -448,15 +479,30 @@ Tags of the resource.
 - Required: No
 - Type: object
 
+### Parameter: `type`
+
+The type of the Virtual WAN.
+
+- Required: No
+- Type: string
+- Default: `'Standard'`
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Standard'
+  ]
+  ```
+
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the public IP prefix. |
-| `resourceGroupName` | string | The resource group the public IP prefix was deployed into. |
-| `resourceId` | string | The resource ID of the public IP prefix. |
+| `name` | string | The name of the virtual WAN. |
+| `resourceGroupName` | string | The resource group the virtual WAN was deployed into. |
+| `resourceId` | string | The resource ID of the virtual WAN. |
 
 ## Cross-referenced modules
 
