@@ -10,6 +10,7 @@ This module deploys a Logic App (Workflow).
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -35,8 +36,6 @@ The following section provides usage examples for the module, which were used to
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-
 
 
 <details>
@@ -45,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module workflow 'br/public:avm/res/logic/workflow:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-lwmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-lwmin'
   params: {
     // Required parameters
     name: 'lwmin001'
@@ -93,7 +92,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module workflow 'br/public:avm/res/logic/workflow:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-lwmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-lwmax'
   params: {
     // Required parameters
     name: 'lwmax001'
@@ -307,7 +306,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module workflow 'br/public:avm/res/logic/workflow:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-lwwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-lwwaf'
   params: {
     // Required parameters
     name: 'lwwaf001'
@@ -601,6 +600,27 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 - Required: No
 - Type: array
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs. |
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs.
+
+- Required: No
+- Type: string
+
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
@@ -614,6 +634,19 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics. |
+
+### Parameter: `diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -1028,3 +1061,7 @@ _None_
 
 </details>
 <p>
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

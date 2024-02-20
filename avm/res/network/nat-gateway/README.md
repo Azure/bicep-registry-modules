@@ -9,6 +9,7 @@ This module deploys a NAT Gateway.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -45,7 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nngmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nngmin'
   params: {
     // Required parameters
     name: 'nngmin001'
@@ -93,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nngmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nngmax'
   params: {
     // Required parameters
     name: 'nngmax001'
@@ -285,7 +286,7 @@ This example shows how you can provide a Public IP Prefix to the module, while a
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nngcprx'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nngcprx'
   params: {
     // Required parameters
     name: 'nngcprx001'
@@ -353,7 +354,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nngwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nngwaf'
   params: {
     // Required parameters
     name: 'nngwaf001'
@@ -706,5 +707,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `res/network/public-ip-prefix` | Local reference |
 | `br/public:avm/res/network/public-ip-address:0.2.1` | Remote reference |
+| `br/public:avm/res/network/public-ip-prefix:0.1.0` | Remote reference |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

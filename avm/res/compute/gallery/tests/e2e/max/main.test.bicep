@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module with most of its featur
 param resourceGroupName string = 'dep-${namePrefix}-compute.galleries-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param location string = deployment().location
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'cgmax'
@@ -28,15 +28,15 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: location
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
+    location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: location
   }
 }
 
@@ -47,10 +47,10 @@ module nestedDependencies 'dependencies.bicep' = {
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
+    location: resourceLocation
     name: '${namePrefix}${serviceShort}001'
-    location: location
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -58,6 +58,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     applications: [
       {
         name: '${namePrefix}-${serviceShort}-appd-001'
+        supportedOSType: 'Linux'
       }
       {
         name: '${namePrefix}-${serviceShort}-appd-002'
@@ -73,10 +74,23 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     images: [
       {
+        hyperVGeneration: 'V1'
         name: '${namePrefix}-az-imgd-ws-001'
+        offer: 'WindowsServer'
+        osType: 'Windows'
+        publisher: 'MicrosoftWindowsServer'
+        sku: '2022-datacenter-azure-edition'
+        roleAssignments: [
+          {
+            roleDefinitionIdOrName: 'Reader'
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+        ]
       }
       {
-        hyperVGeneration: 'V1'
+        hyperVGeneration: 'V2'
+        isHibernateSupported: true
         maxRecommendedMemory: 16
         maxRecommendedvCPUs: 8
         minRecommendedMemory: 4
@@ -93,49 +107,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             principalType: 'ServicePrincipal'
           }
         ]
-        sku: '2022-datacenter-azure-edition'
-      }
-      {
-        hyperVGeneration: 'V2'
-        isHibernateSupported: 'true'
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 8
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: '${namePrefix}-az-imgd-ws-003'
-        offer: 'WindowsServer'
-        osState: 'Generalized'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
         sku: '2022-datacenter-azure-edition-hibernate'
-      }
-      {
-        hyperVGeneration: 'V2'
-        isAcceleratedNetworkSupported: 'true'
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 8
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: '${namePrefix}-az-imgd-ws-004'
-        offer: 'WindowsServer'
-        osState: 'Generalized'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
-        sku: '2022-datacenter-azure-edition-accnet'
       }
       {
         hyperVGeneration: 'V2'
@@ -144,7 +116,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         maxRecommendedvCPUs: 4
         minRecommendedMemory: 4
         minRecommendedvCPUs: 2
-        name: '${namePrefix}-az-imgd-wdtl-002'
+        name: '${namePrefix}-az-imgd-wdtl-001'
         offer: 'WindowsDesktop'
         osState: 'Generalized'
         osType: 'Windows'

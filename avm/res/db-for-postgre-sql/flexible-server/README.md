@@ -14,6 +14,7 @@ This module deploys a DBforPostgreSQL Flexible Server.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -53,7 +54,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dfpsfsmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dfpsfsmin'
   params: {
     // Required parameters
     name: 'dfpsfsmin001'
@@ -117,7 +118,7 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dfpsfse'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dfpsfse'
   params: {
     // Required parameters
     name: 'dfpsfse001'
@@ -205,7 +206,7 @@ This instance deploys the module with private access only.
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dfpsfspvt'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dfpsfspvt'
   params: {
     // Required parameters
     name: 'dfpsfspvt001'
@@ -407,7 +408,7 @@ This instance deploys the module with public access.
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dfpsfsp'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dfpsfsp'
   params: {
     // Required parameters
     name: 'dfpsfsp001'
@@ -651,7 +652,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dfpsfswaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dfpsfswaf'
   params: {
     // Required parameters
     name: 'dfpsfswaf001'
@@ -1127,6 +1128,27 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 - Required: No
 - Type: array
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs. |
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs.
+
+- Required: No
+- Type: string
+
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
@@ -1140,6 +1162,19 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics. |
+
+### Parameter: `diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -1442,3 +1477,7 @@ PostgreSQL Server version.
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

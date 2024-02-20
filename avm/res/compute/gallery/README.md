@@ -1,10 +1,5 @@
 # Azure Compute Galleries `[Microsoft.Compute/galleries]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).
 
 ## Navigation
@@ -14,6 +9,7 @@ This module deploys an Azure Compute Gallery (formerly known as Shared Image Gal
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -48,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cgmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cgmin'
   params: {
     // Required parameters
     name: 'cgmin001'
@@ -96,7 +92,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cgmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cgmax'
   params: {
     // Required parameters
     name: 'cgmax001'
@@ -104,6 +100,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     applications: [
       {
         name: 'cgmax-appd-001'
+        supportedOSType: 'Linux'
       }
       {
         name: 'cgmax-appd-002'
@@ -119,10 +116,23 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     ]
     images: [
       {
+        hyperVGeneration: 'V1'
         name: 'az-imgd-ws-001'
+        offer: 'WindowsServer'
+        osType: 'Windows'
+        publisher: 'MicrosoftWindowsServer'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        sku: '2022-datacenter-azure-edition'
       }
       {
-        hyperVGeneration: 'V1'
+        hyperVGeneration: 'V2'
+        isHibernateSupported: true
         maxRecommendedMemory: 16
         maxRecommendedvCPUs: 8
         minRecommendedMemory: 4
@@ -139,49 +149,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
             roleDefinitionIdOrName: 'Reader'
           }
         ]
-        sku: '2022-datacenter-azure-edition'
-      }
-      {
-        hyperVGeneration: 'V2'
-        isHibernateSupported: 'true'
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 8
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: 'az-imgd-ws-003'
-        offer: 'WindowsServer'
-        osState: 'Generalized'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
         sku: '2022-datacenter-azure-edition-hibernate'
-      }
-      {
-        hyperVGeneration: 'V2'
-        isAcceleratedNetworkSupported: 'true'
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 8
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: 'az-imgd-ws-004'
-        offer: 'WindowsServer'
-        osState: 'Generalized'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        sku: '2022-datacenter-azure-edition-accnet'
       }
       {
         hyperVGeneration: 'V2'
@@ -189,7 +157,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         maxRecommendedvCPUs: 4
         minRecommendedMemory: 4
         minRecommendedvCPUs: 2
-        name: 'az-imgd-wdtl-002'
+        name: 'az-imgd-wdtl-001'
         offer: 'WindowsDesktop'
         osState: 'Generalized'
         osType: 'Windows'
@@ -269,7 +237,8 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     "applications": {
       "value": [
         {
-          "name": "cgmax-appd-001"
+          "name": "cgmax-appd-001",
+          "supportedOSType": "Linux"
         },
         {
           "name": "cgmax-appd-002",
@@ -287,10 +256,23 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     "images": {
       "value": [
         {
-          "name": "az-imgd-ws-001"
+          "hyperVGeneration": "V1",
+          "name": "az-imgd-ws-001",
+          "offer": "WindowsServer",
+          "osType": "Windows",
+          "publisher": "MicrosoftWindowsServer",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Reader"
+            }
+          ],
+          "sku": "2022-datacenter-azure-edition"
         },
         {
-          "hyperVGeneration": "V1",
+          "hyperVGeneration": "V2",
+          "isHibernateSupported": true,
           "maxRecommendedMemory": 16,
           "maxRecommendedvCPUs": 8,
           "minRecommendedMemory": 4,
@@ -307,49 +289,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
               "roleDefinitionIdOrName": "Reader"
             }
           ],
-          "sku": "2022-datacenter-azure-edition"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "isHibernateSupported": "true",
-          "maxRecommendedMemory": 16,
-          "maxRecommendedvCPUs": 8,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 2,
-          "name": "az-imgd-ws-003",
-          "offer": "WindowsServer",
-          "osState": "Generalized",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsServer",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
           "sku": "2022-datacenter-azure-edition-hibernate"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "isAcceleratedNetworkSupported": "true",
-          "maxRecommendedMemory": 16,
-          "maxRecommendedvCPUs": 8,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 2,
-          "name": "az-imgd-ws-004",
-          "offer": "WindowsServer",
-          "osState": "Generalized",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsServer",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "sku": "2022-datacenter-azure-edition-accnet"
         },
         {
           "hyperVGeneration": "V2",
@@ -357,7 +297,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           "maxRecommendedvCPUs": 4,
           "minRecommendedMemory": 4,
           "minRecommendedvCPUs": 2,
-          "name": "az-imgd-wdtl-002",
+          "name": "az-imgd-wdtl-001",
           "offer": "WindowsDesktop",
           "osState": "Generalized",
           "osType": "Windows",
@@ -440,7 +380,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cgwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cgwaf'
   params: {
     // Required parameters
     name: 'cgwaf001'
@@ -448,90 +388,19 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     applications: [
       {
         name: 'cgwaf-appd-001'
-      }
-      {
-        name: 'cgwaf-appd-002'
         supportedOSType: 'Windows'
       }
     ]
     images: [
       {
         name: 'az-imgd-ws-001'
-      }
-      {
-        hyperVGeneration: 'V1'
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 8
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: 'az-imgd-ws-002'
         offer: 'WindowsServer'
-        osState: 'Generalized'
         osType: 'Windows'
         publisher: 'MicrosoftWindowsServer'
         sku: '2022-datacenter-azure-edition'
       }
-      {
-        hyperVGeneration: 'V2'
-        isHibernateSupported: 'true'
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 8
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: 'az-imgd-ws-003'
-        offer: 'WindowsServer'
-        osState: 'Generalized'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        sku: '2022-datacenter-azure-edition-hibernate'
-      }
-      {
-        hyperVGeneration: 'V2'
-        isAcceleratedNetworkSupported: 'true'
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 8
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: 'az-imgd-ws-004'
-        offer: 'WindowsServer'
-        osState: 'Generalized'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        sku: '2022-datacenter-azure-edition-accnet'
-      }
-      {
-        hyperVGeneration: 'V2'
-        maxRecommendedMemory: 16
-        maxRecommendedvCPUs: 4
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 2
-        name: 'az-imgd-wdtl-002'
-        offer: 'WindowsDesktop'
-        osState: 'Generalized'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsDesktop'
-        securityType: 'TrustedLaunch'
-        sku: 'Win11-21H2'
-      }
-      {
-        hyperVGeneration: 'V2'
-        maxRecommendedMemory: 32
-        maxRecommendedvCPUs: 4
-        minRecommendedMemory: 4
-        minRecommendedvCPUs: 1
-        name: 'az-imgd-us-001'
-        offer: '0001-com-ubuntu-server-focal'
-        osState: 'Generalized'
-        osType: 'Linux'
-        publisher: 'canonical'
-        sku: '20_04-lts-gen2'
-      }
     ]
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -561,10 +430,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     "applications": {
       "value": [
         {
-          "name": "cgwaf-appd-001"
-        },
-        {
-          "name": "cgwaf-appd-002",
+          "name": "cgwaf-appd-001",
           "supportedOSType": "Windows"
         }
       ]
@@ -572,86 +438,16 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     "images": {
       "value": [
         {
-          "name": "az-imgd-ws-001"
-        },
-        {
-          "hyperVGeneration": "V1",
-          "maxRecommendedMemory": 16,
-          "maxRecommendedvCPUs": 8,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 2,
-          "name": "az-imgd-ws-002",
+          "name": "az-imgd-ws-001",
           "offer": "WindowsServer",
-          "osState": "Generalized",
           "osType": "Windows",
           "publisher": "MicrosoftWindowsServer",
           "sku": "2022-datacenter-azure-edition"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "isHibernateSupported": "true",
-          "maxRecommendedMemory": 16,
-          "maxRecommendedvCPUs": 8,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 2,
-          "name": "az-imgd-ws-003",
-          "offer": "WindowsServer",
-          "osState": "Generalized",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsServer",
-          "sku": "2022-datacenter-azure-edition-hibernate"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "isAcceleratedNetworkSupported": "true",
-          "maxRecommendedMemory": 16,
-          "maxRecommendedvCPUs": 8,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 2,
-          "name": "az-imgd-ws-004",
-          "offer": "WindowsServer",
-          "osState": "Generalized",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsServer",
-          "sku": "2022-datacenter-azure-edition-accnet"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "maxRecommendedMemory": 16,
-          "maxRecommendedvCPUs": 4,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 2,
-          "name": "az-imgd-wdtl-002",
-          "offer": "WindowsDesktop",
-          "osState": "Generalized",
-          "osType": "Windows",
-          "publisher": "MicrosoftWindowsDesktop",
-          "securityType": "TrustedLaunch",
-          "sku": "Win11-21H2"
-        },
-        {
-          "hyperVGeneration": "V2",
-          "maxRecommendedMemory": 32,
-          "maxRecommendedvCPUs": 4,
-          "minRecommendedMemory": 4,
-          "minRecommendedvCPUs": 1,
-          "name": "az-imgd-us-001",
-          "offer": "0001-com-ubuntu-server-focal",
-          "osState": "Generalized",
-          "osType": "Linux",
-          "publisher": "canonical",
-          "sku": "20_04-lts-gen2"
         }
       ]
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "tags": {
       "value": {
@@ -687,6 +483,8 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`sharingProfile`](#parameter-sharingprofile) | object | Profile for gallery sharing to subscription or tenant. |
+| [`softDeletePolicy`](#parameter-softdeletepolicy) | object | Soft deletion policy of the gallery. |
 | [`tags`](#parameter-tags) | object | Tags for all resources. |
 
 ### Parameter: `name`
@@ -858,6 +656,20 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `sharingProfile`
+
+Profile for gallery sharing to subscription or tenant.
+
+- Required: No
+- Type: object
+
+### Parameter: `softDeletePolicy`
+
+Soft deletion policy of the gallery.
+
+- Required: No
+- Type: object
+
 ### Parameter: `tags`
 
 Tags for all resources.
@@ -878,3 +690,7 @@ Tags for all resources.
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

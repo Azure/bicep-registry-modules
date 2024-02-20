@@ -35,7 +35,7 @@ param tags object?
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
@@ -109,8 +109,8 @@ module vpnGateway_natRules 'nat-rule/main.bicep' = [for (natRule, index) in natR
     externalMappings: contains(natRule, 'externalMappings') ? natRule.externalMappings : []
     internalMappings: contains(natRule, 'internalMappings') ? natRule.internalMappings : []
     ipConfigurationId: contains(natRule, 'ipConfigurationId') ? natRule.ipConfigurationId : ''
-    mode: contains(natRule, 'mode') ? natRule.mode : ''
-    type: contains(natRule, 'type') ? natRule.type : ''
+    mode: natRule.?mode 
+    type: natRule.?type
   }
 }]
 

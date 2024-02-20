@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "900552806279578658"
+      "templateHash": "14501144781393850379"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",
@@ -452,6 +452,7 @@
     "kind": {
       "type": "string",
       "allowedValues": [
+        "AIServices",
         "AnomalyDetector",
         "Bing.Autosuggest.v7",
         "Bing.CustomSearch",
@@ -461,16 +462,22 @@
         "CognitiveServices",
         "ComputerVision",
         "ContentModerator",
+        "ContentSafety",
+        "ConversationalLanguageUnderstanding",
         "CustomVision.Prediction",
         "CustomVision.Training",
         "Face",
         "FormRecognizer",
+        "HealthInsights",
         "ImmersiveReader",
         "Internal.AllInOne",
         "LUIS",
         "LUIS.Authoring",
+        "LanguageAuthoring",
+        "MetricsAdvisor",
+        "OpenAI",
         "Personalizer",
-        "QnAMaker",
+        "QnAMaker.v2",
         "SpeechServices",
         "TextAnalytics",
         "TextTranslation"
@@ -733,7 +740,7 @@
     },
     "cognitiveService": {
       "type": "Microsoft.CognitiveServices/accounts",
-      "apiVersion": "2022-12-01",
+      "apiVersion": "2023-05-01",
       "name": "[parameters('name')]",
       "kind": "[parameters('kind')]",
       "identity": "[variables('identity')]",
@@ -1523,14 +1530,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('cognitiveService', '2022-12-01', 'full').identity, 'principalId')), reference('cognitiveService', '2022-12-01', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('cognitiveService', '2023-05-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('cognitiveService', '2022-12-01', 'full').location]"
+      "value": "[reference('cognitiveService', '2023-05-01', 'full').location]"
     }
   }
 }

@@ -9,6 +9,7 @@ This module deploys a DDoS Protection Plan.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -41,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ndppmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ndppmin'
   params: {
     // Required parameters
     name: 'ndppmin001'
@@ -89,7 +90,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ndppmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ndppmax'
   params: {
     // Required parameters
     name: 'ndppmax001'
@@ -195,7 +196,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ndppwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ndppwaf'
   params: {
     // Required parameters
     name: 'ndppwaf001'
@@ -267,7 +268,7 @@ module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<versi
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -282,7 +283,7 @@ Name of the DDoS protection plan to assign the VNET to.
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -441,3 +442,7 @@ Tags of the resource.
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

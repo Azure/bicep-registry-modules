@@ -80,7 +80,7 @@ param disableLocalAuth bool = true
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. The queues to create in the service bus namespace.')
@@ -319,7 +319,7 @@ module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-e
     ]
     name: privateEndpoint.?name ?? 'pep-${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'vault'}-${index}'
     subnetResourceId: privateEndpoint.subnetResourceId
-    enableTelemetry: enableTelemetry
+    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
@@ -358,7 +358,7 @@ output resourceGroupName string = resourceGroup().name
 output name string = serviceBusNamespace.name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(serviceBusNamespace.identity, 'principalId') ? serviceBusNamespace.identity.principalId : ''
+output systemAssignedMIPrincipalId string = serviceBusNamespace.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = serviceBusNamespace.location

@@ -56,7 +56,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource publicIpPrefix 'Microsoft.Network/publicIPPrefixes@2023-04-01' = {
+resource publicIpPrefix 'Microsoft.Network/publicIPPrefixes@2023-09-01' = {
   name: name
   location: location
   tags: tags

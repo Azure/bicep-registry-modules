@@ -9,6 +9,7 @@ This module deploys a Cognitive Service.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -16,7 +17,7 @@ This module deploys a Cognitive Service.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.CognitiveServices/accounts` | [2022-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2022-12-01/accounts) |
+| `Microsoft.CognitiveServices/accounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
@@ -47,7 +48,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-csamin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-csamin'
   params: {
     // Required parameters
     kind: 'SpeechServices'
@@ -99,7 +100,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-csamax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-csamax'
   params: {
     // Required parameters
     kind: 'Face'
@@ -387,7 +388,7 @@ This instance deploys the module as a Speech Service.
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-csaspeech'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-csaspeech'
   params: {
     // Required parameters
     kind: 'SpeechServices'
@@ -501,7 +502,7 @@ This instance deploys the module using Customer-Managed-Keys using a System-Assi
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-csaecrs'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-csaecrs'
   params: {
     // Required parameters
     kind: 'SpeechServices'
@@ -583,7 +584,7 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-csaencr'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-csaencr'
   params: {
     // Required parameters
     kind: 'SpeechServices'
@@ -671,7 +672,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-csawaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-csawaf'
   params: {
     // Required parameters
     kind: 'Face'
@@ -846,6 +847,7 @@ Kind of the Cognitive Services. Use 'Get-AzCognitiveServicesAccountSku' to deter
 - Allowed:
   ```Bicep
   [
+    'AIServices'
     'AnomalyDetector'
     'Bing.Autosuggest.v7'
     'Bing.CustomSearch'
@@ -855,16 +857,22 @@ Kind of the Cognitive Services. Use 'Get-AzCognitiveServicesAccountSku' to deter
     'CognitiveServices'
     'ComputerVision'
     'ContentModerator'
+    'ContentSafety'
+    'ConversationalLanguageUnderstanding'
     'CustomVision.Prediction'
     'CustomVision.Training'
     'Face'
     'FormRecognizer'
+    'HealthInsights'
     'ImmersiveReader'
     'Internal.AllInOne'
+    'LanguageAuthoring'
     'LUIS'
     'LUIS.Authoring'
+    'MetricsAdvisor'
+    'OpenAI'
     'Personalizer'
-    'QnAMaker'
+    'QnAMaker.v2'
     'SpeechServices'
     'TextAnalytics'
     'TextTranslation'
@@ -1004,6 +1012,27 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 - Required: No
 - Type: array
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
@@ -1017,6 +1046,19 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+### Parameter: `diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -1202,6 +1244,27 @@ Custom DNS configurations.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
+| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+Fqdn that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
+
+A list of private IP addresses of the private endpoint.
+
+- Required: Yes
+- Type: array
+
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
 The custom name of the network interface attached to the private endpoint.
@@ -1222,6 +1285,56 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsipconfigurationsname) | string | The name of the resource that is unique within a resource group. |
+| [`properties`](#parameter-privateendpointsipconfigurationsproperties) | object | Properties of private endpoint IP configurations. |
+
+### Parameter: `privateEndpoints.ipConfigurations.name`
+
+The name of the resource that is unique within a resource group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties`
+
+Properties of private endpoint IP configurations.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
+
+The member name of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
+
+A private IP address obtained from the private endpoint's subnet.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `privateEndpoints.location`
 
@@ -1581,3 +1694,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.3.1` | Remote reference |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

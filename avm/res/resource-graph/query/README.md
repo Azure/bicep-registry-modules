@@ -9,6 +9,7 @@ This module deploys a Resource Graph Query.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -41,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module query 'br/public:avm/res/resource-graph/query:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdsmin'
   params: {
     // Required parameters
     name: 'rdsmin001'
@@ -93,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module query 'br/public:avm/res/resource-graph/query:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdsmax'
   params: {
     // Required parameters
     name: 'rdsmax001'
@@ -205,7 +206,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module query 'br/public:avm/res/resource-graph/query:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdswaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdswaf'
   params: {
     // Required parameters
     name: 'rdswaf001'
@@ -474,3 +475,7 @@ Resource tags.
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

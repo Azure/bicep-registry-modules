@@ -9,6 +9,7 @@ This module deploys a Public IP Prefix.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -16,7 +17,7 @@ This module deploys a Public IP Prefix.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/publicIPPrefixes` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/publicIPPrefixes) |
+| `Microsoft.Network/publicIPPrefixes` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/publicIPPrefixes) |
 
 ## Usage examples
 
@@ -41,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-npipmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-npipmin'
   params: {
     // Required parameters
     name: 'npipmin001'
@@ -93,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-npipmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-npipmax'
   params: {
     // Required parameters
     name: 'npipmax001'
@@ -203,7 +204,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-npipwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-npipwaf'
   params: {
     // Required parameters
     name: 'npipwaf001'
@@ -460,3 +461,7 @@ Tags of the resource.
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

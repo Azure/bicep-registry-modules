@@ -1,10 +1,5 @@
 # App ManagedEnvironments `[Microsoft.App/managedEnvironments]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys an App Managed Environment (also known as a Container App Environment).
 
 ## Navigation
@@ -14,6 +9,7 @@ This module deploys an App Managed Environment (also known as a Container App En
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -46,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-amemin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-amemin'
   params: {
     // Required parameters
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
@@ -98,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-amemax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-amemax'
   params: {
     // Required parameters
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
@@ -248,7 +244,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-amewaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-amewaf'
   params: {
     // Required parameters
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
@@ -413,7 +409,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 | [`daprAIInstrumentationKey`](#parameter-dapraiinstrumentationkey) | securestring | Azure Monitor instrumentation key used by Dapr to export Service to Service communication telemetry. |
 | [`dnsSuffix`](#parameter-dnssuffix) | string | DNS suffix for the environment domain. |
 | [`dockerBridgeCidr`](#parameter-dockerbridgecidr) | string | CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group. If not provided, it will be set with a default value. |
 | [`internal`](#parameter-internal) | bool | Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -498,7 +494,7 @@ CIDR notation IP range assigned to the Docker bridge, network. It must not overl
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -714,3 +710,7 @@ Whether or not this Managed Environment is zone-redundant.
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

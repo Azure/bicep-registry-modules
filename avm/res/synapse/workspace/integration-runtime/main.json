@@ -1,0 +1,76 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "7739107907804712060"
+    },
+    "name": "Synapse Workspace Integration Runtimes",
+    "description": "This module deploys a Synapse Workspace Integration Runtime.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Integration Runtime."
+      }
+    },
+    "type": {
+      "type": "string",
+      "allowedValues": [
+        "Managed",
+        "SelfHosted"
+      ],
+      "metadata": {
+        "description": "Required. The type of Integration Runtime."
+      }
+    },
+    "typeProperties": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Conditional. Integration Runtime type properties. Required if type is \"Managed\"."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Synapse/workspaces/integrationRuntimes",
+      "apiVersion": "2021-06-01",
+      "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
+      "properties": "[if(equals(parameters('type'), 'Managed'), createObject('type', parameters('type'), 'managedVirtualNetwork', createObject('referenceName', 'default', 'type', 'ManagedVirtualNetworkReference'), 'typeProperties', parameters('typeProperties')), createObject('type', parameters('type')))]"
+    }
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the Integration Runtime was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Integration Runtime."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Integration Runtime."
+      },
+      "value": "[resourceId('Microsoft.Synapse/workspaces/integrationRuntimes', parameters('workspaceName'), parameters('name'))]"
+    }
+  }
+}

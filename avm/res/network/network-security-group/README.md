@@ -9,6 +9,7 @@ This module deploys a Network security Group (NSG).
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -43,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nnsgmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nnsgmin'
   params: {
     // Required parameters
     name: 'nnsgmin001'
@@ -91,7 +92,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nnsgmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nnsgmax'
   params: {
     // Required parameters
     name: 'nnsgmax001'
@@ -347,7 +348,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nnsgwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nnsgwaf'
   params: {
     // Required parameters
     name: 'nnsgwaf001'
@@ -570,7 +571,7 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`flushConnection`](#parameter-flushconnection) | bool | When enabled, flows created from Network Security Group connections will be re-evaluated when rules are updates. Initial enablement will trigger re-evaluation. Network Security Group connection flushing is not available in all regions. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -640,6 +641,27 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 - Required: No
 - Type: array
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs. |
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs.
+
+- Required: No
+- Type: string
+
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
@@ -670,7 +692,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -845,3 +867,7 @@ Tags of the NSG resource.
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

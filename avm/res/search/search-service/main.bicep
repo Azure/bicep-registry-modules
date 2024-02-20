@@ -228,7 +228,7 @@ module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoin
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
     customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
-    enableTelemetry: enableTelemetry
+    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
   }
 }]
 
@@ -262,7 +262,7 @@ output resourceId string = searchService.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(searchService.identity, 'principalId') ? searchService.identity.principalId : ''
+output systemAssignedMIPrincipalId string = searchService.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = searchService.location

@@ -9,6 +9,7 @@ This module deploys a User Defined Route Table (UDR).
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -41,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module routeTable 'br/public:avm/res/network/route-table:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nrtmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nrtmin'
   params: {
     // Required parameters
     name: 'nrtmin001'
@@ -89,7 +90,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module routeTable 'br/public:avm/res/network/route-table:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nrtmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nrtmax'
   params: {
     // Required parameters
     name: 'nrtmax001'
@@ -217,7 +218,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module routeTable 'br/public:avm/res/network/route-table:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nrtwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nrtwaf'
   params: {
     // Required parameters
     name: 'nrtwaf001'
@@ -503,6 +504,58 @@ Properties of the route.
 - Required: Yes
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`nextHopType`](#parameter-routespropertiesnexthoptype) | string | The type of Azure hop the packet should be sent to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefix`](#parameter-routespropertiesaddressprefix) | string | The destination CIDR to which the route applies. |
+| [`hasBgpOverride`](#parameter-routespropertieshasbgpoverride) | bool | A value indicating whether this route overrides overlapping BGP routes regardless of LPM. |
+| [`nextHopIpAddress`](#parameter-routespropertiesnexthopipaddress) | string | The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance. |
+
+### Parameter: `routes.properties.nextHopType`
+
+The type of Azure hop the packet should be sent to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Internet'
+    'None'
+    'VirtualAppliance'
+    'VirtualNetworkGateway'
+    'VnetLocal'
+  ]
+  ```
+
+### Parameter: `routes.properties.addressPrefix`
+
+The destination CIDR to which the route applies.
+
+- Required: No
+- Type: string
+
+### Parameter: `routes.properties.hasBgpOverride`
+
+A value indicating whether this route overrides overlapping BGP routes regardless of LPM.
+
+- Required: No
+- Type: bool
+
+### Parameter: `routes.properties.nextHopIpAddress`
+
+The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance.
+
+- Required: No
+- Type: string
+
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -523,3 +576,7 @@ Tags of the resource.
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

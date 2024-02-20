@@ -1,10 +1,5 @@
 # Azure SQL Servers `[Microsoft.Sql/servers]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys an Azure SQL Server.
 
 ## Navigation
@@ -15,6 +10,7 @@ This module deploys an Azure SQL Server.
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -64,7 +60,7 @@ This instance deploys the module with a Microsoft Entra ID identity as SQL admin
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-sqlsadmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-sqlsadmin'
   params: {
     // Required parameters
     name: 'sqlsadmin'
@@ -126,7 +122,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ssmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssmin'
   params: {
     // Required parameters
     name: 'ssmin001'
@@ -182,7 +178,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-sqlsmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-sqlsmax'
   params: {
     // Required parameters
     name: 'sqlsmax'
@@ -516,7 +512,7 @@ This instance deploys the module with Private Endpoints.
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-sqlspe'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-sqlspe'
   params: {
     // Required parameters
     name: 'sqlspe'
@@ -648,7 +644,7 @@ This instance deploys the module with a secondary database.
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-sqlsec'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-sqlsec'
   params: {
     // Required parameters
     name: 'sqlsec-sec'
@@ -738,7 +734,7 @@ This instance deploys the module with a vulnerability assessment.
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-sqlsvln'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-sqlsvln'
   params: {
     // Required parameters
     name: 'sqlsvln'
@@ -866,7 +862,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-sqlswaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-sqlswaf'
   params: {
     // Required parameters
     name: 'sqlswaf'
@@ -1402,6 +1398,27 @@ Custom DNS configurations.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
+| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+Fqdn that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
+
+A list of private IP addresses of the private endpoint.
+
+- Required: Yes
+- Type: array
+
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
 The custom name of the network interface attached to the private endpoint.
@@ -1422,6 +1439,56 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsipconfigurationsname) | string | The name of the resource that is unique within a resource group. |
+| [`properties`](#parameter-privateendpointsipconfigurationsproperties) | object | Properties of private endpoint IP configurations. |
+
+### Parameter: `privateEndpoints.ipConfigurations.name`
+
+The name of the resource that is unique within a resource group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties`
+
+Properties of private endpoint IP configurations.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
+
+The member name of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
+
+A private IP address obtained from the private endpoint's subnet.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `privateEndpoints.location`
 
@@ -1809,3 +1876,7 @@ administrators: {
 
 </details>
 <p>
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

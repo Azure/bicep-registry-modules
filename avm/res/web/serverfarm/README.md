@@ -9,6 +9,7 @@ This module deploys an App Service Plan.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -42,7 +43,7 @@ This instance deploys the module with a base set of parameters. Note it does inc
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsfmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsfmin'
   params: {
     // Required parameters
     name: 'wsfmin001'
@@ -54,7 +55,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       tier: 'Premium'
     }
     // Non-required parameters
-    location: 'eastus'
+    location: '<location>'
   }
 }
 ```
@@ -86,7 +87,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     },
     // Non-required parameters
     "location": {
-      "value": "eastus"
+      "value": "<location>"
     }
   }
 }
@@ -106,7 +107,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsfmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsfmax'
   params: {
     // Required parameters
     name: 'wsfmax001'
@@ -133,7 +134,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       }
     ]
     kind: 'App'
-    location: 'eastus'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'lock'
@@ -212,7 +213,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       "value": "App"
     },
     "location": {
-      "value": "eastus"
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -270,7 +271,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsfwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsfwaf'
   params: {
     // Required parameters
     name: 'wsfwaf001'
@@ -297,7 +298,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       }
     ]
     kind: 'App'
-    location: 'eastus'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'lock'
@@ -358,7 +359,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       "value": "App"
     },
     "location": {
-      "value": "eastus"
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -509,6 +510,19 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+### Parameter: `diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -766,3 +780,7 @@ Zone Redundancy can only be used on Premium or ElasticPremium SKU Tiers within Z
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

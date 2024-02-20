@@ -358,7 +358,7 @@ module automationAccount_privateEndpoints 'br/public:avm/res/network/private-end
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
     customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
-    enableTelemetry: enableTelemetry
+    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
   }
 }]
 
@@ -386,7 +386,7 @@ output resourceId string = automationAccount.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(automationAccount.identity, 'principalId') ? automationAccount.identity.principalId : ''
+output systemAssignedMIPrincipalId string = automationAccount.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = automationAccount.location

@@ -261,7 +261,7 @@ module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
     customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
-    enableTelemetry: enableTelemetry
+    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
   }
 }]
 
@@ -350,7 +350,7 @@ output resourceId string = server.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(server.identity, 'principalId') ? server.identity.principalId : ''
+output systemAssignedMIPrincipalId string = server.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = server.location

@@ -166,6 +166,7 @@ module domain_privateEndpoints 'br/public:avm-res-network-privateendpoint:0.1.1'
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
     customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
   }
 }]
 
@@ -196,7 +197,7 @@ output resourceGroupName string = resourceGroup().name
 output location string = domain.location
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(domain.identity, 'principalId') ? domain.identity.principalId : ''
+output systemAssignedMIPrincipalId string = domain.?identity.?principalId ?? ''
 
 // =============== //
 //   Definitions   //

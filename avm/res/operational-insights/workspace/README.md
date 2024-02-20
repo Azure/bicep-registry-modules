@@ -9,6 +9,7 @@ This module deploys a Log Analytics Workspace.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -51,7 +52,7 @@ This instance deploys the module with advanced features like custom tables and d
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-oiwadv'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-oiwadv'
   params: {
     // Required parameters
     name: 'oiwadv001'
@@ -241,6 +242,23 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       {
         name: 'CustomTableBasic_CL'
         retentionInDays: 60
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
         schema: {
           columns: [
             {
@@ -258,6 +276,23 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       }
       {
         name: 'CustomTableAdvanced_CL'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
         schema: {
           columns: [
             {
@@ -530,6 +565,23 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         {
           "name": "CustomTableBasic_CL",
           "retentionInDays": 60,
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
           "schema": {
             "columns": [
               {
@@ -547,6 +599,23 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         },
         {
           "name": "CustomTableAdvanced_CL",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
           "schema": {
             "columns": [
               {
@@ -607,7 +676,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-oiwmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-oiwmin'
   params: {
     // Required parameters
     name: 'oiwmin001'
@@ -655,7 +724,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-oiwmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-oiwmax'
   params: {
     // Required parameters
     name: 'oiwmax001'
@@ -838,6 +907,92 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           'WADServiceFabric*EventTable'
           'WADWindowsEventLogsTable'
         ]
+      }
+    ]
+    tables: [
+      {
+        name: 'CustomTableBasic_CL'
+        retentionInDays: 60
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        schema: {
+          columns: [
+            {
+              name: 'TimeGenerated'
+              type: 'DateTime'
+            }
+            {
+              name: 'RawData'
+              type: 'String'
+            }
+          ]
+          name: 'CustomTableBasic_CL'
+        }
+        totalRetentionInDays: 90
+      }
+      {
+        name: 'CustomTableAdvanced_CL'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        schema: {
+          columns: [
+            {
+              name: 'TimeGenerated'
+              type: 'DateTime'
+            }
+            {
+              name: 'EventTime'
+              type: 'DateTime'
+            }
+            {
+              name: 'EventLevel'
+              type: 'String'
+            }
+            {
+              name: 'EventCode'
+              type: 'Int'
+            }
+            {
+              name: 'Message'
+              type: 'String'
+            }
+            {
+              name: 'RawData'
+              type: 'String'
+            }
+          ]
+          name: 'CustomTableAdvanced_CL'
+        }
       }
     ]
     tags: {
@@ -1075,6 +1230,94 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         }
       ]
     },
+    "tables": {
+      "value": [
+        {
+          "name": "CustomTableBasic_CL",
+          "retentionInDays": 60,
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "schema": {
+            "columns": [
+              {
+                "name": "TimeGenerated",
+                "type": "DateTime"
+              },
+              {
+                "name": "RawData",
+                "type": "String"
+              }
+            ],
+            "name": "CustomTableBasic_CL"
+          },
+          "totalRetentionInDays": 90
+        },
+        {
+          "name": "CustomTableAdvanced_CL",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "schema": {
+            "columns": [
+              {
+                "name": "TimeGenerated",
+                "type": "DateTime"
+              },
+              {
+                "name": "EventTime",
+                "type": "DateTime"
+              },
+              {
+                "name": "EventLevel",
+                "type": "String"
+              },
+              {
+                "name": "EventCode",
+                "type": "Int"
+              },
+              {
+                "name": "Message",
+                "type": "String"
+              },
+              {
+                "name": "RawData",
+                "type": "String"
+              }
+            ],
+            "name": "CustomTableAdvanced_CL"
+          }
+        }
+      ]
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -1103,7 +1346,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-oiwwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-oiwwaf'
   params: {
     // Required parameters
     name: 'oiwwaf001'
@@ -1589,6 +1832,27 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 - Required: No
 - Type: array
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs. |
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs.
+
+- Required: No
+- Type: string
+
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
@@ -1602,6 +1866,19 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics. |
+
+### Parameter: `diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -1934,3 +2211,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/operations-management/solution:0.1.0` | Remote reference |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
