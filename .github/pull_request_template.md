@@ -13,11 +13,12 @@ Closes #456
 -->
 
 ## Pipeline Reference
+
 <!-- Insert your Pipeline Status Badge below -->
 
 | Pipeline |
-| - |
-| |
+| -------- |
+|          |
 
 ## Type of Change
 
@@ -31,7 +32,6 @@ Closes #456
   - [ ] Feature update backwards compatible feature updates, and I have bumped the MINOR version in `version.json`.
   - [ ] Breaking changes and I have bumped the MAJOR version in `version.json`.
   - [ ] Update to documentation
-
 
 ## Checklist
 
