@@ -366,7 +366,7 @@ module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoi
         }
       }
     ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(storageAccount.id, '/'))}-${privateEndpoint.?service ?? 'vault'}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
