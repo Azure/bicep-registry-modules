@@ -261,32 +261,33 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     }
     dnsEndpointType: !empty(dnsEndpointType) ? dnsEndpointType : null
     isLocalUserEnabled: isLocalUserEnabled
-    encryption: {
-      keySource: !empty(customerManagedKey) ? 'Microsoft.Keyvault' : 'Microsoft.Storage'
-      services: {
-        blob: supportsBlobService ? {
-          enabled: true
-        } : null
-        file: supportsFileService ? {
-          enabled: true
-        } : null
-        table: {
-          enabled: true
+    encryption: union({
+        keySource: !empty(customerManagedKey) ? 'Microsoft.Keyvault' : 'Microsoft.Storage'
+        services: {
+          blob: supportsBlobService ? {
+            enabled: true
+          } : null
+          file: supportsFileService ? {
+            enabled: true
+          } : null
+          table: {
+            enabled: true
+          }
+          queue: {
+            enabled: true
+          }
         }
-        queue: {
-          enabled: true
+        keyvaultproperties: !empty(customerManagedKey) ? {
+          keyname: customerManagedKey!.keyName
+          keyvaulturi: cMKKeyVault.properties.vaultUri
+          keyversion: !empty(customerManagedKey.?keyVersion ?? '') ? customerManagedKey!.keyVersion : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+        } : null
+        identity: {
+          userAssignedIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? cMKUserAssignedIdentity.id : null
         }
-      }
-      requireInfrastructureEncryption: kind != 'Storage' ? requireInfrastructureEncryption : null
-      keyvaultproperties: !empty(customerManagedKey) ? {
-        keyname: customerManagedKey!.keyName
-        keyvaulturi: cMKKeyVault.properties.vaultUri
-        keyversion: !empty(customerManagedKey.?keyVersion ?? '') ? customerManagedKey!.keyVersion : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
-      } : null
-      identity: {
-        userAssignedIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? cMKUserAssignedIdentity.id : null
-      }
-    }
+      }, (requireInfrastructureEncryption ? {
+        requireInfrastructureEncryption: kind != 'Storage' ? requireInfrastructureEncryption : null
+      } : {}))
     accessTier: kind != 'Storage' ? accessTier : null
     sasPolicy: !empty(sasExpirationPeriod) ? {
       expirationAction: 'Log'
@@ -545,7 +546,6 @@ type networkAclsType = {
   @description('Required. Specifies the default action of allow or deny when no other rules match.')
   defaultAction: ('Allow' | 'Deny')
 }
-
 
 type privateEndpointType = {
   @description('Optional. The name of the private endpoint.')
