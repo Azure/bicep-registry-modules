@@ -455,7 +455,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
       ssh: {
         publicKeys: [
           {
-            keyData: sshPublicKey
+            keyData: sshPublicKey ?? ''
           }
         ]
       }
@@ -475,6 +475,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
       }
       ingressApplicationGateway: {
         enabled: ingressApplicationGatewayEnabled && !empty(appGatewayResourceId)
+        #disable-next-line BCP321 // Value will not be used if null or empty
         config: ingressApplicationGatewayEnabled && !empty(appGatewayResourceId) ? {
           applicationGatewayId: appGatewayResourceId
           effectiveApplicationGatewayId: appGatewayResourceId
@@ -482,6 +483,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
       }
       omsagent: {
         enabled: omsAgentEnabled && !empty(monitoringWorkspaceId)
+        #disable-next-line BCP321 // Value will not be used if null or empty
         config: omsAgentEnabled && !empty(monitoringWorkspaceId) ? {
           logAnalyticsWorkspaceResourceID: monitoringWorkspaceId
         } : null

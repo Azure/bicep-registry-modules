@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "5087896607993042469"
+      "templateHash": "2256713976702167408"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1505,7 +1505,7 @@
         "kubernetesVersion": "[parameters('kubernetesVersion')]",
         "dnsPrefix": "[parameters('dnsPrefix')]",
         "agentPoolProfiles": "[parameters('primaryAgentPoolProfile')]",
-        "linuxProfile": "[if(not(empty(parameters('sshPublicKey'))), createObject('adminUsername', parameters('adminUsername'), 'ssh', createObject('publicKeys', createArray(createObject('keyData', parameters('sshPublicKey'))))), null())]",
+        "linuxProfile": "[if(not(empty(parameters('sshPublicKey'))), createObject('adminUsername', parameters('adminUsername'), 'ssh', createObject('publicKeys', createArray(createObject('keyData', coalesce(parameters('sshPublicKey'), ''))))), null())]",
         "servicePrincipalProfile": "[parameters('aksServicePrincipalProfile')]",
         "ingressProfile": {
           "webAppRouting": {
