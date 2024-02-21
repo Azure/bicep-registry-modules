@@ -40,6 +40,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   params: {
     name: '${namePrefix}${serviceShort}001'
+    location: location
     managedResourceGroupName: '${namePrefix}${serviceShort}001-managed-rg'
   }
 }]
