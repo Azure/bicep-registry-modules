@@ -128,12 +128,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
     ]
     location: '<location>'
     lock: {
@@ -261,12 +255,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
             }
           ],
           "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        },
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
