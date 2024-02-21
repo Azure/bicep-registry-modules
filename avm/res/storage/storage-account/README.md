@@ -42,15 +42,72 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/storage/storage-account:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Deploying with a NFS File Share](#example-3-deploying-with-a-nfs-file-share)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-4-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-5-using-customer-managed-keys-with-user-assigned-identity)
-- [Deploying as Storage Account version 1](#example-6-deploying-as-storage-account-version-1)
-- [WAF-aligned](#example-7-waf-aligned)
+- [Deploying as a Block Blob Storage](#example-1-deploying-as-a-block-blob-storage)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Deploying with a NFS File Share](#example-4-deploying-with-a-nfs-file-share)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-5-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-6-using-customer-managed-keys-with-user-assigned-identity)
+- [Deploying as Storage Account version 1](#example-7-deploying-as-storage-account-version-1)
+- [WAF-aligned](#example-8-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Deploying as a Block Blob Storage_
+
+This instance deploys the module as a Premium Block Blob Storage account.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssablock'
+  params: {
+    // Required parameters
+    name: 'ssablock001'
+    // Non-required parameters
+    kind: 'BlockBlobStorage'
+    location: '<location>'
+    skuName: 'Premium_LRS'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssablock001"
+    },
+    // Non-required parameters
+    "kind": {
+      "value": "BlockBlobStorage"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "skuName": {
+      "value": "Premium_LRS"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -98,7 +155,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -868,7 +925,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 3: _Deploying with a NFS File Share_
+### Example 4: _Deploying with a NFS File Share_
 
 This instance deploys the module with a NFS File Share.
 
@@ -942,7 +999,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 5: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -1046,7 +1103,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 5: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 6: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -1166,7 +1223,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 6: _Deploying as Storage Account version 1_
+### Example 7: _Deploying as Storage Account version 1_
 
 This instance deploys the module as Storage Account version 1.
 
@@ -1218,7 +1275,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
+### Example 8: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
