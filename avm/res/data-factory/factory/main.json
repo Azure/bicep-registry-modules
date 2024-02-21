@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "1210072663750911007"
+      "version": "0.25.53.49325",
+      "templateHash": "4819572821876635246"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory.",
@@ -776,8 +776,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "2622993864386710404"
+              "version": "0.25.53.49325",
+              "templateHash": "13192908070354977743"
             },
             "name": "Data Factory Managed Virtual Networks",
             "description": "This module deploys a Data Factory Managed Virtual Network.",
@@ -850,8 +850,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "15507361222321538498"
+                      "version": "0.25.53.49325",
+                      "templateHash": "727544206896372572"
                     },
                     "name": "Data Factory Managed Virtual Network Managed PrivateEndpoints",
                     "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint.",
@@ -995,8 +995,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "14308450010595234197"
+              "version": "0.25.53.49325",
+              "templateHash": "7384162383092533956"
             },
             "name": "Data Factory Integration RunTimes",
             "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime.",

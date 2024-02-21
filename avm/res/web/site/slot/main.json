@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "14287529092911845504"
+      "version": "0.25.53.49325",
+      "templateHash": "2892399457005658450"
     },
     "name": "Web/Function App Deployment Slots",
     "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -870,8 +870,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "9605115891306784861"
+              "version": "0.25.53.49325",
+              "templateHash": "10338815995098199032"
             },
             "name": "Site Slot App Settings",
             "description": "This module deploys a Site Slot App Setting.",
@@ -1039,8 +1039,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "7901002401130178704"
+              "version": "0.25.53.49325",
+              "templateHash": "17486786144236938726"
             },
             "name": "Site Slot Auth Settings V2 Config",
             "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -1154,8 +1154,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "95340614388352354"
+              "version": "0.25.53.49325",
+              "templateHash": "14855550867941906241"
             },
             "name": "Web Site Slot Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy.",
@@ -1280,8 +1280,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "822472634155315347"
+              "version": "0.25.53.49325",
+              "templateHash": "17251933783218724711"
             },
             "name": "Web/Function Apps Slot Hybrid Connection Relay",
             "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay.",

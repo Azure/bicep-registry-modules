@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "108251292480329346"
+      "version": "0.25.53.49325",
+      "templateHash": "4310630541865622256"
     },
     "name": "Dns Forwarding Rulesets",
     "description": "This template deploys an dns forwarding ruleset.",
@@ -359,8 +359,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "15650802450898687792"
+              "version": "0.25.53.49325",
+              "templateHash": "16468651666444588102"
             },
             "name": "Dns Forwarding Rulesets Forwarding Rules",
             "description": "This template deploys Forwarding Rule in a Dns Forwarding Ruleset.",
@@ -484,8 +484,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "12597298600496339402"
+              "version": "0.25.53.49325",
+              "templateHash": "2776981605709910245"
             },
             "name": "Dns Forwarding Rulesets Virtual Network Links",
             "description": "This template deploys Virtual Network Link in a Dns Forwarding Ruleset.",

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "6395864833059360250"
+      "version": "0.25.53.49325",
+      "templateHash": "15621473182413978193"
     },
     "name": "NAT Gateways",
     "description": "This module deploys a NAT Gateway.",
@@ -1029,8 +1029,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "16611084599101521713"
+              "version": "0.25.53.49325",
+              "templateHash": "7172917838055782951"
             }
           },
           "parameters": {
@@ -1407,8 +1407,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "16611084599101521713"
+              "version": "0.25.53.49325",
+              "templateHash": "7172917838055782951"
             }
           },
           "parameters": {

@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "5936342766594392284"
+      "version": "0.25.53.49325",
+      "templateHash": "16244632442901566911"
     },
     "name": "Load Balancer Backend Address Pools",
     "description": "This module deploys a Load Balancer Backend Address Pools.",

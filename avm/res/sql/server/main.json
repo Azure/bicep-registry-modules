@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "11930269426263350547"
+      "version": "0.25.53.49325",
+      "templateHash": "12399546972865018599"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -633,8 +633,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "6114696968407769405"
+              "version": "0.25.53.49325",
+              "templateHash": "8520653390633786534"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database.",
@@ -1079,8 +1079,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "4029220159811407510"
+                      "version": "0.25.53.49325",
+                      "templateHash": "16471212899981632790"
                     },
                     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
@@ -1181,8 +1181,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "7612753724930678316"
+                      "version": "0.25.53.49325",
+                      "templateHash": "17376471861428793697"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",
@@ -1359,8 +1359,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "10241504273376010600"
+              "version": "0.25.53.49325",
+              "templateHash": "3404184459089621320"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -2243,8 +2243,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "7960472599897035207"
+              "version": "0.25.53.49325",
+              "templateHash": "6782455844016435325"
             },
             "name": "Azure SQL Server Firewall Rule",
             "description": "This module deploys an Azure SQL Server Firewall Rule.",
@@ -2349,8 +2349,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "7937154721682653764"
+              "version": "0.25.53.49325",
+              "templateHash": "16350137843713909320"
             },
             "name": "Azure SQL Server Virtual Network Rules",
             "description": "This module deploys an Azure SQL Server Virtual Network Rule.",
@@ -2457,8 +2457,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "14698752458468288733"
+              "version": "0.25.53.49325",
+              "templateHash": "12316453108388638438"
             },
             "name": "Azure SQL Server Security Alert Policies",
             "description": "This module deploys an Azure SQL Server Security Alert Policy.",
@@ -2608,8 +2608,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "4829807745876642281"
+              "version": "0.25.53.49325",
+              "templateHash": "11132162611657015619"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
             "description": "This module deploys an Azure SQL Server Vulnerability Assessment.",
@@ -2711,8 +2711,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "10423099865647735549"
+                      "version": "0.25.53.49325",
+                      "templateHash": "7342984307461208675"
                     }
                   },
                   "parameters": {
@@ -2800,8 +2800,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "8275989665318380510"
+              "version": "0.25.53.49325",
+              "templateHash": "8993850940520323522"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key.",
@@ -2919,8 +2919,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "5640826446798212991"
+              "version": "0.25.53.49325",
+              "templateHash": "16485430925993626206"
             },
             "name": "Azure SQL Server Encryption Protector",
             "description": "This module deploys an Azure SQL Server Encryption Protector.",

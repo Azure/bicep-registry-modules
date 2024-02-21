@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "18339243803083632538"
+      "version": "0.25.53.49325",
+      "templateHash": "18193345016534379443"
     },
     "name": "Azure Virtual Desktop Host Pool",
     "description": "This module deploys an Azure Virtual Desktop Host Pool",
