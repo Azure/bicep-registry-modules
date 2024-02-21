@@ -277,7 +277,6 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
               privateLinkAlias: ''
               privateLinkApprovalMessage: ''
               privateLinkLocation: ''
-              privateLinkResourceId: ''
               weight: 50
             }
           ]
@@ -438,7 +437,6 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
                 "privateLinkAlias": "",
                 "privateLinkApprovalMessage": "",
                 "privateLinkLocation": "",
-                "privateLinkResourceId": "",
                 "weight": 50
               }
             ],
@@ -627,7 +625,6 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
               privateLinkAlias: ''
               privateLinkApprovalMessage: ''
               privateLinkLocation: ''
-              privateLinkResourceId: ''
               weight: 50
             }
           ]
@@ -750,7 +747,6 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
                 "privateLinkAlias": "",
                 "privateLinkApprovalMessage": "",
                 "privateLinkLocation": "",
-                "privateLinkResourceId": "",
                 "weight": 50
               }
             ],
