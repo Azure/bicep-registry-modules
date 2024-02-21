@@ -1,21 +1,28 @@
-metadata name = 'Public IP Prefixes'
-metadata description = 'This module deploys a Public IP Prefix.'
+metadata name = 'Virtual WANs'
+metadata description = 'This module deploys a Virtual WAN.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. The name of the Public IP Prefix.')
-@minLength(1)
-param name string
-
-@description('Optional. Location for all resources.')
+@description('Optional. Location where all resources will be created.')
 param location string = resourceGroup().location
 
-@description('Required. Length of the Public IP Prefix.')
-@minValue(28)
-@maxValue(31)
-param prefixLength int
+@description('Required. Name of the Virtual WAN.')
+param name string
 
-@description('Optional. The lock settings of the service.')
-param lock lockType
+@description('Optional. The type of the Virtual WAN.')
+@allowed([
+  'Standard'
+  'Basic'
+])
+param type string = 'Standard'
+
+@description('Optional. True if branch to branch traffic is allowed.')
+param allowBranchToBranchTraffic bool = false
+
+@description('Optional. True if VNET to VNET traffic is allowed.')
+param allowVnetToVnetTraffic bool = false
+
+@description('Optional. VPN encryption to be disabled or not.')
+param disableVpnEncryption bool = false
 
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
@@ -23,11 +30,11 @@ param roleAssignments roleAssignmentType
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Optional. The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range.')
-param customIPPrefix object = {}
-
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. The lock settings of the service.')
+param lock lockType
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -39,7 +46,7 @@ var builtInRoleNames = {
 }
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.network-publicipprefix.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.res.network-virtualwan.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -56,31 +63,29 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource publicIpPrefix 'Microsoft.Network/publicIPPrefixes@2023-09-01' = {
+resource virtualWan 'Microsoft.Network/virtualWans@2023-04-01' = {
   name: name
   location: location
   tags: tags
-  sku: {
-    name: 'Standard'
-  }
   properties: {
-    customIPPrefix: !empty(customIPPrefix) ? customIPPrefix : null
-    publicIPAddressVersion: 'IPv4'
-    prefixLength: prefixLength
+    allowBranchToBranchTraffic: allowBranchToBranchTraffic
+    allowVnetToVnetTraffic: allowVnetToVnetTraffic ? allowVnetToVnetTraffic : null
+    disableVpnEncryption: disableVpnEncryption
+    type: type
   }
 }
 
-resource publicIpPrefix_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+resource virtualWan_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
     notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
   }
-  scope: publicIpPrefix
+  scope: virtualWan
 }
 
-resource publicIpPrefix_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(publicIpPrefix.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+resource networkInterface_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
+  name: guid(virtualWan.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
   properties: {
     roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
     principalId: roleAssignment.principalId
@@ -90,20 +95,20 @@ resource publicIpPrefix_roleAssignments 'Microsoft.Authorization/roleAssignments
     conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
     delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
   }
-  scope: publicIpPrefix
+  scope: virtualWan
 }]
 
-@description('The resource ID of the public IP prefix.')
-output resourceId string = publicIpPrefix.id
+@description('The name of the virtual WAN.')
+output name string = virtualWan.name
 
-@description('The resource group the public IP prefix was deployed into.')
+@description('The resource ID of the virtual WAN.')
+output resourceId string = virtualWan.id
+
+@description('The resource group the virtual WAN was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The name of the public IP prefix.')
-output name string = publicIpPrefix.name
-
 @description('The location the resource was deployed into.')
-output location string = publicIpPrefix.location
+output location string = virtualWan.location
 
 // =============== //
 //   Definitions   //
