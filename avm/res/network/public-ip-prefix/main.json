@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "10236251134052848815"
+      "version": "0.25.53.49325",
+      "templateHash": "16912543771400413342"
     },
     "name": "Public IP Prefixes",
     "description": "This module deploys a Public IP Prefix.",
@@ -110,7 +110,7 @@
       "type": "string",
       "minLength": 1,
       "metadata": {
-        "description": "Required. Name of the Public IP Prefix."
+        "description": "Required. The name of the Public IP Prefix."
       }
     },
     "location": {
@@ -151,7 +151,7 @@
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": "Optional. The customIpPrefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range."
+        "description": "Optional. The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range."
       }
     },
     "enableTelemetry": {
@@ -195,7 +195,7 @@
     },
     "publicIpPrefix": {
       "type": "Microsoft.Network/publicIPPrefixes",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2023-09-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -272,7 +272,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('publicIpPrefix', '2023-04-01', 'full').location]"
+      "value": "[reference('publicIpPrefix', '2023-09-01', 'full').location]"
     }
   }
 }

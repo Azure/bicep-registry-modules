@@ -8,7 +8,7 @@ param name string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-@description('Optional. Bool indicating if app exposes an external http endpoint.')
+@description('Optional. Bool indicating if the App exposes an external HTTP endpoint.')
 param ingressExternal bool = true
 
 @allowed([
