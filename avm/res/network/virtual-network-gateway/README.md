@@ -383,7 +383,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         ]
         mode: 'EgressSnat'
         name: 'nat-rule-2-dynamic-EgressSnat'
-        type: 'Dynamic'
+        type: 'Static'
       }
     ]
     publicIpZones: [
@@ -525,7 +525,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
           ],
           "mode": "EgressSnat",
           "name": "nat-rule-2-dynamic-EgressSnat",
-          "type": "Dynamic"
+          "type": "Static"
         }
       ]
     },
@@ -765,7 +765,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         ]
         mode: 'EgressSnat'
         name: 'nat-rule-2-dynamic-EgressSnat'
-        type: 'Dynamic'
+        type: 'Static'
       }
     ]
     publicIpZones: [
@@ -890,7 +890,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
           ],
           "mode": "EgressSnat",
           "name": "nat-rule-2-dynamic-EgressSnat",
-          "type": "Dynamic"
+          "type": "Static"
         }
       ]
     },
