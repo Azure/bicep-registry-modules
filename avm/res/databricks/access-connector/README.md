@@ -68,7 +68,6 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:<version>'
     "name": {
       "value": "dacmin001"
     },
-    "identity": "None"
     // Non-required parameters
     "location": {
       "value": "<location>"
