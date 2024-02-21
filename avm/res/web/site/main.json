@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "10936626438749740368"
+      "templateHash": "15412423005625899099"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -1223,7 +1223,7 @@
             "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
           "privateEndpoints": {
-            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'privateEndpoints'), parameters('privateEndpoints'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'privateEndpoints'), createArray())]"
           },
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"

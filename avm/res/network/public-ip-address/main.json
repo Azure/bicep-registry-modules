@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "6540235950362786134"
+      "templateHash": "1322777943943789546"
     },
     "name": "Public IP Addresses",
     "description": "This module deploys a Public IP Address.",
@@ -454,7 +454,7 @@
     },
     "publicIpAddress": {
       "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2023-09-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -585,7 +585,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('publicIpAddress', '2023-04-01', 'full').location]"
+      "value": "[reference('publicIpAddress', '2023-09-01', 'full').location]"
     }
   }
 }
