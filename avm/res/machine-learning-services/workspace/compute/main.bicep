@@ -65,9 +65,6 @@ param computeType string
 @sys.description('Optional. The properties of the compute. Will be ignored in case "resourceId" is set.')
 param properties object = {}
 
-@sys.description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
 @sys.description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
@@ -91,19 +88,8 @@ resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@
 }
 
 // ============ //
-// Dependencies //
+// Deployments  //
 // ============ //
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
-}
 
 resource machineLearningWorkspaceCompute 'Microsoft.MachineLearningServices/workspaces/computes@2022-10-01' = if (deployCompute == true) {
   name: name
@@ -130,6 +116,7 @@ resource machineLearningWorkspaceCompute 'Microsoft.MachineLearningServices/work
 // =========== //
 // Outputs     //
 // =========== //
+
 @sys.description('The name of the compute.')
 output name string = machineLearningWorkspaceCompute.name
 
