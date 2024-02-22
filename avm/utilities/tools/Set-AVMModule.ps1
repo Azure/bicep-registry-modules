@@ -129,6 +129,7 @@ function Set-AVMModule {
         # Instatiate values to enable safe $using usage
         $crossReferencedModuleList = $null
         $ReadMeScriptFilePath = $null
+        $TelemetryFileContent = $null
     }
 
     # Using threading to speed up the process
