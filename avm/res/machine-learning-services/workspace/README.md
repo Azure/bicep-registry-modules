@@ -272,11 +272,11 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     // Non-required parameters
     computes: [
       {
-        computeLocation: 'westeurope'
+        computeLocation: '<computeLocation>'
         computeType: 'AmlCompute'
         description: 'Default CPU Cluster'
         disableLocalAuth: false
-        location: 'westeurope'
+        location: '<location>'
         managedIdentities: {
           systemAssigned: false
           userAssignedResourceIds: [
@@ -400,11 +400,11 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     "computes": {
       "value": [
         {
-          "computeLocation": "westeurope",
+          "computeLocation": "<computeLocation>",
           "computeType": "AmlCompute",
           "description": "Default CPU Cluster",
           "disableLocalAuth": false,
-          "location": "westeurope",
+          "location": "<location>",
           "managedIdentities": {
             "systemAssigned": false,
             "userAssignedResourceIds": [
@@ -544,11 +544,11 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     // Non-required parameters
     computes: [
       {
-        computeLocation: 'westeurope'
+        computeLocation: '<computeLocation>'
         computeType: 'AmlCompute'
         description: 'Default CPU Cluster'
         disableLocalAuth: false
-        location: 'westeurope'
+        location: '<location>'
         managedIdentities: {
           systemAssigned: false
           userAssignedResourceIds: [
@@ -645,11 +645,11 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     "computes": {
       "value": [
         {
-          "computeLocation": "westeurope",
+          "computeLocation": "<computeLocation>",
           "computeType": "AmlCompute",
           "description": "Default CPU Cluster",
           "disableLocalAuth": false,
-          "location": "westeurope",
+          "location": "<location>",
           "managedIdentities": {
             "systemAssigned": false,
             "userAssignedResourceIds": [

@@ -74,11 +74,11 @@ module testDeployment '../../../main.bicep' = {
     sku: 'Premium'
     computes: [
       {
-        computeLocation: 'westeurope'
+        computeLocation: resourceLocation
         computeType: 'AmlCompute'
         description: 'Default CPU Cluster'
         disableLocalAuth: false
-        location: 'westeurope'
+        location: resourceLocation
         name: 'DefaultCPU'
         properties: {
           enableNodePublicIp: true
