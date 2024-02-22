@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "5819351942554123276"
+      "version": "0.25.3.34343",
+      "templateHash": "13820457954637199798"
     },
     "name": "Purview Accounts",
     "description": "This module deploys a Purview Account.",
@@ -321,11 +321,11 @@
         "description": "Optional. Configuration details for Purview Managed Event Hub namespace private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to 'namespace'."
       }
     },
-    "enableDefaultTelemetry": {
+    "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "lock": {
@@ -341,7 +341,6 @@
       "type": "[if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned')]",
       "userAssignedIdentities": "[if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())]"
     },
-    "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -351,17 +350,23 @@
     }
   },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.operationalinsights-workspace.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
-          "resources": []
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
         }
       }
     },
@@ -440,7 +445,7 @@
     "account_privateEndpoints": {
       "copy": {
         "name": "account_privateEndpoints",
-        "count": "[length(parameters('accountPrivateEndpoints'))]"
+        "count": "[length(coalesce(parameters('accountPrivateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -451,38 +456,61 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "groupIds": {
+          "privateLinkServiceConnections": {
             "value": [
-              "[parameters('accountPrivateEndpoints')[copyIndex()].service]"
+              {
+                "name": "[parameters('name')]",
+                "properties": {
+                  "privateLinkServiceId": "[resourceId('Microsoft.Purview/accounts', parameters('name'))]",
+                  "groupIds": [
+                    "[coalesce(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'account')]"
+                  ]
+                }
+              }
             ]
           },
           "name": {
-            "value": "[coalesce(tryGet(parameters('accountPrivateEndpoints')[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(parameters('accountPrivateEndpoints')[copyIndex()], 'service'), parameters('accountPrivateEndpoints')[copyIndex()].service), copyIndex()))]"
-          },
-          "serviceResourceId": {
-            "value": "[resourceId('Microsoft.Purview/accounts', parameters('name'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'account'), copyIndex()))]"
           },
           "subnetResourceId": {
-            "value": "[parameters('accountPrivateEndpoints')[copyIndex()].subnetResourceId]"
+            "value": "[coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+          "enableTelemetry": {
+            "value": "[coalesce(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
           },
-          "location": "[if(contains(parameters('accountPrivateEndpoints')[copyIndex()], 'location'), createObject('value', parameters('accountPrivateEndpoints')[copyIndex()].location), createObject('value', reference(split(parameters('accountPrivateEndpoints')[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location))]",
+          "location": {
+            "value": "[coalesce(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
+          },
           "lock": {
-            "value": "[coalesce(tryGet(parameters('accountPrivateEndpoints')[copyIndex()], 'lock'), parameters('lock'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
-          "privateDnsZoneGroupName": "[if(contains(parameters('accountPrivateEndpoints')[copyIndex()], 'privateDnsZoneGroupName'), createObject('value', parameters('accountPrivateEndpoints')[copyIndex()].privateDnsZoneGroupName), createObject('value', 'default'))]",
-          "privateDnsZoneResourceIds": "[if(contains(parameters('accountPrivateEndpoints')[copyIndex()], 'privateDnsZoneResourceIds'), createObject('value', parameters('accountPrivateEndpoints')[copyIndex()].privateDnsZoneResourceIds), createObject('value', createArray()))]",
-          "roleAssignments": "[if(contains(parameters('accountPrivateEndpoints')[copyIndex()], 'roleAssignments'), createObject('value', parameters('accountPrivateEndpoints')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
+          "privateDnsZoneGroupName": {
+            "value": "[tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroupName')]"
+          },
+          "privateDnsZoneResourceIds": {
+            "value": "[tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneResourceIds')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('accountPrivateEndpoints')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "manualPrivateLinkServiceConnections": "[if(contains(parameters('accountPrivateEndpoints')[copyIndex()], 'manualPrivateLinkServiceConnections'), createObject('value', parameters('accountPrivateEndpoints')[copyIndex()].manualPrivateLinkServiceConnections), createObject('value', createArray()))]",
-          "customDnsConfigs": "[if(contains(parameters('accountPrivateEndpoints')[copyIndex()], 'customDnsConfigs'), createObject('value', parameters('accountPrivateEndpoints')[copyIndex()].customDnsConfigs), createObject('value', createArray()))]",
-          "ipConfigurations": "[if(contains(parameters('accountPrivateEndpoints')[copyIndex()], 'ipConfigurations'), createObject('value', parameters('accountPrivateEndpoints')[copyIndex()].ipConfigurations), createObject('value', createArray()))]",
-          "applicationSecurityGroupResourceIds": "[if(contains(parameters('accountPrivateEndpoints')[copyIndex()], 'applicationSecurityGroupResourceIds'), createObject('value', parameters('accountPrivateEndpoints')[copyIndex()].applicationSecurityGroupResourceIds), createObject('value', createArray()))]",
-          "customNetworkInterfaceName": "[if(contains(parameters('accountPrivateEndpoints')[copyIndex()], 'customNetworkInterfaceName'), createObject('value', parameters('accountPrivateEndpoints')[copyIndex()].customNetworkInterfaceName), createObject('value', ''))]"
+          "manualPrivateLinkServiceConnections": {
+            "value": "[tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections')]"
+          },
+          "customDnsConfigs": {
+            "value": "[tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
+          },
+          "ipConfigurations": {
+            "value": "[tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'ipConfigurations')]"
+          },
+          "applicationSecurityGroupResourceIds": {
+            "value": "[tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'applicationSecurityGroupResourceIds')]"
+          },
+          "customNetworkInterfaceName": {
+            "value": "[tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'customNetworkInterfaceName')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -491,8 +519,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "6873008238043407177"
+              "version": "0.24.24.22086",
+              "templateHash": "2592884001616184297"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -507,7 +535,7 @@
                   "roleDefinitionIdOrName": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                     }
                   },
                   "principalId": {
@@ -541,7 +569,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -619,12 +647,95 @@
                       "privateIPAddress": {
                         "type": "string",
                         "metadata": {
-                          "description": "Required. A private ip address obtained from the private endpoint's subnet."
+                          "description": "Required. A private IP address obtained from the private endpoint's subnet."
                         }
                       }
                     },
                     "metadata": {
                       "description": "Required. Properties of private endpoint IP configurations."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "manualPrivateLinkServiceConnectionsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the private link service connection."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "groupIds": {
+                        "type": "array",
+                        "metadata": {
+                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "privateLinkServiceId": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The resource id of private link service."
+                        }
+                      },
+                      "requestMessage": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of private link service connection."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "privateLinkServiceConnectionsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the private link service connection."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "groupIds": {
+                        "type": "array",
+                        "metadata": {
+                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "privateLinkServiceId": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The resource id of private link service."
+                        }
+                      },
+                      "requestMessage": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of private link service connection."
                     }
                   }
                 }
@@ -639,7 +750,7 @@
                   "fqdn": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. Fqdn that resolves to private endpoint ip address."
+                      "description": "Required. Fqdn that resolves to private endpoint IP address."
                     }
                   },
                   "ipAddresses": {
@@ -648,7 +759,7 @@
                       "type": "string"
                     },
                     "metadata": {
-                      "description": "Required. A list of private ip addresses of the private endpoint."
+                      "description": "Required. A list of private IP addresses of the private endpoint."
                     }
                   }
                 }
@@ -669,12 +780,6 @@
                 "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
               }
             },
-            "serviceResourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. Resource ID of the resource that needs to be connected to the network."
-              }
-            },
             "applicationSecurityGroupResourceIds": {
               "type": "array",
               "nullable": true,
@@ -691,15 +796,8 @@
             },
             "ipConfigurations": {
               "$ref": "#/definitions/ipConfigurationsType",
-              "nullable": true,
               "metadata": {
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-              }
-            },
-            "groupIds": {
-              "type": "array",
-              "metadata": {
-                "description": "Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to."
               }
             },
             "privateDnsZoneGroupName": {
@@ -732,7 +830,7 @@
             "roleAssignments": {
               "$ref": "#/definitions/roleAssignmentType",
               "metadata": {
-                "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                "description": "Optional. Array of role assignments to create."
               }
             },
             "tags": {
@@ -744,19 +842,23 @@
             },
             "customDnsConfigs": {
               "$ref": "#/definitions/customDnsConfigType",
-              "nullable": true,
               "metadata": {
                 "description": "Optional. Custom DNS configurations."
               }
             },
             "manualPrivateLinkServiceConnections": {
-              "type": "array",
-              "nullable": true,
+              "$ref": "#/definitions/manualPrivateLinkServiceConnectionsType",
               "metadata": {
-                "description": "Optional. Manual PrivateLink Service Connections."
+                "description": "Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
               }
             },
-            "enableDefaultTelemetry": {
+            "privateLinkServiceConnections": {
+              "$ref": "#/definitions/privateLinkServiceConnectionsType",
+              "metadata": {
+                "description": "Optional. A grouping of information about the connection to the remote resource."
+              }
+            },
+            "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
               "metadata": {
@@ -765,7 +867,6 @@
             }
           },
           "variables": {
-            "enableReferencedModulesTelemetry": false,
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
@@ -780,17 +881,23 @@
             }
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+              "apiVersion": "2023-07-01",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
-                  "resources": []
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
                 }
               }
             },
@@ -810,19 +917,11 @@
                     }
                   }
                 ],
-                "customDnsConfigs": "[parameters('customDnsConfigs')]",
+                "customDnsConfigs": "[coalesce(parameters('customDnsConfigs'), createArray())]",
                 "customNetworkInterfaceName": "[coalesce(parameters('customNetworkInterfaceName'), '')]",
                 "ipConfigurations": "[coalesce(parameters('ipConfigurations'), createArray())]",
                 "manualPrivateLinkServiceConnections": "[coalesce(parameters('manualPrivateLinkServiceConnections'), createArray())]",
-                "privateLinkServiceConnections": [
-                  {
-                    "name": "[parameters('name')]",
-                    "properties": {
-                      "privateLinkServiceId": "[parameters('serviceResourceId')]",
-                      "groupIds": "[parameters('groupIds')]"
-                    }
-                  }
-                ],
+                "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
                 "subnet": {
                   "id": "[parameters('subnetResourceId')]"
                 }
@@ -852,7 +951,7 @@
               "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
               "name": "[guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
               "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
                 "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
                 "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
                 "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
@@ -883,9 +982,6 @@
                   },
                   "privateEndpointName": {
                     "value": "[parameters('name')]"
-                  },
-                  "enableDefaultTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -894,8 +990,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "17578977753131828304"
+                      "version": "0.24.24.22086",
+                      "templateHash": "9321937464667207030"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -922,13 +1018,6 @@
                       "metadata": {
                         "description": "Optional. The name of the private DNS zone group."
                       }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable/Disable usage telemetry for module."
-                      }
                     }
                   },
                   "variables": {
@@ -946,20 +1035,6 @@
                     ]
                   },
                   "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
-                    },
                     {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
                       "apiVersion": "2023-04-01",
@@ -1027,6 +1102,13 @@
                 "description": "The location the resource was deployed into."
               },
               "value": "[reference('privateEndpoint', '2023-04-01', 'full').location]"
+            },
+            "groupId": {
+              "type": "string",
+              "metadata": {
+                "description": "The group Id for the private endpoint Group."
+              },
+              "value": "[if(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties.groupIds[0], reference('privateEndpoint').privateLinkServiceConnections[0].properties.groupIds[0])]"
             }
           }
         }
@@ -1038,7 +1120,7 @@
     "portal_privateEndpoints": {
       "copy": {
         "name": "portal_privateEndpoints",
-        "count": "[length(parameters('portalPrivateEndpoints'))]"
+        "count": "[length(coalesce(parameters('portalPrivateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1049,38 +1131,61 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "groupIds": {
+          "privateLinkServiceConnections": {
             "value": [
-              "[parameters('portalPrivateEndpoints')[copyIndex()].service]"
+              {
+                "name": "[parameters('name')]",
+                "properties": {
+                  "privateLinkServiceId": "[resourceId('Microsoft.Purview/accounts', parameters('name'))]",
+                  "groupIds": [
+                    "[coalesce(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'portal')]"
+                  ]
+                }
+              }
             ]
           },
           "name": {
-            "value": "[coalesce(tryGet(parameters('portalPrivateEndpoints')[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(parameters('portalPrivateEndpoints')[copyIndex()], 'service'), parameters('portalPrivateEndpoints')[copyIndex()].service), copyIndex()))]"
-          },
-          "serviceResourceId": {
-            "value": "[resourceId('Microsoft.Purview/accounts', parameters('name'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'portal'), copyIndex()))]"
           },
           "subnetResourceId": {
-            "value": "[parameters('portalPrivateEndpoints')[copyIndex()].subnetResourceId]"
+            "value": "[coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+          "enableTelemetry": {
+            "value": "[coalesce(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
           },
-          "location": "[if(contains(parameters('portalPrivateEndpoints')[copyIndex()], 'location'), createObject('value', parameters('portalPrivateEndpoints')[copyIndex()].location), createObject('value', reference(split(parameters('portalPrivateEndpoints')[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location))]",
+          "location": {
+            "value": "[coalesce(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
+          },
           "lock": {
-            "value": "[coalesce(tryGet(parameters('portalPrivateEndpoints')[copyIndex()], 'lock'), parameters('lock'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
-          "privateDnsZoneGroupName": "[if(contains(parameters('portalPrivateEndpoints')[copyIndex()], 'privateDnsZoneGroupName'), createObject('value', parameters('portalPrivateEndpoints')[copyIndex()].privateDnsZoneGroupName), createObject('value', 'default'))]",
-          "privateDnsZoneResourceIds": "[if(contains(parameters('portalPrivateEndpoints')[copyIndex()], 'privateDnsZoneResourceIds'), createObject('value', parameters('portalPrivateEndpoints')[copyIndex()].privateDnsZoneResourceIds), createObject('value', createArray()))]",
-          "roleAssignments": "[if(contains(parameters('portalPrivateEndpoints')[copyIndex()], 'roleAssignments'), createObject('value', parameters('portalPrivateEndpoints')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
+          "privateDnsZoneGroupName": {
+            "value": "[tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroupName')]"
+          },
+          "privateDnsZoneResourceIds": {
+            "value": "[tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneResourceIds')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('portalPrivateEndpoints')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "manualPrivateLinkServiceConnections": "[if(contains(parameters('portalPrivateEndpoints')[copyIndex()], 'manualPrivateLinkServiceConnections'), createObject('value', parameters('portalPrivateEndpoints')[copyIndex()].manualPrivateLinkServiceConnections), createObject('value', createArray()))]",
-          "customDnsConfigs": "[if(contains(parameters('portalPrivateEndpoints')[copyIndex()], 'customDnsConfigs'), createObject('value', parameters('portalPrivateEndpoints')[copyIndex()].customDnsConfigs), createObject('value', createArray()))]",
-          "ipConfigurations": "[if(contains(parameters('portalPrivateEndpoints')[copyIndex()], 'ipConfigurations'), createObject('value', parameters('portalPrivateEndpoints')[copyIndex()].ipConfigurations), createObject('value', createArray()))]",
-          "applicationSecurityGroupResourceIds": "[if(contains(parameters('portalPrivateEndpoints')[copyIndex()], 'applicationSecurityGroupResourceIds'), createObject('value', parameters('portalPrivateEndpoints')[copyIndex()].applicationSecurityGroupResourceIds), createObject('value', createArray()))]",
-          "customNetworkInterfaceName": "[if(contains(parameters('portalPrivateEndpoints')[copyIndex()], 'customNetworkInterfaceName'), createObject('value', parameters('portalPrivateEndpoints')[copyIndex()].customNetworkInterfaceName), createObject('value', ''))]"
+          "manualPrivateLinkServiceConnections": {
+            "value": "[tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections')]"
+          },
+          "customDnsConfigs": {
+            "value": "[tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
+          },
+          "ipConfigurations": {
+            "value": "[tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'ipConfigurations')]"
+          },
+          "applicationSecurityGroupResourceIds": {
+            "value": "[tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'applicationSecurityGroupResourceIds')]"
+          },
+          "customNetworkInterfaceName": {
+            "value": "[tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'customNetworkInterfaceName')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1089,8 +1194,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "6873008238043407177"
+              "version": "0.24.24.22086",
+              "templateHash": "2592884001616184297"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -1105,7 +1210,7 @@
                   "roleDefinitionIdOrName": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                     }
                   },
                   "principalId": {
@@ -1139,7 +1244,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -1217,12 +1322,95 @@
                       "privateIPAddress": {
                         "type": "string",
                         "metadata": {
-                          "description": "Required. A private ip address obtained from the private endpoint's subnet."
+                          "description": "Required. A private IP address obtained from the private endpoint's subnet."
                         }
                       }
                     },
                     "metadata": {
                       "description": "Required. Properties of private endpoint IP configurations."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "manualPrivateLinkServiceConnectionsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the private link service connection."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "groupIds": {
+                        "type": "array",
+                        "metadata": {
+                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "privateLinkServiceId": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The resource id of private link service."
+                        }
+                      },
+                      "requestMessage": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of private link service connection."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "privateLinkServiceConnectionsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the private link service connection."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "groupIds": {
+                        "type": "array",
+                        "metadata": {
+                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "privateLinkServiceId": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The resource id of private link service."
+                        }
+                      },
+                      "requestMessage": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of private link service connection."
                     }
                   }
                 }
@@ -1237,7 +1425,7 @@
                   "fqdn": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. Fqdn that resolves to private endpoint ip address."
+                      "description": "Required. Fqdn that resolves to private endpoint IP address."
                     }
                   },
                   "ipAddresses": {
@@ -1246,7 +1434,7 @@
                       "type": "string"
                     },
                     "metadata": {
-                      "description": "Required. A list of private ip addresses of the private endpoint."
+                      "description": "Required. A list of private IP addresses of the private endpoint."
                     }
                   }
                 }
@@ -1267,12 +1455,6 @@
                 "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
               }
             },
-            "serviceResourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. Resource ID of the resource that needs to be connected to the network."
-              }
-            },
             "applicationSecurityGroupResourceIds": {
               "type": "array",
               "nullable": true,
@@ -1289,15 +1471,8 @@
             },
             "ipConfigurations": {
               "$ref": "#/definitions/ipConfigurationsType",
-              "nullable": true,
               "metadata": {
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-              }
-            },
-            "groupIds": {
-              "type": "array",
-              "metadata": {
-                "description": "Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to."
               }
             },
             "privateDnsZoneGroupName": {
@@ -1330,7 +1505,7 @@
             "roleAssignments": {
               "$ref": "#/definitions/roleAssignmentType",
               "metadata": {
-                "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                "description": "Optional. Array of role assignments to create."
               }
             },
             "tags": {
@@ -1342,19 +1517,23 @@
             },
             "customDnsConfigs": {
               "$ref": "#/definitions/customDnsConfigType",
-              "nullable": true,
               "metadata": {
                 "description": "Optional. Custom DNS configurations."
               }
             },
             "manualPrivateLinkServiceConnections": {
-              "type": "array",
-              "nullable": true,
+              "$ref": "#/definitions/manualPrivateLinkServiceConnectionsType",
               "metadata": {
-                "description": "Optional. Manual PrivateLink Service Connections."
+                "description": "Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
               }
             },
-            "enableDefaultTelemetry": {
+            "privateLinkServiceConnections": {
+              "$ref": "#/definitions/privateLinkServiceConnectionsType",
+              "metadata": {
+                "description": "Optional. A grouping of information about the connection to the remote resource."
+              }
+            },
+            "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
               "metadata": {
@@ -1363,7 +1542,6 @@
             }
           },
           "variables": {
-            "enableReferencedModulesTelemetry": false,
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
@@ -1378,17 +1556,23 @@
             }
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+              "apiVersion": "2023-07-01",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
-                  "resources": []
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
                 }
               }
             },
@@ -1408,19 +1592,11 @@
                     }
                   }
                 ],
-                "customDnsConfigs": "[parameters('customDnsConfigs')]",
+                "customDnsConfigs": "[coalesce(parameters('customDnsConfigs'), createArray())]",
                 "customNetworkInterfaceName": "[coalesce(parameters('customNetworkInterfaceName'), '')]",
                 "ipConfigurations": "[coalesce(parameters('ipConfigurations'), createArray())]",
                 "manualPrivateLinkServiceConnections": "[coalesce(parameters('manualPrivateLinkServiceConnections'), createArray())]",
-                "privateLinkServiceConnections": [
-                  {
-                    "name": "[parameters('name')]",
-                    "properties": {
-                      "privateLinkServiceId": "[parameters('serviceResourceId')]",
-                      "groupIds": "[parameters('groupIds')]"
-                    }
-                  }
-                ],
+                "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
                 "subnet": {
                   "id": "[parameters('subnetResourceId')]"
                 }
@@ -1450,7 +1626,7 @@
               "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
               "name": "[guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
               "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
                 "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
                 "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
                 "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
@@ -1481,9 +1657,6 @@
                   },
                   "privateEndpointName": {
                     "value": "[parameters('name')]"
-                  },
-                  "enableDefaultTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -1492,8 +1665,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "17578977753131828304"
+                      "version": "0.24.24.22086",
+                      "templateHash": "9321937464667207030"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -1520,13 +1693,6 @@
                       "metadata": {
                         "description": "Optional. The name of the private DNS zone group."
                       }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable/Disable usage telemetry for module."
-                      }
                     }
                   },
                   "variables": {
@@ -1544,20 +1710,6 @@
                     ]
                   },
                   "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
-                    },
                     {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
                       "apiVersion": "2023-04-01",
@@ -1625,6 +1777,13 @@
                 "description": "The location the resource was deployed into."
               },
               "value": "[reference('privateEndpoint', '2023-04-01', 'full').location]"
+            },
+            "groupId": {
+              "type": "string",
+              "metadata": {
+                "description": "The group Id for the private endpoint Group."
+              },
+              "value": "[if(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties.groupIds[0], reference('privateEndpoint').privateLinkServiceConnections[0].properties.groupIds[0])]"
             }
           }
         }
@@ -1636,7 +1795,7 @@
     "blob_privateEndpoints": {
       "copy": {
         "name": "blob_privateEndpoints",
-        "count": "[length(parameters('storageBlobPrivateEndpoints'))]"
+        "count": "[length(coalesce(parameters('storageBlobPrivateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1647,38 +1806,61 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "groupIds": {
+          "privateLinkServiceConnections": {
             "value": [
-              "[parameters('storageBlobPrivateEndpoints')[copyIndex()].service]"
+              {
+                "name": "[parameters('name')]",
+                "properties": {
+                  "privateLinkServiceId": "[reference('account').managedResources.storageAccount]",
+                  "groupIds": [
+                    "[coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'blob')]"
+                  ]
+                }
+              }
             ]
           },
           "name": {
-            "value": "[coalesce(tryGet(parameters('storageBlobPrivateEndpoints')[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(parameters('storageBlobPrivateEndpoints')[copyIndex()], 'service'), parameters('storageBlobPrivateEndpoints')[copyIndex()].service), copyIndex()))]"
-          },
-          "serviceResourceId": {
-            "value": "[reference('account').managedResources.storageAccount]"
+            "value": "[coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'blob'), copyIndex()))]"
           },
           "subnetResourceId": {
-            "value": "[parameters('storageBlobPrivateEndpoints')[copyIndex()].subnetResourceId]"
+            "value": "[coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+          "enableTelemetry": {
+            "value": "[coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
           },
-          "location": "[if(contains(parameters('storageBlobPrivateEndpoints')[copyIndex()], 'location'), createObject('value', parameters('storageBlobPrivateEndpoints')[copyIndex()].location), createObject('value', reference(split(parameters('storageBlobPrivateEndpoints')[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location))]",
+          "location": {
+            "value": "[coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
+          },
           "lock": {
-            "value": "[coalesce(tryGet(parameters('storageBlobPrivateEndpoints')[copyIndex()], 'lock'), parameters('lock'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
-          "privateDnsZoneGroupName": "[if(contains(parameters('storageBlobPrivateEndpoints')[copyIndex()], 'privateDnsZoneGroupName'), createObject('value', parameters('storageBlobPrivateEndpoints')[copyIndex()].privateDnsZoneGroupName), createObject('value', 'default'))]",
-          "privateDnsZoneResourceIds": "[if(contains(parameters('storageBlobPrivateEndpoints')[copyIndex()], 'privateDnsZoneResourceIds'), createObject('value', parameters('storageBlobPrivateEndpoints')[copyIndex()].privateDnsZoneResourceIds), createObject('value', createArray()))]",
-          "roleAssignments": "[if(contains(parameters('storageBlobPrivateEndpoints')[copyIndex()], 'roleAssignments'), createObject('value', parameters('storageBlobPrivateEndpoints')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
+          "privateDnsZoneGroupName": {
+            "value": "[tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroupName')]"
+          },
+          "privateDnsZoneResourceIds": {
+            "value": "[tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneResourceIds')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('storageBlobPrivateEndpoints')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "manualPrivateLinkServiceConnections": "[if(contains(parameters('storageBlobPrivateEndpoints')[copyIndex()], 'manualPrivateLinkServiceConnections'), createObject('value', parameters('storageBlobPrivateEndpoints')[copyIndex()].manualPrivateLinkServiceConnections), createObject('value', createArray()))]",
-          "customDnsConfigs": "[if(contains(parameters('storageBlobPrivateEndpoints')[copyIndex()], 'customDnsConfigs'), createObject('value', parameters('storageBlobPrivateEndpoints')[copyIndex()].customDnsConfigs), createObject('value', createArray()))]",
-          "ipConfigurations": "[if(contains(parameters('storageBlobPrivateEndpoints')[copyIndex()], 'ipConfigurations'), createObject('value', parameters('storageBlobPrivateEndpoints')[copyIndex()].ipConfigurations), createObject('value', createArray()))]",
-          "applicationSecurityGroupResourceIds": "[if(contains(parameters('storageBlobPrivateEndpoints')[copyIndex()], 'applicationSecurityGroupResourceIds'), createObject('value', parameters('storageBlobPrivateEndpoints')[copyIndex()].applicationSecurityGroupResourceIds), createObject('value', createArray()))]",
-          "customNetworkInterfaceName": "[if(contains(parameters('storageBlobPrivateEndpoints')[copyIndex()], 'customNetworkInterfaceName'), createObject('value', parameters('storageBlobPrivateEndpoints')[copyIndex()].customNetworkInterfaceName), createObject('value', ''))]"
+          "manualPrivateLinkServiceConnections": {
+            "value": "[tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections')]"
+          },
+          "customDnsConfigs": {
+            "value": "[tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
+          },
+          "ipConfigurations": {
+            "value": "[tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'ipConfigurations')]"
+          },
+          "applicationSecurityGroupResourceIds": {
+            "value": "[tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'applicationSecurityGroupResourceIds')]"
+          },
+          "customNetworkInterfaceName": {
+            "value": "[tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'customNetworkInterfaceName')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1687,8 +1869,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "6873008238043407177"
+              "version": "0.24.24.22086",
+              "templateHash": "2592884001616184297"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -1703,7 +1885,7 @@
                   "roleDefinitionIdOrName": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                     }
                   },
                   "principalId": {
@@ -1737,7 +1919,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -1815,12 +1997,95 @@
                       "privateIPAddress": {
                         "type": "string",
                         "metadata": {
-                          "description": "Required. A private ip address obtained from the private endpoint's subnet."
+                          "description": "Required. A private IP address obtained from the private endpoint's subnet."
                         }
                       }
                     },
                     "metadata": {
                       "description": "Required. Properties of private endpoint IP configurations."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "manualPrivateLinkServiceConnectionsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the private link service connection."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "groupIds": {
+                        "type": "array",
+                        "metadata": {
+                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "privateLinkServiceId": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The resource id of private link service."
+                        }
+                      },
+                      "requestMessage": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of private link service connection."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "privateLinkServiceConnectionsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the private link service connection."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "groupIds": {
+                        "type": "array",
+                        "metadata": {
+                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "privateLinkServiceId": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The resource id of private link service."
+                        }
+                      },
+                      "requestMessage": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of private link service connection."
                     }
                   }
                 }
@@ -1835,7 +2100,7 @@
                   "fqdn": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. Fqdn that resolves to private endpoint ip address."
+                      "description": "Required. Fqdn that resolves to private endpoint IP address."
                     }
                   },
                   "ipAddresses": {
@@ -1844,7 +2109,7 @@
                       "type": "string"
                     },
                     "metadata": {
-                      "description": "Required. A list of private ip addresses of the private endpoint."
+                      "description": "Required. A list of private IP addresses of the private endpoint."
                     }
                   }
                 }
@@ -1865,12 +2130,6 @@
                 "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
               }
             },
-            "serviceResourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. Resource ID of the resource that needs to be connected to the network."
-              }
-            },
             "applicationSecurityGroupResourceIds": {
               "type": "array",
               "nullable": true,
@@ -1887,15 +2146,8 @@
             },
             "ipConfigurations": {
               "$ref": "#/definitions/ipConfigurationsType",
-              "nullable": true,
               "metadata": {
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-              }
-            },
-            "groupIds": {
-              "type": "array",
-              "metadata": {
-                "description": "Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to."
               }
             },
             "privateDnsZoneGroupName": {
@@ -1928,7 +2180,7 @@
             "roleAssignments": {
               "$ref": "#/definitions/roleAssignmentType",
               "metadata": {
-                "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                "description": "Optional. Array of role assignments to create."
               }
             },
             "tags": {
@@ -1940,19 +2192,23 @@
             },
             "customDnsConfigs": {
               "$ref": "#/definitions/customDnsConfigType",
-              "nullable": true,
               "metadata": {
                 "description": "Optional. Custom DNS configurations."
               }
             },
             "manualPrivateLinkServiceConnections": {
-              "type": "array",
-              "nullable": true,
+              "$ref": "#/definitions/manualPrivateLinkServiceConnectionsType",
               "metadata": {
-                "description": "Optional. Manual PrivateLink Service Connections."
+                "description": "Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
               }
             },
-            "enableDefaultTelemetry": {
+            "privateLinkServiceConnections": {
+              "$ref": "#/definitions/privateLinkServiceConnectionsType",
+              "metadata": {
+                "description": "Optional. A grouping of information about the connection to the remote resource."
+              }
+            },
+            "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
               "metadata": {
@@ -1961,7 +2217,6 @@
             }
           },
           "variables": {
-            "enableReferencedModulesTelemetry": false,
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
@@ -1976,17 +2231,23 @@
             }
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+              "apiVersion": "2023-07-01",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
-                  "resources": []
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
                 }
               }
             },
@@ -2006,19 +2267,11 @@
                     }
                   }
                 ],
-                "customDnsConfigs": "[parameters('customDnsConfigs')]",
+                "customDnsConfigs": "[coalesce(parameters('customDnsConfigs'), createArray())]",
                 "customNetworkInterfaceName": "[coalesce(parameters('customNetworkInterfaceName'), '')]",
                 "ipConfigurations": "[coalesce(parameters('ipConfigurations'), createArray())]",
                 "manualPrivateLinkServiceConnections": "[coalesce(parameters('manualPrivateLinkServiceConnections'), createArray())]",
-                "privateLinkServiceConnections": [
-                  {
-                    "name": "[parameters('name')]",
-                    "properties": {
-                      "privateLinkServiceId": "[parameters('serviceResourceId')]",
-                      "groupIds": "[parameters('groupIds')]"
-                    }
-                  }
-                ],
+                "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
                 "subnet": {
                   "id": "[parameters('subnetResourceId')]"
                 }
@@ -2048,7 +2301,7 @@
               "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
               "name": "[guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
               "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
                 "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
                 "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
                 "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
@@ -2079,9 +2332,6 @@
                   },
                   "privateEndpointName": {
                     "value": "[parameters('name')]"
-                  },
-                  "enableDefaultTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -2090,8 +2340,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "17578977753131828304"
+                      "version": "0.24.24.22086",
+                      "templateHash": "9321937464667207030"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -2118,13 +2368,6 @@
                       "metadata": {
                         "description": "Optional. The name of the private DNS zone group."
                       }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable/Disable usage telemetry for module."
-                      }
                     }
                   },
                   "variables": {
@@ -2142,20 +2385,6 @@
                     ]
                   },
                   "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
-                    },
                     {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
                       "apiVersion": "2023-04-01",
@@ -2223,6 +2452,13 @@
                 "description": "The location the resource was deployed into."
               },
               "value": "[reference('privateEndpoint', '2023-04-01', 'full').location]"
+            },
+            "groupId": {
+              "type": "string",
+              "metadata": {
+                "description": "The group Id for the private endpoint Group."
+              },
+              "value": "[if(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties.groupIds[0], reference('privateEndpoint').privateLinkServiceConnections[0].properties.groupIds[0])]"
             }
           }
         }
@@ -2234,7 +2470,7 @@
     "queue_privateEndpoints": {
       "copy": {
         "name": "queue_privateEndpoints",
-        "count": "[length(parameters('storageQueuePrivateEndpoints'))]"
+        "count": "[length(coalesce(parameters('storageQueuePrivateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -2245,38 +2481,61 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "groupIds": {
+          "privateLinkServiceConnections": {
             "value": [
-              "[parameters('storageQueuePrivateEndpoints')[copyIndex()].service]"
+              {
+                "name": "[parameters('name')]",
+                "properties": {
+                  "privateLinkServiceId": "[reference('account').managedResources.storageAccount]",
+                  "groupIds": [
+                    "[coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'service'), 'queue')]"
+                  ]
+                }
+              }
             ]
           },
           "name": {
-            "value": "[coalesce(tryGet(parameters('storageQueuePrivateEndpoints')[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(parameters('storageQueuePrivateEndpoints')[copyIndex()], 'service'), parameters('storageQueuePrivateEndpoints')[copyIndex()].service), copyIndex()))]"
-          },
-          "serviceResourceId": {
-            "value": "[reference('account').managedResources.storageAccount]"
+            "value": "[coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'service'), 'queue'), copyIndex()))]"
           },
           "subnetResourceId": {
-            "value": "[parameters('storageQueuePrivateEndpoints')[copyIndex()].subnetResourceId]"
+            "value": "[coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+          "enableTelemetry": {
+            "value": "[coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
           },
-          "location": "[if(contains(parameters('storageQueuePrivateEndpoints')[copyIndex()], 'location'), createObject('value', parameters('storageQueuePrivateEndpoints')[copyIndex()].location), createObject('value', reference(split(parameters('storageQueuePrivateEndpoints')[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location))]",
+          "location": {
+            "value": "[coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
+          },
           "lock": {
-            "value": "[coalesce(tryGet(parameters('storageQueuePrivateEndpoints')[copyIndex()], 'lock'), parameters('lock'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
-          "privateDnsZoneGroupName": "[if(contains(parameters('storageQueuePrivateEndpoints')[copyIndex()], 'privateDnsZoneGroupName'), createObject('value', parameters('storageQueuePrivateEndpoints')[copyIndex()].privateDnsZoneGroupName), createObject('value', 'default'))]",
-          "privateDnsZoneResourceIds": "[if(contains(parameters('storageQueuePrivateEndpoints')[copyIndex()], 'privateDnsZoneResourceIds'), createObject('value', parameters('storageQueuePrivateEndpoints')[copyIndex()].privateDnsZoneResourceIds), createObject('value', createArray()))]",
-          "roleAssignments": "[if(contains(parameters('storageQueuePrivateEndpoints')[copyIndex()], 'roleAssignments'), createObject('value', parameters('storageQueuePrivateEndpoints')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
+          "privateDnsZoneGroupName": {
+            "value": "[tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroupName')]"
+          },
+          "privateDnsZoneResourceIds": {
+            "value": "[tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneResourceIds')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('storageQueuePrivateEndpoints')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "manualPrivateLinkServiceConnections": "[if(contains(parameters('storageQueuePrivateEndpoints')[copyIndex()], 'manualPrivateLinkServiceConnections'), createObject('value', parameters('storageQueuePrivateEndpoints')[copyIndex()].manualPrivateLinkServiceConnections), createObject('value', createArray()))]",
-          "customDnsConfigs": "[if(contains(parameters('storageQueuePrivateEndpoints')[copyIndex()], 'customDnsConfigs'), createObject('value', parameters('storageQueuePrivateEndpoints')[copyIndex()].customDnsConfigs), createObject('value', createArray()))]",
-          "ipConfigurations": "[if(contains(parameters('storageQueuePrivateEndpoints')[copyIndex()], 'ipConfigurations'), createObject('value', parameters('storageQueuePrivateEndpoints')[copyIndex()].ipConfigurations), createObject('value', createArray()))]",
-          "applicationSecurityGroupResourceIds": "[if(contains(parameters('storageQueuePrivateEndpoints')[copyIndex()], 'applicationSecurityGroupResourceIds'), createObject('value', parameters('storageQueuePrivateEndpoints')[copyIndex()].applicationSecurityGroupResourceIds), createObject('value', createArray()))]",
-          "customNetworkInterfaceName": "[if(contains(parameters('storageQueuePrivateEndpoints')[copyIndex()], 'customNetworkInterfaceName'), createObject('value', parameters('storageQueuePrivateEndpoints')[copyIndex()].customNetworkInterfaceName), createObject('value', ''))]"
+          "manualPrivateLinkServiceConnections": {
+            "value": "[tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections')]"
+          },
+          "customDnsConfigs": {
+            "value": "[tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
+          },
+          "ipConfigurations": {
+            "value": "[tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'ipConfigurations')]"
+          },
+          "applicationSecurityGroupResourceIds": {
+            "value": "[tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'applicationSecurityGroupResourceIds')]"
+          },
+          "customNetworkInterfaceName": {
+            "value": "[tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'customNetworkInterfaceName')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2285,8 +2544,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "6873008238043407177"
+              "version": "0.24.24.22086",
+              "templateHash": "2592884001616184297"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -2301,7 +2560,7 @@
                   "roleDefinitionIdOrName": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                     }
                   },
                   "principalId": {
@@ -2335,7 +2594,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -2413,12 +2672,95 @@
                       "privateIPAddress": {
                         "type": "string",
                         "metadata": {
-                          "description": "Required. A private ip address obtained from the private endpoint's subnet."
+                          "description": "Required. A private IP address obtained from the private endpoint's subnet."
                         }
                       }
                     },
                     "metadata": {
                       "description": "Required. Properties of private endpoint IP configurations."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "manualPrivateLinkServiceConnectionsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the private link service connection."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "groupIds": {
+                        "type": "array",
+                        "metadata": {
+                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "privateLinkServiceId": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The resource id of private link service."
+                        }
+                      },
+                      "requestMessage": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of private link service connection."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "privateLinkServiceConnectionsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the private link service connection."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "groupIds": {
+                        "type": "array",
+                        "metadata": {
+                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "privateLinkServiceId": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The resource id of private link service."
+                        }
+                      },
+                      "requestMessage": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of private link service connection."
                     }
                   }
                 }
@@ -2433,7 +2775,7 @@
                   "fqdn": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. Fqdn that resolves to private endpoint ip address."
+                      "description": "Required. Fqdn that resolves to private endpoint IP address."
                     }
                   },
                   "ipAddresses": {
@@ -2442,7 +2784,7 @@
                       "type": "string"
                     },
                     "metadata": {
-                      "description": "Required. A list of private ip addresses of the private endpoint."
+                      "description": "Required. A list of private IP addresses of the private endpoint."
                     }
                   }
                 }
@@ -2463,12 +2805,6 @@
                 "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
               }
             },
-            "serviceResourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. Resource ID of the resource that needs to be connected to the network."
-              }
-            },
             "applicationSecurityGroupResourceIds": {
               "type": "array",
               "nullable": true,
@@ -2485,15 +2821,8 @@
             },
             "ipConfigurations": {
               "$ref": "#/definitions/ipConfigurationsType",
-              "nullable": true,
               "metadata": {
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-              }
-            },
-            "groupIds": {
-              "type": "array",
-              "metadata": {
-                "description": "Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to."
               }
             },
             "privateDnsZoneGroupName": {
@@ -2526,7 +2855,7 @@
             "roleAssignments": {
               "$ref": "#/definitions/roleAssignmentType",
               "metadata": {
-                "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                "description": "Optional. Array of role assignments to create."
               }
             },
             "tags": {
@@ -2538,19 +2867,23 @@
             },
             "customDnsConfigs": {
               "$ref": "#/definitions/customDnsConfigType",
-              "nullable": true,
               "metadata": {
                 "description": "Optional. Custom DNS configurations."
               }
             },
             "manualPrivateLinkServiceConnections": {
-              "type": "array",
-              "nullable": true,
+              "$ref": "#/definitions/manualPrivateLinkServiceConnectionsType",
               "metadata": {
-                "description": "Optional. Manual PrivateLink Service Connections."
+                "description": "Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
               }
             },
-            "enableDefaultTelemetry": {
+            "privateLinkServiceConnections": {
+              "$ref": "#/definitions/privateLinkServiceConnectionsType",
+              "metadata": {
+                "description": "Optional. A grouping of information about the connection to the remote resource."
+              }
+            },
+            "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
               "metadata": {
@@ -2559,7 +2892,6 @@
             }
           },
           "variables": {
-            "enableReferencedModulesTelemetry": false,
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
@@ -2574,17 +2906,23 @@
             }
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+              "apiVersion": "2023-07-01",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
-                  "resources": []
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
                 }
               }
             },
@@ -2604,19 +2942,11 @@
                     }
                   }
                 ],
-                "customDnsConfigs": "[parameters('customDnsConfigs')]",
+                "customDnsConfigs": "[coalesce(parameters('customDnsConfigs'), createArray())]",
                 "customNetworkInterfaceName": "[coalesce(parameters('customNetworkInterfaceName'), '')]",
                 "ipConfigurations": "[coalesce(parameters('ipConfigurations'), createArray())]",
                 "manualPrivateLinkServiceConnections": "[coalesce(parameters('manualPrivateLinkServiceConnections'), createArray())]",
-                "privateLinkServiceConnections": [
-                  {
-                    "name": "[parameters('name')]",
-                    "properties": {
-                      "privateLinkServiceId": "[parameters('serviceResourceId')]",
-                      "groupIds": "[parameters('groupIds')]"
-                    }
-                  }
-                ],
+                "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
                 "subnet": {
                   "id": "[parameters('subnetResourceId')]"
                 }
@@ -2646,7 +2976,7 @@
               "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
               "name": "[guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
               "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
                 "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
                 "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
                 "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
@@ -2677,9 +3007,6 @@
                   },
                   "privateEndpointName": {
                     "value": "[parameters('name')]"
-                  },
-                  "enableDefaultTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -2688,8 +3015,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "17578977753131828304"
+                      "version": "0.24.24.22086",
+                      "templateHash": "9321937464667207030"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -2716,13 +3043,6 @@
                       "metadata": {
                         "description": "Optional. The name of the private DNS zone group."
                       }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable/Disable usage telemetry for module."
-                      }
                     }
                   },
                   "variables": {
@@ -2740,20 +3060,6 @@
                     ]
                   },
                   "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
-                    },
                     {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
                       "apiVersion": "2023-04-01",
@@ -2821,6 +3127,13 @@
                 "description": "The location the resource was deployed into."
               },
               "value": "[reference('privateEndpoint', '2023-04-01', 'full').location]"
+            },
+            "groupId": {
+              "type": "string",
+              "metadata": {
+                "description": "The group Id for the private endpoint Group."
+              },
+              "value": "[if(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties.groupIds[0], reference('privateEndpoint').privateLinkServiceConnections[0].properties.groupIds[0])]"
             }
           }
         }
@@ -2832,7 +3145,7 @@
     "eventHub_privateEndpoints": {
       "copy": {
         "name": "eventHub_privateEndpoints",
-        "count": "[length(parameters('eventHubPrivateEndpoints'))]"
+        "count": "[length(coalesce(parameters('eventHubPrivateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -2843,38 +3156,61 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "groupIds": {
+          "privateLinkServiceConnections": {
             "value": [
-              "[parameters('eventHubPrivateEndpoints')[copyIndex()].service]"
+              {
+                "name": "[parameters('name')]",
+                "properties": {
+                  "privateLinkServiceId": "[reference('account').managedResources.eventHubNamespace]",
+                  "groupIds": [
+                    "[coalesce(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace')]"
+                  ]
+                }
+              }
             ]
           },
           "name": {
-            "value": "[coalesce(tryGet(parameters('eventHubPrivateEndpoints')[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(parameters('eventHubPrivateEndpoints')[copyIndex()], 'service'), parameters('eventHubPrivateEndpoints')[copyIndex()].service), copyIndex()))]"
-          },
-          "serviceResourceId": {
-            "value": "[reference('account').managedResources.eventHubNamespace]"
+            "value": "[coalesce(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace'), copyIndex()))]"
           },
           "subnetResourceId": {
-            "value": "[parameters('eventHubPrivateEndpoints')[copyIndex()].subnetResourceId]"
+            "value": "[coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+          "enableTelemetry": {
+            "value": "[coalesce(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
           },
-          "location": "[if(contains(parameters('eventHubPrivateEndpoints')[copyIndex()], 'location'), createObject('value', parameters('eventHubPrivateEndpoints')[copyIndex()].location), createObject('value', reference(split(parameters('eventHubPrivateEndpoints')[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location))]",
+          "location": {
+            "value": "[coalesce(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
+          },
           "lock": {
-            "value": "[coalesce(tryGet(parameters('eventHubPrivateEndpoints')[copyIndex()], 'lock'), parameters('lock'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
-          "privateDnsZoneGroupName": "[if(contains(parameters('eventHubPrivateEndpoints')[copyIndex()], 'privateDnsZoneGroupName'), createObject('value', parameters('eventHubPrivateEndpoints')[copyIndex()].privateDnsZoneGroupName), createObject('value', 'default'))]",
-          "privateDnsZoneResourceIds": "[if(contains(parameters('eventHubPrivateEndpoints')[copyIndex()], 'privateDnsZoneResourceIds'), createObject('value', parameters('eventHubPrivateEndpoints')[copyIndex()].privateDnsZoneResourceIds), createObject('value', createArray()))]",
-          "roleAssignments": "[if(contains(parameters('eventHubPrivateEndpoints')[copyIndex()], 'roleAssignments'), createObject('value', parameters('eventHubPrivateEndpoints')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
+          "privateDnsZoneGroupName": {
+            "value": "[tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroupName')]"
+          },
+          "privateDnsZoneResourceIds": {
+            "value": "[tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneResourceIds')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('eventHubPrivateEndpoints')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "manualPrivateLinkServiceConnections": "[if(contains(parameters('eventHubPrivateEndpoints')[copyIndex()], 'manualPrivateLinkServiceConnections'), createObject('value', parameters('eventHubPrivateEndpoints')[copyIndex()].manualPrivateLinkServiceConnections), createObject('value', createArray()))]",
-          "customDnsConfigs": "[if(contains(parameters('eventHubPrivateEndpoints')[copyIndex()], 'customDnsConfigs'), createObject('value', parameters('eventHubPrivateEndpoints')[copyIndex()].customDnsConfigs), createObject('value', createArray()))]",
-          "ipConfigurations": "[if(contains(parameters('eventHubPrivateEndpoints')[copyIndex()], 'ipConfigurations'), createObject('value', parameters('eventHubPrivateEndpoints')[copyIndex()].ipConfigurations), createObject('value', createArray()))]",
-          "applicationSecurityGroupResourceIds": "[if(contains(parameters('eventHubPrivateEndpoints')[copyIndex()], 'applicationSecurityGroupResourceIds'), createObject('value', parameters('eventHubPrivateEndpoints')[copyIndex()].applicationSecurityGroupResourceIds), createObject('value', createArray()))]",
-          "customNetworkInterfaceName": "[if(contains(parameters('eventHubPrivateEndpoints')[copyIndex()], 'customNetworkInterfaceName'), createObject('value', parameters('eventHubPrivateEndpoints')[copyIndex()].customNetworkInterfaceName), createObject('value', ''))]"
+          "manualPrivateLinkServiceConnections": {
+            "value": "[tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections')]"
+          },
+          "customDnsConfigs": {
+            "value": "[tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
+          },
+          "ipConfigurations": {
+            "value": "[tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'ipConfigurations')]"
+          },
+          "applicationSecurityGroupResourceIds": {
+            "value": "[tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'applicationSecurityGroupResourceIds')]"
+          },
+          "customNetworkInterfaceName": {
+            "value": "[tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'customNetworkInterfaceName')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2883,8 +3219,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "6873008238043407177"
+              "version": "0.24.24.22086",
+              "templateHash": "2592884001616184297"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -2899,7 +3235,7 @@
                   "roleDefinitionIdOrName": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                     }
                   },
                   "principalId": {
@@ -2933,7 +3269,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -3011,12 +3347,95 @@
                       "privateIPAddress": {
                         "type": "string",
                         "metadata": {
-                          "description": "Required. A private ip address obtained from the private endpoint's subnet."
+                          "description": "Required. A private IP address obtained from the private endpoint's subnet."
                         }
                       }
                     },
                     "metadata": {
                       "description": "Required. Properties of private endpoint IP configurations."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "manualPrivateLinkServiceConnectionsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the private link service connection."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "groupIds": {
+                        "type": "array",
+                        "metadata": {
+                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "privateLinkServiceId": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The resource id of private link service."
+                        }
+                      },
+                      "requestMessage": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of private link service connection."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "privateLinkServiceConnectionsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the private link service connection."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "groupIds": {
+                        "type": "array",
+                        "metadata": {
+                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "privateLinkServiceId": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The resource id of private link service."
+                        }
+                      },
+                      "requestMessage": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of private link service connection."
                     }
                   }
                 }
@@ -3031,7 +3450,7 @@
                   "fqdn": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. Fqdn that resolves to private endpoint ip address."
+                      "description": "Required. Fqdn that resolves to private endpoint IP address."
                     }
                   },
                   "ipAddresses": {
@@ -3040,7 +3459,7 @@
                       "type": "string"
                     },
                     "metadata": {
-                      "description": "Required. A list of private ip addresses of the private endpoint."
+                      "description": "Required. A list of private IP addresses of the private endpoint."
                     }
                   }
                 }
@@ -3061,12 +3480,6 @@
                 "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
               }
             },
-            "serviceResourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. Resource ID of the resource that needs to be connected to the network."
-              }
-            },
             "applicationSecurityGroupResourceIds": {
               "type": "array",
               "nullable": true,
@@ -3083,15 +3496,8 @@
             },
             "ipConfigurations": {
               "$ref": "#/definitions/ipConfigurationsType",
-              "nullable": true,
               "metadata": {
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-              }
-            },
-            "groupIds": {
-              "type": "array",
-              "metadata": {
-                "description": "Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to."
               }
             },
             "privateDnsZoneGroupName": {
@@ -3124,7 +3530,7 @@
             "roleAssignments": {
               "$ref": "#/definitions/roleAssignmentType",
               "metadata": {
-                "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                "description": "Optional. Array of role assignments to create."
               }
             },
             "tags": {
@@ -3136,19 +3542,23 @@
             },
             "customDnsConfigs": {
               "$ref": "#/definitions/customDnsConfigType",
-              "nullable": true,
               "metadata": {
                 "description": "Optional. Custom DNS configurations."
               }
             },
             "manualPrivateLinkServiceConnections": {
-              "type": "array",
-              "nullable": true,
+              "$ref": "#/definitions/manualPrivateLinkServiceConnectionsType",
               "metadata": {
-                "description": "Optional. Manual PrivateLink Service Connections."
+                "description": "Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
               }
             },
-            "enableDefaultTelemetry": {
+            "privateLinkServiceConnections": {
+              "$ref": "#/definitions/privateLinkServiceConnectionsType",
+              "metadata": {
+                "description": "Optional. A grouping of information about the connection to the remote resource."
+              }
+            },
+            "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
               "metadata": {
@@ -3157,7 +3567,6 @@
             }
           },
           "variables": {
-            "enableReferencedModulesTelemetry": false,
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
@@ -3172,17 +3581,23 @@
             }
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+              "apiVersion": "2023-07-01",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
-                  "resources": []
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
                 }
               }
             },
@@ -3202,19 +3617,11 @@
                     }
                   }
                 ],
-                "customDnsConfigs": "[parameters('customDnsConfigs')]",
+                "customDnsConfigs": "[coalesce(parameters('customDnsConfigs'), createArray())]",
                 "customNetworkInterfaceName": "[coalesce(parameters('customNetworkInterfaceName'), '')]",
                 "ipConfigurations": "[coalesce(parameters('ipConfigurations'), createArray())]",
                 "manualPrivateLinkServiceConnections": "[coalesce(parameters('manualPrivateLinkServiceConnections'), createArray())]",
-                "privateLinkServiceConnections": [
-                  {
-                    "name": "[parameters('name')]",
-                    "properties": {
-                      "privateLinkServiceId": "[parameters('serviceResourceId')]",
-                      "groupIds": "[parameters('groupIds')]"
-                    }
-                  }
-                ],
+                "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
                 "subnet": {
                   "id": "[parameters('subnetResourceId')]"
                 }
@@ -3244,7 +3651,7 @@
               "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
               "name": "[guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
               "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
                 "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
                 "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
                 "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
@@ -3275,9 +3682,6 @@
                   },
                   "privateEndpointName": {
                     "value": "[parameters('name')]"
-                  },
-                  "enableDefaultTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -3286,8 +3690,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "17578977753131828304"
+                      "version": "0.24.24.22086",
+                      "templateHash": "9321937464667207030"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -3314,13 +3718,6 @@
                       "metadata": {
                         "description": "Optional. The name of the private DNS zone group."
                       }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable/Disable usage telemetry for module."
-                      }
                     }
                   },
                   "variables": {
@@ -3338,20 +3735,6 @@
                     ]
                   },
                   "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
-                    },
                     {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
                       "apiVersion": "2023-04-01",
@@ -3419,6 +3802,13 @@
                 "description": "The location the resource was deployed into."
               },
               "value": "[reference('privateEndpoint', '2023-04-01', 'full').location]"
+            },
+            "groupId": {
+              "type": "string",
+              "metadata": {
+                "description": "The group Id for the private endpoint Group."
+              },
+              "value": "[if(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties.groupIds[0], reference('privateEndpoint').privateLinkServiceConnections[0].properties.groupIds[0])]"
             }
           }
         }
