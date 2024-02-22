@@ -11,7 +11,7 @@ metadata description = 'This instance deploys the module in alignment with the b
 param resourceGroupName string = 'dep-${namePrefix}-purview-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param resourceLocation string = 'eastus' // Only available in selected locations: eastus, eastus2, southcentralus, westcentralus, westus, westus2, westus3
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'pvawaf'
@@ -66,7 +66,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
+    #disable-next-line no-hardcoded-location
+    location: 'eastus' // Only available in selected locations: eastus, eastus2, southcentralus, westcentralus, westus, westus2, westus3
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
