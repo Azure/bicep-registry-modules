@@ -88,23 +88,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-11-01' = {
   }
 }
 
-resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2022-07-02' = {
-  name: diskEncryptionSetName
-  location: location
-  identity: {
-    type: 'SystemAssigned'
-  }
-  properties: {
-    activeKey: {
-      sourceVault: {
-        id: keyVault.id
-      }
-      keyUrl: keyVault::key.properties.keyUriWithVersion
-    }
-    encryptionType: 'EncryptionAtRestWithCustomerKey'
-  }
-}
-
 resource keyPermissionsKeyVaultCryptoUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('msi-${keyVault.id}-${location}-${managedIdentity.id}-KeyVault-Crypto-User-RoleAssignment')
   scope: keyVault
@@ -115,14 +98,27 @@ resource keyPermissionsKeyVaultCryptoUser 'Microsoft.Authorization/roleAssignmen
   }
 }
 
-resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault.id}-${location}-${managedIdentity.id}-KeyVault-Key-Read-RoleAssignment')
-  scope: keyVault
-  properties: {
-    principalId: diskEncryptionSet.identity.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424') // Key Vault Crypto User
-    principalType: 'ServicePrincipal'
+resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2022-07-02' = {
+  name: diskEncryptionSetName
+  location: location
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
   }
+  properties: {
+    activeKey: {
+      sourceVault: {
+        id: keyVault.id
+      }
+      keyUrl: keyVault::key.properties.keyUriWithVersion
+    }
+    encryptionType: 'EncryptionAtRestWithCustomerKey'
+  }
+  dependsOn: [
+    keyPermissionsKeyVaultCryptoUser
+  ]
 }
 
 resource proximityPlacementGroup 'Microsoft.Compute/proximityPlacementGroups@2022-03-01' = {
