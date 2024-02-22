@@ -9,7 +9,7 @@ targetScope = 'subscription'
 param resourceGroupName string = 'dep-${namePrefix}-machinelearningservices.workspaces-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param location string = deployment().location
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'mlswecr'
@@ -28,12 +28,12 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: location
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
@@ -41,6 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     applicationInsightsName: 'dep-${namePrefix}-appI-${serviceShort}'
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
+    location: resourceLocation
   }
 }
 
@@ -50,9 +51,10 @@ module nestedDependencies 'dependencies.bicep' = {
 
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
+    location: resourceLocation
     associatedApplicationInsightsResourceId: nestedDependencies.outputs.applicationInsightsResourceId
     associatedKeyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
     associatedStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
