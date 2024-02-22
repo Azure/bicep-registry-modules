@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using Customer-Managed-Keys with User-Assigned identity'
+metadata description = 'This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.'
+
 // ========== //
 // Parameters //
 // ========== //
