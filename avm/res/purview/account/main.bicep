@@ -34,19 +34,19 @@ param diagnosticSettings diagnosticSettingType
 param roleAssignments roleAssignmentType
 
 @description('Optional. Configuration details for Purview Account private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to \'account\'.')
-param accountPrivateEndpoints array = []
+param accountPrivateEndpoints array?
 
 @description('Optional. Configuration details for Purview Portal private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to \'portal\'.')
-param portalPrivateEndpoints array = []
+param portalPrivateEndpoints array?
 
 @description('Optional. Configuration details for Purview Managed Storage Account blob private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to \'blob\'.')
-param storageBlobPrivateEndpoints array = []
+param storageBlobPrivateEndpoints array?
 
 @description('Optional. Configuration details for Purview Managed Storage Account queue private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to \'queue\'.')
-param storageQueuePrivateEndpoints array = []
+param storageQueuePrivateEndpoints array?
 
 @description('Optional. Configuration details for Purview Managed Event Hub namespace private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to \'namespace\'.')
-param eventHubPrivateEndpoints array = []
+param eventHubPrivateEndpoints array?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true

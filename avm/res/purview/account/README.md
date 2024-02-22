@@ -708,7 +708,6 @@ Configuration details for Purview Account private endpoints. For security reason
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `diagnosticSettings`
 
@@ -849,7 +848,6 @@ Configuration details for Purview Managed Event Hub namespace private endpoints.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `location`
 
@@ -929,7 +927,6 @@ Configuration details for Purview Portal private endpoints. For security reasons
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `publicNetworkAccess`
 
@@ -1042,7 +1039,6 @@ Configuration details for Purview Managed Storage Account blob private endpoints
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `storageQueuePrivateEndpoints`
 
@@ -1050,7 +1046,6 @@ Configuration details for Purview Managed Storage Account queue private endpoint
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `tags`
 

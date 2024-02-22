@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "16546056715214952210"
+      "templateHash": "8993106970397823403"
     },
     "name": "Purview Accounts",
     "description": "This module deploys a Purview Account.",
@@ -288,35 +288,35 @@
     },
     "accountPrivateEndpoints": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration details for Purview Account private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to 'account'."
       }
     },
     "portalPrivateEndpoints": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration details for Purview Portal private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to 'portal'."
       }
     },
     "storageBlobPrivateEndpoints": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration details for Purview Managed Storage Account blob private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to 'blob'."
       }
     },
     "storageQueuePrivateEndpoints": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration details for Purview Managed Storage Account queue private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to 'queue'."
       }
     },
     "eventHubPrivateEndpoints": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration details for Purview Managed Event Hub namespace private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to 'namespace'."
       }
