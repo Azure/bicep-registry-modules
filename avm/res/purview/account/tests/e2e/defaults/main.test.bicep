@@ -41,6 +41,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    managedResourceGroupName: '${namePrefix}${serviceShort}001-managed-rg'
   }
 }]
