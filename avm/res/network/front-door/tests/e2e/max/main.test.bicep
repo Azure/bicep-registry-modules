@@ -80,7 +80,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
               privateLinkAlias: ''
               privateLinkApprovalMessage: ''
               privateLinkLocation: ''
-              privateLinkResourceId: ''
               weight: 50
             }
           ]
@@ -188,12 +187,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             category: 'FrontdoorAccessLog'
           }
         ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-      {
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
         eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
