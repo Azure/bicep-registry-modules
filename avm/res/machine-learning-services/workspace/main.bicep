@@ -361,13 +361,13 @@ type privateEndpointType = {
   @sys.description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
-  @sys.description('Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".')
+  @sys.description('Optional. The service (sub-) type to deploy the private endpoint for. For example "connection".')
   service: string?
 
   @sys.description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @sys.description('Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.')
+  @sys.description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
   privateDnsZoneGroupName: string?
 
   @sys.description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
@@ -375,16 +375,27 @@ type privateEndpointType = {
 
   @sys.description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
+    @sys.description('Required. Fqdn that resolves to private endpoint IP address.')
     fqdn: string?
+
+    @sys.description('Required. A list of private IP addresses of the private endpoint.')
     ipAddresses: string[]
   }[]?
 
   @sys.description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
   ipConfigurations: {
+    @sys.description('Required. The name of the resource that is unique within a resource group.')
     name: string
+
+    @sys.description('Required. Properties of private endpoint IP configurations.')
     properties: {
+      @sys.description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
       groupId: string
+
+      @sys.description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
       memberName: string
+
+      @sys.description('Required. A private IP address obtained from the private endpoint\'s subnet.')
       privateIPAddress: string
     }
   }[]?
@@ -398,7 +409,7 @@ type privateEndpointType = {
   @sys.description('Optional. Specify the type of lock.')
   lock: lockType
 
-  @sys.description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+  @sys.description('Optional. Array of role assignments to create.')
   roleAssignments: roleAssignmentType
 
   @sys.description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
