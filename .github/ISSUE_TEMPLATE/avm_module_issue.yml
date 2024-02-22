@@ -150,7 +150,7 @@ body:
         - "avm/res/operations-management/solution"
         # - "avm/res/policy-insights/remediation"
         - "avm/res/power-bi-dedicated/capacity"
-        # - "avm/res/purview/account"
+        - "avm/res/purview/account"
         # - "avm/res/recovery-services/vault"
         # - "avm/res/relay/namespace"
         - "avm/res/resource-graph/query"
