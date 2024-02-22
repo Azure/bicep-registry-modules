@@ -157,6 +157,13 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           Role: 'DeploymentValidation'
         }
       }
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        subnetResourceId: nestedDependencies.outputs.defaultSubnetResourceId
+        service: 'browser_authentication'
+      }
     ]
     managedResourceGroupResourceId: '${subscription().id}/resourceGroups/rg-${resourceGroupName}-managed'
     requireInfrastructureEncryption: true

@@ -90,6 +90,13 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           Role: 'DeploymentValidation'
         }
       }
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        service: 'queue'
+      }
     ]
     networkAcls: {
       bypass: 'AzureServices'
