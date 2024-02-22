@@ -160,7 +160,7 @@ Specify if the image supports accelerated networking.<p>Accelerated networking e
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `isHibernateSupported`
 
