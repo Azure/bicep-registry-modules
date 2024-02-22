@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "10790106014691997162"
+      "version": "0.25.3.34343",
+      "templateHash": "1285689834078893703"
     },
     "name": "Machine Learning Services Workspaces Computes",
-    "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`).",
+    "description": "This module deploys a Machine Learning Services Workspaces Compute.\r\n\r\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`).",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
@@ -140,13 +140,6 @@
         "description": "Optional. The properties of the compute. Will be ignored in case \"resourceId\" is set."
       }
     },
-    "enableDefaultTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-      }
-    },
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentitiesType",
       "metadata": {
@@ -164,20 +157,6 @@
       "type": "Microsoft.MachineLearningServices/workspaces",
       "apiVersion": "2022-10-01",
       "name": "[parameters('machineLearningWorkspaceName')]"
-    },
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
     },
     "machineLearningWorkspaceCompute": {
       "condition": "[equals(parameters('deployCompute'), true())]",

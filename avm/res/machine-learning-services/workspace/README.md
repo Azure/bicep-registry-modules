@@ -10,6 +10,7 @@ This module deploys a Machine Learning Services Workspace.
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -29,10 +30,10 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/machine-learning-services.workspace:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/machine-learning-services/workspace:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Encr](#example-2-encr)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-2-using-customer-managed-keys-with-user-assigned-identity)
 - [Using large parameter set](#example-3-using-large-parameter-set)
 - [WAF-aligned](#example-4-waf-aligned)
 
@@ -46,8 +47,8 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module workspace 'br:bicep/modules/machine-learning-services.workspace:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-mlswmin'
+module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-mlswmin'
   params: {
     // Required parameters
     associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
@@ -56,7 +57,7 @@ module workspace 'br:bicep/modules/machine-learning-services.workspace:1.0.0' = 
     name: 'mlswmin001'
     sku: 'Basic'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     managedIdentities: {
       systemAssigned: true
     }
@@ -93,8 +94,8 @@ module workspace 'br:bicep/modules/machine-learning-services.workspace:1.0.0' = 
       "value": "Basic"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -108,15 +109,18 @@ module workspace 'br:bicep/modules/machine-learning-services.workspace:1.0.0' = 
 </details>
 <p>
 
-### Example 2: _Encr_
+### Example 2: _Using Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module workspace 'br:bicep/modules/machine-learning-services.workspace:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-mlswecr'
+module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-mlswecr'
   params: {
     // Required parameters
     associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
@@ -130,7 +134,7 @@ module workspace 'br:bicep/modules/machine-learning-services.workspace:1.0.0' = 
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     managedIdentities: {
       systemAssigned: false
       userAssignedResourceIds: [
@@ -197,8 +201,8 @@ module workspace 'br:bicep/modules/machine-learning-services.workspace:1.0.0' = 
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -251,8 +255,8 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module workspace 'br:bicep/modules/machine-learning-services.workspace:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-mlswmax'
+module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-mlswmax'
   params: {
     // Required parameters
     associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
@@ -307,8 +311,8 @@ module workspace 'br:bicep/modules/machine-learning-services.workspace:1.0.0' = 
       }
     ]
     discoveryUrl: 'http://example.com'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     imageBuildCompute: 'testcompute'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -442,11 +446,11 @@ module workspace 'br:bicep/modules/machine-learning-services.workspace:1.0.0' = 
     "discoveryUrl": {
       "value": "http://example.com"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "imageBuildCompute": {
       "value": "testcompute"
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -523,8 +527,8 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module workspace 'br:bicep/modules/machine-learning-services.workspace:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-mlswwaf'
+module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-mlswwaf'
   params: {
     // Required parameters
     associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
@@ -568,23 +572,13 @@ module workspace 'br:bicep/modules/machine-learning-services.workspace:1.0.0' = 
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
     discoveryUrl: 'http://example.com'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     imageBuildCompute: 'testcompute'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
+    location: '<location>'
     managedIdentities: {
       systemAssigned: false
       userAssignedResourceIds: [
@@ -683,12 +677,6 @@ module workspace 'br:bicep/modules/machine-learning-services.workspace:1.0.0' = 
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
@@ -697,17 +685,11 @@ module workspace 'br:bicep/modules/machine-learning-services.workspace:1.0.0' = 
     "discoveryUrl": {
       "value": "http://example.com"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "imageBuildCompute": {
       "value": "testcompute"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
+    "location": {
+      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -779,7 +761,7 @@ module workspace 'br:bicep/modules/machine-learning-services.workspace:1.0.0' = 
 | [`description`](#parameter-description) | string | The description of this workspace. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`discoveryUrl`](#parameter-discoveryurl) | string | URL for the discovery service to identify regional endpoints for machine learning experimentation services. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`hbiWorkspace`](#parameter-hbiworkspace) | bool | The flag to signal HBI data in the workspace and reduce diagnostic data collected by the service. |
 | [`imageBuildCompute`](#parameter-imagebuildcompute) | string | The compute name for image build. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -981,6 +963,27 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 - Required: No
 - Type: array
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs. |
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs.
+
+- Required: No
+- Type: string
+
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
@@ -994,6 +997,19 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics. |
+
+### Parameter: `diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -1024,9 +1040,9 @@ URL for the discovery service to identify regional endpoints for machine learnin
 - Type: string
 - Default: `''`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -1519,7 +1535,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `modules/network/private-endpoint` | Local reference |
+| `br/public:avm/res/network/private-endpoint:0.4.0` | Remote reference |
 
 ## Notes
 
@@ -1628,3 +1644,7 @@ computes: [
 
 </details>
 <p>
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
