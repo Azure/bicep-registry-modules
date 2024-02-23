@@ -329,21 +329,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
-        service: 'blob_secondary'
-        subnetResourceId: '<subnetResourceId>'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
         service: 'table'
-        subnetResourceId: '<subnetResourceId>'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        service: 'table_secondary'
         subnetResourceId: '<subnetResourceId>'
       }
       {
@@ -357,21 +343,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
-        service: 'queue_secondary'
-        subnetResourceId: '<subnetResourceId>'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
         service: 'file'
-        subnetResourceId: '<subnetResourceId>'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        service: 'file_secondary'
         subnetResourceId: '<subnetResourceId>'
       }
       {
@@ -385,21 +357,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
-        service: 'web_secondary'
-        subnetResourceId: '<subnetResourceId>'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
         service: 'dfs'
-        subnetResourceId: '<subnetResourceId>'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        service: 'dfs_secondary'
         subnetResourceId: '<subnetResourceId>'
       }
     ]
@@ -797,21 +755,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
-          "service": "blob_secondary",
-          "subnetResourceId": "<subnetResourceId>"
-        },
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
           "service": "table",
-          "subnetResourceId": "<subnetResourceId>"
-        },
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "service": "table_secondary",
           "subnetResourceId": "<subnetResourceId>"
         },
         {
@@ -825,21 +769,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
-          "service": "queue_secondary",
-          "subnetResourceId": "<subnetResourceId>"
-        },
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
           "service": "file",
-          "subnetResourceId": "<subnetResourceId>"
-        },
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "service": "file_secondary",
           "subnetResourceId": "<subnetResourceId>"
         },
         {
@@ -853,21 +783,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
-          "service": "web_secondary",
-          "subnetResourceId": "<subnetResourceId>"
-        },
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
           "service": "dfs",
-          "subnetResourceId": "<subnetResourceId>"
-        },
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "service": "dfs_secondary",
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
