@@ -56,7 +56,6 @@ module account 'br/public:avm/res/purview/account:<version>' = {
     name: 'pvamin001'
     // Non-required parameters
     location: '<location>'
-    managedResourceGroupName: 'pvamin001-managed-rg'
   }
 }
 ```
@@ -80,9 +79,6 @@ module account 'br/public:avm/res/purview/account:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "managedResourceGroupName": {
-      "value": "pvamin001-managed-rg"
     }
   }
 }
@@ -440,11 +436,6 @@ module account 'br/public:avm/res/purview/account:<version>' = {
       }
     ]
     location: '<location>'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     managedResourceGroupName: 'pvawaf001-managed-rg'
     portalPrivateEndpoints: [
       {
@@ -534,13 +525,6 @@ module account 'br/public:avm/res/purview/account:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
     },
     "managedResourceGroupName": {
       "value": "pvawaf001-managed-rg"
