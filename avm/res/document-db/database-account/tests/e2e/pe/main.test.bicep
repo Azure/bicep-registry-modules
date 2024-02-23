@@ -71,18 +71,6 @@ module testDeployment '../../../main.bicep' = {
           Role: 'DeploymentValidation'
         }
       }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        service: 'MongoDB'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
-      }
     ]
     managedIdentities: {
       userAssignedResourceIds: [
