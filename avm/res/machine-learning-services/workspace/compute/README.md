@@ -106,7 +106,6 @@ The description of the Machine Learning compute.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `disableLocalAuth`
 
@@ -158,7 +157,6 @@ The properties of the compute. Will be ignored in case "resourceId" is set.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `resourceId`
 
@@ -166,7 +164,6 @@ ARM resource ID of the underlying compute.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `sku`
 
@@ -174,11 +171,9 @@ Specifies the sku, also referred as "edition". Required for creating a compute r
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Basic'
     'Free'
     'Premium'

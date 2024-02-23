@@ -30,7 +30,7 @@ param associatedKeyVaultResourceId string
 param associatedApplicationInsightsResourceId string
 
 @sys.description('Optional. The resource ID of the associated Container Registry.')
-param associatedContainerRegistryResourceId string = ''
+param associatedContainerRegistryResourceId string?
 
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType
@@ -48,7 +48,7 @@ param roleAssignments roleAssignmentType
 param privateEndpoints privateEndpointType
 
 @sys.description('Optional. Computes to create respectively attach to the workspace.')
-param computes array = []
+param computes array?
 
 @sys.description('Optional. Resource tags.')
 param tags object?
@@ -67,33 +67,32 @@ param managedIdentities managedIdentitiesType = {
 param diagnosticSettings diagnosticSettingType
 
 @sys.description('Optional. The description of this workspace.')
-param description string = ''
+param description string?
 
 @sys.description('Optional. URL for the discovery service to identify regional endpoints for machine learning experimentation services.')
-param discoveryUrl string = ''
+param discoveryUrl string?
 
 @sys.description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
 
 @sys.description('Optional. The compute name for image build.')
-param imageBuildCompute string = ''
+param imageBuildCompute string?
 
 @sys.description('Conditional. The user assigned identity resource ID that represents the workspace identity. Required if \'userAssignedIdentities\' is not empty and may not be used if \'systemAssignedIdentity\' is enabled.')
-param primaryUserAssignedIdentity string = ''
+param primaryUserAssignedIdentity string?
 
 @sys.description('Optional. The service managed resource settings.')
-param serviceManagedResourcesSettings object = {}
+param serviceManagedResourcesSettings object?
 
 @sys.description('Optional. The list of shared private link resources in this workspace.')
 param sharedPrivateLinkResources array = []
 
 @sys.description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
-  ''
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string?
 
 // ================//
 // Variables       //
@@ -167,7 +166,7 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
     storageAccount: associatedStorageAccountResourceId
     keyVault: associatedKeyVaultResourceId
     applicationInsights: associatedApplicationInsightsResourceId
-    containerRegistry: !empty(associatedContainerRegistryResourceId) ? associatedContainerRegistryResourceId : null
+    containerRegistry: associatedContainerRegistryResourceId
     hbiWorkspace: hbiWorkspace
     allowPublicAccessWhenBehindVnet: allowPublicAccessWhenBehindVnet
     description: description
@@ -190,22 +189,22 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
   }
 }
 
-module workspace_computes 'compute/main.bicep' = [for compute in computes: {
+module workspace_computes 'compute/main.bicep' = [for compute in (computes ?? []): {
   name: '${workspace.name}-${compute.name}-compute'
   params: {
     machineLearningWorkspaceName: workspace.name
     name: compute.name
     location: compute.location
-    sku: contains(compute, 'sku') ? compute.sku : ''
-    managedIdentities: contains(compute, 'managedIdentities') ? compute.managedIdentities : null
-    tags: contains(compute, 'tags') ? compute.tags : {}
-    deployCompute: contains(compute, 'deployCompute') ? compute.deployCompute : true
-    computeLocation: contains(compute, 'computeLocation') ? compute.computeLocation : ''
-    description: contains(compute, 'description') ? compute.description : ''
-    disableLocalAuth: compute.disableLocalAuth
-    resourceId: contains(compute, 'resourceId') ? compute.resourceId : ''
+    sku: compute.?sku
+    managedIdentities: compute.?managedIdentities
+    tags: compute.?tags
+    deployCompute: compute.?deployCompute
+    computeLocation: compute.?computeLocation
+    description: compute.?description
+    disableLocalAuth: compute.?disableLocalAuth
+    resourceId: compute.?resourceId
     computeType: compute.computeType
-    properties: contains(compute, 'properties') ? compute.properties : {}
+    properties: compute.?properties
   }
   dependsOn: [
     workspace_privateEndpoints

@@ -25,9 +25,8 @@ param location string = resourceGroup().location
   'Free'
   'Premium'
   'Standard'
-  ''
 ])
-param sku string = ''
+param sku string?
 
 @sys.description('Optional. Contains resource tags defined as key-value pairs. Ignored when attaching a compute resource, i.e. when you provide a resource ID.')
 param tags object?
@@ -39,13 +38,13 @@ param deployCompute bool = true
 param computeLocation string = resourceGroup().location
 
 @sys.description('Optional. The description of the Machine Learning compute.')
-param description string = ''
+param description string?
 
 @sys.description('Optional. Opt-out of local authentication and ensure customers can use only MSI and AAD exclusively for authentication.')
 param disableLocalAuth bool = false
 
 @sys.description('Optional. ARM resource ID of the underlying compute.')
-param resourceId string = ''
+param resourceId string?
 
 @sys.description('Required. Set the object type.')
 @allowed([
@@ -63,7 +62,7 @@ param resourceId string = ''
 param computeType string
 
 @sys.description('Optional. The properties of the compute. Will be ignored in case "resourceId" is set.')
-param properties object = {}
+param properties object?
 
 @sys.description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType

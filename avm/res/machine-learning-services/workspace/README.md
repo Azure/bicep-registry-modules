@@ -829,7 +829,6 @@ The user assigned identity resource ID that represents the workspace identity. R
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `allowPublicAccessWhenBehindVnet`
 
@@ -845,7 +844,6 @@ The resource ID of the associated Container Registry.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `computes`
 
@@ -853,7 +851,6 @@ Computes to create respectively attach to the workspace.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `customerManagedKey`
 
@@ -910,7 +907,6 @@ The description of this workspace.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `diagnosticSettings`
 
@@ -1064,7 +1060,6 @@ URL for the discovery service to identify regional endpoints for machine learnin
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `enableTelemetry`
 
@@ -1088,7 +1083,6 @@ The compute name for image build.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `location`
 
@@ -1493,11 +1487,9 @@ Whether or not public network access is allowed for this resource. For security 
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
   ]
@@ -1598,7 +1590,6 @@ The service managed resource settings.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `sharedPrivateLinkResources`
 

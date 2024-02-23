@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.3.34343",
-      "templateHash": "10036565565483629951"
+      "version": "0.25.53.49325",
+      "templateHash": "6950385914943253955"
     },
     "name": "Machine Learning Services Workspaces Computes",
     "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`).",
@@ -61,13 +61,12 @@
     },
     "sku": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
         "Basic",
         "Free",
         "Premium",
-        "Standard",
-        ""
+        "Standard"
       ],
       "metadata": {
         "description": "Optional. Specifies the sku, also referred as \"edition\". Required for creating a compute resource."
@@ -96,7 +95,7 @@
     },
     "description": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The description of the Machine Learning compute."
       }
@@ -110,7 +109,7 @@
     },
     "resourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. ARM resource ID of the underlying compute."
       }
@@ -135,7 +134,7 @@
     },
     "properties": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The properties of the compute. Will be ignored in case \"resourceId\" is set."
       }

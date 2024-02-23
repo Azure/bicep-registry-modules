@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.3.34343",
-      "templateHash": "8468567082977038771"
+      "version": "0.25.53.49325",
+      "templateHash": "9579112558787912774"
     },
     "name": "Machine Learning Services Workspaces",
     "description": "This module deploys a Machine Learning Services Workspace.",
@@ -500,7 +500,7 @@
     },
     "associatedContainerRegistryResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID of the associated Container Registry."
       }
@@ -539,7 +539,7 @@
     },
     "computes": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Computes to create respectively attach to the workspace."
       }
@@ -575,14 +575,14 @@
     },
     "description": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The description of this workspace."
       }
     },
     "discoveryUrl": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. URL for the discovery service to identify regional endpoints for machine learning experimentation services."
       }
@@ -595,21 +595,21 @@
     },
     "imageBuildCompute": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The compute name for image build."
       }
     },
     "primaryUserAssignedIdentity": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The user assigned identity resource ID that represents the workspace identity. Required if 'userAssignedIdentities' is not empty and may not be used if 'systemAssignedIdentity' is enabled."
       }
     },
     "serviceManagedResourcesSettings": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The service managed resource settings."
       }
@@ -623,9 +623,8 @@
     },
     "publicNetworkAccess": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
-        "",
         "Enabled",
         "Disabled"
       ],
@@ -716,7 +715,7 @@
         "storageAccount": "[parameters('associatedStorageAccountResourceId')]",
         "keyVault": "[parameters('associatedKeyVaultResourceId')]",
         "applicationInsights": "[parameters('associatedApplicationInsightsResourceId')]",
-        "containerRegistry": "[if(not(empty(parameters('associatedContainerRegistryResourceId'))), parameters('associatedContainerRegistryResourceId'), null())]",
+        "containerRegistry": "[parameters('associatedContainerRegistryResourceId')]",
         "hbiWorkspace": "[parameters('hbiWorkspace')]",
         "allowPublicAccessWhenBehindVnet": "[parameters('allowPublicAccessWhenBehindVnet')]",
         "description": "[parameters('description')]",
@@ -813,11 +812,11 @@
     "workspace_computes": {
       "copy": {
         "name": "workspace_computes",
-        "count": "[length(parameters('computes'))]"
+        "count": "[length(coalesce(parameters('computes'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-compute', parameters('name'), parameters('computes')[copyIndex()].name)]",
+      "name": "[format('{0}-{1}-compute', parameters('name'), coalesce(parameters('computes'), createArray())[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -828,25 +827,41 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('computes')[copyIndex()].name]"
+            "value": "[coalesce(parameters('computes'), createArray())[copyIndex()].name]"
           },
           "location": {
-            "value": "[parameters('computes')[copyIndex()].location]"
+            "value": "[coalesce(parameters('computes'), createArray())[copyIndex()].location]"
           },
-          "sku": "[if(contains(parameters('computes')[copyIndex()], 'sku'), createObject('value', parameters('computes')[copyIndex()].sku), createObject('value', ''))]",
-          "managedIdentities": "[if(contains(parameters('computes')[copyIndex()], 'managedIdentities'), createObject('value', parameters('computes')[copyIndex()].managedIdentities), createObject('value', null()))]",
-          "tags": "[if(contains(parameters('computes')[copyIndex()], 'tags'), createObject('value', parameters('computes')[copyIndex()].tags), createObject('value', createObject()))]",
-          "deployCompute": "[if(contains(parameters('computes')[copyIndex()], 'deployCompute'), createObject('value', parameters('computes')[copyIndex()].deployCompute), createObject('value', true()))]",
-          "computeLocation": "[if(contains(parameters('computes')[copyIndex()], 'computeLocation'), createObject('value', parameters('computes')[copyIndex()].computeLocation), createObject('value', ''))]",
-          "description": "[if(contains(parameters('computes')[copyIndex()], 'description'), createObject('value', parameters('computes')[copyIndex()].description), createObject('value', ''))]",
+          "sku": {
+            "value": "[tryGet(coalesce(parameters('computes'), createArray())[copyIndex()], 'sku')]"
+          },
+          "managedIdentities": {
+            "value": "[tryGet(coalesce(parameters('computes'), createArray())[copyIndex()], 'managedIdentities')]"
+          },
+          "tags": {
+            "value": "[tryGet(coalesce(parameters('computes'), createArray())[copyIndex()], 'tags')]"
+          },
+          "deployCompute": {
+            "value": "[tryGet(coalesce(parameters('computes'), createArray())[copyIndex()], 'deployCompute')]"
+          },
+          "computeLocation": {
+            "value": "[tryGet(coalesce(parameters('computes'), createArray())[copyIndex()], 'computeLocation')]"
+          },
+          "description": {
+            "value": "[tryGet(coalesce(parameters('computes'), createArray())[copyIndex()], 'description')]"
+          },
           "disableLocalAuth": {
-            "value": "[parameters('computes')[copyIndex()].disableLocalAuth]"
+            "value": "[tryGet(coalesce(parameters('computes'), createArray())[copyIndex()], 'disableLocalAuth')]"
           },
-          "resourceId": "[if(contains(parameters('computes')[copyIndex()], 'resourceId'), createObject('value', parameters('computes')[copyIndex()].resourceId), createObject('value', ''))]",
+          "resourceId": {
+            "value": "[tryGet(coalesce(parameters('computes'), createArray())[copyIndex()], 'resourceId')]"
+          },
           "computeType": {
-            "value": "[parameters('computes')[copyIndex()].computeType]"
+            "value": "[coalesce(parameters('computes'), createArray())[copyIndex()].computeType]"
           },
-          "properties": "[if(contains(parameters('computes')[copyIndex()], 'properties'), createObject('value', parameters('computes')[copyIndex()].properties), createObject('value', createObject()))]"
+          "properties": {
+            "value": "[tryGet(coalesce(parameters('computes'), createArray())[copyIndex()], 'properties')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -855,8 +870,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.3.34343",
-              "templateHash": "10036565565483629951"
+              "version": "0.25.53.49325",
+              "templateHash": "6950385914943253955"
             },
             "name": "Machine Learning Services Workspaces Computes",
             "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`).",
@@ -911,13 +926,12 @@
             },
             "sku": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "allowedValues": [
                 "Basic",
                 "Free",
                 "Premium",
-                "Standard",
-                ""
+                "Standard"
               ],
               "metadata": {
                 "description": "Optional. Specifies the sku, also referred as \"edition\". Required for creating a compute resource."
@@ -946,7 +960,7 @@
             },
             "description": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The description of the Machine Learning compute."
               }
@@ -960,7 +974,7 @@
             },
             "resourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. ARM resource ID of the underlying compute."
               }
@@ -985,7 +999,7 @@
             },
             "properties": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The properties of the compute. Will be ignored in case \"resourceId\" is set."
               }
