@@ -33,7 +33,7 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-2-using-customer-managed-keys-with-user-assigned-identity)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [Waf-Aligned](#example-4-waf-aligned)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -469,7 +469,10 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
 </details>
 <p>
 
-### Example 4: _Waf-Aligned_
+### Example 4: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -505,6 +508,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
+        service: 'batchAccount'
         subnetResourceId: '<subnetResourceId>'
       }
     ]
@@ -572,6 +576,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
+          "service": "batchAccount",
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
