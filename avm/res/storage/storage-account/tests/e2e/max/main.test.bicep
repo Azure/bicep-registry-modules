@@ -95,13 +95,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        service: 'blob_secondary'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
         service: 'table'
       }
       {
@@ -124,13 +117,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ]
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
         service: 'web'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        service: 'web_secondary'
       }
       {
         privateDnsZoneResourceIds: [
