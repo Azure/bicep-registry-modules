@@ -329,7 +329,77 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
+        service: 'blob_secondary'
+        subnetResourceId: '<subnetResourceId>'
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'table'
+        subnetResourceId: '<subnetResourceId>'
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'table_secondary'
+        subnetResourceId: '<subnetResourceId>'
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
         service: 'queue'
+        subnetResourceId: '<subnetResourceId>'
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'queue_secondary'
+        subnetResourceId: '<subnetResourceId>'
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'file'
+        subnetResourceId: '<subnetResourceId>'
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'file_secondary'
+        subnetResourceId: '<subnetResourceId>'
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'web'
+        subnetResourceId: '<subnetResourceId>'
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'web_secondary'
+        subnetResourceId: '<subnetResourceId>'
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'dfs'
+        subnetResourceId: '<subnetResourceId>'
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'dfs_secondary'
         subnetResourceId: '<subnetResourceId>'
       }
     ]
@@ -727,7 +797,77 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
+          "service": "blob_secondary",
+          "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "table",
+          "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "table_secondary",
+          "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
           "service": "queue",
+          "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "queue_secondary",
+          "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "file",
+          "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "file_secondary",
+          "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "web",
+          "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "web_secondary",
+          "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "dfs",
+          "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "dfs_secondary",
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -2402,7 +2542,6 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`location`](#parameter-privateendpointslocation) | string | The location to deploy the private endpoint to. |
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | The name of the request message for manual approval. |
-| [`manualPrivateLinkServiceConnections`](#parameter-privateendpointsmanualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
@@ -2585,13 +2724,6 @@ The name of the request message for manual approval.
 
 - Required: No
 - Type: string
-
-### Parameter: `privateEndpoints.manualPrivateLinkServiceConnections`
-
-Manual PrivateLink Service Connections.
-
-- Required: No
-- Type: array
 
 ### Parameter: `privateEndpoints.name`
 

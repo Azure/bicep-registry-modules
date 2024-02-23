@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "7455920665107258252"
+      "templateHash": "1361515127661071544"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -347,13 +347,6 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
-            }
-          },
-          "manualPrivateLinkServiceConnections": {
-            "type": "array",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Manual PrivateLink Service Connections."
             }
           },
           "enableTelemetry": {
@@ -993,7 +986,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'blob'), copyIndex()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex()))]"
           },
           "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Storage/storageAccounts', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service))))), createObject('value', null()))]",
           "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Storage/storageAccounts', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",

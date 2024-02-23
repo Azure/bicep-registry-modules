@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "12017185166479854402"
+      "templateHash": "6575586779164584080"
     },
     "name": "Batch Accounts",
     "description": "This module deploys a Batch Account.",
@@ -206,9 +206,8 @@
           },
           "service": {
             "type": "string",
-            "nullable": true,
             "metadata": {
-              "description": "Optional. The service (sub-) type to deploy the private endpoint for. For example \"vault\" or \"blob\"."
+              "description": "Required. The subresource to deploy the private endpoint for. For example \"blob\", \"table\", \"queue\" or \"file\"."
             }
           },
           "subnetResourceId": {
@@ -232,6 +231,20 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones."
+            }
+          },
+          "isManualConnection": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. If Manual Private Link Connection is required."
+            }
+          },
+          "manualConnectionRequestMessage": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars."
             }
           },
           "customDnsConfigs": {
@@ -331,7 +344,6 @@
           },
           "roleAssignments": {
             "$ref": "#/definitions/roleAssignmentType",
-            "nullable": true,
             "metadata": {
               "description": "Optional. Array of role assignments to create."
             }
@@ -341,13 +353,6 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
-            }
-          },
-          "manualPrivateLinkServiceConnections": {
-            "type": "array",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Manual PrivateLink Service Connections."
             }
           },
           "enableTelemetry": {
@@ -794,22 +799,11 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "privateLinkServiceConnections": {
-            "value": [
-              {
-                "name": "[parameters('name')]",
-                "properties": {
-                  "privateLinkServiceId": "[resourceId('Microsoft.Batch/batchAccounts', parameters('name'))]",
-                  "groupIds": [
-                    "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'batchAccount')]"
-                  ]
-                }
-              }
-            ]
-          },
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Batch/batchAccounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'batchAccount'), copyIndex()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Batch/batchAccounts', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex()))]"
           },
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Batch/batchAccounts', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Batch/batchAccounts', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Batch/batchAccounts', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Batch/batchAccounts', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
@@ -833,9 +827,6 @@
           },
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
-          },
-          "manualPrivateLinkServiceConnections": {
-            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections')]"
           },
           "customDnsConfigs": {
             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"

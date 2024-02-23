@@ -33,7 +33,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Waf-Aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -145,11 +145,19 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
+        service: 'databricks_ui_api'
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'browser_authentication'
+        subnetResourceId: '<subnetResourceId>'
       }
     ]
     publicIpName: 'nat-gw-public-ip'
@@ -280,11 +288,19 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
+          "service": "databricks_ui_api",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
             "Role": "DeploymentValidation"
           }
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "browser_authentication",
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -345,10 +361,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
+### Example 3: _Waf-Aligned_
 
 <details>
 
@@ -993,6 +1006,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file". |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -1004,15 +1018,22 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the private endpoint. |
 | [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
+| [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
 | [`location`](#parameter-privateendpointslocation) | string | The location to deploy the private endpoint to. |
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
-| [`manualPrivateLinkServiceConnections`](#parameter-privateendpointsmanualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
+| [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
-| [`service`](#parameter-privateendpointsservice) | string | The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
+
+### Parameter: `privateEndpoints.service`
+
+The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
@@ -1127,6 +1148,13 @@ A private IP address obtained from the private endpoint's subnet.
 - Required: Yes
 - Type: string
 
+### Parameter: `privateEndpoints.isManualConnection`
+
+If Manual Private Link Connection is required.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `privateEndpoints.location`
 
 The location to deploy the private endpoint to.
@@ -1170,12 +1198,12 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.manualPrivateLinkServiceConnections`
+### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
-Manual PrivateLink Service Connections.
+A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.name`
 
@@ -1286,13 +1314,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-
-### Parameter: `privateEndpoints.service`
-
-The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".
-
-- Required: No
-- Type: string
 
 ### Parameter: `privateEndpoints.tags`
 

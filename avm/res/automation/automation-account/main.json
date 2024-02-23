@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "5485541427531214967"
+      "templateHash": "10364017689912885139"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account.",
@@ -149,7 +149,7 @@
           "service": {
             "type": "string",
             "metadata": {
-              "description": "Required. The service (sub-) type to deploy the private endpoint for. For example \"vault\" or \"blob\"."
+              "description": "Required. The subresource to deploy the private endpoint for. For example \"blob\", \"table\", \"queue\" or \"file\"."
             }
           },
           "subnetResourceId": {
@@ -162,7 +162,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided."
+              "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
             }
           },
           "privateDnsZoneResourceIds": {
@@ -175,6 +175,20 @@
               "description": "Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones."
             }
           },
+          "isManualConnection": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. If Manual Private Link Connection is required."
+            }
+          },
+          "manualConnectionRequestMessage": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars."
+            }
+          },
           "customDnsConfigs": {
             "type": "array",
             "items": {
@@ -184,7 +198,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint ip address."
+                    "description": "Required. Fqdn that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -193,7 +207,7 @@
                     "type": "string"
                   },
                   "metadata": {
-                    "description": "Required. A list of private ip addresses of the private endpoint."
+                    "description": "Required. A list of private IP addresses of the private endpoint."
                   }
                 }
               }
@@ -232,7 +246,7 @@
                     "privateIPAddress": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. A private ip address obtained from the private endpoint's subnet."
+                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
                       }
                     }
                   },
@@ -281,13 +295,6 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
-            }
-          },
-          "manualPrivateLinkServiceConnections": {
-            "type": "array",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Manual PrivateLink Service Connections."
             }
           },
           "enableTelemetry": {
@@ -2278,24 +2285,16 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "privateLinkServiceConnections": {
-            "value": [
-              {
-                "name": "[parameters('name')]",
-                "properties": {
-                  "privateLinkServiceId": "[resourceId('Microsoft.Automation/automationAccounts', parameters('name'))]",
-                  "groupIds": [
-                    "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'automationaccount')]"
-                  ]
-                }
-              }
-            ]
-          },
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Automation/automationAccounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service), copyIndex()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Automation/automationAccounts', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex()))]"
           },
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Automation/automationAccounts', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Automation/automationAccounts', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Automation/automationAccounts', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Automation/automationAccounts', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
+          },
+          "enableTelemetry": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
           },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
@@ -2315,9 +2314,6 @@
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "manualPrivateLinkServiceConnections": {
-            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections')]"
-          },
           "customDnsConfigs": {
             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
           },
@@ -2329,9 +2325,6 @@
           },
           "customNetworkInterfaceName": {
             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customNetworkInterfaceName')]"
-          },
-          "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
           }
         },
         "template": {
