@@ -4,9 +4,6 @@ param location string = resourceGroup().location
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
 
-@description('Required. The name of the Managed Identity to create.')
-param managedIdentityName string
-
 var addressPrefix = '10.0.0.0/16'
 
 var privateDNSZoneNames = [
@@ -37,11 +34,6 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: managedIdentityName
-  location: location
-}
-
 @batchSize(1)
 resource privateDNSZones 'Microsoft.Network/privateDnsZones@2020-06-01' = [for privateDNSZone in privateDNSZoneNames: {
   name: privateDNSZone
@@ -50,12 +42,6 @@ resource privateDNSZones 'Microsoft.Network/privateDnsZones@2020-06-01' = [for p
 
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
-
-@description('The principal ID of the created Managed Identity.')
-output managedIdentityPrincipalId string = managedIdentity.properties.principalId
-
-@description('The resource ID of the created Managed Identity.')
-output managedIdentityResourceId string = managedIdentity.id
 
 @description('The resource ID of the created Private DNS Zone for Purview Account.')
 output purviewAccountPrivateDNSResourceId string = privateDNSZones[0].id

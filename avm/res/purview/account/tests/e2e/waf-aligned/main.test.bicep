@@ -31,7 +31,6 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -72,11 +71,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
     }
     managedResourceGroupName: '${namePrefix}${serviceShort}001-managed-rg'
     publicNetworkAccess: 'Disabled'
