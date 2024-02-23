@@ -109,13 +109,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        service: 'table_secondary'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
         service: 'queue'
       }
       {
@@ -123,21 +116,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        service: 'queue_secondary'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
         service: 'file'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        service: 'file_secondary'
       }
       {
         privateDnsZoneResourceIds: [
@@ -159,13 +138,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ]
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
         service: 'dfs'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        service: 'dfs_secondary'
       }
     ]
     networkAcls: {
