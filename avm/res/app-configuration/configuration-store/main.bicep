@@ -68,8 +68,6 @@ param enableTelemetry bool = true
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointType
 
-var enableReferencedModulesTelemetry = false
-
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
 var identity = !empty(managedIdentities) ? {
@@ -152,7 +150,6 @@ module configurationStore_keyValues 'key-value/main.bicep' = [for (keyValue, ind
     value: keyValue.value
     contentType: contains(keyValue, 'contentType') ? keyValue.contentType : ''
     tags: keyValue.?tags ?? tags
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -205,14 +202,21 @@ resource configurationStore_roleAssignments 'Microsoft.Authorization/roleAssignm
   scope: configurationStore
 }]
 
-module configurationStore_privateEndpoints '../../network/private-endpoint/main.bicep' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module configurationStore_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-configurationStore-PrivateEndpoint-${index}'
   params: {
-    groupIds: [
-      privateEndpoint.?service ?? 'configurationStores'
+    privateLinkServiceConnections: [
+      {
+        name: name
+        properties: {
+          privateLinkServiceId: configurationStore.id
+          groupIds: [
+            privateEndpoint.?service ?? 'configurationStores'
+          ]
+        }
+      }
     ]
     name: privateEndpoint.?name ?? 'pep-${last(split(configurationStore.id, '/'))}-${privateEndpoint.?service ?? 'configurationStores'}-${index}'
-    serviceResourceId: configurationStore.id
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
