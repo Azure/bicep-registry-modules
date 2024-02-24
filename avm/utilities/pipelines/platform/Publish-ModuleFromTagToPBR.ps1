@@ -86,4 +86,9 @@ function Publish-ModuleFromTagToPBR {
   if ($PSCmdlet.ShouldProcess("Module of tag [$ModuleReleaseTagName]", "Publish")) {
     bicep publish @publishInput
   }
+
+  return @{
+    version             = $targetVersion
+    publishedModuleName = $publishedModuleName
+  }
 }
