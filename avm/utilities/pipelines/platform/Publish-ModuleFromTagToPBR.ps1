@@ -30,8 +30,7 @@ function Publish-ModuleFromTagToPBR {
     [secureString] $PublicRegistryServer,
 
     [Parameter(Mandatory = $false)]
-    [string] $RepoRoot
-    # = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
+    [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
   )
 
   Write-Verbose "1 [$ModuleReleaseTagName]" -Verbose
