@@ -33,13 +33,18 @@ function Publish-ModuleFromTagToPBR {
     [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
   )
 
+  Write-Verbose "1 [$ModuleReleaseTagName]" -Verbose
   # Load used functions
   . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModuleReadmeLink.ps1')
 
+  Write-Verbose "2 [$ModuleReleaseTagName]" -Verbose
   # 1. Extract information from the tag
   $targetVersion = Split-Path $ModuleReleaseTagName -Leaf
+  Write-Verbose "1 [$targetVersion]" -Verbose
   $moduleRelativeFolderPath = $ModuleReleaseTagName -replace "\/$targetVersion$", ''
+  Write-Verbose "1 [$moduleRelativeFolderPath]" -Verbose
   $moduleFolderPath = Join-Path $repositoryRoot $moduleRelativeFolderPath
+  Write-Verbose "1 [$moduleFolderPath]" -Verbose
   $moduleBicepFilePath = Join-Path $moduleFolderPath 'main.bicep'
   Write-Verbose "Determined Bicep template path [$moduleBicepFilePath]"
 
