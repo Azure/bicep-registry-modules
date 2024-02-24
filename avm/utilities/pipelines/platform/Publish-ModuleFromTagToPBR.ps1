@@ -47,8 +47,29 @@ function Publish-ModuleFromTagToPBR {
   $documentationUri = Get-ModuleReadmeLink -TagName $ModuleReleaseTagName -ModuleFolderPath $moduleFolderPath
   Write-Verbose "Determined documentation URI [$documentationUri]"
 
+  # 3. Replace telemetry version value (in Bicep)
+  $tokenConfiguration = @{
+    FilePathList   = @($moduleBicepFilePath)
+    AbsoluteTokens = @{
+      '-..--..-' = $targetVersion
+    }
+  }
+  Write-Verbose "Convert Tokens Input:`n $($tokenConfiguration | ConvertTo-Json -Depth 10)" -Verbose
+  $null = Convert-TokensInFileList @tokenConfiguration
+
+  # Double-check that tokens are correctly replaced
+  $templateContent = Get-Content -Path $moduleBicepFilePath
+  $incorrectLines = @()
+  for ($index = 0; $index -lt $templateContent.Count; $index++) {
+    if ($templateContent[$index] -match '-..--..-') {
+      $incorrectLines += ('You have the token [{0}] in line [{1}] of file [{2}]. Please seek advice from the AVM team.' -f $matches[0], ($index + 1), $moduleBicepFilePath)
+    }
+  }
+  if ($incorrectLines) {
+    throw ($incorrectLines | ConvertTo-Json)
+  }
   ###################
-  ## 3.  Publish   ##
+  ## 4.  Publish   ##
   ###################
   $plainPublicRegistryServer = ConvertFrom-SecureString $PublicRegistryServer -AsPlainText
 
@@ -64,5 +85,10 @@ function Publish-ModuleFromTagToPBR {
 
   if ($PSCmdlet.ShouldProcess("Module of tag [$ModuleReleaseTagName]", "Publish")) {
     bicep publish @publishInput
+  }
+
+  return @{
+    version             = $targetVersion
+    publishedModuleName = $publishedModuleName
   }
 }
