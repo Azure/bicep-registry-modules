@@ -307,6 +307,7 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
       Role: 'DeploymentValidation'
     }
     threatIntelMode: 'Deny'
+    tier: 'Basic'
   }
 }
 ```
@@ -386,6 +387,9 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
     },
     "threatIntelMode": {
       "value": "Deny"
+    },
+    "tier": {
+      "value": "Basic"
     }
   }
 }
@@ -649,6 +653,7 @@ Tier of Firewall Policy.
 - Allowed:
   ```Bicep
   [
+    'Basic'
     'Premium'
     'Standard'
   ]

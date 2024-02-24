@@ -42,6 +42,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
+    tier: 'Basic'
     ruleCollectionGroups: [
       {
         name: '${namePrefix}-rule-001'
