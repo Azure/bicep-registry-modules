@@ -70,10 +70,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       }
     ]
     softDeleteRetentionInDays: 1
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
   }
 }]

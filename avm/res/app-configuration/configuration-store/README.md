@@ -134,29 +134,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         '<managedIdentityResourceId>'
       ]
     }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
     softDeleteRetentionInDays: 1
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -220,34 +198,8 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         ]
       }
     },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
-    },
     "softDeleteRetentionInDays": {
       "value": 1
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -301,6 +253,10 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
           }
         ]
         value: 'valueName'
+      }
+      {
+        name: 'keyName2'
+        value: 'valueName2'
       }
     ]
     location: '<location>'
@@ -396,6 +352,10 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
             }
           ],
           "value": "valueName"
+        },
+        {
+          "name": "keyName2",
+          "value": "valueName2"
         }
       ]
     },
@@ -486,11 +446,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       }
     ]
     softDeleteRetentionInDays: 1
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -541,13 +496,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     },
     "softDeleteRetentionInDays": {
       "value": 1
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -577,12 +525,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
@@ -593,27 +535,10 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       {
         contentType: 'contentType'
         name: 'keyName'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
         value: 'valueName'
       }
     ]
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     softDeleteRetentionInDays: 1
     tags: {
       Environment: 'Non-Prod'
@@ -649,12 +574,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
@@ -671,33 +590,12 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         {
           "contentType": "contentType",
           "name": "keyName",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
           "value": "valueName"
         }
       ]
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
     },
     "softDeleteRetentionInDays": {
       "value": 1

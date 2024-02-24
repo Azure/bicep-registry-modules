@@ -31,15 +31,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: resourceLocation
-  }
-}
-
 // Diagnostics
 // ===========
 module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
@@ -68,12 +59,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     createMode: 'Default'
     diagnosticSettings: [
       {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
         eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
@@ -86,27 +71,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       {
         contentType: 'contentType'
         name: 'keyName'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
         value: 'valueName'
       }
     ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     softDeleteRetentionInDays: 1
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'

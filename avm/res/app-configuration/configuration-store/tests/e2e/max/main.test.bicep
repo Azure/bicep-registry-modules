@@ -95,6 +95,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ]
         value: 'valueName'
       }
+      {
+        name: 'keyName2'
+        value: 'valueName2'
+      }
     ]
     lock: {
       kind: 'CanNotDelete'
