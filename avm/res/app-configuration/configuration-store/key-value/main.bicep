@@ -12,7 +12,7 @@ param value string
 param appConfigurationName string
 
 @description('Optional. The content type of the key-values value. Providing a proper content-type can enable transformations of values when they are retrieved by applications.')
-param contentType string = ''
+param contentType string?
 
 @description('Optional. Tags of the resource.')
 param tags object?

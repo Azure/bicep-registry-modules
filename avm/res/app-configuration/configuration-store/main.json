@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "264438802706871966"
+      "templateHash": "15521933756757591575"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store.",
@@ -499,9 +499,8 @@
     },
     "publicNetworkAccess": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
-        "",
         "Enabled",
         "Disabled"
       ],
@@ -526,7 +525,7 @@
     },
     "keyValues": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. All Key / Values to create. Requires local authentication to be enabled."
       }
@@ -651,7 +650,7 @@
         "disableLocalAuth": "[parameters('disableLocalAuth')]",
         "enablePurgeProtection": "[if(equals(parameters('sku'), 'Free'), false(), parameters('enablePurgeProtection'))]",
         "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keyVaultProperties', createObject('keyIdentifier', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), reference('cMKKeyVault::cMKKey').keyUriWithVersion), 'identityClientId', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), ''))), reference('cMKUserAssignedIdentity').clientId, null()))), null())]",
-        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), null())]",
+        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', 'Enabled'))]",
         "softDeleteRetentionInDays": "[if(equals(parameters('sku'), 'Free'), 0, parameters('softDeleteRetentionInDays'))]"
       },
       "dependsOn": [
@@ -721,7 +720,7 @@
     "configurationStore_keyValues": {
       "copy": {
         "name": "configurationStore_keyValues",
-        "count": "[length(parameters('keyValues'))]"
+        "count": "[length(coalesce(parameters('keyValues'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -736,14 +735,16 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('keyValues')[copyIndex()].name]"
+            "value": "[coalesce(parameters('keyValues'), createArray())[copyIndex()].name]"
           },
           "value": {
-            "value": "[parameters('keyValues')[copyIndex()].value]"
+            "value": "[coalesce(parameters('keyValues'), createArray())[copyIndex()].value]"
           },
-          "contentType": "[if(contains(parameters('keyValues')[copyIndex()], 'contentType'), createObject('value', parameters('keyValues')[copyIndex()].contentType), createObject('value', ''))]",
+          "contentType": {
+            "value": "[tryGet(coalesce(parameters('keyValues'), createArray())[copyIndex()], 'contentType')]"
+          },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('keyValues')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('keyValues'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           }
         },
         "template": {
@@ -754,7 +755,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "7949614179899909519"
+              "templateHash": "13667600666073687095"
             },
             "name": "App Configuration Stores Key Values",
             "description": "This module deploys an App Configuration Store Key Value.",
@@ -781,7 +782,7 @@
             },
             "contentType": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The content type of the key-values value. Providing a proper content-type can enable transformations of values when they are retrieved by applications."
               }

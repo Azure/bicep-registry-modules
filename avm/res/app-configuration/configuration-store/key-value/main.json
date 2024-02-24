@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "7949614179899909519"
+      "templateHash": "13667600666073687095"
     },
     "name": "App Configuration Stores Key Values",
     "description": "This module deploys an App Configuration Store Key Value.",
@@ -33,7 +33,7 @@
     },
     "contentType": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The content type of the key-values value. Providing a proper content-type can enable transformations of values when they are retrieved by applications."
       }

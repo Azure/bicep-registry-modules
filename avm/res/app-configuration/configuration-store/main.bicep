@@ -33,11 +33,10 @@ param enablePurgeProtection bool = false
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
-  ''
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string?
 
 @description('Optional. The amount of time in days that the configuration store will be retained when it is soft deleted.')
 @minValue(1)
@@ -48,7 +47,7 @@ param softDeleteRetentionInDays int = 1
 param customerManagedKey customerManagedKeyType
 
 @description('Optional. All Key / Values to create. Requires local authentication to be enabled.')
-param keyValues array = []
+param keyValues array?
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
@@ -137,18 +136,18 @@ resource configurationStore 'Microsoft.AppConfiguration/configurationStores@2023
         identityClientId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '') ? cMKUserAssignedIdentity.properties.clientId : null
       }
     } : null
-    publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : null
+    publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
     softDeleteRetentionInDays: sku == 'Free' ? 0 : softDeleteRetentionInDays
   }
 }
 
-module configurationStore_keyValues 'key-value/main.bicep' = [for (keyValue, index) in keyValues: {
+module configurationStore_keyValues 'key-value/main.bicep' = [for (keyValue, index) in (keyValues ?? []): {
   name: '${uniqueString(deployment().name, location)}-AppConfig-KeyValues-${index}'
   params: {
     appConfigurationName: configurationStore.name
     name: keyValue.name
     value: keyValue.value
-    contentType: contains(keyValue, 'contentType') ? keyValue.contentType : ''
+    contentType: keyValue.?contentType
     tags: keyValue.?tags ?? tags
   }
 }]

@@ -65,7 +65,6 @@ The content type of the key-values value. Providing a proper content-type can en
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `tags`
 
