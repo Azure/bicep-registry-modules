@@ -62,8 +62,8 @@ param roleAssignments roleAssignmentType
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointType
@@ -89,14 +89,20 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.appconfiguration-configurationstore.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
       contentVersion: '1.0.0.0'
       resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
     }
   }
 }
@@ -208,7 +214,7 @@ module configurationStore_privateEndpoints '../../network/private-endpoint/main.
     name: privateEndpoint.?name ?? 'pep-${last(split(configurationStore.id, '/'))}-${privateEndpoint.?service ?? 'configurationStores'}-${index}'
     serviceResourceId: configurationStore.id
     subnetResourceId: privateEndpoint.subnetResourceId
-    enableDefaultTelemetry: privateEndpoint.?enableDefaultTelemetry ?? enableReferencedModulesTelemetry
+    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
