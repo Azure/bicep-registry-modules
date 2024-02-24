@@ -89,6 +89,6 @@ function Publish-ModuleFromTagToPBR {
 
   return @{
     version             = $targetVersion
-    publishedModuleName = $publishedModuleName
+    publishedModuleName = $moduleRelativeFolderPath
   }
 }
