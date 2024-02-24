@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "8032560098908563077"
+      "version": "0.25.53.49325",
+      "templateHash": "6226788182357954709"
     },
     "name": "Compute Disks",
     "description": "This module deploys a Compute Disk",

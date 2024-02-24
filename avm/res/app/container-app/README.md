@@ -468,7 +468,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`exposedPort`](#parameter-exposedport) | int | Exposed Port in containers for TCP traffic from ingress. |
 | [`ingressAllowInsecure`](#parameter-ingressallowinsecure) | bool | Bool indicating if HTTP connections to is allowed. If set to false HTTP connections are automatically redirected to HTTPS connections. |
-| [`ingressExternal`](#parameter-ingressexternal) | bool | Bool indicating if app exposes an external http endpoint. |
+| [`ingressExternal`](#parameter-ingressexternal) | bool | Bool indicating if the App exposes an external HTTP endpoint. |
 | [`ingressTargetPort`](#parameter-ingresstargetport) | int | Target Port in containers for traffic from ingress. |
 | [`ingressTransport`](#parameter-ingresstransport) | string | Ingress transport protocol. |
 | [`initContainersTemplate`](#parameter-initcontainerstemplate) | array | List of specialized containers that run before app containers. |
@@ -570,7 +570,7 @@ Bool indicating if HTTP connections to is allowed. If set to false HTTP connecti
 
 ### Parameter: `ingressExternal`
 
-Bool indicating if app exposes an external http endpoint.
+Bool indicating if the App exposes an external HTTP endpoint.
 
 - Required: No
 - Type: bool
