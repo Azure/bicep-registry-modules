@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "16638805495482401204"
+      "templateHash": "14460718726558289834"
     },
     "name": "Purview Accounts",
     "description": "This module deploys a Purview Account.",
@@ -238,6 +238,187 @@
         }
       },
       "nullable": true
+    },
+    "privateEndpointType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the private endpoint."
+            }
+          },
+          "location": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The location to deploy the private endpoint to."
+            }
+          },
+          "service": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The subresource to deploy the private endpoint for. For example \"blob\", \"table\", \"queue\" or \"file\"."
+            }
+          },
+          "subnetResourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+            }
+          },
+          "privateDnsZoneGroupName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
+            }
+          },
+          "privateDnsZoneResourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones."
+            }
+          },
+          "isManualConnection": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. If Manual Private Link Connection is required."
+            }
+          },
+          "manualConnectionRequestMessage": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars."
+            }
+          },
+          "customDnsConfigs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "fqdn": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                  }
+                },
+                "ipAddresses": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of private IP addresses of the private endpoint."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Custom DNS configurations."
+            }
+          },
+          "ipConfigurations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the resource that is unique within a resource group."
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "groupId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                      }
+                    },
+                    "memberName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
+                      }
+                    },
+                    "privateIPAddress": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Properties of private endpoint IP configurations."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
+            }
+          },
+          "applicationSecurityGroupResourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
+            }
+          },
+          "customNetworkInterfaceName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The custom name of the network interface attached to the private endpoint."
+            }
+          },
+          "lock": {
+            "$ref": "#/definitions/lockType",
+            "metadata": {
+              "description": "Optional. Specify the type of lock."
+            }
+          },
+          "roleAssignments": {
+            "$ref": "#/definitions/roleAssignmentType",
+            "metadata": {
+              "description": "Optional. Array of role assignments to create."
+            }
+          },
+          "tags": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
+            }
+          },
+          "enableTelemetry": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Enable/Disable usage telemetry for module."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -301,36 +482,31 @@
       }
     },
     "accountPrivateEndpoints": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/privateEndpointType",
       "metadata": {
         "description": "Optional. Configuration details for Purview Account private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to 'account'."
       }
     },
     "portalPrivateEndpoints": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/privateEndpointType",
       "metadata": {
         "description": "Optional. Configuration details for Purview Portal private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to 'portal'."
       }
     },
     "storageBlobPrivateEndpoints": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/privateEndpointType",
       "metadata": {
         "description": "Optional. Configuration details for Purview Managed Storage Account blob private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to 'blob'."
       }
     },
     "storageQueuePrivateEndpoints": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/privateEndpointType",
       "metadata": {
         "description": "Optional. Configuration details for Purview Managed Storage Account queue private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to 'queue'."
       }
     },
     "eventHubPrivateEndpoints": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/privateEndpointType",
       "metadata": {
         "description": "Optional. Configuration details for Purview Managed Event Hub namespace private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to 'namespace'."
       }
@@ -488,22 +664,11 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "privateLinkServiceConnections": {
-            "value": [
-              {
-                "name": "[parameters('name')]",
-                "properties": {
-                  "privateLinkServiceId": "[resourceId('Microsoft.Purview/accounts', parameters('name'))]",
-                  "groupIds": [
-                    "[coalesce(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'account')]"
-                  ]
-                }
-              }
-            ]
-          },
           "name": {
             "value": "[coalesce(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'account'), copyIndex()))]"
           },
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Purview/accounts', parameters('name')), 'groupIds', createArray(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()].service))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Purview/accounts', parameters('name')), 'groupIds', createArray(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()].service), 'requestMessage', coalesce(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
@@ -528,9 +693,6 @@
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "manualPrivateLinkServiceConnections": {
-            "value": "[tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections')]"
-          },
           "customDnsConfigs": {
             "value": "[tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
           },
@@ -551,8 +713,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "2592884001616184297"
+              "version": "0.25.53.49325",
+              "templateHash": "4120048060064073955"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -917,7 +1079,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1022,8 +1184,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "9321937464667207030"
+                      "version": "0.25.53.49325",
+                      "templateHash": "11244630631275470040"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -1163,22 +1325,11 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "privateLinkServiceConnections": {
-            "value": [
-              {
-                "name": "[parameters('name')]",
-                "properties": {
-                  "privateLinkServiceId": "[resourceId('Microsoft.Purview/accounts', parameters('name'))]",
-                  "groupIds": [
-                    "[coalesce(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'portal')]"
-                  ]
-                }
-              }
-            ]
-          },
           "name": {
             "value": "[coalesce(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'portal'), copyIndex()))]"
           },
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Purview/accounts', parameters('name')), 'groupIds', createArray(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()].service))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Purview/accounts', parameters('name')), 'groupIds', createArray(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()].service), 'requestMessage', coalesce(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
@@ -1203,9 +1354,6 @@
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "manualPrivateLinkServiceConnections": {
-            "value": "[tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections')]"
-          },
           "customDnsConfigs": {
             "value": "[tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
           },
@@ -1226,8 +1374,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "2592884001616184297"
+              "version": "0.25.53.49325",
+              "templateHash": "4120048060064073955"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -1592,7 +1740,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1697,8 +1845,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "9321937464667207030"
+                      "version": "0.25.53.49325",
+                      "templateHash": "11244630631275470040"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -1838,22 +1986,11 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "privateLinkServiceConnections": {
-            "value": [
-              {
-                "name": "[parameters('name')]",
-                "properties": {
-                  "privateLinkServiceId": "[reference('account').managedResources.storageAccount]",
-                  "groupIds": [
-                    "[coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'blob')]"
-                  ]
-                }
-              }
-            ]
-          },
           "name": {
             "value": "[coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'blob'), copyIndex()))]"
           },
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', reference('account').managedResources.storageAccount, 'groupIds', createArray(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()].service))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', reference('account').managedResources.storageAccount, 'groupIds', createArray(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()].service), 'requestMessage', coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
@@ -1878,9 +2015,6 @@
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "manualPrivateLinkServiceConnections": {
-            "value": "[tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections')]"
-          },
           "customDnsConfigs": {
             "value": "[tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
           },
@@ -1901,8 +2035,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "2592884001616184297"
+              "version": "0.25.53.49325",
+              "templateHash": "4120048060064073955"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -2267,7 +2401,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2372,8 +2506,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "9321937464667207030"
+                      "version": "0.25.53.49325",
+                      "templateHash": "11244630631275470040"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -2513,22 +2647,11 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "privateLinkServiceConnections": {
-            "value": [
-              {
-                "name": "[parameters('name')]",
-                "properties": {
-                  "privateLinkServiceId": "[reference('account').managedResources.storageAccount]",
-                  "groupIds": [
-                    "[coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'service'), 'queue')]"
-                  ]
-                }
-              }
-            ]
-          },
           "name": {
             "value": "[coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'service'), 'queue'), copyIndex()))]"
           },
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', reference('account').managedResources.storageAccount, 'groupIds', createArray(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()].service))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', reference('account').managedResources.storageAccount, 'groupIds', createArray(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()].service), 'requestMessage', coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
@@ -2553,9 +2676,6 @@
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "manualPrivateLinkServiceConnections": {
-            "value": "[tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections')]"
-          },
           "customDnsConfigs": {
             "value": "[tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
           },
@@ -2576,8 +2696,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "2592884001616184297"
+              "version": "0.25.53.49325",
+              "templateHash": "4120048060064073955"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -2942,7 +3062,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3047,8 +3167,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "9321937464667207030"
+                      "version": "0.25.53.49325",
+                      "templateHash": "11244630631275470040"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -3188,22 +3308,11 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "privateLinkServiceConnections": {
-            "value": [
-              {
-                "name": "[parameters('name')]",
-                "properties": {
-                  "privateLinkServiceId": "[reference('account').managedResources.eventHubNamespace]",
-                  "groupIds": [
-                    "[coalesce(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace')]"
-                  ]
-                }
-              }
-            ]
-          },
           "name": {
             "value": "[coalesce(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace'), copyIndex()))]"
           },
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', reference('account').managedResources.eventHubNamespace, 'groupIds', createArray(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()].service))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', reference('account').managedResources.eventHubNamespace, 'groupIds', createArray(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()].service), 'requestMessage', coalesce(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
@@ -3228,9 +3337,6 @@
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "manualPrivateLinkServiceConnections": {
-            "value": "[tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections')]"
-          },
           "customDnsConfigs": {
             "value": "[tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
           },
@@ -3251,8 +3357,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "2592884001616184297"
+              "version": "0.25.53.49325",
+              "templateHash": "4120048060064073955"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -3617,7 +3723,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3722,8 +3828,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "9321937464667207030"
+                      "version": "0.25.53.49325",
+                      "templateHash": "11244630631275470040"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",

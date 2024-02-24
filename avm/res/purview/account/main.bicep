@@ -34,19 +34,19 @@ param diagnosticSettings diagnosticSettingType
 param roleAssignments roleAssignmentType
 
 @description('Optional. Configuration details for Purview Account private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to \'account\'.')
-param accountPrivateEndpoints array?
+param accountPrivateEndpoints privateEndpointType
 
 @description('Optional. Configuration details for Purview Portal private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to \'portal\'.')
-param portalPrivateEndpoints array?
+param portalPrivateEndpoints privateEndpointType
 
 @description('Optional. Configuration details for Purview Managed Storage Account blob private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to \'blob\'.')
-param storageBlobPrivateEndpoints array?
+param storageBlobPrivateEndpoints privateEndpointType
 
 @description('Optional. Configuration details for Purview Managed Storage Account queue private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to \'queue\'.')
-param storageQueuePrivateEndpoints array?
+param storageQueuePrivateEndpoints privateEndpointType
 
 @description('Optional. Configuration details for Purview Managed Event Hub namespace private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to \'namespace\'.')
-param eventHubPrivateEndpoints array?
+param eventHubPrivateEndpoints privateEndpointType
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -135,21 +135,33 @@ resource account_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-
   scope: account
 }]
 
-module account_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (accountPrivateEndpoints ?? []): {
+module account_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [for (privateEndpoint, index) in (accountPrivateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-Account-PrivateEndpoint-${index}'
   params: {
-    privateLinkServiceConnections: [
+    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
+    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
         properties: {
           privateLinkServiceId: account.id
           groupIds: [
-            privateEndpoint.?service ?? 'account'
+            privateEndpoint.service
           ]
         }
       }
-    ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
+    ] : null
+    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
+      {
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+        properties: {
+          privateLinkServiceId: account.id
+          groupIds: [
+            privateEndpoint.service
+          ]
+          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+        }
+      }
+    ] : null
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
@@ -158,7 +170,6 @@ module account_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
     roleAssignments: privateEndpoint.?roleAssignments
     tags: privateEndpoint.?tags ?? tags
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
     customDnsConfigs: privateEndpoint.?customDnsConfigs
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
@@ -166,21 +177,33 @@ module account_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.
   }
 }]
 
-module portal_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (portalPrivateEndpoints ?? []): {
+module portal_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [for (privateEndpoint, index) in (portalPrivateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-Portal-PrivateEndpoint-${index}'
   params: {
-    privateLinkServiceConnections: [
+    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'portal'}-${index}'
+    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
         properties: {
           privateLinkServiceId: account.id
           groupIds: [
-            privateEndpoint.?service ?? 'portal'
+            privateEndpoint.service
           ]
         }
       }
-    ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'portal'}-${index}'
+    ] : null
+    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
+      {
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+        properties: {
+          privateLinkServiceId: account.id
+          groupIds: [
+            privateEndpoint.service
+          ]
+          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+        }
+      }
+    ] : null
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
@@ -189,7 +212,6 @@ module portal_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
     roleAssignments: privateEndpoint.?roleAssignments
     tags: privateEndpoint.?tags ?? tags
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
     customDnsConfigs: privateEndpoint.?customDnsConfigs
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
@@ -197,21 +219,33 @@ module portal_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0
   }
 }]
 
-module blob_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (storageBlobPrivateEndpoints ?? []): {
+module blob_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [for (privateEndpoint, index) in (storageBlobPrivateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-Storage-Blob-PrivateEndpoint-${index}'
   params: {
-    privateLinkServiceConnections: [
+    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'blob'}-${index}'
+    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
         properties: {
           privateLinkServiceId: account.properties.managedResources.storageAccount
           groupIds: [
-            privateEndpoint.?service ?? 'blob'
+            privateEndpoint.service
           ]
         }
       }
-    ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'blob'}-${index}'
+    ] : null
+    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
+      {
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+        properties: {
+          privateLinkServiceId: account.properties.managedResources.storageAccount
+          groupIds: [
+            privateEndpoint.service
+          ]
+          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+        }
+      }
+    ] : null
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
@@ -220,7 +254,6 @@ module blob_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' 
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
     roleAssignments: privateEndpoint.?roleAssignments
     tags: privateEndpoint.?tags ?? tags
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
     customDnsConfigs: privateEndpoint.?customDnsConfigs
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
@@ -228,21 +261,33 @@ module blob_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' 
   }
 }]
 
-module queue_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (storageQueuePrivateEndpoints ?? []): {
+module queue_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [for (privateEndpoint, index) in (storageQueuePrivateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-Storage-Queue-PrivateEndpoint-${index}'
   params: {
-    privateLinkServiceConnections: [
+    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'queue'}-${index}'
+    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
         properties: {
           privateLinkServiceId: account.properties.managedResources.storageAccount
           groupIds: [
-            privateEndpoint.?service ?? 'queue'
+            privateEndpoint.service
           ]
         }
       }
-    ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'queue'}-${index}'
+    ] : null
+    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
+      {
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+        properties: {
+          privateLinkServiceId: account.properties.managedResources.storageAccount
+          groupIds: [
+            privateEndpoint.service
+          ]
+          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+        }
+      }
+    ] : null
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
@@ -251,7 +296,6 @@ module queue_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0'
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
     roleAssignments: privateEndpoint.?roleAssignments
     tags: privateEndpoint.?tags ?? tags
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
     customDnsConfigs: privateEndpoint.?customDnsConfigs
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
@@ -259,21 +303,33 @@ module queue_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0'
   }
 }]
 
-module eventHub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (eventHubPrivateEndpoints ?? []): {
+module eventHub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [for (privateEndpoint, index) in (eventHubPrivateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-Eventhub-Namespace-PrivateEndpoint-${index}'
   params: {
-    privateLinkServiceConnections: [
+    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
+    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
         properties: {
           privateLinkServiceId: account.properties.managedResources.eventHubNamespace
           groupIds: [
-            privateEndpoint.?service ?? 'namespace'
+            privateEndpoint.service
           ]
         }
       }
-    ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
+    ] : null
+    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
+      {
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+        properties: {
+          privateLinkServiceId: account.properties.managedResources.eventHubNamespace
+          groupIds: [
+            privateEndpoint.service
+          ]
+          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+        }
+      }
+    ] : null
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
@@ -282,7 +338,6 @@ module eventHub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
     roleAssignments: privateEndpoint.?roleAssignments
     tags: privateEndpoint.?tags ?? tags
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
     customDnsConfigs: privateEndpoint.?customDnsConfigs
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
@@ -413,4 +468,76 @@ type diagnosticSettingType = {
 
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
+}[]?
+
+type privateEndpointType = {
+  @description('Optional. The name of the private endpoint.')
+  name: string?
+
+  @description('Optional. The location to deploy the private endpoint to.')
+  location: string?
+
+  // Variant 2: A default subresource cannot be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...)
+  @description('Required. The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".')
+  service: string
+
+  @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
+  subnetResourceId: string
+
+  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
+  privateDnsZoneGroupName: string?
+
+  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
+  privateDnsZoneResourceIds: string[]?
+
+  @description('Optional. If Manual Private Link Connection is required.')
+  isManualConnection: bool?
+
+  @description('Optional. A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars.')
+  manualConnectionRequestMessage: string?
+
+  @description('Optional. Custom DNS configurations.')
+  customDnsConfigs: {
+    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('Required. A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]?
+
+  @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
+  ipConfigurations: {
+    @description('Required. The name of the resource that is unique within a resource group.')
+    name: string
+
+    @description('Required. Properties of private endpoint IP configurations.')
+    properties: {
+      @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
+      groupId: string
+
+      @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
+      memberName: string
+
+      @description('Required. A private IP address obtained from the private endpoint\'s subnet.')
+      privateIPAddress: string
+    }
+  }[]?
+
+  @description('Optional. Application security groups in which the private endpoint IP configuration is included.')
+  applicationSecurityGroupResourceIds: string[]?
+
+  @description('Optional. The custom name of the network interface attached to the private endpoint.')
+  customNetworkInterfaceName: string?
+
+  @description('Optional. Specify the type of lock.')
+  lock: lockType
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType
+
+  @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
+  tags: object?
+
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
 }[]?
