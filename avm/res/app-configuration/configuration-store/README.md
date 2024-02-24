@@ -529,7 +529,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    disableLocalAuth: true
+    disableLocalAuth: false
     enablePurgeProtection: false
     keyValues: [
       {
@@ -580,7 +580,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       ]
     },
     "disableLocalAuth": {
-      "value": true
+      "value": false
     },
     "enablePurgeProtection": {
       "value": false
