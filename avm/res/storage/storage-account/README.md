@@ -70,7 +70,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     // Non-required parameters
     kind: 'BlobStorage'
     location: '<location>'
-    skuName: 'Premium_LRS'
+    skuName: 'Standard_LRS'
   }
 }
 ```
@@ -99,7 +99,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       "value": "<location>"
     },
     "skuName": {
-      "value": "Premium_LRS"
+      "value": "Standard_LRS"
     }
   }
 }
