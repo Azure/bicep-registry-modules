@@ -39,10 +39,9 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Germlin Database](#example-2-germlin-database)
 - [Mongo Database](#example-3-mongo-database)
-- [Private Endpoints](#example-4-private-endpoints)
-- [Plain](#example-5-plain)
-- [SQL Database](#example-6-sql-database)
-- [WAF-aligned](#example-7-waf-aligned)
+- [Plain](#example-4-plain)
+- [SQL Database](#example-5-sql-database)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -910,125 +909,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 4: _Private Endpoints_
-
-This instance deploys the module with all Private Endpoints.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dddape'
-  params: {
-    // Required parameters
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: '<locationName>'
-      }
-    ]
-    name: 'dddape001'
-    // Non-required parameters
-    location: '<location>'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        service: 'Sql'
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
-      }
-    ]
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "locations": {
-      "value": [
-        {
-          "failoverPriority": 0,
-          "isZoneRedundant": false,
-          "locationName": "<locationName>"
-        }
-      ]
-    },
-    "name": {
-      "value": "dddape001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "service": "Sql",
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
-        }
-      ]
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 5: _Plain_
+### Example 4: _Plain_
 
 This instance deploys the module without a Database.
 
@@ -1190,7 +1071,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 6: _SQL Database_
+### Example 5: _SQL Database_
 
 This instance deploys the module with a SQL Database.
 
@@ -1534,7 +1415,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
