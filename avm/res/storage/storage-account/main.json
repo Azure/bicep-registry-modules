@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "3367209446741600401"
+      "templateHash": "2079881859262732934"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -903,7 +903,7 @@
         "dnsEndpointType": "[if(not(empty(parameters('dnsEndpointType'))), parameters('dnsEndpointType'), null())]",
         "isLocalUserEnabled": "[parameters('isLocalUserEnabled')]",
         "encryption": "[union(createObject('keySource', if(not(empty(parameters('customerManagedKey'))), 'Microsoft.Keyvault', 'Microsoft.Storage'), 'services', createObject('blob', if(variables('supportsBlobService'), createObject('enabled', true()), null()), 'file', if(variables('supportsFileService'), createObject('enabled', true()), null()), 'table', createObject('enabled', true()), 'queue', createObject('enabled', true())), 'keyvaultproperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyname', parameters('customerManagedKey').keyName, 'keyvaulturi', reference('cMKKeyVault').vaultUri, 'keyversion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), null()), 'identity', createObject('userAssignedIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))), null()))), if(parameters('requireInfrastructureEncryption'), createObject('requireInfrastructureEncryption', if(not(equals(parameters('kind'), 'Storage')), parameters('requireInfrastructureEncryption'), null())), createObject()))]",
-        "accessTier": "[if(not(equals(parameters('kind'), 'Storage')), parameters('accessTier'), null())]",
+        "accessTier": "[if(and(not(equals(parameters('kind'), 'Storage')), not(equals(parameters('kind'), 'BlockBlobStorage'))), parameters('accessTier'), null())]",
         "sasPolicy": "[if(not(empty(parameters('sasExpirationPeriod'))), createObject('expirationAction', 'Log', 'sasExpirationPeriod', parameters('sasExpirationPeriod')), null())]",
         "supportsHttpsTrafficOnly": "[parameters('supportsHttpsTrafficOnly')]",
         "isHnsEnabled": "[if(parameters('enableHierarchicalNamespace'), parameters('enableHierarchicalNamespace'), null())]",

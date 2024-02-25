@@ -288,7 +288,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
       }, (requireInfrastructureEncryption ? {
         requireInfrastructureEncryption: kind != 'Storage' ? requireInfrastructureEncryption : null
       } : {}))
-    accessTier: kind != 'Storage' ? accessTier : null
+    accessTier: (kind != 'Storage' && kind != 'BlockBlobStorage') ? accessTier : null
     sasPolicy: !empty(sasExpirationPeriod) ? {
       expirationAction: 'Log'
       sasExpirationPeriod: sasExpirationPeriod
