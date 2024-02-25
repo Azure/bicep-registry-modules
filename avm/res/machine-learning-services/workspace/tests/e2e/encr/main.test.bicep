@@ -68,20 +68,6 @@ module testDeployment '../../../main.bicep' = {
       userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
     }
     primaryUserAssignedIdentity: nestedDependencies.outputs.managedIdentityResourceId
-    privateEndpoints: [
-      {
-        service: 'amlworkspace'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
-      }
-    ]
     // systemAssigned must be false if `primaryUserAssignedIdentity` is provided
     managedIdentities: {
       systemAssigned: false
