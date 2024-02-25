@@ -164,7 +164,7 @@ module domain_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0
         properties: {
           privateLinkServiceId: domain.id
           groupIds: [
-            privateEndpoint.service ?? 'domain'
+            privateEndpoint.?service ?? 'domain'
           ]
           requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
         }

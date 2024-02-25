@@ -124,7 +124,7 @@ module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endp
         properties: {
           privateLinkServiceId: privateLinkScope.id
           groupIds: [
-            privateEndpoint.service ?? 'azuremonitor'
+            privateEndpoint.?service ?? 'azuremonitor'
           ]
           requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
         }

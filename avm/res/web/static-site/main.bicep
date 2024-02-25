@@ -211,7 +211,7 @@ module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0
         properties: {
           privateLinkServiceId: staticSite.id
           groupIds: [
-            privateEndpoint.service ?? 'staticSites'
+            privateEndpoint.?service ?? 'staticSites'
           ]
         }
       }
@@ -222,7 +222,7 @@ module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0
         properties: {
           privateLinkServiceId: staticSite.id
           groupIds: [
-            privateEndpoint.service ?? 'staticSites'
+            privateEndpoint.?service ?? 'staticSites'
           ]
           requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
         }

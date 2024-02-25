@@ -247,7 +247,7 @@ module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:
         properties: {
           privateLinkServiceId: dataFactory.id
           groupIds: [
-            privateEndpoint.service ?? 'dataFactory'
+            privateEndpoint.?service ?? 'dataFactory'
           ]
           requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
         }

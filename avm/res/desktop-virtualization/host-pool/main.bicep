@@ -217,7 +217,7 @@ module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4
         properties: {
           privateLinkServiceId: hostPool.id
           groupIds: [
-            privateEndpoint.service ?? 'connection'
+            privateEndpoint.?service ?? 'connection'
           ]
           requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
         }

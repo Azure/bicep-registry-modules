@@ -355,7 +355,7 @@ module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4
         properties: {
           privateLinkServiceId: registry.id
           groupIds: [
-            privateEndpoint.service ?? 'registry'
+            privateEndpoint.?service ?? 'registry'
           ]
           requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
         }

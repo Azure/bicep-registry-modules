@@ -310,7 +310,7 @@ module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-e
         properties: {
           privateLinkServiceId: serviceBusNamespace.id
           groupIds: [
-            privateEndpoint.service ?? 'namespace'
+            privateEndpoint.?service ?? 'namespace'
           ]
         }
       }
@@ -321,7 +321,7 @@ module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-e
         properties: {
           privateLinkServiceId: serviceBusNamespace.id
           groupIds: [
-            privateEndpoint.service ?? 'namespace'
+            privateEndpoint.?service ?? 'namespace'
           ]
           requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
         }

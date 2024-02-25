@@ -372,7 +372,7 @@ module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' =
         properties: {
           privateLinkServiceId: app.id
           groupIds: [
-            privateEndpoint.service ?? 'sites'
+            privateEndpoint.?service ?? 'sites'
           ]
         }
       }
@@ -383,7 +383,7 @@ module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' =
         properties: {
           privateLinkServiceId: app.id
           groupIds: [
-            privateEndpoint.service ?? 'sites'
+            privateEndpoint.?service ?? 'sites'
           ]
           requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
         }

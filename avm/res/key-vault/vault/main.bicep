@@ -246,7 +246,7 @@ module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4
         properties: {
           privateLinkServiceId: keyVault.id
           groupIds: [
-            privateEndpoint.service ?? 'vault'
+            privateEndpoint.?service ?? 'vault'
           ]
         }
       }
@@ -257,7 +257,7 @@ module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4
         properties: {
           privateLinkServiceId: keyVault.id
           groupIds: [
-            privateEndpoint.service ?? 'vault'
+            privateEndpoint.?service ?? 'vault'
           ]
           requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
         }

@@ -208,7 +208,7 @@ module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoin
         properties: {
           privateLinkServiceId: searchService.id
           groupIds: [
-            privateEndpoint.service ?? 'searchService'
+            privateEndpoint.?service ?? 'searchService'
           ]
         }
       }
@@ -219,7 +219,7 @@ module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoin
         properties: {
           privateLinkServiceId: searchService.id
           groupIds: [
-            privateEndpoint.service ?? 'searchService'
+            privateEndpoint.?service ?? 'searchService'
           ]
           requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
         }

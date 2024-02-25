@@ -91,7 +91,7 @@ module privateLinkHub_privateEndpoints 'br/public:avm/res/network/private-endpoi
         properties: {
           privateLinkServiceId: privateLinkHub.id
           groupIds: [
-            privateEndpoint.service ?? 'privateLinkHubs'
+            privateEndpoint.?service ?? 'privateLinkHubs'
           ]
         }
       }
@@ -102,7 +102,7 @@ module privateLinkHub_privateEndpoints 'br/public:avm/res/network/private-endpoi
         properties: {
           privateLinkServiceId: privateLinkHub.id
           groupIds: [
-            privateEndpoint.service ?? 'privateLinkHubs'
+            privateEndpoint.?service ?? 'privateLinkHubs'
           ]
           requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
         }

@@ -244,7 +244,7 @@ module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0
         properties: {
           privateLinkServiceId: server.id
           groupIds: [
-            privateEndpoint.service ?? 'sqlServer'
+            privateEndpoint.?service ?? 'sqlServer'
           ]
         }
       }
@@ -255,7 +255,7 @@ module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0
         properties: {
           privateLinkServiceId: server.id
           groupIds: [
-            privateEndpoint.service ?? 'sqlServer'
+            privateEndpoint.?service ?? 'sqlServer'
           ]
           requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
         }
