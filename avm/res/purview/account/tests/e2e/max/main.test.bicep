@@ -19,9 +19,6 @@ param serviceShort string = 'pvamax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-#disable-next-line no-hardcoded-location // services used for this module are only available in major regions
-var tempLocation = 'eastus'
-
 // =========== //
 // Deployments //
 // =========== //
@@ -31,7 +28,7 @@ var tempLocation = 'eastus'
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: tempLocation
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
@@ -40,7 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: tempLocation
+    location: resourceLocation
   }
 }
 
@@ -54,7 +51,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
-    location: tempLocation
+    location: resourceLocation
   }
 }
 
@@ -68,7 +65,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: tempLocation
+    location: resourceLocation
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
