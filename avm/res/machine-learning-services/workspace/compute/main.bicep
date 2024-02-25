@@ -126,7 +126,7 @@ output resourceId string = machineLearningWorkspaceCompute.id
 output resourceGroupName string = resourceGroup().name
 
 @sys.description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(machineLearningWorkspace.identity, 'principalId') ? machineLearningWorkspace.identity.principalId : ''
+output systemAssignedMIPrincipalId string = machineLearningWorkspaceCompute.?identity.?principalId ?? ''
 
 @sys.description('The location the resource was deployed into.')
 output location string = machineLearningWorkspaceCompute.location
