@@ -13,14 +13,14 @@ param resourceGroupName string = 'dep-${namePrefix}-purview-${serviceShort}-rg'
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
-@description('Optional. The location to deploy resources to.')
-param fixedResourceLocation string = 'eastus' // Not available all locations used for testing, so we need a fixed location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'pvawaf'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
+
+#disable-next-line no-hardcoded-location // services used for this module are only available in major regions
+var tempLocation = 'eastus'
 
 // =========== //
 // Deployments //
@@ -29,18 +29,18 @@ param namePrefix string = '#_namePrefix_#'
 // General resources
 // =================
 
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: resourceGroupName
+  location: tempLocation
+}
+
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    location: resourceLocation
+    location: tempLocation
   }
-}
-
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroupName
-  location: resourceLocation
 }
 
 // Diagnostics
@@ -53,7 +53,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
-    location: resourceLocation
+    location: tempLocation
 
   }
 }
@@ -68,7 +68,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: fixedResourceLocation
+    location: tempLocation
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
