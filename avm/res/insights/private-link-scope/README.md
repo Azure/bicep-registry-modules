@@ -223,12 +223,6 @@ This instance deploys the module with most of its features enabled.
           Role: 'DeploymentValidation'
         }
       }
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        subnetResourceId: '<subnetResourceId>'
-      }
     ]
     roleAssignments: [
       {
@@ -412,12 +406,6 @@ This instance deploys the module with most of its features enabled.
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           }
-        },
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
