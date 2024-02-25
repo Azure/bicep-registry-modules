@@ -84,7 +84,7 @@ param primaryUserAssignedIdentity string?
 @sys.description('Optional. The service managed resource settings.')
 param serviceManagedResourcesSettings object?
 
-@sys.description('Optional. The list of shared private link resources in this workspace.')
+@sys.description('Optional. The list of shared private link resources in this workspace. Note: This property is not idempotent. Neither with [] or `null`.')
 param sharedPrivateLinkResources array = []
 
 @sys.description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
@@ -185,7 +185,7 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
     primaryUserAssignedIdentity: primaryUserAssignedIdentity
     publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
     serviceManagedResourcesSettings: serviceManagedResourcesSettings
-    sharedPrivateLinkResources: sharedPrivateLinkResources // Note: This property is not idempotent. Neither with [] or `null`
+    sharedPrivateLinkResources: sharedPrivateLinkResources
   }
 }
 
