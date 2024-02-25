@@ -298,9 +298,10 @@ resource slot_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-0
 module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-Slot-PrivateEndpoint-${index}'
   params: {
-    privateLinkServiceConnections: [
+    name: privateEndpoint.?name ?? 'pep-${last(split(app.id, '/'))}-${name}-${privateEndpoint.?service ?? 'sites'}-${index}'
+    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
-        name: slot.name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(app.id, '/'))}-${privateEndpoint.service}-${index}'
         properties: {
           privateLinkServiceId: app.id // Must be set on the WebApp and not the slot
           groupIds: [
@@ -308,8 +309,19 @@ module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' 
           ]
         }
       }
-    ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(app.id, '/'))}-${name}-${privateEndpoint.?service ?? 'sites'}-${index}'
+    ] : null
+    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
+      {
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(app.id, '/'))}-${privateEndpoint.service}-${index}'
+        properties: {
+          privateLinkServiceId: app.id // Must be set on the WebApp and not the slot
+          groupIds: [
+            privateEndpoint.?service ?? 'sites-${slot.name}' // The required syntax to create the private endpoint for a specific slot
+          ]
+          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+        }
+      }
+    ] : null
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
@@ -318,7 +330,6 @@ module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' 
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
     roleAssignments: privateEndpoint.?roleAssignments
     tags: privateEndpoint.?tags ?? tags
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
     customDnsConfigs: privateEndpoint.?customDnsConfigs
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
@@ -406,7 +417,8 @@ type privateEndpointType = {
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
 
-  @description('Optional. A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars.')
+  @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
+  @maxLength(140)
   manualConnectionRequestMessage: string?
 
   @description('Optional. Custom DNS configurations.')
