@@ -328,7 +328,7 @@ resource automationAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSett
   scope: automationAccount
 }]
 
-module automationAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module automationAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-automationAccount-PrivateEndpoint-${index}'
   params: {
     name: privateEndpoint.?name ?? 'pep-${last(split(automationAccount.id, '/'))}-${privateEndpoint.service}-${index}'

@@ -90,7 +90,7 @@ resource workspace 'Microsoft.DesktopVirtualization/workspaces@2022-10-14-previe
   }
 }
 
-module workspace_privateEndpoints 'br/public:avm-res-network-privateendpoint:0.1.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module workspace_privateEndpoints 'br/public:avm-res-network-privateendpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-Workspace-PrivateEndpoint-${index}'
   params: {
     groupIds: [

@@ -317,7 +317,7 @@ module databaseAccount_gremlinDatabases 'gremlin-database/main.bicep' = [for gre
   }
 }]
 
-module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-databaseAccount-PrivateEndpoint-${index}'
   params: {
     name: privateEndpoint.?name ?? 'pep-${last(split(databaseAccount.id, '/'))}-${privateEndpoint.service}-${index}'

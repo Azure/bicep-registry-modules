@@ -201,7 +201,7 @@ resource batchAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
   scope: batchAccount
 }]
 
-module batchAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module batchAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-BatchAccount-PrivateEndpoint-${index}'
   params: {
     name: privateEndpoint.?name ?? 'pep-${last(split(batchAccount.id, '/'))}-${privateEndpoint.service}-${index}'
