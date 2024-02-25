@@ -138,7 +138,7 @@ resource account_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-
 module account_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [for (privateEndpoint, index) in (accountPrivateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-Account-PrivateEndpoint-${index}'
   params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
     privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
         name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
@@ -180,7 +180,7 @@ module account_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.
 module portal_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [for (privateEndpoint, index) in (portalPrivateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-Portal-PrivateEndpoint-${index}'
   params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'portal'}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
     privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
         name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
@@ -222,7 +222,7 @@ module portal_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1
 module blob_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [for (privateEndpoint, index) in (storageBlobPrivateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-Storage-Blob-PrivateEndpoint-${index}'
   params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'blob'}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
     privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
         name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
@@ -264,7 +264,7 @@ module blob_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' 
 module queue_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [for (privateEndpoint, index) in (storageQueuePrivateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-Storage-Queue-PrivateEndpoint-${index}'
   params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'queue'}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
     privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
         name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
@@ -306,7 +306,7 @@ module queue_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1'
 module eventHub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [for (privateEndpoint, index) in (eventHubPrivateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-Eventhub-Namespace-PrivateEndpoint-${index}'
   params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
     privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
         name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
