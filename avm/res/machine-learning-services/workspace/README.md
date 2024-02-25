@@ -490,39 +490,8 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
     associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
     name: 'mlswwaf001'
-    sku: 'Premium'
+    sku: 'Standard'
     // Non-required parameters
-    computes: [
-      {
-        computeLocation: '<computeLocation>'
-        computeType: 'AmlCompute'
-        description: 'Default CPU Cluster'
-        disableLocalAuth: false
-        location: '<location>'
-        managedIdentities: {
-          systemAssigned: false
-          userAssignedResourceIds: [
-            '<managedIdentityResourceId>'
-          ]
-        }
-        name: 'DefaultCPU'
-        properties: {
-          enableNodePublicIp: true
-          isolatedNetwork: false
-          osType: 'Linux'
-          remoteLoginPortPublicAccess: 'Disabled'
-          scaleSettings: {
-            maxNodeCount: 3
-            minNodeCount: 0
-            nodeIdleTimeBeforeScaleDown: 'PT5M'
-          }
-          vmPriority: 'Dedicated'
-          vmSize: 'STANDARD_DS11_V2'
-        }
-        sku: 'Basic'
-      }
-    ]
-    description: 'The cake is a lie.'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -531,16 +500,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    discoveryUrl: 'http://example.com'
-    imageBuildCompute: 'testcompute'
     location: '<location>'
-    managedIdentities: {
-      systemAssigned: false
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    primaryUserAssignedIdentity: '<primaryUserAssignedIdentity>'
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -589,44 +549,9 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
       "value": "mlswwaf001"
     },
     "sku": {
-      "value": "Premium"
+      "value": "Standard"
     },
     // Non-required parameters
-    "computes": {
-      "value": [
-        {
-          "computeLocation": "<computeLocation>",
-          "computeType": "AmlCompute",
-          "description": "Default CPU Cluster",
-          "disableLocalAuth": false,
-          "location": "<location>",
-          "managedIdentities": {
-            "systemAssigned": false,
-            "userAssignedResourceIds": [
-              "<managedIdentityResourceId>"
-            ]
-          },
-          "name": "DefaultCPU",
-          "properties": {
-            "enableNodePublicIp": true,
-            "isolatedNetwork": false,
-            "osType": "Linux",
-            "remoteLoginPortPublicAccess": "Disabled",
-            "scaleSettings": {
-              "maxNodeCount": 3,
-              "minNodeCount": 0,
-              "nodeIdleTimeBeforeScaleDown": "PT5M"
-            },
-            "vmPriority": "Dedicated",
-            "vmSize": "STANDARD_DS11_V2"
-          },
-          "sku": "Basic"
-        }
-      ]
-    },
-    "description": {
-      "value": "The cake is a lie."
-    },
     "diagnosticSettings": {
       "value": [
         {
@@ -637,25 +562,8 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         }
       ]
     },
-    "discoveryUrl": {
-      "value": "http://example.com"
-    },
-    "imageBuildCompute": {
-      "value": "testcompute"
-    },
     "location": {
       "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": false,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "primaryUserAssignedIdentity": {
-      "value": "<primaryUserAssignedIdentity>"
     },
     "privateEndpoints": {
       "value": [
@@ -726,7 +634,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceManagedResourcesSettings`](#parameter-servicemanagedresourcessettings) | object | The service managed resource settings. |
-| [`sharedPrivateLinkResources`](#parameter-sharedprivatelinkresources) | array | The list of shared private link resources in this workspace. Note: This property is not idempotent. Neither with [] or `null`. |
+| [`sharedPrivateLinkResources`](#parameter-sharedprivatelinkresources) | array | The list of shared private link resources in this workspace. Note: This property is not idempotent. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 
 ### Parameter: `associatedApplicationInsightsResourceId`
@@ -1551,11 +1459,10 @@ The service managed resource settings.
 
 ### Parameter: `sharedPrivateLinkResources`
 
-The list of shared private link resources in this workspace. Note: This property is not idempotent. Neither with [] or `null`.
+The list of shared private link resources in this workspace. Note: This property is not idempotent.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `tags`
 
