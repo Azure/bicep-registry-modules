@@ -71,38 +71,7 @@ module testDeployment '../../../main.bicep' = {
     associatedApplicationInsightsResourceId: nestedDependencies.outputs.applicationInsightsResourceId
     associatedKeyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
     associatedStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-    sku: 'Premium'
-    computes: [
-      {
-        computeLocation: resourceLocation
-        computeType: 'AmlCompute'
-        description: 'Default CPU Cluster'
-        disableLocalAuth: false
-        location: resourceLocation
-        name: 'DefaultCPU'
-        properties: {
-          enableNodePublicIp: true
-          isolatedNetwork: false
-          osType: 'Linux'
-          remoteLoginPortPublicAccess: 'Disabled'
-          scaleSettings: {
-            maxNodeCount: 3
-            minNodeCount: 0
-            nodeIdleTimeBeforeScaleDown: 'PT5M'
-          }
-          vmPriority: 'Dedicated'
-          vmSize: 'STANDARD_DS11_V2'
-        }
-        sku: 'Basic'
-        managedIdentities: {
-          systemAssigned: false
-          userAssignedResourceIds: [
-            nestedDependencies.outputs.managedIdentityResourceId
-          ]
-        }
-      }
-    ]
-    description: 'The cake is a lie.'
+    sku: 'Standard'
     diagnosticSettings: [
       {
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
@@ -111,9 +80,6 @@ module testDeployment '../../../main.bicep' = {
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
-    discoveryUrl: 'http://example.com'
-    imageBuildCompute: 'testcompute'
-    primaryUserAssignedIdentity: nestedDependencies.outputs.managedIdentityResourceId
     privateEndpoints: [
       {
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
@@ -127,12 +93,6 @@ module testDeployment '../../../main.bicep' = {
         }
       }
     ]
-    managedIdentities: {
-      systemAssigned: false
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
