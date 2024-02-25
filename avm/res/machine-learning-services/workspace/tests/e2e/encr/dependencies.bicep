@@ -1,9 +1,6 @@
 @description('Optional. The location to deploy to.')
 param location string = resourceGroup().location
 
-@description('Required. The name of the Virtual Network to create.')
-param virtualNetworkName string
-
 @description('Required. The name of the Key Vault to create.')
 @minLength(3)
 @maxLength(24)
@@ -17,28 +14,6 @@ param applicationInsightsName string
 
 @description('Required. The name of the Storage Account to create.')
 param storageAccountName string
-
-var addressPrefix = '10.0.0.0/16'
-
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
-  name: virtualNetworkName
-  location: location
-  properties: {
-    addressSpace: {
-      addressPrefixes: [
-        addressPrefix
-      ]
-    }
-    subnets: [
-      {
-        name: 'defaultSubnet'
-        properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 16, 0)
-        }
-      }
-    ]
-  }
-}
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: keyVaultName
@@ -106,25 +81,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   kind: 'StorageV2'
 }
 
-resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink.api.azureml.ms'
-  location: 'global'
-
-  resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
-    name: '${virtualNetwork.name}-vnetlink'
-    location: 'global'
-    properties: {
-      virtualNetwork: {
-        id: virtualNetwork.id
-      }
-      registrationEnabled: false
-    }
-  }
-}
-
-@description('The resource ID of the created Virtual Network Subnet.')
-output subnetResourceId string = virtualNetwork.properties.subnets[0].id
-
 @description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id
 
@@ -139,6 +95,3 @@ output storageAccountResourceId string = storageAccount.id
 
 @description('The name of the Key Vault Encryption Key.')
 output keyVaultEncryptionKeyName string = keyVault::key.name
-
-@description('The resource ID of the created Private DNS Zone.')
-output privateDNSZoneResourceId string = privateDNSZone.id
