@@ -232,7 +232,7 @@ module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:
     name: privateEndpoint.?name ?? 'pep-${last(split(dataFactory.id, '/'))}-${privateEndpoint.?service ?? 'dataFactory'}-${index}'
     privateLinkServiceConnections: [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(dataFactory.id, '/'))}-${privateEndpoint.?service ?? 'dataFactory'}-${index}'
         properties: {
           privateLinkServiceId: dataFactory.id
           groupIds: [
@@ -243,7 +243,7 @@ module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:
     ]
     manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(dataFactory.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(dataFactory.id, '/'))}-${privateEndpoint.?service ?? 'dataFactory'}-${index}'
         properties: {
           privateLinkServiceId: dataFactory.id
           groupIds: [

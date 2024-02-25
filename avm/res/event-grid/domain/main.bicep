@@ -149,7 +149,7 @@ module domain_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0
     name: privateEndpoint.?name ?? 'pep-${last(split(domain.id, '/'))}-${privateEndpoint.?service ?? 'domain'}-${index}'
     privateLinkServiceConnections: [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(domain.id, '/'))}-${privateEndpoint.?service ?? 'domain'}-${index}'
         properties: {
           privateLinkServiceId: domain.id
           groupIds: [
@@ -160,7 +160,7 @@ module domain_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0
     ]
     manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(domain.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(domain.id, '/'))}-${privateEndpoint.?service ?? 'domain'}-${index}'
         properties: {
           privateLinkServiceId: domain.id
           groupIds: [

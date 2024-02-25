@@ -271,7 +271,7 @@ module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endp
     name: privateEndpoint.?name ?? 'pep-${last(split(cognitiveService.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
     privateLinkServiceConnections: [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(cognitiveService.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
         properties: {
           privateLinkServiceId: cognitiveService.id
           groupIds: [
@@ -282,7 +282,7 @@ module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endp
     ]
     manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(cognitiveService.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(cognitiveService.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
         properties: {
           privateLinkServiceId: cognitiveService.id
           groupIds: [

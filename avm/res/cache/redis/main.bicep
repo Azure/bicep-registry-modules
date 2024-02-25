@@ -219,7 +219,7 @@ module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0'
     name: privateEndpoint.?name ?? 'pep-${last(split(redis.id, '/'))}-${privateEndpoint.?service ?? 'redisCache'}-${index}'
     privateLinkServiceConnections: [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(redis.id, '/'))}-${privateEndpoint.?service ?? 'redisCache'}-${index}'
         properties: {
           privateLinkServiceId: redis.id
           groupIds: [
@@ -230,7 +230,7 @@ module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0'
     ]
     manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(redis.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(redis.id, '/'))}-${privateEndpoint.?service ?? 'redisCache'}-${index}'
         properties: {
           privateLinkServiceId: redis.id
           groupIds: [

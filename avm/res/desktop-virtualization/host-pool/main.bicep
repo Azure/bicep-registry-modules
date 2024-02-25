@@ -202,7 +202,7 @@ module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4
     name: privateEndpoint.?name ?? 'pep-${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
     privateLinkServiceConnections: [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
         properties: {
           privateLinkServiceId: hostPool.id
           groupIds: [
@@ -213,7 +213,7 @@ module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4
     ]
     manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(hostPool.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
         properties: {
           privateLinkServiceId: hostPool.id
           groupIds: [

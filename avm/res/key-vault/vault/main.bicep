@@ -239,10 +239,10 @@ module keyVault_keys 'key/main.bicep' = [for (key, index) in (keys ?? []): {
 module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-KeyVault-PrivateEndpoint-${index}'
   params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(keyVault.id, '/'))}-${privateEndpoint.service}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(keyVault.id, '/'))}-${privateEndpoint.?service ?? 'vault'}-${index}'
     privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(keyVault.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(keyVault.id, '/'))}-${privateEndpoint.?service ?? 'vault'}-${index}'
         properties: {
           privateLinkServiceId: keyVault.id
           groupIds: [
@@ -253,7 +253,7 @@ module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4
     ] : null
     manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(keyVault.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(keyVault.id, '/'))}-${privateEndpoint.?service ?? 'vault'}-${index}'
         properties: {
           privateLinkServiceId: keyVault.id
           groupIds: [

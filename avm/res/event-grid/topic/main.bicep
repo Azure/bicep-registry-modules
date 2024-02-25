@@ -151,7 +151,7 @@ module topic_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0'
     name: privateEndpoint.?name ?? 'pep-${last(split(topic.id, '/'))}-${privateEndpoint.?service ?? 'topic'}-${index}'
     privateLinkServiceConnections: [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(topic.id, '/'))}-${privateEndpoint.?service ?? 'topic'}-${index}'
         properties: {
           privateLinkServiceId: topic.id
           groupIds: [
@@ -162,7 +162,7 @@ module topic_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0'
     ]
     manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(topic.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(topic.id, '/'))}-${privateEndpoint.?service ?? 'topic'}-${index}'
         properties: {
           privateLinkServiceId: topic.id
           groupIds: [

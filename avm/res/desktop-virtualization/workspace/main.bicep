@@ -96,7 +96,7 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
     name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
     privateLinkServiceConnections: [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
         properties: {
           privateLinkServiceId: workspace.id
           groupIds: [
@@ -107,7 +107,7 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
     ]
     manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
         properties: {
           privateLinkServiceId: workspace.id
           groupIds: [

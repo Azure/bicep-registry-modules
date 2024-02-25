@@ -340,7 +340,7 @@ module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4
     name: privateEndpoint.?name ?? 'pep-${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
     privateLinkServiceConnections: [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
         properties: {
           privateLinkServiceId: registry.id
           groupIds: [
@@ -351,7 +351,7 @@ module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4
     ]
     manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(registry.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
         properties: {
           privateLinkServiceId: registry.id
           groupIds: [

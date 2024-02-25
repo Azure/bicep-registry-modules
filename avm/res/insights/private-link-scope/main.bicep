@@ -109,7 +109,7 @@ module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endp
     name: privateEndpoint.?name ?? 'pep-${last(split(privateLinkScope.id, '/'))}-${privateEndpoint.?service ?? 'azuremonitor'}-${index}'
     privateLinkServiceConnections: [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(privateLinkScope.id, '/'))}-${privateEndpoint.?service ?? 'azuremonitor'}-${index}'
         properties: {
           privateLinkServiceId: privateLinkScope.id
           groupIds: [
@@ -120,7 +120,7 @@ module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endp
     ]
     manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(privateLinkScope.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(privateLinkScope.id, '/'))}-${privateEndpoint.?service ?? 'azuremonitor'}-${index}'
         properties: {
           privateLinkServiceId: privateLinkScope.id
           groupIds: [

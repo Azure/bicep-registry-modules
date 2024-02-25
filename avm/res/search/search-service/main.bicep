@@ -201,10 +201,10 @@ resource searchService_roleAssignments 'Microsoft.Authorization/roleAssignments@
 module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-SearchService-PrivateEndpoint-${index}'
   params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(searchService.id, '/'))}-${privateEndpoint.service}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(searchService.id, '/'))}-${privateEndpoint.?service ?? 'searchService'}-${index}'
     privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(searchService.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(searchService.id, '/'))}-${privateEndpoint.?service ?? 'searchService'}-${index}'
         properties: {
           privateLinkServiceId: searchService.id
           groupIds: [
@@ -215,7 +215,7 @@ module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoin
     ] : null
     manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(searchService.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(searchService.id, '/'))}-${privateEndpoint.?service ?? 'searchService'}-${index}'
         properties: {
           privateLinkServiceId: searchService.id
           groupIds: [
