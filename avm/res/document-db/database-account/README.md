@@ -1132,6 +1132,13 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           Role: 'DeploymentValidation'
         }
       }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'Sql'
+        subnetResourceId: '<subnetResourceId>'
+      }
     ]
     roleAssignments: [
       {
@@ -1303,6 +1310,13 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           }
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "Sql",
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -1452,6 +1466,20 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       }
     ]
     location: '<location>'
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'Sql'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
     sqlDatabases: [
       {
         containers: [
@@ -1541,6 +1569,22 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     },
     "location": {
       "value": "<location>"
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "Sql",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        }
+      ]
     },
     "sqlDatabases": {
       "value": [
@@ -2061,7 +2105,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
 | [`location`](#parameter-privateendpointslocation) | string | The location to deploy the private endpoint to. |
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
-| [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars. |
+| [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
@@ -2240,7 +2284,7 @@ Specify the name of lock.
 
 ### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
-A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars.
+A message passed to the owner of the remote resource with the manual connection request.
 
 - Required: No
 - Type: string
@@ -2500,7 +2544,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.3.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.4.0` | Remote reference |
 
 ## Data Collection
 
