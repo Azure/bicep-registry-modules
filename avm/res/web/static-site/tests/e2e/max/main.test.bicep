@@ -72,6 +72,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           Role: 'DeploymentValidation'
         }
       }
+      {
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+      }
     ]
     roleAssignments: [
       {

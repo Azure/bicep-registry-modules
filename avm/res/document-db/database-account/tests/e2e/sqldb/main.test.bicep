@@ -105,6 +105,13 @@ module testDeployment '../../../main.bicep' = {
           Role: 'DeploymentValidation'
         }
       }
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        service: 'Sql'
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      }
     ]
     roleAssignments: [
       {

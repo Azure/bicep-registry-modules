@@ -89,6 +89,12 @@ module testDeployment '../../../main.bicep' = {
         ]
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
       }
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      }
     ]
     loadBalancerType: 'BreadthFirst'
     location: resourceLocation
