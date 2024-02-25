@@ -43,7 +43,7 @@ function Publish-ModuleFromTagToPBR {
   Write-Verbose "1 [$targetVersion]" -Verbose
   $moduleRelativeFolderPath = $ModuleReleaseTagName -replace "\/$targetVersion$", ''
   Write-Verbose "1 [$moduleRelativeFolderPath]" -Verbose
-  $moduleFolderPath = Join-Path $repositoryRoot $moduleRelativeFolderPath
+  $moduleFolderPath = Join-Path $RepoRoot $moduleRelativeFolderPath
   Write-Verbose "1 [$moduleFolderPath]" -Verbose
   $moduleBicepFilePath = Join-Path $moduleFolderPath 'main.bicep'
   Write-Verbose "Determined Bicep template path [$moduleBicepFilePath]"
