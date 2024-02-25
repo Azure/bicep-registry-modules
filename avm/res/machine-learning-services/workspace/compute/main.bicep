@@ -90,7 +90,7 @@ resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@
 // Deployments  //
 // ============ //
 
-resource machineLearningWorkspaceCompute 'Microsoft.MachineLearningServices/workspaces/computes@2022-10-01' = if (deployCompute == true) {
+resource compute 'Microsoft.MachineLearningServices/workspaces/computes@2022-10-01' = if (deployCompute == true) {
   name: name
   location: location
   tags: empty(resourceId) ? tags : any(null)
@@ -117,19 +117,19 @@ resource machineLearningWorkspaceCompute 'Microsoft.MachineLearningServices/work
 // =========== //
 
 @sys.description('The name of the compute.')
-output name string = machineLearningWorkspaceCompute.name
+output name string = compute.name
 
 @sys.description('The resource ID of the compute.')
-output resourceId string = machineLearningWorkspaceCompute.id
+output resourceId string = compute.id
 
 @sys.description('The resource group the compute was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
 @sys.description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = machineLearningWorkspaceCompute.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string = compute.?identity.?principalId ?? ''
 
 @sys.description('The location the resource was deployed into.')
-output location string = machineLearningWorkspaceCompute.location
+output location string = compute.location
 
 // =============== //
 //   Definitions   //
