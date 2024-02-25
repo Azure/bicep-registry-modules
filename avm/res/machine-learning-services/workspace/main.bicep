@@ -84,8 +84,8 @@ param primaryUserAssignedIdentity string?
 @sys.description('Optional. The service managed resource settings.')
 param serviceManagedResourcesSettings object?
 
-@sys.description('Optional. The list of shared private link resources in this workspace. Note: This property is not idempotent. Neither with [] or `null`.')
-param sharedPrivateLinkResources array = []
+@sys.description('Optional. The list of shared private link resources in this workspace. Note: This property is not idempotent.')
+param sharedPrivateLinkResources array?
 
 @sys.description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
@@ -161,32 +161,38 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' = {
     tier: sku
   }
   identity: identity
-  properties: {
-    friendlyName: name
-    storageAccount: associatedStorageAccountResourceId
-    keyVault: associatedKeyVaultResourceId
-    applicationInsights: associatedApplicationInsightsResourceId
-    containerRegistry: associatedContainerRegistryResourceId
-    hbiWorkspace: hbiWorkspace
-    allowPublicAccessWhenBehindVnet: allowPublicAccessWhenBehindVnet
-    description: description
-    discoveryUrl: discoveryUrl
-    encryption: !empty(customerManagedKey) ? {
-      status: 'Enabled'
-      identity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? {
-        userAssignedIdentity: cMKUserAssignedIdentity.id
+  properties: union(
+    // Always added parameters
+    {
+      friendlyName: name
+      storageAccount: associatedStorageAccountResourceId
+      keyVault: associatedKeyVaultResourceId
+      applicationInsights: associatedApplicationInsightsResourceId
+      containerRegistry: associatedContainerRegistryResourceId
+      hbiWorkspace: hbiWorkspace
+      allowPublicAccessWhenBehindVnet: allowPublicAccessWhenBehindVnet
+      description: description
+      discoveryUrl: discoveryUrl
+      encryption: !empty(customerManagedKey) ? {
+        status: 'Enabled'
+        identity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? {
+          userAssignedIdentity: cMKUserAssignedIdentity.id
+        } : null
+        keyVaultProperties: {
+          keyVaultArmId: cMKKeyVault.id
+          keyIdentifier: !empty(customerManagedKey.?keyVersion ?? '') ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}' : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+        }
       } : null
-      keyVaultProperties: {
-        keyVaultArmId: cMKKeyVault.id
-        keyIdentifier: !empty(customerManagedKey.?keyVersion ?? '') ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}' : cMKKeyVault::cMKKey.properties.keyUriWithVersion
-      }
-    } : null
-    imageBuildCompute: imageBuildCompute
-    primaryUserAssignedIdentity: primaryUserAssignedIdentity
-    publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
-    serviceManagedResourcesSettings: serviceManagedResourcesSettings
-    sharedPrivateLinkResources: sharedPrivateLinkResources
-  }
+      imageBuildCompute: imageBuildCompute
+      primaryUserAssignedIdentity: primaryUserAssignedIdentity
+      publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
+      serviceManagedResourcesSettings: serviceManagedResourcesSettings
+    },
+    // Parameters only added if not empty
+    !empty(sharedPrivateLinkResources) ? {
+      sharedPrivateLinkResources: sharedPrivateLinkResources
+    } : {}
+  )
 }
 
 module workspace_computes 'compute/main.bicep' = [for compute in (computes ?? []): {
