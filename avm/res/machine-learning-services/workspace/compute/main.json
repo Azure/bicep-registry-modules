@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "6950385914943253955"
+      "templateHash": "2960011886227478748"
     },
     "name": "Machine Learning Services Workspaces Computes",
     "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`).",
@@ -157,7 +157,7 @@
       "apiVersion": "2022-10-01",
       "name": "[parameters('machineLearningWorkspaceName')]"
     },
-    "machineLearningWorkspaceCompute": {
+    "compute": {
       "condition": "[equals(parameters('deployCompute'), true())]",
       "type": "Microsoft.MachineLearningServices/workspaces/computes",
       "apiVersion": "2022-10-01",
@@ -199,14 +199,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('machineLearningWorkspace', '2022-10-01', 'full').identity, 'principalId')), reference('machineLearningWorkspace', '2022-10-01', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('compute', '2022-10-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('machineLearningWorkspaceCompute', '2022-10-01', 'full').location]"
+      "value": "[reference('compute', '2022-10-01', 'full').location]"
     }
   }
 }

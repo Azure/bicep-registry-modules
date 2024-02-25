@@ -323,7 +323,7 @@ output location string = workspace.location
 // =============== //
 
 type managedIdentitiesType = {
-  @sys.description('Optional. Enables system assigned managed identity on the resource.')
+  @sys.description('Optional. Enables system assigned managed identity on the resource. Must be false if `primaryUserAssignedIdentity` is provided.')
   systemAssigned: bool?
 
   @sys.description('Optional. The resource ID(s) to assign to the resource.')
