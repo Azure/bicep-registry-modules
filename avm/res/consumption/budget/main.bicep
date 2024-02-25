@@ -45,18 +45,24 @@ param thresholds array = [
 ]
 
 @description('Conditional. The list of email addresses to send the budget notification to when the thresholds are exceeded. Required if neither `contactRoles` nor `actionGroups` was provided.')
-param contactEmails array = []
+param contactEmails array?
 
 @description('Conditional. The list of contact roles to send the budget notification to when the thresholds are exceeded. Required if neither `contactEmails` nor `actionGroups` was provided.')
-param contactRoles array = []
+param contactRoles array?
 
 @description('Conditional. List of action group resource IDs that will receive the alert. Required if neither `contactEmails` nor `contactEmails` was provided.')
-param actionGroups array = []
+param actionGroups array?
+
+@description('Optional. The filter to use for restricting which resources are considered within the budget.')
+param filter object?
+
+@description('Optional. The list of resource groups that contain the resources that are to be considered within the budget.')
+param resourceGroupFilter string[] = []
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@sys.description('Optional. Location deployment metadata.')
+@description('Optional. Location deployment metadata.')
 param location string = deployment().location
 
 var notificationsArray = [for threshold in thresholds: {
@@ -64,14 +70,12 @@ var notificationsArray = [for threshold in thresholds: {
     enabled: true
     operator: 'GreaterThan'
     threshold: threshold
-    contactEmails: !empty(contactEmails) ? array(contactEmails) : null
-    contactRoles: !empty(contactRoles) ? array(contactRoles) : null
-    contactGroups: !empty(actionGroups) ? array(actionGroups) : null
+    contactEmails: contactEmails
+    contactRoles: contactRoles
+    contactGroups: actionGroups
     thresholdType: 'Actual'
   }
 }]
-
-var notifications = json(replace(replace(replace(string(notificationsArray), '[{', '{'), '}]', '}'), '}},{', '},'))
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.consumption-budget.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -102,8 +106,14 @@ resource budget 'Microsoft.Consumption/budgets@2023-11-01' = {
       startDate: startDate
       endDate: endDate
     }
-    filter: {}
-    notifications: notifications
+    filter: filter ?? (!empty(resourceGroupFilter) ? {
+      dimensions: {
+        name: 'ResourceGroupName'
+        operator: 'In'
+        values: resourceGroupFilter
+      }
+    } : {})
+    notifications: json(replace(replace(replace(string(notificationsArray), '[{', '{'), '}]', '}'), '}},{', '},'))
   }
 }
 
