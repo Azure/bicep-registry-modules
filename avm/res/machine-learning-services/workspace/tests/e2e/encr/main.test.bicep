@@ -68,9 +68,8 @@ module testDeployment '../../../main.bicep' = {
       userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
     }
     primaryUserAssignedIdentity: nestedDependencies.outputs.managedIdentityResourceId
-    // systemAssigned must be false if `primaryUserAssignedIdentity` is provided
     managedIdentities: {
-      systemAssigned: false
+      systemAssigned: false // Must be false if `primaryUserAssignedIdentity` is provided
       userAssignedResourceIds: [
         nestedDependencies.outputs.managedIdentityResourceId
       ]
