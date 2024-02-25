@@ -84,25 +84,25 @@ resource privateLinkHub_roleAssignments 'Microsoft.Authorization/roleAssignments
 module privateLinkHub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-PrivateLinkHub-PrivateEndpoint-${index}'
   params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(privateLinkHub.id, '/'))}-${privateEndpoint.?service ?? 'privateLinkHubs'}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(privateLinkHub.id, '/'))}-${privateEndpoint.?service ?? 'web'}-${index}'
     privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(privateLinkHub.id, '/'))}-${privateEndpoint.?service ?? 'privateLinkHubs'}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(privateLinkHub.id, '/'))}-${privateEndpoint.?service ?? 'web'}-${index}'
         properties: {
           privateLinkServiceId: privateLinkHub.id
           groupIds: [
-            privateEndpoint.?service ?? 'privateLinkHubs'
+            privateEndpoint.?service ?? 'web'
           ]
         }
       }
     ] : null
     manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(privateLinkHub.id, '/'))}-${privateEndpoint.?service ?? 'privateLinkHubs'}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(privateLinkHub.id, '/'))}-${privateEndpoint.?service ?? 'web'}-${index}'
         properties: {
           privateLinkServiceId: privateLinkHub.id
           groupIds: [
-            privateEndpoint.?service ?? 'privateLinkHubs'
+            privateEndpoint.?service ?? 'web'
           ]
           requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
         }
