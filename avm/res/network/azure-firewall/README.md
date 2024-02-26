@@ -34,8 +34,8 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-3-using-only-defaults)
 - [Hubcommon](#example-4-hubcommon)
 - [Hubmin](#example-5-hubmin)
-- [Max](#example-6-max)
-- [Waf-Aligned](#example-7-waf-aligned)
+- [Using large parameter set](#example-6-using-large-parameter-set)
+- [WAF-aligned](#example-7-waf-aligned)
 
 ### Example 1: _Addpip_
 
@@ -447,7 +447,10 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 6: _Max_
+### Example 6: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -766,7 +769,10 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 7: _Waf-Aligned_
+### Example 7: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
