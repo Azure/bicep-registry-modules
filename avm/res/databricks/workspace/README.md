@@ -156,6 +156,17 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
+        service: 'databricks_ui_api'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
         service: 'browser_authentication'
         subnetResourceId: '<subnetResourceId>'
       }
@@ -284,6 +295,17 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     },
     "privateEndpoints": {
       "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "databricks_ui_api",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "Role": "DeploymentValidation"
+          }
+        },
         {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"

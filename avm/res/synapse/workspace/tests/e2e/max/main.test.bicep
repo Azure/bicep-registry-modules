@@ -136,11 +136,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ]
         service: 'Dev'
         subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
       }
     ]
     managedVirtualNetwork: true

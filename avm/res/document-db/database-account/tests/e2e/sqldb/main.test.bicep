@@ -111,11 +111,6 @@ module testDeployment '../../../main.bicep' = {
         ]
         service: 'Sql'
         subnetResourceId: nestedDependencies.outputs.customSubnet2ResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
       }
     ]
     roleAssignments: [

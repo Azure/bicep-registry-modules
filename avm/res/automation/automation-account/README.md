@@ -237,6 +237,18 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
+        service: 'Webhook'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
         service: 'DSCAndHybridWorker'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -455,6 +467,18 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     },
     "privateEndpoints": {
       "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "Webhook",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
         {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
