@@ -1,0 +1,425 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "7700094852777954431"
+    },
+    "name": "Network Manager Security Admin Configurations",
+    "description": "This module deploys an Network Manager Security Admin Configuration.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "networkManagerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent network manager. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 64,
+      "metadata": {
+        "description": "Required. The name of the security admin configuration."
+      }
+    },
+    "description": {
+      "type": "string",
+      "defaultValue": "",
+      "maxLength": 500,
+      "metadata": {
+        "description": "Optional. A description of the security admin configuration."
+      }
+    },
+    "applyOnNetworkIntentPolicyBasedServices": {
+      "type": "array",
+      "defaultValue": [
+        "None"
+      ],
+      "allowedValues": [
+        "None",
+        "All",
+        "AllowRulesOnly"
+      ],
+      "metadata": {
+        "description": "Required. Enum list of network intent policy based services."
+      }
+    },
+    "ruleCollections": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. A security admin configuration contains a set of rule collections that are applied to network groups. Each rule collection contains one or more security admin rules."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
+      "apiVersion": "2023-04-01",
+      "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
+      "properties": {
+        "description": "[parameters('description')]",
+        "applyOnNetworkIntentPolicyBasedServices": "[parameters('applyOnNetworkIntentPolicyBasedServices')]"
+      }
+    },
+    {
+      "copy": {
+        "name": "securityAdminConfigurations_ruleCollections",
+        "count": "[length(parameters('ruleCollections'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-SecurityAdminConfigurations-RuleCollections-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "networkManagerName": {
+            "value": "[parameters('networkManagerName')]"
+          },
+          "securityAdminConfigurationName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('ruleCollections')[copyIndex()].name]"
+          },
+          "appliesToGroups": {
+            "value": "[parameters('ruleCollections')[copyIndex()].appliesToGroups]"
+          },
+          "rules": "[if(contains(parameters('ruleCollections')[copyIndex()], 'rules'), createObject('value', parameters('ruleCollections')[copyIndex()].rules), createObject('value', createArray()))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.25.53.49325",
+              "templateHash": "6205777935004784732"
+            },
+            "name": "Network Manager Security Admin Configuration Rule Collections",
+            "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "networkManagerName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent network manager. Required if the template is used in a standalone deployment."
+              }
+            },
+            "securityAdminConfigurationName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent security admin configuration. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "maxLength": 64,
+              "metadata": {
+                "description": "Required. The name of the admin rule collection."
+              }
+            },
+            "description": {
+              "type": "string",
+              "defaultValue": "",
+              "maxLength": 500,
+              "metadata": {
+                "description": "Optional. A description of the admin rule collection."
+              }
+            },
+            "appliesToGroups": {
+              "type": "array",
+              "metadata": {
+                "description": "Required. List of network groups for configuration. An admin rule collection must be associated to at least one network group."
+              }
+            },
+            "rules": {
+              "type": "array",
+              "metadata": {
+                "description": "Optional. List of rules for the admin rules collection. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections",
+              "apiVersion": "2023-04-01",
+              "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('name'))]",
+              "properties": {
+                "description": "[parameters('description')]",
+                "appliesToGroups": "[parameters('appliesToGroups')]"
+              }
+            },
+            {
+              "copy": {
+                "name": "securityAdminConfigurations_rules",
+                "count": "[length(parameters('rules'))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-RuleCollections-Rules-{1}', uniqueString(deployment().name), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "networkManagerName": {
+                    "value": "[parameters('networkManagerName')]"
+                  },
+                  "securityAdminConfigurationName": {
+                    "value": "[parameters('securityAdminConfigurationName')]"
+                  },
+                  "ruleCollectionName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "name": {
+                    "value": "[parameters('rules')[copyIndex()].name]"
+                  },
+                  "access": {
+                    "value": "[parameters('rules')[copyIndex()].access]"
+                  },
+                  "description": "[if(contains(parameters('rules')[copyIndex()], 'description'), createObject('value', parameters('rules')[copyIndex()].description), createObject('value', ''))]",
+                  "destinationPortRanges": "[if(contains(parameters('rules')[copyIndex()], 'destinationPortRanges'), createObject('value', parameters('rules')[copyIndex()].destinationPortRanges), createObject('value', createArray()))]",
+                  "destinations": "[if(contains(parameters('rules')[copyIndex()], 'destinations'), createObject('value', parameters('rules')[copyIndex()].destinations), createObject('value', createArray()))]",
+                  "direction": {
+                    "value": "[parameters('rules')[copyIndex()].direction]"
+                  },
+                  "priority": {
+                    "value": "[parameters('rules')[copyIndex()].priority]"
+                  },
+                  "protocol": {
+                    "value": "[parameters('rules')[copyIndex()].protocol]"
+                  },
+                  "sourcePortRanges": "[if(contains(parameters('rules')[copyIndex()], 'sourcePortRanges'), createObject('value', parameters('rules')[copyIndex()].sourcePortRanges), createObject('value', createArray()))]",
+                  "sources": "[if(contains(parameters('rules')[copyIndex()], 'sources'), createObject('value', parameters('rules')[copyIndex()].sources), createObject('value', createArray()))]"
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.25.53.49325",
+                      "templateHash": "4678937950332023656"
+                    },
+                    "name": "Network Manager Security Admin Configuration Rule Collection Rules",
+                    "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "networkManagerName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent network manager. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "securityAdminConfigurationName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent security admin configuration. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "ruleCollectionName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent rule collection. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "maxLength": 64,
+                      "metadata": {
+                        "description": "Required. The name of the rule."
+                      }
+                    },
+                    "description": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "maxLength": 500,
+                      "metadata": {
+                        "description": "Optional. A description of the rule."
+                      }
+                    },
+                    "access": {
+                      "type": "string",
+                      "allowedValues": [
+                        "Allow",
+                        "AlwaysAllow",
+                        "Deny"
+                      ],
+                      "metadata": {
+                        "description": "Required. Indicates the access allowed for this particular rule. \"Allow\" means traffic matching this rule will be allowed. \"Deny\" means traffic matching this rule will be blocked. \"AlwaysAllow\" means that traffic matching this rule will be allowed regardless of other rules with lower priority or user-defined NSGs."
+                      }
+                    },
+                    "destinationPortRanges": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
+                      }
+                    },
+                    "destinations": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "Optional. The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
+                      }
+                    },
+                    "direction": {
+                      "type": "string",
+                      "allowedValues": [
+                        "Inbound",
+                        "Outbound"
+                      ],
+                      "metadata": {
+                        "description": "Required. Indicates if the traffic matched against the rule in inbound or outbound."
+                      }
+                    },
+                    "priority": {
+                      "type": "int",
+                      "minValue": 1,
+                      "maxValue": 4096,
+                      "metadata": {
+                        "description": "Required. The priority of the rule. The value can be between 1 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
+                      }
+                    },
+                    "protocol": {
+                      "type": "string",
+                      "allowedValues": [
+                        "Ah",
+                        "Any",
+                        "Esp",
+                        "Icmp",
+                        "Tcp",
+                        "Udp"
+                      ],
+                      "metadata": {
+                        "description": "Required. Network protocol this rule applies to."
+                      }
+                    },
+                    "sourcePortRanges": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
+                      }
+                    },
+                    "sources": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules",
+                      "apiVersion": "2023-04-01",
+                      "name": "[format('{0}/{1}/{2}/{3}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('ruleCollectionName'), parameters('name'))]",
+                      "kind": "Custom",
+                      "properties": {
+                        "access": "[parameters('access')]",
+                        "description": "[parameters('description')]",
+                        "destinationPortRanges": "[parameters('destinationPortRanges')]",
+                        "destinations": "[parameters('destinations')]",
+                        "direction": "[parameters('direction')]",
+                        "priority": "[parameters('priority')]",
+                        "protocol": "[parameters('protocol')]",
+                        "sourcePortRanges": "[parameters('sourcePortRanges')]",
+                        "sources": "[parameters('sources')]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the deployed rule."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the deployed rule."
+                      },
+                      "value": "[resourceId('Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('ruleCollectionName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the rule was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('name'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed admin rule collection."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed admin rule collection."
+              },
+              "value": "[resourceId('Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the admin rule collection was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkManagers/securityAdminConfigurations', parameters('networkManagerName'), parameters('name'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed security admin configuration."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed security admin configuration."
+      },
+      "value": "[resourceId('Microsoft.Network/networkManagers/securityAdminConfigurations', parameters('networkManagerName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the security admin configuration was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
