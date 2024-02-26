@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "11674721033032796270"
+      "templateHash": "8011975579597033437"
     },
     "name": "DNS Resolver",
     "description": "This module deploys a DNS Resolver.",
@@ -380,7 +380,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "8672047882378700944"
+              "templateHash": "4122702757444237290"
             },
             "name": "DNS Resolver Inbound Endpoint",
             "description": "This module deploys a DNS Resolver Inbound Endpoint.",
@@ -531,7 +531,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "7237665514415394760"
+              "templateHash": "1054861255449270275"
             },
             "name": "DNS Resolver Outbound Endpoint",
             "description": "This module deploys a DNS Resolver Outbound Endpoint.",

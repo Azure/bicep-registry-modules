@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "4883865469071312398"
+      "version": "0.25.53.49325",
+      "templateHash": "5785178353049312317"
     },
     "name": "Virtual WANs",
     "description": "This module deploys a Virtual WAN.",
