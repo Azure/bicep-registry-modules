@@ -1,0 +1,162 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "9016533430746404335"
+    },
+    "name": "CDN Profiles Origin",
+    "description": "This module deploys a CDN Profile Origin.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the origion."
+      }
+    },
+    "profileName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the CDN profile."
+      }
+    },
+    "originGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the group."
+      }
+    },
+    "enabledState": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "Optional. Whether to enable health probes to be made against backends defined under backendPools. Health probes can only be disabled if there is a single enabled backend in single enabled backend pool."
+      }
+    },
+    "enforceCertificateNameCheck": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Whether to enable certificate name check at origin level."
+      }
+    },
+    "hostName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The address of the origin. Domain names, IPv4 addresses, and IPv6 addresses are supported.This should be unique across all origins in an endpoint."
+      }
+    },
+    "httpPort": {
+      "type": "int",
+      "defaultValue": 80,
+      "metadata": {
+        "description": "Optional. The value of the HTTP port. Must be between 1 and 65535."
+      }
+    },
+    "httpsPort": {
+      "type": "int",
+      "defaultValue": 443,
+      "metadata": {
+        "description": "Optional. The value of the HTTPS port. Must be between 1 and 65535."
+      }
+    },
+    "originHostHeader": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The host header value sent to the origin with each request. If you leave this blank, the request hostname determines this value. Azure Front Door origins, such as Web Apps, Blob Storage, and Cloud Services require this host header value to match the origin hostname by default. This overrides the host header defined at Endpoint."
+      }
+    },
+    "priority": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Optional. Priority of origin in given origin group for load balancing. Higher priorities will not be used for load balancing if any lower priority origin is healthy.Must be between 1 and 5."
+      }
+    },
+    "sharedPrivateLinkResource": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The properties of the private link resource for private origin."
+      }
+    },
+    "weight": {
+      "type": "int",
+      "defaultValue": 1000,
+      "metadata": {
+        "description": "Optional. Weight of the origin in given origin group for load balancing. Must be between 1 and 1000."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Cdn/profiles/originGroups/origins",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('originGroupName'), parameters('name'))]",
+      "properties": {
+        "enabledState": "[parameters('enabledState')]",
+        "enforceCertificateNameCheck": "[parameters('enforceCertificateNameCheck')]",
+        "hostName": "[parameters('hostName')]",
+        "httpPort": "[parameters('httpPort')]",
+        "httpsPort": "[parameters('httpsPort')]",
+        "originHostHeader": "[parameters('originHostHeader')]",
+        "priority": "[parameters('priority')]",
+        "sharedPrivateLinkResource": "[if(not(empty(parameters('sharedPrivateLinkResource'))), parameters('sharedPrivateLinkResource'), null())]",
+        "weight": "[parameters('weight')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the origin."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource id of the origin."
+      },
+      "value": "[resourceId('Microsoft.Cdn/profiles/originGroups/origins', parameters('profileName'), parameters('originGroupName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the origin was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

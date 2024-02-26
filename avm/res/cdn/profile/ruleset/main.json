@@ -1,0 +1,247 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "6357254985592021008"
+    },
+    "name": "CDN Profiles Rule Sets",
+    "description": "This module deploys a CDN Profile rule set.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the rule set."
+      }
+    },
+    "profileName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the CDN profile."
+      }
+    },
+    "rules": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optinal. The rules to apply to the rule set."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Cdn/profiles/ruleSets",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]"
+    },
+    {
+      "copy": {
+        "name": "rule",
+        "count": "[length(parameters('rules'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-RuleSet-Rule-{1}-{2}', uniqueString(deployment().name), parameters('rules')[copyIndex()].name, copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "ruleSetName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('rules')[copyIndex()].name]"
+          },
+          "order": {
+            "value": "[parameters('rules')[copyIndex()].order]"
+          },
+          "actions": {
+            "value": "[parameters('rules')[copyIndex()].actions]"
+          },
+          "conditions": "[if(contains(parameters('rules')[copyIndex()], 'conditions'), createObject('value', parameters('rules')[copyIndex()].conditions), createObject('value', createArray()))]",
+          "matchProcessingBehavior": "[if(contains(parameters('rules')[copyIndex()], 'matchProcessingBehavior'), createObject('value', parameters('rules')[copyIndex()].matchProcessingBehavior), createObject('value', 'Continue'))]",
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.24.24.22086",
+              "templateHash": "5740342061156329686"
+            },
+            "name": "CDN Profiles Rules",
+            "description": "This module deploys a CDN Profile rule.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the rule."
+              }
+            },
+            "profileName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the profile."
+              }
+            },
+            "ruleSetName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the rule set."
+              }
+            },
+            "order": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The order in which this rule will be applied. Rules with a lower order are applied before rules with a higher order."
+              }
+            },
+            "actions": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. A list of actions that are executed when all the conditions of a rule are satisfied."
+              }
+            },
+            "conditions": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. A list of conditions that must be matched for the actions to be executed."
+              }
+            },
+            "matchProcessingBehavior": {
+              "type": "string",
+              "allowedValues": [
+                "Continue",
+                "Stop"
+              ],
+              "metadata": {
+                "description": "Required. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Cdn/profiles/ruleSets/rules",
+              "apiVersion": "2023-05-01",
+              "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('ruleSetName'), parameters('name'))]",
+              "properties": {
+                "order": "[parameters('order')]",
+                "actions": "[parameters('actions')]",
+                "conditions": "[parameters('conditions')]",
+                "matchProcessingBehavior": "[parameters('matchProcessingBehavior')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the rule."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource id of the rule."
+              },
+              "value": "[resourceId('Microsoft.Cdn/profiles/ruleSets/rules', parameters('profileName'), parameters('ruleSetName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the custom domain was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the rule set."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource id of the rule set."
+      },
+      "value": "[resourceId('Microsoft.Cdn/profiles/ruleSets', parameters('profileName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the custom domain was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
