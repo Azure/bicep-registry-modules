@@ -94,7 +94,7 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Key-Vault-Crypto-User-RoleAssignment')
   scope: keyVault::key
   properties: {
-    principalId: '711330f9-cfad-4b10-a462-d82faa92027d' // AzureDatabricks Enterprise Application Object Id (Note: this is tenant specific)
+    principalId: '09ef9f59-e7b6-422e-84e4-508cfc8d64e7' // '711330f9-cfad-4b10-a462-d82faa92027d' // AzureDatabricks Enterprise Application Object Id (Note: this is tenant specific)
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424') // Key Vault Crypto User
     principalType: 'ServicePrincipal'
   }
@@ -284,7 +284,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-01-01' = {
         }
       }
       {
-        name: 'custom-public-subnet'
+        name: 'public'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 20, 1)
           networkSecurityGroup: {
@@ -301,7 +301,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-01-01' = {
         }
       }
       {
-        name: 'custom-private-subnet'
+        name: 'private'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 20, 2)
           networkSecurityGroup: {

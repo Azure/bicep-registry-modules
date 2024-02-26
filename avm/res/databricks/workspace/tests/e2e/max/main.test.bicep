@@ -152,7 +152,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
         service: 'databricks_ui_api'
-        subnetResourceId: nestedDependencies.outputs.defaultSubnetResourceId
+        subnetResourceId: nestedDependencies.outputs.customPublicSubnetName
         tags: {
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
@@ -162,7 +162,18 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        subnetResourceId: nestedDependencies.outputs.defaultSubnetResourceId
+        service: 'databricks_ui_api'
+        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName
+        tags: {
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName
         service: 'browser_authentication'
       }
     ]
