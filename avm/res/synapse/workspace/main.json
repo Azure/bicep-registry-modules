@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "7944657056081864299"
+      "version": "0.25.53.49325",
+      "templateHash": "12384527443627568306"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -796,8 +796,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "5925144887906209420"
+              "version": "0.25.53.49325",
+              "templateHash": "7739107907804712060"
             },
             "name": "Synapse Workspace Integration Runtimes",
             "description": "This module deploys a Synapse Workspace Integration Runtime.",
@@ -894,8 +894,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "17058954208193213785"
+              "version": "0.25.53.49325",
+              "templateHash": "16862202180408198277"
             }
           },
           "parameters": {
@@ -982,8 +982,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "15811131631744837887"
+              "version": "0.25.53.49325",
+              "templateHash": "2498604793784722860"
             },
             "name": "Synapse Workspaces Keys",
             "description": "This module deploys a Synapse Workspaces Key.",
