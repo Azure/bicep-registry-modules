@@ -62,14 +62,14 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
-@description('The resource ID of the created Virtual Network Subnet.')
+@description('The resource ID of the created Virtual Network Default Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
-@description('The resource ID of the created Virtual Network Subnet.')
-output customPrivateSubnetName string = virtualNetwork.properties.subnets[1].id
+@description('The resource ID of the 2nd created Virtual Network Subnet.')
+output customSubnet1ResourceId string = virtualNetwork.properties.subnets[1].id
 
-@description('The resource ID of the created Virtual Network Subnet.')
-output customPrivateSubnetName2 string = virtualNetwork.properties.subnets[2].id
+@description('The resource ID of the 3rd created Virtual Network Subnet.')
+output customSubnet2ResourceId string = virtualNetwork.properties.subnets[2].id
 
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId

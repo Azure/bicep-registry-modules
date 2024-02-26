@@ -340,10 +340,10 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 @description('The resource ID of the created Virtual Network Default Subnet.')
 output defaultSubnetResourceId string = virtualNetwork.properties.subnets[0].id
 
-@description('The name of the created Virtual Network Public Subnet.')
+@description('The name of the 2nd created Virtual Network Public Subnet.')
 output customPublicSubnetName string = virtualNetwork.properties.subnets[1].name
 
-@description('The name of the created Virtual Network Private Subnet.')
+@description('The name of the 3rd created Virtual Network Private Subnet.')
 output customPrivateSubnetName string = virtualNetwork.properties.subnets[2].name
 
 @description('The resource ID of the created Virtual Network.')

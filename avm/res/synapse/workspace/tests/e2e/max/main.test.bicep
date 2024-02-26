@@ -99,7 +99,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
         service: 'SQL'
-        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName
+        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
@@ -111,7 +111,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
         service: 'SQL'
-        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName2
+        subnetResourceId: nestedDependencies.outputs.customSubnet2ResourceId
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
@@ -123,7 +123,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
         service: 'SqlOnDemand'
-        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName
+        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
@@ -135,7 +135,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
         service: 'Dev'
-        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName
+        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'

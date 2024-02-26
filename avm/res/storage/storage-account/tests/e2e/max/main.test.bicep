@@ -80,7 +80,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     privateEndpoints: [
       {
         service: 'blob'
-        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName
+        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
@@ -92,7 +92,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       }
       {
         service: 'blob'
-        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName2
+        subnetResourceId: nestedDependencies.outputs.customSubnet2ResourceId
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
@@ -106,35 +106,35 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName
+        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
         service: 'table'
       }
       {
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName
+        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
         service: 'queue'
       }
       {
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName
+        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
         service: 'file'
       }
       {
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName
+        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
         service: 'web'
       }
       {
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName
+        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
         service: 'dfs'
       }
     ]
@@ -144,7 +144,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       virtualNetworkRules: [
         {
           action: 'Allow'
-          id: nestedDependencies.outputs.subnetResourceId
+          id: nestedDependencies.outputs.defaultSubnetResourceId
         }
       ]
       ipRules: [
