@@ -156,4 +156,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       resourceType: 'Redis Cache'
     }
   }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
 }]
