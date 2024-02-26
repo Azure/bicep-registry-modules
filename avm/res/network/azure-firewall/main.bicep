@@ -161,11 +161,11 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (ena
   }
 }
 
-module publicIPAddress '../../network/public-ip-address/main.bicep' = if (empty(publicIPResourceID) && azureSkuName == 'AZFW_VNet') {
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.2.1' = if (empty(publicIPResourceID) && azureSkuName == 'AZFW_VNet') {
   name: '${uniqueString(deployment().name, location)}-Firewall-PIP'
   params: {
     name: publicIPAddressObject.name
-    publicIPPrefixResourceId: contains(publicIPAddressObject, 'publicIPPrefixResourceId') ? (!(empty(publicIPAddressObject.publicIPPrefixResourceId)) ? publicIPAddressObject.publicIPPrefixResourceId : '') : ''
+    publicIpPrefixResourceId: contains(publicIPAddressObject, 'publicIPPrefixResourceId') ? (!(empty(publicIPAddressObject.publicIPPrefixResourceId)) ? publicIPAddressObject.publicIPPrefixResourceId : '') : ''
     publicIPAllocationMethod: contains(publicIPAddressObject, 'publicIPAllocationMethod') ? (!(empty(publicIPAddressObject.publicIPAllocationMethod)) ? publicIPAddressObject.publicIPAllocationMethod : 'Static') : 'Static'
     skuName: contains(publicIPAddressObject, 'skuName') ? (!(empty(publicIPAddressObject.skuName)) ? publicIPAddressObject.skuName : 'Standard') : 'Standard'
     skuTier: contains(publicIPAddressObject, 'skuTier') ? (!(empty(publicIPAddressObject.skuTier)) ? publicIPAddressObject.skuTier : 'Regional') : 'Regional'
@@ -175,16 +175,16 @@ module publicIPAddress '../../network/public-ip-address/main.bicep' = if (empty(
     lock: lock
     tags: publicIPAddressObject.?tags ?? tags
     zones: zones
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
 // create a Management Public IP address if one is not provided and the flag is true
-module managementIPAddress '../../network/public-ip-address/main.bicep' = if (isCreateDefaultManagementIP && azureSkuName == 'AZFW_VNet') {
+module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.2.1' = if (isCreateDefaultManagementIP && azureSkuName == 'AZFW_VNet') {
   name: '${uniqueString(deployment().name, location)}-Firewall-MIP'
   params: {
     name: contains(managementIPAddressObject, 'name') ? (!(empty(managementIPAddressObject.name)) ? managementIPAddressObject.name : '${name}-mip') : '${name}-mip'
-    publicIPPrefixResourceId: contains(managementIPAddressObject, 'managementIPPrefixResourceId') ? (!(empty(managementIPAddressObject.publicIPPrefixResourceId)) ? managementIPAddressObject.publicIPPrefixResourceId : '') : ''
+    publicIpPrefixResourceId: contains(managementIPAddressObject, 'managementIPPrefixResourceId') ? (!(empty(managementIPAddressObject.publicIPPrefixResourceId)) ? managementIPAddressObject.publicIPPrefixResourceId : '') : ''
     publicIPAllocationMethod: contains(managementIPAddressObject, 'managementIPAllocationMethod') ? (!(empty(managementIPAddressObject.publicIPAllocationMethod)) ? managementIPAddressObject.publicIPAllocationMethod : 'Static') : 'Static'
     skuName: contains(managementIPAddressObject, 'skuName') ? (!(empty(managementIPAddressObject.skuName)) ? managementIPAddressObject.skuName : 'Standard') : 'Standard'
     skuTier: contains(managementIPAddressObject, 'skuTier') ? (!(empty(managementIPAddressObject.skuTier)) ? managementIPAddressObject.skuTier : 'Regional') : 'Regional'
@@ -193,7 +193,7 @@ module managementIPAddress '../../network/public-ip-address/main.bicep' = if (is
     location: location
     tags: managementIPAddressObject.?tags ?? tags
     zones: zones
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
