@@ -98,7 +98,19 @@ module testDeployment '../../../main.bicep' = {
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
         service: 'Sql'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        service: 'Sql'
+        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName2
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
