@@ -48,7 +48,7 @@ This instance deploys the module and attaches an existing public IP address.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nafaddpip'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nafaddpip'
   params: {
     // Required parameters
     name: 'nafaddpip001'
@@ -156,7 +156,7 @@ This instance deploys the module and will create a public IP address.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nafcstpip'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nafcstpip'
   params: {
     // Required parameters
     name: 'nafcstpip001'
@@ -282,7 +282,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nafmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nafmin'
   params: {
     // Required parameters
     name: 'nafmin001'
@@ -338,7 +338,7 @@ This instance deploys the module a vWAN in a typical hub setting.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nafhubcom'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nafhubcom'
   params: {
     // Required parameters
     name: 'nafhubcom001'
@@ -422,7 +422,7 @@ This instance deploys the module a vWAN minimum hub setting.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nafhubmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nafhubmin'
   params: {
     // Required parameters
     name: 'nafhubmin001'
@@ -490,7 +490,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nafmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nafmax'
   params: {
     // Required parameters
     name: 'nafmax001'
@@ -816,7 +816,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nafwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nafwaf'
   params: {
     // Required parameters
     name: 'nafwaf001'
