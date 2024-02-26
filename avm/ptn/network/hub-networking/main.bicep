@@ -15,74 +15,27 @@ param enableTelemetry bool = true
 // Add your parameters here
 //
 
-@description('Optional. Enable/Disable Bastion Host.')
-param enableBastionHost bool = false
+@description('Optional. The lock settings of the service.')
+param lock lockType
+
+@description('Optional. Array of role assignments to create.')
+param roleAssignments roleAssignmentType
+
+@description('Optional. Tags of the resource.')
+param tags object?
 
 @description('Optional. A map of the hub virtual networks to create.')
-param hub_virtual_networks object = {}
+param hubVirtualNetworks object = {}
+
+@description('Optional. The diagnostic settings of the service.')
+param diagnosticSettings diagnosticSettingType
 
 // ============== //
 // Resources      //
 // ============== //
 
-module bastionHost 'br/public:avm/res/network/bastion-host:0.1.1' = if (enableBastionHost) {
-  name: '${uniqueString(deployment().name, location)}-${name}-bastion'
-  params: {
-    // Required parameters
-    name: name
-    vNetId: '<vNetId>'
-    // Non-required parameters
-    bastionSubnetPublicIpResourceId: '<bastionSubnetPublicIpResourceId>'
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    disableCopyPaste: true
-    enableFileCopy: false
-    enableIpConnect: false
-    enableShareableLink: false
-    location: '<location>'
-    scaleUnits: 4
-    skuName: 'Standard'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
-
-module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [for hub in items(hub_virtual_networks): {
-  name: '${uniqueString(deployment().name, location)}-${hub.value.name}'
-  params: {
-    // Required parameters
-    name: hub.value.name
-    addressPrefixes: hub.value.addressPrefixes
-    // Non-required parameters
-    ddosProtectionPlanResourceId: hub.value.ddosProtectionPlanId
-    diagnosticSettings: hub.value.diagnosticSettings
-    dnsServers: hub.value.dnsServers
-    enableTelemetry: hub.value.enableTelemetry
-    flowTimeoutInMinutes: hub.value.flowTimeoutInMinutes
-    location: hub.value.location
-    lock: hub.value.lock
-    peerings: hub.value.peerings
-    roleAssignments: hub.value.roleAssignments
-    subnets: hub.value.subnets
-    tags: hub.value.tags
-    vnetEncryption: hub.value.vnetEncryption
-    vnetEncryptionEnforcement: hub.value.vnetEncryptionEnforcement
-  }
-
-}]
-
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.network-hubspoke.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.ptn.network-hub-networking.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -99,6 +52,60 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
+module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [for hub in items(hubVirtualNetworks): {
+  name: '${uniqueString(deployment().name, location)}-${hub.value.name}'
+  params: {
+    // Required parameters
+    name: hub.value.name
+    addressPrefixes: hub.value.addressPrefixes
+    // Non-required parameters
+    ddosProtectionPlanResourceId: hub.value.ddosProtectionPlanResourceId
+    diagnosticSettings: hub.value.diagnosticSettings
+    dnsServers: hub.value.dnsServers
+    enableTelemetry: hub.value.enableTelemetry
+    flowTimeoutInMinutes: hub.value.flowTimeoutInMinutes
+    location: hub.value.location
+    lock: hub.value.lock
+    peerings: hub.value.peerings
+    roleAssignments: hub.value.roleAssignments
+    subnets: hub.value.subnets
+    tags: hub.value.tags
+    vnetEncryption: hub.value.vnetEncryption
+    vnetEncryptionEnforcement: hub.value.vnetEncryptionEnforcement
+  }
+
+}]
+
+resource hubVirtualNetwork_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+  }
+}
+
+resource hubVirtualNetwork_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+  properties: {
+    storageAccountId: diagnosticSetting.?storageAccountResourceId
+    workspaceId: diagnosticSetting.?workspaceResourceId
+    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+    eventHubName: diagnosticSetting.?eventHubName
+    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
+      category: group.category
+      enabled: group.?enabled ?? true
+      timeGrain: null
+    }]
+    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
+      categoryGroup: group.?categoryGroup
+      category: group.?category
+      enabled: group.?enabled ?? true
+    }]
+    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+  }
+}]
+
 //
 // Add your resources here
 //
@@ -109,14 +116,18 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 
 // Add your outputs here
 
-// @description('The resource ID of the resource.')
-// output resourceId string = <Resource>.id
-
 // @description('The name of the resource.')
 // output name string = <Resource>.name
 
-// @description('The location the resource was deployed into.')
-// output location string = <Resource>.location
+@description('The names of the Hub Networks.')
+output name array = [for i in range(0, length(hubVirtualNetworks)): {
+  name: hubVirtualNetwork[i].outputs.name
+}]
+
+@description('The resource group names of the Hub Networks.')
+output resourceGroupName array = [for i in range(0, length(hubVirtualNetworks)): {
+  resourceGroupName: hubVirtualNetwork[i].outputs.resourceGroupName
+}]
 
 // ================ //
 // Definitions      //
@@ -124,3 +135,78 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 //
 // Add your User-defined-types here, if any
 //
+
+type lockType = {
+  @description('Optional. Specify the name of lock.')
+  name: string?
+
+  @description('Optional. Specify the type of lock.')
+  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
+}?
+
+type roleAssignmentType = {
+  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+  roleDefinitionIdOrName: string
+
+  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
+  principalId: string
+
+  @description('Optional. The principal type of the assigned principal ID.')
+  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
+
+  @description('Optional. The description of the role assignment.')
+  description: string?
+
+  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
+  condition: string?
+
+  @description('Optional. Version of the condition.')
+  conditionVersion: '2.0'?
+
+  @description('Optional. The Resource Id of the delegated managed identity resource.')
+  delegatedManagedIdentityResourceId: string?
+}[]?
+
+type diagnosticSettingType = {
+  @description('Optional. The name of diagnostic setting.')
+  name: string?
+
+  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
+  logCategoriesAndGroups: {
+    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
+    category: string?
+
+    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
+    categoryGroup: string?
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
+  }[]?
+
+  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
+  metricCategories: {
+    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
+    category: string
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
+  }[]?
+
+  @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
+  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
+
+  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+  workspaceResourceId: string?
+
+  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+  storageAccountResourceId: string?
+
+  @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
+  eventHubAuthorizationRuleResourceId: string?
+
+  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+  eventHubName: string?
+
+  @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
+  marketplacePartnerResourceId: string?
+}[]?

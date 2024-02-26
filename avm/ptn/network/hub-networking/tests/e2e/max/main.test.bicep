@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using large parameter set'
+metadata description = 'This instance deploys the module with most of its features enabled.'
+
 // ========== //
 // Parameters //
 // ========== //
@@ -42,32 +45,54 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     // You parameters go here
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    hub_virtual_networks: {
+    hubVirtualNetworks: {
       hub1: {
         name: 'hub1'
         addressPrefixes: [ '10.0.0.0/16' ]
         enableTelemetry: true
         flowTimeoutInMinutes: 30
+        ddosProtectionPlanResourceId: ''
+        dnsServers: []
+        diagnosticSettings: []
         location: 'westeurope'
-        subnets: {
-          subnet1: {
+        lock: 'None'
+        peerings: []
+        roleAssignments: []
+        subnets: [
+          {
             name: 'subnet1'
             addressPrefix: '10.0.1.0/24'
           }
+        ]
+        tags: {
+          environment: 'test'
         }
+        vnetEncryption: false
+        vnetEncryptionEnforcement: 'AllowUnencrypted'
       }
       hub2: {
         name: 'hub2'
         addressPrefixes: [ '10.1.0.0/16' ]
         enableTelemetry: false
         flowTimeoutInMinutes: 10
+        ddosProtectionPlanResourceId: ''
+        dnsServers: []
+        diagnosticSettings: []
         location: 'westus2'
-        subnets: {
-          subnet2: {
+        lock: 'None'
+        peerings: []
+        roleAssignments: []
+        subnets: [
+          {
             name: 'subnet2'
             addressPrefix: '10.1.1.0/24'
           }
+        ]
+        tags: {
+          environment: 'test'
         }
+        vnetEncryption: false
+        vnetEncryptionEnforcement: 'AllowUnencrypted'
       }
     }
   }
