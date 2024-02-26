@@ -35,11 +35,14 @@ function Publish-ModuleFromTagToPBR {
 
   # Load used functions
   . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModuleReadmeLink.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
 
   # 1. Extract information from the tag
   $targetVersion = Split-Path $ModuleReleaseTagName -Leaf
+  Write-Verbose "Version: [$targetVersion]" -Verbose
   $moduleRelativeFolderPath = $ModuleReleaseTagName -replace "\/$targetVersion$", ''
-  $moduleFolderPath = Join-Path $repositoryRoot $moduleRelativeFolderPath
+  Write-Verbose "Module: [$moduleRelativeFolderPath]" -Verbose
+  $moduleFolderPath = Join-Path $RepoRoot $moduleRelativeFolderPath
   $moduleBicepFilePath = Join-Path $moduleFolderPath 'main.bicep'
   Write-Verbose "Determined Bicep template path [$moduleBicepFilePath]"
 
@@ -68,6 +71,7 @@ function Publish-ModuleFromTagToPBR {
   if ($incorrectLines) {
     throw ($incorrectLines | ConvertTo-Json)
   }
+
   ###################
   ## 4.  Publish   ##
   ###################
