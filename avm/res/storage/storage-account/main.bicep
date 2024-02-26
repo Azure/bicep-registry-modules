@@ -288,7 +288,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
       }, (requireInfrastructureEncryption ? {
         requireInfrastructureEncryption: kind != 'Storage' ? requireInfrastructureEncryption : null
       } : {}))
-    accessTier: kind != 'Storage' ? accessTier : null
+    accessTier: (kind != 'Storage' && kind != 'BlockBlobStorage') ? accessTier : null
     sasPolicy: !empty(sasExpirationPeriod) ? {
       expirationAction: 'Log'
       sasExpirationPeriod: sasExpirationPeriod
@@ -368,7 +368,7 @@ module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoi
     ]
     name: privateEndpoint.?name ?? 'pep-${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
     subnetResourceId: privateEndpoint.subnetResourceId
-    enableTelemetry: enableTelemetry
+    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
