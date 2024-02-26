@@ -22,7 +22,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
       {
         name: 'defaultSubnet'
         properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 16, 0)
+          addressPrefix: cidrSubnet(addressPrefix, 20, 0)
           serviceEndpoints: [
             {
               service: 'Microsoft.Storage'
@@ -33,7 +33,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
       {
         name: 'custom-private-subnet'
         properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 16, 1)
+          addressPrefix: cidrSubnet(addressPrefix, 20, 1)
           serviceEndpoints: [
             {
               service: 'Microsoft.Storage'
@@ -44,7 +44,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
       {
         name: 'custom-private-subnet-2'
         properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 16, 2)
+          addressPrefix: cidrSubnet(addressPrefix, 20, 2)
           serviceEndpoints: [
             {
               service: 'Microsoft.Storage'
