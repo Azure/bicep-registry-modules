@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "547611759335428426"
+      "version": "0.25.53.49325",
+      "templateHash": "5117333214781202133"
     },
     "name": "Diagnostic Settings (Activity Logs) for Azure Subscriptions",
     "description": "This module deploys a Subscription wide export of the Activity Log.",
@@ -29,14 +29,21 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs."
+              "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `AllLogs` to collect all logs."
+            }
+          },
+          "enabled": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Enable or disable the category explicitly. Default is `true`."
             }
           }
         }
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+        "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
       }
     },
     "metricCategoriesType": {
@@ -47,14 +54,21 @@
           "category": {
             "type": "string",
             "metadata": {
-              "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics."
+              "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+            }
+          },
+          "enabled": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Enable or disable the category explicitly. Default is `true`."
             }
           }
         }
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+        "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
       }
     }
   },
@@ -99,14 +113,14 @@
     "logCategoriesAndGroups": {
       "$ref": "#/definitions/logCategoriesAndGroupsType",
       "metadata": {
-        "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+        "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
       }
     },
     "metricCategories": {
       "$ref": "#/definitions/metricCategoriesType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+        "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
       }
     },
     "logAnalyticsDestinationType": {
@@ -170,14 +184,32 @@
       "apiVersion": "2021-05-01-preview",
       "name": "[parameters('name')]",
       "properties": {
+        "copy": [
+          {
+            "name": "logs",
+            "count": "[length(coalesce(parameters('logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "input": {
+              "categoryGroup": "[tryGet(coalesce(parameters('logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(parameters('logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(parameters('logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+            }
+          },
+          {
+            "name": "metrics",
+            "count": "[length(coalesce(parameters('metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+            "input": {
+              "category": "[coalesce(parameters('metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+              "enabled": "[coalesce(tryGet(coalesce(parameters('metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+              "timeGrain": null
+            }
+          }
+        ],
         "storageAccountId": "[parameters('storageAccountResourceId')]",
         "workspaceId": "[parameters('workspaceResourceId')]",
         "eventHubAuthorizationRuleId": "[parameters('eventHubAuthorizationRuleResourceId')]",
         "eventHubName": "[parameters('eventHubName')]",
         "logAnalyticsDestinationType": "[if(not(empty(parameters('logAnalyticsDestinationType'))), parameters('logAnalyticsDestinationType'), null())]",
-        "marketplacePartnerId": "[parameters('marketplacePartnerResourceId')]",
-        "logs": "[coalesce(parameters('logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'AllLogs', 'enabled', true())))]",
-        "metrics": "[coalesce(parameters('metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]"
+        "marketplacePartnerId": "[parameters('marketplacePartnerResourceId')]"
       }
     }
   },
