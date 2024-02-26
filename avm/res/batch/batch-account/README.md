@@ -231,7 +231,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
           {
             fqdn: 'abc.batch.com'
             ipAddresses: [
-              '10.0.0.10'
+              '10.0.16.10'
             ]
           }
         ]
@@ -241,7 +241,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
             properties: {
               groupId: 'batchAccount'
               memberName: 'batchAccount'
-              privateIPAddress: '10.0.0.10'
+              privateIPAddress: '10.0.16.10'
             }
           }
         ]
@@ -391,7 +391,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
             {
               "fqdn": "abc.batch.com",
               "ipAddresses": [
-                "10.0.0.10"
+                "10.0.16.10"
               ]
             }
           ],
@@ -401,7 +401,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
               "properties": {
                 "groupId": "batchAccount",
                 "memberName": "batchAccount",
-                "privateIPAddress": "10.0.0.10"
+                "privateIPAddress": "10.0.16.10"
               }
             }
           ],
