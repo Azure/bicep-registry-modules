@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "2030878924566742322"
+      "version": "0.25.53.49325",
+      "templateHash": "8072514070285903960"
     },
     "name": "Resource Graph Queries",
     "description": "This module deploys a Resource Graph Query.",

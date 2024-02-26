@@ -264,14 +264,14 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Public IP Prefix. |
+| [`name`](#parameter-name) | string | The name of the Public IP Prefix. |
 | [`prefixLength`](#parameter-prefixlength) | int | Length of the Public IP Prefix. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customIPPrefix`](#parameter-customipprefix) | object | The customIpPrefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range. |
+| [`customIPPrefix`](#parameter-customipprefix) | object | The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -280,7 +280,7 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
 
 ### Parameter: `name`
 
-Name of the Public IP Prefix.
+The name of the Public IP Prefix.
 
 - Required: Yes
 - Type: string
@@ -294,7 +294,7 @@ Length of the Public IP Prefix.
 
 ### Parameter: `customIPPrefix`
 
-The customIpPrefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range.
+The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range.
 
 - Required: No
 - Type: object

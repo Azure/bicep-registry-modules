@@ -143,7 +143,7 @@ body:
         - "avm/res/network/virtual-hub"
         - "avm/res/network/virtual-network"
         - "avm/res/network/virtual-network-gateway"
-        # - "avm/res/network/virtual-wan"
+        - "avm/res/network/virtual-wan"
         - "avm/res/network/vpn-gateway"
         - "avm/res/network/vpn-site"
         - "avm/res/operational-insights/workspace"
