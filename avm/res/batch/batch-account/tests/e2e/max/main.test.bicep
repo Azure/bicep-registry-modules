@@ -112,7 +112,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             properties: {
               groupId: 'batchAccount'
               memberName: 'batchAccount'
-              privateIPAddress: '10.0.0.10'
+              privateIPAddress: '10.0.16.10'
             }
           }
         ]
@@ -120,7 +120,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           {
             fqdn: 'abc.batch.com'
             ipAddresses: [
-              '10.0.0.10'
+              '10.0.16.10'
             ]
           }
         ]
