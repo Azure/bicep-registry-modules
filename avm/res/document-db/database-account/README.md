@@ -1132,6 +1132,18 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           Role: 'DeploymentValidation'
         }
       }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'Sql'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
     ]
     roleAssignments: [
       {
@@ -1292,6 +1304,18 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     },
     "privateEndpoints": {
       "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "Sql",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
         {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"

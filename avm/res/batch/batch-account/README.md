@@ -272,6 +272,18 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
+        service: 'batchAccount'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
         service: 'nodeManagement'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -407,6 +419,18 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
+          ],
+          "service": "batchAccount",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
           ],
           "service": "batchAccount",
           "subnetResourceId": "<subnetResourceId>",

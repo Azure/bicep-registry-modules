@@ -394,6 +394,18 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
+        service: 'SQL'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
         service: 'SqlOnDemand'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -507,6 +519,18 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     },
     "privateEndpoints": {
       "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "SQL",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
         {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"

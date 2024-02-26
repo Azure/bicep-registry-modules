@@ -443,6 +443,18 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
+        service: 'blob'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
         service: 'table'
         subnetResourceId: '<subnetResourceId>'
       }
@@ -853,6 +865,18 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "privateEndpoints": {
       "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "blob",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
         {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
