@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Hub-commom'
+metadata description = 'This instance deploys the module a vWAN in a typical hub setting.'
+
 // ========== //
 // Parameters //
 // ========== //
@@ -35,6 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
+    location: location
     virtualWanName: 'dep-${namePrefix}-vwan-${serviceShort}'
     virtualHubName: 'dep-${namePrefix}-vhub-${serviceShort}'
     firewallPolicyName: 'dep-${namePrefix}-afwp-${serviceShort}'
@@ -50,6 +54,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
+    location: location
     enableTelemetry: enableTelemetry
     name: '${namePrefix}${serviceShort}001'
     firewallPolicyId: nestedDependencies.outputs.firewallPolicyResourceId

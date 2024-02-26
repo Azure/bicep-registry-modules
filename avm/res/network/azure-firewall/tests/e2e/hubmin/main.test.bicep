@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Hub-min'
+metadata description = 'This instance deploys the module a vWAN minimum hub setting.'
+
 // ========== //
 // Parameters //
 // ========== //
@@ -37,6 +40,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualWanName: 'dep-${namePrefix}-vwan-${serviceShort}'
     virtualHubName: 'dep-${namePrefix}-vhub-${serviceShort}'
+    location: location
   }
 }
 
@@ -49,6 +53,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
+    location: location
     enableTelemetry: enableTelemetry
     name: '${namePrefix}${serviceShort}001'
     virtualHubId: nestedDependencies.outputs.virtualHubResourceId

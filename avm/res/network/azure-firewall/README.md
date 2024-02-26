@@ -29,15 +29,18 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/azure-firewall:<version>`.
 
-- [Addpip](#example-1-addpip)
-- [Custompip](#example-2-custompip)
+- [Add-PIP](#example-1-add-pip)
+- [Custom-PIP](#example-2-custom-pip)
 - [Using only defaults](#example-3-using-only-defaults)
-- [Hubcommon](#example-4-hubcommon)
-- [Hubmin](#example-5-hubmin)
+- [Hub-commom](#example-4-hub-commom)
+- [Hub-min](#example-5-hub-min)
 - [Using large parameter set](#example-6-using-large-parameter-set)
 - [WAF-aligned](#example-7-waf-aligned)
 
-### Example 1: _Addpip_
+### Example 1: _Add-PIP_
+
+This instance deploys the module and attaches an existing public IP address.
+
 
 <details>
 
@@ -57,7 +60,8 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       }
     ]
     azureSkuTier: 'Basic'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
+    location: '<location>'
     managementIPAddressObject: {
       publicIPAllocationMethod: 'Static'
       roleAssignments: [
@@ -106,8 +110,11 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     "azureSkuTier": {
       "value": "Basic"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
+    },
+    "location": {
+      "value": "<location>"
     },
     "managementIPAddressObject": {
       "value": {
@@ -138,7 +145,10 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 2: _Custompip_
+### Example 2: _Custom-PIP_
+
+This instance deploys the module and will create a public IP address.
+
 
 <details>
 
@@ -151,7 +161,8 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     // Required parameters
     name: 'nafcstpip001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
+    location: '<location>'
     publicIPAddressObject: {
       diagnosticSettings: [
         {
@@ -207,8 +218,11 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       "value": "nafcstpip001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
+    },
+    "location": {
+      "value": "<location>"
     },
     "publicIPAddressObject": {
       "value": {
@@ -273,7 +287,8 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     // Required parameters
     name: 'nafmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
+    location: '<location>'
     vNetId: '<vNetId>'
   }
 }
@@ -296,8 +311,11 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       "value": "nafmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
+    },
+    "location": {
+      "value": "<location>"
     },
     "vNetId": {
       "value": "<vNetId>"
@@ -309,7 +327,10 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 4: _Hubcommon_
+### Example 4: _Hub-commom_
+
+This instance deploys the module a vWAN in a typical hub setting.
+
 
 <details>
 
@@ -322,13 +343,14 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     // Required parameters
     name: 'nafhubcom001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     firewallPolicyId: '<firewallPolicyId>'
     hubIPAddresses: {
       publicIPs: {
         count: 1
       }
     }
+    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -356,8 +378,8 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       "value": "nafhubcom001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "firewallPolicyId": {
       "value": "<firewallPolicyId>"
@@ -368,6 +390,9 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
           "count": 1
         }
       }
+    },
+    "location": {
+      "value": "<location>"
     },
     "tags": {
       "value": {
@@ -386,7 +411,10 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 </details>
 <p>
 
-### Example 5: _Hubmin_
+### Example 5: _Hub-min_
+
+This instance deploys the module a vWAN minimum hub setting.
+
 
 <details>
 
@@ -399,12 +427,13 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     // Required parameters
     name: 'nafhubmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     hubIPAddresses: {
       publicIPs: {
         count: 1
       }
     }
+    location: '<location>'
     virtualHubId: '<virtualHubId>'
   }
 }
@@ -427,8 +456,8 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       "value": "nafhubmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "hubIPAddresses": {
       "value": {
@@ -436,6 +465,9 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
           "count": 1
         }
       }
+    },
+    "location": {
+      "value": "<location>"
     },
     "virtualHubId": {
       "value": "<virtualHubId>"
@@ -529,7 +561,8 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -683,8 +716,11 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -851,7 +887,8 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -988,8 +1025,11 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -1080,7 +1120,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 | [`applicationRuleCollections`](#parameter-applicationrulecollections) | array | Collection of application rule collections used by Azure Firewall. |
 | [`azureSkuTier`](#parameter-azureskutier) | string | Tier of an Azure Firewall. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`firewallPolicyId`](#parameter-firewallpolicyid) | string | Resource ID of the Firewall Policy that should be attached. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -1283,9 +1323,9 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool

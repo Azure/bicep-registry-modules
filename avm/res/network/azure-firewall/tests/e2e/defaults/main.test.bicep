@@ -39,6 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    location: location
   }
 }
 
@@ -54,5 +55,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     enableTelemetry: enableTelemetry
     name: '${namePrefix}${serviceShort}001'
     vNetId: nestedDependencies.outputs.virtualNetworkResourceId
+    location: location
   }
 }]
