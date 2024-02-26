@@ -1,0 +1,182 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "6814363898116827751"
+    },
+    "name": "Network Manager Network Groups",
+    "description": "This module deploys a Network Manager Network Group.\nA network group is a collection of same-type network resources that you can associate with network manager configurations. You can add same-type network resources after you create the network group.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "networkManagerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent network manager. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 64,
+      "metadata": {
+        "description": "Required. The name of the network group."
+      }
+    },
+    "description": {
+      "type": "string",
+      "defaultValue": "",
+      "maxLength": 500,
+      "metadata": {
+        "description": "Optional. A description of the network group."
+      }
+    },
+    "staticMembers": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Static Members to create for the network group. Contains virtual networks to add to the network group."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkManagers/networkGroups",
+      "apiVersion": "2023-04-01",
+      "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
+      "properties": {
+        "description": "[parameters('description')]"
+      }
+    },
+    {
+      "copy": {
+        "name": "networkGroup_staticMembers",
+        "count": "[length(parameters('staticMembers'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-NetworkGroup-StaticMembers-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "networkManagerName": {
+            "value": "[parameters('networkManagerName')]"
+          },
+          "networkGroupName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('staticMembers')[copyIndex()].name]"
+          },
+          "resourceId": {
+            "value": "[parameters('staticMembers')[copyIndex()].resourceId]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.25.53.49325",
+              "templateHash": "8599408258770736969"
+            },
+            "name": "Network Manager Network Group Static Members",
+            "description": "This module deploys a Network Manager Network Group Static Member.\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "networkManagerName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent network manager. Required if the template is used in a standalone deployment."
+              }
+            },
+            "networkGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent network group. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the static member."
+              }
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Resource ID of the virtual network."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/networkManagers/networkGroups/staticMembers",
+              "apiVersion": "2023-04-01",
+              "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('networkGroupName'), parameters('name'))]",
+              "properties": {
+                "resourceId": "[parameters('resourceId')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed static member."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed static member."
+              },
+              "value": "[resourceId('Microsoft.Network/networkManagers/networkGroups/staticMembers', parameters('networkManagerName'), parameters('networkGroupName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the static member was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkManagers/networkGroups', parameters('networkManagerName'), parameters('name'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed network group."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed network group."
+      },
+      "value": "[resourceId('Microsoft.Network/networkManagers/networkGroups', parameters('networkManagerName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the network group was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
