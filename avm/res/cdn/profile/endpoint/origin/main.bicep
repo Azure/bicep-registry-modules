@@ -5,9 +5,6 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the CDN Endpoint.')
 param endpointName string
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
 @description('Required. The name of the origin.')
 param name string
 
@@ -40,18 +37,6 @@ param privateLinkResourceId string
 
 @description('Optional. The host header value sent to the origin.')
 param originHostHeader string
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
-}
 
 @description('Optional. The name of the CDN profile. Default to "default".')
 param profileName string = 'default'

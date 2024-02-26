@@ -27,23 +27,6 @@ param trafficRestorationTimeToHealedOrNewEndpointsInMinutes int = 10
 @description('Required. The list of origins within the origin group.')
 param origins array = []
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
-var enableReferencedModulesTelemetry = false
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
-}
-
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName
 }
@@ -74,7 +57,6 @@ module origin 'origin/main.bicep' = [for (origion, index) in origins: {
     priority: contains(origion, 'priority') ? origion.priority : 1
     weight: contains(origion, 'weight') ? origion.weight : 1000
     sharedPrivateLinkResource: contains(origion, 'sharedPrivateLinkResource') ? origion.sharedPrivateLinkResource : null
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 

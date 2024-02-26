@@ -33,22 +33,6 @@ param enabledState string = 'Enabled'
 @description('Optional. The list of routes for this AFD Endpoint.')
 param routes array = []
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-var enableReferencedModulesTelemetry = false
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
-}
-
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName
 }
@@ -81,7 +65,6 @@ module afd_endpoint_route 'route/main.bicep' = [for route in routes: {
     patternsToMatch: contains(route, 'patternsToMatch') ? route.patternsToMatch : []
     ruleSets: contains(route, 'ruleSets') ? route.ruleSets : []
     supportedProtocols: contains(route, 'supportedProtocols') ? route.supportedProtocols : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
