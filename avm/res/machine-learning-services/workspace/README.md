@@ -291,6 +291,12 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
           Role: 'DeploymentValidation'
         }
       }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+      }
     ]
     roleAssignments: [
       {
@@ -436,6 +442,12 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           }
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
