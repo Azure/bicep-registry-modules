@@ -258,9 +258,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
     // Non-required parameters
     hubVirtualNetworks: {
       hub1: {
-        addressPrefixes: [
-          '10.0.0.0/16'
-        ]
+        addressPrefixes: '<addressPrefixes>'
         diagnosticSettings: [
           {
             eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -274,44 +272,31 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             storageAccountResourceId: '<storageAccountResourceId>'
             workspaceResourceId: '<workspaceResourceId>'
           }
+        ]
+        dnsServers: [
+          '10.0.1.4'
+          '10.0.1.5'
         ]
         enableTelemetry: true
-        flowTimeoutInMinutes: 30
+        flowTimeoutInMinutes: 20
         location: 'westeurope'
+        lock: {
+          kind: 'CanNotDelete'
+          name: 'hub1CustomLockName'
+        }
         name: 'hub1'
         subnets: {
-          subnet1: {
-            addressPrefix: '10.0.1.0/24'
-            name: 'subnet1'
+          AzureBastionSubnet: {
+            addressPrefix: '<addressPrefix>'
+            name: 'AzureBastionSubnet'
           }
-        }
-      }
-      hub2: {
-        addressPrefixes: [
-          '10.1.0.0/16'
-        ]
-        diagnosticSettings: [
-          {
-            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-            eventHubName: '<eventHubName>'
-            metricCategories: [
-              {
-                category: 'AllMetrics'
-              }
-            ]
-            name: 'customSetting'
-            storageAccountResourceId: '<storageAccountResourceId>'
-            workspaceResourceId: '<workspaceResourceId>'
+          AzureFirewallSubnet: {
+            addressPrefix: '<addressPrefix>'
+            name: 'AzureFirewallSubnet'
           }
-        ]
-        enableTelemetry: false
-        flowTimeoutInMinutes: 10
-        location: 'westus2'
-        name: 'hub2'
-        subnets: {
-          subnet2: {
-            addressPrefix: '10.1.1.0/24'
-            name: 'subnet2'
+          GatewaySubnet: {
+            addressPrefix: '<addressPrefix>'
+            name: 'GatewaySubnet'
           }
         }
       }
@@ -341,9 +326,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
     "hubVirtualNetworks": {
       "value": {
         "hub1": {
-          "addressPrefixes": [
-            "10.0.0.0/16"
-          ],
+          "addressPrefixes": "<addressPrefixes>",
           "diagnosticSettings": [
             {
               "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
@@ -357,44 +340,31 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
               "storageAccountResourceId": "<storageAccountResourceId>",
               "workspaceResourceId": "<workspaceResourceId>"
             }
+          ],
+          "dnsServers": [
+            "10.0.1.4",
+            "10.0.1.5"
           ],
           "enableTelemetry": true,
-          "flowTimeoutInMinutes": 30,
+          "flowTimeoutInMinutes": 20,
           "location": "westeurope",
+          "lock": {
+            "kind": "CanNotDelete",
+            "name": "hub1CustomLockName"
+          },
           "name": "hub1",
           "subnets": {
-            "subnet1": {
-              "addressPrefix": "10.0.1.0/24",
-              "name": "subnet1"
-            }
-          }
-        },
-        "hub2": {
-          "addressPrefixes": [
-            "10.1.0.0/16"
-          ],
-          "diagnosticSettings": [
-            {
-              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-              "eventHubName": "<eventHubName>",
-              "metricCategories": [
-                {
-                  "category": "AllMetrics"
-                }
-              ],
-              "name": "customSetting",
-              "storageAccountResourceId": "<storageAccountResourceId>",
-              "workspaceResourceId": "<workspaceResourceId>"
-            }
-          ],
-          "enableTelemetry": false,
-          "flowTimeoutInMinutes": 10,
-          "location": "westus2",
-          "name": "hub2",
-          "subnets": {
-            "subnet2": {
-              "addressPrefix": "10.1.1.0/24",
-              "name": "subnet2"
+            "AzureBastionSubnet": {
+              "addressPrefix": "<addressPrefix>",
+              "name": "AzureBastionSubnet"
+            },
+            "AzureFirewallSubnet": {
+              "addressPrefix": "<addressPrefix>",
+              "name": "AzureFirewallSubnet"
+            },
+            "GatewaySubnet": {
+              "addressPrefix": "<addressPrefix>",
+              "name": "GatewaySubnet"
             }
           }
         }

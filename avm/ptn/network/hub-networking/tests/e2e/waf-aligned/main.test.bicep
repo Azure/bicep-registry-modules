@@ -49,6 +49,8 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // Test Execution //
 // ============== //
 
+var addressPrefix = '10.0.0.0/16'
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
@@ -60,7 +62,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     hubVirtualNetworks: {
       hub1: {
         name: 'hub1'
-        addressPrefixes: [ '10.0.0.0/16' ]
+        addressPrefixes: addressPrefix
         diagnosticSettings: [
           {
             name: 'customSetting'
@@ -75,40 +77,26 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
           }
         ]
+        dnsServers: [ '10.0.1.4', '10.0.1.5' ]
+        lock: {
+          kind: 'CanNotDelete'
+          name: 'hub1CustomLockName'
+        }
         enableTelemetry: true
-        flowTimeoutInMinutes: 30
+        flowTimeoutInMinutes: 20
         location: 'westeurope'
         subnets: {
-          subnet1: {
-            name: 'subnet1'
-            addressPrefix: '10.0.1.0/24'
+          GatewaySubnet: {
+            name: 'GatewaySubnet'
+            addressPrefix: cidrSubnet(addressPrefix, 26, 0)
           }
-        }
-      }
-      hub2: {
-        name: 'hub2'
-        addressPrefixes: [ '10.1.0.0/16' ]
-        diagnosticSettings: [
-          {
-            name: 'customSetting'
-            metricCategories: [
-              {
-                category: 'AllMetrics'
-              }
-            ]
-            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          AzureFirewallSubnet: {
+            name: 'AzureFirewallSubnet'
+            addressPrefix: cidrSubnet(addressPrefix, 26, 0)
           }
-        ]
-        enableTelemetry: false
-        flowTimeoutInMinutes: 10
-        location: 'westus2'
-        subnets: {
-          subnet2: {
-            name: 'subnet2'
-            addressPrefix: '10.1.1.0/24'
+          AzureBastionSubnet: {
+            name: 'AzureBastionSubnet'
+            addressPrefix: cidrSubnet(addressPrefix, 26, 0)
           }
         }
       }
