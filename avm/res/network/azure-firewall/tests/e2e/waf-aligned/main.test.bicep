@@ -18,7 +18,7 @@ param location string = deployment().location
 param serviceShort string = 'nafwaf'
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+param enableTelemetry bool = true
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -67,7 +67,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    enableDefaultTelemetry: enableDefaultTelemetry
+    enableTelemetry: enableTelemetry
     name: '${namePrefix}${serviceShort}001'
     vNetId: nestedDependencies.outputs.virtualNetworkResourceId
     applicationRuleCollections: [
