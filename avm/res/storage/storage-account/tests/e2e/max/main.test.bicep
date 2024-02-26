@@ -80,7 +80,19 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     privateEndpoints: [
       {
         service: 'blob'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        service: 'blob'
+        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName2
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
@@ -94,35 +106,35 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName
         service: 'table'
       }
       {
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName
         service: 'queue'
       }
       {
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName
         service: 'file'
       }
       {
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName
         service: 'web'
       }
       {
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName
         service: 'dfs'
       }
     ]
