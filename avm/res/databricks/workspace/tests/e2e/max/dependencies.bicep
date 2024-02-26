@@ -284,7 +284,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-01-01' = {
         }
       }
       {
-        name: 'public'
+        name: 'publicSubnet'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 20, 1)
           networkSecurityGroup: {
@@ -301,7 +301,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-01-01' = {
         }
       }
       {
-        name: 'private'
+        name: 'privateSubnet'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 20, 2)
           networkSecurityGroup: {
