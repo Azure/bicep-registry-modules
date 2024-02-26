@@ -36,6 +36,7 @@ function Publish-ModuleFromTagToPBR {
   Write-Verbose "1 [$ModuleReleaseTagName]" -Verbose
   # Load used functions
   . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModuleReadmeLink.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
 
   Write-Verbose "2 [$ModuleReleaseTagName]" -Verbose
   # 1. Extract information from the tag
@@ -73,6 +74,7 @@ function Publish-ModuleFromTagToPBR {
   if ($incorrectLines) {
     throw ($incorrectLines | ConvertTo-Json)
   }
+
   ###################
   ## 4.  Publish   ##
   ###################
