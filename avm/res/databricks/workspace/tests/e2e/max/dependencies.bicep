@@ -284,7 +284,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-01-01' = {
         }
       }
       {
-        name: 'custom-public-subnet'
+        name: 'public'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 20, 1)
           networkSecurityGroup: {
@@ -301,26 +301,9 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-01-01' = {
         }
       }
       {
-        name: 'custom-private-subnet'
+        name: 'private'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 20, 2)
-          networkSecurityGroup: {
-            id: networkSecurityGroup.id
-          }
-          delegations: [
-            {
-              name: 'databricksDelegation'
-              properties: {
-                serviceName: 'Microsoft.Databricks/workspaces'
-              }
-            }
-          ]
-        }
-      }
-      {
-        name: 'custom-private-subnet-2'
-        properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 20, 3)
           networkSecurityGroup: {
             id: networkSecurityGroup.id
           }
@@ -362,9 +345,6 @@ output customPublicSubnetName string = virtualNetwork.properties.subnets[1].name
 
 @description('The name of the created Virtual Network Private Subnet.')
 output customPrivateSubnetName string = virtualNetwork.properties.subnets[2].name
-
-@description('The name of the created Virtual Network Private Subnet 2.')
-output customPrivateSubnetName2 string = virtualNetwork.properties.subnets[3].name
 
 @description('The resource ID of the created Virtual Network.')
 output virtualNetworkResourceId string = virtualNetwork.id

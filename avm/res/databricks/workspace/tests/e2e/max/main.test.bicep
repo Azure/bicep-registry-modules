@@ -173,7 +173,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName2
+        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetName
         service: 'browser_authentication'
       }
     ]
