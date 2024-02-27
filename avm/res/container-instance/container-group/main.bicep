@@ -245,7 +245,7 @@ type containerType = {
     }[]
 
     resources: {
-      @description('Required. The resource requests of this container instance..')
+      @description('Required. The resource requests of this container instance.')
       requests: {
         cpu: int
         gpu: {
