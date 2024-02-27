@@ -136,6 +136,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           Role: 'DeploymentValidation'
         }
       }
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.purviewPortalPrivateDNSResourceId
+        ]
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      }
     ]
     storageBlobPrivateEndpoints: [
       {
@@ -163,6 +169,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.storageQueuePrivateDNSResourceId
+        ]
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
       }
     ]
     eventHubPrivateEndpoints: [

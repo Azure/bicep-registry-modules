@@ -169,6 +169,12 @@ module account 'br/public:avm/res/purview/account:<version>' = {
           Role: 'DeploymentValidation'
         }
       }
+      {
+        privateDnsZoneResourceIds: [
+          '<purviewPortalPrivateDNSResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+      }
     ]
     publicNetworkAccess: 'Disabled'
     roleAssignments: [
@@ -214,6 +220,12 @@ module account 'br/public:avm/res/purview/account:<version>' = {
           'hidden-title': 'This is visible in the resource name'
           Role: 'DeploymentValidation'
         }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<storageQueuePrivateDNSResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
       }
     ]
     tags: {
@@ -322,6 +334,12 @@ module account 'br/public:avm/res/purview/account:<version>' = {
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           }
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<purviewPortalPrivateDNSResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -376,6 +394,12 @@ module account 'br/public:avm/res/purview/account:<version>' = {
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           }
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<storageQueuePrivateDNSResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -625,7 +649,6 @@ Configuration details for Purview Account private endpoints. For security reason
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`service`](#parameter-accountprivateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file". |
 | [`subnetResourceId`](#parameter-accountprivateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -640,19 +663,13 @@ Configuration details for Purview Account private endpoints. For security reason
 | [`isManualConnection`](#parameter-accountprivateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
 | [`location`](#parameter-accountprivateendpointslocation) | string | The location to deploy the private endpoint to. |
 | [`lock`](#parameter-accountprivateendpointslock) | object | Specify the type of lock. |
-| [`manualConnectionRequestMessage`](#parameter-accountprivateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars. |
+| [`manualConnectionRequestMessage`](#parameter-accountprivateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-accountprivateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-accountprivateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-accountprivateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-accountprivateendpointsroleassignments) | array | Array of role assignments to create. |
+| [`service`](#parameter-accountprivateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-accountprivateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
-
-### Parameter: `accountPrivateEndpoints.service`
-
-The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `accountPrivateEndpoints.subnetResourceId`
 
@@ -819,7 +836,7 @@ Specify the name of lock.
 
 ### Parameter: `accountPrivateEndpoints.manualConnectionRequestMessage`
 
-A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars.
+A message passed to the owner of the remote resource with the manual connection request.
 
 - Required: No
 - Type: string
@@ -933,6 +950,13 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `accountPrivateEndpoints.service`
+
+The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".
+
+- Required: No
+- Type: string
 
 ### Parameter: `accountPrivateEndpoints.tags`
 
@@ -1106,7 +1130,6 @@ Configuration details for Purview Managed Event Hub namespace private endpoints.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`service`](#parameter-eventhubprivateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file". |
 | [`subnetResourceId`](#parameter-eventhubprivateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -1121,19 +1144,13 @@ Configuration details for Purview Managed Event Hub namespace private endpoints.
 | [`isManualConnection`](#parameter-eventhubprivateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
 | [`location`](#parameter-eventhubprivateendpointslocation) | string | The location to deploy the private endpoint to. |
 | [`lock`](#parameter-eventhubprivateendpointslock) | object | Specify the type of lock. |
-| [`manualConnectionRequestMessage`](#parameter-eventhubprivateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars. |
+| [`manualConnectionRequestMessage`](#parameter-eventhubprivateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-eventhubprivateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-eventhubprivateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-eventhubprivateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-eventhubprivateendpointsroleassignments) | array | Array of role assignments to create. |
+| [`service`](#parameter-eventhubprivateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-eventhubprivateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
-
-### Parameter: `eventHubPrivateEndpoints.service`
-
-The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `eventHubPrivateEndpoints.subnetResourceId`
 
@@ -1300,7 +1317,7 @@ Specify the name of lock.
 
 ### Parameter: `eventHubPrivateEndpoints.manualConnectionRequestMessage`
 
-A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars.
+A message passed to the owner of the remote resource with the manual connection request.
 
 - Required: No
 - Type: string
@@ -1415,6 +1432,13 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `eventHubPrivateEndpoints.service`
+
+The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".
+
+- Required: No
+- Type: string
+
 ### Parameter: `eventHubPrivateEndpoints.tags`
 
 Tags to be applied on all resources/resource groups in this deployment.
@@ -1505,7 +1529,6 @@ Configuration details for Purview Portal private endpoints. For security reasons
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`service`](#parameter-portalprivateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file". |
 | [`subnetResourceId`](#parameter-portalprivateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -1520,19 +1543,13 @@ Configuration details for Purview Portal private endpoints. For security reasons
 | [`isManualConnection`](#parameter-portalprivateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
 | [`location`](#parameter-portalprivateendpointslocation) | string | The location to deploy the private endpoint to. |
 | [`lock`](#parameter-portalprivateendpointslock) | object | Specify the type of lock. |
-| [`manualConnectionRequestMessage`](#parameter-portalprivateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars. |
+| [`manualConnectionRequestMessage`](#parameter-portalprivateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-portalprivateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-portalprivateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-portalprivateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-portalprivateendpointsroleassignments) | array | Array of role assignments to create. |
+| [`service`](#parameter-portalprivateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-portalprivateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
-
-### Parameter: `portalPrivateEndpoints.service`
-
-The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `portalPrivateEndpoints.subnetResourceId`
 
@@ -1699,7 +1716,7 @@ Specify the name of lock.
 
 ### Parameter: `portalPrivateEndpoints.manualConnectionRequestMessage`
 
-A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars.
+A message passed to the owner of the remote resource with the manual connection request.
 
 - Required: No
 - Type: string
@@ -1813,6 +1830,13 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `portalPrivateEndpoints.service`
+
+The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".
+
+- Required: No
+- Type: string
 
 ### Parameter: `portalPrivateEndpoints.tags`
 
@@ -1937,7 +1961,6 @@ Configuration details for Purview Managed Storage Account blob private endpoints
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`service`](#parameter-storageblobprivateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file". |
 | [`subnetResourceId`](#parameter-storageblobprivateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -1952,19 +1975,13 @@ Configuration details for Purview Managed Storage Account blob private endpoints
 | [`isManualConnection`](#parameter-storageblobprivateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
 | [`location`](#parameter-storageblobprivateendpointslocation) | string | The location to deploy the private endpoint to. |
 | [`lock`](#parameter-storageblobprivateendpointslock) | object | Specify the type of lock. |
-| [`manualConnectionRequestMessage`](#parameter-storageblobprivateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars. |
+| [`manualConnectionRequestMessage`](#parameter-storageblobprivateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-storageblobprivateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-storageblobprivateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-storageblobprivateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-storageblobprivateendpointsroleassignments) | array | Array of role assignments to create. |
+| [`service`](#parameter-storageblobprivateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-storageblobprivateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
-
-### Parameter: `storageBlobPrivateEndpoints.service`
-
-The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `storageBlobPrivateEndpoints.subnetResourceId`
 
@@ -2131,7 +2148,7 @@ Specify the name of lock.
 
 ### Parameter: `storageBlobPrivateEndpoints.manualConnectionRequestMessage`
 
-A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars.
+A message passed to the owner of the remote resource with the manual connection request.
 
 - Required: No
 - Type: string
@@ -2246,6 +2263,13 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `storageBlobPrivateEndpoints.service`
+
+The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".
+
+- Required: No
+- Type: string
+
 ### Parameter: `storageBlobPrivateEndpoints.tags`
 
 Tags to be applied on all resources/resource groups in this deployment.
@@ -2264,7 +2288,6 @@ Configuration details for Purview Managed Storage Account queue private endpoint
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`service`](#parameter-storagequeueprivateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file". |
 | [`subnetResourceId`](#parameter-storagequeueprivateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -2279,19 +2302,13 @@ Configuration details for Purview Managed Storage Account queue private endpoint
 | [`isManualConnection`](#parameter-storagequeueprivateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
 | [`location`](#parameter-storagequeueprivateendpointslocation) | string | The location to deploy the private endpoint to. |
 | [`lock`](#parameter-storagequeueprivateendpointslock) | object | Specify the type of lock. |
-| [`manualConnectionRequestMessage`](#parameter-storagequeueprivateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars. |
+| [`manualConnectionRequestMessage`](#parameter-storagequeueprivateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-storagequeueprivateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-storagequeueprivateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-storagequeueprivateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-storagequeueprivateendpointsroleassignments) | array | Array of role assignments to create. |
+| [`service`](#parameter-storagequeueprivateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-storagequeueprivateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
-
-### Parameter: `storageQueuePrivateEndpoints.service`
-
-The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `storageQueuePrivateEndpoints.subnetResourceId`
 
@@ -2458,7 +2475,7 @@ Specify the name of lock.
 
 ### Parameter: `storageQueuePrivateEndpoints.manualConnectionRequestMessage`
 
-A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars.
+A message passed to the owner of the remote resource with the manual connection request.
 
 - Required: No
 - Type: string
@@ -2572,6 +2589,13 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `storageQueuePrivateEndpoints.service`
+
+The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".
+
+- Required: No
+- Type: string
 
 ### Parameter: `storageQueuePrivateEndpoints.tags`
 

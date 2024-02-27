@@ -138,25 +138,25 @@ resource account_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-
 module account_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [for (privateEndpoint, index) in (accountPrivateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-Account-PrivateEndpoint-${index}'
   params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
     privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
         properties: {
           privateLinkServiceId: account.id
           groupIds: [
-            privateEndpoint.service
+            privateEndpoint.?service ?? 'account'
           ]
         }
       }
     ] : null
     manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
         properties: {
           privateLinkServiceId: account.id
           groupIds: [
-            privateEndpoint.service
+            privateEndpoint.?service ?? 'account'
           ]
           requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
         }
@@ -180,25 +180,25 @@ module account_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.
 module portal_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [for (privateEndpoint, index) in (portalPrivateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-Portal-PrivateEndpoint-${index}'
   params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'portal'}-${index}'
     privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'portal'}-${index}'
         properties: {
           privateLinkServiceId: account.id
           groupIds: [
-            privateEndpoint.service
+            privateEndpoint.?service ?? 'portal'
           ]
         }
       }
     ] : null
     manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'portal'}-${index}'
         properties: {
           privateLinkServiceId: account.id
           groupIds: [
-            privateEndpoint.service
+            privateEndpoint.?service ?? 'portal'
           ]
           requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
         }
@@ -222,25 +222,25 @@ module portal_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1
 module blob_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [for (privateEndpoint, index) in (storageBlobPrivateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-Storage-Blob-PrivateEndpoint-${index}'
   params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'blob'}-${index}'
     privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'blob'}-${index}'
         properties: {
           privateLinkServiceId: account.properties.managedResources.storageAccount
           groupIds: [
-            privateEndpoint.service
+            privateEndpoint.?service ?? 'blob'
           ]
         }
       }
     ] : null
     manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'blob'}-${index}'
         properties: {
           privateLinkServiceId: account.properties.managedResources.storageAccount
           groupIds: [
-            privateEndpoint.service
+            privateEndpoint.?service ?? 'blob'
           ]
           requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
         }
@@ -264,25 +264,25 @@ module blob_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' 
 module queue_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [for (privateEndpoint, index) in (storageQueuePrivateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-Storage-Queue-PrivateEndpoint-${index}'
   params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'queue'}-${index}'
     privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'queue'}-${index}'
         properties: {
           privateLinkServiceId: account.properties.managedResources.storageAccount
           groupIds: [
-            privateEndpoint.service
+            privateEndpoint.?service ?? 'queue'
           ]
         }
       }
     ] : null
     manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'queue'}-${index}'
         properties: {
           privateLinkServiceId: account.properties.managedResources.storageAccount
           groupIds: [
-            privateEndpoint.service
+            privateEndpoint.?service ?? 'queue'
           ]
           requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
         }
@@ -306,25 +306,25 @@ module queue_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1'
 module eventHub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [for (privateEndpoint, index) in (eventHubPrivateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-Eventhub-Namespace-PrivateEndpoint-${index}'
   params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
     privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
         properties: {
           privateLinkServiceId: account.properties.managedResources.eventHubNamespace
           groupIds: [
-            privateEndpoint.service
+            privateEndpoint.?service ?? 'namespace'
           ]
         }
       }
     ] : null
     manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
       {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.service}-${index}'
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
         properties: {
           privateLinkServiceId: account.properties.managedResources.eventHubNamespace
           groupIds: [
-            privateEndpoint.service
+            privateEndpoint.?service ?? 'namespace'
           ]
           requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
         }
@@ -477,9 +477,9 @@ type privateEndpointType = {
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
-  // Variant 2: A default subresource cannot be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...)
-  @description('Required. The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".')
-  service: string
+  // Variant 1: A default service can be assumed (i.e., for services that only have one private endpoint type)
+  @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
+  service: string?
 
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
@@ -493,7 +493,8 @@ type privateEndpointType = {
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
 
-  @description('Optional. A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars.')
+  @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
+  @maxLength(140)
   manualConnectionRequestMessage: string?
 
   @description('Optional. Custom DNS configurations.')
