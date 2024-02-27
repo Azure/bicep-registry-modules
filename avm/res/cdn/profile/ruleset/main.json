@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "18265794377529101092"
+      "templateHash": "11349380273880361551"
     },
     "name": "CDN Profiles Rule Sets",
     "description": "This module deploys a CDN Profile rule set.",
@@ -67,8 +67,12 @@
           "actions": {
             "value": "[parameters('rules')[copyIndex()].actions]"
           },
-          "conditions": "[if(contains(parameters('rules')[copyIndex()], 'conditions'), createObject('value', parameters('rules')[copyIndex()].conditions), createObject('value', createArray()))]",
-          "matchProcessingBehavior": "[if(contains(parameters('rules')[copyIndex()], 'matchProcessingBehavior'), createObject('value', parameters('rules')[copyIndex()].matchProcessingBehavior), createObject('value', 'Continue'))]"
+          "conditions": {
+            "value": "[tryGet(parameters('rules')[copyIndex()], 'conditions')]"
+          },
+          "matchProcessingBehavior": {
+            "value": "[tryGet(parameters('rules')[copyIndex()], 'matchProcessingBehavior')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -77,7 +81,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "15256606823968322093"
+              "templateHash": "9466960009088357095"
             },
             "name": "CDN Profiles Rules",
             "description": "This module deploys a CDN Profile rule.",
@@ -124,12 +128,13 @@
             },
             "matchProcessingBehavior": {
               "type": "string",
+              "defaultValue": "Continue",
               "allowedValues": [
                 "Continue",
                 "Stop"
               ],
               "metadata": {
-                "description": "Required. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue."
+                "description": "Optional. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue."
               }
             }
           },

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "15161179248582262242"
+      "templateHash": "8802729705814825775"
     },
     "name": "CDN Profiles Endpoints",
     "description": "This module deploys a CDN Profile Endpoint.",
@@ -90,17 +90,33 @@
           "hostName": {
             "value": "[parameters('properties').origins[copyIndex()].properties.hostName]"
           },
-          "httpPort": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'httpPort'), createObject('value', parameters('properties').origins[copyIndex()].properties.httpPort), createObject('value', 80))]",
-          "httpsPort": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'httpsPort'), createObject('value', parameters('properties').origins[copyIndex()].properties.httpsPort), createObject('value', 443))]",
+          "httpPort": {
+            "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'httpPort')]"
+          },
+          "httpsPort": {
+            "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'httpsPort')]"
+          },
           "enabled": {
             "value": "[parameters('properties').origins[copyIndex()].properties.enabled]"
           },
-          "priority": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'priority'), createObject('value', parameters('properties').origins[copyIndex()].properties.priority), createObject('value', -1))]",
-          "weight": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'weight'), createObject('value', parameters('properties').origins[copyIndex()].properties.weight), createObject('value', -1))]",
-          "originHostHeader": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'originHostHeader'), createObject('value', parameters('properties').origins[copyIndex()].properties.originHostHeader), createObject('value', ''))]",
-          "privateLinkAlias": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'privateLinkAlias'), createObject('value', parameters('properties').origins[copyIndex()].properties.privateLinkAlias), createObject('value', ''))]",
-          "privateLinkLocation": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'privateLinkLocation'), createObject('value', parameters('properties').origins[copyIndex()].properties.privateLinkLocation), createObject('value', ''))]",
-          "privateLinkResourceId": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'privateLinkResourceId'), createObject('value', parameters('properties').origins[copyIndex()].properties.privateLinkResourceId), createObject('value', ''))]"
+          "priority": {
+            "value": "[coalesce(tryGet(parameters('properties').origins[copyIndex()].properties, 'priority'), -1)]"
+          },
+          "weight": {
+            "value": "[coalesce(tryGet(parameters('properties').origins[copyIndex()].properties, 'weight'), -1)]"
+          },
+          "originHostHeader": {
+            "value": "[coalesce(tryGet(parameters('properties').origins[copyIndex()].properties, 'originHostHeader'), '')]"
+          },
+          "privateLinkAlias": {
+            "value": "[coalesce(tryGet(parameters('properties').origins[copyIndex()].properties, 'privateLinkAlias'), '')]"
+          },
+          "privateLinkLocation": {
+            "value": "[coalesce(tryGet(parameters('properties').origins[copyIndex()].properties, 'privateLinkLocation'), '')]"
+          },
+          "privateLinkResourceId": {
+            "value": "[coalesce(parameters('properties').origins[copyIndex()].properties.privateLinkResourceId, '')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

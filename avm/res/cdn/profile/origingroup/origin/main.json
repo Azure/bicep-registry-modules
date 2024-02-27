@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "12086693759397028642"
+      "templateHash": "17323276561210856523"
     },
     "name": "CDN Profiles Origin",
     "description": "This module deploys a CDN Profile Origin.",
@@ -84,7 +85,7 @@
     },
     "sharedPrivateLinkResource": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The properties of the private link resource for private origin."
       }
@@ -97,8 +98,23 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "profile::originGroup": {
+      "existing": true,
+      "type": "Microsoft.Cdn/profiles/originGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
+      "dependsOn": [
+        "profile"
+      ]
+    },
+    "profile": {
+      "existing": true,
+      "type": "Microsoft.Cdn/profiles",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('profileName')]"
+    },
+    "origin": {
       "type": "Microsoft.Cdn/profiles/originGroups/origins",
       "apiVersion": "2023-05-01",
       "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('originGroupName'), parameters('name'))]",
@@ -110,11 +126,14 @@
         "httpsPort": "[parameters('httpsPort')]",
         "originHostHeader": "[parameters('originHostHeader')]",
         "priority": "[parameters('priority')]",
-        "sharedPrivateLinkResource": "[if(not(empty(parameters('sharedPrivateLinkResource'))), parameters('sharedPrivateLinkResource'), null())]",
+        "sharedPrivateLinkResource": "[parameters('sharedPrivateLinkResource')]",
         "weight": "[parameters('weight')]"
-      }
+      },
+      "dependsOn": [
+        "profile::originGroup"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

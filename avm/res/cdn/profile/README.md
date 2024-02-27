@@ -110,23 +110,6 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
         ]
       }
     ]
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
     ruleSets: [
       {
         name: 'deptestcdnpafdruleset'
@@ -229,25 +212,6 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               "name": "dep-test-cdnpafd-origin"
             }
           ]
-        }
-      ]
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -547,10 +511,6 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       queryStringCachingBehavior: 'IgnoreQueryString'
     }
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     originResponseTimeoutSeconds: 60
   }
 }
@@ -610,12 +570,6 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "originResponseTimeoutSeconds": {
       "value": 60
