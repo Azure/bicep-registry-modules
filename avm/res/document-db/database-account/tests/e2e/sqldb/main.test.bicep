@@ -98,19 +98,12 @@ module testDeployment '../../../main.bicep' = {
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
         service: 'Sql'
-        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        service: 'Sql'
-        subnetResourceId: nestedDependencies.outputs.customSubnet2ResourceId
       }
     ]
     roleAssignments: [
@@ -215,8 +208,4 @@ module testDeployment '../../../main.bicep' = {
       Role: 'DeploymentValidation'
     }
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
 }

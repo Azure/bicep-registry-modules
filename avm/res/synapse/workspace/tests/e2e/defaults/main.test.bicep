@@ -55,7 +55,4 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     defaultDataLakeStorageFilesystem: nestedDependencies.outputs.storageContainerName
     sqlAdministratorLogin: 'synwsadmin'
   }
-  dependsOn: [
-    nestedDependencies
-  ]
 }]

@@ -54,7 +54,4 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     kind: 'app'
     serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
   }
-  dependsOn: [
-    nestedDependencies
-  ]
 }]
