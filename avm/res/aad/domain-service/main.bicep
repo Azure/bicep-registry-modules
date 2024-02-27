@@ -15,6 +15,7 @@ param enableTelemetry bool = true
 // ============ //
 // Parameters   //
 // ============ //
+
 @minLength(1)
 @description('Required. The domain name specific to the Azure ADDS service.')
 param domainName string
@@ -258,6 +259,7 @@ output location string = domainService.location
 // ================ //
 // Definitions      //
 // ================ //
+
 type lockType = {
   @description('Optional. Specify the name of lock.')
   name: string?

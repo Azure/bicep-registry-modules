@@ -1,25 +1,26 @@
 targetScope = 'subscription'
 
+// metadata name = 'Using large parameter set'
+// metadata description = 'This instance deploys the module with most of its features enabled.'
+
 // ========== //
 // Parameters //
 // ========== //
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-// e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
-param resourceGroupName string = 'dep-${namePrefix}-<provider>-<resourceType>-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-aad.domainservices-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-// e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
-param serviceShort string = 'aaddsdefault'
+param serviceShort string = 'aaddsmax'
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
 param enableTelemetry bool = false
 
-@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
+@description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
@@ -68,10 +69,9 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   scope: resourceGroup
 }
 
-@batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
+module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
+  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     enableTelemetry: enableTelemetry
     name: '${namePrefix}${serviceShort}001'
@@ -108,4 +108,4 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Role: 'DeploymentValidation'
     }
   }
-}]
+}
