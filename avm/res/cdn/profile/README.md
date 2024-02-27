@@ -89,10 +89,6 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       }
     ]
     location: 'global'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     originResponseTimeoutSeconds: 60
     origionGroups: [
       {
@@ -187,12 +183,6 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     },
     "location": {
       "value": "global"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "originResponseTimeoutSeconds": {
       "value": 60

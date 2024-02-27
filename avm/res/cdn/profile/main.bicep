@@ -144,9 +144,9 @@ module profile_secret 'secret/main.bicep' = [for (secret, index) in secrets: {
     profileName: profile.name
     type: secret.type
     secretSourceResourceId: secret.secretSourceResourceId
-    subjectAlternativeNames: secret.?subjectAlternativeNames
-    useLatestVersion: secret.?useLatestVersion
-    secretVersion: secret.?secretVersion
+    subjectAlternativeNames: secret.?subjectAlternativeNames ?? []
+    useLatestVersion: secret.?useLatestVersion ?? false
+    secretVersion: secret.secretVersion
   }
 }]
 
@@ -164,7 +164,7 @@ module profile_custom_domain 'customdomain/main.bicep' = [for (customDomain, ind
     certificateType: customDomain.certificateType
     minimumTlsVersion: customDomain.?minimumTlsVersion
     preValidatedCustomDomainResourceId: customDomain.?preValidatedCustomDomainResourceId
-    secretName: customDomain.?secretName
+    secretName: customDomain.?secretName ?? ''
   }
 }]
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "7791848768590732498"
+      "templateHash": "8075586903665375480"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -686,13 +686,13 @@
             "value": "[parameters('secrets')[copyIndex()].secretSourceResourceId]"
           },
           "subjectAlternativeNames": {
-            "value": "[tryGet(parameters('secrets')[copyIndex()], 'subjectAlternativeNames')]"
+            "value": "[coalesce(tryGet(parameters('secrets')[copyIndex()], 'subjectAlternativeNames'), createArray())]"
           },
           "useLatestVersion": {
-            "value": "[tryGet(parameters('secrets')[copyIndex()], 'useLatestVersion')]"
+            "value": "[coalesce(tryGet(parameters('secrets')[copyIndex()], 'useLatestVersion'), false())]"
           },
           "secretVersion": {
-            "value": "[tryGet(parameters('secrets')[copyIndex()], 'secretVersion')]"
+            "value": "[parameters('secrets')[copyIndex()].secretVersion]"
           }
         },
         "template": {
@@ -841,7 +841,7 @@
             "value": "[tryGet(parameters('customDomains')[copyIndex()], 'preValidatedCustomDomainResourceId')]"
           },
           "secretName": {
-            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'secretName')]"
+            "value": "[coalesce(tryGet(parameters('customDomains')[copyIndex()], 'secretName'), '')]"
           }
         },
         "template": {
