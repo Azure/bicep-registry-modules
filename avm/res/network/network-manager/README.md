@@ -127,7 +127,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     ]
     networkManagerScopes: {
       managementGroups: [
-        '/providers/Microsoft.Management/managementGroups/#_ARM_MGMTGROUP_ID_#'
+        '/providers/Microsoft.Management/managementGroups/#_managementGroupId_#'
       ]
     }
     // Non-required parameters
@@ -354,7 +354,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     "networkManagerScopes": {
       "value": {
         "managementGroups": [
-          "/providers/Microsoft.Management/managementGroups/#_ARM_MGMTGROUP_ID_#"
+          "/providers/Microsoft.Management/managementGroups/#_managementGroupId_#"
         ]
       }
     },
@@ -678,7 +678,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`connectivityConfigurations`](#parameter-connectivityconfigurations) | array | Connectivity Configurations to create for the network manager. Network manager must contain at least one network group in order to define connectivity configurations. |
-| [`description`](#parameter-description) | string | A description of the network manager. |
+| [`description`](#parameter-description) | string | A description of the Network Manager. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -726,7 +726,7 @@ Connectivity Configurations to create for the network manager. Network manager m
 
 ### Parameter: `description`
 
-A description of the network manager.
+A description of the Network Manager.
 
 - Required: No
 - Type: string
