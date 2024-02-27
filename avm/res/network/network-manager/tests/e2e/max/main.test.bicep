@@ -84,6 +84,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     networkManagerScopes: {
       managementGroups: [
+        // Note: Required the `Microsoft.Network` provider to be registered at management group level via `az provider register --namespace Microsoft.Network -m '<MgmtGroupName>'`
         '/providers/Microsoft.Management/managementGroups/#_managementGroupId_#'
       ]
     }
