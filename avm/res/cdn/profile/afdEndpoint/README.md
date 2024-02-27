@@ -101,6 +101,7 @@ The list of routes for this AFD Endpoint.
 
 - Required: No
 - Type: array
+- Default: `[]`
 
 ### Parameter: `tags`
 

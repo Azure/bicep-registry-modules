@@ -77,14 +77,14 @@ The caching configuration for this route. To disable caching, do not provide a c
 
 - Required: No
 - Type: object
+- Default: `{}`
 
 ### Parameter: `customDomainName`
 
 The name of the custom domain. The custom domain must be defined in the profile customDomains.
 
-- Required: No
+- Required: Yes
 - Type: string
-- Default: `''`
 
 ### Parameter: `enabledState`
 
@@ -153,6 +153,7 @@ A directory path on the origin that AzureFrontDoor can use to retrieve content f
 
 - Required: No
 - Type: string
+- Default: `''`
 
 ### Parameter: `patternsToMatch`
 
@@ -176,6 +177,7 @@ The supported protocols of the rule.
 
 - Required: No
 - Type: array
+- Default: `[]`
 - Allowed:
   ```Bicep
   [

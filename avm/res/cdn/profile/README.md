@@ -89,6 +89,10 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       }
     ]
     location: 'global'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     originResponseTimeoutSeconds: 60
     origionGroups: [
       {
@@ -104,6 +108,23 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
             name: 'dep-test-cdnpafd-origin'
           }
         ]
+      }
+    ]
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     ruleSets: [
@@ -184,6 +205,12 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     "location": {
       "value": "global"
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
     "originResponseTimeoutSeconds": {
       "value": 60
     },
@@ -202,6 +229,25 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               "name": "dep-test-cdnpafd-origin"
             }
           ]
+        }
+      ]
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -501,6 +547,10 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       queryStringCachingBehavior: 'IgnoreQueryString'
     }
     location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     originResponseTimeoutSeconds: 60
   }
 }
@@ -560,6 +610,12 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     },
     "location": {
       "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
     },
     "originResponseTimeoutSeconds": {
       "value": 60

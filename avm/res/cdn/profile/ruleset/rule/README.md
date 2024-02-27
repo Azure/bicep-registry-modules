@@ -22,6 +22,7 @@ This module deploys a CDN Profile rule.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`matchProcessingBehavior`](#parameter-matchprocessingbehavior) | string | If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue. |
 | [`name`](#parameter-name) | string | The name of the rule. |
 | [`order`](#parameter-order) | int | The order in which this rule will be applied. Rules with a lower order are applied before rules with a higher order. |
 | [`profileName`](#parameter-profilename) | string | The name of the profile. |
@@ -33,7 +34,20 @@ This module deploys a CDN Profile rule.
 | :-- | :-- | :-- |
 | [`actions`](#parameter-actions) | array | A list of actions that are executed when all the conditions of a rule are satisfied. |
 | [`conditions`](#parameter-conditions) | array | A list of conditions that must be matched for the actions to be executed. |
-| [`matchProcessingBehavior`](#parameter-matchprocessingbehavior) | string | If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue. |
+
+### Parameter: `matchProcessingBehavior`
+
+If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Continue'
+    'Stop'
+  ]
+  ```
 
 ### Parameter: `name`
 
@@ -78,21 +92,6 @@ A list of conditions that must be matched for the actions to be executed.
 - Required: No
 - Type: array
 - Default: `[]`
-
-### Parameter: `matchProcessingBehavior`
-
-If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue.
-
-- Required: No
-- Type: string
-- Default: `'Continue'`
-- Allowed:
-  ```Bicep
-  [
-    'Continue'
-    'Stop'
-  ]
-  ```
 
 
 ## Outputs

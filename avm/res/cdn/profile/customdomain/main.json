@@ -1,12 +1,11 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "3572825873549312810"
+      "templateHash": "14057037772702090927"
     },
     "name": "CDN Profiles Custom Domains",
     "description": "This module deploys a CDN Profile Custom Domains.",
@@ -33,21 +32,21 @@
     },
     "azureDnsZoneResourceId": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "",
       "metadata": {
         "description": "Optonal. Resource reference to the Azure DNS zone."
       }
     },
     "extendedProperties": {
       "type": "object",
-      "nullable": true,
+      "defaultValue": {},
       "metadata": {
         "description": "Optional. Key-Value pair representing migration properties for domains."
       }
     },
     "preValidatedCustomDomainResourceId": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "",
       "metadata": {
         "description": "Optional. Resource reference to the Azure resource where custom domain ownership was prevalidated."
       }
@@ -81,30 +80,14 @@
       }
     }
   },
-  "resources": {
-    "profile::profile_secrect": {
-      "condition": "[not(empty(parameters('secretName')))]",
-      "existing": true,
-      "type": "Microsoft.Cdn/profiles/secrets",
-      "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('secretName'))]",
-      "dependsOn": [
-        "profile"
-      ]
-    },
-    "profile": {
-      "existing": true,
-      "type": "Microsoft.Cdn/profiles",
-      "apiVersion": "2023-05-01",
-      "name": "[parameters('profileName')]"
-    },
-    "profile_custom_domain": {
+  "resources": [
+    {
       "type": "Microsoft.Cdn/profiles/customDomains",
       "apiVersion": "2023-05-01",
       "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
       "properties": {
         "azureDnsZone": "[if(not(empty(parameters('azureDnsZoneResourceId'))), createObject('id', parameters('azureDnsZoneResourceId')), null())]",
-        "extendedProperties": "[parameters('extendedProperties')]",
+        "extendedProperties": "[if(not(empty(parameters('extendedProperties'))), parameters('extendedProperties'), null())]",
         "hostName": "[parameters('hostName')]",
         "preValidatedCustomDomainResourceId": "[if(not(empty(parameters('preValidatedCustomDomainResourceId'))), createObject('id', parameters('preValidatedCustomDomainResourceId')), null())]",
         "tlsSettings": {
@@ -112,12 +95,9 @@
           "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
           "secret": "[if(not(empty(parameters('secretName'))), createObject('id', resourceId('Microsoft.Cdn/profiles/secrets', parameters('profileName'), parameters('secretName'))), null())]"
         }
-      },
-      "dependsOn": [
-        "profile"
-      ]
+      }
     }
-  },
+  ],
   "outputs": {
     "name": {
       "type": "string",

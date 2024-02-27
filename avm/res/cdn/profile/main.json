@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "8075586903665375480"
+      "templateHash": "214921878633510052"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -336,7 +336,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "17914312135409497837"
+              "templateHash": "15161179248582262242"
             },
             "name": "CDN Profiles Endpoints",
             "description": "This module deploys a CDN Profile Endpoint.",
@@ -420,43 +420,26 @@
                   "hostName": {
                     "value": "[parameters('properties').origins[copyIndex()].properties.hostName]"
                   },
-                  "httpPort": {
-                    "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'httpPort')]"
-                  },
-                  "httpsPort": {
-                    "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'httpsPort')]"
-                  },
+                  "httpPort": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'httpPort'), createObject('value', parameters('properties').origins[copyIndex()].properties.httpPort), createObject('value', 80))]",
+                  "httpsPort": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'httpsPort'), createObject('value', parameters('properties').origins[copyIndex()].properties.httpsPort), createObject('value', 443))]",
                   "enabled": {
                     "value": "[parameters('properties').origins[copyIndex()].properties.enabled]"
                   },
-                  "priority": {
-                    "value": "[coalesce(tryGet(parameters('properties').origins[copyIndex()].properties, 'priority'), -1)]"
-                  },
-                  "weight": {
-                    "value": "[coalesce(tryGet(parameters('properties').origins[copyIndex()].properties, 'weight'), -1)]"
-                  },
-                  "originHostHeader": {
-                    "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'originHostHeader')]"
-                  },
-                  "privateLinkAlias": {
-                    "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'privateLinkAlias')]"
-                  },
-                  "privateLinkLocation": {
-                    "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'privateLinkLocation')]"
-                  },
-                  "privateLinkResourceId": {
-                    "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'privateLinkResourceId')]"
-                  }
+                  "priority": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'priority'), createObject('value', parameters('properties').origins[copyIndex()].properties.priority), createObject('value', -1))]",
+                  "weight": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'weight'), createObject('value', parameters('properties').origins[copyIndex()].properties.weight), createObject('value', -1))]",
+                  "originHostHeader": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'originHostHeader'), createObject('value', parameters('properties').origins[copyIndex()].properties.originHostHeader), createObject('value', ''))]",
+                  "privateLinkAlias": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'privateLinkAlias'), createObject('value', parameters('properties').origins[copyIndex()].properties.privateLinkAlias), createObject('value', ''))]",
+                  "privateLinkLocation": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'privateLinkLocation'), createObject('value', parameters('properties').origins[copyIndex()].properties.privateLinkLocation), createObject('value', ''))]",
+                  "privateLinkResourceId": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'privateLinkResourceId'), createObject('value', parameters('properties').origins[copyIndex()].properties.privateLinkResourceId), createObject('value', ''))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.25.53.49325",
-                      "templateHash": "12571580620816780353"
+                      "templateHash": "16488920644082246249"
                     },
                     "name": "CDN Profiles Endpoints Origins",
                     "description": "This module deploys a CDN Profile Endpoint Origin.",
@@ -518,28 +501,24 @@
                     },
                     "privateLinkAlias": {
                       "type": "string",
-                      "nullable": true,
                       "metadata": {
                         "description": "Conditional. The private link alias of the origin. Required if privateLinkLocation is provided."
                       }
                     },
                     "privateLinkLocation": {
                       "type": "string",
-                      "nullable": true,
                       "metadata": {
                         "description": "Conditional. The private link location of the origin. Required if privateLinkAlias is provided."
                       }
                     },
                     "privateLinkResourceId": {
                       "type": "string",
-                      "nullable": true,
                       "metadata": {
                         "description": "Optional. The private link resource ID of the origin."
                       }
                     },
                     "originHostHeader": {
                       "type": "string",
-                      "nullable": true,
                       "metadata": {
                         "description": "Optional. The host header value sent to the origin."
                       }
@@ -552,32 +531,14 @@
                       }
                     }
                   },
-                  "resources": {
-                    "profile": {
-                      "existing": true,
-                      "type": "Microsoft.Cdn/profiles",
-                      "apiVersion": "2021-06-01",
-                      "name": "[parameters('profileName')]"
-                    },
-                    "endpoint": {
-                      "existing": true,
-                      "type": "Microsoft.Cdn/profiles/endpoints",
-                      "apiVersion": "2021-06-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('endpointName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
-                    },
-                    "origins": {
+                  "resources": [
+                    {
                       "type": "Microsoft.Cdn/profiles/endpoints/origins",
                       "apiVersion": "2021-06-01",
                       "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('endpointName'), parameters('name'))]",
-                      "properties": "[union(createObject('hostName', parameters('hostName'), 'httpPort', parameters('httpPort'), 'enabled', parameters('enabled'), 'httpsPort', parameters('httpsPort')), if(or(greater(parameters('priority'), 0), greater(parameters('weight'), 0)), createObject('priority', parameters('priority'), 'weight', parameters('weight')), createObject()), if(and(not(empty(parameters('privateLinkAlias'))), not(empty(parameters('privateLinkLocation')))), createObject('privateLinkAlias', parameters('privateLinkAlias'), 'privateLinkLocation', parameters('privateLinkLocation')), createObject()), if(not(empty(parameters('privateLinkResourceId'))), createObject('privateLinkResourceId', parameters('privateLinkResourceId')), createObject()), if(not(empty(parameters('originHostHeader'))), createObject('originHostHeader', parameters('originHostHeader')), createObject()))]",
-                      "dependsOn": [
-                        "endpoint"
-                      ]
+                      "properties": "[union(createObject('hostName', parameters('hostName'), 'httpPort', parameters('httpPort'), 'enabled', parameters('enabled'), 'httpsPort', parameters('httpsPort')), if(or(greater(parameters('priority'), 0), greater(parameters('weight'), 0)), createObject('priority', parameters('priority'), 'weight', parameters('weight')), createObject()), if(and(not(empty(parameters('privateLinkAlias'))), not(empty(parameters('privateLinkLocation')))), createObject('privateLinkAlias', parameters('privateLinkAlias'), 'privateLinkLocation', parameters('privateLinkLocation')), createObject()), if(not(empty(parameters('privateLinkResourceId'))), createObject('privateLinkResourceId', parameters('privateLinkResourceId')), createObject()), if(not(empty(parameters('originHostHeader'))), createObject('originHostHeader', parameters('originHostHeader')), createObject()))]"
                     }
-                  },
+                  ],
                   "outputs": {
                     "name": {
                       "type": "string",
@@ -605,7 +566,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('endpoint', '2021-06-01', 'full').location]"
+                      "value": "[reference(resourceId('Microsoft.Cdn/profiles/endpoints', parameters('profileName'), parameters('endpointName')), '2021-06-01', 'full').location]"
                     }
                   }
                 }
@@ -685,12 +646,8 @@
           "secretSourceResourceId": {
             "value": "[parameters('secrets')[copyIndex()].secretSourceResourceId]"
           },
-          "subjectAlternativeNames": {
-            "value": "[coalesce(tryGet(parameters('secrets')[copyIndex()], 'subjectAlternativeNames'), createArray())]"
-          },
-          "useLatestVersion": {
-            "value": "[coalesce(tryGet(parameters('secrets')[copyIndex()], 'useLatestVersion'), false())]"
-          },
+          "subjectAlternativeNames": "[if(contains(parameters('secrets')[copyIndex()], 'subjectAlternativeNames'), createObject('value', parameters('secrets')[copyIndex()].subjectAlternativeNames), createObject('value', createArray()))]",
+          "useLatestVersion": "[if(contains(parameters('secrets')[copyIndex()], 'useLatestVersion'), createObject('value', parameters('secrets')[copyIndex()].useLatestVersion), createObject('value', false()))]",
           "secretVersion": {
             "value": "[parameters('secrets')[copyIndex()].secretVersion]"
           }
@@ -825,34 +782,23 @@
           "hostName": {
             "value": "[parameters('customDomains')[copyIndex()].hostName]"
           },
-          "azureDnsZoneResourceId": {
-            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'azureDnsZoneResourceId')]"
-          },
-          "extendedProperties": {
-            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'extendedProperties')]"
-          },
+          "azureDnsZoneResourceId": "[if(contains(parameters('customDomains')[copyIndex()], 'azureDnsZoneResourceId'), createObject('value', parameters('customDomains')[copyIndex()].azureDnsZoneResourceId), createObject('value', ''))]",
+          "extendedProperties": "[if(contains(parameters('customDomains')[copyIndex()], 'extendedProperties'), createObject('value', parameters('customDomains')[copyIndex()].extendedProperties), createObject('value', createObject()))]",
           "certificateType": {
             "value": "[parameters('customDomains')[copyIndex()].certificateType]"
           },
-          "minimumTlsVersion": {
-            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'minimumTlsVersion')]"
-          },
-          "preValidatedCustomDomainResourceId": {
-            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'preValidatedCustomDomainResourceId')]"
-          },
-          "secretName": {
-            "value": "[coalesce(tryGet(parameters('customDomains')[copyIndex()], 'secretName'), '')]"
-          }
+          "minimumTlsVersion": "[if(contains(parameters('customDomains')[copyIndex()], 'minimumTlsVersion'), createObject('value', parameters('customDomains')[copyIndex()].minimumTlsVersion), createObject('value', 'TLS12'))]",
+          "preValidatedCustomDomainResourceId": "[if(contains(parameters('customDomains')[copyIndex()], 'preValidatedCustomDomainResourceId'), createObject('value', parameters('customDomains')[copyIndex()].preValidatedCustomDomainResourceId), createObject('value', ''))]",
+          "secretName": "[if(contains(parameters('customDomains')[copyIndex()], 'secretName'), createObject('value', parameters('customDomains')[copyIndex()].secretName), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "3572825873549312810"
+              "templateHash": "14057037772702090927"
             },
             "name": "CDN Profiles Custom Domains",
             "description": "This module deploys a CDN Profile Custom Domains.",
@@ -879,21 +825,21 @@
             },
             "azureDnsZoneResourceId": {
               "type": "string",
-              "nullable": true,
+              "defaultValue": "",
               "metadata": {
                 "description": "Optonal. Resource reference to the Azure DNS zone."
               }
             },
             "extendedProperties": {
               "type": "object",
-              "nullable": true,
+              "defaultValue": {},
               "metadata": {
                 "description": "Optional. Key-Value pair representing migration properties for domains."
               }
             },
             "preValidatedCustomDomainResourceId": {
               "type": "string",
-              "nullable": true,
+              "defaultValue": "",
               "metadata": {
                 "description": "Optional. Resource reference to the Azure resource where custom domain ownership was prevalidated."
               }
@@ -927,30 +873,14 @@
               }
             }
           },
-          "resources": {
-            "profile::profile_secrect": {
-              "condition": "[not(empty(parameters('secretName')))]",
-              "existing": true,
-              "type": "Microsoft.Cdn/profiles/secrets",
-              "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('profileName'), parameters('secretName'))]",
-              "dependsOn": [
-                "profile"
-              ]
-            },
-            "profile": {
-              "existing": true,
-              "type": "Microsoft.Cdn/profiles",
-              "apiVersion": "2023-05-01",
-              "name": "[parameters('profileName')]"
-            },
-            "profile_custom_domain": {
+          "resources": [
+            {
               "type": "Microsoft.Cdn/profiles/customDomains",
               "apiVersion": "2023-05-01",
               "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
               "properties": {
                 "azureDnsZone": "[if(not(empty(parameters('azureDnsZoneResourceId'))), createObject('id', parameters('azureDnsZoneResourceId')), null())]",
-                "extendedProperties": "[parameters('extendedProperties')]",
+                "extendedProperties": "[if(not(empty(parameters('extendedProperties'))), parameters('extendedProperties'), null())]",
                 "hostName": "[parameters('hostName')]",
                 "preValidatedCustomDomainResourceId": "[if(not(empty(parameters('preValidatedCustomDomainResourceId'))), createObject('id', parameters('preValidatedCustomDomainResourceId')), null())]",
                 "tlsSettings": {
@@ -958,12 +888,9 @@
                   "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
                   "secret": "[if(not(empty(parameters('secretName'))), createObject('id', resourceId('Microsoft.Cdn/profiles/secrets', parameters('profileName'), parameters('secretName'))), null())]"
                 }
-              },
-              "dependsOn": [
-                "profile"
-              ]
+              }
             }
-          },
+          ],
           "outputs": {
             "name": {
               "type": "string",
@@ -1014,31 +941,24 @@
           "profileName": {
             "value": "[parameters('name')]"
           },
-          "healthProbeSettings": {
-            "value": "[tryGet(parameters('origionGroups')[copyIndex()], 'healthProbeSettings')]"
-          },
+          "healthProbeSettings": "[if(contains(parameters('origionGroups')[copyIndex()], 'healthProbeSettings'), createObject('value', parameters('origionGroups')[copyIndex()].healthProbeSettings), createObject('value', createObject()))]",
           "loadBalancingSettings": {
             "value": "[parameters('origionGroups')[copyIndex()].loadBalancingSettings]"
           },
-          "sessionAffinityState": {
-            "value": "[tryGet(parameters('origionGroups')[copyIndex()], 'sessionAffinityState')]"
-          },
-          "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": {
-            "value": "[tryGet(parameters('origionGroups')[copyIndex()], 'trafficRestorationTimeToHealedOrNewEndpointsInMinutes')]"
-          },
+          "sessionAffinityState": "[if(contains(parameters('origionGroups')[copyIndex()], 'sessionAffinityState'), createObject('value', parameters('origionGroups')[copyIndex()].sessionAffinityState), createObject('value', 'Disabled'))]",
+          "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": "[if(contains(parameters('origionGroups')[copyIndex()], 'trafficRestorationTimeToHealedOrNewEndpointsInMinutes'), createObject('value', parameters('origionGroups')[copyIndex()].trafficRestorationTimeToHealedOrNewEndpointsInMinutes), createObject('value', 10))]",
           "origins": {
             "value": "[parameters('origionGroups')[copyIndex()].origins]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "5057758604734054444"
+              "templateHash": "3379389871799694033"
             },
             "name": "CDN Profiles Origin Group",
             "description": "This module deploys a CDN Profile Origin Group.",
@@ -1059,7 +979,7 @@
             },
             "healthProbeSettings": {
               "type": "object",
-              "nullable": true,
+              "defaultValue": {},
               "metadata": {
                 "description": "Optional. Health probe settings to the origin that is used to determine the health of the origin."
               }
@@ -1096,28 +1016,19 @@
               }
             }
           },
-          "resources": {
-            "profile": {
-              "existing": true,
-              "type": "Microsoft.Cdn/profiles",
-              "apiVersion": "2023-05-01",
-              "name": "[parameters('profileName')]"
-            },
-            "originGroup": {
+          "resources": [
+            {
               "type": "Microsoft.Cdn/profiles/originGroups",
               "apiVersion": "2023-05-01",
               "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
               "properties": {
-                "healthProbeSettings": "[parameters('healthProbeSettings')]",
+                "healthProbeSettings": "[if(not(empty(parameters('healthProbeSettings'))), parameters('healthProbeSettings'), null())]",
                 "loadBalancingSettings": "[parameters('loadBalancingSettings')]",
                 "sessionAffinityState": "[parameters('sessionAffinityState')]",
                 "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": "[parameters('trafficRestorationTimeToHealedOrNewEndpointsInMinutes')]"
-              },
-              "dependsOn": [
-                "profile"
-              ]
+              }
             },
-            "origin": {
+            {
               "copy": {
                 "name": "origin",
                 "count": "[length(parameters('origins'))]"
@@ -1143,40 +1054,23 @@
                   "originGroupName": {
                     "value": "[parameters('name')]"
                   },
-                  "enabledState": {
-                    "value": "[tryGet(parameters('origins')[copyIndex()], 'enabledState')]"
-                  },
-                  "enforceCertificateNameCheck": {
-                    "value": "[tryGet(parameters('origins')[copyIndex()], 'enforceCertificateNameCheck')]"
-                  },
-                  "httpPort": {
-                    "value": "[tryGet(parameters('origins')[copyIndex()], 'httpPort')]"
-                  },
-                  "httpsPort": {
-                    "value": "[tryGet(parameters('origins')[copyIndex()], 'httpsPort')]"
-                  },
-                  "originHostHeader": {
-                    "value": "[tryGet(parameters('origins')[copyIndex()], 'originHostHeader')]"
-                  },
-                  "priority": {
-                    "value": "[tryGet(parameters('origins')[copyIndex()], 'priority')]"
-                  },
-                  "weight": {
-                    "value": "[tryGet(parameters('origins')[copyIndex()], 'weight')]"
-                  },
-                  "sharedPrivateLinkResource": {
-                    "value": "[tryGet(parameters('origins')[copyIndex()], 'sharedPrivateLinkResource')]"
-                  }
+                  "enabledState": "[if(contains(parameters('origins')[copyIndex()], 'enabledState'), createObject('value', parameters('origins')[copyIndex()].enabledState), createObject('value', 'Enabled'))]",
+                  "enforceCertificateNameCheck": "[if(contains(parameters('origins')[copyIndex()], 'enforceCertificateNameCheck'), createObject('value', parameters('origins')[copyIndex()].enforceCertificateNameCheck), createObject('value', true()))]",
+                  "httpPort": "[if(contains(parameters('origins')[copyIndex()], 'httpPort'), createObject('value', parameters('origins')[copyIndex()].httpPort), createObject('value', 80))]",
+                  "httpsPort": "[if(contains(parameters('origins')[copyIndex()], 'httpsPort'), createObject('value', parameters('origins')[copyIndex()].httpsPort), createObject('value', 443))]",
+                  "originHostHeader": "[if(contains(parameters('origins')[copyIndex()], 'originHostHeader'), createObject('value', parameters('origins')[copyIndex()].originHostHeader), createObject('value', parameters('origins')[copyIndex()].hostName))]",
+                  "priority": "[if(contains(parameters('origins')[copyIndex()], 'priority'), createObject('value', parameters('origins')[copyIndex()].priority), createObject('value', 1))]",
+                  "weight": "[if(contains(parameters('origins')[copyIndex()], 'weight'), createObject('value', parameters('origins')[copyIndex()].weight), createObject('value', 1000))]",
+                  "sharedPrivateLinkResource": "[if(contains(parameters('origins')[copyIndex()], 'sharedPrivateLinkResource'), createObject('value', parameters('origins')[copyIndex()].sharedPrivateLinkResource), createObject('value', null()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.25.53.49325",
-                      "templateHash": "17323276561210856523"
+                      "templateHash": "12086693759397028642"
                     },
                     "name": "CDN Profiles Origin",
                     "description": "This module deploys a CDN Profile Origin.",
@@ -1255,7 +1149,7 @@
                     },
                     "sharedPrivateLinkResource": {
                       "type": "object",
-                      "nullable": true,
+                      "defaultValue": {},
                       "metadata": {
                         "description": "Optional. The properties of the private link resource for private origin."
                       }
@@ -1268,23 +1162,8 @@
                       }
                     }
                   },
-                  "resources": {
-                    "profile::originGroup": {
-                      "existing": true,
-                      "type": "Microsoft.Cdn/profiles/originGroups",
-                      "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
-                    },
-                    "profile": {
-                      "existing": true,
-                      "type": "Microsoft.Cdn/profiles",
-                      "apiVersion": "2023-05-01",
-                      "name": "[parameters('profileName')]"
-                    },
-                    "origin": {
+                  "resources": [
+                    {
                       "type": "Microsoft.Cdn/profiles/originGroups/origins",
                       "apiVersion": "2023-05-01",
                       "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('originGroupName'), parameters('name'))]",
@@ -1296,14 +1175,11 @@
                         "httpsPort": "[parameters('httpsPort')]",
                         "originHostHeader": "[parameters('originHostHeader')]",
                         "priority": "[parameters('priority')]",
-                        "sharedPrivateLinkResource": "[parameters('sharedPrivateLinkResource')]",
+                        "sharedPrivateLinkResource": "[if(not(empty(parameters('sharedPrivateLinkResource'))), parameters('sharedPrivateLinkResource'), null())]",
                         "weight": "[parameters('weight')]"
-                      },
-                      "dependsOn": [
-                        "profile::originGroup"
-                      ]
+                      }
                     }
-                  },
+                  ],
                   "outputs": {
                     "name": {
                       "type": "string",
@@ -1330,10 +1206,10 @@
                 }
               },
               "dependsOn": [
-                "originGroup"
+                "[resourceId('Microsoft.Cdn/profiles/originGroups', parameters('profileName'), parameters('name'))]"
               ]
             }
-          },
+          ],
           "outputs": {
             "name": {
               "type": "string",
@@ -1361,7 +1237,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('profile', '2023-05-01', 'full').location]"
+              "value": "[reference(resourceId('Microsoft.Cdn/profiles', parameters('profileName')), '2023-05-01', 'full').location]"
             }
           }
         }
@@ -1401,7 +1277,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "11349380273880361551"
+              "templateHash": "18265794377529101092"
             },
             "name": "CDN Profiles Rule Sets",
             "description": "This module deploys a CDN Profile rule set.",
@@ -1463,12 +1339,8 @@
                   "actions": {
                     "value": "[parameters('rules')[copyIndex()].actions]"
                   },
-                  "conditions": {
-                    "value": "[tryGet(parameters('rules')[copyIndex()], 'conditions')]"
-                  },
-                  "matchProcessingBehavior": {
-                    "value": "[tryGet(parameters('rules')[copyIndex()], 'matchProcessingBehavior')]"
-                  }
+                  "conditions": "[if(contains(parameters('rules')[copyIndex()], 'conditions'), createObject('value', parameters('rules')[copyIndex()].conditions), createObject('value', createArray()))]",
+                  "matchProcessingBehavior": "[if(contains(parameters('rules')[copyIndex()], 'matchProcessingBehavior'), createObject('value', parameters('rules')[copyIndex()].matchProcessingBehavior), createObject('value', 'Continue'))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1477,7 +1349,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.25.53.49325",
-                      "templateHash": "9466960009088357095"
+                      "templateHash": "15256606823968322093"
                     },
                     "name": "CDN Profiles Rules",
                     "description": "This module deploys a CDN Profile rule.",
@@ -1524,13 +1396,12 @@
                     },
                     "matchProcessingBehavior": {
                       "type": "string",
-                      "defaultValue": "Continue",
                       "allowedValues": [
                         "Continue",
                         "Stop"
                       ],
                       "metadata": {
-                        "description": "Optional. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue."
+                        "description": "Required. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue."
                       }
                     }
                   },
@@ -1626,15 +1497,9 @@
           "profileName": {
             "value": "[parameters('name')]"
           },
-          "autoGeneratedDomainNameLabelScope": {
-            "value": "[tryGet(parameters('afdEndpoints')[copyIndex()], 'autoGeneratedDomainNameLabelScope')]"
-          },
-          "enabledState": {
-            "value": "[tryGet(parameters('afdEndpoints')[copyIndex()], 'enabledState')]"
-          },
-          "routes": {
-            "value": "[tryGet(parameters('afdEndpoints')[copyIndex()], 'routes')]"
-          },
+          "autoGeneratedDomainNameLabelScope": "[if(contains(parameters('afdEndpoints')[copyIndex()], 'autoGeneratedDomainNameLabelScope'), createObject('value', parameters('afdEndpoints')[copyIndex()].autoGeneratedDomainNameLabelScope), createObject('value', 'TenantReuse'))]",
+          "enabledState": "[if(contains(parameters('afdEndpoints')[copyIndex()], 'enabledState'), createObject('value', parameters('afdEndpoints')[copyIndex()].enabledState), createObject('value', 'Enabled'))]",
+          "routes": "[if(contains(parameters('afdEndpoints')[copyIndex()], 'routes'), createObject('value', parameters('afdEndpoints')[copyIndex()].routes), createObject('value', createArray()))]",
           "tags": {
             "value": "[coalesce(tryGet(parameters('afdEndpoints')[copyIndex()], 'tags'), parameters('tags'))]"
           }
@@ -1647,7 +1512,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "7750202159670080799"
+              "templateHash": "12322873859578469065"
             },
             "name": "CDN Profiles AFD Endpoints",
             "description": "This module deploys a CDN Profile AFD Endpoint.",
@@ -1706,7 +1571,7 @@
             },
             "routes": {
               "type": "array",
-              "nullable": true,
+              "defaultValue": [],
               "metadata": {
                 "description": "Optional. The list of routes for this AFD Endpoint."
               }
@@ -1736,11 +1601,11 @@
             "afd_endpoint_route": {
               "copy": {
                 "name": "afd_endpoint_route",
-                "count": "[length(coalesce(parameters('routes'), createArray()))]"
+                "count": "[length(parameters('routes'))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-Profile-AfdEndpoint-Route', uniqueString(deployment().name, coalesce(parameters('routes'), createArray())[copyIndex()].name))]",
+              "name": "[format('{0}-Profile-AfdEndpoint-Route', uniqueString(deployment().name, parameters('routes')[copyIndex()].name))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -1748,7 +1613,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[coalesce(parameters('routes'), createArray())[copyIndex()].name]"
+                    "value": "[parameters('routes')[copyIndex()].name]"
                   },
                   "profileName": {
                     "value": "[parameters('profileName')]"
@@ -1756,49 +1621,26 @@
                   "afdEndpointName": {
                     "value": "[parameters('name')]"
                   },
-                  "cacheConfiguration": {
-                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'cacheConfiguration')]"
-                  },
-                  "customDomainName": {
-                    "value": "[coalesce(tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'customDomainName'), '')]"
-                  },
-                  "enabledState": {
-                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'enabledState')]"
-                  },
-                  "forwardingProtocol": {
-                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'forwardingProtocol')]"
-                  },
-                  "httpsRedirect": {
-                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'httpsRedirect')]"
-                  },
-                  "linkToDefaultDomain": {
-                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'linkToDefaultDomain')]"
-                  },
-                  "originGroupName": {
-                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'originGroupName')]"
-                  },
-                  "originPath": {
-                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'originPath')]"
-                  },
-                  "patternsToMatch": {
-                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'patternsToMatch')]"
-                  },
-                  "ruleSets": {
-                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'ruleSets')]"
-                  },
-                  "supportedProtocols": {
-                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'supportedProtocols')]"
-                  }
+                  "cacheConfiguration": "[if(contains(parameters('routes')[copyIndex()], 'cacheConfiguration'), createObject('value', parameters('routes')[copyIndex()].cacheConfiguration), createObject('value', null()))]",
+                  "customDomainName": "[if(contains(parameters('routes')[copyIndex()], 'customDomainName'), createObject('value', parameters('routes')[copyIndex()].customDomainName), createObject('value', ''))]",
+                  "enabledState": "[if(contains(parameters('routes')[copyIndex()], 'enabledState'), createObject('value', parameters('routes')[copyIndex()].enabledState), createObject('value', 'Enabled'))]",
+                  "forwardingProtocol": "[if(contains(parameters('routes')[copyIndex()], 'forwardingProtocol'), createObject('value', parameters('routes')[copyIndex()].forwardingProtocol), createObject('value', 'MatchRequest'))]",
+                  "httpsRedirect": "[if(contains(parameters('routes')[copyIndex()], 'httpsRedirect'), createObject('value', parameters('routes')[copyIndex()].httpsRedirect), createObject('value', 'Enabled'))]",
+                  "linkToDefaultDomain": "[if(contains(parameters('routes')[copyIndex()], 'linkToDefaultDomain'), createObject('value', parameters('routes')[copyIndex()].linkToDefaultDomain), createObject('value', 'Enabled'))]",
+                  "originGroupName": "[if(contains(parameters('routes')[copyIndex()], 'originGroupName'), createObject('value', parameters('routes')[copyIndex()].originGroupName), createObject('value', ''))]",
+                  "originPath": "[if(contains(parameters('routes')[copyIndex()], 'originPath'), createObject('value', parameters('routes')[copyIndex()].originPath), createObject('value', ''))]",
+                  "patternsToMatch": "[if(contains(parameters('routes')[copyIndex()], 'patternsToMatch'), createObject('value', parameters('routes')[copyIndex()].patternsToMatch), createObject('value', createArray()))]",
+                  "ruleSets": "[if(contains(parameters('routes')[copyIndex()], 'ruleSets'), createObject('value', parameters('routes')[copyIndex()].ruleSets), createObject('value', createArray()))]",
+                  "supportedProtocols": "[if(contains(parameters('routes')[copyIndex()], 'supportedProtocols'), createObject('value', parameters('routes')[copyIndex()].supportedProtocols), createObject('value', createArray()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.25.53.49325",
-                      "templateHash": "11404018144751152031"
+                      "templateHash": "6304971247989032741"
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
                     "description": "This module deploys a CDN Profile AFD Endpoint route.",
@@ -1825,14 +1667,13 @@
                     },
                     "cacheConfiguration": {
                       "type": "object",
-                      "nullable": true,
+                      "defaultValue": {},
                       "metadata": {
                         "description": "Optional. The caching configuration for this route. To disable caching, do not provide a cacheConfiguration object."
                       }
                     },
                     "customDomainName": {
                       "type": "string",
-                      "defaultValue": "",
                       "metadata": {
                         "description": "Optional. The name of the custom domain. The custom domain must be defined in the profile customDomains."
                       }
@@ -1891,7 +1732,7 @@
                     },
                     "originPath": {
                       "type": "string",
-                      "nullable": true,
+                      "defaultValue": "",
                       "metadata": {
                         "description": "Optional. A directory path on the origin that AzureFrontDoor can use to retrieve content from, e.g. contoso.cloudapp.net/originpath."
                       }
@@ -1912,7 +1753,7 @@
                     },
                     "supportedProtocols": {
                       "type": "array",
-                      "nullable": true,
+                      "defaultValue": [],
                       "allowedValues": [
                         "Http",
                         "Https"
@@ -1922,55 +1763,8 @@
                       }
                     }
                   },
-                  "resources": {
-                    "profile::afd_endpoint": {
-                      "existing": true,
-                      "type": "Microsoft.Cdn/profiles/afdEndpoints",
-                      "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('afdEndpointName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
-                    },
-                    "profile::custom_domain": {
-                      "condition": "[not(empty(parameters('customDomainName')))]",
-                      "existing": true,
-                      "type": "Microsoft.Cdn/profiles/customDomains",
-                      "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('customDomainName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
-                    },
-                    "profile::originGroup": {
-                      "existing": true,
-                      "type": "Microsoft.Cdn/profiles/originGroups",
-                      "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
-                    },
-                    "profile::rule_set": {
-                      "copy": {
-                        "name": "rule_set",
-                        "count": "[length(parameters('ruleSets'))]"
-                      },
-                      "existing": true,
-                      "type": "Microsoft.Cdn/profiles/ruleSets",
-                      "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSets')[copyIndex()].name)]",
-                      "dependsOn": [
-                        "profile"
-                      ]
-                    },
-                    "profile": {
-                      "existing": true,
-                      "type": "Microsoft.Cdn/profiles",
-                      "apiVersion": "2023-05-01",
-                      "name": "[parameters('profileName')]"
-                    },
-                    "afd_endpoint_route": {
+                  "resources": [
+                    {
                       "type": "Microsoft.Cdn/profiles/afdEndpoints/routes",
                       "apiVersion": "2023-05-01",
                       "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('afdEndpointName'), parameters('name'))]",
@@ -1984,7 +1778,7 @@
                             }
                           }
                         ],
-                        "cacheConfiguration": "[parameters('cacheConfiguration')]",
+                        "cacheConfiguration": "[if(not(empty(parameters('cacheConfiguration'))), parameters('cacheConfiguration'), null())]",
                         "customDomains": "[if(not(empty(parameters('customDomainName'))), createArray(createObject('id', resourceId('Microsoft.Cdn/profiles/customDomains', parameters('profileName'), parameters('customDomainName')))), createArray())]",
                         "enabledState": "[parameters('enabledState')]",
                         "forwardingProtocol": "[parameters('forwardingProtocol')]",
@@ -1993,15 +1787,12 @@
                         "originGroup": {
                           "id": "[resourceId('Microsoft.Cdn/profiles/originGroups', parameters('profileName'), parameters('originGroupName'))]"
                         },
-                        "originPath": "[parameters('originPath')]",
+                        "originPath": "[if(not(empty(parameters('originPath'))), parameters('originPath'), null())]",
                         "patternsToMatch": "[parameters('patternsToMatch')]",
-                        "supportedProtocols": "[parameters('supportedProtocols')]"
-                      },
-                      "dependsOn": [
-                        "profile::afd_endpoint"
-                      ]
+                        "supportedProtocols": "[if(not(empty(parameters('supportedProtocols'))), parameters('supportedProtocols'), null())]"
+                      }
                     }
-                  },
+                  ],
                   "outputs": {
                     "name": {
                       "type": "string",

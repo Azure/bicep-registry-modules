@@ -27,16 +27,16 @@ param priority int = -1
 param weight int = -1
 
 @description('Conditional. The private link alias of the origin. Required if privateLinkLocation is provided.')
-param privateLinkAlias string?
+param privateLinkAlias string
 
 @description('Conditional. The private link location of the origin. Required if privateLinkAlias is provided.')
-param privateLinkLocation string?
+param privateLinkLocation string
 
 @description('Optional. The private link resource ID of the origin.')
-param privateLinkResourceId string?
+param privateLinkResourceId string
 
 @description('Optional. The host header value sent to the origin.')
-param originHostHeader string?
+param originHostHeader string
 
 @description('Optional. The name of the CDN profile. Default to "default".')
 param profileName string = 'default'

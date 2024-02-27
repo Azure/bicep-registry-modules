@@ -52,6 +52,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: 'dep-${namePrefix}-test-${serviceShort}'
     location: resourceLocation
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     originResponseTimeoutSeconds: 60
     sku: 'Standard_Verizon'
     endpointProperties: {

@@ -9,7 +9,7 @@ param name string
 param profileName string
 
 @description('Optional. Health probe settings to the origin that is used to determine the health of the origin.')
-param healthProbeSettings object?
+param healthProbeSettings object = {}
 
 @description('Required. Load balancing settings for a backend pool.')
 param loadBalancingSettings object
@@ -35,7 +35,7 @@ resource originGroup 'Microsoft.Cdn/profiles/originGroups@2023-05-01' = {
   name: name
   parent: profile
   properties: {
-    healthProbeSettings: healthProbeSettings
+    healthProbeSettings: !empty(healthProbeSettings) ? healthProbeSettings : null
     loadBalancingSettings: loadBalancingSettings
     sessionAffinityState: sessionAffinityState
     trafficRestorationTimeToHealedOrNewEndpointsInMinutes: trafficRestorationTimeToHealedOrNewEndpointsInMinutes
@@ -49,14 +49,14 @@ module origin 'origin/main.bicep' = [for (origion, index) in origins: {
     profileName: profileName
     hostName: origion.hostName
     originGroupName: originGroup.name
-    enabledState: origion.?enabledState
-    enforceCertificateNameCheck: origion.?enforceCertificateNameCheck
-    httpPort: origion.?httpPort
-    httpsPort: origion.?httpsPort
-    originHostHeader: origion.?originHostHeader
-    priority: origion.?priority
-    weight: origion.?weight
-    sharedPrivateLinkResource: origion.?sharedPrivateLinkResource
+    enabledState: contains(origion, 'enabledState') ? origion.enabledState : 'Enabled'
+    enforceCertificateNameCheck: contains(origion, 'enforceCertificateNameCheck') ? origion.enforceCertificateNameCheck : true
+    httpPort: contains(origion, 'httpPort') ? origion.httpPort : 80
+    httpsPort: contains(origion, 'httpsPort') ? origion.httpsPort : 443
+    originHostHeader: contains(origion, 'originHostHeader') ? origion.originHostHeader : origion.hostName
+    priority: contains(origion, 'priority') ? origion.priority : 1
+    weight: contains(origion, 'weight') ? origion.weight : 1000
+    sharedPrivateLinkResource: contains(origion, 'sharedPrivateLinkResource') ? origion.sharedPrivateLinkResource : null
   }
 }]
 

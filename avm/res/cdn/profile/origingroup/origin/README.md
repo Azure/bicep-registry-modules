@@ -129,6 +129,7 @@ The properties of the private link resource for private origin.
 
 - Required: No
 - Type: object
+- Default: `{}`
 
 ### Parameter: `weight`
 

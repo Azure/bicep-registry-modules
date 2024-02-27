@@ -1,12 +1,11 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "11404018144751152031"
+      "templateHash": "6304971247989032741"
     },
     "name": "CDN Profiles AFD Endpoint Route",
     "description": "This module deploys a CDN Profile AFD Endpoint route.",
@@ -33,14 +32,13 @@
     },
     "cacheConfiguration": {
       "type": "object",
-      "nullable": true,
+      "defaultValue": {},
       "metadata": {
         "description": "Optional. The caching configuration for this route. To disable caching, do not provide a cacheConfiguration object."
       }
     },
     "customDomainName": {
       "type": "string",
-      "defaultValue": "",
       "metadata": {
         "description": "Optional. The name of the custom domain. The custom domain must be defined in the profile customDomains."
       }
@@ -99,7 +97,7 @@
     },
     "originPath": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "",
       "metadata": {
         "description": "Optional. A directory path on the origin that AzureFrontDoor can use to retrieve content from, e.g. contoso.cloudapp.net/originpath."
       }
@@ -120,7 +118,7 @@
     },
     "supportedProtocols": {
       "type": "array",
-      "nullable": true,
+      "defaultValue": [],
       "allowedValues": [
         "Http",
         "Https"
@@ -130,55 +128,8 @@
       }
     }
   },
-  "resources": {
-    "profile::afd_endpoint": {
-      "existing": true,
-      "type": "Microsoft.Cdn/profiles/afdEndpoints",
-      "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('afdEndpointName'))]",
-      "dependsOn": [
-        "profile"
-      ]
-    },
-    "profile::custom_domain": {
-      "condition": "[not(empty(parameters('customDomainName')))]",
-      "existing": true,
-      "type": "Microsoft.Cdn/profiles/customDomains",
-      "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('customDomainName'))]",
-      "dependsOn": [
-        "profile"
-      ]
-    },
-    "profile::originGroup": {
-      "existing": true,
-      "type": "Microsoft.Cdn/profiles/originGroups",
-      "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
-      "dependsOn": [
-        "profile"
-      ]
-    },
-    "profile::rule_set": {
-      "copy": {
-        "name": "rule_set",
-        "count": "[length(parameters('ruleSets'))]"
-      },
-      "existing": true,
-      "type": "Microsoft.Cdn/profiles/ruleSets",
-      "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSets')[copyIndex()].name)]",
-      "dependsOn": [
-        "profile"
-      ]
-    },
-    "profile": {
-      "existing": true,
-      "type": "Microsoft.Cdn/profiles",
-      "apiVersion": "2023-05-01",
-      "name": "[parameters('profileName')]"
-    },
-    "afd_endpoint_route": {
+  "resources": [
+    {
       "type": "Microsoft.Cdn/profiles/afdEndpoints/routes",
       "apiVersion": "2023-05-01",
       "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('afdEndpointName'), parameters('name'))]",
@@ -192,7 +143,7 @@
             }
           }
         ],
-        "cacheConfiguration": "[parameters('cacheConfiguration')]",
+        "cacheConfiguration": "[if(not(empty(parameters('cacheConfiguration'))), parameters('cacheConfiguration'), null())]",
         "customDomains": "[if(not(empty(parameters('customDomainName'))), createArray(createObject('id', resourceId('Microsoft.Cdn/profiles/customDomains', parameters('profileName'), parameters('customDomainName')))), createArray())]",
         "enabledState": "[parameters('enabledState')]",
         "forwardingProtocol": "[parameters('forwardingProtocol')]",
@@ -201,15 +152,12 @@
         "originGroup": {
           "id": "[resourceId('Microsoft.Cdn/profiles/originGroups', parameters('profileName'), parameters('originGroupName'))]"
         },
-        "originPath": "[parameters('originPath')]",
+        "originPath": "[if(not(empty(parameters('originPath'))), parameters('originPath'), null())]",
         "patternsToMatch": "[parameters('patternsToMatch')]",
-        "supportedProtocols": "[parameters('supportedProtocols')]"
-      },
-      "dependsOn": [
-        "profile::afd_endpoint"
-      ]
+        "supportedProtocols": "[if(not(empty(parameters('supportedProtocols'))), parameters('supportedProtocols'), null())]"
+      }
     }
-  },
+  ],
   "outputs": {
     "name": {
       "type": "string",
