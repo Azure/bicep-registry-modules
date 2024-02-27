@@ -9,6 +9,7 @@ This module deploys a CDN Profile.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -34,11 +35,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/cdn.profile:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/cdn/profile:<version>`.
 
 - [Afd](#example-1-afd)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Afd_
 
@@ -47,8 +49,8 @@ The following section provides usage examples for the module, which were used to
 <summary>via Bicep module</summary>
 
 ```bicep
-module profile 'br:bicep/modules/cdn.profile:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-cdnpafd'
+module profile 'br/public:avm/res/cdn/profile:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdnpafd'
   params: {
     // Required parameters
     name: 'dep-test-cdnpafd'
@@ -78,7 +80,6 @@ module profile 'br:bicep/modules/cdn.profile:1.0.0' = {
         name: 'dep-test-cdnpafd-custom-domain'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     location: 'global'
     lock: {
       kind: 'CanNotDelete'
@@ -193,9 +194,6 @@ module profile 'br:bicep/modules/cdn.profile:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "location": {
       "value": "global"
     },
@@ -277,7 +275,59 @@ module profile 'br:bicep/modules/cdn.profile:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module profile 'br/public:avm/res/cdn/profile:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdnpmin'
+  params: {
+    // Required parameters
+    name: 'dep-test-cdnpmin'
+    sku: 'Standard_Microsoft'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dep-test-cdnpmin"
+    },
+    "sku": {
+      "value": "Standard_Microsoft"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -287,14 +337,13 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module profile 'br:bicep/modules/cdn.profile:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-cdnpmax'
+module profile 'br/public:avm/res/cdn/profile:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdnpmax'
   params: {
     // Required parameters
     name: 'dep-test-cdnpmax'
     sku: 'Standard_Verizon'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     endpointProperties: {
       contentTypesToCompress: [
         'application/javascript'
@@ -372,9 +421,6 @@ module profile 'br:bicep/modules/cdn.profile:1.0.0' = {
       "value": "Standard_Verizon"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "endpointProperties": {
       "value": {
         "contentTypesToCompress": [
@@ -445,7 +491,7 @@ module profile 'br:bicep/modules/cdn.profile:1.0.0' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -455,14 +501,13 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module profile 'br:bicep/modules/cdn.profile:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-cdnpwaf'
+module profile 'br/public:avm/res/cdn/profile:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdnpwaf'
   params: {
     // Required parameters
     name: 'dep-test-cdnpwaf'
     sku: 'Standard_Verizon'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     endpointProperties: {
       contentTypesToCompress: [
         'application/javascript'
@@ -523,9 +568,6 @@ module profile 'br:bicep/modules/cdn.profile:1.0.0' = {
       "value": "Standard_Verizon"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "endpointProperties": {
       "value": {
         "contentTypesToCompress": [
@@ -599,7 +641,7 @@ module profile 'br:bicep/modules/cdn.profile:1.0.0' = {
 | :-- | :-- | :-- |
 | [`afdEndpoints`](#parameter-afdendpoints) | array | Array of AFD endpoint objects. |
 | [`customDomains`](#parameter-customdomains) | array | Array of custom domain objects. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`endpointName`](#parameter-endpointname) | string | Name of the endpoint under the profile which is unique globally. |
 | [`endpointProperties`](#parameter-endpointproperties) | object | Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details). |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -666,9 +708,9 @@ Array of custom domain objects.
 - Type: array
 - Default: `[]`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -868,3 +910,7 @@ Endpoint tags.
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

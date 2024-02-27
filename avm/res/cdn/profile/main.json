@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "2094374182247826446"
+      "version": "0.25.53.49325",
+      "templateHash": "4565996460943160854"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -215,16 +215,15 @@
         "description": "Optional. Array of role assignments to create."
       }
     },
-    "enableDefaultTelemetry": {
+    "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
   "variables": {
-    "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "CDN Endpoint Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '426e0c7f-0c7e-4658-b36f-ff54d6c29b45')]",
       "CDN Endpoint Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '871e35f6-b5c1-49cc-a043-bde969a0f2cd')]",
@@ -238,17 +237,23 @@
     }
   },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.cdn-profile.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
-          "resources": []
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
         }
       }
     },
@@ -321,9 +326,6 @@
           },
           "profileName": {
             "value": "[parameters('name')]"
-          },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -333,8 +335,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "12835560149201986440"
+              "version": "0.25.53.49325",
+              "templateHash": "15161179248582262242"
             },
             "name": "CDN Profiles Endpoints",
             "description": "This module deploys a CDN Profile Endpoint.",
@@ -372,33 +374,9 @@
               "metadata": {
                 "description": "Optional. Endpoint tags."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
-          "variables": {
-            "enableReferencedModulesTelemetry": false
-          },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             "profile": {
               "existing": true,
               "type": "Microsoft.Cdn/profiles",
@@ -452,10 +430,7 @@
                   "originHostHeader": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'originHostHeader'), createObject('value', parameters('properties').origins[copyIndex()].properties.originHostHeader), createObject('value', ''))]",
                   "privateLinkAlias": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'privateLinkAlias'), createObject('value', parameters('properties').origins[copyIndex()].properties.privateLinkAlias), createObject('value', ''))]",
                   "privateLinkLocation": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'privateLinkLocation'), createObject('value', parameters('properties').origins[copyIndex()].properties.privateLinkLocation), createObject('value', ''))]",
-                  "privateLinkResourceId": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'privateLinkResourceId'), createObject('value', parameters('properties').origins[copyIndex()].properties.privateLinkResourceId), createObject('value', ''))]",
-                  "enableDefaultTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
-                  }
+                  "privateLinkResourceId": "[if(contains(parameters('properties').origins[copyIndex()].properties, 'privateLinkResourceId'), createObject('value', parameters('properties').origins[copyIndex()].properties.privateLinkResourceId), createObject('value', ''))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -463,8 +438,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "13313881743665626025"
+                      "version": "0.25.53.49325",
+                      "templateHash": "16488920644082246249"
                     },
                     "name": "CDN Profiles Endpoints Origins",
                     "description": "This module deploys a CDN Profile Endpoint Origin.",
@@ -475,13 +450,6 @@
                       "type": "string",
                       "metadata": {
                         "description": "Required. The name of the CDN Endpoint."
-                      }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
                       }
                     },
                     "name": {
@@ -564,20 +532,6 @@
                     }
                   },
                   "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
-                    },
                     {
                       "type": "Microsoft.Cdn/profiles/endpoints/origins",
                       "apiVersion": "2021-06-01",
@@ -696,9 +650,6 @@
           "useLatestVersion": "[if(contains(parameters('secrets')[copyIndex()], 'useLatestVersion'), createObject('value', parameters('secrets')[copyIndex()].useLatestVersion), createObject('value', false()))]",
           "secretVersion": {
             "value": "[parameters('secrets')[copyIndex()].secretVersion]"
-          },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -707,8 +658,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "9065117765223577157"
+              "version": "0.25.53.49325",
+              "templateHash": "3645784765890890733"
             },
             "name": "CDN Profiles Secret",
             "description": "This module deploys a CDN Profile Secret.",
@@ -767,30 +718,9 @@
               "metadata": {
                 "description": "Optional. Indicates whether to use the latest version of the secrect."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.Cdn/profiles/secrets",
               "apiVersion": "2023-05-01",
@@ -859,10 +789,7 @@
           },
           "minimumTlsVersion": "[if(contains(parameters('customDomains')[copyIndex()], 'minimumTlsVersion'), createObject('value', parameters('customDomains')[copyIndex()].minimumTlsVersion), createObject('value', 'TLS12'))]",
           "preValidatedCustomDomainResourceId": "[if(contains(parameters('customDomains')[copyIndex()], 'preValidatedCustomDomainResourceId'), createObject('value', parameters('customDomains')[copyIndex()].preValidatedCustomDomainResourceId), createObject('value', ''))]",
-          "secretName": "[if(contains(parameters('customDomains')[copyIndex()], 'secretName'), createObject('value', parameters('customDomains')[copyIndex()].secretName), createObject('value', ''))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "secretName": "[if(contains(parameters('customDomains')[copyIndex()], 'secretName'), createObject('value', parameters('customDomains')[copyIndex()].secretName), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -870,8 +797,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "14020917186794999695"
+              "version": "0.25.53.49325",
+              "templateHash": "14057037772702090927"
             },
             "name": "CDN Profiles Custom Domains",
             "description": "This module deploys a CDN Profile Custom Domains.",
@@ -944,30 +871,9 @@
               "metadata": {
                 "description": "Optional. The name of the secret. ie. subs/rg/profile/secret."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.Cdn/profiles/customDomains",
               "apiVersion": "2023-05-01",
@@ -1043,9 +949,6 @@
           "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": "[if(contains(parameters('origionGroups')[copyIndex()], 'trafficRestorationTimeToHealedOrNewEndpointsInMinutes'), createObject('value', parameters('origionGroups')[copyIndex()].trafficRestorationTimeToHealedOrNewEndpointsInMinutes), createObject('value', 10))]",
           "origins": {
             "value": "[parameters('origionGroups')[copyIndex()].origins]"
-          },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1054,8 +957,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "11971964733746078182"
+              "version": "0.25.53.49325",
+              "templateHash": "3379389871799694033"
             },
             "name": "CDN Profiles Origin Group",
             "description": "This module deploys a CDN Profile Origin Group.",
@@ -1111,33 +1014,9 @@
               "metadata": {
                 "description": "Required. The list of origins within the origin group."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
-          "variables": {
-            "enableReferencedModulesTelemetry": false
-          },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.Cdn/profiles/originGroups",
               "apiVersion": "2023-05-01",
@@ -1182,10 +1061,7 @@
                   "originHostHeader": "[if(contains(parameters('origins')[copyIndex()], 'originHostHeader'), createObject('value', parameters('origins')[copyIndex()].originHostHeader), createObject('value', parameters('origins')[copyIndex()].hostName))]",
                   "priority": "[if(contains(parameters('origins')[copyIndex()], 'priority'), createObject('value', parameters('origins')[copyIndex()].priority), createObject('value', 1))]",
                   "weight": "[if(contains(parameters('origins')[copyIndex()], 'weight'), createObject('value', parameters('origins')[copyIndex()].weight), createObject('value', 1000))]",
-                  "sharedPrivateLinkResource": "[if(contains(parameters('origins')[copyIndex()], 'sharedPrivateLinkResource'), createObject('value', parameters('origins')[copyIndex()].sharedPrivateLinkResource), createObject('value', null()))]",
-                  "enableDefaultTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
-                  }
+                  "sharedPrivateLinkResource": "[if(contains(parameters('origins')[copyIndex()], 'sharedPrivateLinkResource'), createObject('value', parameters('origins')[copyIndex()].sharedPrivateLinkResource), createObject('value', null()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1193,8 +1069,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "9016533430746404335"
+                      "version": "0.25.53.49325",
+                      "templateHash": "12086693759397028642"
                     },
                     "name": "CDN Profiles Origin",
                     "description": "This module deploys a CDN Profile Origin.",
@@ -1284,30 +1160,9 @@
                       "metadata": {
                         "description": "Optional. Weight of the origin in given origin group for load balancing. Must be between 1 and 1000."
                       }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-                      }
                     }
                   },
                   "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
-                    },
                     {
                       "type": "Microsoft.Cdn/profiles/originGroups/origins",
                       "apiVersion": "2023-05-01",
@@ -1413,9 +1268,6 @@
           },
           "rules": {
             "value": "[parameters('ruleSets')[copyIndex()].rules]"
-          },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1424,8 +1276,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "6357254985592021008"
+              "version": "0.25.53.49325",
+              "templateHash": "18265794377529101092"
             },
             "name": "CDN Profiles Rule Sets",
             "description": "This module deploys a CDN Profile rule set.",
@@ -1450,33 +1302,9 @@
               "metadata": {
                 "description": "Optinal. The rules to apply to the rule set."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
-          "variables": {
-            "enableReferencedModulesTelemetry": false
-          },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.Cdn/profiles/ruleSets",
               "apiVersion": "2023-05-01",
@@ -1512,10 +1340,7 @@
                     "value": "[parameters('rules')[copyIndex()].actions]"
                   },
                   "conditions": "[if(contains(parameters('rules')[copyIndex()], 'conditions'), createObject('value', parameters('rules')[copyIndex()].conditions), createObject('value', createArray()))]",
-                  "matchProcessingBehavior": "[if(contains(parameters('rules')[copyIndex()], 'matchProcessingBehavior'), createObject('value', parameters('rules')[copyIndex()].matchProcessingBehavior), createObject('value', 'Continue'))]",
-                  "enableDefaultTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
-                  }
+                  "matchProcessingBehavior": "[if(contains(parameters('rules')[copyIndex()], 'matchProcessingBehavior'), createObject('value', parameters('rules')[copyIndex()].matchProcessingBehavior), createObject('value', 'Continue'))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1523,8 +1348,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "5740342061156329686"
+                      "version": "0.25.53.49325",
+                      "templateHash": "15256606823968322093"
                     },
                     "name": "CDN Profiles Rules",
                     "description": "This module deploys a CDN Profile rule.",
@@ -1578,30 +1403,9 @@
                       "metadata": {
                         "description": "Required. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue."
                       }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-                      }
                     }
                   },
                   "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
-                    },
                     {
                       "type": "Microsoft.Cdn/profiles/ruleSets/rules",
                       "apiVersion": "2023-05-01",
@@ -1695,9 +1499,6 @@
           },
           "autoGeneratedDomainNameLabelScope": "[if(contains(parameters('afdEndpoints')[copyIndex()], 'autoGeneratedDomainNameLabelScope'), createObject('value', parameters('afdEndpoints')[copyIndex()].autoGeneratedDomainNameLabelScope), createObject('value', 'TenantReuse'))]",
           "enabledState": "[if(contains(parameters('afdEndpoints')[copyIndex()], 'enabledState'), createObject('value', parameters('afdEndpoints')[copyIndex()].enabledState), createObject('value', 'Enabled'))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          },
           "routes": "[if(contains(parameters('afdEndpoints')[copyIndex()], 'routes'), createObject('value', parameters('afdEndpoints')[copyIndex()].routes), createObject('value', createArray()))]",
           "tags": {
             "value": "[coalesce(tryGet(parameters('afdEndpoints')[copyIndex()], 'tags'), parameters('tags'))]"
@@ -1710,8 +1511,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "9151451101933620806"
+              "version": "0.25.53.49325",
+              "templateHash": "12322873859578469065"
             },
             "name": "CDN Profiles AFD Endpoints",
             "description": "This module deploys a CDN Profile AFD Endpoint.",
@@ -1774,33 +1575,9 @@
               "metadata": {
                 "description": "Optional. The list of routes for this AFD Endpoint."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
-          "variables": {
-            "enableReferencedModulesTelemetry": false
-          },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             "profile": {
               "existing": true,
               "type": "Microsoft.Cdn/profiles",
@@ -1854,10 +1631,7 @@
                   "originPath": "[if(contains(parameters('routes')[copyIndex()], 'originPath'), createObject('value', parameters('routes')[copyIndex()].originPath), createObject('value', ''))]",
                   "patternsToMatch": "[if(contains(parameters('routes')[copyIndex()], 'patternsToMatch'), createObject('value', parameters('routes')[copyIndex()].patternsToMatch), createObject('value', createArray()))]",
                   "ruleSets": "[if(contains(parameters('routes')[copyIndex()], 'ruleSets'), createObject('value', parameters('routes')[copyIndex()].ruleSets), createObject('value', createArray()))]",
-                  "supportedProtocols": "[if(contains(parameters('routes')[copyIndex()], 'supportedProtocols'), createObject('value', parameters('routes')[copyIndex()].supportedProtocols), createObject('value', createArray()))]",
-                  "enableDefaultTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
-                  }
+                  "supportedProtocols": "[if(contains(parameters('routes')[copyIndex()], 'supportedProtocols'), createObject('value', parameters('routes')[copyIndex()].supportedProtocols), createObject('value', createArray()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1865,8 +1639,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "1534020105352910282"
+                      "version": "0.25.53.49325",
+                      "templateHash": "6304971247989032741"
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
                     "description": "This module deploys a CDN Profile AFD Endpoint route.",
@@ -1987,30 +1761,9 @@
                       "metadata": {
                         "description": "Optional. The supported protocols of the rule."
                       }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-                      }
                     }
                   },
                   "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
-                    },
                     {
                       "type": "Microsoft.Cdn/profiles/afdEndpoints/routes",
                       "apiVersion": "2023-05-01",

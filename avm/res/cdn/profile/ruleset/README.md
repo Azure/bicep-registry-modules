@@ -8,6 +8,7 @@ This module deploys a CDN Profile rule set.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -18,54 +19,10 @@ This module deploys a CDN Profile rule set.
 
 ## Parameters
 
-**Required parameters**
+**RequiredOptinal parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the rule set. |
-| [`profileName`](#parameter-profilename) | string | The name of the CDN profile. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
-
-**Optinal parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`rules`](#parameter-rules) | array | The rules to apply to the rule set. |
-
-### Parameter: `name`
-
-The name of the rule set.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `profileName`
-
-The name of the CDN profile.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `rules`
-
-The rules to apply to the rule set.
-
-- Required: No
-- Type: array
-- Default: `[]`
 
 
 ## Outputs
@@ -79,3 +36,7 @@ The rules to apply to the rule set.
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

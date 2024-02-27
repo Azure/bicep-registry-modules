@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "11971964733746078182"
+      "version": "0.25.53.49325",
+      "templateHash": "3379389871799694033"
     },
     "name": "CDN Profiles Origin Group",
     "description": "This module deploys a CDN Profile Origin Group.",
@@ -61,33 +61,9 @@
       "metadata": {
         "description": "Required. The list of origins within the origin group."
       }
-    },
-    "enableDefaultTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-      }
     }
   },
-  "variables": {
-    "enableReferencedModulesTelemetry": false
-  },
   "resources": [
-    {
-      "condition": "[parameters('enableDefaultTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
-    },
     {
       "type": "Microsoft.Cdn/profiles/originGroups",
       "apiVersion": "2023-05-01",
@@ -132,10 +108,7 @@
           "originHostHeader": "[if(contains(parameters('origins')[copyIndex()], 'originHostHeader'), createObject('value', parameters('origins')[copyIndex()].originHostHeader), createObject('value', parameters('origins')[copyIndex()].hostName))]",
           "priority": "[if(contains(parameters('origins')[copyIndex()], 'priority'), createObject('value', parameters('origins')[copyIndex()].priority), createObject('value', 1))]",
           "weight": "[if(contains(parameters('origins')[copyIndex()], 'weight'), createObject('value', parameters('origins')[copyIndex()].weight), createObject('value', 1000))]",
-          "sharedPrivateLinkResource": "[if(contains(parameters('origins')[copyIndex()], 'sharedPrivateLinkResource'), createObject('value', parameters('origins')[copyIndex()].sharedPrivateLinkResource), createObject('value', null()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "sharedPrivateLinkResource": "[if(contains(parameters('origins')[copyIndex()], 'sharedPrivateLinkResource'), createObject('value', parameters('origins')[copyIndex()].sharedPrivateLinkResource), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -143,8 +116,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "9016533430746404335"
+              "version": "0.25.53.49325",
+              "templateHash": "12086693759397028642"
             },
             "name": "CDN Profiles Origin",
             "description": "This module deploys a CDN Profile Origin.",
@@ -234,30 +207,9 @@
               "metadata": {
                 "description": "Optional. Weight of the origin in given origin group for load balancing. Must be between 1 and 1000."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.Cdn/profiles/originGroups/origins",
               "apiVersion": "2023-05-01",
