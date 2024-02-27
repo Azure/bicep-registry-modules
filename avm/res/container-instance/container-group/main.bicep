@@ -255,7 +255,7 @@ type containerType = {
         memoryInGB: int
       }
 
-      @description('Optional. The resource limits of this container instance..')
+      @description('Optional. The resource limits of this container instance.')
       limits: {
         cpu: int
         gpu: {
