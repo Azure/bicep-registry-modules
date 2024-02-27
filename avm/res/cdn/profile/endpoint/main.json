@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "8802729705814825775"
+      "templateHash": "17914312135409497837"
     },
     "name": "CDN Profiles Endpoints",
     "description": "This module deploys a CDN Profile Endpoint.",
@@ -106,26 +106,27 @@
             "value": "[coalesce(tryGet(parameters('properties').origins[copyIndex()].properties, 'weight'), -1)]"
           },
           "originHostHeader": {
-            "value": "[coalesce(tryGet(parameters('properties').origins[copyIndex()].properties, 'originHostHeader'), '')]"
+            "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'originHostHeader')]"
           },
           "privateLinkAlias": {
-            "value": "[coalesce(tryGet(parameters('properties').origins[copyIndex()].properties, 'privateLinkAlias'), '')]"
+            "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'privateLinkAlias')]"
           },
           "privateLinkLocation": {
-            "value": "[coalesce(tryGet(parameters('properties').origins[copyIndex()].properties, 'privateLinkLocation'), '')]"
+            "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'privateLinkLocation')]"
           },
           "privateLinkResourceId": {
-            "value": "[coalesce(parameters('properties').origins[copyIndex()].properties.privateLinkResourceId, '')]"
+            "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'privateLinkResourceId')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "16488920644082246249"
+              "templateHash": "12571580620816780353"
             },
             "name": "CDN Profiles Endpoints Origins",
             "description": "This module deploys a CDN Profile Endpoint Origin.",
@@ -187,24 +188,28 @@
             },
             "privateLinkAlias": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "Conditional. The private link alias of the origin. Required if privateLinkLocation is provided."
               }
             },
             "privateLinkLocation": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "Conditional. The private link location of the origin. Required if privateLinkAlias is provided."
               }
             },
             "privateLinkResourceId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The private link resource ID of the origin."
               }
             },
             "originHostHeader": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The host header value sent to the origin."
               }
@@ -217,14 +222,32 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "profile": {
+              "existing": true,
+              "type": "Microsoft.Cdn/profiles",
+              "apiVersion": "2021-06-01",
+              "name": "[parameters('profileName')]"
+            },
+            "endpoint": {
+              "existing": true,
+              "type": "Microsoft.Cdn/profiles/endpoints",
+              "apiVersion": "2021-06-01",
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('endpointName'))]",
+              "dependsOn": [
+                "profile"
+              ]
+            },
+            "origins": {
               "type": "Microsoft.Cdn/profiles/endpoints/origins",
               "apiVersion": "2021-06-01",
               "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('endpointName'), parameters('name'))]",
-              "properties": "[union(createObject('hostName', parameters('hostName'), 'httpPort', parameters('httpPort'), 'enabled', parameters('enabled'), 'httpsPort', parameters('httpsPort')), if(or(greater(parameters('priority'), 0), greater(parameters('weight'), 0)), createObject('priority', parameters('priority'), 'weight', parameters('weight')), createObject()), if(and(not(empty(parameters('privateLinkAlias'))), not(empty(parameters('privateLinkLocation')))), createObject('privateLinkAlias', parameters('privateLinkAlias'), 'privateLinkLocation', parameters('privateLinkLocation')), createObject()), if(not(empty(parameters('privateLinkResourceId'))), createObject('privateLinkResourceId', parameters('privateLinkResourceId')), createObject()), if(not(empty(parameters('originHostHeader'))), createObject('originHostHeader', parameters('originHostHeader')), createObject()))]"
+              "properties": "[union(createObject('hostName', parameters('hostName'), 'httpPort', parameters('httpPort'), 'enabled', parameters('enabled'), 'httpsPort', parameters('httpsPort')), if(or(greater(parameters('priority'), 0), greater(parameters('weight'), 0)), createObject('priority', parameters('priority'), 'weight', parameters('weight')), createObject()), if(and(not(empty(parameters('privateLinkAlias'))), not(empty(parameters('privateLinkLocation')))), createObject('privateLinkAlias', parameters('privateLinkAlias'), 'privateLinkLocation', parameters('privateLinkLocation')), createObject()), if(not(empty(parameters('privateLinkResourceId'))), createObject('privateLinkResourceId', parameters('privateLinkResourceId')), createObject()), if(not(empty(parameters('originHostHeader'))), createObject('originHostHeader', parameters('originHostHeader')), createObject()))]",
+              "dependsOn": [
+                "endpoint"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -252,7 +275,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference(resourceId('Microsoft.Cdn/profiles/endpoints', parameters('profileName'), parameters('endpointName')), '2021-06-01', 'full').location]"
+              "value": "[reference('endpoint', '2021-06-01', 'full').location]"
             }
           }
         }

@@ -79,14 +79,14 @@ The priority of origin in given origin group for load balancing. Required if `we
 
 The private link alias of the origin. Required if privateLinkLocation is provided.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `privateLinkLocation`
 
 The private link location of the origin. Required if privateLinkAlias is provided.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `weight`
@@ -125,14 +125,14 @@ The HTTPS port of the origin.
 
 The host header value sent to the origin.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `privateLinkResourceId`
 
 The private link resource ID of the origin.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `profileName`

@@ -41,10 +41,10 @@ module endpoint_origins 'origin/main.bicep' = [for origin in properties.origins:
     enabled: origin.properties.enabled
     priority: origin.properties.?priority ?? -1
     weight: origin.properties.?weight ?? -1
-    originHostHeader: origin.properties.?originHostHeader ?? ''
-    privateLinkAlias: origin.properties.?privateLinkAlias ?? ''
-    privateLinkLocation: origin.properties.?privateLinkLocation ?? ''
-    privateLinkResourceId: origin.properties.privateLinkResourceId ?? ''
+    originHostHeader: origin.properties.?originHostHeader
+    privateLinkAlias: origin.properties.?privateLinkAlias
+    privateLinkLocation: origin.properties.?privateLinkLocation
+    privateLinkResourceId: origin.properties.?privateLinkResourceId
   }
 }]
 
