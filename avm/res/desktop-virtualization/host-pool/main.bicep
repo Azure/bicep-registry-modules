@@ -196,41 +196,22 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
   }
 }
 
-module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module hostPool_privateEndpoints 'br/public:avm-res-network-privateendpoint:0.1.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-HostPool-PrivateEndpoint-${index}'
   params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
-    privateLinkServiceConnections: [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
-        properties: {
-          privateLinkServiceId: hostPool.id
-          groupIds: [
-            privateEndpoint.?service ?? 'connection'
-          ]
-        }
-      }
+    groupIds: [
+      privateEndpoint.?service ?? 'connection'
     ]
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
-        properties: {
-          privateLinkServiceId: hostPool.id
-          groupIds: [
-            privateEndpoint.?service ?? 'connection'
-          ]
-          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
-        }
-      }
-    ] : null
+    name: privateEndpoint.?name ?? 'pep-${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
+    serviceResourceId: hostPool.id
     subnetResourceId: privateEndpoint.subnetResourceId
-    location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: privateEndpoint.?lock ?? lock
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+    lock: privateEndpoint.?lock ?? lock
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
     roleAssignments: privateEndpoint.?roleAssignments
     tags: privateEndpoint.?tags ?? tags
+    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
     customDnsConfigs: privateEndpoint.?customDnsConfigs
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
@@ -354,13 +335,14 @@ type roleAssignmentType = {
 }[]?
 
 type privateEndpointType = {
+
   @sys.description('Optional. The name of the private endpoint.')
   name: string?
 
   @sys.description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
-  @sys.description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
+  @sys.description('Optional. The service (sub-) type to deploy the private endpoint for. For example "connection".')
   service: string?
 
   @sys.description('Required. Resource ID of the subnet where the endpoint needs to be created.')
@@ -371,13 +353,6 @@ type privateEndpointType = {
 
   @sys.description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
   privateDnsZoneResourceIds: string[]?
-
-  @sys.description('Optional. If Manual Private Link Connection is required.')
-  isManualConnection: bool?
-
-  @sys.description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
-  @maxLength(140)
-  manualConnectionRequestMessage: string?
 
   @sys.description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
@@ -420,6 +395,9 @@ type privateEndpointType = {
 
   @sys.description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
   tags: object?
+
+  @sys.description('Optional. Manual PrivateLink Service Connections.')
+  manualPrivateLinkServiceConnections: array?
 
   @sys.description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?

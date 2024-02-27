@@ -139,8 +139,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     requiredNsgRules: 'NoAzureDatabricksRules'
     skuName: 'premium'
     amlWorkspaceResourceId: nestedDependencies.outputs.machineLearningWorkspaceResourceId
-    customPrivateSubnetName: nestedDependencies.outputs.customPrivateSubnetResourceId
-    customPublicSubnetName: nestedDependencies.outputs.customPublicSubnetResourceId
+    customPrivateSubnetName: nestedDependencies.outputs.customPrivateSubnetName
+    customPublicSubnetName: nestedDependencies.outputs.customPublicSubnetName
     publicNetworkAccess: 'Disabled'
     disablePublicIp: true
     loadBalancerResourceId: nestedDependencies.outputs.loadBalancerResourceId
@@ -151,30 +151,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        service: 'databricks_ui_api'
-        subnetResourceId: nestedDependencies.outputs.customPublicSubnetResourceId
+        subnetResourceId: nestedDependencies.outputs.defaultSubnetResourceId
         tags: {
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        service: 'databricks_ui_api'
-        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetResourceId
-        tags: {
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetResourceId
-        service: 'browser_authentication'
       }
     ]
     managedResourceGroupResourceId: '${subscription().id}/resourceGroups/rg-${resourceGroupName}-managed'

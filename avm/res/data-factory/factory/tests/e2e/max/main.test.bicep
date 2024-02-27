@@ -134,14 +134,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
         tags: {
           'hidden-title': 'This is visible in the resource name'
-          application: 'AVM'
+          application: 'CARML'
         }
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
       }
     ]
     roleAssignments: [

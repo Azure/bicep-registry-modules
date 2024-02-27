@@ -107,8 +107,4 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       '${namePrefix}-topic-${serviceShort}001'
     ]
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
 }]
