@@ -127,10 +127,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
     }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
   }
 }]
