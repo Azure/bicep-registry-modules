@@ -1,0 +1,84 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "16681369558452798358"
+    },
+    "name": "Network Manager Scope Connections",
+    "description": "This module deploys a Network Manager Scope Connection.\nCreate a cross-tenant connection to manage a resource from another tenant.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "networkManagerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent network manager. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 64,
+      "metadata": {
+        "description": "Required. The name of the scope connection."
+      }
+    },
+    "description": {
+      "type": "string",
+      "defaultValue": "",
+      "maxLength": 500,
+      "metadata": {
+        "description": "Optional. A description of the scope connection."
+      }
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Enter the subscription or management group resource ID that you want to add to this network manager's scope."
+      }
+    },
+    "tenantId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Tenant ID of the subscription or management group that you want to manage."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkManagers/scopeConnections",
+      "apiVersion": "2023-04-01",
+      "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
+      "properties": {
+        "description": "[parameters('description')]",
+        "resourceId": "[parameters('resourceId')]",
+        "tenantId": "[parameters('tenantId')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed scope connection."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed scope connection."
+      },
+      "value": "[resourceId('Microsoft.Network/networkManagers/scopeConnections', parameters('networkManagerName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the scope connection was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
