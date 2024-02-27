@@ -1,0 +1,122 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "18438352233682084029"
+    },
+    "name": "DevTest Lab Notification Channels",
+    "description": "This module deploys a DevTest Lab Notification Channel.\n\nNotification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "labName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent lab. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "allowedValues": [
+        "autoShutdown",
+        "costThreshold"
+      ],
+      "metadata": {
+        "description": "Required. The name of the notification channel."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "description": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Description of notification."
+      }
+    },
+    "events": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Required. The list of event for which this notification is enabled."
+      }
+    },
+    "emailRecipient": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if \"webHookUrl\" is empty."
+      }
+    },
+    "webHookUrl": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. The webhook URL to which the notification will be sent. Required if \"emailRecipient\" is empty."
+      }
+    },
+    "notificationLocale": {
+      "type": "string",
+      "defaultValue": "en",
+      "metadata": {
+        "description": "Optional. The locale to use when sending a notification (fallback for unsupported languages is EN)."
+      }
+    }
+  },
+  "resources": {
+    "lab": {
+      "existing": true,
+      "type": "Microsoft.DevTestLab/labs",
+      "apiVersion": "2018-09-15",
+      "name": "[parameters('labName')]"
+    },
+    "notificationChannel": {
+      "type": "Microsoft.DevTestLab/labs/notificationchannels",
+      "apiVersion": "2018-09-15",
+      "name": "[format('{0}/{1}', parameters('labName'), parameters('name'))]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "description": "[parameters('description')]",
+        "events": "[parameters('events')]",
+        "emailRecipient": "[parameters('emailRecipient')]",
+        "webHookUrl": "[parameters('webHookUrl')]",
+        "notificationLocale": "[parameters('notificationLocale')]"
+      },
+      "dependsOn": [
+        "lab"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the notification channel."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the notification channel."
+      },
+      "value": "[resourceId('Microsoft.DevTestLab/labs/notificationchannels', parameters('labName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the notification channel was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

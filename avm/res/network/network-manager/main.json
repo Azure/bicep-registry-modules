@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "13408841161232378934"
+      "templateHash": "9720522527868870534"
     },
     "name": "Network Managers",
     "description": "This module deploys a Network Manager.",
@@ -666,7 +666,9 @@
           "networkManagerName": {
             "value": "[parameters('name')]"
           },
-          "description": "[if(contains(parameters('scopeConnections')[copyIndex()], 'description'), createObject('value', parameters('scopeConnections')[copyIndex()].description), createObject('value', ''))]",
+          "description": {
+            "value": "[tryGet(parameters('scopeConnections')[copyIndex()], 'description')]"
+          },
           "resourceId": {
             "value": "[parameters('scopeConnections')[copyIndex()].resourceId]"
           },
@@ -783,11 +785,15 @@
           "networkManagerName": {
             "value": "[parameters('name')]"
           },
-          "description": "[if(contains(parameters('securityAdminConfigurations')[copyIndex()], 'description'), createObject('value', parameters('securityAdminConfigurations')[copyIndex()].description), createObject('value', ''))]",
+          "description": {
+            "value": "[tryGet(parameters('securityAdminConfigurations')[copyIndex()], 'description')]"
+          },
           "applyOnNetworkIntentPolicyBasedServices": {
             "value": "[parameters('securityAdminConfigurations')[copyIndex()].applyOnNetworkIntentPolicyBasedServices]"
           },
-          "ruleCollections": "[if(contains(parameters('securityAdminConfigurations')[copyIndex()], 'ruleCollections'), createObject('value', parameters('securityAdminConfigurations')[copyIndex()].ruleCollections), createObject('value', createArray()))]"
+          "ruleCollections": {
+            "value": "[tryGet(parameters('securityAdminConfigurations')[copyIndex()], 'ruleCollections')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

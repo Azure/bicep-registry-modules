@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "10816792797635578407"
+      "templateHash": "17055439590426138357"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet).",
@@ -229,7 +229,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. The Virtual Network (vNet) Name."
+        "description": "Required. The name of the Virtual Network (vNet)."
       }
     },
     "location": {
