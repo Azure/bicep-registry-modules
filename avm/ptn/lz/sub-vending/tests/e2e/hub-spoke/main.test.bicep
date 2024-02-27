@@ -1,15 +1,27 @@
 targetScope = 'managementGroup'
 
+@description('Optional. The location to deploy resources to.')
 param location string = 'uksouth'
 
 param prNumber string
 
+@description('Optional. The subscription billing scope.')
 param subscriptionBillingScope string
 
-module createSub '../../main.bicep' = {
+module nestedDependencies 'dependencies.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
+  scope: resourceGroup('e4e7395f-dc45-411e-b425-95f75e470e16', 'rsg-blzv-perm-hubs-001')
+  params: {
+    hubVirtualNetworkName: 'vnet-uksouth-hub-blzv'
+  }
+}
+
+module createSub '../../../main.bicep' = {
   name: 'sub-blzv-tests-pr-${prNumber}-blank-sub'
   params: {
     subscriptionAliasEnabled: true
+    deploymentScriptLocation: location
+    virtualNetworkLocation: location
     subscriptionBillingScope: subscriptionBillingScope
     subscriptionAliasName: 'sub-blzv-tests-pr-${prNumber}'
     subscriptionDisplayName: 'sub-blzv-tests-pr-${prNumber}'
@@ -23,6 +35,9 @@ module createSub '../../main.bicep' = {
     deploymentScriptManagedIdentityName: 'id-${location}-pr-${prNumber}'
     deploymentScriptName: 'ds-${location}-pr-${prNumber}'
     virtualNetworkEnabled: false
+    deploymentScriptNetworkSecurityGroupName: 'nsg-${location}-ds-pr-${prNumber}'
+    deploymentScriptVirtualNetworkName: 'vnet-${location}-ds-pr-${prNumber}'
+    deploymentScriptStorageAccountName: 'stglzds${location}${prNumber}'
     roleAssignmentEnabled: true
     roleAssignments: [
       {
@@ -31,16 +46,17 @@ module createSub '../../main.bicep' = {
         relativeScope: ''
       }
     ]
-    resourceProviders : {
-      'Microsoft.HybridCompute': ['ArcServerPrivateLinkPreview']
-      'Microsoft.AVS': ['AzureServicesVm']
+    resourceProviders: {
+      'Microsoft.HybridCompute': [ 'ArcServerPrivateLinkPreview' ]
+      'Microsoft.AVS': [ 'AzureServicesVm' ]
     }
   }
 }
 
-module hubSpoke '../../main.bicep' = {
+module hubSpoke '../../../main.bicep' = {
   name: 'sub-blzv-tests-pr-${prNumber}-add-vnet-spoke'
   params: {
+    deploymentScriptLocation: location
     subscriptionAliasEnabled: false
     existingSubscriptionId: createSub.outputs.subscriptionId
     virtualNetworkEnabled: true
@@ -50,13 +66,16 @@ module hubSpoke '../../main.bicep' = {
     deploymentScriptManagedIdentityName: 'id-${location}-pr-${prNumber}'
     deploymentScriptName: 'ds-${location}-pr-${prNumber}'
     virtualNetworkName: 'vnet-${location}-hs-pr-${prNumber}'
+    deploymentScriptNetworkSecurityGroupName: 'nsg-${location}-ds-pr-${prNumber}'
+    deploymentScriptVirtualNetworkName: 'vnet-${location}-ds-pr-${prNumber}'
+    deploymentScriptStorageAccountName: 'stglzds${location}${prNumber}'
     virtualNetworkAddressSpace: [
       '10.100.0.0/16'
     ]
     virtualNetworkResourceGroupLockEnabled: false
     virtualNetworkPeeringEnabled: true
     virtualNetworkUseRemoteGateways: false
-    hubNetworkResourceId: '/subscriptions/e4e7395f-dc45-411e-b425-95f75e470e16/resourceGroups/rsg-blzv-perm-hubs-001/providers/Microsoft.Network/virtualNetworks/vnet-uksouth-hub-blzv'
+    hubNetworkResourceId: nestedDependencies.outputs.hubNetworkResourceId
     roleAssignmentEnabled: true
     roleAssignments: [
       {
@@ -65,35 +84,6 @@ module hubSpoke '../../main.bicep' = {
         relativeScope: '/resourceGroups/rsg-${location}-net-hs-pr-${prNumber}'
       }
     ]
-    resourceProviders : {
-      'Microsoft.HybridCompute': ['ArcServerPrivateLinkPreview']
-      'Microsoft.AVS': ['AzureServicesVm']
-    }
-  }
-}
-
-module vwanSpoke '../../main.bicep' = {
-  name: 'sub-blzv-tests-pr-${prNumber}-add-vwan-spoke'
-  params: {
-    subscriptionAliasEnabled: false
-    existingSubscriptionId: createSub.outputs.subscriptionId
-    virtualNetworkEnabled: true
-    virtualNetworkLocation: location
-    virtualNetworkResourceGroupName: 'rsg-${location}-net-vwan-pr-${prNumber}'
-    deploymentScriptResourceGroupName: 'rsg-${location}-ds-pr-${prNumber}'
-    deploymentScriptManagedIdentityName: 'id-${location}-pr-${prNumber}'
-    deploymentScriptName: 'ds-${location}-pr-${prNumber}'
-    virtualNetworkName: 'vnet-${location}-vwan-pr-${prNumber}'
-    virtualNetworkAddressSpace: [
-      '10.200.0.0/16'
-    ]
-    virtualNetworkResourceGroupLockEnabled: false
-    virtualNetworkPeeringEnabled: true
-    hubNetworkResourceId: '/subscriptions/e4e7395f-dc45-411e-b425-95f75e470e16/resourceGroups/rsg-blzv-perm-hubs-001/providers/Microsoft.Network/virtualHubs/vhub-uksouth-blzv'
-    resourceProviders :{
-      'Microsoft.HybridCompute': ['ArcServerPrivateLinkPreview']
-      'Microsoft.AVS': ['AzureServicesVm']
-    }
   }
 }
 
