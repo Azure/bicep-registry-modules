@@ -67,7 +67,4 @@ module testDeployment '../../../main.bicep' = {
       Role: 'DeploymentValidation'
     }
   }
-  dependsOn: [
-    diagnosticDependencies
-  ]
 }

@@ -175,6 +175,7 @@ module testDeployment '../../../main.bicep' = {
     privateEndpoints: [
       {
         subnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
+        service: 'sqlServer'
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
@@ -183,12 +184,6 @@ module testDeployment '../../../main.bicep' = {
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
-      }
-      {
-        subnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
       }
     ]
     virtualNetworkRules: [
@@ -205,8 +200,4 @@ module testDeployment '../../../main.bicep' = {
       Role: 'DeploymentValidation'
     }
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
 }

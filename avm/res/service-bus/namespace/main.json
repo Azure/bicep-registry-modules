@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "16911267296539658497"
+      "templateHash": "16905316086455363065"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -150,7 +150,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The subresource to deploy the private endpoint for. For example \"vault\", \"mysqlServer\" or \"dataFactory\"."
+              "description": "Optional. The service (sub-) type to deploy the private endpoint for. For example \"vault\" or \"blob\"."
             }
           },
           "subnetResourceId": {
@@ -163,7 +163,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
+              "description": "Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided."
             }
           },
           "privateDnsZoneResourceIds": {
@@ -174,21 +174,6 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones."
-            }
-          },
-          "isManualConnection": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. If Manual Private Link Connection is required."
-            }
-          },
-          "manualConnectionRequestMessage": {
-            "type": "string",
-            "nullable": true,
-            "maxLength": 140,
-            "metadata": {
-              "description": "Optional. A message passed to the owner of the remote resource with the manual connection request."
             }
           },
           "customDnsConfigs": {
@@ -297,6 +282,13 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
+            }
+          },
+          "manualPrivateLinkServiceConnections": {
+            "type": "array",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Manual PrivateLink Service Connections."
             }
           },
           "enableTelemetry": {
@@ -3393,18 +3385,29 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-ServiceBusNamespace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-serviceBusNamespace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
-          "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.ServiceBus/namespaces', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace'), copyIndex()))]"
+          "privateLinkServiceConnections": {
+            "value": [
+              {
+                "name": "[parameters('name')]",
+                "properties": {
+                  "privateLinkServiceId": "[resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))]",
+                  "groupIds": [
+                    "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace')]"
+                  ]
+                }
+              }
+            ]
           },
-          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.ServiceBus/namespaces', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.ServiceBus/namespaces', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace')))))), createObject('value', null()))]",
-          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.ServiceBus/namespaces', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.ServiceBus/namespaces', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace')), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
+          "name": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.ServiceBus/namespaces', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'vault'), copyIndex()))]"
+          },
           "subnetResourceId": {
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
@@ -3429,6 +3432,9 @@
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
+          "manualPrivateLinkServiceConnections": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections')]"
+          },
           "customDnsConfigs": {
             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
           },
@@ -3449,8 +3455,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "2592884001616184297"
+              "version": "0.23.1.45101",
+              "templateHash": "2821141217598568122"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -3499,7 +3505,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
                     }
                   },
                   "conditionVersion": {
@@ -3577,7 +3583,7 @@
                       "privateIPAddress": {
                         "type": "string",
                         "metadata": {
-                          "description": "Required. A private IP address obtained from the private endpoint's subnet."
+                          "description": "Required. A private ip address obtained from the private endpoint's subnet."
                         }
                       }
                     },
@@ -3680,7 +3686,7 @@
                   "fqdn": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. Fqdn that resolves to private endpoint IP address."
+                      "description": "Required. Fqdn that resolves to private endpoint ip address."
                     }
                   },
                   "ipAddresses": {
@@ -3689,7 +3695,7 @@
                       "type": "string"
                     },
                     "metadata": {
-                      "description": "Required. A list of private IP addresses of the private endpoint."
+                      "description": "Required. A list of private ip addresses of the private endpoint."
                     }
                   }
                 }
@@ -3815,7 +3821,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3920,8 +3926,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "9321937464667207030"
+                      "version": "0.23.1.45101",
+                      "templateHash": "18168683629401652671"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -4032,13 +4038,6 @@
                 "description": "The location the resource was deployed into."
               },
               "value": "[reference('privateEndpoint', '2023-04-01', 'full').location]"
-            },
-            "groupId": {
-              "type": "string",
-              "metadata": {
-                "description": "The group Id for the private endpoint Group."
-              },
-              "value": "[if(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties.groupIds[0], reference('privateEndpoint').privateLinkServiceConnections[0].properties.groupIds[0])]"
             }
           }
         }

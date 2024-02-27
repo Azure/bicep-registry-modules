@@ -212,6 +212,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     privateEndpoints: [
       {
+        service: 'namespace'
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
@@ -240,12 +241,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           }
         ]
       }
-      {
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-      }
     ]
     managedIdentities: {
       systemAssigned: true
@@ -257,8 +252,4 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     publicNetworkAccess: 'Enabled'
     minimumTlsVersion: '1.2'
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
 }]

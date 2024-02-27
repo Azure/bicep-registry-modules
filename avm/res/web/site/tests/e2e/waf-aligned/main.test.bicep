@@ -100,8 +100,4 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     vnetRouteAllEnabled: true
     publicNetworkAccess: 'Disabled'
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
 }]
