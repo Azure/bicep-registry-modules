@@ -127,7 +127,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     ]
     networkManagerScopes: {
       managementGroups: [
-        '/providers/Microsoft.Management/managementGroups/#_managementGroupId_#'
+        '/providers/Microsoft.Management/managementGroups/#_ARM_MGMTGROUP_ID_#'
       ]
     }
     // Non-required parameters
@@ -354,7 +354,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     "networkManagerScopes": {
       "value": {
         "managementGroups": [
-          "/providers/Microsoft.Management/managementGroups/#_managementGroupId_#"
+          "/providers/Microsoft.Management/managementGroups/#_ARM_MGMTGROUP_ID_#"
         ]
       }
     },
