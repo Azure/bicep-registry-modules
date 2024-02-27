@@ -716,7 +716,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`addressPrefixes`](#parameter-addressprefixes) | array | An Array of 1 or more IP Address Prefixes for the Virtual Network. |
-| [`name`](#parameter-name) | string | The Virtual Network (vNet) Name. |
+| [`name`](#parameter-name) | string | The name of the Virtual Network (vNet). |
 
 **Optional parameters**
 
@@ -745,7 +745,7 @@ An Array of 1 or more IP Address Prefixes for the Virtual Network.
 
 ### Parameter: `name`
 
-The Virtual Network (vNet) Name.
+The name of the Virtual Network (vNet).
 
 - Required: Yes
 - Type: string
