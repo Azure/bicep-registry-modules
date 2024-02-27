@@ -231,7 +231,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
           {
             fqdn: 'abc.batch.com'
             ipAddresses: [
-              '10.0.16.10'
+              '10.0.0.10'
             ]
           }
         ]
@@ -241,7 +241,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
             properties: {
               groupId: 'batchAccount'
               memberName: 'batchAccount'
-              privateIPAddress: '10.0.16.10'
+              privateIPAddress: '10.0.0.10'
             }
           }
         ]
@@ -260,31 +260,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
             roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
-        service: 'batchAccount'
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
-      }
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        service: 'batchAccount'
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
-      }
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        service: 'nodeManagement'
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -391,7 +366,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
             {
               "fqdn": "abc.batch.com",
               "ipAddresses": [
-                "10.0.16.10"
+                "10.0.0.10"
               ]
             }
           ],
@@ -401,7 +376,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
               "properties": {
                 "groupId": "batchAccount",
                 "memberName": "batchAccount",
-                "privateIPAddress": "10.0.16.10"
+                "privateIPAddress": "10.0.0.10"
               }
             }
           ],
@@ -420,31 +395,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
               "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
-          "service": "batchAccount",
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
-        },
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "service": "batchAccount",
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
-        },
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "service": "nodeManagement",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -532,7 +482,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
-        service: 'batchAccount'
         subnetResourceId: '<subnetResourceId>'
       }
     ]
@@ -600,7 +549,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
-          "service": "batchAccount",
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -1074,7 +1022,6 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file". |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -1086,22 +1033,15 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the private endpoint. |
 | [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
-| [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
 | [`location`](#parameter-privateendpointslocation) | string | The location to deploy the private endpoint to. |
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
-| [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
+| [`manualPrivateLinkServiceConnections`](#parameter-privateendpointsmanualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
+| [`service`](#parameter-privateendpointsservice) | string | The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
-
-### Parameter: `privateEndpoints.service`
-
-The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
@@ -1216,13 +1156,6 @@ A private IP address obtained from the private endpoint's subnet.
 - Required: Yes
 - Type: string
 
-### Parameter: `privateEndpoints.isManualConnection`
-
-If Manual Private Link Connection is required.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `privateEndpoints.location`
 
 The location to deploy the private endpoint to.
@@ -1266,12 +1199,12 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.manualConnectionRequestMessage`
+### Parameter: `privateEndpoints.manualPrivateLinkServiceConnections`
 
-A message passed to the owner of the remote resource with the manual connection request.
+Manual PrivateLink Service Connections.
 
 - Required: No
-- Type: string
+- Type: array
 
 ### Parameter: `privateEndpoints.name`
 
@@ -1382,6 +1315,13 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `privateEndpoints.service`
+
+The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints.tags`
 
@@ -1541,7 +1481,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.3.1` | Remote reference |
 
 ## Data Collection
 

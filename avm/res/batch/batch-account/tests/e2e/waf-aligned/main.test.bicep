@@ -86,7 +86,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        service: 'batchAccount'
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
       }
     ]
@@ -101,8 +100,4 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Role: 'DeploymentValidation'
     }
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
 }]

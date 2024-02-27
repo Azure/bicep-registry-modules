@@ -191,6 +191,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSResourceId
         ]
+        service: 'vault'
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
         tags: {
           'hidden-title': 'This is visible in the resource name'
@@ -227,12 +228,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             ]
           }
         ]
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
       }
     ]
     roleAssignments: [
@@ -287,8 +282,4 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Role: 'DeploymentValidation'
     }
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
 }]
