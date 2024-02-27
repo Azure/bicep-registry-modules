@@ -184,7 +184,7 @@ output resourceGroupName string = resourceGroup().name
 output iPv4Address string = containergroup.properties.ipAddress.ip
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(containergroup.identity, 'principalId') ? containergroup.identity.principalId : ''
+output systemAssignedMIPrincipalId string = containergroup.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = containergroup.location
