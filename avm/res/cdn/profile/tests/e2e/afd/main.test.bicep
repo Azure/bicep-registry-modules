@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'As Azure Front Door'
+metadata description = 'This instance deploys the module as Azure Front Door.'
+
 // ========== //
 // Parameters //
 // ========== //

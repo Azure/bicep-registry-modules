@@ -37,12 +37,15 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/cdn/profile:<version>`.
 
-- [Afd](#example-1-afd)
+- [As Azure Front Door](#example-1-as-azure-front-door)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using large parameter set](#example-3-using-large-parameter-set)
 - [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Afd_
+### Example 1: _As Azure Front Door_
+
+This instance deploys the module as Azure Front Door.
+
 
 <details>
 
