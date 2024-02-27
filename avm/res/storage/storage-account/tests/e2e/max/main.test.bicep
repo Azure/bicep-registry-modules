@@ -80,7 +80,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     privateEndpoints: [
       {
         service: 'blob'
-        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
@@ -90,48 +90,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           Role: 'DeploymentValidation'
         }
       }
-      {
-        service: 'blob'
-        subnetResourceId: nestedDependencies.outputs.customSubnet2ResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
-        service: 'table'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
-        service: 'queue'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
-        service: 'file'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
-        service: 'web'
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
-        service: 'dfs'
-      }
     ]
     networkAcls: {
       bypass: 'AzureServices'
@@ -139,7 +97,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       virtualNetworkRules: [
         {
           action: 'Allow'
-          id: nestedDependencies.outputs.defaultSubnetResourceId
+          id: nestedDependencies.outputs.subnetResourceId
         }
       ]
       ipRules: [
@@ -449,8 +407,4 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Role: 'DeploymentValidation'
     }
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
 }]

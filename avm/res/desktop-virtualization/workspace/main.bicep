@@ -90,41 +90,22 @@ resource workspace 'Microsoft.DesktopVirtualization/workspaces@2022-10-14-previe
   }
 }
 
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module workspace_privateEndpoints 'br/public:avm-res-network-privateendpoint:0.1.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-Workspace-PrivateEndpoint-${index}'
   params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
-    privateLinkServiceConnections: [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
-        properties: {
-          privateLinkServiceId: workspace.id
-          groupIds: [
-            privateEndpoint.?service ?? 'connection'
-          ]
-        }
-      }
+    groupIds: [
+      privateEndpoint.service
     ]
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
-        properties: {
-          privateLinkServiceId: workspace.id
-          groupIds: [
-            privateEndpoint.?service ?? 'connection'
-          ]
-          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
-        }
-      }
-    ] : null
+    name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.?service}-${index}'
+    serviceResourceId: workspace.id
     subnetResourceId: privateEndpoint.subnetResourceId
-    location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: privateEndpoint.?lock ?? lock
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+    lock: privateEndpoint.?lock ?? lock
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
     roleAssignments: privateEndpoint.?roleAssignments
     tags: privateEndpoint.?tags ?? tags
+    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
     customDnsConfigs: privateEndpoint.?customDnsConfigs
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
@@ -246,6 +227,7 @@ type roleAssignmentType = {
 }[]?
 
 type privateEndpointType = {
+
   @sys.description('Optional. The name of the private endpoint.')
   name: string?
 
@@ -263,13 +245,6 @@ type privateEndpointType = {
 
   @sys.description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
   privateDnsZoneResourceIds: string[]?
-
-  @sys.description('Optional. If Manual Private Link Connection is required.')
-  isManualConnection: bool?
-
-  @sys.description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
-  @maxLength(140)
-  manualConnectionRequestMessage: string?
 
   @sys.description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
@@ -312,6 +287,9 @@ type privateEndpointType = {
 
   @sys.description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
   tags: object?
+
+  @sys.description('Optional. Manual PrivateLink Service Connections.')
+  manualPrivateLinkServiceConnections: array?
 
   @sys.description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
