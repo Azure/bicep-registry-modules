@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "12322873859578469065"
+      "templateHash": "14054471315525975342"
     },
     "name": "CDN Profiles AFD Endpoints",
     "description": "This module deploys a CDN Profile AFD Endpoint.",
@@ -65,7 +65,7 @@
     },
     "routes": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The list of routes for this AFD Endpoint."
       }
@@ -95,11 +95,11 @@
     "afd_endpoint_route": {
       "copy": {
         "name": "afd_endpoint_route",
-        "count": "[length(parameters('routes'))]"
+        "count": "[length(coalesce(parameters('routes'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-Profile-AfdEndpoint-Route', uniqueString(deployment().name, parameters('routes')[copyIndex()].name))]",
+      "name": "[format('{0}-Profile-AfdEndpoint-Route', uniqueString(deployment().name, coalesce(parameters('routes'), createArray())[copyIndex()].name))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -107,7 +107,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('routes')[copyIndex()].name]"
+            "value": "[coalesce(parameters('routes'), createArray())[copyIndex()].name]"
           },
           "profileName": {
             "value": "[parameters('profileName')]"
@@ -115,26 +115,49 @@
           "afdEndpointName": {
             "value": "[parameters('name')]"
           },
-          "cacheConfiguration": "[if(contains(parameters('routes')[copyIndex()], 'cacheConfiguration'), createObject('value', parameters('routes')[copyIndex()].cacheConfiguration), createObject('value', null()))]",
-          "customDomainName": "[if(contains(parameters('routes')[copyIndex()], 'customDomainName'), createObject('value', parameters('routes')[copyIndex()].customDomainName), createObject('value', ''))]",
-          "enabledState": "[if(contains(parameters('routes')[copyIndex()], 'enabledState'), createObject('value', parameters('routes')[copyIndex()].enabledState), createObject('value', 'Enabled'))]",
-          "forwardingProtocol": "[if(contains(parameters('routes')[copyIndex()], 'forwardingProtocol'), createObject('value', parameters('routes')[copyIndex()].forwardingProtocol), createObject('value', 'MatchRequest'))]",
-          "httpsRedirect": "[if(contains(parameters('routes')[copyIndex()], 'httpsRedirect'), createObject('value', parameters('routes')[copyIndex()].httpsRedirect), createObject('value', 'Enabled'))]",
-          "linkToDefaultDomain": "[if(contains(parameters('routes')[copyIndex()], 'linkToDefaultDomain'), createObject('value', parameters('routes')[copyIndex()].linkToDefaultDomain), createObject('value', 'Enabled'))]",
-          "originGroupName": "[if(contains(parameters('routes')[copyIndex()], 'originGroupName'), createObject('value', parameters('routes')[copyIndex()].originGroupName), createObject('value', ''))]",
-          "originPath": "[if(contains(parameters('routes')[copyIndex()], 'originPath'), createObject('value', parameters('routes')[copyIndex()].originPath), createObject('value', ''))]",
-          "patternsToMatch": "[if(contains(parameters('routes')[copyIndex()], 'patternsToMatch'), createObject('value', parameters('routes')[copyIndex()].patternsToMatch), createObject('value', createArray()))]",
-          "ruleSets": "[if(contains(parameters('routes')[copyIndex()], 'ruleSets'), createObject('value', parameters('routes')[copyIndex()].ruleSets), createObject('value', createArray()))]",
-          "supportedProtocols": "[if(contains(parameters('routes')[copyIndex()], 'supportedProtocols'), createObject('value', parameters('routes')[copyIndex()].supportedProtocols), createObject('value', createArray()))]"
+          "cacheConfiguration": {
+            "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'cacheConfiguration')]"
+          },
+          "customDomainName": {
+            "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'customDomainName')]"
+          },
+          "enabledState": {
+            "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'enabledState')]"
+          },
+          "forwardingProtocol": {
+            "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'forwardingProtocol')]"
+          },
+          "httpsRedirect": {
+            "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'httpsRedirect')]"
+          },
+          "linkToDefaultDomain": {
+            "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'linkToDefaultDomain')]"
+          },
+          "originGroupName": {
+            "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'originGroupName')]"
+          },
+          "originPath": {
+            "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'originPath')]"
+          },
+          "patternsToMatch": {
+            "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'patternsToMatch')]"
+          },
+          "ruleSets": {
+            "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'ruleSets')]"
+          },
+          "supportedProtocols": {
+            "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'supportedProtocols')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "6304971247989032741"
+              "templateHash": "11404018144751152031"
             },
             "name": "CDN Profiles AFD Endpoint Route",
             "description": "This module deploys a CDN Profile AFD Endpoint route.",
@@ -161,13 +184,14 @@
             },
             "cacheConfiguration": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The caching configuration for this route. To disable caching, do not provide a cacheConfiguration object."
               }
             },
             "customDomainName": {
               "type": "string",
+              "defaultValue": "",
               "metadata": {
                 "description": "Optional. The name of the custom domain. The custom domain must be defined in the profile customDomains."
               }
@@ -226,7 +250,7 @@
             },
             "originPath": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A directory path on the origin that AzureFrontDoor can use to retrieve content from, e.g. contoso.cloudapp.net/originpath."
               }
@@ -247,7 +271,7 @@
             },
             "supportedProtocols": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "allowedValues": [
                 "Http",
                 "Https"
@@ -257,8 +281,55 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "profile::afd_endpoint": {
+              "existing": true,
+              "type": "Microsoft.Cdn/profiles/afdEndpoints",
+              "apiVersion": "2023-05-01",
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('afdEndpointName'))]",
+              "dependsOn": [
+                "profile"
+              ]
+            },
+            "profile::custom_domain": {
+              "condition": "[not(empty(parameters('customDomainName')))]",
+              "existing": true,
+              "type": "Microsoft.Cdn/profiles/customDomains",
+              "apiVersion": "2023-05-01",
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('customDomainName'))]",
+              "dependsOn": [
+                "profile"
+              ]
+            },
+            "profile::originGroup": {
+              "existing": true,
+              "type": "Microsoft.Cdn/profiles/originGroups",
+              "apiVersion": "2023-05-01",
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
+              "dependsOn": [
+                "profile"
+              ]
+            },
+            "profile::rule_set": {
+              "copy": {
+                "name": "rule_set",
+                "count": "[length(parameters('ruleSets'))]"
+              },
+              "existing": true,
+              "type": "Microsoft.Cdn/profiles/ruleSets",
+              "apiVersion": "2023-05-01",
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSets')[copyIndex()].name)]",
+              "dependsOn": [
+                "profile"
+              ]
+            },
+            "profile": {
+              "existing": true,
+              "type": "Microsoft.Cdn/profiles",
+              "apiVersion": "2023-05-01",
+              "name": "[parameters('profileName')]"
+            },
+            "afd_endpoint_route": {
               "type": "Microsoft.Cdn/profiles/afdEndpoints/routes",
               "apiVersion": "2023-05-01",
               "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('afdEndpointName'), parameters('name'))]",
@@ -272,7 +343,7 @@
                     }
                   }
                 ],
-                "cacheConfiguration": "[if(not(empty(parameters('cacheConfiguration'))), parameters('cacheConfiguration'), null())]",
+                "cacheConfiguration": "[parameters('cacheConfiguration')]",
                 "customDomains": "[if(not(empty(parameters('customDomainName'))), createArray(createObject('id', resourceId('Microsoft.Cdn/profiles/customDomains', parameters('profileName'), parameters('customDomainName')))), createArray())]",
                 "enabledState": "[parameters('enabledState')]",
                 "forwardingProtocol": "[parameters('forwardingProtocol')]",
@@ -281,12 +352,15 @@
                 "originGroup": {
                   "id": "[resourceId('Microsoft.Cdn/profiles/originGroups', parameters('profileName'), parameters('originGroupName'))]"
                 },
-                "originPath": "[if(not(empty(parameters('originPath'))), parameters('originPath'), null())]",
+                "originPath": "[parameters('originPath')]",
                 "patternsToMatch": "[parameters('patternsToMatch')]",
-                "supportedProtocols": "[if(not(empty(parameters('supportedProtocols'))), parameters('supportedProtocols'), null())]"
-              }
+                "supportedProtocols": "[parameters('supportedProtocols')]"
+              },
+              "dependsOn": [
+                "profile::afd_endpoint"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",

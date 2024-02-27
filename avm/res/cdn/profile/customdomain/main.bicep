@@ -12,13 +12,13 @@ param profileName string
 param hostName string
 
 @description('Optonal. Resource reference to the Azure DNS zone.')
-param azureDnsZoneResourceId string = ''
+param azureDnsZoneResourceId string?
 
 @description('Optional. Key-Value pair representing migration properties for domains.')
-param extendedProperties object = {}
+param extendedProperties object?
 
 @description('Optional. Resource reference to the Azure resource where custom domain ownership was prevalidated.')
-param preValidatedCustomDomainResourceId string = ''
+param preValidatedCustomDomainResourceId string?
 
 @allowed([
   'CustomerCertificate'
@@ -52,7 +52,7 @@ resource profile_custom_domain 'Microsoft.Cdn/profiles/customDomains@2023-05-01'
     azureDnsZone: !empty(azureDnsZoneResourceId) ? {
       id: azureDnsZoneResourceId
     } : null
-    extendedProperties: !empty(extendedProperties) ? extendedProperties : null
+    extendedProperties: extendedProperties
     hostName: hostName
     preValidatedCustomDomainResourceId: !empty(preValidatedCustomDomainResourceId) ? {
       id: preValidatedCustomDomainResourceId

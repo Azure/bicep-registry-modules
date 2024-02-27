@@ -12,10 +12,10 @@ param profileName string
 param afdEndpointName string
 
 @description('Optional. The caching configuration for this route. To disable caching, do not provide a cacheConfiguration object.')
-param cacheConfiguration object = {}
+param cacheConfiguration object?
 
 @description('Optional. The name of the custom domain. The custom domain must be defined in the profile customDomains.')
-param customDomainName string
+param customDomainName string = ''
 
 @allowed([
   'HttpOnly'
@@ -50,7 +50,7 @@ param linkToDefaultDomain string = 'Enabled'
 param originGroupName string = ''
 
 @description('Optional. A directory path on the origin that AzureFrontDoor can use to retrieve content from, e.g. contoso.cloudapp.net/originpath.')
-param originPath string = ''
+param originPath string?
 
 @description('Optional. The route patterns of the rule.')
 param patternsToMatch array = []
@@ -60,7 +60,7 @@ param ruleSets array = []
 
 @allowed([ 'Http', 'Https' ])
 @description('Optional. The supported protocols of the rule.')
-param supportedProtocols array = []
+param supportedProtocols array?
 
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName
@@ -86,7 +86,7 @@ resource afd_endpoint_route 'Microsoft.Cdn/profiles/afdEndpoints/routes@2023-05-
   name: name
   parent: profile::afd_endpoint
   properties: {
-    cacheConfiguration: !empty(cacheConfiguration) ? cacheConfiguration : null
+    cacheConfiguration: cacheConfiguration
     customDomains: !empty(customDomainName) ? [ {
         id: profile::custom_domain.id
       } ] : []
@@ -97,12 +97,12 @@ resource afd_endpoint_route 'Microsoft.Cdn/profiles/afdEndpoints/routes@2023-05-
     originGroup: {
       id: profile::originGroup.id
     }
-    originPath: !empty(originPath) ? originPath : null
+    originPath: originPath
     patternsToMatch: patternsToMatch
     ruleSets: [for (item, index) in ruleSets: {
       id: profile::rule_set[index].id
     }]
-    supportedProtocols: !empty(supportedProtocols) ? supportedProtocols : null
+    supportedProtocols: supportedProtocols
   }
 }
 
