@@ -15,7 +15,7 @@ param afdEndpointName string
 param cacheConfiguration object?
 
 @description('Optional. The name of the custom domain. The custom domain must be defined in the profile customDomains.')
-param customDomainName string
+param customDomainName string = ''
 
 @allowed([
   'HttpOnly'
