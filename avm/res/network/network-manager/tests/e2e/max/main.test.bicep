@@ -84,7 +84,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     networkManagerScopes: {
       managementGroups: [
-        '/providers/Microsoft.Management/managementGroups/#_managementGroupId_#'
+        '/providers/Microsoft.Management/managementGroups/#_ARM_MGMTGROUP_ID_#'
       ]
     }
     networkGroups: [
