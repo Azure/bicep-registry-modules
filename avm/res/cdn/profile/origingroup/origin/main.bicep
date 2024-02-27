@@ -37,7 +37,7 @@ param originHostHeader string = ''
 param priority int = 1
 
 @description('Optional. The properties of the private link resource for private origin.')
-param sharedPrivateLinkResource object = {}
+param sharedPrivateLinkResource object?
 
 @description('Optional. Weight of the origin in given origin group for load balancing. Must be between 1 and 1000.')
 param weight int = 1000
@@ -61,7 +61,7 @@ resource origin 'Microsoft.Cdn/profiles/originGroups/origins@2023-05-01' = {
     httpsPort: httpsPort
     originHostHeader: originHostHeader
     priority: priority
-    sharedPrivateLinkResource: !empty(sharedPrivateLinkResource) ? sharedPrivateLinkResource : null
+    sharedPrivateLinkResource: sharedPrivateLinkResource
     weight: weight
   }
 }

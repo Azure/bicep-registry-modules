@@ -28,8 +28,8 @@ module rule 'rule/main.bicep' = [for (rule, index) in rules: {
     name: rule.name
     order: rule.order
     actions: rule.actions
-    conditions: contains(rule, 'conditions') ? rule.conditions : []
-    matchProcessingBehavior: contains(rule, 'matchProcessingBehavior') ? rule.matchProcessingBehavior : 'Continue'
+    conditions: rule.?conditions
+    matchProcessingBehavior: rule.?matchProcessingBehavior
   }
 }]
 
