@@ -115,7 +115,7 @@ module networkManager_scopeConnections 'scope-connection/main.bicep' = [for (sco
   params: {
     name: scopeConnection.name
     networkManagerName: networkManager.name
-    description: contains(scopeConnection, 'description') ? scopeConnection.description : ''
+    description: scopeConnection.?description
     resourceId: scopeConnection.resourceId
     tenantId: scopeConnection.tenantId
   }
@@ -126,9 +126,9 @@ module networkManager_securityAdminConfigurations 'security-admin-configuration/
   params: {
     name: securityAdminConfiguration.name
     networkManagerName: networkManager.name
-    description: contains(securityAdminConfiguration, 'description') ? securityAdminConfiguration.description : ''
+    description: securityAdminConfiguration.?description
     applyOnNetworkIntentPolicyBasedServices: securityAdminConfiguration.applyOnNetworkIntentPolicyBasedServices
-    ruleCollections: contains(securityAdminConfiguration, 'ruleCollections') ? securityAdminConfiguration.ruleCollections : []
+    ruleCollections: securityAdminConfiguration.?ruleCollections
   }
   dependsOn: networkManager_networkGroups
 }]
