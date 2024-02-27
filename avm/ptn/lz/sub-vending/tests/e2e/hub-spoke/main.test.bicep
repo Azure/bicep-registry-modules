@@ -31,6 +31,7 @@ module createSub '../../../main.bicep' = {
     subscriptionDisplayName: 'sub-blzv-tests-${namePrefix}-${serviceShort}'
     subscriptionTags: {
       namePrefix: namePrefix
+      serviceShort: serviceShort
     }
     subscriptionWorkload: 'Production'
     subscriptionManagementGroupAssociationEnabled: true
@@ -92,3 +93,4 @@ module hubSpoke '../../../main.bicep' = {
 }
 
 output createdSubId string = createSub.outputs.subscriptionId
+output hubNetworkResourceId string = nestedDependencies.outputs.hubNetworkResourceId

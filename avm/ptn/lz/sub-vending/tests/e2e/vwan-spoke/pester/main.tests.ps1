@@ -10,7 +10,11 @@ param (
 
   [Parameter(Mandatory)]
   [string]
-  $location
+  $location,
+
+  [Parameter(Mandatory)]
+  [hashtable]
+  $TestInputData
 )
 
 Describe "Bicep Landing Zone (Sub) Vending Tests" {
@@ -99,20 +103,6 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
     }
   }
 
-  Context "Hub Spoke - Resource Group Tests" {
-    BeforeAll {
-      $rsg = Get-AzResourceGroup -Name "rsg-$location-net-hs-pr-$prNumber" -ErrorAction SilentlyContinue
-    }
-
-    It "Should have a Resource Group with the correct name" {
-      $rsg.ResourceGroupName | Should -Be "rsg-$location-net-hs-pr-$prNumber"
-    }
-
-    It "Should have a Resource Group with the correct location" {
-      $rsg.Location | Should -Be $location
-    }
-  }
-
   Context "Virtual WAN - Resource Group Tests" {
     BeforeAll {
       $rsg = Get-AzResourceGroup -Name "rsg-$location-net-vwan-pr-$prNumber" -ErrorAction SilentlyContinue
@@ -124,62 +114,6 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
 
     It "Should have a Resource Group with the correct location" {
       $rsg.Location | Should -Be $location
-    }
-  }
-
-  Context "Networking - Hub Spoke Tests" {
-    BeforeAll {
-      $vnetHs = Get-AzVirtualNetwork -ResourceGroupName "rsg-$location-net-hs-pr-$prNumber" -Name "vnet-$location-hs-pr-$prNumber" -ErrorAction SilentlyContinue
-    }
-
-    It "Should have a Virtual Network in the correct Resource Group (rsg-$location-net-hs-pr-$prNumber)" {
-      $vnetHs.ResourceGroupName | Should -Be "rsg-$location-net-hs-pr-$prNumber"
-    }
-
-    It "Should have a Virtual Network with the correct name (vnet-$location-hs-pr-$prNumber)" {
-      $vnetHs.Name | Should -Be "vnet-$location-hs-pr-$prNumber"
-    }
-
-    It "Should have a Virtual Network with the correct location" {
-      $vnetHs.Location | Should -Be $location
-    }
-
-    It "Should have a Virtual Network with the correct address space (10.100.0.0/16)" {
-      $vnetHs.AddressSpace.AddressPrefixes | Should -Be "10.100.0.0/16"
-    }
-
-    It "Should have a Virtual Network with DDoS protection disabled" {
-      $vnetHs.EnableDdosProtection | Should -Be $false
-      $vnetHs.ddosProtectionPlan | Should -BeNullOrEmpty
-    }
-
-    It "Should have a Virtual Network with a single Virtual Network Peer" {
-      $vnetHs.VirtualNetworkPeerings.Count | Should -Be 1
-    }
-
-    It "Should have a Virtual Network with a Virtual Network Peering to the Hub Virtual Network called 'vnet-uksouth-hub-blzv'" {
-      $vnetHs.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be "/subscriptions/e4e7395f-dc45-411e-b425-95f75e470e16/resourceGroups/rsg-blzv-perm-hubs-001/providers/Microsoft.Network/virtualNetworks/vnet-uksouth-hub-blzv"
-    }
-
-    It "Should have a Virtual Network with a Virtual Network Peering to the Hub Virtual Network called 'vnet-uksouth-hub-blzv' that is in the Connected state and FullyInSync" {
-      $vnetHs.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be "/subscriptions/e4e7395f-dc45-411e-b425-95f75e470e16/resourceGroups/rsg-blzv-perm-hubs-001/providers/Microsoft.Network/virtualNetworks/vnet-uksouth-hub-blzv"
-      $vnetHs.VirtualNetworkPeerings[0].PeeringState | Should -Be "Connected"
-      $vnetHs.VirtualNetworkPeerings[0].PeeringSyncLevel | Should -Be "FullyInSync"
-    }
-
-    It "Should have a Virtual Network with a Virtual Network Peering to the Hub Virtual Network called 'vnet-uksouth-hub-blzv' that has AllowForwardedTraffic set to $true" {
-      $vnetHs.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be "/subscriptions/e4e7395f-dc45-411e-b425-95f75e470e16/resourceGroups/rsg-blzv-perm-hubs-001/providers/Microsoft.Network/virtualNetworks/vnet-uksouth-hub-blzv"
-      $vnetHs.VirtualNetworkPeerings[0].AllowForwardedTraffic | Should -Be $true
-    }
-
-    It "Should have a Virtual Network with a Virtual Network Peering to the Hub Virtual Network called 'vnet-uksouth-hub-blzv' that has AllowVirtualNetworkAccess set to $true" {
-      $vnetHs.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be "/subscriptions/e4e7395f-dc45-411e-b425-95f75e470e16/resourceGroups/rsg-blzv-perm-hubs-001/providers/Microsoft.Network/virtualNetworks/vnet-uksouth-hub-blzv"
-      $vnetHs.VirtualNetworkPeerings[0].AllowVirtualNetworkAccess | Should -Be $true
-    }
-
-    It "Should have a Virtual Network with a Virtual Network Peering to the Hub Virtual Network called 'vnet-uksouth-hub-blzv' that has AllowGatewayTransit set to $false" {
-      $vnetHs.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be "/subscriptions/e4e7395f-dc45-411e-b425-95f75e470e16/resourceGroups/rsg-blzv-perm-hubs-001/providers/Microsoft.Network/virtualNetworks/vnet-uksouth-hub-blzv"
-      $vnetHs.VirtualNetworkPeerings[0].AllowGatewayTransit | Should -Be $false
     }
   }
 
@@ -214,11 +148,11 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
     }
 
     It "Should have a Virtual Network with a Virtual Network Peering to the Hub Virtual Network called 'vnet-uksouth-hub-blzv'" {
-      $vnetVwan.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be "/subscriptions/2b8681e7-7c7f-474a-b649-6377f4c1b74d/resourceGroups/RG_vhub-uksouth-blzv_73df07af-62ce-4aed-b15e-832d49d4984f/providers/Microsoft.Network/virtualNetworks/HV_vhub-uksouth-blzv_ed0b8a35-0235-4ada-9405-39530ef6c722"
+      $vnetVwan.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be $TestInputData.DeploymentOutputs.hubNetworkResourceId
     }
 
     It "Should have a Virtual Network with a Virtual Network Peering to the Hub Virtual Network called 'vnet-uksouth-hub-blzv' that is in the Connected state and FullyInSync" {
-      $vnetVwan.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be "/subscriptions/2b8681e7-7c7f-474a-b649-6377f4c1b74d/resourceGroups/RG_vhub-uksouth-blzv_73df07af-62ce-4aed-b15e-832d49d4984f/providers/Microsoft.Network/virtualNetworks/HV_vhub-uksouth-blzv_ed0b8a35-0235-4ada-9405-39530ef6c722"
+      $vnetVwan.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be $TestInputData.DeploymentOutputs.hubNetworkResourceId
       $vnetVwan.VirtualNetworkPeerings[0].PeeringState | Should -Be "Connected"
       $vnetVwan.VirtualNetworkPeerings[0].PeeringSyncLevel | Should -Be "FullyInSync"
     }

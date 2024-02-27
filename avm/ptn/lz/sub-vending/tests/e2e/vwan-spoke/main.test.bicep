@@ -81,3 +81,6 @@ module vwanSpoke '../../../main.bicep' = {
     deploymentScriptLocation: location
   }
 }
+
+output createdSubId string = createSub.outputs.subscriptionId
+output hubNetworkResourceId string = nestedDependencies.outputs.hubNetworkResourceId
