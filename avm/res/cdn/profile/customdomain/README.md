@@ -83,6 +83,7 @@ Key-Value pair representing migration properties for domains.
 
 - Required: No
 - Type: object
+- Default: `{}`
 
 ### Parameter: `minimumTlsVersion`
 
@@ -105,6 +106,7 @@ Resource reference to the Azure resource where custom domain ownership was preva
 
 - Required: No
 - Type: string
+- Default: `''`
 
 ### Parameter: `secretName`
 
@@ -120,6 +122,7 @@ Resource reference to the Azure DNS zone.
 
 - Required: No
 - Type: string
+- Default: `''`
 
 
 ## Outputs

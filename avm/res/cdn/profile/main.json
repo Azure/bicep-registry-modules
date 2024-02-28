@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "4974788100374531429"
+      "templateHash": "17321741830802631638"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -821,34 +821,23 @@
           "hostName": {
             "value": "[parameters('customDomains')[copyIndex()].hostName]"
           },
-          "azureDnsZoneResourceId": {
-            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'azureDnsZoneResourceId')]"
-          },
-          "extendedProperties": {
-            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'extendedProperties')]"
-          },
+          "azureDnsZoneResourceId": "[if(contains(parameters('customDomains')[copyIndex()], 'azureDnsZoneResourceId'), createObject('value', parameters('customDomains')[copyIndex()].azureDnsZoneResourceId), createObject('value', ''))]",
+          "extendedProperties": "[if(contains(parameters('customDomains')[copyIndex()], 'extendedProperties'), createObject('value', parameters('customDomains')[copyIndex()].extendedProperties), createObject('value', createObject()))]",
           "certificateType": {
             "value": "[parameters('customDomains')[copyIndex()].certificateType]"
           },
-          "minimumTlsVersion": {
-            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'minimumTlsVersion')]"
-          },
-          "preValidatedCustomDomainResourceId": {
-            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'preValidatedCustomDomainResourceId')]"
-          },
-          "secretName": {
-            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'secretName')]"
-          }
+          "minimumTlsVersion": "[if(contains(parameters('customDomains')[copyIndex()], 'minimumTlsVersion'), createObject('value', parameters('customDomains')[copyIndex()].minimumTlsVersion), createObject('value', 'TLS12'))]",
+          "preValidatedCustomDomainResourceId": "[if(contains(parameters('customDomains')[copyIndex()], 'preValidatedCustomDomainResourceId'), createObject('value', parameters('customDomains')[copyIndex()].preValidatedCustomDomainResourceId), createObject('value', ''))]",
+          "secretName": "[if(contains(parameters('customDomains')[copyIndex()], 'secretName'), createObject('value', parameters('customDomains')[copyIndex()].secretName), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "3572825873549312810"
+              "templateHash": "14057037772702090927"
             },
             "name": "CDN Profiles Custom Domains",
             "description": "This module deploys a CDN Profile Custom Domains.",
@@ -875,21 +864,21 @@
             },
             "azureDnsZoneResourceId": {
               "type": "string",
-              "nullable": true,
+              "defaultValue": "",
               "metadata": {
                 "description": "Optonal. Resource reference to the Azure DNS zone."
               }
             },
             "extendedProperties": {
               "type": "object",
-              "nullable": true,
+              "defaultValue": {},
               "metadata": {
                 "description": "Optional. Key-Value pair representing migration properties for domains."
               }
             },
             "preValidatedCustomDomainResourceId": {
               "type": "string",
-              "nullable": true,
+              "defaultValue": "",
               "metadata": {
                 "description": "Optional. Resource reference to the Azure resource where custom domain ownership was prevalidated."
               }
@@ -923,30 +912,14 @@
               }
             }
           },
-          "resources": {
-            "profile::profile_secrect": {
-              "condition": "[not(empty(parameters('secretName')))]",
-              "existing": true,
-              "type": "Microsoft.Cdn/profiles/secrets",
-              "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('profileName'), parameters('secretName'))]",
-              "dependsOn": [
-                "profile"
-              ]
-            },
-            "profile": {
-              "existing": true,
-              "type": "Microsoft.Cdn/profiles",
-              "apiVersion": "2023-05-01",
-              "name": "[parameters('profileName')]"
-            },
-            "profile_custom_domain": {
+          "resources": [
+            {
               "type": "Microsoft.Cdn/profiles/customDomains",
               "apiVersion": "2023-05-01",
               "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
               "properties": {
                 "azureDnsZone": "[if(not(empty(parameters('azureDnsZoneResourceId'))), createObject('id', parameters('azureDnsZoneResourceId')), null())]",
-                "extendedProperties": "[parameters('extendedProperties')]",
+                "extendedProperties": "[if(not(empty(parameters('extendedProperties'))), parameters('extendedProperties'), null())]",
                 "hostName": "[parameters('hostName')]",
                 "preValidatedCustomDomainResourceId": "[if(not(empty(parameters('preValidatedCustomDomainResourceId'))), createObject('id', parameters('preValidatedCustomDomainResourceId')), null())]",
                 "tlsSettings": {
@@ -954,12 +927,9 @@
                   "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
                   "secret": "[if(not(empty(parameters('secretName'))), createObject('id', resourceId('Microsoft.Cdn/profiles/secrets', parameters('profileName'), parameters('secretName'))), null())]"
                 }
-              },
-              "dependsOn": [
-                "profile"
-              ]
+              }
             }
-          },
+          ],
           "outputs": {
             "name": {
               "type": "string",
@@ -1566,15 +1536,9 @@
           "profileName": {
             "value": "[parameters('name')]"
           },
-          "autoGeneratedDomainNameLabelScope": {
-            "value": "[tryGet(parameters('afdEndpoints')[copyIndex()], 'autoGeneratedDomainNameLabelScope')]"
-          },
-          "enabledState": {
-            "value": "[tryGet(parameters('afdEndpoints')[copyIndex()], 'enabledState')]"
-          },
-          "routes": {
-            "value": "[tryGet(parameters('afdEndpoints')[copyIndex()], 'routes')]"
-          },
+          "autoGeneratedDomainNameLabelScope": "[if(contains(parameters('afdEndpoints')[copyIndex()], 'autoGeneratedDomainNameLabelScope'), createObject('value', parameters('afdEndpoints')[copyIndex()].autoGeneratedDomainNameLabelScope), createObject('value', 'TenantReuse'))]",
+          "enabledState": "[if(contains(parameters('afdEndpoints')[copyIndex()], 'enabledState'), createObject('value', parameters('afdEndpoints')[copyIndex()].enabledState), createObject('value', 'Enabled'))]",
+          "routes": "[if(contains(parameters('afdEndpoints')[copyIndex()], 'routes'), createObject('value', parameters('afdEndpoints')[copyIndex()].routes), createObject('value', createArray()))]",
           "tags": {
             "value": "[coalesce(tryGet(parameters('afdEndpoints')[copyIndex()], 'tags'), parameters('tags'))]"
           }
