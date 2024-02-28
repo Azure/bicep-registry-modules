@@ -261,33 +261,34 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     }
     dnsEndpointType: !empty(dnsEndpointType) ? dnsEndpointType : null
     isLocalUserEnabled: isLocalUserEnabled
-    encryption: {
-      keySource: !empty(customerManagedKey) ? 'Microsoft.Keyvault' : 'Microsoft.Storage'
-      services: {
-        blob: supportsBlobService ? {
-          enabled: true
-        } : null
-        file: supportsFileService ? {
-          enabled: true
-        } : null
-        table: {
-          enabled: true
+    encryption: union({
+        keySource: !empty(customerManagedKey) ? 'Microsoft.Keyvault' : 'Microsoft.Storage'
+        services: {
+          blob: supportsBlobService ? {
+            enabled: true
+          } : null
+          file: supportsFileService ? {
+            enabled: true
+          } : null
+          table: {
+            enabled: true
+          }
+          queue: {
+            enabled: true
+          }
         }
-        queue: {
-          enabled: true
+        keyvaultproperties: !empty(customerManagedKey) ? {
+          keyname: customerManagedKey!.keyName
+          keyvaulturi: cMKKeyVault.properties.vaultUri
+          keyversion: !empty(customerManagedKey.?keyVersion ?? '') ? customerManagedKey!.keyVersion : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+        } : null
+        identity: {
+          userAssignedIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? cMKUserAssignedIdentity.id : null
         }
-      }
-      requireInfrastructureEncryption: kind != 'Storage' ? requireInfrastructureEncryption : null
-      keyvaultproperties: !empty(customerManagedKey) ? {
-        keyname: customerManagedKey!.keyName
-        keyvaulturi: cMKKeyVault.properties.vaultUri
-        keyversion: !empty(customerManagedKey.?keyVersion ?? '') ? customerManagedKey!.keyVersion : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
-      } : null
-      identity: {
-        userAssignedIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? cMKUserAssignedIdentity.id : null
-      }
-    }
-    accessTier: kind != 'Storage' ? accessTier : null
+      }, (requireInfrastructureEncryption ? {
+        requireInfrastructureEncryption: kind != 'Storage' ? requireInfrastructureEncryption : null
+      } : {}))
+    accessTier: (kind != 'Storage' && kind != 'BlockBlobStorage') ? accessTier : null
     sasPolicy: !empty(sasExpirationPeriod) ? {
       expirationAction: 'Log'
       sasExpirationPeriod: sasExpirationPeriod
@@ -317,13 +318,11 @@ resource storageAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
     workspaceId: diagnosticSetting.?workspaceResourceId
     eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
     eventHubName: diagnosticSetting.?eventHubName
-    metrics: diagnosticSetting.?metricCategories ?? [
-      {
-        category: 'AllMetrics'
-        timeGrain: null
-        enabled: true
-      }
-    ]
+    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
+      category: group.category
+      enabled: group.?enabled ?? true
+      timeGrain: null
+    }]
     marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
     logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
   }
@@ -367,9 +366,9 @@ module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoi
         }
       }
     ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(storageAccount.id, '/'))}-${privateEndpoint.?service ?? 'vault'}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
     subnetResourceId: privateEndpoint.subnetResourceId
-    enableTelemetry: enableTelemetry
+    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
@@ -546,7 +545,6 @@ type networkAclsType = {
   defaultAction: ('Allow' | 'Deny')
 }
 
-
 type privateEndpointType = {
   @description('Optional. The name of the private endpoint.')
   name: string?
@@ -619,10 +617,13 @@ type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
 
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
+  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
   metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to \'AllMetrics\' to collect all metrics.')
+    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
     category: string
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
   }[]?
 
   @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
