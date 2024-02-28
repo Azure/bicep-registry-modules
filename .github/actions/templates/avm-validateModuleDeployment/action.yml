@@ -30,7 +30,7 @@ description: "Deploy module"
 
 inputs:
   modulePath:
-    descriptio: "The path to the module file directory used to determine the resource location"
+    description: "The path to the module file directory used to determine the resource location"
     required: true
   templateFilePath:
     description: "The path to the template file to use for deployment"

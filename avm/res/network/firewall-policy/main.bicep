@@ -53,6 +53,7 @@ param mode string = 'Off'
 @allowed([
   'Premium'
   'Standard'
+  'Basic'
 ])
 param tier string = 'Standard'
 

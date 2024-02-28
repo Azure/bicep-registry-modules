@@ -726,7 +726,7 @@ Describe 'Module tests' -Tag 'Module' {
               $expectedSchema = $expectedSchemaFull[$expectedSchemaStartIndex..$expectedSchemaEndIndex]
 
               if ($templateFileContentBicep -match '@sys\.([a-zA-Z]+)\(') {
-                # Handing cases where the template may use the @sys namespace explicitely
+                # Handing cases where the template may use the @sys namespace explicitly
                 $expectedSchema = $expectedSchema | ForEach-Object { $_ -replace '@([a-zA-Z]+)\(', '@sys.$1(' }
               }
 

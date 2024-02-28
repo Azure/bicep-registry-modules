@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "14421664754265859300"
+      "version": "0.25.53.49325",
+      "templateHash": "6631896891995690305"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -146,7 +146,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Bool indicating if app exposes an external http endpoint."
+        "description": "Optional. Bool indicating if the App exposes an external HTTP endpoint."
       }
     },
     "ingressTransport": {
