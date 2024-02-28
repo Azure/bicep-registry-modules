@@ -1,0 +1,1679 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "7675513612588492913"
+    },
+    "name": "DevTest Labs",
+    "description": "This module deploys a DevTest Lab.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "managedIdentitiesType": {
+      "type": "object",
+      "properties": {
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Currently, a single user-assigned identity is supported per lab."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "roleAssignmentType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "roleDefinitionIdOrName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+            }
+          },
+          "principalId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+            }
+          },
+          "principalType": {
+            "type": "string",
+            "allowedValues": [
+              "Device",
+              "ForeignGroup",
+              "Group",
+              "ServicePrincipal",
+              "User"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The principal type of the assigned principal ID."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The description of the role assignment."
+            }
+          },
+          "condition": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+            }
+          },
+          "conditionVersion": {
+            "type": "string",
+            "allowedValues": [
+              "2.0"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Version of the condition."
+            }
+          },
+          "delegatedManagedIdentityResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The Resource Id of the delegated managed identity resource."
+            }
+          }
+        }
+      },
+      "nullable": true
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the lab."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all Resources."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "roleAssignments": {
+      "$ref": "#/definitions/roleAssignmentType",
+      "metadata": {
+        "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalIds' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "announcement": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The properties of any lab announcement associated with this lab."
+      }
+    },
+    "environmentPermission": {
+      "type": "string",
+      "defaultValue": "Reader",
+      "allowedValues": [
+        "Contributor",
+        "Reader"
+      ],
+      "metadata": {
+        "description": "Optional. The access rights to be granted to the user when provisioning an environment."
+      }
+    },
+    "extendedProperties": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Extended properties of the lab used for experimental features."
+      }
+    },
+    "labStorageType": {
+      "type": "string",
+      "defaultValue": "Premium",
+      "allowedValues": [
+        "Standard",
+        "StandardSSD",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "Optional. Type of storage used by the lab. It can be either Premium or Standard."
+      }
+    },
+    "artifactsStorageAccount": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The resource ID of the storage account used to store artifacts and images by the lab. Also used for defaultStorageAccount, defaultPremiumStorageAccount and premiumDataDiskStorageAccount properties. If left empty, a default storage account will be created by the lab and used."
+      }
+    },
+    "mandatoryArtifactsResourceIdsLinux": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The ordered list of artifact resource IDs that should be applied on all Linux VM creations by default, prior to the artifacts specified by the user."
+      }
+    },
+    "mandatoryArtifactsResourceIdsWindows": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The ordered list of artifact resource IDs that should be applied on all Windows VM creations by default, prior to the artifacts specified by the user."
+      }
+    },
+    "premiumDataDisks": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. The setting to enable usage of premium data disks. When its value is \"Enabled\", creation of standard or premium data disks is allowed. When its value is \"Disabled\", only creation of standard data disks is allowed. Default is \"Disabled\"."
+      }
+    },
+    "support": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The properties of any lab support message associated with this lab."
+      }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentitiesType",
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource. DevTest Labs creates a system-assigned identity by default the first time it creates the lab environment."
+      }
+    },
+    "managementIdentitiesResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The resource ID(s) to assign to the virtual machines associated with this lab."
+      }
+    },
+    "vmCreationResourceGroupId": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().id]",
+      "metadata": {
+        "description": "Optional. Resource Group allocation for virtual machines. If left empty, virtual machines will be deployed in their own Resource Groups. Default is the same Resource Group for DevTest Lab."
+      }
+    },
+    "browserConnect": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Enable browser connect on virtual machines if the lab's VNETs have configured Azure Bastion."
+      }
+    },
+    "disableAutoUpgradeCseMinorVersion": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Disable auto upgrade custom script extension minor version."
+      }
+    },
+    "isolateLabResources": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Enable lab resources isolation from the public internet."
+      }
+    },
+    "encryptionType": {
+      "type": "string",
+      "defaultValue": "EncryptionAtRestWithPlatformKey",
+      "allowedValues": [
+        "EncryptionAtRestWithPlatformKey",
+        "EncryptionAtRestWithCustomerKey"
+      ],
+      "metadata": {
+        "description": "Optional. Specify how OS and data disks created as part of the lab are encrypted."
+      }
+    },
+    "encryptionDiskEncryptionSetId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. The Disk Encryption Set Resource ID used to encrypt OS and data disks created as part of the the lab. Required if encryptionType is set to \"EncryptionAtRestWithCustomerKey\"."
+      }
+    },
+    "virtualnetworks": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Virtual networks to create for the lab."
+      }
+    },
+    "policies": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Policies to create for the lab."
+      }
+    },
+    "schedules": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Schedules to create for the lab."
+      }
+    },
+    "notificationchannels": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Conditional. Notification Channels to create for the lab. Required if the schedules property \"notificationSettingsStatus\" is set to \"Enabled."
+      }
+    },
+    "artifactsources": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Artifact sources to create for the lab."
+      }
+    },
+    "costs": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Costs to create for the lab."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "variables": {
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "formattedManagementIdentities": "[if(not(empty(parameters('managementIdentitiesResourceIds'))), reduce(map(coalesce(parameters('managementIdentitiesResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next')))), createObject())]",
+    "builtInRoleNames": {
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+      "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]"
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.devtestlab-lab.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "lab": {
+      "type": "Microsoft.DevTestLab/labs",
+      "apiVersion": "2018-10-15-preview",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[coalesce(parameters('tags'), createObject())]",
+      "identity": "[variables('identity')]",
+      "properties": {
+        "artifactsStorageAccount": "[parameters('artifactsStorageAccount')]",
+        "announcement": "[parameters('announcement')]",
+        "environmentPermission": "[parameters('environmentPermission')]",
+        "extendedProperties": "[parameters('extendedProperties')]",
+        "labStorageType": "[parameters('labStorageType')]",
+        "mandatoryArtifactsResourceIdsLinux": "[parameters('mandatoryArtifactsResourceIdsLinux')]",
+        "mandatoryArtifactsResourceIdsWindows": "[parameters('mandatoryArtifactsResourceIdsWindows')]",
+        "premiumDataDisks": "[parameters('premiumDataDisks')]",
+        "support": "[parameters('support')]",
+        "managementIdentities": "[variables('formattedManagementIdentities')]",
+        "vmCreationResourceGroupId": "[parameters('vmCreationResourceGroupId')]",
+        "browserConnect": "[parameters('browserConnect')]",
+        "disableAutoUpgradeCseMinorVersion": "[parameters('disableAutoUpgradeCseMinorVersion')]",
+        "isolateLabResources": "[parameters('isolateLabResources')]",
+        "encryption": {
+          "type": "[parameters('encryptionType')]",
+          "diskEncryptionSetId": "[if(not(empty(parameters('encryptionDiskEncryptionSetId'))), parameters('encryptionDiskEncryptionSetId'), null())]"
+        }
+      }
+    },
+    "lab_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.DevTestLab/labs/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "lab"
+      ]
+    },
+    "lab_roleAssignments": {
+      "copy": {
+        "name": "lab_roleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.DevTestLab/labs/{0}', parameters('name'))]",
+      "name": "[guid(resourceId('Microsoft.DevTestLab/labs', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "properties": {
+        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "lab"
+      ]
+    },
+    "lab_virtualNetworks": {
+      "copy": {
+        "name": "lab_virtualNetworks",
+        "count": "[length(parameters('virtualnetworks'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Lab-VirtualNetwork-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "labName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('virtualnetworks')[copyIndex()].name]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(parameters('virtualnetworks')[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "externalProviderResourceId": {
+            "value": "[parameters('virtualnetworks')[copyIndex()].externalProviderResourceId]"
+          },
+          "description": "[if(contains(parameters('virtualnetworks')[copyIndex()], 'description'), createObject('value', parameters('virtualnetworks')[copyIndex()].description), createObject('value', ''))]",
+          "allowedSubnets": "[if(contains(parameters('virtualnetworks')[copyIndex()], 'allowedSubnets'), createObject('value', parameters('virtualnetworks')[copyIndex()].allowedSubnets), createObject('value', createArray()))]",
+          "subnetOverrides": "[if(contains(parameters('virtualnetworks')[copyIndex()], 'subnetOverrides'), createObject('value', parameters('virtualnetworks')[copyIndex()].subnetOverrides), createObject('value', createArray()))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.25.53.49325",
+              "templateHash": "418188724139628409"
+            },
+            "name": "DevTest Lab Virtual Networks",
+            "description": "This module deploys a DevTest Lab Virtual Network.\n\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "labName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent lab. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the virtual network."
+              }
+            },
+            "externalProviderResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the virtual network."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            },
+            "description": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The description of the virtual network."
+              }
+            },
+            "allowedSubnets": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The allowed subnets of the virtual network."
+              }
+            },
+            "subnetOverrides": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The subnet overrides of the virtual network."
+              }
+            }
+          },
+          "resources": {
+            "lab": {
+              "existing": true,
+              "type": "Microsoft.DevTestLab/labs",
+              "apiVersion": "2018-09-15",
+              "name": "[parameters('labName')]"
+            },
+            "virtualNetwork": {
+              "type": "Microsoft.DevTestLab/labs/virtualnetworks",
+              "apiVersion": "2018-09-15",
+              "name": "[format('{0}/{1}', parameters('labName'), parameters('name'))]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "description": "[parameters('description')]",
+                "externalProviderResourceId": "[parameters('externalProviderResourceId')]",
+                "allowedSubnets": "[parameters('allowedSubnets')]",
+                "subnetOverrides": "[parameters('subnetOverrides')]"
+              },
+              "dependsOn": [
+                "lab"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the lab virtual network."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the lab virtual network."
+              },
+              "value": "[resourceId('Microsoft.DevTestLab/labs/virtualnetworks', parameters('labName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the lab virtual network was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "lab"
+      ]
+    },
+    "lab_policies": {
+      "copy": {
+        "name": "lab_policies",
+        "count": "[length(parameters('policies'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Lab-PolicySets-Policy-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "labName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('policies')[copyIndex()].name]"
+          },
+          "description": "[if(contains(parameters('policies')[copyIndex()], 'description'), createObject('value', parameters('policies')[copyIndex()].description), createObject('value', ''))]",
+          "evaluatorType": {
+            "value": "[parameters('policies')[copyIndex()].evaluatorType]"
+          },
+          "factData": "[if(contains(parameters('policies')[copyIndex()], 'factData'), createObject('value', parameters('policies')[copyIndex()].factData), createObject('value', ''))]",
+          "factName": {
+            "value": "[parameters('policies')[copyIndex()].factName]"
+          },
+          "status": "[if(contains(parameters('policies')[copyIndex()], 'status'), createObject('value', parameters('policies')[copyIndex()].status), createObject('value', 'Enabled'))]",
+          "threshold": {
+            "value": "[parameters('policies')[copyIndex()].threshold]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.25.53.49325",
+              "templateHash": "16570135700722429091"
+            },
+            "name": "DevTest Lab Policy Sets Policies",
+            "description": "This module deploys a DevTest Lab Policy Sets Policy.\n\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "labName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent lab. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the policy."
+              }
+            },
+            "description": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The description of the policy."
+              }
+            },
+            "evaluatorType": {
+              "type": "string",
+              "allowedValues": [
+                "AllowedValuesPolicy",
+                "MaxValuePolicy"
+              ],
+              "metadata": {
+                "description": "Required. The evaluator type of the policy (i.e. AllowedValuesPolicy, MaxValuePolicy)."
+              }
+            },
+            "factData": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The fact data of the policy."
+              }
+            },
+            "factName": {
+              "type": "string",
+              "allowedValues": [
+                "EnvironmentTemplate",
+                "GalleryImage",
+                "LabPremiumVmCount",
+                "LabTargetCost",
+                "LabVmCount",
+                "LabVmSize",
+                "ScheduleEditPermission",
+                "UserOwnedLabPremiumVmCount",
+                "UserOwnedLabVmCount",
+                "UserOwnedLabVmCountInSubnet"
+              ],
+              "metadata": {
+                "description": "Required. The fact name of the policy."
+              }
+            },
+            "status": {
+              "type": "string",
+              "defaultValue": "Enabled",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "metadata": {
+                "description": "Optional. The status of the policy."
+              }
+            },
+            "threshold": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The threshold of the policy (i.e. a number for MaxValuePolicy, and a JSON array of values for AllowedValuesPolicy)."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DevTestLab/labs/policysets/policies",
+              "apiVersion": "2018-09-15",
+              "name": "[format('{0}/{1}/{2}', parameters('labName'), 'default', parameters('name'))]",
+              "properties": {
+                "description": "[parameters('description')]",
+                "evaluatorType": "[parameters('evaluatorType')]",
+                "factData": "[parameters('factData')]",
+                "factName": "[parameters('factName')]",
+                "status": "[parameters('status')]",
+                "threshold": "[parameters('threshold')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the policy."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the policy."
+              },
+              "value": "[resourceId('Microsoft.DevTestLab/labs/policysets/policies', parameters('labName'), 'default', parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the policy was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "lab"
+      ]
+    },
+    "lab_schedules": {
+      "copy": {
+        "name": "lab_schedules",
+        "count": "[length(parameters('schedules'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Lab-Schedules-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "labName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('schedules')[copyIndex()].name]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(parameters('schedules')[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "taskType": {
+            "value": "[parameters('schedules')[copyIndex()].taskType]"
+          },
+          "dailyRecurrence": "[if(contains(parameters('schedules')[copyIndex()], 'dailyRecurrence'), createObject('value', parameters('schedules')[copyIndex()].dailyRecurrence), createObject('value', createObject()))]",
+          "hourlyRecurrence": "[if(contains(parameters('schedules')[copyIndex()], 'hourlyRecurrence'), createObject('value', parameters('schedules')[copyIndex()].hourlyRecurrence), createObject('value', createObject()))]",
+          "weeklyRecurrence": "[if(contains(parameters('schedules')[copyIndex()], 'weeklyRecurrence'), createObject('value', parameters('schedules')[copyIndex()].weeklyRecurrence), createObject('value', createObject()))]",
+          "status": "[if(contains(parameters('schedules')[copyIndex()], 'status'), createObject('value', parameters('schedules')[copyIndex()].status), createObject('value', 'Enabled'))]",
+          "targetResourceId": "[if(contains(parameters('schedules')[copyIndex()], 'targetResourceId'), createObject('value', parameters('schedules')[copyIndex()].targetResourceId), createObject('value', ''))]",
+          "timeZoneId": "[if(contains(parameters('schedules')[copyIndex()], 'timeZoneId'), createObject('value', parameters('schedules')[copyIndex()].timeZoneId), createObject('value', 'Pacific Standard time'))]",
+          "notificationSettingsStatus": "[if(contains(parameters('schedules')[copyIndex()], 'notificationSettingsStatus'), createObject('value', parameters('schedules')[copyIndex()].notificationSettingsStatus), createObject('value', 'Disabled'))]",
+          "notificationSettingsTimeInMinutes": "[if(contains(parameters('schedules')[copyIndex()], 'notificationSettingsTimeInMinutes'), createObject('value', parameters('schedules')[copyIndex()].notificationSettingsTimeInMinutes), createObject('value', 30))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.25.53.49325",
+              "templateHash": "96187176657838206"
+            },
+            "name": "DevTest Lab Schedules",
+            "description": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "labName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent lab. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "allowedValues": [
+                "LabVmsShutdown",
+                "LabVmAutoStart"
+              ],
+              "metadata": {
+                "description": "Required. The name of the schedule."
+              }
+            },
+            "taskType": {
+              "type": "string",
+              "allowedValues": [
+                "LabVmsShutdownTask",
+                "LabVmsStartupTask"
+              ],
+              "metadata": {
+                "description": "Required. The task type of the schedule (e.g. LabVmsShutdownTask, LabVmsStartupTask)."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            },
+            "dailyRecurrence": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. If the schedule will occur once each day of the week, specify the daily recurrence."
+              }
+            },
+            "hourlyRecurrence": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. If the schedule will occur multiple times a day, specify the hourly recurrence."
+              }
+            },
+            "weeklyRecurrence": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. If the schedule will occur only some days of the week, specify the weekly recurrence."
+              }
+            },
+            "status": {
+              "type": "string",
+              "defaultValue": "Enabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. The status of the schedule (i.e. Enabled, Disabled)."
+              }
+            },
+            "targetResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The resource ID to which the schedule belongs."
+              }
+            },
+            "timeZoneId": {
+              "type": "string",
+              "defaultValue": "Pacific Standard time",
+              "metadata": {
+                "description": "Optional. The time zone ID (e.g. Pacific Standard time)."
+              }
+            },
+            "notificationSettingsStatus": {
+              "type": "string",
+              "defaultValue": "Disabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. If notifications are enabled for this schedule (i.e. Enabled, Disabled)."
+              }
+            },
+            "notificationSettingsTimeInMinutes": {
+              "type": "int",
+              "defaultValue": 30,
+              "metadata": {
+                "description": "Optional. Time in minutes before event at which notification will be sent. Optional if \"notificationSettingsStatus\" is set to \"Enabled\". Default is 30 minutes."
+              }
+            }
+          },
+          "resources": {
+            "lab": {
+              "existing": true,
+              "type": "Microsoft.DevTestLab/labs",
+              "apiVersion": "2018-09-15",
+              "name": "[parameters('labName')]"
+            },
+            "schedule": {
+              "type": "Microsoft.DevTestLab/labs/schedules",
+              "apiVersion": "2018-09-15",
+              "name": "[format('{0}/{1}', parameters('labName'), parameters('name'))]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "taskType": "[parameters('taskType')]",
+                "dailyRecurrence": "[if(not(empty(parameters('dailyRecurrence'))), parameters('dailyRecurrence'), null())]",
+                "hourlyRecurrence": "[if(not(empty(parameters('hourlyRecurrence'))), parameters('hourlyRecurrence'), null())]",
+                "weeklyRecurrence": "[if(not(empty(parameters('weeklyRecurrence'))), parameters('weeklyRecurrence'), null())]",
+                "status": "[parameters('status')]",
+                "targetResourceId": "[if(not(empty(parameters('targetResourceId'))), parameters('targetResourceId'), null())]",
+                "timeZoneId": "[parameters('timeZoneId')]",
+                "notificationSettings": "[if(equals(parameters('notificationSettingsStatus'), 'Enabled'), createObject('status', parameters('notificationSettingsStatus'), 'timeInMinutes', parameters('notificationSettingsTimeInMinutes')), createObject())]"
+              },
+              "dependsOn": [
+                "lab"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the schedule."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the schedule."
+              },
+              "value": "[resourceId('Microsoft.DevTestLab/labs/schedules', parameters('labName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the schedule was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "lab"
+      ]
+    },
+    "lab_notificationChannels": {
+      "copy": {
+        "name": "lab_notificationChannels",
+        "count": "[length(parameters('notificationchannels'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Lab-NotificationChannels-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "labName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('notificationchannels')[copyIndex()].name]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(parameters('notificationchannels')[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "description": "[if(contains(parameters('notificationchannels')[copyIndex()], 'description'), createObject('value', parameters('notificationchannels')[copyIndex()].description), createObject('value', ''))]",
+          "events": {
+            "value": "[parameters('notificationchannels')[copyIndex()].events]"
+          },
+          "emailRecipient": "[if(contains(parameters('notificationchannels')[copyIndex()], 'emailRecipient'), createObject('value', parameters('notificationchannels')[copyIndex()].emailRecipient), createObject('value', ''))]",
+          "webHookUrl": "[if(contains(parameters('notificationchannels')[copyIndex()], 'webhookUrl'), createObject('value', parameters('notificationchannels')[copyIndex()].webhookUrl), createObject('value', ''))]",
+          "notificationLocale": "[if(contains(parameters('notificationchannels')[copyIndex()], 'notificationLocale'), createObject('value', parameters('notificationchannels')[copyIndex()].notificationLocale), createObject('value', 'en'))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.25.53.49325",
+              "templateHash": "18438352233682084029"
+            },
+            "name": "DevTest Lab Notification Channels",
+            "description": "This module deploys a DevTest Lab Notification Channel.\n\nNotification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "labName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent lab. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "allowedValues": [
+                "autoShutdown",
+                "costThreshold"
+              ],
+              "metadata": {
+                "description": "Required. The name of the notification channel."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            },
+            "description": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Description of notification."
+              }
+            },
+            "events": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Required. The list of event for which this notification is enabled."
+              }
+            },
+            "emailRecipient": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if \"webHookUrl\" is empty."
+              }
+            },
+            "webHookUrl": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Conditional. The webhook URL to which the notification will be sent. Required if \"emailRecipient\" is empty."
+              }
+            },
+            "notificationLocale": {
+              "type": "string",
+              "defaultValue": "en",
+              "metadata": {
+                "description": "Optional. The locale to use when sending a notification (fallback for unsupported languages is EN)."
+              }
+            }
+          },
+          "resources": {
+            "lab": {
+              "existing": true,
+              "type": "Microsoft.DevTestLab/labs",
+              "apiVersion": "2018-09-15",
+              "name": "[parameters('labName')]"
+            },
+            "notificationChannel": {
+              "type": "Microsoft.DevTestLab/labs/notificationchannels",
+              "apiVersion": "2018-09-15",
+              "name": "[format('{0}/{1}', parameters('labName'), parameters('name'))]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "description": "[parameters('description')]",
+                "events": "[parameters('events')]",
+                "emailRecipient": "[parameters('emailRecipient')]",
+                "webHookUrl": "[parameters('webHookUrl')]",
+                "notificationLocale": "[parameters('notificationLocale')]"
+              },
+              "dependsOn": [
+                "lab"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the notification channel."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the notification channel."
+              },
+              "value": "[resourceId('Microsoft.DevTestLab/labs/notificationchannels', parameters('labName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the notification channel was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "lab"
+      ]
+    },
+    "lab_artifactSources": {
+      "copy": {
+        "name": "lab_artifactSources",
+        "count": "[length(parameters('artifactsources'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Lab-ArtifactSources-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "labName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('artifactsources')[copyIndex()].name]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(parameters('artifactsources')[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "displayName": "[if(contains(parameters('artifactsources')[copyIndex()], 'displayName'), createObject('value', parameters('artifactsources')[copyIndex()].displayName), createObject('value', parameters('artifactsources')[copyIndex()].name))]",
+          "branchRef": "[if(contains(parameters('artifactsources')[copyIndex()], 'branchRef'), createObject('value', parameters('artifactsources')[copyIndex()].branchRef), createObject('value', ''))]",
+          "folderPath": "[if(contains(parameters('artifactsources')[copyIndex()], 'folderPath'), createObject('value', parameters('artifactsources')[copyIndex()].folderPath), createObject('value', ''))]",
+          "armTemplateFolderPath": "[if(contains(parameters('artifactsources')[copyIndex()], 'armTemplateFolderPath'), createObject('value', parameters('artifactsources')[copyIndex()].armTemplateFolderPath), createObject('value', ''))]",
+          "sourceType": "[if(contains(parameters('artifactsources')[copyIndex()], 'sourceType'), createObject('value', parameters('artifactsources')[copyIndex()].sourceType), createObject('value', ''))]",
+          "status": "[if(contains(parameters('artifactsources')[copyIndex()], 'status'), createObject('value', parameters('artifactsources')[copyIndex()].status), createObject('value', 'Enabled'))]",
+          "uri": {
+            "value": "[parameters('artifactsources')[copyIndex()].uri]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.25.53.49325",
+              "templateHash": "15843038393934364114"
+            },
+            "name": "DevTest Lab Artifact Sources",
+            "description": "This module deploys a DevTest Lab Artifact Source.\n\nAn artifact source allows you to create custom artifacts for the VMs in the lab, or use Azure Resource Manager templates to create a custom test environment. You must add a private Git repository for the artifacts or Resource Manager templates that your team creates. The repository can be hosted on GitHub or on Azure DevOps Services.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "labName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent lab. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the artifact source."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            },
+            "displayName": {
+              "type": "string",
+              "defaultValue": "[parameters('name')]",
+              "metadata": {
+                "description": "Optional. The artifact source's display name. Default is the name of the artifact source."
+              }
+            },
+            "branchRef": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The artifact source's branch reference (e.g. main or master)."
+              }
+            },
+            "folderPath": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Conditional. The folder containing artifacts. At least one folder path is required. Required if \"armTemplateFolderPath\" is empty."
+              }
+            },
+            "armTemplateFolderPath": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Conditional. The folder containing Azure Resource Manager templates. Required if \"folderPath\" is empty."
+              }
+            },
+            "securityToken": {
+              "type": "securestring",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The security token to authenticate to the artifact source."
+              }
+            },
+            "sourceType": {
+              "type": "string",
+              "defaultValue": "",
+              "allowedValues": [
+                "",
+                "GitHub",
+                "StorageAccount",
+                "VsoGit"
+              ],
+              "metadata": {
+                "description": "Optional. The artifact source's type."
+              }
+            },
+            "status": {
+              "type": "string",
+              "defaultValue": "Enabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. Indicates if the artifact source is enabled (values: Enabled, Disabled). Default is \"Enabled\"."
+              }
+            },
+            "uri": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The artifact source's URI."
+              }
+            }
+          },
+          "resources": {
+            "lab": {
+              "existing": true,
+              "type": "Microsoft.DevTestLab/labs",
+              "apiVersion": "2018-09-15",
+              "name": "[parameters('labName')]"
+            },
+            "artifactsource": {
+              "type": "Microsoft.DevTestLab/labs/artifactsources",
+              "apiVersion": "2018-09-15",
+              "name": "[format('{0}/{1}', parameters('labName'), parameters('name'))]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "displayName": "[parameters('displayName')]",
+                "branchRef": "[if(not(empty(parameters('branchRef'))), parameters('branchRef'), null())]",
+                "folderPath": "[if(not(empty(parameters('folderPath'))), parameters('folderPath'), null())]",
+                "armTemplateFolderPath": "[if(not(empty(parameters('armTemplateFolderPath'))), parameters('armTemplateFolderPath'), null())]",
+                "securityToken": "[if(not(empty(parameters('securityToken'))), parameters('securityToken'), null())]",
+                "sourceType": "[if(not(empty(parameters('sourceType'))), parameters('sourceType'), null())]",
+                "status": "[parameters('status')]",
+                "uri": "[parameters('uri')]"
+              },
+              "dependsOn": [
+                "lab"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the artifact source."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the artifact source."
+              },
+              "value": "[resourceId('Microsoft.DevTestLab/labs/artifactsources', parameters('labName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the artifact source was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "lab"
+      ]
+    },
+    "lab_costs": {
+      "condition": "[not(empty(parameters('costs')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Lab-Costs', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "labName": {
+            "value": "[parameters('name')]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(parameters('costs'), 'tags'), parameters('tags'))]"
+          },
+          "currencyCode": "[if(contains(parameters('costs'), 'currencyCode'), createObject('value', parameters('costs').currencyCode), createObject('value', 'USD'))]",
+          "cycleType": {
+            "value": "[parameters('costs').cycleType]"
+          },
+          "cycleStartDateTime": "[if(contains(parameters('costs'), 'cycleStartDateTime'), createObject('value', parameters('costs').cycleStartDateTime), createObject('value', ''))]",
+          "cycleEndDateTime": "[if(contains(parameters('costs'), 'cycleEndDateTime'), createObject('value', parameters('costs').cycleEndDateTime), createObject('value', ''))]",
+          "status": "[if(contains(parameters('costs'), 'status'), createObject('value', parameters('costs').status), createObject('value', 'Enabled'))]",
+          "target": "[if(contains(parameters('costs'), 'target'), createObject('value', parameters('costs').target), createObject('value', 0))]",
+          "thresholdValue25DisplayOnChart": "[if(contains(parameters('costs'), 'thresholdValue25DisplayOnChart'), createObject('value', parameters('costs').thresholdValue25DisplayOnChart), createObject('value', 'Disabled'))]",
+          "thresholdValue25SendNotificationWhenExceeded": "[if(contains(parameters('costs'), 'thresholdValue25SendNotificationWhenExceeded'), createObject('value', parameters('costs').thresholdValue25SendNotificationWhenExceeded), createObject('value', 'Disabled'))]",
+          "thresholdValue50DisplayOnChart": "[if(contains(parameters('costs'), 'thresholdValue50DisplayOnChart'), createObject('value', parameters('costs').thresholdValue50DisplayOnChart), createObject('value', 'Disabled'))]",
+          "thresholdValue50SendNotificationWhenExceeded": "[if(contains(parameters('costs'), 'thresholdValue50SendNotificationWhenExceeded'), createObject('value', parameters('costs').thresholdValue50SendNotificationWhenExceeded), createObject('value', 'Disabled'))]",
+          "thresholdValue75DisplayOnChart": "[if(contains(parameters('costs'), 'thresholdValue75DisplayOnChart'), createObject('value', parameters('costs').thresholdValue75DisplayOnChart), createObject('value', 'Disabled'))]",
+          "thresholdValue75SendNotificationWhenExceeded": "[if(contains(parameters('costs'), 'thresholdValue75SendNotificationWhenExceeded'), createObject('value', parameters('costs').thresholdValue75SendNotificationWhenExceeded), createObject('value', 'Disabled'))]",
+          "thresholdValue100DisplayOnChart": "[if(contains(parameters('costs'), 'thresholdValue100DisplayOnChart'), createObject('value', parameters('costs').thresholdValue100DisplayOnChart), createObject('value', 'Disabled'))]",
+          "thresholdValue100SendNotificationWhenExceeded": "[if(contains(parameters('costs'), 'thresholdValue100SendNotificationWhenExceeded'), createObject('value', parameters('costs').thresholdValue100SendNotificationWhenExceeded), createObject('value', 'Disabled'))]",
+          "thresholdValue125DisplayOnChart": "[if(contains(parameters('costs'), 'thresholdValue125DisplayOnChart'), createObject('value', parameters('costs').thresholdValue125DisplayOnChart), createObject('value', 'Disabled'))]",
+          "thresholdValue125SendNotificationWhenExceeded": "[if(contains(parameters('costs'), 'thresholdValue125SendNotificationWhenExceeded'), createObject('value', parameters('costs').thresholdValue125SendNotificationWhenExceeded), createObject('value', 'Disabled'))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.25.53.49325",
+              "templateHash": "65674909664804563"
+            },
+            "name": "DevTest Lab Costs",
+            "description": "This module deploys a DevTest Lab Cost.\n\nManage lab costs by setting a spending target that can be viewed in the Monthly Estimated Cost Trend chart. DevTest Labs can send a notification when spending reaches the specified target threshold.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "labName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent lab. Required if the template is used in a standalone deployment."
+              }
+            },
+            "cycleType": {
+              "type": "string",
+              "allowedValues": [
+                "Custom",
+                "CalendarMonth"
+              ],
+              "metadata": {
+                "description": "Required. Reporting cycle type."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            },
+            "cycleStartDateTime": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Conditional. Reporting cycle start date in the zulu time format (e.g. 2023-12-01T00:00:00.000Z). Required if cycleType is set to \"Custom\"."
+              }
+            },
+            "cycleEndDateTime": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Conditional. Reporting cycle end date in the zulu time format (e.g. 2023-12-01T00:00:00.000Z). Required if cycleType is set to \"Custom\"."
+              }
+            },
+            "status": {
+              "type": "string",
+              "defaultValue": "Enabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. Target cost status."
+              }
+            },
+            "target": {
+              "type": "int",
+              "defaultValue": 0,
+              "metadata": {
+                "description": "Optional. Lab target cost (e.g. 100). The target cost will appear in the \"Cost trend\" chart to allow tracking lab spending relative to the target cost for the current reporting cycleSetting the target cost to 0 will disable all thresholds."
+              }
+            },
+            "currencyCode": {
+              "type": "string",
+              "defaultValue": "USD",
+              "metadata": {
+                "description": "Optional. The currency code of the cost."
+              }
+            },
+            "thresholdValue25DisplayOnChart": {
+              "type": "string",
+              "defaultValue": "Disabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. Target Cost threshold at 25% display on chart. Indicates whether this threshold will be displayed on cost charts."
+              }
+            },
+            "thresholdValue25SendNotificationWhenExceeded": {
+              "type": "string",
+              "defaultValue": "Disabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. Target cost threshold at 25% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded."
+              }
+            },
+            "thresholdValue50DisplayOnChart": {
+              "type": "string",
+              "defaultValue": "Disabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. Target Cost threshold at 50% display on chart. Indicates whether this threshold will be displayed on cost charts."
+              }
+            },
+            "thresholdValue50SendNotificationWhenExceeded": {
+              "type": "string",
+              "defaultValue": "Disabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. Target cost threshold at 50% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded."
+              }
+            },
+            "thresholdValue75DisplayOnChart": {
+              "type": "string",
+              "defaultValue": "Disabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. Target Cost threshold at 75% display on chart. Indicates whether this threshold will be displayed on cost charts."
+              }
+            },
+            "thresholdValue75SendNotificationWhenExceeded": {
+              "type": "string",
+              "defaultValue": "Disabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. Target cost threshold at 75% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded."
+              }
+            },
+            "thresholdValue100DisplayOnChart": {
+              "type": "string",
+              "defaultValue": "Disabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. Target Cost threshold at 100% display on chart. Indicates whether this threshold will be displayed on cost charts."
+              }
+            },
+            "thresholdValue100SendNotificationWhenExceeded": {
+              "type": "string",
+              "defaultValue": "Disabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. Target cost threshold at 100% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded."
+              }
+            },
+            "thresholdValue125DisplayOnChart": {
+              "type": "string",
+              "defaultValue": "Disabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. Target Cost threshold at 125% display on chart. Indicates whether this threshold will be displayed on cost charts."
+              }
+            },
+            "thresholdValue125SendNotificationWhenExceeded": {
+              "type": "string",
+              "defaultValue": "Disabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. Target cost threshold at 125% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded."
+              }
+            }
+          },
+          "resources": {
+            "lab": {
+              "existing": true,
+              "type": "Microsoft.DevTestLab/labs",
+              "apiVersion": "2018-09-15",
+              "name": "[parameters('labName')]"
+            },
+            "cost": {
+              "type": "Microsoft.DevTestLab/labs/costs",
+              "apiVersion": "2018-09-15",
+              "name": "[format('{0}/{1}', parameters('labName'), 'targetCost')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "currencyCode": "[parameters('currencyCode')]",
+                "startDateTime": "[parameters('cycleStartDateTime')]",
+                "endDateTime": "[parameters('cycleEndDateTime')]",
+                "targetCost": {
+                  "target": "[parameters('target')]",
+                  "cycleStartDateTime": "[parameters('cycleStartDateTime')]",
+                  "cycleEndDateTime": "[parameters('cycleEndDateTime')]",
+                  "cycleType": "[parameters('cycleType')]",
+                  "status": "[parameters('status')]",
+                  "costThresholds": [
+                    {
+                      "thresholdId": "00000000-0000-0000-0000-000000000001",
+                      "percentageThreshold": {
+                        "thresholdValue": 25
+                      },
+                      "displayOnChart": "[parameters('thresholdValue25DisplayOnChart')]",
+                      "sendNotificationWhenExceeded": "[parameters('thresholdValue25SendNotificationWhenExceeded')]"
+                    },
+                    {
+                      "thresholdId": "00000000-0000-0000-0000-000000000002",
+                      "percentageThreshold": {
+                        "thresholdValue": 50
+                      },
+                      "displayOnChart": "[parameters('thresholdValue50DisplayOnChart')]",
+                      "sendNotificationWhenExceeded": "[parameters('thresholdValue50SendNotificationWhenExceeded')]"
+                    },
+                    {
+                      "thresholdId": "00000000-0000-0000-0000-000000000003",
+                      "percentageThreshold": {
+                        "thresholdValue": 75
+                      },
+                      "displayOnChart": "[parameters('thresholdValue75DisplayOnChart')]",
+                      "sendNotificationWhenExceeded": "[parameters('thresholdValue75SendNotificationWhenExceeded')]"
+                    },
+                    {
+                      "thresholdId": "00000000-0000-0000-0000-000000000004",
+                      "percentageThreshold": {
+                        "thresholdValue": 100
+                      },
+                      "displayOnChart": "[parameters('thresholdValue100DisplayOnChart')]",
+                      "sendNotificationWhenExceeded": "[parameters('thresholdValue100SendNotificationWhenExceeded')]"
+                    },
+                    {
+                      "thresholdId": "00000000-0000-0000-0000-000000000005",
+                      "percentageThreshold": {
+                        "thresholdValue": 125
+                      },
+                      "displayOnChart": "[parameters('thresholdValue125DisplayOnChart')]",
+                      "sendNotificationWhenExceeded": "[parameters('thresholdValue125SendNotificationWhenExceeded')]"
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "lab"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the cost."
+              },
+              "value": "targetCost"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the cost."
+              },
+              "value": "[resourceId('Microsoft.DevTestLab/labs/costs', parameters('labName'), 'targetCost')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the cost was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "lab"
+      ]
+    }
+  },
+  "outputs": {
+    "uniqueIdentifier": {
+      "type": "string",
+      "metadata": {
+        "description": "The unique identifier for the lab. Used to track tags that the lab applies to each resource that it creates."
+      },
+      "value": "[reference('lab').uniqueIdentifier]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the lab was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the lab."
+      },
+      "value": "[resourceId('Microsoft.DevTestLab/labs', parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the lab."
+      },
+      "value": "[parameters('name')]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[reference('lab', '2018-10-15-preview', 'full').identity.principalId]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('lab', '2018-10-15-preview', 'full').location]"
+    }
+  }
+}
