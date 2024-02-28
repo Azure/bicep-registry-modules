@@ -9,6 +9,7 @@ This module deploys a Network Manager.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -909,6 +910,10 @@ Tags of the resource.
 ## Cross-referenced modules
 
 _None_
+
+## Notes
+
+In order to deploy a Network Manager with the `networkManagerScopes` property set to `managementGroups`, you need to register the `Microsoft.Network` resource provider at the Management Group first ([ref](https://learn.microsoft.com/en-us/rest/api/resources/providers/register-at-management-group-scope)).
 
 ## Data Collection
 
