@@ -24,8 +24,8 @@ param conditions array = []
   'Continue'
   'Stop'
 ])
-@description('Required. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue.')
-param matchProcessingBehavior string
+@description('Optional. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue.')
+param matchProcessingBehavior string = 'Continue'
 
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName

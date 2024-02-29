@@ -71,7 +71,6 @@ Health probe settings to the origin that is used to determine the health of the 
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `sessionAffinityState`
 

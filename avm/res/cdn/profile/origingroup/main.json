@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "3379389871799694033"
+      "templateHash": "5057758604734054444"
     },
     "name": "CDN Profiles Origin Group",
     "description": "This module deploys a CDN Profile Origin Group.",
@@ -26,7 +27,7 @@
     },
     "healthProbeSettings": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Health probe settings to the origin that is used to determine the health of the origin."
       }
@@ -63,19 +64,28 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "profile": {
+      "existing": true,
+      "type": "Microsoft.Cdn/profiles",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('profileName')]"
+    },
+    "originGroup": {
       "type": "Microsoft.Cdn/profiles/originGroups",
       "apiVersion": "2023-05-01",
       "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
       "properties": {
-        "healthProbeSettings": "[if(not(empty(parameters('healthProbeSettings'))), parameters('healthProbeSettings'), null())]",
+        "healthProbeSettings": "[parameters('healthProbeSettings')]",
         "loadBalancingSettings": "[parameters('loadBalancingSettings')]",
         "sessionAffinityState": "[parameters('sessionAffinityState')]",
         "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": "[parameters('trafficRestorationTimeToHealedOrNewEndpointsInMinutes')]"
-      }
+      },
+      "dependsOn": [
+        "profile"
+      ]
     },
-    {
+    "origin": {
       "copy": {
         "name": "origin",
         "count": "[length(parameters('origins'))]"
@@ -101,23 +111,40 @@
           "originGroupName": {
             "value": "[parameters('name')]"
           },
-          "enabledState": "[if(contains(parameters('origins')[copyIndex()], 'enabledState'), createObject('value', parameters('origins')[copyIndex()].enabledState), createObject('value', 'Enabled'))]",
-          "enforceCertificateNameCheck": "[if(contains(parameters('origins')[copyIndex()], 'enforceCertificateNameCheck'), createObject('value', parameters('origins')[copyIndex()].enforceCertificateNameCheck), createObject('value', true()))]",
-          "httpPort": "[if(contains(parameters('origins')[copyIndex()], 'httpPort'), createObject('value', parameters('origins')[copyIndex()].httpPort), createObject('value', 80))]",
-          "httpsPort": "[if(contains(parameters('origins')[copyIndex()], 'httpsPort'), createObject('value', parameters('origins')[copyIndex()].httpsPort), createObject('value', 443))]",
-          "originHostHeader": "[if(contains(parameters('origins')[copyIndex()], 'originHostHeader'), createObject('value', parameters('origins')[copyIndex()].originHostHeader), createObject('value', parameters('origins')[copyIndex()].hostName))]",
-          "priority": "[if(contains(parameters('origins')[copyIndex()], 'priority'), createObject('value', parameters('origins')[copyIndex()].priority), createObject('value', 1))]",
-          "weight": "[if(contains(parameters('origins')[copyIndex()], 'weight'), createObject('value', parameters('origins')[copyIndex()].weight), createObject('value', 1000))]",
-          "sharedPrivateLinkResource": "[if(contains(parameters('origins')[copyIndex()], 'sharedPrivateLinkResource'), createObject('value', parameters('origins')[copyIndex()].sharedPrivateLinkResource), createObject('value', null()))]"
+          "enabledState": {
+            "value": "[tryGet(parameters('origins')[copyIndex()], 'enabledState')]"
+          },
+          "enforceCertificateNameCheck": {
+            "value": "[tryGet(parameters('origins')[copyIndex()], 'enforceCertificateNameCheck')]"
+          },
+          "httpPort": {
+            "value": "[tryGet(parameters('origins')[copyIndex()], 'httpPort')]"
+          },
+          "httpsPort": {
+            "value": "[tryGet(parameters('origins')[copyIndex()], 'httpsPort')]"
+          },
+          "originHostHeader": {
+            "value": "[tryGet(parameters('origins')[copyIndex()], 'originHostHeader')]"
+          },
+          "priority": {
+            "value": "[tryGet(parameters('origins')[copyIndex()], 'priority')]"
+          },
+          "weight": {
+            "value": "[tryGet(parameters('origins')[copyIndex()], 'weight')]"
+          },
+          "sharedPrivateLinkResource": {
+            "value": "[tryGet(parameters('origins')[copyIndex()], 'sharedPrivateLinkResource')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "12086693759397028642"
+              "templateHash": "17323276561210856523"
             },
             "name": "CDN Profiles Origin",
             "description": "This module deploys a CDN Profile Origin.",
@@ -196,7 +223,7 @@
             },
             "sharedPrivateLinkResource": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The properties of the private link resource for private origin."
               }
@@ -209,8 +236,23 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "profile::originGroup": {
+              "existing": true,
+              "type": "Microsoft.Cdn/profiles/originGroups",
+              "apiVersion": "2023-05-01",
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
+              "dependsOn": [
+                "profile"
+              ]
+            },
+            "profile": {
+              "existing": true,
+              "type": "Microsoft.Cdn/profiles",
+              "apiVersion": "2023-05-01",
+              "name": "[parameters('profileName')]"
+            },
+            "origin": {
               "type": "Microsoft.Cdn/profiles/originGroups/origins",
               "apiVersion": "2023-05-01",
               "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('originGroupName'), parameters('name'))]",
@@ -222,11 +264,14 @@
                 "httpsPort": "[parameters('httpsPort')]",
                 "originHostHeader": "[parameters('originHostHeader')]",
                 "priority": "[parameters('priority')]",
-                "sharedPrivateLinkResource": "[if(not(empty(parameters('sharedPrivateLinkResource'))), parameters('sharedPrivateLinkResource'), null())]",
+                "sharedPrivateLinkResource": "[parameters('sharedPrivateLinkResource')]",
                 "weight": "[parameters('weight')]"
-              }
+              },
+              "dependsOn": [
+                "profile::originGroup"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -253,10 +298,10 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Cdn/profiles/originGroups', parameters('profileName'), parameters('name'))]"
+        "originGroup"
       ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",
@@ -284,7 +329,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference(resourceId('Microsoft.Cdn/profiles', parameters('profileName')), '2023-05-01', 'full').location]"
+      "value": "[reference('profile', '2023-05-01', 'full').location]"
     }
   }
 }
