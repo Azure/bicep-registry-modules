@@ -221,6 +221,12 @@ function Test-ModuleLocally {
             # Add other template files as they may contain the 'moduleVersion'
             $tokenConfiguration.FilePathList += (Get-ChildItem -Path $moduleRoot -Recurse -File).FullName | Where-Object { $_ -match '.+(main.json|main.bicep)$' }
 
+            # Default tokens
+            $tokenConfiguration.Tokens += @{
+                subscriptionId    = $ValidateOrDeployParameters.SubscriptionId
+                managementGroupId = $ValidateOrDeployParameters.ManagementGroupId
+            }
+
             # Add Other Parameter File Tokens (For Testing)
             $AdditionalTokens.Keys | ForEach-Object {
                 $tokenConfiguration.Tokens[$PSItem] = $AdditionalTokens.$PSItem
