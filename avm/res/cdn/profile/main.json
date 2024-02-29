@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "5832452817052818870"
+      "templateHash": "13753288918977240254"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -149,14 +149,14 @@
     },
     "endpointName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Name of the endpoint under the profile which is unique globally."
       }
     },
     "endpointProperties": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details)."
       }
@@ -317,9 +317,11 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "name": "[if(not(empty(parameters('endpointName'))), createObject('value', parameters('endpointName')), createObject('value', format('{0}-endpoint', parameters('name'))))]",
+          "name": {
+            "value": "[coalesce(parameters('endpointName'), format('{0}-endpoint', parameters('name')))]"
+          },
           "properties": {
-            "value": "[parameters('endpointProperties')]"
+            "value": "[coalesce(parameters('endpointProperties'), createObject())]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -685,8 +687,12 @@
           "secretSourceResourceId": {
             "value": "[parameters('secrets')[copyIndex()].secretSourceResourceId]"
           },
-          "subjectAlternativeNames": "[if(contains(parameters('secrets')[copyIndex()], 'subjectAlternativeNames'), createObject('value', parameters('secrets')[copyIndex()].subjectAlternativeNames), createObject('value', createArray()))]",
-          "useLatestVersion": "[if(contains(parameters('secrets')[copyIndex()], 'useLatestVersion'), createObject('value', parameters('secrets')[copyIndex()].useLatestVersion), createObject('value', false()))]",
+          "subjectAlternativeNames": {
+            "value": "[tryGet(parameters('secrets')[copyIndex()], 'subjectAlternativeNames')]"
+          },
+          "useLatestVersion": {
+            "value": "[tryGet(parameters('secrets')[copyIndex()], 'useLatestVersion')]"
+          },
           "secretVersion": {
             "value": "[parameters('secrets')[copyIndex()].secretVersion]"
           }
@@ -821,14 +827,24 @@
           "hostName": {
             "value": "[parameters('customDomains')[copyIndex()].hostName]"
           },
-          "azureDnsZoneResourceId": "[if(contains(parameters('customDomains')[copyIndex()], 'azureDnsZoneResourceId'), createObject('value', parameters('customDomains')[copyIndex()].azureDnsZoneResourceId), createObject('value', ''))]",
-          "extendedProperties": "[if(contains(parameters('customDomains')[copyIndex()], 'extendedProperties'), createObject('value', parameters('customDomains')[copyIndex()].extendedProperties), createObject('value', createObject()))]",
+          "azureDnsZoneResourceId": {
+            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'azureDnsZoneResourceId')]"
+          },
+          "extendedProperties": {
+            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'extendedProperties')]"
+          },
           "certificateType": {
             "value": "[parameters('customDomains')[copyIndex()].certificateType]"
           },
-          "minimumTlsVersion": "[if(contains(parameters('customDomains')[copyIndex()], 'minimumTlsVersion'), createObject('value', parameters('customDomains')[copyIndex()].minimumTlsVersion), createObject('value', 'TLS12'))]",
-          "preValidatedCustomDomainResourceId": "[if(contains(parameters('customDomains')[copyIndex()], 'preValidatedCustomDomainResourceId'), createObject('value', parameters('customDomains')[copyIndex()].preValidatedCustomDomainResourceId), createObject('value', ''))]",
-          "secretName": "[if(contains(parameters('customDomains')[copyIndex()], 'secretName'), createObject('value', parameters('customDomains')[copyIndex()].secretName), createObject('value', ''))]"
+          "minimumTlsVersion": {
+            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'minimumTlsVersion')]"
+          },
+          "preValidatedCustomDomainResourceId": {
+            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'preValidatedCustomDomainResourceId')]"
+          },
+          "secretName": {
+            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'secretName')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -980,12 +996,18 @@
           "profileName": {
             "value": "[parameters('name')]"
           },
-          "healthProbeSettings": "[if(contains(parameters('origionGroups')[copyIndex()], 'healthProbeSettings'), createObject('value', parameters('origionGroups')[copyIndex()].healthProbeSettings), createObject('value', createObject()))]",
           "loadBalancingSettings": {
             "value": "[parameters('origionGroups')[copyIndex()].loadBalancingSettings]"
           },
-          "sessionAffinityState": "[if(contains(parameters('origionGroups')[copyIndex()], 'sessionAffinityState'), createObject('value', parameters('origionGroups')[copyIndex()].sessionAffinityState), createObject('value', 'Disabled'))]",
-          "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": "[if(contains(parameters('origionGroups')[copyIndex()], 'trafficRestorationTimeToHealedOrNewEndpointsInMinutes'), createObject('value', parameters('origionGroups')[copyIndex()].trafficRestorationTimeToHealedOrNewEndpointsInMinutes), createObject('value', 10))]",
+          "healthProbeSettings": {
+            "value": "[tryGet(parameters('origionGroups')[copyIndex()], 'healthProbeSettings')]"
+          },
+          "sessionAffinityState": {
+            "value": "[tryGet(parameters('origionGroups')[copyIndex()], 'sessionAffinityState')]"
+          },
+          "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": {
+            "value": "[tryGet(parameters('origionGroups')[copyIndex()], 'trafficRestorationTimeToHealedOrNewEndpointsInMinutes')]"
+          },
           "origins": {
             "value": "[parameters('origionGroups')[copyIndex()].origins]"
           }
@@ -1614,9 +1636,15 @@
           "profileName": {
             "value": "[parameters('name')]"
           },
-          "autoGeneratedDomainNameLabelScope": "[if(contains(parameters('afdEndpoints')[copyIndex()], 'autoGeneratedDomainNameLabelScope'), createObject('value', parameters('afdEndpoints')[copyIndex()].autoGeneratedDomainNameLabelScope), createObject('value', 'TenantReuse'))]",
-          "enabledState": "[if(contains(parameters('afdEndpoints')[copyIndex()], 'enabledState'), createObject('value', parameters('afdEndpoints')[copyIndex()].enabledState), createObject('value', 'Enabled'))]",
-          "routes": "[if(contains(parameters('afdEndpoints')[copyIndex()], 'routes'), createObject('value', parameters('afdEndpoints')[copyIndex()].routes), createObject('value', createArray()))]",
+          "autoGeneratedDomainNameLabelScope": {
+            "value": "[tryGet(parameters('afdEndpoints')[copyIndex()], 'autoGeneratedDomainNameLabelScope')]"
+          },
+          "enabledState": {
+            "value": "[tryGet(parameters('afdEndpoints')[copyIndex()], 'enabledState')]"
+          },
+          "routes": {
+            "value": "[tryGet(parameters('afdEndpoints')[copyIndex()], 'routes')]"
+          },
           "tags": {
             "value": "[coalesce(tryGet(parameters('afdEndpoints')[copyIndex()], 'tags'), parameters('tags'))]"
           }

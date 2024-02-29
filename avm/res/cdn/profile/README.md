@@ -674,7 +674,6 @@ Name of the endpoint under the profile which is unique globally.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `endpointProperties`
 
@@ -682,7 +681,6 @@ Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/micro
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `location`
 
