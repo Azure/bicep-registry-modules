@@ -3,7 +3,7 @@ metadata description = 'This module deploys a Storage Account.'
 metadata owner = 'Azure/module-maintainers'
 
 @maxLength(24)
-@description('Required. Name of the Storage Account.')
+@description('Required. Name of the Storage Account. Must be lower-case.')
 param name string
 
 @description('Optional. Location for all resources.')
@@ -300,6 +300,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     largeFileSharesState: (skuName == 'Standard_LRS') || (skuName == 'Standard_ZRS') ? largeFileSharesState : null
     minimumTlsVersion: minimumTlsVersion
     networkAcls: !empty(networkAcls) ? {
+      resourceAccessRules: networkAcls.?resourceAccessRules
       bypass: networkAcls.?bypass
       defaultAction: networkAcls.?defaultAction
       virtualNetworkRules: networkAcls.?virtualNetworkRules
@@ -529,7 +530,7 @@ type roleAssignmentType = {
 }[]?
 
 type networkAclsType = {
-  @description('Optional. Sets the resource access rules.')
+  @description('Optional. Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only. A sample for allowing all container registries in the same resource group access follows this format: ``/subscriptions/<subscriptionId>/resourceGroups/*/providers/Microsoft.ContainerRegistry/registries/*``. A full list of supported resource types can be found here: https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#trusted-access-based-on-a-managed-identity')
   resourceAccessRules: array?
 
   @description('Required. Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging,Metrics,AzureServices (For example, "Logging, Metrics"), or None to bypass none of those traffics.')

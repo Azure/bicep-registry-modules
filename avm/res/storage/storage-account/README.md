@@ -419,6 +419,12 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           value: '1.1.1.1'
         }
       ]
+      resourceAccessRules: [
+        {
+          resourceId: '<resourceId>'
+          tenantId: '<tenantId>'
+        }
+      ]
       virtualNetworkRules: [
         {
           action: 'Allow'
@@ -806,6 +812,12 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           {
             "action": "Allow",
             "value": "1.1.1.1"
+          }
+        ],
+        "resourceAccessRules": [
+          {
+            "resourceId": "<resourceId>",
+            "tenantId": "<tenantId>"
           }
         ],
         "virtualNetworkRules": [
@@ -1893,7 +1905,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Storage Account. |
+| [`name`](#parameter-name) | string | Name of the Storage Account. Must be lower-case. |
 | [`networkAcls`](#parameter-networkacls) | object | Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny. |
 
 **Conditional parameters**
@@ -1945,7 +1957,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 ### Parameter: `name`
 
-Name of the Storage Account.
+Name of the Storage Account. Must be lower-case.
 
 - Required: Yes
 - Type: string
@@ -1976,7 +1988,7 @@ Networks ACLs, this value contains IPs to whitelist and/or Subnet information. I
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`ipRules`](#parameter-networkaclsiprules) | array | Sets the IP ACL rules. |
-| [`resourceAccessRules`](#parameter-networkaclsresourceaccessrules) | array | Sets the resource access rules. |
+| [`resourceAccessRules`](#parameter-networkaclsresourceaccessrules) | array | Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only. A sample for allowing all container registries in the same resource group access follows this format: ``/subscriptions/<subscriptionId>/resourceGroups/*/providers/Microsoft.ContainerRegistry/registries/*``. A full list of supported resource types can be found here: https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#trusted-access-based-on-a-managed-identity |
 | [`virtualNetworkRules`](#parameter-networkaclsvirtualnetworkrules) | array | Sets the virtual network rules. |
 
 ### Parameter: `networkAcls.bypass`
@@ -2022,7 +2034,7 @@ Sets the IP ACL rules.
 
 ### Parameter: `networkAcls.resourceAccessRules`
 
-Sets the resource access rules.
+Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only. A sample for allowing all container registries in the same resource group access follows this format: ``/subscriptions/<subscriptionId>/resourceGroups/*/providers/Microsoft.ContainerRegistry/registries/*``. A full list of supported resource types can be found here: https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#trusted-access-based-on-a-managed-identity
 
 - Required: No
 - Type: array
