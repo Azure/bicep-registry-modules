@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "12182710622628299894"
+      "templateHash": "2144667186349833922"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -134,7 +134,7 @@
           "type": "array",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Sets the resource access rules. Array entries must consist of \"tenantId\" and \"resourceId\" fields only. A full list of supported resource types to be entered in the \"resourceId\" field can be found here: https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#trusted-access-based-on-a-managed-identity"
+            "description": "Optional. Sets the resource access rules. Array entries must consist of \"tenantId\" and \"resourceId\" fields only."
           }
         },
         "bypass": {
