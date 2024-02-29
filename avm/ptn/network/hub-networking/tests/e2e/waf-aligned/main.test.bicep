@@ -9,7 +9,7 @@ metadata description = 'This instance deploys the module in alignment with the b
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-cache.redis-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-network.hub-networking-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -98,6 +98,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             name: 'AzureBastionSubnet'
             addressPrefix: cidrSubnet(addressPrefix, 26, 0)
           }
+        }
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
         }
       }
     }

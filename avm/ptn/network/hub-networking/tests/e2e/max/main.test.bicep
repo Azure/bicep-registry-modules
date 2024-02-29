@@ -10,7 +10,7 @@ metadata description = 'This instance deploys the module with most of its featur
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 // e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
-param resourceGroupName string = 'dep-${namePrefix}-<provider>-<resourceType>-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-network.hub-networking-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -33,6 +33,20 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
+// Diagnostics
+// ===========
+module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  params: {
+    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
+    location: resourceLocation
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -52,11 +66,23 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         enableTelemetry: true
         flowTimeoutInMinutes: 30
         ddosProtectionPlanResourceId: ''
-        dnsServers: []
+        dnsServers: [ '10.0.1.4', '10.0.1.5' ]
         diagnosticSettings: []
         location: 'westeurope'
-        lock: 'None'
-        peerings: []
+        lock: {
+          kind: 'CanNotDelete'
+          name: 'hub1Lock'
+        }
+        peeringEnabled: false
+        peerings: [
+          {
+            name: 'hub1-to-hub2'
+            remoteVirtualNetworkId: 'hub2'
+            allowForwardedTraffic: false
+            allowGatewayTransit: false
+            allowVirtualNetworkAccess: true
+            useRemoteGateways: false }
+        ]
         roleAssignments: []
         subnets: [
           {
@@ -65,7 +91,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           }
         ]
         tags: {
-          environment: 'test'
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
         }
         vnetEncryption: false
         vnetEncryptionEnforcement: 'AllowUnencrypted'
@@ -75,12 +103,14 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         addressPrefixes: [ '10.1.0.0/16' ]
         enableTelemetry: false
         flowTimeoutInMinutes: 10
-        ddosProtectionPlanResourceId: ''
         dnsServers: []
         diagnosticSettings: []
         location: 'westus2'
-        lock: 'None'
-        peerings: []
+        lock: {
+          kind: 'CanNotDelete'
+          name: 'hub1Lock'
+        }
+        peeringEnabled: false
         roleAssignments: []
         subnets: [
           {
@@ -89,7 +119,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           }
         ]
         tags: {
-          environment: 'test'
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
         }
         vnetEncryption: false
         vnetEncryptionEnforcement: 'AllowUnencrypted'

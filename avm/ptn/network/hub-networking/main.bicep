@@ -18,14 +18,8 @@ param enableTelemetry bool = true
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
-@description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
-
-@description('Optional. Tags of the resource.')
-param tags object?
-
 @description('Optional. A map of the hub virtual networks to create.')
-param hubVirtualNetworks object = {}
+param hubVirtualNetworks hubVirtualNetworkType
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
@@ -35,7 +29,7 @@ param diagnosticSettings diagnosticSettingType
 // ============== //
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.network-hub-networking.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.ptn.network-hubnetworking.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -52,28 +46,27 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [for hub in items(hubVirtualNetworks): {
+module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [for hub in items(hubVirtualNetworks ?? {}): {
   name: '${uniqueString(deployment().name, location)}-${hub.value.name}'
   params: {
     // Required parameters
     name: hub.value.name
     addressPrefixes: hub.value.addressPrefixes
     // Non-required parameters
-    ddosProtectionPlanResourceId: hub.value.ddosProtectionPlanResourceId
-    diagnosticSettings: hub.value.diagnosticSettings
-    dnsServers: hub.value.dnsServers
-    enableTelemetry: hub.value.enableTelemetry
-    flowTimeoutInMinutes: hub.value.flowTimeoutInMinutes
-    location: hub.value.location
-    lock: hub.value.lock
-    peerings: hub.value.peerings
-    roleAssignments: hub.value.roleAssignments
-    subnets: hub.value.subnets
-    tags: hub.value.tags
-    vnetEncryption: hub.value.vnetEncryption
-    vnetEncryptionEnforcement: hub.value.vnetEncryptionEnforcement
+    ddosProtectionPlanResourceId: hub.value.ddosProtectionPlanResourceId ?? ''
+    diagnosticSettings: hub.value.diagnosticSettings ?? []
+    dnsServers: hub.value.dnsServers ?? []
+    enableTelemetry: hub.value.enableTelemetry ?? true
+    flowTimeoutInMinutes: hub.value.flowTimeoutInMinutes ?? 0
+    location: hub.value.location ?? ''
+    lock: hub.value.lock ?? {}
+    peerings: hub.value.peerings ?? []
+    roleAssignments: hub.value.roleAssignments ?? []
+    subnets: hub.value.subnets ?? []
+    tags: hub.value.tags ?? {}
+    vnetEncryption: hub.value.vnetEncryption ?? {}
+    vnetEncryptionEnforcement: hub.value.vnetEncryptionEnforcement ?? {}
   }
-
 }]
 
 resource hubVirtualNetwork_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
@@ -120,12 +113,12 @@ resource hubVirtualNetwork_diagnosticSettings 'Microsoft.Insights/diagnosticSett
 // output name string = <Resource>.name
 
 @description('The names of the Hub Networks.')
-output name array = [for i in range(0, length(hubVirtualNetworks)): {
+output name array = [for i in range(0, length(hubVirtualNetworks ?? {})): {
   name: hubVirtualNetwork[i].outputs.name
 }]
 
 @description('The resource group names of the Hub Networks.')
-output resourceGroupName array = [for i in range(0, length(hubVirtualNetworks)): {
+output resourceGroupName array = [for i in range(0, length(hubVirtualNetworks ?? {})): {
   resourceGroupName: hubVirtualNetwork[i].outputs.resourceGroupName
 }]
 
@@ -210,3 +203,53 @@ type diagnosticSettingType = {
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
 }[]?
+
+type hubVirtualNetworkType = {
+  @description('Required. The name of the virtual network.')
+  name: string
+
+  @description('Required. The address prefixes for the virtual network.')
+  addressPrefixes: array
+
+  @description('Optional. The location of the virtual network. Defaults to the location of the resource group.')
+  location: string?
+
+  @description('Optional. The tags of the virtual network.')
+  tags: object?
+
+  @description('Optional. The lock settings of the virtual network.')
+  lock: lockType?
+
+  @description('Optional. The diagnostic settings of the virtual network.')
+  diagnosticSettings: diagnosticSettingType?
+
+  @description('Optional. The role assignments to create.')
+  roleAssignments: roleAssignmentType?
+
+  @description('Optional. The DDoS protection plan resource ID.')
+  ddosProtectionPlanResourceId: string?
+
+  @description('Optional. The DNS servers of the virtual network.')
+  dnsServers: array?
+
+  @description('Optional. The flow timeout in minutes.')
+  flowTimeoutInMinutes: int?
+
+  @description('Optional. The peerings of the virtual network.')
+  peerings: object?
+
+  @description('Optional. The subnets of the virtual network.')
+  subnets: object?
+
+  @description('Optional. The VNet encryption settings of the virtual network.')
+  vnetEncryption: object?
+
+  @description('Optional. The VNet encryption enforcement settings of the virtual network.')
+  vnetEncryptionEnforcement: object?
+
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
+
+  @description('Optional. Enable/Disable peering for the virtual network.')
+  peeringEnabled: bool?
+}?
