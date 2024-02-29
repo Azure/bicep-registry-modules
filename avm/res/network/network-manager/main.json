@@ -145,7 +145,7 @@
       "defaultValue": "",
       "maxLength": 500,
       "metadata": {
-        "description": "Optional. A description of the network manager."
+        "description": "Optional. A description of the Network Manager."
       }
     },
     "networkManagerScopeAccesses": {
