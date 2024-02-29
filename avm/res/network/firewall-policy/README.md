@@ -649,6 +649,7 @@ Tier of Firewall Policy.
 - Allowed:
   ```Bicep
   [
+    'Basic'
     'Premium'
     'Standard'
   ]

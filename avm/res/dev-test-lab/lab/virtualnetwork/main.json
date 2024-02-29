@@ -1,0 +1,109 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "418188724139628409"
+    },
+    "name": "DevTest Lab Virtual Networks",
+    "description": "This module deploys a DevTest Lab Virtual Network.\n\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "labName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent lab. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the virtual network."
+      }
+    },
+    "externalProviderResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource ID of the virtual network."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "description": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The description of the virtual network."
+      }
+    },
+    "allowedSubnets": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The allowed subnets of the virtual network."
+      }
+    },
+    "subnetOverrides": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The subnet overrides of the virtual network."
+      }
+    }
+  },
+  "resources": {
+    "lab": {
+      "existing": true,
+      "type": "Microsoft.DevTestLab/labs",
+      "apiVersion": "2018-09-15",
+      "name": "[parameters('labName')]"
+    },
+    "virtualNetwork": {
+      "type": "Microsoft.DevTestLab/labs/virtualnetworks",
+      "apiVersion": "2018-09-15",
+      "name": "[format('{0}/{1}', parameters('labName'), parameters('name'))]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "description": "[parameters('description')]",
+        "externalProviderResourceId": "[parameters('externalProviderResourceId')]",
+        "allowedSubnets": "[parameters('allowedSubnets')]",
+        "subnetOverrides": "[parameters('subnetOverrides')]"
+      },
+      "dependsOn": [
+        "lab"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the lab virtual network."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the lab virtual network."
+      },
+      "value": "[resourceId('Microsoft.DevTestLab/labs/virtualnetworks', parameters('labName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the lab virtual network was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
