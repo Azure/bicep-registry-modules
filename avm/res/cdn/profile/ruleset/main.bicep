@@ -9,7 +9,7 @@ param name string
 param profileName string
 
 @description('Optinal. The rules to apply to the rule set.')
-param rules array = []
+param rules array?
 
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName
@@ -20,14 +20,14 @@ resource rule_set 'Microsoft.Cdn/profiles/ruleSets@2023-05-01' = {
   parent: profile
 }
 
-module rule 'rule/main.bicep' = [for (rule, index) in rules: {
+module rule 'rule/main.bicep' = [for (rule, index) in (rules ?? []): {
   name: '${uniqueString(deployment().name)}-RuleSet-Rule-${rule.name}-${index}'
   params: {
     profileName: profileName
     ruleSetName: name
     name: rule.name
     order: rule.order
-    actions: rule.actions
+    actions: rule.?actions
     conditions: rule.?conditions
     matchProcessingBehavior: rule.?matchProcessingBehavior
   }

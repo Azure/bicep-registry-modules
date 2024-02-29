@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "14054471315525975342"
+      "templateHash": "4560893781268909255"
     },
     "name": "CDN Profiles AFD Endpoints",
     "description": "This module deploys a CDN Profile AFD Endpoint.",
@@ -157,7 +157,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "11404018144751152031"
+              "templateHash": "1367700058970626915"
             },
             "name": "CDN Profiles AFD Endpoint Route",
             "description": "This module deploys a CDN Profile AFD Endpoint route.",
@@ -191,7 +191,7 @@
             },
             "customDomainName": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The name of the custom domain. The custom domain must be defined in the profile customDomains."
               }
@@ -243,7 +243,6 @@
             },
             "originGroupName": {
               "type": "string",
-              "defaultValue": "",
               "metadata": {
                 "description": "Required. The name of the origin group. The origin group must be defined in the profile originGroups."
               }
@@ -257,7 +256,7 @@
             },
             "patternsToMatch": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The route patterns of the rule."
               }
@@ -296,7 +295,7 @@
               "existing": true,
               "type": "Microsoft.Cdn/profiles/customDomains",
               "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('profileName'), parameters('customDomainName'))]",
+              "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainName'), ''))]",
               "dependsOn": [
                 "profile"
               ]
@@ -344,7 +343,7 @@
                   }
                 ],
                 "cacheConfiguration": "[parameters('cacheConfiguration')]",
-                "customDomains": "[if(not(empty(parameters('customDomainName'))), createArray(createObject('id', resourceId('Microsoft.Cdn/profiles/customDomains', parameters('profileName'), parameters('customDomainName')))), createArray())]",
+                "customDomains": "[if(not(empty(parameters('customDomainName'))), createArray(createObject('id', resourceId('Microsoft.Cdn/profiles/customDomains', parameters('profileName'), coalesce(parameters('customDomainName'), '')))), createArray())]",
                 "enabledState": "[parameters('enabledState')]",
                 "forwardingProtocol": "[parameters('forwardingProtocol')]",
                 "httpsRedirect": "[parameters('httpsRedirect')]",

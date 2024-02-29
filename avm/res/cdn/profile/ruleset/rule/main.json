@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "9466960009088357095"
+      "templateHash": "6646164740649777362"
     },
     "name": "CDN Profiles Rules",
     "description": "This module deploys a CDN Profile rule.",
@@ -38,14 +39,14 @@
     },
     "actions": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. A list of actions that are executed when all the conditions of a rule are satisfied."
       }
     },
     "conditions": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. A list of conditions that must be matched for the actions to be executed."
       }
@@ -62,8 +63,23 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "profile::rule_set": {
+      "existing": true,
+      "type": "Microsoft.Cdn/profiles/ruleSets",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSetName'))]",
+      "dependsOn": [
+        "profile"
+      ]
+    },
+    "profile": {
+      "existing": true,
+      "type": "Microsoft.Cdn/profiles",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('profileName')]"
+    },
+    "rule_set_rule": {
       "type": "Microsoft.Cdn/profiles/ruleSets/rules",
       "apiVersion": "2023-05-01",
       "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('ruleSetName'), parameters('name'))]",
@@ -72,9 +88,12 @@
         "actions": "[parameters('actions')]",
         "conditions": "[parameters('conditions')]",
         "matchProcessingBehavior": "[parameters('matchProcessingBehavior')]"
-      }
+      },
+      "dependsOn": [
+        "profile::rule_set"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

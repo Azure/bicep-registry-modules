@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "6441104995515380784"
+      "templateHash": "5832452817052818870"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -998,7 +998,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "1562479073725115229"
+              "templateHash": "15098299688075682428"
             },
             "name": "CDN Profiles Origin Group",
             "description": "This module deploys a CDN Profile Origin Group.",
@@ -1050,7 +1050,6 @@
             },
             "origins": {
               "type": "array",
-              "defaultValue": [],
               "metadata": {
                 "description": "Required. The list of origins within the origin group."
               }
@@ -1356,12 +1355,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "11349380273880361551"
+              "templateHash": "15438216602779847451"
             },
             "name": "CDN Profiles Rule Sets",
             "description": "This module deploys a CDN Profile rule set.",
@@ -1382,26 +1382,35 @@
             },
             "rules": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optinal. The rules to apply to the rule set."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "profile": {
+              "existing": true,
+              "type": "Microsoft.Cdn/profiles",
+              "apiVersion": "2023-05-01",
+              "name": "[parameters('profileName')]"
+            },
+            "rule_set": {
               "type": "Microsoft.Cdn/profiles/ruleSets",
               "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]"
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
+              "dependsOn": [
+                "profile"
+              ]
             },
-            {
+            "rule": {
               "copy": {
                 "name": "rule",
-                "count": "[length(parameters('rules'))]"
+                "count": "[length(coalesce(parameters('rules'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-RuleSet-Rule-{1}-{2}', uniqueString(deployment().name), parameters('rules')[copyIndex()].name, copyIndex())]",
+              "name": "[format('{0}-RuleSet-Rule-{1}-{2}', uniqueString(deployment().name), coalesce(parameters('rules'), createArray())[copyIndex()].name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -1415,29 +1424,30 @@
                     "value": "[parameters('name')]"
                   },
                   "name": {
-                    "value": "[parameters('rules')[copyIndex()].name]"
+                    "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].name]"
                   },
                   "order": {
-                    "value": "[parameters('rules')[copyIndex()].order]"
+                    "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].order]"
                   },
                   "actions": {
-                    "value": "[parameters('rules')[copyIndex()].actions]"
+                    "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'actions')]"
                   },
                   "conditions": {
-                    "value": "[tryGet(parameters('rules')[copyIndex()], 'conditions')]"
+                    "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'conditions')]"
                   },
                   "matchProcessingBehavior": {
-                    "value": "[tryGet(parameters('rules')[copyIndex()], 'matchProcessingBehavior')]"
+                    "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'matchProcessingBehavior')]"
                   }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.25.53.49325",
-                      "templateHash": "9466960009088357095"
+                      "templateHash": "6646164740649777362"
                     },
                     "name": "CDN Profiles Rules",
                     "description": "This module deploys a CDN Profile rule.",
@@ -1470,14 +1480,14 @@
                     },
                     "actions": {
                       "type": "array",
-                      "defaultValue": [],
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. A list of actions that are executed when all the conditions of a rule are satisfied."
                       }
                     },
                     "conditions": {
                       "type": "array",
-                      "defaultValue": [],
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. A list of conditions that must be matched for the actions to be executed."
                       }
@@ -1494,8 +1504,23 @@
                       }
                     }
                   },
-                  "resources": [
-                    {
+                  "resources": {
+                    "profile::rule_set": {
+                      "existing": true,
+                      "type": "Microsoft.Cdn/profiles/ruleSets",
+                      "apiVersion": "2023-05-01",
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSetName'))]",
+                      "dependsOn": [
+                        "profile"
+                      ]
+                    },
+                    "profile": {
+                      "existing": true,
+                      "type": "Microsoft.Cdn/profiles",
+                      "apiVersion": "2023-05-01",
+                      "name": "[parameters('profileName')]"
+                    },
+                    "rule_set_rule": {
                       "type": "Microsoft.Cdn/profiles/ruleSets/rules",
                       "apiVersion": "2023-05-01",
                       "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('ruleSetName'), parameters('name'))]",
@@ -1504,9 +1529,12 @@
                         "actions": "[parameters('actions')]",
                         "conditions": "[parameters('conditions')]",
                         "matchProcessingBehavior": "[parameters('matchProcessingBehavior')]"
-                      }
+                      },
+                      "dependsOn": [
+                        "profile::rule_set"
+                      ]
                     }
-                  ],
+                  },
                   "outputs": {
                     "name": {
                       "type": "string",
@@ -1533,7 +1561,7 @@
                 }
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -1601,7 +1629,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "14054471315525975342"
+              "templateHash": "4560893781268909255"
             },
             "name": "CDN Profiles AFD Endpoints",
             "description": "This module deploys a CDN Profile AFD Endpoint.",
@@ -1752,7 +1780,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.25.53.49325",
-                      "templateHash": "11404018144751152031"
+                      "templateHash": "1367700058970626915"
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
                     "description": "This module deploys a CDN Profile AFD Endpoint route.",
@@ -1786,7 +1814,7 @@
                     },
                     "customDomainName": {
                       "type": "string",
-                      "defaultValue": "",
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. The name of the custom domain. The custom domain must be defined in the profile customDomains."
                       }
@@ -1838,7 +1866,6 @@
                     },
                     "originGroupName": {
                       "type": "string",
-                      "defaultValue": "",
                       "metadata": {
                         "description": "Required. The name of the origin group. The origin group must be defined in the profile originGroups."
                       }
@@ -1852,7 +1879,7 @@
                     },
                     "patternsToMatch": {
                       "type": "array",
-                      "defaultValue": [],
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. The route patterns of the rule."
                       }
@@ -1891,7 +1918,7 @@
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/customDomains",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('customDomainName'))]",
+                      "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainName'), ''))]",
                       "dependsOn": [
                         "profile"
                       ]
@@ -1939,7 +1966,7 @@
                           }
                         ],
                         "cacheConfiguration": "[parameters('cacheConfiguration')]",
-                        "customDomains": "[if(not(empty(parameters('customDomainName'))), createArray(createObject('id', resourceId('Microsoft.Cdn/profiles/customDomains', parameters('profileName'), parameters('customDomainName')))), createArray())]",
+                        "customDomains": "[if(not(empty(parameters('customDomainName'))), createArray(createObject('id', resourceId('Microsoft.Cdn/profiles/customDomains', parameters('profileName'), coalesce(parameters('customDomainName'), '')))), createArray())]",
                         "enabledState": "[parameters('enabledState')]",
                         "forwardingProtocol": "[parameters('forwardingProtocol')]",
                         "httpsRedirect": "[parameters('httpsRedirect')]",

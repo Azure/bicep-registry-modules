@@ -25,7 +25,7 @@ param sessionAffinityState string = 'Disabled'
 param trafficRestorationTimeToHealedOrNewEndpointsInMinutes int = 10
 
 @description('Required. The list of origins within the origin group.')
-param origins array = []
+param origins array
 
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName

@@ -69,7 +69,6 @@ A list of actions that are executed when all the conditions of a rule are satisf
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `conditions`
 
@@ -77,7 +76,6 @@ A list of conditions that must be matched for the actions to be executed.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `matchProcessingBehavior`
 

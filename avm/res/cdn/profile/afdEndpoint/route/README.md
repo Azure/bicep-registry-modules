@@ -60,9 +60,8 @@ The name of the route.
 
 The name of the origin group. The origin group must be defined in the profile originGroups.
 
-- Required: No
+- Required: Yes
 - Type: string
-- Default: `''`
 
 ### Parameter: `profileName`
 
@@ -84,7 +83,6 @@ The name of the custom domain. The custom domain must be defined in the profile 
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `enabledState`
 
@@ -160,7 +158,6 @@ The route patterns of the rule.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `ruleSets`
 

@@ -15,10 +15,10 @@ param ruleSetName string
 param order int
 
 @description('Optional. A list of actions that are executed when all the conditions of a rule are satisfied.')
-param actions array = []
+param actions array?
 
 @description('Optional. A list of conditions that must be matched for the actions to be executed.')
-param conditions array = []
+param conditions array?
 
 @allowed([
   'Continue'

@@ -15,7 +15,7 @@ param afdEndpointName string
 param cacheConfiguration object?
 
 @description('Optional. The name of the custom domain. The custom domain must be defined in the profile customDomains.')
-param customDomainName string = ''
+param customDomainName string?
 
 @allowed([
   'HttpOnly'
@@ -47,13 +47,13 @@ param httpsRedirect string = 'Enabled'
 param linkToDefaultDomain string = 'Enabled'
 
 @description('Required. The name of the origin group. The origin group must be defined in the profile originGroups.')
-param originGroupName string = ''
+param originGroupName string
 
 @description('Optional. A directory path on the origin that AzureFrontDoor can use to retrieve content from, e.g. contoso.cloudapp.net/originpath.')
 param originPath string?
 
 @description('Optional. The route patterns of the rule.')
-param patternsToMatch array = []
+param patternsToMatch array?
 
 @description('Optional. The rule sets of the rule. The rule sets must be defined in the profile ruleSets.')
 param ruleSets array = []
@@ -70,7 +70,7 @@ resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   }
 
   resource custom_domain 'customDomains@2023-05-01' existing = if (!empty(customDomainName)) {
-    name: customDomainName
+    name: customDomainName ?? ''
   }
 
   resource originGroup 'originGroups@2023-05-01' existing = {

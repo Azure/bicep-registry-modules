@@ -54,9 +54,8 @@ The name of the origin group.
 
 The list of origins within the origin group.
 
-- Required: No
+- Required: Yes
 - Type: array
-- Default: `[]`
 
 ### Parameter: `profileName`
 
