@@ -53,7 +53,7 @@ module origin 'origin/main.bicep' = [for (origion, index) in origins: {
     enforceCertificateNameCheck: origion.?enforceCertificateNameCheck
     httpPort: origion.?httpPort
     httpsPort: origion.?httpsPort
-    originHostHeader: origion.?originHostHeader
+    originHostHeader: origion.?originHostHeader ?? origion.hostName
     priority: origion.?priority
     weight: origion.?weight
     sharedPrivateLinkResource: origion.?sharedPrivateLinkResource
