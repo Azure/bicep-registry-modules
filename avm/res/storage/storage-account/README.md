@@ -1988,7 +1988,7 @@ Networks ACLs, this value contains IPs to whitelist and/or Subnet information. I
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`ipRules`](#parameter-networkaclsiprules) | array | Sets the IP ACL rules. |
-| [`resourceAccessRules`](#parameter-networkaclsresourceaccessrules) | array | Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only. A sample for allowing all container registries in the same resource group access follows this format: ``/subscriptions/<subscriptionId>/resourceGroups/*/providers/Microsoft.ContainerRegistry/registries/*``. A full list of supported resource types can be found here: https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#trusted-access-based-on-a-managed-identity |
+| [`resourceAccessRules`](#parameter-networkaclsresourceaccessrules) | array | Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only. A full list of supported resource types to be entered in the "resourceId" field can be found here: https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#trusted-access-based-on-a-managed-identity |
 | [`virtualNetworkRules`](#parameter-networkaclsvirtualnetworkrules) | array | Sets the virtual network rules. |
 
 ### Parameter: `networkAcls.bypass`
@@ -2034,7 +2034,7 @@ Sets the IP ACL rules.
 
 ### Parameter: `networkAcls.resourceAccessRules`
 
-Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only. A sample for allowing all container registries in the same resource group access follows this format: ``/subscriptions/<subscriptionId>/resourceGroups/*/providers/Microsoft.ContainerRegistry/registries/*``. A full list of supported resource types can be found here: https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#trusted-access-based-on-a-managed-identity
+Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only. A full list of supported resource types to be entered in the "resourceId" field can be found here: https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#trusted-access-based-on-a-managed-identity
 
 - Required: No
 - Type: array

@@ -530,7 +530,7 @@ type roleAssignmentType = {
 }[]?
 
 type networkAclsType = {
-  @description('Optional. Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only. A sample for allowing all container registries in the same resource group access follows this format: ``/subscriptions/<subscriptionId>/resourceGroups/*/providers/Microsoft.ContainerRegistry/registries/*``. A full list of supported resource types can be found here: https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#trusted-access-based-on-a-managed-identity')
+  @description('Optional. Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only. A full list of supported resource types to be entered in the "resourceId" field can be found here: https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-portal#trusted-access-based-on-a-managed-identity')
   resourceAccessRules: array?
 
   @description('Required. Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging,Metrics,AzureServices (For example, "Logging, Metrics"), or None to bypass none of those traffics.')
