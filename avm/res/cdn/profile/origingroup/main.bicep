@@ -42,21 +42,21 @@ resource originGroup 'Microsoft.Cdn/profiles/originGroups@2023-05-01' = {
   }
 }
 
-module origin 'origin/main.bicep' = [for (origion, index) in origins: {
+module origin 'origin/main.bicep' = [for (origin, index) in origins: {
   name: '${uniqueString(deployment().name)}-OriginGroup-Origin-${index}'
   params: {
-    name: origion.name
+    name: origin.name
     profileName: profileName
-    hostName: origion.hostName
+    hostName: origin.hostName
     originGroupName: originGroup.name
-    enabledState: origion.?enabledState
-    enforceCertificateNameCheck: origion.?enforceCertificateNameCheck
-    httpPort: origion.?httpPort
-    httpsPort: origion.?httpsPort
-    originHostHeader: origion.?originHostHeader ?? origion.hostName
-    priority: origion.?priority
-    weight: origion.?weight
-    sharedPrivateLinkResource: origion.?sharedPrivateLinkResource
+    enabledState: origin.?enabledState
+    enforceCertificateNameCheck: origin.?enforceCertificateNameCheck
+    httpPort: origin.?httpPort
+    httpsPort: origin.?httpsPort
+    originHostHeader: origin.?originHostHeader ?? origin.hostName
+    priority: origin.?priority
+    weight: origin.?weight
+    sharedPrivateLinkResource: origin.?sharedPrivateLinkResource
   }
 }]
 
