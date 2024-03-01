@@ -101,8 +101,6 @@ param roleAssignments roleAssignmentType
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var enableReferencedModulesTelemetry = false
-
 var liveTraceCatagories = [for configuration in liveTraceCatagoriesToEnable: {
   name: configuration
   enabled: 'true'
@@ -181,23 +179,41 @@ resource signalR 'Microsoft.SignalRService/signalR@2022-02-01' = {
   }
 }
 
-module signalR_privateEndpoints '../../network/private-endpoint/main.bicep' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-signalR-PrivateEndpoint-${index}'
   params: {
-    groupIds: [
-      privateEndpoint.?service ?? 'signalr'
-    ]
     name: privateEndpoint.?name ?? 'pep-${last(split(signalR.id, '/'))}-${privateEndpoint.?service ?? 'signalr'}-${index}'
-    serviceResourceId: signalR.id
+    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
+      {
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(signalR.id, '/'))}-${privateEndpoint.?service ?? 'signalr'}-${index}'
+        properties: {
+          privateLinkServiceId: signalR.id
+          groupIds: [
+            privateEndpoint.?service ?? 'signalr'
+          ]
+        }
+      }
+    ] : null
+    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
+      {
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(signalR.id, '/'))}-${privateEndpoint.?service ?? 'signalr'}-${index}'
+        properties: {
+          privateLinkServiceId: signalR.id
+          groupIds: [
+            privateEndpoint.?service ?? 'signalr'
+          ]
+          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+        }
+      }
+    ] : null
     subnetResourceId: privateEndpoint.subnetResourceId
-    enableDefaultTelemetry: privateEndpoint.?enableDefaultTelemetry ?? enableReferencedModulesTelemetry
+    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
     roleAssignments: privateEndpoint.?roleAssignments
     tags: privateEndpoint.?tags ?? tags
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
     customDnsConfigs: privateEndpoint.?customDnsConfigs
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
