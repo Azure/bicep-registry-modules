@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "15098299688075682428"
+      "templateHash": "8675132561244182118"
     },
     "name": "CDN Profiles Origin Group",
     "description": "This module deploys a CDN Profile Origin Group.",
@@ -84,9 +84,9 @@
         "profile"
       ]
     },
-    "origin": {
+    "originGroup_origins": {
       "copy": {
-        "name": "origin",
+        "name": "originGroup_origins",
         "count": "[length(parameters('origins'))]"
       },
       "type": "Microsoft.Resources/deployments",

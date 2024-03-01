@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "12571580620816780353"
+      "templateHash": "17135058845123401414"
     },
     "name": "CDN Profiles Endpoints Origins",
     "description": "This module deploys a CDN Profile Endpoint Origin.",
@@ -118,7 +118,7 @@
         "profile"
       ]
     },
-    "origins": {
+    "origin": {
       "type": "Microsoft.Cdn/profiles/endpoints/origins",
       "apiVersion": "2021-06-01",
       "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('endpointName'), parameters('name'))]",
