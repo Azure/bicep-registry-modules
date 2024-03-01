@@ -40,7 +40,7 @@ param secretName string = ''
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName
 
-  resource profile_secrect 'secrets@2023-05-01' existing = if (!empty(secretName)) {
+  resource secrect 'secrets@2023-05-01' existing = if (!empty(secretName)) {
     name: secretName
   }
 }
