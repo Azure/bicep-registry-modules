@@ -1,5 +1,10 @@
 # SignalR Service SignalR `[Microsoft.SignalRService/signalR]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys a SignalR Service SignalR.
 
 ## Navigation
@@ -9,6 +14,7 @@ This module deploys a SignalR Service SignalR.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -26,7 +32,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/signal-r-service.signal-r:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/signal-r-service/signal-r:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -42,13 +48,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module signalR 'br:bicep/modules/signal-r-service.signal-r:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-srsdrmin'
+module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-srsdrmin'
   params: {
     // Required parameters
     name: 'srsdrmin-001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -70,8 +76,8 @@ module signalR 'br:bicep/modules/signal-r-service.signal-r:1.0.0' = {
       "value": "srsdrmin-001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -90,8 +96,8 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module signalR 'br:bicep/modules/signal-r-service.signal-r:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-srssrmax'
+module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-srssrmax'
   params: {
     // Required parameters
     name: 'srssrmax-001'
@@ -100,7 +106,6 @@ module signalR 'br:bicep/modules/signal-r-service.signal-r:1.0.0' = {
     clientCertEnabled: false
     disableAadAuth: false
     disableLocalAuth: true
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     kind: 'SignalR'
     location: '<location>'
     lock: {
@@ -138,6 +143,12 @@ module signalR 'br:bicep/modules/signal-r-service.signal-r:1.0.0' = {
           'hidden-title': 'This is visible in the resource name'
           Role: 'DeploymentValidation'
         }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
       }
     ]
     resourceLogConfigurationsToEnable: [
@@ -189,9 +200,6 @@ module signalR 'br:bicep/modules/signal-r-service.signal-r:1.0.0' = {
     "disableLocalAuth": {
       "value": true
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "kind": {
       "value": "SignalR"
     },
@@ -238,6 +246,12 @@ module signalR 'br:bicep/modules/signal-r-service.signal-r:1.0.0' = {
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           }
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -282,8 +296,8 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module signalR 'br:bicep/modules/signal-r-service.signal-r:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-srssrwaf'
+module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-srssrwaf'
   params: {
     // Required parameters
     name: 'srssrwaf-001'
@@ -292,13 +306,8 @@ module signalR 'br:bicep/modules/signal-r-service.signal-r:1.0.0' = {
     clientCertEnabled: false
     disableAadAuth: false
     disableLocalAuth: true
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     kind: 'SignalR'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     networkAcls: {
       defaultAction: 'Allow'
       privateEndpoints: [
@@ -334,13 +343,6 @@ module signalR 'br:bicep/modules/signal-r-service.signal-r:1.0.0' = {
     ]
     resourceLogConfigurationsToEnable: [
       'ConnectivityLogs'
-    ]
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
     ]
     sku: 'Standard_S1'
     tags: {
@@ -381,20 +383,11 @@ module signalR 'br:bicep/modules/signal-r-service.signal-r:1.0.0' = {
     "disableLocalAuth": {
       "value": true
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "kind": {
       "value": "SignalR"
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "networkAcls": {
       "value": {
@@ -438,15 +431,6 @@ module signalR 'br:bicep/modules/signal-r-service.signal-r:1.0.0' = {
         "ConnectivityLogs"
       ]
     },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
-    },
     "sku": {
       "value": "Standard_S1"
     },
@@ -482,7 +466,7 @@ module signalR 'br:bicep/modules/signal-r-service.signal-r:1.0.0' = {
 | [`clientCertEnabled`](#parameter-clientcertenabled) | bool | Request client certificate during TLS handshake if enabled. |
 | [`disableAadAuth`](#parameter-disableaadauth) | bool | The disable Azure AD auth settings of the resource. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | The disable local auth settings of the resource. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`features`](#parameter-features) | array | The features settings of the resource, `ServiceMode` is the only required feature. See https://learn.microsoft.com/en-us/azure/templates/microsoft.signalrservice/signalr?pivots=deployment-language-bicep#signalrfeature for more information. |
 | [`kind`](#parameter-kind) | string | The kind of the service. |
 | [`liveTraceCatagoriesToEnable`](#parameter-livetracecatagoriestoenable) | array | Control permission for data plane traffic coming from public networks while private endpoint is enabled. |
@@ -549,9 +533,9 @@ The disable local auth settings of the resource.
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -714,6 +698,27 @@ Custom DNS configurations.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint ip address. |
+| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private ip addresses of the private endpoint. |
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+Fqdn that resolves to private endpoint ip address.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
+
+A list of private ip addresses of the private endpoint.
+
+- Required: Yes
+- Type: array
+
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
 The custom name of the network interface attached to the private endpoint.
@@ -734,6 +739,56 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsipconfigurationsname) | string | The name of the resource that is unique within a resource group. |
+| [`properties`](#parameter-privateendpointsipconfigurationsproperties) | object | Properties of private endpoint IP configurations. |
+
+### Parameter: `privateEndpoints.ipConfigurations.name`
+
+The name of the resource that is unique within a resource group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties`
+
+Properties of private endpoint IP configurations.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private ip address obtained from the private endpoint's subnet. |
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
+
+The member name of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
+
+A private ip address obtained from the private endpoint's subnet.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `privateEndpoints.location`
 
@@ -1086,4 +1141,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `modules/network/private-endpoint` | Local reference |
+| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
