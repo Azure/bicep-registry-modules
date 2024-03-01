@@ -970,11 +970,9 @@ Whether or not public network access is allowed for this resource. For security 
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
   ]
@@ -1123,7 +1121,6 @@ Upstream templates to enable. For more information, see https://learn.microsoft.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 
 ## Outputs
