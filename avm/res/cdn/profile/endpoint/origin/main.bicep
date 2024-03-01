@@ -50,7 +50,7 @@ resource endpoint 'Microsoft.Cdn/profiles/endpoints@2021-06-01' existing = {
   name: endpointName
 }
 
-resource origins 'Microsoft.Cdn/profiles/endpoints/origins@2021-06-01' = {
+resource origin 'Microsoft.Cdn/profiles/endpoints/origins@2021-06-01' = {
   parent: endpoint
   name: name
   properties: union({
@@ -72,10 +72,10 @@ resource origins 'Microsoft.Cdn/profiles/endpoints/origins@2021-06-01' = {
 }
 
 @description('The name of the endpoint.')
-output name string = origins.name
+output name string = origin.name
 
 @description('The resource ID of the endpoint.')
-output resourceId string = origins.id
+output resourceId string = origin.id
 
 @description('The name of the resource group the endpoint was created in.')
 output resourceGroupName string = resourceGroup().name

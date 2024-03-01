@@ -127,7 +127,7 @@ resource profile_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-0
   scope: profile
 }]
 
-module profile_endpoint 'endpoint/main.bicep' = if (!empty(endpointProperties)) {
+module profile_endpoints 'endpoint/main.bicep' = if (!empty(endpointProperties)) {
   name: '${uniqueString(deployment().name, location)}-Profile-Endpoint'
   params: {
     name: endpointName ?? '${profile.name}-endpoint'
@@ -150,10 +150,10 @@ module profile_secrets 'secret/main.bicep' = [for (secret, index) in secrets: {
   }
 }]
 
-module profile_custom_domain 'customdomain/main.bicep' = [for (customDomain, index) in customDomains: {
+module profile_customDomains 'customdomain/main.bicep' = [for (customDomain, index) in customDomains: {
   name: '${uniqueString(deployment().name)}-CustomDomain-${index}'
   dependsOn: [
-    profile_secret
+    profile_secrets
   ]
   params: {
     name: customDomain.name
@@ -168,7 +168,7 @@ module profile_custom_domain 'customdomain/main.bicep' = [for (customDomain, ind
   }
 }]
 
-module profile_origionGroup 'origingroup/main.bicep' = [for (origingroup, index) in origionGroups: {
+module profile_originGroups 'origingroup/main.bicep' = [for (origingroup, index) in origionGroups: {
   name: '${uniqueString(deployment().name)}-Profile-OrigionGroup-${index}'
   params: {
     name: origingroup.name
@@ -181,7 +181,7 @@ module profile_origionGroup 'origingroup/main.bicep' = [for (origingroup, index)
   }
 }]
 
-module profile_ruleSet 'ruleset/main.bicep' = [for (ruleSet, index) in ruleSets: {
+module profile_ruleSets 'ruleset/main.bicep' = [for (ruleSet, index) in ruleSets: {
   name: '${uniqueString(deployment().name)}-Profile-RuleSet-${index}'
   params: {
     name: ruleSet.name
@@ -190,12 +190,12 @@ module profile_ruleSet 'ruleset/main.bicep' = [for (ruleSet, index) in ruleSets:
   }
 }]
 
-module profile_afdEndpoint 'afdEndpoint/main.bicep' = [for (afdEndpoint, index) in afdEndpoints: {
+module profile_afdEndpoints 'afdEndpoint/main.bicep' = [for (afdEndpoint, index) in afdEndpoints: {
   name: '${uniqueString(deployment().name)}-Profile-AfdEndpoint-${index}'
   dependsOn: [
-    profile_origionGroup
-    profile_custom_domain
-    profile_ruleSet
+    profile_originGroups
+    profile_customDomains
+    profile_ruleSets
   ]
   params: {
     name: afdEndpoint.name

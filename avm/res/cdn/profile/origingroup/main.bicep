@@ -42,7 +42,7 @@ resource originGroup 'Microsoft.Cdn/profiles/originGroups@2023-05-01' = {
   }
 }
 
-module origin 'origin/main.bicep' = [for (origin, index) in origins: {
+module originGroup_origins 'origin/main.bicep' = [for (origin, index) in origins: {
   name: '${uniqueString(deployment().name)}-OriginGroup-Origin-${index}'
   params: {
     name: origin.name

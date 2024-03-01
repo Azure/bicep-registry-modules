@@ -34,7 +34,7 @@ resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName
 }
 
-resource profile_secrect 'Microsoft.Cdn/profiles/secrets@2023-05-01' = {
+resource secret 'Microsoft.Cdn/profiles/secrets@2023-05-01' = {
   name: name
   parent: profile
   properties: {
@@ -51,10 +51,10 @@ resource profile_secrect 'Microsoft.Cdn/profiles/secrets@2023-05-01' = {
 }
 
 @description('The name of the secrect.')
-output name string = profile_secrect.name
+output name string = secret.name
 
 @description('The resource ID of the secrect.')
-output resourceId string = profile_secrect.id
+output resourceId string = secret.id
 
 @description('The name of the resource group the secret was created in.')
 output resourceGroupName string = resourceGroup().name

@@ -30,14 +30,14 @@ param matchProcessingBehavior string = 'Continue'
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName
 
-  resource rule_set 'ruleSets@2023-05-01' existing = {
+  resource ruleSet 'ruleSets@2023-05-01' existing = {
     name: ruleSetName
   }
 }
 
-resource rule_set_rule 'Microsoft.Cdn/profiles/ruleSets/rules@2023-05-01' = {
+resource rule 'Microsoft.Cdn/profiles/ruleSets/rules@2023-05-01' = {
   name: name
-  parent: profile::rule_set
+  parent: profile::ruleSet
   properties: {
     order: order
     actions: actions
@@ -47,10 +47,10 @@ resource rule_set_rule 'Microsoft.Cdn/profiles/ruleSets/rules@2023-05-01' = {
 }
 
 @description('The name of the rule.')
-output name string = rule_set_rule.name
+output name string = rule.name
 
 @description('The resource id of the rule.')
-output resourceId string = rule_set_rule.id
+output resourceId string = rule.id
 
 @description('The name of the resource group the custom domain was created in.')
 output resourceGroupName string = resourceGroup().name

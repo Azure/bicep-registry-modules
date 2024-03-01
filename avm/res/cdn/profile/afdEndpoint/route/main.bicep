@@ -65,11 +65,11 @@ param supportedProtocols array?
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName
 
-  resource afd_endpoint 'afdEndpoints@2023-05-01' existing = {
+  resource afdEndpoint 'afdEndpoints@2023-05-01' existing = {
     name: afdEndpointName
   }
 
-  resource custom_domain 'customDomains@2023-05-01' existing = if (!empty(customDomainName)) {
+  resource customDomain 'customDomains@2023-05-01' existing = if (!empty(customDomainName)) {
     name: customDomainName ?? ''
   }
 
@@ -77,18 +77,18 @@ resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
     name: originGroupName
   }
 
-  resource rule_set 'ruleSets@2023-05-01' existing = [for ruleSet in ruleSets: {
+  resource ruleSet 'ruleSets@2023-05-01' existing = [for ruleSet in ruleSets: {
     name: ruleSet.name
   }]
 }
 
-resource afd_endpoint_route 'Microsoft.Cdn/profiles/afdEndpoints/routes@2023-05-01' = {
+resource route 'Microsoft.Cdn/profiles/afdEndpoints/routes@2023-05-01' = {
   name: name
-  parent: profile::afd_endpoint
+  parent: profile::afdEndpoint
   properties: {
     cacheConfiguration: cacheConfiguration
     customDomains: !empty(customDomainName) ? [ {
-        id: profile::custom_domain.id
+        id: profile::customDomain.id
       } ] : []
     enabledState: enabledState
     forwardingProtocol: forwardingProtocol
@@ -100,17 +100,17 @@ resource afd_endpoint_route 'Microsoft.Cdn/profiles/afdEndpoints/routes@2023-05-
     originPath: originPath
     patternsToMatch: patternsToMatch
     ruleSets: [for (item, index) in ruleSets: {
-      id: profile::rule_set[index].id
+      id: profile::ruleSet[index].id
     }]
     supportedProtocols: supportedProtocols
   }
 }
 
 @description('The name of the route.')
-output name string = afd_endpoint_route.name
+output name string = route.name
 
 @description('The ID of the route.')
-output resourceId string = afd_endpoint_route.id
+output resourceId string = route.id
 
 @description('The name of the resource group the route was created in.')
 output resourceGroupName string = resourceGroup().name

@@ -37,7 +37,7 @@ resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName
 }
 
-resource afd_endpoint 'Microsoft.Cdn/profiles/afdEndpoints@2023-05-01' = {
+resource afdEndpoint 'Microsoft.Cdn/profiles/afdEndpoints@2023-05-01' = {
   name: name
   parent: profile
   location: location
@@ -48,12 +48,12 @@ resource afd_endpoint 'Microsoft.Cdn/profiles/afdEndpoints@2023-05-01' = {
   }
 }
 
-module afd_endpoint_route 'route/main.bicep' = [for route in (routes ?? []): {
+module afdEndpoint_routes 'route/main.bicep' = [for route in (routes ?? []): {
   name: '${uniqueString(deployment().name, route.name)}-Profile-AfdEndpoint-Route'
   params: {
     name: route.name
     profileName: profile.name
-    afdEndpointName: afd_endpoint.name
+    afdEndpointName: afdEndpoint.name
     cacheConfiguration: route.?cacheConfiguration
     customDomainName: route.?customDomainName
     enabledState: route.?enabledState
@@ -69,13 +69,13 @@ module afd_endpoint_route 'route/main.bicep' = [for route in (routes ?? []): {
 }]
 
 @description('The name of the AFD Endpoint.')
-output name string = afd_endpoint.name
+output name string = afdEndpoint.name
 
 @description('The resource id of the AFD Endpoint.')
-output resourceId string = afd_endpoint.id
+output resourceId string = afdEndpoint.id
 
 @description('The name of the resource group the endpoint was created in.')
 output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
-output location string = afd_endpoint.location
+output location string = afdEndpoint.location

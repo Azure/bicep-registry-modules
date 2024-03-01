@@ -15,12 +15,12 @@ resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName
 }
 
-resource rule_set 'Microsoft.Cdn/profiles/ruleSets@2023-05-01' = {
+resource ruleSet 'Microsoft.Cdn/profiles/ruleSets@2023-05-01' = {
   name: name
   parent: profile
 }
 
-module rule 'rule/main.bicep' = [for (rule, index) in (rules ?? []): {
+module ruleSet_rules 'rule/main.bicep' = [for (rule, index) in (rules ?? []): {
   name: '${uniqueString(deployment().name)}-RuleSet-Rule-${rule.name}-${index}'
   params: {
     profileName: profileName
@@ -34,10 +34,10 @@ module rule 'rule/main.bicep' = [for (rule, index) in (rules ?? []): {
 }]
 
 @description('The name of the rule set.')
-output name string = rule_set.name
+output name string = ruleSet.name
 
 @description('The resource id of the rule set.')
-output resourceId string = rule_set.id
+output resourceId string = ruleSet.id
 
 @description('The name of the resource group the custom domain was created in.')
 output resourceGroupName string = resourceGroup().name
