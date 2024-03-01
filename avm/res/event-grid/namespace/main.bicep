@@ -1,26 +1,37 @@
-metadata name = '<Add module name>'
-metadata description = '<Add description>'
+metadata name = 'Event Grid Namespaces'
+metadata description = 'This module deploys an Event Grid Namespace.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. Name of the resource to create.')
+@minLength(3)
+@maxLength(50)
+@description('Required. Name of the Event Grid Namespace to create.')
 param name string
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
+@sys.description('Optional. Resource tags.')
+param tags object?
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-//
-// Add your parameters here
-//
+@description('Optional. The managed identity definition for this resource.')
+param managedIdentities managedIdentitiesType
+
+var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+
+var identity = !empty(managedIdentities) ? {
+  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+} : null
 
 // ============== //
 // Resources      //
 // ============== //
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.[[REPLACE WITH TELEMETRY IDENTIFIER]].${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.46d3xbcp.res.eventgrid-namespace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -37,28 +48,35 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-//
-// Add your resources here
-//
+resource namespace 'Microsoft.EventGrid/namespaces@2023-12-15-preview' = {
+  name: name
+  location: location
+  tags: tags
+  identity: identity
+  properties: {}
+}
 
 // ============ //
 // Outputs      //
 // ============ //
 
-// Add your outputs here
+@description('The resource ID of the resource.')
+output resourceId string = namespace.id
 
-// @description('The resource ID of the resource.')
-// output resourceId string = <Resource>.id
+@description('The name of the resource.')
+output name string = namespace.name
 
-// @description('The name of the resource.')
-// output name string = <Resource>.name
-
-// @description('The location the resource was deployed into.')
-// output location string = <Resource>.location
+@description('The location the resource was deployed into.')
+output location string = namespace.location
 
 // ================ //
 // Definitions      //
 // ================ //
 //
-// Add your User-defined-types here, if any
-//
+type managedIdentitiesType = {
+  @description('Optional. Enables system assigned managed identity on the resource.')
+  systemAssigned: bool?
+
+  @description('Optional. The resource ID(s) to assign to the resource.')
+  userAssignedResourceIds: string[]?
+}?
