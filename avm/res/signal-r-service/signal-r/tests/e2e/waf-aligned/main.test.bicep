@@ -56,10 +56,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     clientCertEnabled: false
     disableAadAuth: false
     disableLocalAuth: true
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     kind: 'SignalR'
     networkAcls: {
       defaultAction: 'Allow'
@@ -97,13 +93,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     resourceLogConfigurationsToEnable: [
       'ConnectivityLogs'
-    ]
-    roleAssignments: [
-      {
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        roleDefinitionIdOrName: 'Reader'
-        principalType: 'ServicePrincipal'
-      }
     ]
     sku: 'Standard_S1'
     tags: {
