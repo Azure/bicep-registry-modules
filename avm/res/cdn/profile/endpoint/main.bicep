@@ -39,8 +39,8 @@ module endpoint_origins 'origin/main.bicep' = [for origin in properties.origins:
     httpPort: origin.properties.?httpPort
     httpsPort: origin.properties.?httpsPort
     enabled: origin.properties.enabled
-    priority: origin.properties.?priority ?? -1
-    weight: origin.properties.?weight ?? -1
+    priority: origin.properties.?priority
+    weight: origin.properties.?weight
     originHostHeader: origin.properties.?originHostHeader
     privateLinkAlias: origin.properties.?privateLinkAlias
     privateLinkLocation: origin.properties.?privateLinkLocation
