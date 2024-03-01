@@ -137,7 +137,7 @@ module profile_endpoint 'endpoint/main.bicep' = if (!empty(endpointProperties)) 
   }
 }
 
-module profile_secret 'secret/main.bicep' = [for (secret, index) in secrets: {
+module profile_secrets 'secret/main.bicep' = [for (secret, index) in secrets: {
   name: '${uniqueString(deployment().name)}-Profile-Secret-${index}'
   params: {
     name: secret.name
