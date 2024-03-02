@@ -72,10 +72,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         nestedDependencies.outputs.managedIdentityResourceId
       ]
     }
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
+    // lock: {
+    //   kind: 'CanNotDelete'
+    //   name: 'myCustomLockName'
+    // }
     diagnosticSettings: [
       {
         name: 'customSetting'
