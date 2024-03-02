@@ -34,6 +34,9 @@ param roleAssignments roleAssignmentType
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointType
 
+@description('Optional. All namespace topics to create.')
+param topics array?
+
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
 var identity = !empty(managedIdentities) ? {
@@ -174,7 +177,18 @@ resource namespace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
   scope: namespace
 }]
 
-resource n
+module namespace_topics 'topic/main.bicep' = [for (topic, index) in (topics ?? []): {
+  name: '${uniqueString(deployment().name, location)}-Namespace-Topic-${index}'
+  params: {
+    name: topic.name
+    namespaceName: namespace.name
+    eventRetentionInDays: topic.?eventRetentionInDays
+    inputSchema: topic.?inputSchema
+    publisherType: topic.?publisherType
+    roleAssignments: topic.?roleAssignments
+  }
+}]
+
 // ============ //
 // Outputs      //
 // ============ //
