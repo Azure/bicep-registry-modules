@@ -186,6 +186,7 @@ module namespace_topics 'topic/main.bicep' = [for (topic, index) in (topics ?? [
     inputSchema: topic.?inputSchema
     publisherType: topic.?publisherType
     roleAssignments: topic.?roleAssignments
+    eventSubscriptions: topic.?eventSubscriptions
   }
 }]
 

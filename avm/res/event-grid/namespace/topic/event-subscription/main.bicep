@@ -1,27 +1,27 @@
-metadata name = 'Eventgrid Namespace Topics'
-metadata description = 'This module deploys an Eventgrid Namespace Topic.'
+metadata name = 'Event Subscriptions'
+metadata description = 'This module deploys an Event Subscription.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent EventGrid namespace. Required if the template is used in a standalone deployment.')
 param namespaceName string
 
-@description('Required. Name of the topic.')
+@description('Conditional. The name of the parent EventGrid namespace topic. Required if the template is used in a standalone deployment.')
+param topicName string
+
+@description('Required. Name of the resource to create.')
 param name string
+
+@description('Optional. Information about the delivery configuration of the event subscription.')
+param deliveryConfiguration object?
+
+@description('Optional. The event delivery schema for the event subscription.')
+param eventDeliverySchema string = 'CloudEventSchemaV1_0'
+
+@description('Optional. Information about the filter for the event subscription.')
+param filtersConfiguration object?
 
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
-
-@description('Optional. Event retention for the namespace topic expressed in days.')
-param eventRetentionInDays int = 1
-
-@description('Optional. This determines the format that is expected for incoming events published to the topic.')
-param inputSchema string = 'CloudEventSchemaV1_0'
-
-@description('Optional. Publisher type of the namespace topic.')
-param publisherType string = 'Custom'
-
-@description('Optional. All event subscriptions to create.')
-param eventSubscriptions array?
 
 var builtInRoleNames = {
   'Azure Resource Notifications System Topics Subscriber': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0b962ed2-6d56-471c-bd5f-3477d83a7ba4')
@@ -44,20 +44,24 @@ var builtInRoleNames = {
 
 resource namespace 'Microsoft.EventGrid/namespaces@2023-12-15-preview' existing = {
   name: namespaceName
-}
 
-resource topic 'Microsoft.EventGrid/namespaces/topics@2023-12-15-preview' = {
-  name: name
-  parent: namespace
-  properties: {
-    eventRetentionInDays: eventRetentionInDays
-    inputSchema: inputSchema
-    publisherType: publisherType
+  resource topic 'topics@2023-12-15-preview' existing = {
+    name: topicName
   }
 }
 
-resource topic_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(topic.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+resource eventSubscription 'Microsoft.EventGrid/namespaces/topics/eventSubscriptions@2023-12-15-preview' = {
+  name: name
+  parent: namespace::topic
+  properties: {
+    deliveryConfiguration: deliveryConfiguration
+    eventDeliverySchema: eventDeliverySchema
+    filtersConfiguration: filtersConfiguration
+  }
+}
+
+resource eventSubscription_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
+  name: guid(eventSubscription.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
   properties: {
     roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
     principalId: roleAssignment.principalId
@@ -67,31 +71,20 @@ resource topic_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-
     conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
     delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
   }
-  scope: topic
-}]
-
-module topic_eventSubscriptions 'event-subscription/main.bicep' = [for (eventSubscription, index) in (eventSubscriptions ?? []): {
-  name: '${uniqueString(deployment().name, topic.name)}-Topic-EventSubscription-${index}'
-  params: {
-    name: eventSubscription.name
-    namespaceName: namespace.name
-    topicName: topic.name
-    deliveryConfiguration: eventSubscription.?deliveryConfiguration
-    eventDeliverySchema: eventSubscription.?eventDeliverySchema
-    filtersConfiguration: eventSubscription.?filtersConfiguration
-    roleAssignments: eventSubscription.?roleAssignments
-  }
+  scope: eventSubscription
 }]
 
 // ============ //
 // Outputs      //
 // ============ //
 
-@description('The resource ID of the namespace topic.')
-output resourceId string = topic.id
+// Add your outputs here
 
-@description('The name of the namespace topic.')
-output name string = topic.name
+@description('The resource ID of the resource.')
+output resourceId string = eventSubscription.id
+
+@description('The name of the resource.')
+output name string = eventSubscription.name
 
 @description('The name of the resource group the namespace topic was created in.')
 output resourceGroupName string = resourceGroup().name
