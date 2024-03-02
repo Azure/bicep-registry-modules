@@ -41,5 +41,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     // You parameters go here
     name: '${namePrefix}${serviceShort}001'
+    location: resourceLocation
   }
 }]
