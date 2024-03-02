@@ -37,6 +37,8 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    eventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -49,8 +51,8 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${uniqueString(serviceShort)}-evh-01'
+    eventHubNamespaceName: 'dep-${uniqueString(serviceShort)}-evh-01'
     location: resourceLocation
   }
 }
@@ -134,26 +136,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     topics: [
       {
         name: 'topic1'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Owner'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-          {
-            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-          {
-            roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
-      }
-      {
-        name: 'topic2'
+        eventRetentionInDays: 7
         eventSubscriptions: [
           {
             name: 'subscription1'
@@ -174,11 +157,87 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
                 principalType: 'ServicePrincipal'
               }
             ]
+            deliveryConfiguration: {
+              deliveryMode: 'Queue'
+              queue: {
+                receiveLockDurationInSeconds: 60
+                maxDeliveryCount: 10
+                eventTimeToLive: 'P7D'
+              }
+            }
           }
           {
             name: 'subscription2'
+            deliveryConfiguration: {
+              deliveryMode: 'Push'
+              push: {
+                maxDeliveryCount: 10
+                eventTimeToLive: 'P7D'
+                deliveryWithResourceIdentity: {
+                  identity: {
+                    type: 'UserAssigned'
+                    userAssignedIdentity: nestedDependencies.outputs.managedIdentityResourceId
+                  }
+                  destination: {
+                    endpointType: 'EventHub'
+                    properties: {
+                      resourceId: nestedDependencies.outputs.eventHubResourceId
+                      deliveryAttributeMappings: [
+                        {
+                          properties: {
+                            value: 'staticVaule'
+                            isSecret: false
+                          }
+                          name: 'StaticHeader1'
+                          type: 'Static'
+                        }
+                        {
+                          properties: {
+                            sourceField: 'id'
+                          }
+                          name: 'DynamicHeader1'
+                          type: 'Dynamic'
+                        }
+                        {
+                          properties: {
+                            value: 'Hidden'
+                            isSecret: true
+                          }
+                          name: 'StaticSecretHeader1'
+                          type: 'Static'
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
           }
         ]
+      }
+      {
+        name: 'topic2'
+        roleAssignments: [
+          {
+            roleDefinitionIdOrName: 'Owner'
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+          {
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+          {
+            roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+        ]
+        lock: {
+          kind: 'CanNotDelete'
+          name: 'myCustomLockName'
+        }
       }
     ]
   }

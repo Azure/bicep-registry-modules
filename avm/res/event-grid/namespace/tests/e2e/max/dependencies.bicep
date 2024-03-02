@@ -7,6 +7,12 @@ param virtualNetworkName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
+@description('Required. The name of the Event Hub Namespace to create.')
+param eventHubNamespaceName string
+
+@description('Required. The name of the Event Hub to create.')
+param eventHubName string
+
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
@@ -50,6 +56,30 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
+resource eventHubNamespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' = {
+  name: eventHubNamespaceName
+  location: location
+  properties: {
+    zoneRedundant: false
+    isAutoInflateEnabled: false
+    maximumThroughputUnits: 0
+  }
+
+  resource eventHub 'eventhubs@2022-10-01-preview' = {
+    name: eventHubName
+  }
+}
+
+resource eventHubNamespaceRbacAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(managedIdentity.id, 'evhrbacAssignment')
+  scope: eventHubNamespace
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2b629674-e913-4c01-ae53-ef4638d8f975') // Azure Event Hubs Data Sender
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
@@ -61,3 +91,12 @@ output managedIdentityResourceId string = managedIdentity.id
 
 @description('The resource ID of the created Private DNS Zone.')
 output privateDNSZoneResourceId string = privateDNSZone.id
+
+@description('The name of the Event Hub Namespace.')
+output eventhubNamespaceName string = eventHubNamespace.name
+
+@description('The resource ID of the created Event Hub Namespace.')
+output eventHubResourceId string = eventHubNamespace::eventHub.id
+
+@description('The name of the Event Hub.')
+output eventhubName string = eventHubNamespace::eventHub.name
