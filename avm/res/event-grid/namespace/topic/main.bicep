@@ -11,6 +11,11 @@ param name string
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
+@description('Optional. The lock settings of the service.')
+param lock lockType
+
+@minValue(1)
+@maxValue(7)
 @description('Optional. Event retention for the namespace topic expressed in days.')
 param eventRetentionInDays int = 1
 
@@ -56,6 +61,15 @@ resource topic 'Microsoft.EventGrid/namespaces/topics@2023-12-15-preview' = {
   }
 }
 
+resource topic_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+  }
+  scope: topic
+}
+
 resource topic_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
   name: guid(topic.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
   properties: {
@@ -99,6 +113,14 @@ output resourceGroupName string = resourceGroup().name
 // ================ //
 // Definitions      //
 // ================ //
+
+type lockType = {
+  @sys.description('Optional. Specify the name of lock.')
+  name: string?
+
+  @sys.description('Optional. Specify the type of lock.')
+  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
+}?
 
 type roleAssignmentType = {
   @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
