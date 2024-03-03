@@ -10,7 +10,7 @@ param name string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-@sys.description('Optional. Resource tags.')
+@description('Optional. Resource tags.')
 param tags object?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -36,6 +36,33 @@ param privateEndpoints privateEndpointType
 
 @description('Optional. All namespace topics to create.')
 param topics array?
+
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+@description('Optional. Indicate if Topic Spaces Configuration is enabled for the namespace.')
+param topicSpacesState string = 'Disabled'
+
+@allowed([
+  'ClientCertificateDns'
+  'ClientCertificateEmail'
+  'ClientCertificateIp'
+  'ClientCertificateSubject'
+  'ClientCertificateUri'
+])
+@description('Optional. Alternative authentication name sources related to client authentication settings for namespace resource. This will only take effect if \'topicSpacesState\' is set to \'Enabled\'.')
+param alternativeAuthenticationNameSources array?
+
+@minValue(1)
+@maxValue(8)
+@description('Optional. The maximum session expiry in hours. This will only take effect if \'topicSpacesState\' is set to \'Enabled\'.')
+param maximumSessionExpiryInHours int = 1
+
+@minValue(1)
+@maxValue(100)
+@description('Optional. The maximum number of sessions per authentication name. This will only take effect if \'topicSpacesState\' is set to \'Enabled\'.')
+param maximumClientSessionsPerAuthenticationName int = 1
 
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
@@ -86,7 +113,16 @@ resource namespace 'Microsoft.EventGrid/namespaces@2023-12-15-preview' = {
   location: location
   tags: tags
   identity: identity
-  properties: {}
+  properties: {
+    topicSpacesConfiguration: topicSpacesState == 'Enabled' ? {
+      state: topicSpacesState
+      clientAuthentication: !empty(alternativeAuthenticationNameSources) ? {
+        alternativeAuthenticationNameSources: alternativeAuthenticationNameSources
+      } : null
+      maximumSessionExpiryInHours: maximumSessionExpiryInHours
+      maximumClientSessionsPerAuthenticationName: maximumClientSessionsPerAuthenticationName
+    } : null
+  }
 }
 
 resource namespace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
@@ -203,7 +239,7 @@ output name string = namespace.name
 @description('The location the resource was deployed into.')
 output location string = namespace.location
 
-@sys.description('The principal ID of the system assigned identity.')
+@description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string = namespace.?identity.?principalId ?? ''
 
 // ================ //
@@ -219,147 +255,147 @@ type managedIdentitiesType = {
 }?
 
 type lockType = {
-  @sys.description('Optional. Specify the name of lock.')
+  @description('Optional. Specify the name of lock.')
   name: string?
 
-  @sys.description('Optional. Specify the type of lock.')
+  @description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
 
 type roleAssignmentType = {
-  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
-  @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
+  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
   principalId: string
 
-  @sys.description('Optional. The principal type of the assigned principal ID.')
+  @description('Optional. The principal type of the assigned principal ID.')
   principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
 
-  @sys.description('Optional. The description of the role assignment.')
+  @description('Optional. The description of the role assignment.')
   description: string?
 
-  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
+  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
-  @sys.description('Optional. Version of the condition.')
+  @description('Optional. Version of the condition.')
   conditionVersion: '2.0'?
 
-  @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
+  @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
 
 type privateEndpointType = {
-  @sys.description('Optional. The name of the private endpoint.')
+  @description('Optional. The name of the private endpoint.')
   name: string?
 
-  @sys.description('Optional. The location to deploy the private endpoint to.')
+  @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
-  @sys.description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
+  @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
   service: string?
 
-  @sys.description('Required. Resource ID of the subnet where the endpoint needs to be created.')
+  @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @sys.description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
+  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
   privateDnsZoneGroupName: string?
 
-  @sys.description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
+  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
   privateDnsZoneResourceIds: string[]?
 
-  @sys.description('Optional. If Manual Private Link Connection is required.')
+  @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
 
-  @sys.description('Optional. A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars.')
+  @description('Optional. A message passed to the owner of the remote resource with the manual connection request. Restricted to 140 chars.')
   manualConnectionRequestMessage: string?
 
-  @sys.description('Optional. Custom DNS configurations.')
+  @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @sys.description('Required. Fqdn that resolves to private endpoint IP address.')
+    @description('Required. Fqdn that resolves to private endpoint IP address.')
     fqdn: string?
 
-    @sys.description('Required. A list of private IP addresses of the private endpoint.')
+    @description('Required. A list of private IP addresses of the private endpoint.')
     ipAddresses: string[]
   }[]?
 
-  @sys.description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
+  @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
   ipConfigurations: {
-    @sys.description('Required. The name of the resource that is unique within a resource group.')
+    @description('Required. The name of the resource that is unique within a resource group.')
     name: string
 
-    @sys.description('Required. Properties of private endpoint IP configurations.')
+    @description('Required. Properties of private endpoint IP configurations.')
     properties: {
-      @sys.description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
+      @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
       groupId: string
 
-      @sys.description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
+      @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
       memberName: string
 
-      @sys.description('Required. A private IP address obtained from the private endpoint\'s subnet.')
+      @description('Required. A private IP address obtained from the private endpoint\'s subnet.')
       privateIPAddress: string
     }
   }[]?
 
-  @sys.description('Optional. Application security groups in which the private endpoint IP configuration is included.')
+  @description('Optional. Application security groups in which the private endpoint IP configuration is included.')
   applicationSecurityGroupResourceIds: string[]?
 
-  @sys.description('Optional. The custom name of the network interface attached to the private endpoint.')
+  @description('Optional. The custom name of the network interface attached to the private endpoint.')
   customNetworkInterfaceName: string?
 
-  @sys.description('Optional. Specify the type of lock.')
+  @description('Optional. Specify the type of lock.')
   lock: lockType
 
-  @sys.description('Optional. Array of role assignments to create.')
+  @description('Optional. Array of role assignments to create.')
   roleAssignments: roleAssignmentType
 
-  @sys.description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
+  @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
   tags: object?
 
-  @sys.description('Optional. Enable/Disable usage telemetry for module.')
+  @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
 }[]?
 
 type diagnosticSettingType = {
-  @sys.description('Optional. The name of diagnostic setting.')
+  @description('Optional. The name of diagnostic setting.')
   name: string?
 
-  @sys.description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
+  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
   logCategoriesAndGroups: {
-    @sys.description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
+    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
     category: string?
 
-    @sys.description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
+    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
     categoryGroup: string?
 
-    @sys.description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
     enabled: bool?
   }[]?
 
-  @sys.description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
+  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
   metricCategories: {
-    @sys.description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
+    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
     category: string
 
-    @sys.description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
     enabled: bool?
   }[]?
 
-  @sys.description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
+  @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
   logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
 
-  @sys.description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
   workspaceResourceId: string?
 
-  @sys.description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
   storageAccountResourceId: string?
 
-  @sys.description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
+  @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
   eventHubAuthorizationRuleResourceId: string?
 
-  @sys.description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
   eventHubName: string?
 
-  @sys.description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
+  @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
 }[]?

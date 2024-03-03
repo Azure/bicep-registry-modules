@@ -51,8 +51,8 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${uniqueString(serviceShort)}-evh-01'
-    eventHubNamespaceName: 'dep-${uniqueString(serviceShort)}-evh-01'
+    eventHubNamespaceEventHubName: 'dep-${uniqueString(serviceShort, namePrefix)}-evh-01'
+    eventHubNamespaceName: 'dep-${uniqueString(serviceShort, namePrefix)}-evh-01'
     location: resourceLocation
   }
 }
@@ -239,6 +239,13 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           name: 'myCustomLockName'
         }
       }
+    ]
+    topicSpacesState: 'Enabled'
+    maximumClientSessionsPerAuthenticationName: 95
+    maximumSessionExpiryInHours: 6
+    alternativeAuthenticationNameSources: [
+      'ClientCertificateEmail'
+      'ClientCertificateUri'
     ]
   }
 }]
