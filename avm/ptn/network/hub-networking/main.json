@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "7415413912270545661"
+      "templateHash": "10437701377988253946"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.",
@@ -223,6 +223,122 @@
         }
       },
       "nullable": true
+    },
+    "hubVirtualNetworkType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the virtual network."
+          }
+        },
+        "addressPrefixes": {
+          "type": "array",
+          "metadata": {
+            "description": "Required. The address prefixes for the virtual network."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The location of the virtual network. Defaults to the location of the resource group."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tags of the virtual network."
+          }
+        },
+        "lock": {
+          "$ref": "#/definitions/lockType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The lock settings of the virtual network."
+          }
+        },
+        "diagnosticSettings": {
+          "$ref": "#/definitions/diagnosticSettingType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The diagnostic settings of the virtual network."
+          }
+        },
+        "roleAssignments": {
+          "$ref": "#/definitions/roleAssignmentType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The role assignments to create."
+          }
+        },
+        "ddosProtectionPlanResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The DDoS protection plan resource ID."
+          }
+        },
+        "dnsServers": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The DNS servers of the virtual network."
+          }
+        },
+        "flowTimeoutInMinutes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The flow timeout in minutes."
+          }
+        },
+        "peerings": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The peerings of the virtual network."
+          }
+        },
+        "subnets": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The subnets of the virtual network."
+          }
+        },
+        "vnetEncryption": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable VNet encryption."
+          }
+        },
+        "vnetEncryptionEnforcement": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The VNet encryption enforcement settings of the virtual network."
+          }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
+          }
+        },
+        "peeringEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable peering for the virtual network."
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -246,28 +362,8 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
-    "lock": {
-      "$ref": "#/definitions/lockType",
-      "metadata": {
-        "description": "Optional. The lock settings of the service."
-      }
-    },
-    "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
-      "metadata": {
-        "description": "Optional. Array of role assignments to create."
-      }
-    },
-    "tags": {
-      "type": "object",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Tags of the resource."
-      }
-    },
     "hubVirtualNetworks": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/hubVirtualNetworkType",
       "metadata": {
         "description": "Optional. A map of the hub virtual networks to create."
       }
@@ -284,7 +380,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
-      "name": "[format('46d3xbcp.ptn.network-hub-networking.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.ptn.network-hubnetworking.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -301,13 +397,17 @@
       }
     },
     "hubVirtualNetwork_lock": {
-      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "copy": {
+        "name": "hubVirtualNetwork_lock",
+        "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]"
+      },
+      "condition": "[and(not(empty(coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.lock, createObject()))), not(equals(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.lock, 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "name": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.lock, 'name'), format('lock-{0}', items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.name))]",
       "properties": {
-        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "level": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.lock, 'kind'), '')]",
+        "notes": "[if(equals(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.lock, 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
       }
     },
     "hubVirtualNetwork_diagnosticSettings": {
@@ -350,11 +450,11 @@
     "hubVirtualNetwork": {
       "copy": {
         "name": "hubVirtualNetwork",
-        "count": "[length(items(parameters('hubVirtualNetworks')))]"
+        "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}', uniqueString(deployment().name, parameters('location')), items(parameters('hubVirtualNetworks'))[copyIndex()].value.name)]",
+      "name": "[format('{0}-{1}', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -362,49 +462,47 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[items(parameters('hubVirtualNetworks'))[copyIndex()].value.name]"
+            "value": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.name]"
           },
           "addressPrefixes": {
-            "value": "[items(parameters('hubVirtualNetworks'))[copyIndex()].value.addressPrefixes]"
+            "value": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.addressPrefixes]"
           },
           "ddosProtectionPlanResourceId": {
-            "value": "[items(parameters('hubVirtualNetworks'))[copyIndex()].value.ddosProtectionPlanResourceId]"
+            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.ddosProtectionPlanResourceId, '')]"
           },
           "diagnosticSettings": {
-            "value": "[items(parameters('hubVirtualNetworks'))[copyIndex()].value.diagnosticSettings]"
+            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.diagnosticSettings, createArray())]"
           },
           "dnsServers": {
-            "value": "[items(parameters('hubVirtualNetworks'))[copyIndex()].value.dnsServers]"
+            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.dnsServers, createArray())]"
           },
           "enableTelemetry": {
-            "value": "[items(parameters('hubVirtualNetworks'))[copyIndex()].value.enableTelemetry]"
+            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableTelemetry, true())]"
           },
           "flowTimeoutInMinutes": {
-            "value": "[items(parameters('hubVirtualNetworks'))[copyIndex()].value.flowTimeoutInMinutes]"
+            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.flowTimeoutInMinutes, 0)]"
           },
           "location": {
-            "value": "[items(parameters('hubVirtualNetworks'))[copyIndex()].value.location]"
+            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.location, '')]"
           },
           "lock": {
-            "value": "[items(parameters('hubVirtualNetworks'))[copyIndex()].value.lock]"
+            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.lock, createObject())]"
           },
-          "peerings": {
-            "value": "[items(parameters('hubVirtualNetworks'))[copyIndex()].value.peerings]"
-          },
+          "peerings": "[if(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.peeringEnabled, createObject('value', items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.peerings), createObject('value', createArray()))]",
           "roleAssignments": {
-            "value": "[items(parameters('hubVirtualNetworks'))[copyIndex()].value.roleAssignments]"
+            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.roleAssignments, createArray())]"
           },
           "subnets": {
-            "value": "[items(parameters('hubVirtualNetworks'))[copyIndex()].value.subnets]"
+            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.subnets, createArray())]"
           },
           "tags": {
-            "value": "[items(parameters('hubVirtualNetworks'))[copyIndex()].value.tags]"
+            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.tags, createObject())]"
           },
           "vnetEncryption": {
-            "value": "[items(parameters('hubVirtualNetworks'))[copyIndex()].value.vnetEncryption]"
+            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.vnetEncryption, false())]"
           },
           "vnetEncryptionEnforcement": {
-            "value": "[items(parameters('hubVirtualNetworks'))[copyIndex()].value.vnetEncryptionEnforcement]"
+            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.vnetEncryptionEnforcement, '')]"
           }
         },
         "template": {
@@ -1548,9 +1646,9 @@
         "description": "The names of the Hub Networks."
       },
       "copy": {
-        "count": "[length(range(0, length(parameters('hubVirtualNetworks'))))]",
+        "count": "[length(range(0, length(coalesce(parameters('hubVirtualNetworks'), createObject()))))]",
         "input": {
-          "name": "[reference(format('hubVirtualNetwork[{0}]', range(0, length(parameters('hubVirtualNetworks')))[copyIndex()])).outputs.name.value]"
+          "name": "[reference(format('hubVirtualNetwork[{0}]', range(0, length(coalesce(parameters('hubVirtualNetworks'), createObject())))[copyIndex()])).outputs.name.value]"
         }
       }
     },
@@ -1560,9 +1658,9 @@
         "description": "The resource group names of the Hub Networks."
       },
       "copy": {
-        "count": "[length(range(0, length(parameters('hubVirtualNetworks'))))]",
+        "count": "[length(range(0, length(coalesce(parameters('hubVirtualNetworks'), createObject()))))]",
         "input": {
-          "resourceGroupName": "[reference(format('hubVirtualNetwork[{0}]', range(0, length(parameters('hubVirtualNetworks')))[copyIndex()])).outputs.resourceGroupName.value]"
+          "resourceGroupName": "[reference(format('hubVirtualNetwork[{0}]', range(0, length(coalesce(parameters('hubVirtualNetworks'), createObject())))[copyIndex()])).outputs.resourceGroupName.value]"
         }
       }
     }

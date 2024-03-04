@@ -31,8 +31,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/network/hub-networking:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Max](#example-2-max)
+- [Waf-Aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -82,10 +82,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
-
-This instance deploys the module with most of its features enabled.
-
+### Example 2: _Max_
 
 <details>
 
@@ -284,10 +281,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
+### Example 3: _Waf-Aligned_
 
 <details>
 
@@ -329,20 +323,20 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           name: 'hub1CustomLockName'
         }
         name: 'hub1'
-        subnets: {
-          AzureBastionSubnet: {
-            addressPrefix: '<addressPrefix>'
-            name: 'AzureBastionSubnet'
-          }
-          AzureFirewallSubnet: {
-            addressPrefix: '<addressPrefix>'
-            name: 'AzureFirewallSubnet'
-          }
-          GatewaySubnet: {
+        subnets: [
+          {
             addressPrefix: '<addressPrefix>'
             name: 'GatewaySubnet'
           }
-        }
+          {
+            addressPrefix: '<addressPrefix>'
+            name: 'AzureFirewallSubnet'
+          }
+          {
+            addressPrefix: '<addressPrefix>'
+            name: 'AzureBastionSubnet'
+          }
+        ]
         tags: {
           Environment: 'Non-Prod'
           'hidden-title': 'This is visible in the resource name'
@@ -402,20 +396,20 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "name": "hub1CustomLockName"
           },
           "name": "hub1",
-          "subnets": {
-            "AzureBastionSubnet": {
+          "subnets": [
+            {
               "addressPrefix": "<addressPrefix>",
-              "name": "AzureBastionSubnet"
+              "name": "GatewaySubnet"
             },
-            "AzureFirewallSubnet": {
+            {
               "addressPrefix": "<addressPrefix>",
               "name": "AzureFirewallSubnet"
             },
-            "GatewaySubnet": {
+            {
               "addressPrefix": "<addressPrefix>",
-              "name": "GatewaySubnet"
+              "name": "AzureBastionSubnet"
             }
-          },
+          ],
           "tags": {
             "Environment": "Non-Prod",
             "hidden-title": "This is visible in the resource name",
@@ -451,7 +445,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`hubVirtualNetworks`](#parameter-hubvirtualnetworks) | object | A map of the hub virtual networks to create. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
-| [`lock`](#parameter-lock) | object | The lock settings of the service. |
 
 ### Parameter: `name`
 
@@ -620,19 +613,231 @@ A map of the hub virtual networks to create.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
-### Parameter: `location`
+**Required parameters**
 
-Location for all Resources.
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefixes`](#parameter-hubvirtualnetworksaddressprefixes) | array | The address prefixes for the virtual network. |
+| [`name`](#parameter-hubvirtualnetworksname) | string | The name of the virtual network. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ddosProtectionPlanResourceId`](#parameter-hubvirtualnetworksddosprotectionplanresourceid) | string | The DDoS protection plan resource ID. |
+| [`diagnosticSettings`](#parameter-hubvirtualnetworksdiagnosticsettings) | array | The diagnostic settings of the virtual network. |
+| [`dnsServers`](#parameter-hubvirtualnetworksdnsservers) | array | The DNS servers of the virtual network. |
+| [`enableTelemetry`](#parameter-hubvirtualnetworksenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`flowTimeoutInMinutes`](#parameter-hubvirtualnetworksflowtimeoutinminutes) | int | The flow timeout in minutes. |
+| [`location`](#parameter-hubvirtualnetworkslocation) | string | The location of the virtual network. Defaults to the location of the resource group. |
+| [`lock`](#parameter-hubvirtualnetworkslock) | object | The lock settings of the virtual network. |
+| [`peeringEnabled`](#parameter-hubvirtualnetworkspeeringenabled) | bool | Enable/Disable peering for the virtual network. |
+| [`peerings`](#parameter-hubvirtualnetworkspeerings) | array | The peerings of the virtual network. |
+| [`roleAssignments`](#parameter-hubvirtualnetworksroleassignments) | array | The role assignments to create. |
+| [`subnets`](#parameter-hubvirtualnetworkssubnets) | array | The subnets of the virtual network. |
+| [`tags`](#parameter-hubvirtualnetworkstags) | object | The tags of the virtual network. |
+| [`vnetEncryption`](#parameter-hubvirtualnetworksvnetencryption) | bool | Enable/Disable VNet encryption. |
+| [`vnetEncryptionEnforcement`](#parameter-hubvirtualnetworksvnetencryptionenforcement) | string | The VNet encryption enforcement settings of the virtual network. |
+
+### Parameter: `hubVirtualNetworks.addressPrefixes`
+
+The address prefixes for the virtual network.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `hubVirtualNetworks.name`
+
+The name of the virtual network.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `hubVirtualNetworks.ddosProtectionPlanResourceId`
+
+The DDoS protection plan resource ID.
 
 - Required: No
 - Type: string
-- Default: `[resourceGroup().location]`
 
-### Parameter: `lock`
+### Parameter: `hubVirtualNetworks.diagnosticSettings`
 
-The lock settings of the service.
+The diagnostic settings of the virtual network.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-hubvirtualnetworksdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-hubvirtualnetworksdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-hubvirtualnetworksdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-hubvirtualnetworksdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-hubvirtualnetworksdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-hubvirtualnetworksdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-hubvirtualnetworksdiagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-hubvirtualnetworksdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-hubvirtualnetworksdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `hubVirtualNetworks.diagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubVirtualNetworks.diagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubVirtualNetworks.diagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `hubVirtualNetworks.diagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-hubvirtualnetworksdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-hubvirtualnetworksdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-hubvirtualnetworksdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `hubVirtualNetworks.diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubVirtualNetworks.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubVirtualNetworks.diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `hubVirtualNetworks.diagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubVirtualNetworks.diagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-hubvirtualnetworksdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-hubvirtualnetworksdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `hubVirtualNetworks.diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `hubVirtualNetworks.diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `hubVirtualNetworks.diagnosticSettings.name`
+
+The name of diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubVirtualNetworks.diagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubVirtualNetworks.diagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubVirtualNetworks.dnsServers`
+
+The DNS servers of the virtual network.
+
+- Required: No
+- Type: array
+
+### Parameter: `hubVirtualNetworks.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+
+### Parameter: `hubVirtualNetworks.flowTimeoutInMinutes`
+
+The flow timeout in minutes.
+
+- Required: No
+- Type: int
+
+### Parameter: `hubVirtualNetworks.location`
+
+The location of the virtual network. Defaults to the location of the resource group.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubVirtualNetworks.lock`
+
+The lock settings of the virtual network.
 
 - Required: No
 - Type: object
@@ -641,10 +846,10 @@ The lock settings of the service.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
-| [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`kind`](#parameter-hubvirtualnetworkslockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-hubvirtualnetworkslockname) | string | Specify the name of lock. |
 
-### Parameter: `lock.kind`
+### Parameter: `hubVirtualNetworks.lock.kind`
 
 Specify the type of lock.
 
@@ -659,12 +864,151 @@ Specify the type of lock.
   ]
   ```
 
-### Parameter: `lock.name`
+### Parameter: `hubVirtualNetworks.lock.name`
 
 Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `hubVirtualNetworks.peeringEnabled`
+
+Enable/Disable peering for the virtual network.
+
+- Required: No
+- Type: bool
+
+### Parameter: `hubVirtualNetworks.peerings`
+
+The peerings of the virtual network.
+
+- Required: No
+- Type: array
+
+### Parameter: `hubVirtualNetworks.roleAssignments`
+
+The role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-hubvirtualnetworksroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-hubvirtualnetworksroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-hubvirtualnetworksroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-hubvirtualnetworksroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-hubvirtualnetworksroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-hubvirtualnetworksroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-hubvirtualnetworksroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `hubVirtualNetworks.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `hubVirtualNetworks.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `hubVirtualNetworks.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `hubVirtualNetworks.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `hubVirtualNetworks.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubVirtualNetworks.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubVirtualNetworks.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `hubVirtualNetworks.subnets`
+
+The subnets of the virtual network.
+
+- Required: No
+- Type: array
+
+### Parameter: `hubVirtualNetworks.tags`
+
+The tags of the virtual network.
+
+- Required: No
+- Type: object
+
+### Parameter: `hubVirtualNetworks.vnetEncryption`
+
+Enable/Disable VNet encryption.
+
+- Required: No
+- Type: bool
+
+### Parameter: `hubVirtualNetworks.vnetEncryptionEnforcement`
+
+The VNet encryption enforcement settings of the virtual network.
+
+- Required: No
+- Type: string
+
+### Parameter: `location`
+
+Location for all Resources.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
 
 
 ## Outputs

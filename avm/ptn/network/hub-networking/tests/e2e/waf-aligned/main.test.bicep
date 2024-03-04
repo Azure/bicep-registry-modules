@@ -62,7 +62,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     hubVirtualNetworks: {
       hub1: {
         name: 'hub1'
-        addressPrefixes: addressPrefix
+        addressPrefixes: array(addressPrefix)
         diagnosticSettings: [
           {
             name: 'customSetting'
@@ -85,20 +85,20 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         enableTelemetry: true
         flowTimeoutInMinutes: 20
         location: 'westeurope'
-        subnets: {
-          GatewaySubnet: {
+        subnets : [
+          {
             name: 'GatewaySubnet'
             addressPrefix: cidrSubnet(addressPrefix, 26, 0)
           }
-          AzureFirewallSubnet: {
+          {
             name: 'AzureFirewallSubnet'
             addressPrefix: cidrSubnet(addressPrefix, 26, 0)
           }
-          AzureBastionSubnet: {
+          {
             name: 'AzureBastionSubnet'
             addressPrefix: cidrSubnet(addressPrefix, 26, 0)
           }
-        }
+        ]
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'

@@ -15,9 +15,6 @@ param enableTelemetry bool = true
 // Add your parameters here
 //
 
-@description('Optional. The lock settings of the service.')
-param lock lockType
-
 @description('Optional. A map of the hub virtual networks to create.')
 param hubVirtualNetworks hubVirtualNetworkType
 
@@ -60,22 +57,22 @@ module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [fo
     flowTimeoutInMinutes: hub.value.flowTimeoutInMinutes ?? 0
     location: hub.value.location ?? ''
     lock: hub.value.lock ?? {}
-    peerings: hub.value.peerings ?? []
+    peerings                    : hub.value.peeringEnabled ? hub.value.peerings : []
     roleAssignments: hub.value.roleAssignments ?? []
     subnets: hub.value.subnets ?? []
     tags: hub.value.tags ?? {}
-    vnetEncryption: hub.value.vnetEncryption ?? {}
-    vnetEncryptionEnforcement: hub.value.vnetEncryptionEnforcement ?? {}
+    vnetEncryption: hub.value.vnetEncryption ?? false
+    vnetEncryptionEnforcement: hub.value.vnetEncryptionEnforcement ?? ''
   }
 }]
 
-resource hubVirtualNetwork_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
+resource hubVirtualNetwork_lock 'Microsoft.Authorization/locks@2020-05-01' = [for hub in items(hubVirtualNetworks ?? {}): if (!empty(hub.value.lock ?? {}) && hub.value.lock.?kind != 'None') {
+  name: hub.value.lock.?name ?? 'lock-${hub.value.name}'
   properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+    level: hub.value.lock.?kind ?? ''
+    notes: hub.value.lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
   }
-}
+}]
 
 resource hubVirtualNetwork_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
   name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
@@ -236,16 +233,16 @@ type hubVirtualNetworkType = {
   flowTimeoutInMinutes: int?
 
   @description('Optional. The peerings of the virtual network.')
-  peerings: object?
+  peerings: array?
 
   @description('Optional. The subnets of the virtual network.')
-  subnets: object?
+  subnets: array?
 
-  @description('Optional. The VNet encryption settings of the virtual network.')
-  vnetEncryption: object?
+  @description('Optional. Enable/Disable VNet encryption.')
+  vnetEncryption: bool?
 
   @description('Optional. The VNet encryption enforcement settings of the virtual network.')
-  vnetEncryptionEnforcement: object?
+  vnetEncryptionEnforcement: string?
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
