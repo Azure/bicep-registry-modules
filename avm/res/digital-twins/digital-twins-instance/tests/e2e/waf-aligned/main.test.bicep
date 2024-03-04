@@ -117,6 +117,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        service: 'API'
       }
     ]
     roleAssignments: [
