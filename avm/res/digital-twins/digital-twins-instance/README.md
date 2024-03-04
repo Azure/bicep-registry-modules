@@ -46,7 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-instance:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dtdtimin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dtdtimin'
   params: {
     name: 'dtdtimin001'
   }
@@ -86,7 +86,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-instance:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dtdtimax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dtdtimax'
   params: {
     // Required parameters
     name: 'dtdtimax001'
@@ -276,7 +276,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-instance:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dtdtiwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-dtdtiwaf'
   params: {
     // Required parameters
     name: 'dtdtiwaf001'
