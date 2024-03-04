@@ -2039,6 +2039,27 @@ Sets the resource access rules. Array entries must consist of "tenantId" and "re
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-networkaclsresourceaccessrulesresourceid) | string | The resource ID of the target service. Can also contain a wildcard, if multiple services e.g. in a resource group should be included. |
+| [`tenantId`](#parameter-networkaclsresourceaccessrulestenantid) | string | The ID of the tenant in which the resource resides in. |
+
+### Parameter: `networkAcls.resourceAccessRules.resourceId`
+
+The resource ID of the target service. Can also contain a wildcard, if multiple services e.g. in a resource group should be included.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkAcls.resourceAccessRules.tenantId`
+
+The ID of the tenant in which the resource resides in.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `networkAcls.virtualNetworkRules`
 
 Sets the virtual network rules.

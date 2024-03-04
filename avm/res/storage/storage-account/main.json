@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "2144667186349833922"
+      "templateHash": "6887152386156436186"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -132,6 +132,23 @@
       "properties": {
         "resourceAccessRules": {
           "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "tenantId": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The ID of the tenant in which the resource resides in."
+                }
+              },
+              "resourceId": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The resource ID of the target service. Can also contain a wildcard, if multiple services e.g. in a resource group should be included."
+                }
+              }
+            }
+          },
           "nullable": true,
           "metadata": {
             "description": "Optional. Sets the resource access rules. Array entries must consist of \"tenantId\" and \"resourceId\" fields only."
