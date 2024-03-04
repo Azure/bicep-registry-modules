@@ -56,10 +56,10 @@ Sets the attributes of the secret.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`attributes`](#parameter-keypropertiesattributes) | object | Contains attributes of the key. |
-| [`curveName`](#parameter-keypropertiescurvename) | string | The elliptic curve name. |
+| [`curveName`](#parameter-keypropertiescurvename) | string | The elliptic curve name. Default value is "P-256". |
 | [`keyOps`](#parameter-keypropertieskeyops) | array | The allowed operations on this key. |
 | [`keySize`](#parameter-keypropertieskeysize) | int | The key size in bits. |
-| [`kty`](#parameter-keypropertieskty) | string | The type of the key. |
+| [`kty`](#parameter-keypropertieskty) | string | The type of the key. Default value is "EC". |
 | [`releasePolicy`](#parameter-keypropertiesreleasepolicy) | object | Key release policy. |
 | [`roleAssignments`](#parameter-keypropertiesroleassignments) | array | Array of role assignments to create. |
 | [`rotationPolicy`](#parameter-keypropertiesrotationpolicy) | object | Key rotation policy. |
@@ -110,7 +110,7 @@ If set, defines the date from which onwards the key becomes valid. Defined in se
 
 ### Parameter: `keyProperties.curveName`
 
-The elliptic curve name.
+The elliptic curve name. Default value is "P-256".
 
 - Required: No
 - Type: string
@@ -161,7 +161,7 @@ The key size in bits.
 
 ### Parameter: `keyProperties.kty`
 
-The type of the key.
+The type of the key. Default value is "EC".
 
 - Required: No
 - Type: string

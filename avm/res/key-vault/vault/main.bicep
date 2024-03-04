@@ -501,7 +501,7 @@ type keyType = {
     @description('Optional. If set, defines the date from which onwards the key becomes valid. Defined in seconds since 1970-01-01T00:00:00Z.')
     nbf: int?
   }?
-  @description('Optional. The elliptic curve name.')
+  @description('Optional. The elliptic curve name. Default value is "P-256".')
   curveName: ('P-256' | 'P-256K' | 'P-384' | 'P-521')?
 
   @description('Optional. The allowed operations on this key.')
@@ -510,7 +510,7 @@ type keyType = {
   @description('Optional. The key size in bits.')
   keySize: (2048 | 3072 | 4096)?
 
-  @description('Optional. The type of the key.')
+  @description('Optional. The type of the key. Default value is "EC".')
   kty: ('EC' | 'EC-HSM' | 'RSA' | 'RSA-HSM')?
 
   @description('Optional. Key release policy.')

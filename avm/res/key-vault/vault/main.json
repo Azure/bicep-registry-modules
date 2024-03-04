@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "4886068303571988419"
+      "templateHash": "18108245291678716034"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -663,7 +663,7 @@
             ],
             "nullable": true,
             "metadata": {
-              "description": "Optional. The elliptic curve name."
+              "description": "Optional. The elliptic curve name. Default value is \"P-256\"."
             }
           },
           "keyOps": {
@@ -705,7 +705,7 @@
             ],
             "nullable": true,
             "metadata": {
-              "description": "Optional. The type of the key."
+              "description": "Optional. The type of the key. Default value is \"EC\"."
             }
           },
           "releasePolicy": {
@@ -1692,7 +1692,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.3.34343",
-              "templateHash": "8543911991532794354"
+              "templateHash": "4492220200871045953"
             },
             "name": "Key Vault Keys",
             "description": "This module deploys a Key Vault Key.",
@@ -1821,7 +1821,7 @@
                   ],
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The elliptic curve name."
+                    "description": "Optional. The elliptic curve name. Default value is \"P-256\"."
                   }
                 },
                 "keyOps": {
@@ -1863,7 +1863,7 @@
                   ],
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The type of the key."
+                    "description": "Optional. The type of the key. Default value is \"EC\"."
                   }
                 },
                 "releasePolicy": {
@@ -2033,10 +2033,10 @@
                   "exp": "[tryGet(parameters('keyProperties').attributes, 'exp')]",
                   "nbf": "[tryGet(parameters('keyProperties').attributes, 'nbf')]"
                 },
-                "curveName": "[tryGet(parameters('keyProperties'), 'curveName')]",
+                "curveName": "[coalesce(tryGet(parameters('keyProperties'), 'curveName'), 'P-256')]",
                 "keyOps": "[tryGet(parameters('keyProperties'), 'keyOps')]",
                 "keySize": "[tryGet(parameters('keyProperties'), 'keySize')]",
-                "kty": "[tryGet(parameters('keyProperties'), 'kty')]",
+                "kty": "[coalesce(tryGet(parameters('keyProperties'), 'kty'), 'EC')]",
                 "release_policy": "[coalesce(tryGet(parameters('keyProperties'), 'releasePolicy'), createObject())]",
                 "rotationPolicy": "[coalesce(tryGet(parameters('keyProperties'), 'rotationPolicy'), createObject())]"
               },

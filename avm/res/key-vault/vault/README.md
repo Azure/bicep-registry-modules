@@ -1404,10 +1404,10 @@ All keys to create.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`attributes`](#parameter-keysattributes) | object | Contains attributes of the key. |
-| [`curveName`](#parameter-keyscurvename) | string | The elliptic curve name. |
+| [`curveName`](#parameter-keyscurvename) | string | The elliptic curve name. Default value is "P-256". |
 | [`keyOps`](#parameter-keyskeyops) | array | The allowed operations on this key. |
 | [`keySize`](#parameter-keyskeysize) | int | The key size in bits. |
-| [`kty`](#parameter-keyskty) | string | The type of the key. |
+| [`kty`](#parameter-keyskty) | string | The type of the key. Default value is "EC". |
 | [`releasePolicy`](#parameter-keysreleasepolicy) | object | Key release policy. |
 | [`roleAssignments`](#parameter-keysroleassignments) | array | Array of role assignments to create. |
 | [`rotationPolicy`](#parameter-keysrotationpolicy) | object | Key rotation policy. |
@@ -1458,7 +1458,7 @@ If set, defines the date from which onwards the key becomes valid. Defined in se
 
 ### Parameter: `keys.curveName`
 
-The elliptic curve name.
+The elliptic curve name. Default value is "P-256".
 
 - Required: No
 - Type: string
@@ -1509,7 +1509,7 @@ The key size in bits.
 
 ### Parameter: `keys.kty`
 
-The type of the key.
+The type of the key. Default value is "EC".
 
 - Required: No
 - Type: string
