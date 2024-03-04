@@ -127,7 +127,7 @@ resource profile_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-0
   scope: profile
 }]
 
-module profile_endpoints 'endpoint/main.bicep' = if (!empty(endpointProperties)) {
+module profile_endpoint 'endpoint/main.bicep' = if (!empty(endpointProperties)) {
   name: '${uniqueString(deployment().name, location)}-Profile-Endpoint'
   params: {
     name: endpointName ?? '${profile.name}-endpoint'
