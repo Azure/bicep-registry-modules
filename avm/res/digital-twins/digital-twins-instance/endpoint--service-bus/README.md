@@ -161,6 +161,7 @@ SecondaryConnectionString of the endpoint for key-based authentication. Will be 
 | `name` | string | The name of the Endpoint. |
 | `resourceGroupName` | string | The name of the resource group the resource was created in. |
 | `resourceId` | string | The resource ID of the Endpoint. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 

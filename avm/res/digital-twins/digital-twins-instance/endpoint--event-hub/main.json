@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "3827044913364251160"
+      "version": "0.25.53.49325",
+      "templateHash": "5034915816999063148"
     },
     "name": "Digital Twins Instance EventHub Endpoint",
     "description": "This module deploys a Digital Twins Instance EventHub Endpoint.",
@@ -180,6 +180,13 @@
         "description": "The name of the Endpoint."
       },
       "value": "[parameters('name')]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[coalesce(tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId'), '')]"
     }
   }
 }

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "14446097959926541173"
+      "version": "0.25.53.49325",
+      "templateHash": "1816454950263065695"
     },
     "name": "Digital Twins Instance ServiceBus Endpoint",
     "description": "This module deploys a Digital Twins Instance ServiceBus Endpoint.",
@@ -180,6 +180,13 @@
         "description": "The name of the Endpoint."
       },
       "value": "[parameters('name')]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[coalesce(tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId'), '')]"
     }
   }
 }
