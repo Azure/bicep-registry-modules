@@ -57,7 +57,7 @@ Sets the attributes of the secret.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`attributes`](#parameter-secretpropertiesattributes) | object | Contains attributes of the secret. |
-| [`contentType`](#parameter-secretpropertiescontenttype) | securestring | The content type of the secret. |
+| [`contentType`](#parameter-secretpropertiescontenttype) | string | The content type of the secret. |
 | [`roleAssignments`](#parameter-secretpropertiesroleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-secretpropertiestags) | object | Resource tags. |
 
@@ -116,7 +116,7 @@ If set, defines the date from which onwards the secret becomes valid. Defined in
 The content type of the secret.
 
 - Required: No
-- Type: securestring
+- Type: string
 
 ### Parameter: `secretProperties.roleAssignments`
 
