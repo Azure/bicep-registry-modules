@@ -123,9 +123,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     softDeleteRetentionInDays: 7
     keys: [
       {
-        attributesExp: 1725109032
-        attributesNbf: 10000
         name: 'keyName'
+        attributes: {
+          exp: 1725109032
+          nbf: 10000
+        }
         roleAssignments: [
           {
             roleDefinitionIdOrName: 'Owner'

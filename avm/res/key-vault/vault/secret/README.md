@@ -79,7 +79,7 @@ The value of the secret. NOTE: "value" will never be returned from the service, 
 
 Contains attributes of the secret.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 **Optional parameters**

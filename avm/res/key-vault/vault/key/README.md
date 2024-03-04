@@ -19,12 +19,6 @@ This module deploys a Key Vault Key.
 
 ## Parameters
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the key. |
-
 **Conditional parameters**
 
 | Parameter | Type | Description |
@@ -35,23 +29,7 @@ This module deploys a Key Vault Key.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`attributesEnabled`](#parameter-attributesenabled) | bool | Determines whether the object is enabled. |
-| [`attributesExp`](#parameter-attributesexp) | int | Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible. |
-| [`attributesNbf`](#parameter-attributesnbf) | int | Not before date in seconds since 1970-01-01T00:00:00Z. |
-| [`curveName`](#parameter-curvename) | string | The elliptic curve name. |
-| [`keyOps`](#parameter-keyops) | array | Array of JsonWebKeyOperation. |
-| [`keySize`](#parameter-keysize) | int | The key size in bits. For example: 2048, 3072, or 4096 for RSA. |
-| [`kty`](#parameter-kty) | string | The type of the key. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`rotationPolicy`](#parameter-rotationpolicy) | object | Key rotation policy properties object. |
-| [`tags`](#parameter-tags) | object | Resource tags. |
-
-### Parameter: `name`
-
-The name of the key.
-
-- Required: Yes
-- Type: string
+| [`keyProperties`](#parameter-keyproperties) | object | Sets the attributes of the secret. |
 
 ### Parameter: `keyVaultName`
 
@@ -60,35 +38,82 @@ The name of the parent key vault. Required if the template is used in a standalo
 - Required: Yes
 - Type: string
 
-### Parameter: `attributesEnabled`
+### Parameter: `keyProperties`
 
-Determines whether the object is enabled.
+Sets the attributes of the secret.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-keypropertiesname) | string | The name of the key. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`attributes`](#parameter-keypropertiesattributes) | object | Contains attributes of the key. |
+| [`curveName`](#parameter-keypropertiescurvename) | string | The elliptic curve name. |
+| [`keyOps`](#parameter-keypropertieskeyops) | array | The allowed operations on this key. |
+| [`keySize`](#parameter-keypropertieskeysize) | int | The key size in bits. |
+| [`kty`](#parameter-keypropertieskty) | string |  |
+| [`releasePolicy`](#parameter-keypropertiesreleasepolicy) | object | Key release policy. |
+| [`roleAssignments`](#parameter-keypropertiesroleassignments) | array | Array of role assignments to create. |
+| [`rotationPolicy`](#parameter-keypropertiesrotationpolicy) | object | Key rotation policy. |
+| [`tags`](#parameter-keypropertiestags) | object | Resource tags. |
+
+### Parameter: `keyProperties.name`
+
+The name of the key.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `keyProperties.attributes`
+
+Contains attributes of the key.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-keypropertiesattributesenabled) | bool | Defines whether the key is enabled or disabled. |
+| [`exp`](#parameter-keypropertiesattributesexp) | int | Defines when the key will become invalid. Defined in seconds since 1970-01-01T00:00:00Z. |
+| [`nbf`](#parameter-keypropertiesattributesnbf) | int | If set, defines the date from which onwards the key becomes valid. Defined in seconds since 1970-01-01T00:00:00Z. |
+
+### Parameter: `keyProperties.attributes.enabled`
+
+Defines whether the key is enabled or disabled.
 
 - Required: No
 - Type: bool
-- Default: `True`
 
-### Parameter: `attributesExp`
+### Parameter: `keyProperties.attributes.exp`
 
-Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible.
-
-- Required: No
-- Type: int
-
-### Parameter: `attributesNbf`
-
-Not before date in seconds since 1970-01-01T00:00:00Z.
+Defines when the key will become invalid. Defined in seconds since 1970-01-01T00:00:00Z.
 
 - Required: No
 - Type: int
 
-### Parameter: `curveName`
+### Parameter: `keyProperties.attributes.nbf`
+
+If set, defines the date from which onwards the key becomes valid. Defined in seconds since 1970-01-01T00:00:00Z.
+
+- Required: No
+- Type: int
+
+### Parameter: `keyProperties.curveName`
 
 The elliptic curve name.
 
 - Required: No
 - Type: string
-- Default: `'P-256'`
 - Allowed:
   ```Bicep
   [
@@ -99,9 +124,9 @@ The elliptic curve name.
   ]
   ```
 
-### Parameter: `keyOps`
+### Parameter: `keyProperties.keyOps`
 
-Array of JsonWebKeyOperation.
+The allowed operations on this key.
 
 - Required: No
 - Type: array
@@ -111,6 +136,7 @@ Array of JsonWebKeyOperation.
     'decrypt'
     'encrypt'
     'import'
+    'release'
     'sign'
     'unwrapKey'
     'verify'
@@ -118,20 +144,27 @@ Array of JsonWebKeyOperation.
   ]
   ```
 
-### Parameter: `keySize`
+### Parameter: `keyProperties.keySize`
 
-The key size in bits. For example: 2048, 3072, or 4096 for RSA.
+The key size in bits.
 
 - Required: No
 - Type: int
+- Allowed:
+  ```Bicep
+  [
+    2048
+    3072
+    4096
+  ]
+  ```
 
-### Parameter: `kty`
+### Parameter: `keyProperties.kty`
 
-The type of the key.
+
 
 - Required: No
 - Type: string
-- Default: `'EC'`
 - Allowed:
   ```Bicep
   [
@@ -142,7 +175,35 @@ The type of the key.
   ]
   ```
 
-### Parameter: `roleAssignments`
+### Parameter: `keyProperties.releasePolicy`
+
+Key release policy.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`contentType`](#parameter-keypropertiesreleasepolicycontenttype) | string | Content type and version of key release policy. |
+| [`data`](#parameter-keypropertiesreleasepolicydata) | string | Blob encoding the policy rules under which the key can be released. |
+
+### Parameter: `keyProperties.releasePolicy.contentType`
+
+Content type and version of key release policy.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyProperties.releasePolicy.data`
+
+Blob encoding the policy rules under which the key can be released.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyProperties.roleAssignments`
 
 Array of role assignments to create.
 
@@ -153,41 +214,41 @@ Array of role assignments to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`principalId`](#parameter-keypropertiesroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-keypropertiesroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
-| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
-| [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+| [`condition`](#parameter-keypropertiesroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-keypropertiesroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-keypropertiesroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-keypropertiesroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-keypropertiesroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
-### Parameter: `roleAssignments.principalId`
+### Parameter: `keyProperties.roleAssignments.principalId`
 
 The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `roleAssignments.roleDefinitionIdOrName`
+### Parameter: `keyProperties.roleAssignments.roleDefinitionIdOrName`
 
 The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `roleAssignments.condition`
+### Parameter: `keyProperties.roleAssignments.condition`
 
 The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
 
-### Parameter: `roleAssignments.conditionVersion`
+### Parameter: `keyProperties.roleAssignments.conditionVersion`
 
 Version of the condition.
 
@@ -200,21 +261,21 @@ Version of the condition.
   ]
   ```
 
-### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
+### Parameter: `keyProperties.roleAssignments.delegatedManagedIdentityResourceId`
 
 The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
-### Parameter: `roleAssignments.description`
+### Parameter: `keyProperties.roleAssignments.description`
 
 The description of the role assignment.
 
 - Required: No
 - Type: string
 
-### Parameter: `roleAssignments.principalType`
+### Parameter: `keyProperties.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
 
@@ -231,14 +292,110 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `rotationPolicy`
+### Parameter: `keyProperties.rotationPolicy`
 
-Key rotation policy properties object.
+Key rotation policy.
 
 - Required: No
 - Type: object
 
-### Parameter: `tags`
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`attributes`](#parameter-keypropertiesrotationpolicyattributes) | object | The attributes of key rotation policy. |
+| [`lifetimeActions`](#parameter-keypropertiesrotationpolicylifetimeactions) | array | The lifetimeActions for key rotation action. |
+
+### Parameter: `keyProperties.rotationPolicy.attributes`
+
+The attributes of key rotation policy.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`expiryTime`](#parameter-keypropertiesrotationpolicyattributesexpirytime) | string | The expiration time for the new key version. It should be in ISO8601 format. Eg: "P90D", "P1Y". |
+
+### Parameter: `keyProperties.rotationPolicy.attributes.expiryTime`
+
+The expiration time for the new key version. It should be in ISO8601 format. Eg: "P90D", "P1Y".
+
+- Required: No
+- Type: string
+
+### Parameter: `keyProperties.rotationPolicy.lifetimeActions`
+
+The lifetimeActions for key rotation action.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`action`](#parameter-keypropertiesrotationpolicylifetimeactionsaction) | object | The action of key rotation policy lifetimeAction. |
+| [`trigger`](#parameter-keypropertiesrotationpolicylifetimeactionstrigger) | object | The trigger of key rotation policy lifetimeAction. |
+
+### Parameter: `keyProperties.rotationPolicy.lifetimeActions.action`
+
+The action of key rotation policy lifetimeAction.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-keypropertiesrotationpolicylifetimeactionsactiontype) | string | The type of action. |
+
+### Parameter: `keyProperties.rotationPolicy.lifetimeActions.action.type`
+
+The type of action.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Notify'
+    'Rotate'
+  ]
+  ```
+
+### Parameter: `keyProperties.rotationPolicy.lifetimeActions.trigger`
+
+The trigger of key rotation policy lifetimeAction.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`timeAfterCreate`](#parameter-keypropertiesrotationpolicylifetimeactionstriggertimeaftercreate) | string | The time duration after key creation to rotate the key. It only applies to rotate. It will be in ISO 8601 duration format. Eg: "P90D", "P1Y". |
+| [`timeBeforeExpiry`](#parameter-keypropertiesrotationpolicylifetimeactionstriggertimebeforeexpiry) | string | The time duration before key expiring to rotate or notify. It will be in ISO 8601 duration format. Eg: "P90D", "P1Y". |
+
+### Parameter: `keyProperties.rotationPolicy.lifetimeActions.trigger.timeAfterCreate`
+
+The time duration after key creation to rotate the key. It only applies to rotate. It will be in ISO 8601 duration format. Eg: "P90D", "P1Y".
+
+- Required: No
+- Type: string
+
+### Parameter: `keyProperties.rotationPolicy.lifetimeActions.trigger.timeBeforeExpiry`
+
+The time duration before key expiring to rotate or notify. It will be in ISO 8601 duration format. Eg: "P90D", "P1Y".
+
+- Required: No
+- Type: string
+
+### Parameter: `keyProperties.tags`
 
 Resource tags.
 

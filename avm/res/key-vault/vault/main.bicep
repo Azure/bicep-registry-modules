@@ -19,7 +19,7 @@ param accessPolicies accessPoliciesType
 param secrets secretType
 
 @description('Optional. All keys to create.')
-param keys array?
+param keys keyType
 
 @description('Optional. Specifies if the vault is enabled for deployment by script or compute.')
 param enableVaultForDeployment bool = true
@@ -211,18 +211,8 @@ module keyVault_secrets 'secret/main.bicep' = [for (secret, index) in (secrets ?
 module keyVault_keys 'key/main.bicep' = [for (key, index) in (keys ?? []): {
   name: '${uniqueString(deployment().name, location)}-KeyVault-Key-${index}'
   params: {
-    name: key.name
     keyVaultName: keyVault.name
-    attributesEnabled: key.?attributesEnabled ?? true
-    attributesExp: key.?attributesExp
-    attributesNbf: key.?attributesNbf
-    curveName: key.?curveName ?? 'P-256'
-    keyOps: key.?keyOps
-    keySize: key.?keySize
-    kty: key.?kty ?? 'EC'
-    tags: key.?tags ?? tags
-    roleAssignments: key.?roleAssignments
-    rotationPolicy: key.?rotationPolicy
+    keyProperties: key
   }
 }]
 
@@ -492,3 +482,75 @@ type secretType = {
   @description('Optional. Array of role assignments to create.')
   roleAssignments: roleAssignmentType?
 }[]?
+
+type keyType = {
+  @description('Required. The name of the key.')
+  name: string
+
+  @description('Optional. Resource tags.')
+  tags: object?
+
+  @description('Optional. Contains attributes of the key.')
+  attributes: {
+    @description('Optional. Defines whether the key is enabled or disabled.')
+    enabled: bool?
+
+    @description('Optional. Defines when the key will become invalid. Defined in seconds since 1970-01-01T00:00:00Z.')
+    exp: int?
+
+    @description('Optional. If set, defines the date from which onwards the key becomes valid. Defined in seconds since 1970-01-01T00:00:00Z.')
+    nbf: int?
+  }?
+  @description('Optional. The elliptic curve name.')
+  curveName: ('P-256' | 'P-256K' | 'P-384' | 'P-521')?
+
+  @description('Optional. The allowed operations on this key.')
+  keyOps: ('decrypt' | 'encrypt' | 'import' | 'release' | 'sign' | 'unwrapKey' | 'verify' | 'wrapKey')[]?
+
+  @description('Optional. The key size in bits.')
+  keySize: (2048 | 3072 | 4096)?
+
+  @description('Optional. ')
+  kty: ('EC' | 'EC-HSM' | 'RSA' | 'RSA-HSM')?
+
+  @description('Optional. Key release policy.')
+  releasePolicy: {
+    @description('Optional. Content type and version of key release policy.')
+    contentType: string?
+
+    @description('Optional. Blob encoding the policy rules under which the key can be released.')
+    data: string?
+  }?
+
+  @description('Optional. Key rotation policy.')
+  rotationPolicy: rotationPolicyType?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType?
+}[]?
+
+type rotationPolicyType = {
+  @description('Optional. The attributes of key rotation policy.')
+  attributes: {
+    @description('Optional. The expiration time for the new key version. It should be in ISO8601 format. Eg: "P90D", "P1Y".')
+    expiryTime: string?
+  }?
+
+  @description('Optional. The lifetimeActions for key rotation action.')
+  lifetimeActions: {
+    @description('Optional. The action of key rotation policy lifetimeAction.')
+    action: {
+      @description('Optional. The type of action.')
+      type: ('Notify' | 'Rotate')?
+    }?
+
+    @description('Optional. The trigger of key rotation policy lifetimeAction.')
+    trigger: {
+      @description('Optional. The time duration after key creation to rotate the key. It only applies to rotate. It will be in ISO 8601 duration format. Eg: "P90D", "P1Y".')
+      timeAfterCreate: string?
+
+      @description('Optional. The time duration before key expiring to rotate or notify. It will be in ISO 8601 duration format. Eg: "P90D", "P1Y".')
+      timeBeforeExpiry: string?
+    }?
+  }[]?
+}?

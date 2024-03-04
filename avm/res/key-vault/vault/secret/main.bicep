@@ -36,9 +36,9 @@ resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   tags: secretProperties.tags
   properties: {
     attributes: {
-      enabled: secretProperties.attributes.enabled
-      exp: secretProperties.attributes.exp
-      nbf: secretProperties.attributes.nbf
+      enabled: secretProperties.attributes.?enabled
+      exp: secretProperties.attributes.?exp
+      nbf: secretProperties.attributes.?nbf
     }
     contentType: secretProperties.contentType
     value: secretProperties.value
@@ -112,7 +112,7 @@ type secretType = {
 
     @description('Optional. If set, defines the date from which onwards the secret becomes valid. Defined in seconds since 1970-01-01T00:00:00Z.')
     nbf: int?
-  }
+  }?
   @description('Optional. The content type of the secret.')
   contentType: string?
 

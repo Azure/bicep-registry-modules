@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "2842725799898730902"
+      "templateHash": "9080938059007785589"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -604,6 +604,227 @@
         }
       },
       "nullable": true
+    },
+    "keyType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the key."
+            }
+          },
+          "tags": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource tags."
+            }
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Defines whether the key is enabled or disabled."
+                }
+              },
+              "exp": {
+                "type": "int",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Defines when the key will become invalid. Defined in seconds since 1970-01-01T00:00:00Z."
+                }
+              },
+              "nbf": {
+                "type": "int",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. If set, defines the date from which onwards the key becomes valid. Defined in seconds since 1970-01-01T00:00:00Z."
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Contains attributes of the key."
+            }
+          },
+          "curveName": {
+            "type": "string",
+            "allowedValues": [
+              "P-256",
+              "P-256K",
+              "P-384",
+              "P-521"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The elliptic curve name."
+            }
+          },
+          "keyOps": {
+            "type": "array",
+            "allowedValues": [
+              "decrypt",
+              "encrypt",
+              "import",
+              "release",
+              "sign",
+              "unwrapKey",
+              "verify",
+              "wrapKey"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The allowed operations on this key."
+            }
+          },
+          "keySize": {
+            "type": "int",
+            "allowedValues": [
+              2048,
+              3072,
+              4096
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The key size in bits."
+            }
+          },
+          "kty": {
+            "type": "string",
+            "allowedValues": [
+              "EC",
+              "EC-HSM",
+              "RSA",
+              "RSA-HSM"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. "
+            }
+          },
+          "releasePolicy": {
+            "type": "object",
+            "properties": {
+              "contentType": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Content type and version of key release policy."
+                }
+              },
+              "data": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Blob encoding the policy rules under which the key can be released."
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Key release policy."
+            }
+          },
+          "rotationPolicy": {
+            "$ref": "#/definitions/rotationPolicyType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Key rotation policy."
+            }
+          },
+          "roleAssignments": {
+            "$ref": "#/definitions/roleAssignmentType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Array of role assignments to create."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "rotationPolicyType": {
+      "type": "object",
+      "properties": {
+        "attributes": {
+          "type": "object",
+          "properties": {
+            "expiryTime": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The expiration time for the new key version. It should be in ISO8601 format. Eg: \"P90D\", \"P1Y\"."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The attributes of key rotation policy."
+          }
+        },
+        "lifetimeActions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Notify",
+                      "Rotate"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The type of action."
+                    }
+                  }
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The action of key rotation policy lifetimeAction."
+                }
+              },
+              "trigger": {
+                "type": "object",
+                "properties": {
+                  "timeAfterCreate": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The time duration after key creation to rotate the key. It only applies to rotate. It will be in ISO 8601 duration format. Eg: \"P90D\", \"P1Y\"."
+                    }
+                  },
+                  "timeBeforeExpiry": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The time duration before key expiring to rotate or notify. It will be in ISO 8601 duration format. Eg: \"P90D\", \"P1Y\"."
+                    }
+                  }
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The trigger of key rotation policy lifetimeAction."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The lifetimeActions for key rotation action."
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -634,8 +855,7 @@
       }
     },
     "keys": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/keyType",
       "metadata": {
         "description": "Optional. All keys to create."
       }
@@ -1192,7 +1412,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.3.34343",
-              "templateHash": "7761859250737017552"
+              "templateHash": "2673242990058710064"
             },
             "name": "Key Vault Secrets",
             "description": "This module deploys a Key Vault Secret.",
@@ -1306,6 +1526,7 @@
                       }
                     }
                   },
+                  "nullable": true,
                   "metadata": {
                     "description": "Optional. Contains attributes of the secret."
                   }
@@ -1379,9 +1600,9 @@
               "tags": "[parameters('secretProperties').tags]",
               "properties": {
                 "attributes": {
-                  "enabled": "[parameters('secretProperties').attributes.enabled]",
-                  "exp": "[parameters('secretProperties').attributes.exp]",
-                  "nbf": "[parameters('secretProperties').attributes.nbf]"
+                  "enabled": "[tryGet(parameters('secretProperties').attributes, 'enabled')]",
+                  "exp": "[tryGet(parameters('secretProperties').attributes, 'exp')]",
+                  "nbf": "[tryGet(parameters('secretProperties').attributes, 'nbf')]"
                 },
                 "contentType": "[parameters('secretProperties').contentType]",
                 "value": "[parameters('secretProperties').value]"
@@ -1456,41 +1677,11 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "name": {
-            "value": "[coalesce(parameters('keys'), createArray())[copyIndex()].name]"
-          },
           "keyVaultName": {
             "value": "[parameters('name')]"
           },
-          "attributesEnabled": {
-            "value": "[coalesce(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesEnabled'), true())]"
-          },
-          "attributesExp": {
-            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesExp')]"
-          },
-          "attributesNbf": {
-            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesNbf')]"
-          },
-          "curveName": {
-            "value": "[coalesce(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'curveName'), 'P-256')]"
-          },
-          "keyOps": {
-            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'keyOps')]"
-          },
-          "keySize": {
-            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'keySize')]"
-          },
-          "kty": {
-            "value": "[coalesce(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'kty'), 'EC')]"
-          },
-          "tags": {
-            "value": "[coalesce(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
-          },
-          "roleAssignments": {
-            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'roleAssignments')]"
-          },
-          "rotationPolicy": {
-            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'rotationPolicy')]"
+          "keyProperties": {
+            "value": "[coalesce(parameters('keys'), createArray())[copyIndex()]]"
           }
         },
         "template": {
@@ -1501,7 +1692,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.3.34343",
-              "templateHash": "1439294400020057009"
+              "templateHash": "16880191640298585382"
             },
             "name": "Key Vault Keys",
             "description": "This module deploys a Key Vault Key.",
@@ -1573,6 +1764,223 @@
                 }
               },
               "nullable": true
+            },
+            "keyType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the key."
+                  }
+                },
+                "tags": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource tags."
+                  }
+                },
+                "attributes": {
+                  "type": "object",
+                  "properties": {
+                    "enabled": {
+                      "type": "bool",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Defines whether the key is enabled or disabled."
+                      }
+                    },
+                    "exp": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Defines when the key will become invalid. Defined in seconds since 1970-01-01T00:00:00Z."
+                      }
+                    },
+                    "nbf": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. If set, defines the date from which onwards the key becomes valid. Defined in seconds since 1970-01-01T00:00:00Z."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Contains attributes of the key."
+                  }
+                },
+                "curveName": {
+                  "type": "string",
+                  "allowedValues": [
+                    "P-256",
+                    "P-256K",
+                    "P-384",
+                    "P-521"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The elliptic curve name."
+                  }
+                },
+                "keyOps": {
+                  "type": "array",
+                  "allowedValues": [
+                    "decrypt",
+                    "encrypt",
+                    "import",
+                    "release",
+                    "sign",
+                    "unwrapKey",
+                    "verify",
+                    "wrapKey"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The allowed operations on this key."
+                  }
+                },
+                "keySize": {
+                  "type": "int",
+                  "allowedValues": [
+                    2048,
+                    3072,
+                    4096
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The key size in bits."
+                  }
+                },
+                "kty": {
+                  "type": "string",
+                  "allowedValues": [
+                    "EC",
+                    "EC-HSM",
+                    "RSA",
+                    "RSA-HSM"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. "
+                  }
+                },
+                "releasePolicy": {
+                  "type": "object",
+                  "properties": {
+                    "contentType": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Content type and version of key release policy."
+                      }
+                    },
+                    "data": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Blob encoding the policy rules under which the key can be released."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Key release policy."
+                  }
+                },
+                "rotationPolicy": {
+                  "$ref": "#/definitions/rotationPolicyType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Key rotation policy."
+                  }
+                },
+                "roleAssignments": {
+                  "$ref": "#/definitions/roleAssignmentType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of role assignments to create."
+                  }
+                }
+              }
+            },
+            "rotationPolicyType": {
+              "type": "object",
+              "properties": {
+                "attributes": {
+                  "type": "object",
+                  "properties": {
+                    "expiryTime": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The expiration time for the new key version. It should be in ISO8601 format. Eg: \"P90D\", \"P1Y\"."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The attributes of key rotation policy."
+                  }
+                },
+                "lifetimeActions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "action": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "allowedValues": [
+                              "Notify",
+                              "Rotate"
+                            ],
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The type of action."
+                            }
+                          }
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The action of key rotation policy lifetimeAction."
+                        }
+                      },
+                      "trigger": {
+                        "type": "object",
+                        "properties": {
+                          "timeAfterCreate": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The time duration after key creation to rotate the key. It only applies to rotate. It will be in ISO 8601 duration format. Eg: \"P90D\", \"P1Y\"."
+                            }
+                          },
+                          "timeBeforeExpiry": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The time duration before key expiring to rotate or notify. It will be in ISO 8601 duration format. Eg: \"P90D\", \"P1Y\"."
+                            }
+                          }
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The trigger of key rotation policy lifetimeAction."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The lifetimeActions for key rotation action."
+                  }
+                }
+              },
+              "nullable": true
             }
           },
           "parameters": {
@@ -1582,100 +1990,10 @@
                 "description": "Conditional. The name of the parent key vault. Required if the template is used in a standalone deployment."
               }
             },
-            "name": {
-              "type": "string",
+            "keyProperties": {
+              "$ref": "#/definitions/keyType",
               "metadata": {
-                "description": "Required. The name of the key."
-              }
-            },
-            "tags": {
-              "type": "object",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Resource tags."
-              }
-            },
-            "attributesEnabled": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Determines whether the object is enabled."
-              }
-            },
-            "attributesExp": {
-              "type": "int",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible."
-              }
-            },
-            "attributesNbf": {
-              "type": "int",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Not before date in seconds since 1970-01-01T00:00:00Z."
-              }
-            },
-            "curveName": {
-              "type": "string",
-              "defaultValue": "P-256",
-              "allowedValues": [
-                "P-256",
-                "P-256K",
-                "P-384",
-                "P-521"
-              ],
-              "metadata": {
-                "description": "Optional. The elliptic curve name."
-              }
-            },
-            "keyOps": {
-              "type": "array",
-              "nullable": true,
-              "allowedValues": [
-                "decrypt",
-                "encrypt",
-                "import",
-                "sign",
-                "unwrapKey",
-                "verify",
-                "wrapKey"
-              ],
-              "metadata": {
-                "description": "Optional. Array of JsonWebKeyOperation."
-              }
-            },
-            "keySize": {
-              "type": "int",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The key size in bits. For example: 2048, 3072, or 4096 for RSA."
-              }
-            },
-            "kty": {
-              "type": "string",
-              "defaultValue": "EC",
-              "allowedValues": [
-                "EC",
-                "EC-HSM",
-                "RSA",
-                "RSA-HSM"
-              ],
-              "metadata": {
-                "description": "Optional. The type of the key."
-              }
-            },
-            "roleAssignments": {
-              "$ref": "#/definitions/roleAssignmentType",
-              "metadata": {
-                "description": "Optional. Array of role assignments to create."
-              }
-            },
-            "rotationPolicy": {
-              "type": "object",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Key rotation policy properties object."
+                "description": "Optional. Sets the attributes of the secret."
               }
             }
           },
@@ -1707,19 +2025,20 @@
             "key": {
               "type": "Microsoft.KeyVault/vaults/keys",
               "apiVersion": "2022-07-01",
-              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
-              "tags": "[parameters('tags')]",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('keyProperties').name)]",
+              "tags": "[parameters('keyProperties').tags]",
               "properties": {
                 "attributes": {
-                  "enabled": "[parameters('attributesEnabled')]",
-                  "exp": "[parameters('attributesExp')]",
-                  "nbf": "[parameters('attributesNbf')]"
+                  "enabled": "[tryGet(parameters('keyProperties').attributes, 'enabled')]",
+                  "exp": "[tryGet(parameters('keyProperties').attributes, 'exp')]",
+                  "nbf": "[tryGet(parameters('keyProperties').attributes, 'nbf')]"
                 },
-                "curveName": "[parameters('curveName')]",
-                "keyOps": "[parameters('keyOps')]",
-                "keySize": "[parameters('keySize')]",
-                "kty": "[parameters('kty')]",
-                "rotationPolicy": "[parameters('rotationPolicy')]"
+                "curveName": "[parameters('keyProperties').curveName]",
+                "keyOps": "[parameters('keyProperties').keyOps]",
+                "keySize": "[parameters('keyProperties').keySize]",
+                "kty": "[parameters('keyProperties').kty]",
+                "release_policy": "[parameters('keyProperties').releasePolicy]",
+                "rotationPolicy": "[parameters('keyProperties').rotationPolicy]"
               },
               "dependsOn": [
                 "keyVault"
@@ -1728,20 +2047,20 @@
             "key_roleAssignments": {
               "copy": {
                 "name": "key_roleAssignments",
-                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+                "count": "[length(coalesce(parameters('keyProperties').roleAssignments, createArray()))]"
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.KeyVault/vaults/{0}/keys/{1}', parameters('keyVaultName'), parameters('name'))]",
-              "name": "[guid(resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+              "scope": "[format('Microsoft.KeyVault/vaults/{0}/keys/{1}', parameters('keyVaultName'), parameters('keyProperties').name)]",
+              "name": "[guid(resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), parameters('keyProperties').name), coalesce(parameters('keyProperties').roleAssignments, createArray())[copyIndex()].principalId, coalesce(parameters('keyProperties').roleAssignments, createArray())[copyIndex()].roleDefinitionIdOrName)]",
               "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('keyProperties').roleAssignments, createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('keyProperties').roleAssignments, createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('keyProperties').roleAssignments, createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('keyProperties').roleAssignments, createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('keyProperties').roleAssignments, createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+                "principalId": "[coalesce(parameters('keyProperties').roleAssignments, createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(parameters('keyProperties').roleAssignments, createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(parameters('keyProperties').roleAssignments, createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(parameters('keyProperties').roleAssignments, createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('keyProperties').roleAssignments, createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('keyProperties').roleAssignments, createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('keyProperties').roleAssignments, createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
               },
               "dependsOn": [
                 "key"
@@ -1754,14 +2073,14 @@
               "metadata": {
                 "description": "The name of the key."
               },
-              "value": "[parameters('name')]"
+              "value": "[parameters('keyProperties').name]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the key."
               },
-              "value": "[resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), parameters('name'))]"
+              "value": "[resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), parameters('keyProperties').name)]"
             },
             "resourceGroupName": {
               "type": "string",

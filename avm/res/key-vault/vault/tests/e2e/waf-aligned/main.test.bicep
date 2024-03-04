@@ -79,8 +79,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     enableRbacAuthorization: true
     keys: [
       {
-        attributesExp: 1725109032
-        attributesNbf: 10000
+        attributes: {
+          exp: 1725109032
+          nbf: 10000
+        }
         name: 'keyName'
         rotationPolicy: {
           attributes: {
