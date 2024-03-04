@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "17144298796807883265"
+      "templateHash": "554896365853450726"
     },
     "name": "Digital Twins Instances",
     "description": "This module deploys an Azure Digital Twins Instance.",
@@ -103,7 +103,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
             }
           },
           "conditionVersion": {
@@ -163,7 +163,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided."
+              "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
             }
           },
           "privateDnsZoneResourceIds": {
@@ -185,7 +185,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint ip address."
+                    "description": "Required. Fqdn that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -194,7 +194,7 @@
                     "type": "string"
                   },
                   "metadata": {
-                    "description": "Required. A list of private ip addresses of the private endpoint."
+                    "description": "Required. A list of private IP addresses of the private endpoint."
                   }
                 }
               }
@@ -233,7 +233,7 @@
                     "privateIPAddress": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. A private ip address obtained from the private endpoint's subnet."
+                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
                       }
                     }
                   },
@@ -493,7 +493,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "roleAssignments": {
@@ -504,7 +504,6 @@
     }
   },
   "variables": {
-    "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -630,9 +629,6 @@
           "deadLetterUri": "[if(contains(parameters('eventHubEndpoint'), 'deadLetterUri'), createObject('value', parameters('eventHubEndpoint').deadLetterUri), createObject('value', ''))]",
           "endpointUri": "[if(contains(parameters('eventHubEndpoint'), 'endpointUri'), createObject('value', parameters('eventHubEndpoint').endpointUri), createObject('value', ''))]",
           "entityPath": "[if(contains(parameters('eventHubEndpoint'), 'entityPath'), createObject('value', parameters('eventHubEndpoint').entityPath), createObject('value', ''))]",
-          "enableTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          },
           "managedIdentities": "[if(contains(parameters('eventHubEndpoint'), 'managedIdentities'), createObject('value', parameters('eventHubEndpoint').managedIdentities), createObject('value', createObject()))]"
         },
         "template": {
@@ -643,7 +639,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "5034915816999063148"
+              "templateHash": "15207654188913498370"
             },
             "name": "Digital Twins Instance EventHub Endpoint",
             "description": "This module deploys a Digital Twins Instance EventHub Endpoint.",
@@ -738,13 +734,6 @@
                 "description": "Optional. The URL of the EventHub namespace for identity-based authentication. It must include the protocol 'sb://' (i.e. sb://xyz.servicebus.windows.net)."
               }
             },
-            "enableTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
-              }
-            },
             "managedIdentities": {
               "$ref": "#/definitions/managedIdentitiesType",
               "metadata": {
@@ -756,20 +745,6 @@
             "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), ''))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), ''))), 'UserAssigned', null())), 'userAssignedIdentity', if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), null())), null())]"
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             "digitalTwinsInstance": {
               "existing": true,
               "type": "Microsoft.DigitalTwins/digitalTwinsInstances",
@@ -850,9 +825,6 @@
           "topicEndpoint": "[if(contains(parameters('eventGridEndpoint'), 'topicEndpoint'), createObject('value', parameters('eventGridEndpoint').topicEndpoint), createObject('value', ''))]",
           "deadLetterSecret": "[if(contains(parameters('eventGridEndpoint'), 'deadLetterSecret'), createObject('value', parameters('eventGridEndpoint').deadLetterSecret), createObject('value', ''))]",
           "deadLetterUri": "[if(contains(parameters('eventGridEndpoint'), 'deadLetterUri'), createObject('value', parameters('eventGridEndpoint').deadLetterUri), createObject('value', ''))]",
-          "enableTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          },
           "eventGridDomainResourceId": "[if(contains(parameters('eventGridEndpoint'), 'eventGridDomainId'), createObject('value', parameters('eventGridEndpoint').eventGridDomainId), createObject('value', ''))]"
         },
         "template": {
@@ -862,7 +834,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "15355103223444931979"
+              "templateHash": "13296243171089676779"
             },
             "name": "Digital Twins Instance Event Grid Endpoints",
             "description": "This module deploys a Digital Twins Instance Event Grid Endpoint.",
@@ -907,30 +879,9 @@
               "metadata": {
                 "description": "Optional. Dead letter storage URL for identity-based authentication."
               }
-            },
-            "enableTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.DigitalTwins/digitalTwinsInstances/endpoints",
               "apiVersion": "2023-01-31",
@@ -997,9 +948,6 @@
           "entityPath": "[if(contains(parameters('serviceBusEndpoint'), 'entityPath'), createObject('value', parameters('serviceBusEndpoint').entityPath), createObject('value', ''))]",
           "primaryConnectionString": "[if(contains(parameters('serviceBusEndpoint'), 'primaryConnectionString'), createObject('value', parameters('serviceBusEndpoint').primaryConnectionString), createObject('value', ''))]",
           "secondaryConnectionString": "[if(contains(parameters('serviceBusEndpoint'), 'secondaryConnectionString'), createObject('value', parameters('serviceBusEndpoint').secondaryConnectionString), createObject('value', ''))]",
-          "enableTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          },
           "managedIdentities": "[if(contains(parameters('serviceBusEndpoint'), 'managedIdentities'), createObject('value', parameters('serviceBusEndpoint').managedIdentities), createObject('value', createObject()))]"
         },
         "template": {
@@ -1010,7 +958,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "1816454950263065695"
+              "templateHash": "2993508090377421654"
             },
             "name": "Digital Twins Instance ServiceBus Endpoint",
             "description": "This module deploys a Digital Twins Instance ServiceBus Endpoint.",
@@ -1105,13 +1053,6 @@
                 "description": "Optional. SecondaryConnectionString of the endpoint for key-based authentication. Will be obfuscated during read. Only used if the `authenticationType` is \"KeyBased\"."
               }
             },
-            "enableTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
-              }
-            },
             "managedIdentities": {
               "$ref": "#/definitions/managedIdentitiesType",
               "metadata": {
@@ -1123,20 +1064,6 @@
             "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), ''))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), ''))), 'UserAssigned', null())), 'userAssignedIdentity', if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), null())), null())]"
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             "digitalTwinsInstance": {
               "existing": true,
               "type": "Microsoft.DigitalTwins/digitalTwinsInstances",
