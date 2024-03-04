@@ -39,10 +39,10 @@ resource key 'Microsoft.KeyVault/vaults/keys@2022-07-01' = {
       exp: keyProperties.attributes.?exp
       nbf: keyProperties.attributes.?nbf
     }
-    curveName: keyProperties.curveName
-    keyOps: keyProperties.keyOps
-    keySize: keyProperties.keySize
-    kty: keyProperties.kty
+    curveName: keyProperties.?curveName
+    keyOps: keyProperties.?keyOps
+    keySize: keyProperties.?keySize
+    kty: keyProperties.?kty
     release_policy: keyProperties.?releasePolicy ?? {}
     rotationPolicy: keyProperties.?rotationPolicy ?? {}
   }

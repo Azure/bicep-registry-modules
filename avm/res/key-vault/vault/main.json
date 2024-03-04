@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "3780831007384221474"
+      "templateHash": "4886068303571988419"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -1412,7 +1412,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.3.34343",
-              "templateHash": "12251833397402024589"
+              "templateHash": "5591385944921063433"
             },
             "name": "Key Vault Secrets",
             "description": "This module deploys a Key Vault Secret.",
@@ -1604,7 +1604,7 @@
                   "exp": "[tryGet(parameters('secretProperties').attributes, 'exp')]",
                   "nbf": "[tryGet(parameters('secretProperties').attributes, 'nbf')]"
                 },
-                "contentType": "[parameters('secretProperties').contentType]",
+                "contentType": "[tryGet(parameters('secretProperties'), 'contentType')]",
                 "value": "[parameters('secretProperties').value]"
               },
               "dependsOn": [
@@ -1692,7 +1692,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.3.34343",
-              "templateHash": "1450898330971835600"
+              "templateHash": "8543911991532794354"
             },
             "name": "Key Vault Keys",
             "description": "This module deploys a Key Vault Key.",
@@ -2033,10 +2033,10 @@
                   "exp": "[tryGet(parameters('keyProperties').attributes, 'exp')]",
                   "nbf": "[tryGet(parameters('keyProperties').attributes, 'nbf')]"
                 },
-                "curveName": "[parameters('keyProperties').curveName]",
-                "keyOps": "[parameters('keyProperties').keyOps]",
-                "keySize": "[parameters('keyProperties').keySize]",
-                "kty": "[parameters('keyProperties').kty]",
+                "curveName": "[tryGet(parameters('keyProperties'), 'curveName')]",
+                "keyOps": "[tryGet(parameters('keyProperties'), 'keyOps')]",
+                "keySize": "[tryGet(parameters('keyProperties'), 'keySize')]",
+                "kty": "[tryGet(parameters('keyProperties'), 'kty')]",
                 "release_policy": "[coalesce(tryGet(parameters('keyProperties'), 'releasePolicy'), createObject())]",
                 "rotationPolicy": "[coalesce(tryGet(parameters('keyProperties'), 'rotationPolicy'), createObject())]"
               },

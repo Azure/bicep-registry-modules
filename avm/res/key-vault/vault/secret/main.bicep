@@ -40,7 +40,7 @@ resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
       exp: secretProperties.attributes.?exp
       nbf: secretProperties.attributes.?nbf
     }
-    contentType: secretProperties.contentType
+    contentType: secretProperties.?contentType
     value: secretProperties.value
   }
 }
