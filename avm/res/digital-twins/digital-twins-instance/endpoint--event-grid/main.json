@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "15355103223444931979"
+      "templateHash": "13296243171089676779"
     },
     "name": "Digital Twins Instance Event Grid Endpoints",
     "description": "This module deploys a Digital Twins Instance Event Grid Endpoint.",
@@ -50,30 +50,9 @@
       "metadata": {
         "description": "Optional. Dead letter storage URL for identity-based authentication."
       }
-    },
-    "enableTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
-      }
     }
   },
   "resources": [
-    {
-      "condition": "[parameters('enableTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
-    },
     {
       "type": "Microsoft.DigitalTwins/digitalTwinsInstances/endpoints",
       "apiVersion": "2023-01-31",

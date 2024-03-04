@@ -42,13 +42,11 @@ param publicNetworkAccess string = ''
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
-@description('Optional. Enable telemetry via the Customer Usage Attribution ID (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalIds\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
 param roleAssignments roleAssignmentType
-
-var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
@@ -107,7 +105,6 @@ module digitalTwinsInstance_eventHubEndpoint 'endpoint--event-hub/main.bicep' = 
     deadLetterUri: contains(eventHubEndpoint, 'deadLetterUri') ? eventHubEndpoint.deadLetterUri : ''
     endpointUri: contains(eventHubEndpoint, 'endpointUri') ? eventHubEndpoint.endpointUri : ''
     entityPath: contains(eventHubEndpoint, 'entityPath') ? eventHubEndpoint.entityPath : ''
-    enableTelemetry: enableReferencedModulesTelemetry
     managedIdentities: contains(eventHubEndpoint, 'managedIdentities') ? eventHubEndpoint.managedIdentities : {}
   }
 }
@@ -120,7 +117,6 @@ module digitalTwinsInstance_eventGridEndpoint 'endpoint--event-grid/main.bicep' 
     topicEndpoint: contains(eventGridEndpoint, 'topicEndpoint') ? eventGridEndpoint.topicEndpoint : ''
     deadLetterSecret: contains(eventGridEndpoint, 'deadLetterSecret') ? eventGridEndpoint.deadLetterSecret : ''
     deadLetterUri: contains(eventGridEndpoint, 'deadLetterUri') ? eventGridEndpoint.deadLetterUri : ''
-    enableTelemetry: enableReferencedModulesTelemetry
     eventGridDomainResourceId: contains(eventGridEndpoint, 'eventGridDomainId') ? eventGridEndpoint.eventGridDomainId : ''
   }
 }
@@ -137,7 +133,6 @@ module digitalTwinsInstance_serviceBusEndpoint 'endpoint--service-bus/main.bicep
     entityPath: contains(serviceBusEndpoint, 'entityPath') ? serviceBusEndpoint.entityPath : ''
     primaryConnectionString: contains(serviceBusEndpoint, 'primaryConnectionString') ? serviceBusEndpoint.primaryConnectionString : ''
     secondaryConnectionString: contains(serviceBusEndpoint, 'secondaryConnectionString') ? serviceBusEndpoint.secondaryConnectionString : ''
-    enableTelemetry: enableReferencedModulesTelemetry
     managedIdentities: contains(serviceBusEndpoint, 'managedIdentities') ? serviceBusEndpoint.managedIdentities : {}
   }
 }
@@ -272,7 +267,7 @@ type roleAssignmentType = {
   @description('Optional. The description of the role assignment.')
   description: string?
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
+  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
   @description('Optional. Version of the condition.')
@@ -289,8 +284,8 @@ type privateEndpointType = {
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
-  @description('Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".')
-  service: string?
+  @description('Required. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".')
+  service: string
 
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string

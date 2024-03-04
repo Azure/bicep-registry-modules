@@ -37,7 +37,6 @@ This module deploys a Digital Twins Instance Event Grid Endpoint.
 | :-- | :-- | :-- |
 | [`deadLetterSecret`](#parameter-deadlettersecret) | securestring | Dead letter storage secret for key-based authentication. Will be obfuscated during read. |
 | [`deadLetterUri`](#parameter-deadletteruri) | string | Dead letter storage URL for identity-based authentication. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via the Customer Usage Attribution ID (GUID). |
 | [`name`](#parameter-name) | string | The name of the Digital Twin Endpoint. |
 
 ### Parameter: `eventGridDomainResourceId`
@@ -76,14 +75,6 @@ Dead letter storage URL for identity-based authentication.
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `enableTelemetry`
-
-Enable telemetry via the Customer Usage Attribution ID (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `name`
 

@@ -36,9 +36,6 @@ param primaryConnectionString string = ''
 @secure()
 param secondaryConnectionString string = ''
 
-@description('Optional. Enable telemetry via the Customer Usage Attribution ID (GUID).')
-param enableTelemetry bool = true
-
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
@@ -46,18 +43,6 @@ var identity = !empty(managedIdentities) ? {
   type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceId ?? '') ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceId ?? '') ? 'UserAssigned' : null)
   userAssignedIdentity: !empty(managedIdentities.?userAssignedResourceId) ? managedIdentities.?userAssignedResourceId : null
 } : null
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
-}
 
 resource digitalTwinsInstance 'Microsoft.DigitalTwins/digitalTwinsInstances@2023-01-31' existing = {
   name: digitalTwinInstanceName

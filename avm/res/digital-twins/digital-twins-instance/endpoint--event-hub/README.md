@@ -33,7 +33,6 @@ This module deploys a Digital Twins Instance EventHub Endpoint.
 | [`connectionStringSecondaryKey`](#parameter-connectionstringsecondarykey) | securestring | SecondaryConnectionString of the endpoint for key-based authentication. Will be obfuscated during read. Only used if the `authenticationType` is "KeyBased". |
 | [`deadLetterSecret`](#parameter-deadlettersecret) | securestring | Dead letter storage secret for key-based authentication. Will be obfuscated during read. |
 | [`deadLetterUri`](#parameter-deadletteruri) | string | Dead letter storage URL for identity-based authentication. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via the Customer Usage Attribution ID (GUID). |
 | [`endpointUri`](#parameter-endpointuri) | string | The URL of the EventHub namespace for identity-based authentication. It must include the protocol 'sb://' (i.e. sb://xyz.servicebus.windows.net). |
 | [`entityPath`](#parameter-entitypath) | string | The EventHub name in the EventHub namespace for identity-based authentication. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -92,14 +91,6 @@ Dead letter storage URL for identity-based authentication.
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `enableTelemetry`
-
-Enable telemetry via the Customer Usage Attribution ID (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `endpointUri`
 
