@@ -129,7 +129,7 @@ For all other app settings key-value pairs use this object.
 "appSettingsKeyValuePairs": {
     "value": {
       "AzureFunctionsJobHost__logging__logLevel__default": "Trace",
-      "EASYAUTH_SECRET": "https://adp-[[namePrefix]]-az-kv-x-001.vault.azure.net/secrets/Modules-Test-SP-Password",
+      "EASYAUTH_SECRET": "https://adp-#_namePrefix_#-az-kv-x-001.vault.azure.net/secrets/Modules-Test-SP-Password",
       "FUNCTIONS_EXTENSION_VERSION": "~4",
       "FUNCTIONS_WORKER_RUNTIME": "dotnet"
     }
@@ -145,7 +145,7 @@ For all other app settings key-value pairs use this object.
 ```bicep
 appSettingsKeyValuePairs: {
   AzureFunctionsJobHost__logging__logLevel__default: 'Trace'
-  EASYAUTH_SECRET: 'https://adp-[[namePrefix]]-az-kv-x-001.vault.azure.net/secrets/Modules-Test-SP-Password'
+  EASYAUTH_SECRET: 'https://adp-#_namePrefix_#-az-kv-x-001.vault.azure.net/secrets/Modules-Test-SP-Password'
   FUNCTIONS_EXTENSION_VERSION: '~4'
   FUNCTIONS_WORKER_RUNTIME: 'dotnet'
 }
