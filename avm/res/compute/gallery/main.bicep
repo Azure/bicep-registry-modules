@@ -133,6 +133,7 @@ module galleries_images 'image/main.bicep' = [for (image, index) in (images ?? [
     maxRecommendedMemory: image.?maxRecommendedMemory
     hyperVGeneration: image.?hyperVGeneration
     securityType: image.?securityType
+    isAcceleratedNetworkSupported: image.?isAcceleratedNetworkSupported
     description: image.?description
     eula: image.?eula
     privacyStatementUri: image.?privacyStatementUri

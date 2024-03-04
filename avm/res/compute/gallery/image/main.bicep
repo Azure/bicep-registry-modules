@@ -81,7 +81,7 @@ param isHibernateSupported bool = false
 Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.
 This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.
 ''')
-param isAcceleratedNetworkSupported bool = false
+param isAcceleratedNetworkSupported bool = true
 
 @sys.description('Optional. The description of this gallery Image Definition resource. This property is updatable.')
 param description string?
