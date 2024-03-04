@@ -61,6 +61,7 @@ resource endpoint 'Microsoft.DigitalTwins/digitalTwinsInstances/endpoints@2023-0
     primaryConnectionString: primaryConnectionString
     secondaryConnectionString: secondaryConnectionString
     identity: identity
+
   }
 }
 

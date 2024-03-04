@@ -37,10 +37,10 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    eventHubName: 'dt-${uniqueString(serviceShort)}-evh-01'
-    eventHubNamespaceName: 'dt-${uniqueString(serviceShort)}-evhns-01'
-    serviceBusName: 'dt-${uniqueString(serviceShort)}-sb-01'
-    eventGridDomainName: 'dt-${uniqueString(serviceShort)}-evg-01'
+    eventHubName: 'dep-dt-${uniqueString(serviceShort)}-evh-01'
+    eventHubNamespaceName: 'dep-dt-${uniqueString(serviceShort)}-evhns-01'
+    serviceBusName: 'dep-dt-${uniqueString(serviceShort)}-sb-01'
+    eventGridDomainName: 'dep-dt-${uniqueString(serviceShort)}-evg-01'
   }
 }
 
