@@ -531,7 +531,13 @@ type roleAssignmentType = {
 
 type networkAclsType = {
   @description('Optional. Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only.')
-  resourceAccessRules: array?
+  resourceAccessRules: {
+    @description('Required. The ID of the tenant in which the resource resides in.')
+    tenantId: string
+
+    @description('Required. The resource ID of the target service. Can also contain a wildcard, if multiple services e.g. in a resource group should be included.')
+    resourceId: string
+  }[]?
 
   @description('Required. Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging,Metrics,AzureServices (For example, "Logging, Metrics"), or None to bypass none of those traffics.')
   bypass: ('None' | 'AzureServices' | 'Logging' | 'Metrics' | 'AzureServices, Logging' | 'AzureServices, Metrics' | 'AzureServices, Logging, Metrics' | 'Logging, Metrics')
