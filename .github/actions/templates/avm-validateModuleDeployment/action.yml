@@ -334,6 +334,7 @@ runs:
             OutputFilePath    = Join-Path $env:GITHUB_WORKSPACE 'avm' "$moduleTestFolderName-Pester-output.md"
             GitHubRepository  = $env:GITHUB_REPOSITORY
             BranchName        = $env:GITHUB_REF
+            Title             = 'Post-deployment test validation summary'
           }
 
           Write-Verbose 'Invoke Pester formatting function with' -Verbose
