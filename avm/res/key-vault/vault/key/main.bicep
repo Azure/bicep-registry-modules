@@ -125,7 +125,7 @@ type keyType = {
   @description('Optional. The key size in bits.')
   keySize: (2048 | 3072 | 4096)?
 
-  @description('Optional. ')
+  @description('Optional. The type of the key.')
   kty: ('EC' | 'EC-HSM' | 'RSA' | 'RSA-HSM')?
 
   @description('Optional. Key release policy.')

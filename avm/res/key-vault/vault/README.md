@@ -1,4 +1,4 @@
-# Key Vaults `[Microsoft.keyvault/vault]`
+# Key Vaults `[Microsoft.KeyVault/vaults]`
 
 This module deploys a Key Vault.
 
@@ -1407,7 +1407,7 @@ All keys to create.
 | [`curveName`](#parameter-keyscurvename) | string | The elliptic curve name. |
 | [`keyOps`](#parameter-keyskeyops) | array | The allowed operations on this key. |
 | [`keySize`](#parameter-keyskeysize) | int | The key size in bits. |
-| [`kty`](#parameter-keyskty) | string |  |
+| [`kty`](#parameter-keyskty) | string | The type of the key. |
 | [`releasePolicy`](#parameter-keysreleasepolicy) | object | Key release policy. |
 | [`roleAssignments`](#parameter-keysroleassignments) | array | Array of role assignments to create. |
 | [`rotationPolicy`](#parameter-keysrotationpolicy) | object | Key rotation policy. |
@@ -1509,7 +1509,7 @@ The key size in bits.
 
 ### Parameter: `keys.kty`
 
-
+The type of the key.
 
 - Required: No
 - Type: string

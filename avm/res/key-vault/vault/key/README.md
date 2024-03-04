@@ -59,7 +59,7 @@ Sets the attributes of the secret.
 | [`curveName`](#parameter-keypropertiescurvename) | string | The elliptic curve name. |
 | [`keyOps`](#parameter-keypropertieskeyops) | array | The allowed operations on this key. |
 | [`keySize`](#parameter-keypropertieskeysize) | int | The key size in bits. |
-| [`kty`](#parameter-keypropertieskty) | string |  |
+| [`kty`](#parameter-keypropertieskty) | string | The type of the key. |
 | [`releasePolicy`](#parameter-keypropertiesreleasepolicy) | object | Key release policy. |
 | [`roleAssignments`](#parameter-keypropertiesroleassignments) | array | Array of role assignments to create. |
 | [`rotationPolicy`](#parameter-keypropertiesrotationpolicy) | object | Key rotation policy. |
@@ -161,7 +161,7 @@ The key size in bits.
 
 ### Parameter: `keyProperties.kty`
 
-
+The type of the key.
 
 - Required: No
 - Type: string

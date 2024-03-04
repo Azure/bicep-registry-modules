@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "9080938059007785589"
+      "templateHash": "6770902477668735176"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -705,7 +705,7 @@
             ],
             "nullable": true,
             "metadata": {
-              "description": "Optional. "
+              "description": "Optional. The type of the key."
             }
           },
           "releasePolicy": {
@@ -1692,7 +1692,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.3.34343",
-              "templateHash": "16880191640298585382"
+              "templateHash": "11682794399188149100"
             },
             "name": "Key Vault Keys",
             "description": "This module deploys a Key Vault Key.",
@@ -1863,7 +1863,7 @@
                   ],
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. "
+                    "description": "Optional. The type of the key."
                   }
                 },
                 "releasePolicy": {
