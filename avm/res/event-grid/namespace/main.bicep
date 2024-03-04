@@ -61,17 +61,20 @@ param maximumSessionExpiryInHours int = 1
 @description('Optional. The maximum number of sessions per authentication name. This will only take effect if \'topicSpacesState\' is set to \'Enabled\'.')
 param maximumClientSessionsPerAuthenticationName int = 1
 
-@description('Optional. All namespace topics to create.')
+@description('Optional. All namespace Topics to create.')
 param topics array?
 
 @description('Optional. CA certificates (Root or intermediate) used to sign the client certificates for clients authenticated using CA-signed certificates.')
 param caCertificates array?
 
-@description('Optional. All namespace clients to create.')
+@description('Optional. All namespace Clients to create.')
 param clients array?
 
-@description('Optional. All namespace client groups to create.')
+@description('Optional. All namespace Client Groups to create.')
 param clientGroups array?
+
+@description('Optional. All namespace Topic Spaces to create.')
+param topicSpaces array?
 
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
@@ -246,7 +249,7 @@ module namespace_caCertificates 'ca-certificate/main.bicep' = [for (caCertificat
 }]
 
 module namespace_clients 'client/main.bicep' = [for (client, index) in (clients ?? []): {
-  name: '${uniqueString(deployment().name, location)}-Namespace-clients-${index}'
+  name: '${uniqueString(deployment().name, location)}-Namespace-Client-${index}'
   params: {
     name: client.name
     namespaceName: namespace.name
@@ -260,12 +263,23 @@ module namespace_clients 'client/main.bicep' = [for (client, index) in (clients 
 }]
 
 module namespace_clientGroups 'client-group/main.bicep' = [for (clientGroup, index) in (clientGroups ?? []): {
-  name: '${uniqueString(deployment().name, location)}-Namespace-clientGroups-${index}'
+  name: '${uniqueString(deployment().name, location)}-Namespace-clientGroup-${index}'
   params: {
     name: clientGroup.name
     namespaceName: namespace.name
     query: clientGroup.query
     description: clientGroup.?description
+  }
+}]
+
+module namespace_topicSpaces 'topic-space/main.bicep' = [for (topicSpaces, index) in (topicSpaces ?? []): {
+  name: '${uniqueString(deployment().name, location)}-Namespace-topicSpace-${index}'
+  params: {
+    name: topicSpaces.name
+    namespaceName: namespace.name
+    description: topicSpaces.?description
+    topicTemplates: topicSpaces.topicTemplates
+    roleAssignments: topicSpaces.?roleAssignments
   }
 }]
 
