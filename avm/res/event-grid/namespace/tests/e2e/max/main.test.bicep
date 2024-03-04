@@ -289,5 +289,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         clientCertificateAuthenticationValidationSchema: 'IpMatchesAuthenticationName'
       }
     ]
+    clientGroups: [
+      {
+        name: 'group1'
+        query: 'attributes.keyName IN [\'a\', \'b\', \'c\']'
+        description: 'this is group1'
+      }
+    ]
   }
 }]

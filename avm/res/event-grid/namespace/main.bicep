@@ -34,15 +34,6 @@ param roleAssignments roleAssignmentType
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointType
 
-@description('Optional. All namespace topics to create.')
-param topics array?
-
-@description('Optional. CA certificates (Root or intermediate) used to sign the client certificates for clients authenticated using CA-signed certificates.')
-param caCertificates array?
-
-@description('Optional. All namespace clients to create.')
-param clients array?
-
 @allowed([
   'Enabled'
   'Disabled'
@@ -69,6 +60,18 @@ param maximumSessionExpiryInHours int = 1
 @maxValue(100)
 @description('Optional. The maximum number of sessions per authentication name. This will only take effect if \'topicSpacesState\' is set to \'Enabled\'.')
 param maximumClientSessionsPerAuthenticationName int = 1
+
+@description('Optional. All namespace topics to create.')
+param topics array?
+
+@description('Optional. CA certificates (Root or intermediate) used to sign the client certificates for clients authenticated using CA-signed certificates.')
+param caCertificates array?
+
+@description('Optional. All namespace clients to create.')
+param clients array?
+
+@description('Optional. All namespace client groups to create.')
+param clientGroups array?
 
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
@@ -253,6 +256,16 @@ module namespace_clients 'client/main.bicep' = [for (client, index) in (clients 
     clientCertificateAuthenticationAllowedThumbprints: client.?clientCertificateAuthenticationAllowedThumbprints
     attributes: client.?attributes
     state: client.?state
+  }
+}]
+
+module namespace_clientGroups 'client-group/main.bicep' = [for (clientGroup, index) in (clientGroups ?? []): {
+  name: '${uniqueString(deployment().name, location)}-Namespace-clientGroups-${index}'
+  params: {
+    name: clientGroup.name
+    namespaceName: namespace.name
+    query: clientGroup.query
+    description: clientGroup.?description
   }
 }]
 
