@@ -64,7 +64,11 @@ configuration:
       "secretid",
       "disablepassword",
       "sync*passwords",
+      "sqlAdministratorLogin",
       "tokenname",
+      "ssoClientSecretKeyVaultPath",
+      "ssoSecretType",
+      "tokenValidityLength"
     ]
 
 rule:
