@@ -34,9 +34,11 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/key-vault/vault:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using Private Endpoints](#example-3-using-private-endpoints)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Using Private Endpoints](#example-4-using-private-endpoints)
+- [Using only defaults](#example-5-using-only-defaults)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -90,7 +92,129 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module vault 'br/public:avm/res/key-vault/vault:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-kvvec'
+  params: {
+    // Required parameters
+    name: 'kvvec002'
+    // Non-required parameters
+    enablePurgeProtection: false
+    enableRbacAuthorization: true
+    keys: [
+      {
+        attributes: {
+          exp: 1725109032
+          nbf: 10000
+        }
+        kty: 'EC'
+        name: 'keyName'
+        rotationPolicy: {
+          attributes: {
+            expiryTime: 'P2Y'
+          }
+          lifetimeActions: [
+            {
+              action: {
+                type: 'Rotate'
+              }
+              trigger: {
+                timeBeforeExpiry: 'P2M'
+              }
+            }
+            {
+              action: {
+                type: 'Notify'
+              }
+              trigger: {
+                timeBeforeExpiry: 'P30D'
+              }
+            }
+          ]
+        }
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "kvvec002"
+    },
+    "enablePurgeProtection": {
+      "value": false
+    },
+    "enableRbacAuthorization": {
+      "value": true
+    },
+    "keys": {
+      "value": [
+        {
+          "attributes": {
+            "exp": 1725109032,
+            "nbf": 10000
+          },
+          "kty": "EC",
+          "name": "keyName",
+          "rotationPolicy": {
+            "attributes": {
+              "expiryTime": "P2Y"
+            },
+            "lifetimeActions": [
+              {
+                "action": {
+                  "type": "Rotate"
+                },
+                "trigger": {
+                  "timeBeforeExpiry": "P2M"
+                }
+              },
+              {
+                "action": {
+                  "type": "Notify"
+                },
+                "trigger": {
+                  "timeBeforeExpiry": "P30D"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -604,7 +728,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using Private Endpoints_
+### Example 4: _Using Private Endpoints_
 
 This instance deploys the module with Private Endpoints.
 
@@ -746,7 +870,129 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module vault 'br/public:avm/res/key-vault/vault:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-kvvrsa'
+  params: {
+    // Required parameters
+    name: 'kvvrsa002'
+    // Non-required parameters
+    enablePurgeProtection: false
+    enableRbacAuthorization: true
+    keys: [
+      {
+        attributes: {
+          exp: 1725109032
+          nbf: 10000
+        }
+        kty: 'RSA'
+        name: 'keyName'
+        rotationPolicy: {
+          attributes: {
+            expiryTime: 'P2Y'
+          }
+          lifetimeActions: [
+            {
+              action: {
+                type: 'Rotate'
+              }
+              trigger: {
+                timeBeforeExpiry: 'P2M'
+              }
+            }
+            {
+              action: {
+                type: 'Notify'
+              }
+              trigger: {
+                timeBeforeExpiry: 'P30D'
+              }
+            }
+          ]
+        }
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "kvvrsa002"
+    },
+    "enablePurgeProtection": {
+      "value": false
+    },
+    "enableRbacAuthorization": {
+      "value": true
+    },
+    "keys": {
+      "value": [
+        {
+          "attributes": {
+            "exp": 1725109032,
+            "nbf": 10000
+          },
+          "kty": "RSA",
+          "name": "keyName",
+          "rotationPolicy": {
+            "attributes": {
+              "expiryTime": "P2Y"
+            },
+            "lifetimeActions": [
+              {
+                "action": {
+                  "type": "Rotate"
+                },
+                "trigger": {
+                  "timeBeforeExpiry": "P2M"
+                }
+              },
+              {
+                "action": {
+                  "type": "Notify"
+                },
+                "trigger": {
+                  "timeBeforeExpiry": "P30D"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -1404,10 +1650,10 @@ All keys to create.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`attributes`](#parameter-keysattributes) | object | Contains attributes of the key. |
-| [`curveName`](#parameter-keyscurvename) | string | The elliptic curve name. Default value is "P-256". |
+| [`curveName`](#parameter-keyscurvename) | string | The elliptic curve name. Only works if "keySize" equals "EC" or "EC-HSM". Default is "P-256". |
 | [`keyOps`](#parameter-keyskeyops) | array | The allowed operations on this key. |
-| [`keySize`](#parameter-keyskeysize) | int | The key size in bits. |
-| [`kty`](#parameter-keyskty) | string | The type of the key. Default value is "EC". |
+| [`keySize`](#parameter-keyskeysize) | int | The key size in bits. Only works if "keySize" equals "RSA" or "RSA-HSM". Default is "4096". |
+| [`kty`](#parameter-keyskty) | string | The type of the key. Default is "EC". |
 | [`releasePolicy`](#parameter-keysreleasepolicy) | object | Key release policy. |
 | [`roleAssignments`](#parameter-keysroleassignments) | array | Array of role assignments to create. |
 | [`rotationPolicy`](#parameter-keysrotationpolicy) | object | Key rotation policy. |
@@ -1458,7 +1704,7 @@ If set, defines the date from which onwards the key becomes valid. Defined in se
 
 ### Parameter: `keys.curveName`
 
-The elliptic curve name. Default value is "P-256".
+The elliptic curve name. Only works if "keySize" equals "EC" or "EC-HSM". Default is "P-256".
 
 - Required: No
 - Type: string
@@ -1494,7 +1740,7 @@ The allowed operations on this key.
 
 ### Parameter: `keys.keySize`
 
-The key size in bits.
+The key size in bits. Only works if "keySize" equals "RSA" or "RSA-HSM". Default is "4096".
 
 - Required: No
 - Type: int
@@ -1509,7 +1755,7 @@ The key size in bits.
 
 ### Parameter: `keys.kty`
 
-The type of the key. Default value is "EC".
+The type of the key. Default is "EC".
 
 - Required: No
 - Type: string

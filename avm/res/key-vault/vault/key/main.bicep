@@ -39,9 +39,9 @@ resource key 'Microsoft.KeyVault/vaults/keys@2022-07-01' = {
       exp: keyProperties.attributes.?exp
       nbf: keyProperties.attributes.?nbf
     }
-    curveName: keyProperties.?curveName ?? 'P-256'
+    curveName: (keyProperties.kty == 'EC' || keyProperties.kty == 'EC-HSM') ? (keyProperties.?curveName ?? 'P-256') : null
     keyOps: keyProperties.?keyOps
-    keySize: keyProperties.?keySize
+    keySize: (keyProperties.kty == 'RSA' || keyProperties.kty == 'RSA-HSM') ? (keyProperties.?keySize ?? 4096) : null
     kty: keyProperties.?kty ?? 'EC'
     release_policy: keyProperties.?releasePolicy ?? {}
     rotationPolicy: keyProperties.?rotationPolicy ?? {}
@@ -116,16 +116,16 @@ type keyType = {
     @description('Optional. If set, defines the date from which onwards the key becomes valid. Defined in seconds since 1970-01-01T00:00:00Z.')
     nbf: int?
   }?
-  @description('Optional. The elliptic curve name. Default value is "P-256".')
+  @description('Optional. The elliptic curve name. Only works if "keySize" equals "EC" or "EC-HSM". Default is "P-256".')
   curveName: ('P-256' | 'P-256K' | 'P-384' | 'P-521')?
 
   @description('Optional. The allowed operations on this key.')
   keyOps: ('decrypt' | 'encrypt' | 'import' | 'release' | 'sign' | 'unwrapKey' | 'verify' | 'wrapKey')[]?
 
-  @description('Optional. The key size in bits.')
+  @description('Optional. The key size in bits. Only works if "keySize" equals "RSA" or "RSA-HSM". Default is "4096".')
   keySize: (2048 | 3072 | 4096)?
 
-  @description('Optional. The type of the key. Default value is "EC".')
+  @description('Optional. The type of the key. Default is "EC".')
   kty: ('EC' | 'EC-HSM' | 'RSA' | 'RSA-HSM')?
 
   @description('Optional. Key release policy.')
