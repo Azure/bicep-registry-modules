@@ -33,7 +33,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
 resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   name: secretProperties.name
   parent: keyVault
-  tags: secretProperties.tags
+  tags: secretProperties.?tags ?? {}
   properties: {
     attributes: {
       enabled: secretProperties.attributes.?enabled

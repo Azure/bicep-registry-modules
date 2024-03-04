@@ -32,7 +32,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
 resource key 'Microsoft.KeyVault/vaults/keys@2022-07-01' = {
   name: keyProperties.name
   parent: keyVault
-  tags: keyProperties.tags
+  tags: keyProperties.?tags ?? {}
   properties: {
     attributes: {
       enabled: keyProperties.attributes.?enabled
@@ -43,8 +43,8 @@ resource key 'Microsoft.KeyVault/vaults/keys@2022-07-01' = {
     keyOps: keyProperties.keyOps
     keySize: keyProperties.keySize
     kty: keyProperties.kty
-    release_policy: keyProperties.releasePolicy
-    rotationPolicy: keyProperties.rotationPolicy
+    release_policy: keyProperties.?releasePolicy ?? {}
+    rotationPolicy: keyProperties.?rotationPolicy ?? {}
   }
 }
 
