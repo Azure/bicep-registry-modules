@@ -120,6 +120,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     // Only for testing purposes
     enablePurgeProtection: false
     enableRbacAuthorization: false
+    softDeleteRetentionInDays: 7
     keys: [
       {
         attributesExp: 1725109032
@@ -247,35 +248,40 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         principalType: 'ServicePrincipal'
       }
     ]
-    secrets: {
-      secureList: [
-        {
-          attributesExp: 1702648632
-          attributesNbf: 10000
-          contentType: 'Something'
-          name: 'secretName'
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Owner'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-            {
-              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-            {
-              roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
-          value: 'secretValue'
+    secrets: [
+      {
+        name: 'secretName'
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
         }
-      ]
-    }
-    softDeleteRetentionInDays: 7
+        attributes: {
+          enabled: false
+          exp: 1702648632
+          nbf: 10000
+        }
+        contentType: 'Something'
+        value: 'secretValue'
+        roleAssignments: [
+          {
+            roleDefinitionIdOrName: 'Owner'
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+          {
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+          {
+            roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+        ]
+      }
+    ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'

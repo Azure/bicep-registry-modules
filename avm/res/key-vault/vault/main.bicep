@@ -16,8 +16,7 @@ param location string = resourceGroup().location
 param accessPolicies accessPoliciesType
 
 @description('Optional. All secrets to create.')
-@secure()
-param secrets object?
+param secrets secretType
 
 @description('Optional. All keys to create.')
 param keys array?
@@ -110,8 +109,6 @@ var formattedAccessPolicies = [for accessPolicy in (accessPolicies ?? []): {
   tenantId: accessPolicy.?tenantId ?? tenant().tenantId
 }]
 
-var secretList = secrets.?secureList ?? []
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -203,18 +200,11 @@ module keyVault_accessPolicies 'access-policy/main.bicep' = if (!empty(accessPol
   }
 }
 
-module keyVault_secrets 'secret/main.bicep' = [for (secret, index) in secretList: {
+module keyVault_secrets 'secret/main.bicep' = [for (secret, index) in (secrets ?? []): {
   name: '${uniqueString(deployment().name, location)}-KeyVault-Secret-${index}'
   params: {
-    name: secret.name
-    value: secret.value
     keyVaultName: keyVault.name
-    attributesEnabled: secret.?attributesEnabled ?? true
-    attributesExp: secret.?attributesExp
-    attributesNbf: secret.?attributesNbf
-    contentType: secret.?contentType
-    tags: secret.?tags ?? tags
-    roleAssignments: secret.?roleAssignments
+    secretProperties: secret
   }
 }]
 
@@ -471,4 +461,34 @@ type accessPoliciesType = {
     @description('Optional. Permissions to storage accounts.')
     storage: ('all' | 'backup' | 'delete' | 'deletesas' | 'get' | 'getsas' | 'list' | 'listsas' | 'purge' | 'recover' | 'regeneratekey' | 'restore' | 'set' | 'setsas' | 'update')[]?
   }
+}[]?
+
+type secretType = {
+  @description('Required. The name of the secret.')
+  name: string
+
+  @description('Optional. Resource tags.')
+  tags: object?
+
+  @description('Optional. Contains attributes of the secret.')
+  attributes: {
+    @description('Optional. Defines whether the secret is enabled or disabled.')
+    enabled: bool?
+
+    @description('Optional. Defines when the secret will become invalid. Defined in seconds since 1970-01-01T00:00:00Z.')
+    exp: int?
+
+    @description('Optional. If set, defines the date from which onwards the secret becomes valid. Defined in seconds since 1970-01-01T00:00:00Z.')
+    nbf: int?
+  }
+  @description('Optional. The content type of the secret.')
+  @secure()
+  contentType: string?
+
+  @description('Required. The value of the secret. NOTE: "value" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets.')
+  @secure()
+  value: string
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType?
 }[]?

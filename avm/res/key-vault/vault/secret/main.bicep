@@ -5,31 +5,9 @@ metadata owner = 'Azure/module-maintainers'
 @description('Conditional. The name of the parent key vault. Required if the template is used in a standalone deployment.')
 param keyVaultName string
 
-@description('Required. The name of the secret.')
-param name string
-
-@description('Optional. Resource tags.')
-param tags object?
-
-@description('Optional. Determines whether the object is enabled.')
-param attributesEnabled bool = true
-
-@description('Optional. Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible.')
-param attributesExp int?
-
-@description('Optional. Not before date in seconds since 1970-01-01T00:00:00Z.')
-param attributesNbf int?
-
-@description('Optional. The content type of the secret.')
-@secure()
-param contentType string?
-
-@description('Required. The value of the secret. NOTE: "value" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets.')
-@secure()
-param value string
-
-@description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+@description('Optional. Sets the attributes of the secret.')
+#disable-next-line secure-secrets-in-params // the sensitive information is handled separately within the user-defined-type, so this is a false-positive
+param secretProperties secretType
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -53,21 +31,21 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
 }
 
 resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
-  name: name
+  name: secretProperties.name
   parent: keyVault
-  tags: tags
+  tags: secretProperties.tags
   properties: {
-    contentType: contentType
     attributes: {
-      enabled: attributesEnabled
-      exp: attributesExp
-      nbf: attributesNbf
+      enabled: secretProperties.attributes.enabled
+      exp: secretProperties.attributes.exp
+      nbf: secretProperties.attributes.nbf
     }
-    value: value
+    contentType: secretProperties.contentType
+    value: secretProperties.value
   }
 }
 
-resource secret_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
+resource secret_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (secretProperties.roleAssignments ?? []): {
   name: guid(secret.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
   properties: {
     roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
@@ -116,3 +94,33 @@ type roleAssignmentType = {
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
+
+type secretType = {
+  @description('Required. The name of the secret.')
+  name: string
+
+  @description('Optional. Resource tags.')
+  tags: object?
+
+  @description('Optional. Contains attributes of the secret.')
+  attributes: {
+    @description('Optional. Defines whether the secret is enabled or disabled.')
+    enabled: bool?
+
+    @description('Optional. Defines when the secret will become invalid. Defined in seconds since 1970-01-01T00:00:00Z.')
+    exp: int?
+
+    @description('Optional. If set, defines the date from which onwards the secret becomes valid. Defined in seconds since 1970-01-01T00:00:00Z.')
+    nbf: int?
+  }
+  @description('Optional. The content type of the secret.')
+  @secure()
+  contentType: string?
+
+  @description('Required. The value of the secret. NOTE: "value" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets.')
+  @secure()
+  value: string
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType?
+}

@@ -125,17 +125,17 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
       }
     ]
-    secrets: {
-      secureList: [
-        {
-          attributesExp: 1702648632
-          attributesNbf: 10000
-          contentType: 'Something'
-          name: 'secretName'
-          value: 'secretValue'
+    secrets: [
+      {
+        name: 'secretName'
+        attributes: {
+          exp: 1702648632
+          nbf: 10000
         }
-      ]
-    }
+        contentType: 'Something'
+        value: 'secretValue'
+      }
+    ]
     softDeleteRetentionInDays: 7
     tags: {
       'hidden-title': 'This is visible in the resource name'

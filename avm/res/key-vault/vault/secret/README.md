@@ -19,13 +19,6 @@ This module deploys a Key Vault Secret.
 
 ## Parameters
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the secret. |
-| [`value`](#parameter-value) | securestring | The value of the secret. NOTE: "value" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets. |
-
 **Conditional parameters**
 
 | Parameter | Type | Description |
@@ -36,26 +29,7 @@ This module deploys a Key Vault Secret.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`attributesEnabled`](#parameter-attributesenabled) | bool | Determines whether the object is enabled. |
-| [`attributesExp`](#parameter-attributesexp) | int | Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible. |
-| [`attributesNbf`](#parameter-attributesnbf) | int | Not before date in seconds since 1970-01-01T00:00:00Z. |
-| [`contentType`](#parameter-contenttype) | securestring | The content type of the secret. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`tags`](#parameter-tags) | object | Resource tags. |
-
-### Parameter: `name`
-
-The name of the secret.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `value`
-
-The value of the secret. NOTE: "value" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets.
-
-- Required: Yes
-- Type: securestring
+| [`secretProperties`](#parameter-secretproperties) | object | Sets the attributes of the secret. |
 
 ### Parameter: `keyVaultName`
 
@@ -64,36 +38,87 @@ The name of the parent key vault. Required if the template is used in a standalo
 - Required: Yes
 - Type: string
 
-### Parameter: `attributesEnabled`
+### Parameter: `secretProperties`
 
-Determines whether the object is enabled.
+Sets the attributes of the secret.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-secretpropertiesname) | string | The name of the secret. |
+| [`value`](#parameter-secretpropertiesvalue) | securestring | The value of the secret. NOTE: "value" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`attributes`](#parameter-secretpropertiesattributes) | object | Contains attributes of the secret. |
+| [`contentType`](#parameter-secretpropertiescontenttype) | securestring | The content type of the secret. |
+| [`roleAssignments`](#parameter-secretpropertiesroleassignments) | array | Array of role assignments to create. |
+| [`tags`](#parameter-secretpropertiestags) | object | Resource tags. |
+
+### Parameter: `secretProperties.name`
+
+The name of the secret.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `secretProperties.value`
+
+The value of the secret. NOTE: "value" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `secretProperties.attributes`
+
+Contains attributes of the secret.
+
+- Required: Yes
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-secretpropertiesattributesenabled) | bool | Defines whether the secret is enabled or disabled. |
+| [`exp`](#parameter-secretpropertiesattributesexp) | int | Defines when the secret will become invalid. Defined in seconds since 1970-01-01T00:00:00Z. |
+| [`nbf`](#parameter-secretpropertiesattributesnbf) | int | If set, defines the date from which onwards the secret becomes valid. Defined in seconds since 1970-01-01T00:00:00Z. |
+
+### Parameter: `secretProperties.attributes.enabled`
+
+Defines whether the secret is enabled or disabled.
 
 - Required: No
 - Type: bool
-- Default: `True`
 
-### Parameter: `attributesExp`
+### Parameter: `secretProperties.attributes.exp`
 
-Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible.
-
-- Required: No
-- Type: int
-
-### Parameter: `attributesNbf`
-
-Not before date in seconds since 1970-01-01T00:00:00Z.
+Defines when the secret will become invalid. Defined in seconds since 1970-01-01T00:00:00Z.
 
 - Required: No
 - Type: int
 
-### Parameter: `contentType`
+### Parameter: `secretProperties.attributes.nbf`
+
+If set, defines the date from which onwards the secret becomes valid. Defined in seconds since 1970-01-01T00:00:00Z.
+
+- Required: No
+- Type: int
+
+### Parameter: `secretProperties.contentType`
 
 The content type of the secret.
 
 - Required: No
 - Type: securestring
 
-### Parameter: `roleAssignments`
+### Parameter: `secretProperties.roleAssignments`
 
 Array of role assignments to create.
 
@@ -104,41 +129,41 @@ Array of role assignments to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`principalId`](#parameter-secretpropertiesroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-secretpropertiesroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
-| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
-| [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+| [`condition`](#parameter-secretpropertiesroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-secretpropertiesroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-secretpropertiesroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-secretpropertiesroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-secretpropertiesroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
-### Parameter: `roleAssignments.principalId`
+### Parameter: `secretProperties.roleAssignments.principalId`
 
 The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `roleAssignments.roleDefinitionIdOrName`
+### Parameter: `secretProperties.roleAssignments.roleDefinitionIdOrName`
 
 The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `roleAssignments.condition`
+### Parameter: `secretProperties.roleAssignments.condition`
 
 The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
 
-### Parameter: `roleAssignments.conditionVersion`
+### Parameter: `secretProperties.roleAssignments.conditionVersion`
 
 Version of the condition.
 
@@ -151,21 +176,21 @@ Version of the condition.
   ]
   ```
 
-### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
+### Parameter: `secretProperties.roleAssignments.delegatedManagedIdentityResourceId`
 
 The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
-### Parameter: `roleAssignments.description`
+### Parameter: `secretProperties.roleAssignments.description`
 
 The description of the role assignment.
 
 - Required: No
 - Type: string
 
-### Parameter: `roleAssignments.principalType`
+### Parameter: `secretProperties.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
 
@@ -182,7 +207,7 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `tags`
+### Parameter: `secretProperties.tags`
 
 Resource tags.
 

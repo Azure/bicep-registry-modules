@@ -287,34 +287,40 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    secrets: {
-      secureList: [
-        {
-          attributesExp: 1702648632
-          attributesNbf: 10000
-          contentType: 'Something'
-          name: 'secretName'
-          roleAssignments: [
-            {
-              principalId: '<principalId>'
-              principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Owner'
-            }
-            {
-              principalId: '<principalId>'
-              principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-            }
-            {
-              principalId: '<principalId>'
-              principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-            }
-          ]
-          value: 'secretValue'
+    secrets: [
+      {
+        attributes: {
+          enabled: false
+          exp: 1702648632
+          nbf: 10000
         }
-      ]
-    }
+        contentType: 'Something'
+        name: 'secretName'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+        value: 'secretValue'
+      }
+    ]
     softDeleteRetentionInDays: 7
     tags: {
       Environment: 'Non-Prod'
@@ -542,34 +548,40 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
       ]
     },
     "secrets": {
-      "value": {
-        "secureList": [
-          {
-            "attributesExp": 1702648632,
-            "attributesNbf": 10000,
-            "contentType": "Something",
-            "name": "secretName",
-            "roleAssignments": [
-              {
-                "principalId": "<principalId>",
-                "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "Owner"
-              },
-              {
-                "principalId": "<principalId>",
-                "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-              },
-              {
-                "principalId": "<principalId>",
-                "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-              }
-            ],
-            "value": "secretValue"
-          }
-        ]
-      }
+      "value": [
+        {
+          "attributes": {
+            "enabled": false,
+            "exp": 1702648632,
+            "nbf": 10000
+          },
+          "contentType": "Something",
+          "name": "secretName",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          },
+          "value": "secretValue"
+        }
+      ]
     },
     "softDeleteRetentionInDays": {
       "value": 7
@@ -805,17 +817,17 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
-    secrets: {
-      secureList: [
-        {
-          attributesExp: 1702648632
-          attributesNbf: 10000
-          contentType: 'Something'
-          name: 'secretName'
-          value: 'secretValue'
+    secrets: [
+      {
+        attributes: {
+          exp: 1702648632
+          nbf: 10000
         }
-      ]
-    }
+        contentType: 'Something'
+        name: 'secretName'
+        value: 'secretValue'
+      }
+    ]
     softDeleteRetentionInDays: 7
     tags: {
       Environment: 'Non-Prod'
@@ -917,17 +929,17 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
       ]
     },
     "secrets": {
-      "value": {
-        "secureList": [
-          {
-            "attributesExp": 1702648632,
-            "attributesNbf": 10000,
-            "contentType": "Something",
-            "name": "secretName",
-            "value": "secretValue"
-          }
-        ]
-      }
+      "value": [
+        {
+          "attributes": {
+            "exp": 1702648632,
+            "nbf": 10000
+          },
+          "contentType": "Something",
+          "name": "secretName",
+          "value": "secretValue"
+        }
+      ]
     },
     "softDeleteRetentionInDays": {
       "value": 7
@@ -976,7 +988,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`secrets`](#parameter-secrets) | secureObject | All secrets to create. |
+| [`secrets`](#parameter-secrets) | array | All secrets to create. |
 | [`sku`](#parameter-sku) | string | Specifies the SKU for the vault. |
 | [`softDeleteRetentionInDays`](#parameter-softdeleteretentionindays) | int | softDelete data retention days. It accepts >=7 and <=90. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
@@ -1853,7 +1865,176 @@ The principal type of the assigned principal ID.
 All secrets to create.
 
 - Required: No
-- Type: secureObject
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-secretsname) | string | The name of the secret. |
+| [`value`](#parameter-secretsvalue) | securestring | The value of the secret. NOTE: "value" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`attributes`](#parameter-secretsattributes) | object | Contains attributes of the secret. |
+| [`contentType`](#parameter-secretscontenttype) | securestring | The content type of the secret. |
+| [`roleAssignments`](#parameter-secretsroleassignments) | array | Array of role assignments to create. |
+| [`tags`](#parameter-secretstags) | object | Resource tags. |
+
+### Parameter: `secrets.name`
+
+The name of the secret.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `secrets.value`
+
+The value of the secret. NOTE: "value" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `secrets.attributes`
+
+Contains attributes of the secret.
+
+- Required: Yes
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-secretsattributesenabled) | bool | Defines whether the secret is enabled or disabled. |
+| [`exp`](#parameter-secretsattributesexp) | int | Defines when the secret will become invalid. Defined in seconds since 1970-01-01T00:00:00Z. |
+| [`nbf`](#parameter-secretsattributesnbf) | int | If set, defines the date from which onwards the secret becomes valid. Defined in seconds since 1970-01-01T00:00:00Z. |
+
+### Parameter: `secrets.attributes.enabled`
+
+Defines whether the secret is enabled or disabled.
+
+- Required: No
+- Type: bool
+
+### Parameter: `secrets.attributes.exp`
+
+Defines when the secret will become invalid. Defined in seconds since 1970-01-01T00:00:00Z.
+
+- Required: No
+- Type: int
+
+### Parameter: `secrets.attributes.nbf`
+
+If set, defines the date from which onwards the secret becomes valid. Defined in seconds since 1970-01-01T00:00:00Z.
+
+- Required: No
+- Type: int
+
+### Parameter: `secrets.contentType`
+
+The content type of the secret.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `secrets.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-secretsroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-secretsroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-secretsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-secretsroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-secretsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-secretsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-secretsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `secrets.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `secrets.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `secrets.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `secrets.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `secrets.tags`
+
+Resource tags.
+
+- Required: No
+- Type: object
 
 ### Parameter: `sku`
 
