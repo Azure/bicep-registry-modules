@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "11523807998025124721"
+      "templateHash": "5590822157258383721"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile.",
@@ -306,7 +306,7 @@
         "profile"
       ]
     },
-    "profile_endpoints": {
+    "profile_endpoint": {
       "condition": "[not(empty(parameters('endpointProperties')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
