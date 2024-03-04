@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.3.34343",
-      "templateHash": "9013777077291537155"
+      "templateHash": "15987889443979703085"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -1692,7 +1692,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.3.34343",
-              "templateHash": "4533926909013201532"
+              "templateHash": "15331847381813003060"
             },
             "name": "Key Vault Keys",
             "description": "This module deploys a Key Vault Key.",
@@ -2033,9 +2033,9 @@
                   "exp": "[tryGet(parameters('keyProperties').attributes, 'exp')]",
                   "nbf": "[tryGet(parameters('keyProperties').attributes, 'nbf')]"
                 },
-                "curveName": "[if(or(equals(parameters('keyProperties').kty, 'EC'), equals(parameters('keyProperties').kty, 'EC-HSM')), coalesce(tryGet(parameters('keyProperties'), 'curveName'), 'P-256'), null())]",
+                "curveName": "[if(and(not(equals(tryGet(parameters('keyProperties'), 'kty'), 'RSA')), not(equals(tryGet(parameters('keyProperties'), 'kty'), 'RSA-HSM'))), coalesce(tryGet(parameters('keyProperties'), 'curveName'), 'P-256'), null())]",
                 "keyOps": "[tryGet(parameters('keyProperties'), 'keyOps')]",
-                "keySize": "[if(or(equals(parameters('keyProperties').kty, 'RSA'), equals(parameters('keyProperties').kty, 'RSA-HSM')), coalesce(tryGet(parameters('keyProperties'), 'keySize'), 4096), null())]",
+                "keySize": "[if(or(equals(tryGet(parameters('keyProperties'), 'kty'), 'RSA'), equals(tryGet(parameters('keyProperties'), 'kty'), 'RSA-HSM')), coalesce(tryGet(parameters('keyProperties'), 'keySize'), 4096), null())]",
                 "kty": "[coalesce(tryGet(parameters('keyProperties'), 'kty'), 'EC')]",
                 "release_policy": "[coalesce(tryGet(parameters('keyProperties'), 'releasePolicy'), createObject())]",
                 "rotationPolicy": "[coalesce(tryGet(parameters('keyProperties'), 'rotationPolicy'), createObject())]"

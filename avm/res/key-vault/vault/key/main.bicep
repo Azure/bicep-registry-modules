@@ -39,9 +39,9 @@ resource key 'Microsoft.KeyVault/vaults/keys@2022-07-01' = {
       exp: keyProperties.attributes.?exp
       nbf: keyProperties.attributes.?nbf
     }
-    curveName: (keyProperties.kty == 'EC' || keyProperties.kty == 'EC-HSM') ? (keyProperties.?curveName ?? 'P-256') : null
+    curveName: (keyProperties.?kty != 'RSA' && keyProperties.?kty != 'RSA-HSM') ? (keyProperties.?curveName ?? 'P-256') : null
     keyOps: keyProperties.?keyOps
-    keySize: (keyProperties.kty == 'RSA' || keyProperties.kty == 'RSA-HSM') ? (keyProperties.?keySize ?? 4096) : null
+    keySize: (keyProperties.?kty == 'RSA' || keyProperties.?kty == 'RSA-HSM') ? (keyProperties.?keySize ?? 4096) : null
     kty: keyProperties.?kty ?? 'EC'
     release_policy: keyProperties.?releasePolicy ?? {}
     rotationPolicy: keyProperties.?rotationPolicy ?? {}
