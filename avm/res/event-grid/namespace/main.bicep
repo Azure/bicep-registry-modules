@@ -251,6 +251,7 @@ module namespace_clients 'client/main.bicep' = [for (client, index) in (clients 
     description: client.?description
     clientCertificateAuthenticationValidationSchema: client.?clientCertificateAuthenticationValidationSchema
     clientCertificateAuthenticationAllowedThumbprints: client.?clientCertificateAuthenticationAllowedThumbprints
+    attributes: client.?attributes
     state: client.?state
   }
 }]

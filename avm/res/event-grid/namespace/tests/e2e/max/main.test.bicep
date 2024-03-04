@@ -265,6 +265,14 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           '2222222222222222222222222222222222222222'
         ]
         state: 'Enabled'
+        attributes: {
+          room: '345'
+          floor: 12
+          deviceTypes: [
+            'Fan'
+            'Light'
+          ]
+        }
       }
       {
         name: 'client2'

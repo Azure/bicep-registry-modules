@@ -34,6 +34,9 @@ param clientCertificateAuthenticationAllowedThumbprints string[]?
 @sys.description('Optional. Indicates if the client is enabled or not.')
 param state string = 'Enabled'
 
+@sys.description('Conditional. Attributes for the client. Supported values are int, bool, string, string[].')
+param attributes object?
+
 // ============== //
 // Resources      //
 // ============== //
@@ -48,7 +51,7 @@ resource client 'Microsoft.EventGrid/namespaces/clients@2023-12-15-preview' = {
   properties: {
     description: description
     authenticationName: !empty(authenticationName) ? authenticationName : name
-    attributes: {}
+    attributes: attributes
     clientCertificateAuthentication: {
       validationScheme: clientCertificateAuthenticationValidationSchema
       allowedThumbprints: clientCertificateAuthenticationValidationSchema == 'ThumbprintMatch' ? clientCertificateAuthenticationAllowedThumbprints : null
