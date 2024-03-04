@@ -37,6 +37,9 @@ param privateEndpoints privateEndpointType
 @description('Optional. All namespace topics to create.')
 param topics array?
 
+@description('Optional. CA certificates (Root or intermediate) used to sign the client certificates for clients authenticated using CA-signed certificates.')
+param caCertificates array?
+
 @allowed([
   'Enabled'
   'Disabled'
@@ -223,6 +226,16 @@ module namespace_topics 'topic/main.bicep' = [for (topic, index) in (topics ?? [
     publisherType: topic.?publisherType
     roleAssignments: topic.?roleAssignments
     eventSubscriptions: topic.?eventSubscriptions
+  }
+}]
+
+module namespace_caCertificates 'ca-certificate/main.bicep' = [for (caCertificate, index) in (caCertificates ?? []): {
+  name: '${uniqueString(deployment().name, location)}-Namespace-caCertificate-${index}'
+  params: {
+    name: caCertificate.name
+    namespaceName: namespace.name
+    description: caCertificate.?description
+    encodedCertificate: caCertificate.encodedCertificate
   }
 }]
 

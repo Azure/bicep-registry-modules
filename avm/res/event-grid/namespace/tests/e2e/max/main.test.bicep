@@ -247,5 +247,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       'ClientCertificateEmail'
       'ClientCertificateUri'
     ]
+    // caCertificates: [
+    //   {
+    //     name: 'exampleCert'
+    //     encodedCertificate: '''
+    //     '''
+    //   }
+    // ]
   }
 }]
