@@ -1,0 +1,164 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "96187176657838206"
+    },
+    "name": "DevTest Lab Schedules",
+    "description": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "labName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent lab. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "allowedValues": [
+        "LabVmsShutdown",
+        "LabVmAutoStart"
+      ],
+      "metadata": {
+        "description": "Required. The name of the schedule."
+      }
+    },
+    "taskType": {
+      "type": "string",
+      "allowedValues": [
+        "LabVmsShutdownTask",
+        "LabVmsStartupTask"
+      ],
+      "metadata": {
+        "description": "Required. The task type of the schedule (e.g. LabVmsShutdownTask, LabVmsStartupTask)."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "dailyRecurrence": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. If the schedule will occur once each day of the week, specify the daily recurrence."
+      }
+    },
+    "hourlyRecurrence": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. If the schedule will occur multiple times a day, specify the hourly recurrence."
+      }
+    },
+    "weeklyRecurrence": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. If the schedule will occur only some days of the week, specify the weekly recurrence."
+      }
+    },
+    "status": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. The status of the schedule (i.e. Enabled, Disabled)."
+      }
+    },
+    "targetResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The resource ID to which the schedule belongs."
+      }
+    },
+    "timeZoneId": {
+      "type": "string",
+      "defaultValue": "Pacific Standard time",
+      "metadata": {
+        "description": "Optional. The time zone ID (e.g. Pacific Standard time)."
+      }
+    },
+    "notificationSettingsStatus": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. If notifications are enabled for this schedule (i.e. Enabled, Disabled)."
+      }
+    },
+    "notificationSettingsTimeInMinutes": {
+      "type": "int",
+      "defaultValue": 30,
+      "metadata": {
+        "description": "Optional. Time in minutes before event at which notification will be sent. Optional if \"notificationSettingsStatus\" is set to \"Enabled\". Default is 30 minutes."
+      }
+    }
+  },
+  "resources": {
+    "lab": {
+      "existing": true,
+      "type": "Microsoft.DevTestLab/labs",
+      "apiVersion": "2018-09-15",
+      "name": "[parameters('labName')]"
+    },
+    "schedule": {
+      "type": "Microsoft.DevTestLab/labs/schedules",
+      "apiVersion": "2018-09-15",
+      "name": "[format('{0}/{1}', parameters('labName'), parameters('name'))]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "taskType": "[parameters('taskType')]",
+        "dailyRecurrence": "[if(not(empty(parameters('dailyRecurrence'))), parameters('dailyRecurrence'), null())]",
+        "hourlyRecurrence": "[if(not(empty(parameters('hourlyRecurrence'))), parameters('hourlyRecurrence'), null())]",
+        "weeklyRecurrence": "[if(not(empty(parameters('weeklyRecurrence'))), parameters('weeklyRecurrence'), null())]",
+        "status": "[parameters('status')]",
+        "targetResourceId": "[if(not(empty(parameters('targetResourceId'))), parameters('targetResourceId'), null())]",
+        "timeZoneId": "[parameters('timeZoneId')]",
+        "notificationSettings": "[if(equals(parameters('notificationSettingsStatus'), 'Enabled'), createObject('status', parameters('notificationSettingsStatus'), 'timeInMinutes', parameters('notificationSettingsTimeInMinutes')), createObject())]"
+      },
+      "dependsOn": [
+        "lab"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the schedule."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the schedule."
+      },
+      "value": "[resourceId('Microsoft.DevTestLab/labs/schedules', parameters('labName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the schedule was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
