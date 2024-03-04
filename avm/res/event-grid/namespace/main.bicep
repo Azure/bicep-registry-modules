@@ -40,6 +40,9 @@ param topics array?
 @description('Optional. CA certificates (Root or intermediate) used to sign the client certificates for clients authenticated using CA-signed certificates.')
 param caCertificates array?
 
+@description('Optional. All namespace clients to create.')
+param clients array?
+
 @allowed([
   'Enabled'
   'Disabled'
@@ -236,6 +239,19 @@ module namespace_caCertificates 'ca-certificate/main.bicep' = [for (caCertificat
     namespaceName: namespace.name
     description: caCertificate.?description
     encodedCertificate: caCertificate.encodedCertificate
+  }
+}]
+
+module namespace_clients 'client/main.bicep' = [for (client, index) in (clients ?? []): {
+  name: '${uniqueString(deployment().name, location)}-Namespace-clients-${index}'
+  params: {
+    name: client.name
+    namespaceName: namespace.name
+    authenticationName: client.?authenticationName
+    description: client.?description
+    clientCertificateAuthenticationValidationSchema: client.?clientCertificateAuthenticationValidationSchema
+    clientCertificateAuthenticationAllowedThumbprints: client.?clientCertificateAuthenticationAllowedThumbprints
+    state: client.?state
   }
 }]
 

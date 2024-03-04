@@ -254,5 +254,32 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     //     '''
     //   }
     // ]
+    clients: [
+      {
+        name: 'client1'
+        authenticationName: 'client2auth'
+        description: 'this is client2'
+        clientCertificateAuthenticationValidationSchema: 'ThumbprintMatch'
+        clientCertificateAuthenticationAllowedThumbprints: [
+          '1111111111111111111111111111111111111111'
+          '2222222222222222222222222222222222222222'
+        ]
+        state: 'Enabled'
+      }
+      {
+        name: 'client2'
+        clientCertificateAuthenticationValidationSchema: 'ThumbprintMatch'
+        clientCertificateAuthenticationAllowedThumbprints: [
+          '3333333333333333333333333333333333333333'
+        ]
+      }
+      {
+        name: 'client3'
+      }
+      {
+        name: 'client4'
+        clientCertificateAuthenticationValidationSchema: 'IpMatchesAuthenticationName'
+      }
+    ]
   }
 }]
