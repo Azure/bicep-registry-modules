@@ -262,12 +262,11 @@ resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@202
     workspaceId: diagnosticSetting.?workspaceResourceId
     eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
     eventHubName: diagnosticSetting.?eventHubName
-    logs: diagnosticSetting.?logCategoriesAndGroups ?? [
-      {
-        categoryGroup: 'AllLogs'
-        enabled: true
-      }
-    ]
+    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
+      categoryGroup: group.?categoryGroup
+      category: group.?category
+      enabled: group.?enabled ?? true
+    }]
     marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
     logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
   }
@@ -288,8 +287,8 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
   scope: workspace
 }]
 
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-KeyVault-PrivateEndpoint-${index}'
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.3' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+  name: '${uniqueString(deployment().name, location)}-Databricks-PrivateEndpoint-${index}'
   params: {
     privateLinkServiceConnections: [
       {
@@ -330,6 +329,24 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = workspace.location
+
+@description('The resource ID of the managed resource group.')
+output managedResourceGroupId string = workspace.properties.managedResourceGroupId
+
+@description('The name of the managed resource group.')
+output managedResourceGroupName string = last(split(workspace.properties.managedResourceGroupId, '/'))
+
+@description('The name of the DBFS storage account.')
+output storageAccountName string = workspace.properties.parameters.storageAccountName.value
+
+@description('The resource ID of the DBFS storage account.')
+output storageAccountId string = resourceId(last(split(workspace.properties.managedResourceGroupId, '/')), 'microsoft.storage/storageAccounts', workspace.properties.parameters.storageAccountName.value)
+
+@description('The private endpoints for the Databricks Workspace.')
+output privateEndpoints array = [for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+  name: workspace_privateEndpoints[i].outputs.name
+  resourceId: workspace_privateEndpoints[i].outputs.resourceId
+}]
 
 // =============== //
 //   Definitions   //
@@ -470,19 +487,16 @@ type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
 
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
+  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
   logCategoriesAndGroups: {
     @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
     category: string?
 
     @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
     categoryGroup: string?
-  }[]?
 
-  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to \'\' to disable metric collection.')
-  metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
-    category: string
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
   }[]?
 
   @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
