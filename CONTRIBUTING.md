@@ -37,7 +37,7 @@ Add a new directory under the `modules` folder in your local bicep-registry-modu
 
 Open a terminal and navigate to the newly created folder. From there, run the following command to generate the required files for the Bicep public registry module:
 
-```
+```shell
 brm generate
 ```
 
@@ -105,7 +105,7 @@ Each template should include the following 3 parameters: `location`, `prefix` an
 ##### Outputs
 
 - The `name` output should link to the `name` parameter.
-- THe `id` output should link to the main resource of the deployment. Additional ID parameters may be provided.
+- The `id` output should link to the main resource of the deployment. Additional ID parameters may be provided.
 
 ##### Zone Redundancy
 
@@ -172,13 +172,15 @@ Instead go with:
 - `./modules/storage.bicep`
 - `./modules/compute.bicep`
 
-## User-Defined Types (Preview)
+## User-Defined Types
 
-The repository has been setup to leverage the preview feature, [user-defined types](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/user-defined-data-types), on a per module basis.
+User-defined type `type` assignments should be declared to the end of the file, after the declaration of `outputs`.
 
-While the feature is in Preview, [to enable](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/user-defined-data-types#enable-the-preview-feature) include a `bicepconfig.json` in your module directory.
+Types should include descriptions, which can be copied from the Azure API documentation when wrapping existing resource provider objects. Nested `type` declarations do not need a description. Types are reserved for use in complex cases and should not be used to in place of primitive types.
 
-`type` assignments should be declared to the end of the file, after the declaration of `outputs`. Types should include descriptions, which can be copied from the Azure API documentation when wrapping existing RP objects. Nested `type` declarations do not need a description. `type` should be reserved for use in complex cases and should not be used to in place of primitive types.
+To utilize `type` it is required to use Bicep version of 0.24.24 or higher.
+
+Follow these patterns:
 
 ```bicep
 @description('The properties of a storage account’s Blob service.')
@@ -210,7 +212,7 @@ type containerDeleteRetentionPolicy = {
 }
 ```
 
-Avoid these patterns.
+Avoid these patterns:
 
 ```bicep
 type enabled = bool  // Avoid setting aliases for primitive types
@@ -298,7 +300,7 @@ If your change is non-breaking but does not require updating the MINOR version, 
 
 You may use the Bicep registry module tool to validate the contents of the registry module files. To do so, invoke the follow command from the module folder:
 
-```
+```shell
 brm validate
 ```
 

@@ -119,7 +119,7 @@ module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endp
     ]
     name: privateEndpoint.?name ?? 'pep-${last(split(privateLinkScope.id, '/'))}-${privateEndpoint.?service ?? 'azuremonitor'}-${index}'
     subnetResourceId: privateEndpoint.subnetResourceId
-    enableTelemetry: enableTelemetry
+    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName

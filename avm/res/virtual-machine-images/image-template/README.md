@@ -525,9 +525,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>.</p>If no value is provided, a new temporary VNET and subnet will be created in the staging resource group and will be deleted along with the remaining temporary resources. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`vmSize`](#parameter-vmsize) | string | Specifies the size for the VM. |
-| [`vmUserAssignedIdentities`](#parameter-vmuserassignedidentities) | array | List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.
-Be aware, the user assigned identities specified in the \'managedIdentities\' parameter must have the \'Managed Identity Operator\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.
- |
+| [`vmUserAssignedIdentities`](#parameter-vmuserassignedidentities) | array | List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.<p>Be aware, the user assigned identities specified in the \'managedIdentities\' parameter must have the \'Managed Identity Operator\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.<p> |
 
 **Generated parameters**
 
@@ -771,9 +769,7 @@ Specifies the size for the VM.
 
 ### Parameter: `vmUserAssignedIdentities`
 
-List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.
-Be aware, the user assigned identities specified in the \'managedIdentities\' parameter must have the \'Managed Identity Operator\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.
-
+List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.<p>Be aware, the user assigned identities specified in the \'managedIdentities\' parameter must have the \'Managed Identity Operator\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.<p>
 
 - Required: No
 - Type: array

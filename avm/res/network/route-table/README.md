@@ -504,6 +504,58 @@ Properties of the route.
 - Required: Yes
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`nextHopType`](#parameter-routespropertiesnexthoptype) | string | The type of Azure hop the packet should be sent to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefix`](#parameter-routespropertiesaddressprefix) | string | The destination CIDR to which the route applies. |
+| [`hasBgpOverride`](#parameter-routespropertieshasbgpoverride) | bool | A value indicating whether this route overrides overlapping BGP routes regardless of LPM. |
+| [`nextHopIpAddress`](#parameter-routespropertiesnexthopipaddress) | string | The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance. |
+
+### Parameter: `routes.properties.nextHopType`
+
+The type of Azure hop the packet should be sent to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Internet'
+    'None'
+    'VirtualAppliance'
+    'VirtualNetworkGateway'
+    'VnetLocal'
+  ]
+  ```
+
+### Parameter: `routes.properties.addressPrefix`
+
+The destination CIDR to which the route applies.
+
+- Required: No
+- Type: string
+
+### Parameter: `routes.properties.hasBgpOverride`
+
+A value indicating whether this route overrides overlapping BGP routes regardless of LPM.
+
+- Required: No
+- Type: bool
+
+### Parameter: `routes.properties.nextHopIpAddress`
+
+The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance.
+
+- Required: No
+- Type: string
+
 ### Parameter: `tags`
 
 Tags of the resource.
