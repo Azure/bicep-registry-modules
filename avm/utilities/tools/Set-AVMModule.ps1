@@ -28,10 +28,7 @@ Optional. Set this parameter if you don't want to generate the ReadMe file(s) fo
 Optional. Set this parameter if you don't want to setup the file & folder structure for the module(s).
 
 .PARAMETER ThrottleLimit
-Optional. The number of parallel threads to use for the generation.
-
-.PARAMETER SkipVersionCheck
-Optional. Do not check for the latest Bicep CLI version.
+Optional. The number of parallel threads to use for the generation. Defaults to 5.
 
 .EXAMPLE
 Set-AVMModule -ModuleFolderPath 'C:\avm\res\key-vault\vault'
@@ -73,9 +70,6 @@ function Set-AVMModule {
         [switch] $SkipFileAndFolderSetup,
 
         [Parameter(Mandatory = $false)]
-        [switch] $SkipVersionCheck,
-
-        [Parameter(Mandatory = $false)]
         [int] $ThrottleLimit = 5,
 
         [Parameter(Mandatory = $false)]
@@ -107,42 +101,6 @@ function Set-AVMModule {
         $relevantTemplatePaths = (Get-ChildItem @childInput).FullName
     } else {
         $relevantTemplatePaths = Join-Path $resolvedPath 'main.bicep'
-    }
-
-    if (-not $SkipVersionCheck) {
-
-        # Get latest release from Azure/Bicep repository
-        # ----------------------------------------------
-        $latestReleaseUrl = 'https://api.github.com/repos/azure/bicep/releases/latest'
-
-        $latestReleaseObject = Invoke-RestMethod -Uri $latestReleaseUrl -Method 'GET'
-        $releaseTag = $latestReleaseObject.tag_name
-        $latestReleaseVersion = [version]($releaseTag -replace 'v', '')
-        $latestReleaseUrl = $latestReleaseObject.html_url
-
-        # Get latest installed Bicep CLI version
-        # --------------------------------------
-        $latestInstalledVersionOutput = bicep --version
-
-        if ($latestInstalledVersionOutput -match ' ([0-9]+\.[0-9]+\.[0-9]+) ') {
-            $latestInstalledVersion = [version]$matches[1]
-        }
-
-        # Compare the versions
-        # --------------------
-        if ($latestInstalledVersion -ne $latestReleaseVersion) {
-            Write-Warning """
-You're not using the latest available Bicep CLI version [$latestReleaseVersion] but [$latestInstalledVersion].
-You can find the latest release at: $latestReleaseUrl.
-
-On Windows, you can use chocolatey to update the Bicep CLI by running 'choco upgrade bicep'. For other OSs, please refer to the Bicep documentation (https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install).
-
-Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CLI Bicep extension' version (az bicep version).
-"""
-        } else {
-            Write-Verbose "You're using the latest available Bicep CLI version [$latestInstalledVersion]."
-        }
-
     }
 
     # Load recurring information we'll need for the modules
