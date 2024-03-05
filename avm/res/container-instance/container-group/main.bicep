@@ -236,6 +236,7 @@ type containerType = {
 		@description('Optional. The liveness probe.')
 		livenessProbe: {}?
 
+		@description('Optional. The exposed ports on the container instance.')
 		ports: {
 			@description('Required. The port number exposed on the container instance.')
 			port: int
@@ -244,32 +245,46 @@ type containerType = {
 			protocol: string
 		}[]
 
+		@description('Required. The resource requirements of the container instance.')
 		resources: {
 			@description('Required. The resource requests of this container instance.')
 			requests: {
+
+				@description('Required. The CPU request of this container instance.')
 				cpu: int
-				gpu: {
-					count: int
-					sku: string
-				}?
+
+				@description('Optional. The GPU request of this container instance.')
+				gpu: containerGpuType
+
+				@description('Optional. The memory request in GB of this container instance. To specify a decimal value, use the json() function.')
 				memoryInGB: int
 			}
 
 			@description('Optional. The resource limits of this container instance.')
 			limits: {
+
+				@description('Required. The CPU limit of this container instance.')
 				cpu: int
-				gpu: {
-					count: int
-					sku: string
-				}?
+
+				@description('Optional. The GPU limit of this container instance.')
+				gpu: containerGpuType
+
+				@description('Optional. The memory limit in GB of this container instance. To specify a decimal value, use the json() function.')
 				memoryInGB: string
 			}?
 		}
 
 		@description('Optional. The volume mounts within the container instance.')
 		volumeMounts: {
+
+			@description('Required. The name of the volume mount.')
 			name: string
+
+			@description('Required. The path within the container where the volume should be mounted. Must not contain colon (:).')
 			mountPath: string
+
+			@description('Optional. The flag indicating whether the volume mount is read-only.')
+			readOnly: bool?
 		}[]?
 
 		@description('Optional. The command to execute within the container instance.')
@@ -277,8 +292,14 @@ type containerType = {
 
 		@description('Optional. The environment variables to set in the container instance.')
 		environmentVariables: {
+
+			@description('Required. The name of the environment variable.')
 			name: string
+
+			@description('Optional. The value of the secure environment variable.')
 			secureValue: string?
+
+			@description('Optional. The value of the environment variable.')
 			value: string?
 		}[]?
 	}
@@ -291,3 +312,12 @@ type ipAddressPortsType = {
 	@description('Required. The protocol associated with the port number.')
 	protocol: string
 }[]
+
+type containerGpuType = {
+
+	@description('Required. The count of the GPU resource.')
+	count: int
+
+	@description('Required.	The SKU of the GPU resource.')
+	sku: ('K80' | 'P100' | 'V100')
+}?

@@ -996,6 +996,7 @@ The properties of the container instance.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`image`](#parameter-containerspropertiesimage) | string | The name of the container source image. |
+| [`resources`](#parameter-containerspropertiesresources) | object | The resource requirements of the container instance. |
 
 **Optional parameters**
 
@@ -1004,11 +1005,139 @@ The properties of the container instance.
 | [`command`](#parameter-containerspropertiescommand) | array | The command to execute within the container instance. |
 | [`environmentVariables`](#parameter-containerspropertiesenvironmentvariables) | array | The environment variables to set in the container instance. |
 | [`livenessProbe`](#parameter-containerspropertieslivenessprobe) | object | The liveness probe. |
+| [`ports`](#parameter-containerspropertiesports) | array | The exposed ports on the container instance. |
 | [`volumeMounts`](#parameter-containerspropertiesvolumemounts) | array | The volume mounts within the container instance. |
 
 ### Parameter: `containers.properties.image`
 
 The name of the container source image.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.properties.resources`
+
+The resource requirements of the container instance.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`requests`](#parameter-containerspropertiesresourcesrequests) | object | The resource requests of this container instance. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`limits`](#parameter-containerspropertiesresourceslimits) | object | The resource limits of this container instance. |
+
+### Parameter: `containers.properties.resources.requests`
+
+The resource requests of this container instance.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cpu`](#parameter-containerspropertiesresourcesrequestscpu) | int | The CPU request of this container instance. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`gpu`](#parameter-containerspropertiesresourcesrequestsgpu) | object | The GPU request of this container instance. |
+| [`memoryInGB`](#parameter-containerspropertiesresourcesrequestsmemoryingb) | int | The memory request in GB of this container instance. To specify a decimal value, use the json() function. |
+
+### Parameter: `containers.properties.resources.requests.cpu`
+
+The CPU request of this container instance.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `containers.properties.resources.requests.gpu`
+
+The GPU request of this container instance.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`count`](#parameter-containerspropertiesresourcesrequestsgpucount) | int | The count of the GPU resource. |
+
+### Parameter: `containers.properties.resources.requests.gpu.count`
+
+The count of the GPU resource.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `containers.properties.resources.requests.memoryInGB`
+
+The memory request in GB of this container instance. To specify a decimal value, use the json() function.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `containers.properties.resources.limits`
+
+The resource limits of this container instance.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cpu`](#parameter-containerspropertiesresourceslimitscpu) | int | The CPU limit of this container instance. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`gpu`](#parameter-containerspropertiesresourceslimitsgpu) | object | The GPU limit of this container instance. |
+| [`memoryInGB`](#parameter-containerspropertiesresourceslimitsmemoryingb) | string | The memory limit in GB of this container instance. To specify a decimal value, use the json() function. |
+
+### Parameter: `containers.properties.resources.limits.cpu`
+
+The CPU limit of this container instance.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `containers.properties.resources.limits.gpu`
+
+The GPU limit of this container instance.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`count`](#parameter-containerspropertiesresourceslimitsgpucount) | int | The count of the GPU resource. |
+
+### Parameter: `containers.properties.resources.limits.gpu.count`
+
+The count of the GPU resource.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `containers.properties.resources.limits.memoryInGB`
+
+The memory limit in GB of this container instance. To specify a decimal value, use the json() function.
 
 - Required: Yes
 - Type: string
@@ -1027,6 +1156,40 @@ The environment variables to set in the container instance.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-containerspropertiesenvironmentvariablesname) | string | The name of the environment variable. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`secureValue`](#parameter-containerspropertiesenvironmentvariablessecurevalue) | string | The value of the secure environment variable. |
+| [`value`](#parameter-containerspropertiesenvironmentvariablesvalue) | string | The value of the environment variable. |
+
+### Parameter: `containers.properties.environmentVariables.name`
+
+The name of the environment variable.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.properties.environmentVariables.secureValue`
+
+The value of the secure environment variable.
+
+- Required: No
+- Type: string
+
+### Parameter: `containers.properties.environmentVariables.value`
+
+The value of the environment variable.
+
+- Required: No
+- Type: string
+
 ### Parameter: `containers.properties.livenessProbe`
 
 The liveness probe.
@@ -1034,12 +1197,74 @@ The liveness probe.
 - Required: No
 - Type: object
 
+### Parameter: `containers.properties.ports`
+
+The exposed ports on the container instance.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`port`](#parameter-containerspropertiesportsport) | int | The port number exposed on the container instance. |
+| [`protocol`](#parameter-containerspropertiesportsprotocol) | string | The protocol associated with the port number. |
+
+### Parameter: `containers.properties.ports.port`
+
+The port number exposed on the container instance.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `containers.properties.ports.protocol`
+
+The protocol associated with the port number.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `containers.properties.volumeMounts`
 
 The volume mounts within the container instance.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`mountPath`](#parameter-containerspropertiesvolumemountsmountpath) | string | The path within the container where the volume should be mounted. Must not contain colon (:). |
+| [`name`](#parameter-containerspropertiesvolumemountsname) | string | The name of the volume mount. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`readOnly`](#parameter-containerspropertiesvolumemountsreadonly) | bool | The flag indicating whether the volume mount is read-only. |
+
+### Parameter: `containers.properties.volumeMounts.mountPath`
+
+The path within the container where the volume should be mounted. Must not contain colon (:).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.properties.volumeMounts.name`
+
+The name of the volume mount.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.properties.volumeMounts.readOnly`
+
+The flag indicating whether the volume mount is read-only.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `name`
 

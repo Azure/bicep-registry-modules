@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "8758281165218348863"
+      "templateHash": "6012923499756923208"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group.",
@@ -138,6 +138,9 @@
                       }
                     }
                   }
+                },
+                "metadata": {
+                  "description": "Optional. The exposed ports on the container instance."
                 }
               },
               "resources": {
@@ -147,22 +150,22 @@
                     "type": "object",
                     "properties": {
                       "cpu": {
-                        "type": "int"
+                        "type": "int",
+                        "metadata": {
+                          "description": "Required. The CPU request of this container instance."
+                        }
                       },
                       "gpu": {
-                        "type": "object",
-                        "properties": {
-                          "count": {
-                            "type": "int"
-                          },
-                          "sku": {
-                            "type": "string"
-                          }
-                        },
-                        "nullable": true
+                        "$ref": "#/definitions/containerGpuType",
+                        "metadata": {
+                          "description": "Optional. The GPU request of this container instance."
+                        }
                       },
                       "memoryInGB": {
-                        "type": "int"
+                        "type": "int",
+                        "metadata": {
+                          "description": "Optional. The memory request in GB of this container instance. To specify a decimal value, use the json() function."
+                        }
                       }
                     },
                     "metadata": {
@@ -173,22 +176,22 @@
                     "type": "object",
                     "properties": {
                       "cpu": {
-                        "type": "int"
+                        "type": "int",
+                        "metadata": {
+                          "description": "Required. The CPU limit of this container instance."
+                        }
                       },
                       "gpu": {
-                        "type": "object",
-                        "properties": {
-                          "count": {
-                            "type": "int"
-                          },
-                          "sku": {
-                            "type": "string"
-                          }
-                        },
-                        "nullable": true
+                        "$ref": "#/definitions/containerGpuType",
+                        "metadata": {
+                          "description": "Optional. The GPU limit of this container instance."
+                        }
                       },
                       "memoryInGB": {
-                        "type": "string"
+                        "type": "string",
+                        "metadata": {
+                          "description": "Optional. The memory limit in GB of this container instance. To specify a decimal value, use the json() function."
+                        }
                       }
                     },
                     "nullable": true,
@@ -196,6 +199,9 @@
                       "description": "Optional. The resource limits of this container instance."
                     }
                   }
+                },
+                "metadata": {
+                  "description": "Required. The resource requirements of the container instance."
                 }
               },
               "volumeMounts": {
@@ -204,10 +210,23 @@
                   "type": "object",
                   "properties": {
                     "name": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the volume mount."
+                      }
                     },
                     "mountPath": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The path within the container where the volume should be mounted. Must not contain colon (:)."
+                      }
+                    },
+                    "readOnly": {
+                      "type": "bool",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The flag indicating whether the volume mount is read-only."
+                      }
                     }
                   }
                 },
@@ -232,15 +251,24 @@
                   "type": "object",
                   "properties": {
                     "name": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the environment variable."
+                      }
                     },
                     "secureValue": {
                       "type": "string",
-                      "nullable": true
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The value of the secure environment variable."
+                      }
                     },
                     "value": {
                       "type": "string",
-                      "nullable": true
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The value of the environment variable."
+                      }
                     }
                   }
                 },
@@ -276,6 +304,29 @@
           }
         }
       }
+    },
+    "containerGpuType": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The count of the GPU resource."
+          }
+        },
+        "sku": {
+          "type": "string",
+          "allowedValues": [
+            "K80",
+            "P100",
+            "V100"
+          ],
+          "metadata": {
+            "description": "Required.\tThe SKU of the GPU resource."
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
