@@ -118,6 +118,7 @@ function Set-AVMModule {
         $latestReleaseObject = Invoke-RestMethod -Uri $latestReleaseUrl -Method 'GET'
         $releaseTag = $latestReleaseObject.tag_name
         $latestReleaseVersion = [version]($releaseTag -replace 'v', '')
+        $latestReleaseUrl = $latestReleaseObject.html_url
 
         # Get latest installed Bicep CLI version
         # --------------------------------------
@@ -132,6 +133,8 @@ function Set-AVMModule {
         if ($latestInstalledVersion -ne $latestReleaseVersion) {
             Write-Warning """
 You're not using the latest available Bicep CLI version [$latestReleaseVersion] but [$latestInstalledVersion].
+You can find the latest release at: $latestReleaseUrl.
+
 On Windows, you can use chocolatey to update the Bicep CLI by running 'choco upgrade bicep'. For other OSs, please refer to the Bicep documentation (https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install).
 
 Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CLI Bicep extension' version (az bicep version).
