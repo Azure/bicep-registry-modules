@@ -225,11 +225,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         '<managedIdentityResourceId>'
       ]
     }
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -333,13 +328,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
-      }
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
       }
     }
   }
@@ -637,24 +625,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     subnetId: '<subnetId>'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-    volumes: [
-      {
-        emptyDir: {}
-        name: 'my-name'
-      }
-    ]
   }
 }
 ```
@@ -758,31 +729,8 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         "name": "myCustomLockName"
       }
     },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
     "subnetId": {
       "value": "<subnetId>"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    },
-    "volumes": {
-      "value": [
-        {
-          "emptyDir": {},
-          "name": "my-name"
-        }
-      ]
     }
   }
 }
@@ -867,12 +815,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
     }
     tags: {
       Environment: 'Non-Prod'
@@ -967,14 +909,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
       }
     },
     "tags": {

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "8542899703590066772"
+      "version": "0.25.3.34343",
+      "templateHash": "8314614865301790142"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group.",
@@ -166,7 +166,7 @@
                       }
                     },
                     "metadata": {
-                      "description": "Required. The resource requests of this container instance.."
+                      "description": "Required. The resource requests of this container instance."
                     }
                   },
                   "limits": {
@@ -193,7 +193,7 @@
                     },
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The resource limits of this container instance.."
+                      "description": "Optional. The resource limits of this container instance."
                     }
                   }
                 }
@@ -558,7 +558,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('containergroup', '2023-05-01', 'full').identity, 'principalId')), reference('containergroup', '2023-05-01', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('containergroup', '2023-05-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
