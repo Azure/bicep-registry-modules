@@ -314,7 +314,6 @@ type ipAddressPortsType = {
 }[]
 
 type containerGpuType = {
-
 	@description('Required. The count of the GPU resource.')
 	count: int
 
