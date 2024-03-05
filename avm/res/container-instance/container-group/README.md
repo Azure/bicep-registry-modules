@@ -816,12 +816,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -917,14 +911,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         "name": "myCustomLockName"
       }
     },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -1005,6 +991,56 @@ The properties of the container instance.
 
 - Required: Yes
 - Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`image`](#parameter-containerspropertiesimage) | string | The name of the container source image. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`command`](#parameter-containerspropertiescommand) | array | The command to execute within the container instance. |
+| [`environmentVariables`](#parameter-containerspropertiesenvironmentvariables) | array | The environment variables to set in the container instance. |
+| [`livenessProbe`](#parameter-containerspropertieslivenessprobe) | object | The liveness probe. |
+| [`volumeMounts`](#parameter-containerspropertiesvolumemounts) | array | The volume mounts within the container instance. |
+
+### Parameter: `containers.properties.image`
+
+The name of the container source image.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.properties.command`
+
+The command to execute within the container instance.
+
+- Required: No
+- Type: array
+
+### Parameter: `containers.properties.environmentVariables`
+
+The environment variables to set in the container instance.
+
+- Required: No
+- Type: array
+
+### Parameter: `containers.properties.livenessProbe`
+
+The liveness probe.
+
+- Required: No
+- Type: object
+
+### Parameter: `containers.properties.volumeMounts`
+
+The volume mounts within the container instance.
+
+- Required: No
+- Type: array
 
 ### Parameter: `name`
 
