@@ -61,6 +61,18 @@ param maximumSessionExpiryInHours int = 1
 @description('Optional. The maximum number of sessions per authentication name. This will only take effect if \'topicSpacesState\' is set to \'Enabled\'.')
 param maximumClientSessionsPerAuthenticationName int = 1
 
+@description('Optional. Enables routing of the MQTT messages to an Event Grid Topic. This will only take effect if \'topicSpacesState\' is set to \'Enabled\'.')
+param enableMessageRouting bool = false
+
+@description('Optional. Resource Id for the Event Grid Topic to which events will be routed to from TopicSpaces under a namespace. This topic should reside in the same region where namespace is located. This will only take effect if \'topicSpacesState\' is set to \'Enabled\' and \'enableMessageRouting\' is set to \'true\'.')
+param routeTopicResourceId string?
+
+@description('Optional. Routing enrichments for topic spaces configuration. This will only take effect if \'topicSpacesState\' is set to \'Enabled\' and \'enableMessageRouting\' is set to \'true\'.')
+param routingEnrichments object?
+
+@description('Conditional. Routing identity info for topic spaces configuration. This will only take effect if \'topicSpacesState\' is set to \'Enabled\' and \'enableMessageRouting\' is set to \'true\'.')
+param routingIdentityInfo object?
+
 @description('Optional. All namespace Topics to create.')
 param topics array?
 
