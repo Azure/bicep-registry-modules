@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "6012923499756923208"
+      "templateHash": "13215637228642532588"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group.",
@@ -139,6 +139,7 @@
                     }
                   }
                 },
+                "nullable": true,
                 "metadata": {
                   "description": "Optional. The exposed ports on the container instance."
                 }
@@ -157,12 +158,14 @@
                       },
                       "gpu": {
                         "$ref": "#/definitions/containerGpuType",
+                        "nullable": true,
                         "metadata": {
                           "description": "Optional. The GPU request of this container instance."
                         }
                       },
                       "memoryInGB": {
                         "type": "int",
+                        "nullable": true,
                         "metadata": {
                           "description": "Optional. The memory request in GB of this container instance. To specify a decimal value, use the json() function."
                         }
@@ -183,12 +186,14 @@
                       },
                       "gpu": {
                         "$ref": "#/definitions/containerGpuType",
+                        "nullable": true,
                         "metadata": {
                           "description": "Optional. The GPU limit of this container instance."
                         }
                       },
                       "memoryInGB": {
                         "type": "string",
+                        "nullable": true,
                         "metadata": {
                           "description": "Optional. The memory limit in GB of this container instance. To specify a decimal value, use the json() function."
                         }

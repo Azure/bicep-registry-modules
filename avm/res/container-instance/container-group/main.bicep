@@ -243,7 +243,7 @@ type containerType = {
 
 			@description('Required. The protocol associated with the port number.')
 			protocol: string
-		}[]
+		}[]?
 
 		@description('Required. The resource requirements of the container instance.')
 		resources: {
@@ -254,10 +254,10 @@ type containerType = {
 				cpu: int
 
 				@description('Optional. The GPU request of this container instance.')
-				gpu: containerGpuType
+				gpu: containerGpuType?
 
 				@description('Optional. The memory request in GB of this container instance. To specify a decimal value, use the json() function.')
-				memoryInGB: int
+				memoryInGB: int?
 			}
 
 			@description('Optional. The resource limits of this container instance.')
@@ -267,10 +267,10 @@ type containerType = {
 				cpu: int
 
 				@description('Optional. The GPU limit of this container instance.')
-				gpu: containerGpuType
+				gpu: containerGpuType?
 
 				@description('Optional. The memory limit in GB of this container instance. To specify a decimal value, use the json() function.')
-				memoryInGB: string
+				memoryInGB: string?
 			}?
 		}
 

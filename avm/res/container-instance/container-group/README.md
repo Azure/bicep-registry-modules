@@ -370,6 +370,10 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           resources: {
             requests: {
               cpu: 2
+              gpu: {
+                count: 1
+                sku: 'K80'
+              }
               memoryInGB: 2
             }
           }
@@ -462,6 +466,10 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             "resources": {
               "requests": {
                 "cpu": 2,
+                "gpu": {
+                  "count": 1,
+                  "sku": "K80"
+                },
                 "memoryInGB": 2
               }
             }
@@ -1085,7 +1093,7 @@ The count of the GPU resource.
 
 The memory request in GB of this container instance. To specify a decimal value, use the json() function.
 
-- Required: Yes
+- Required: No
 - Type: int
 
 ### Parameter: `containers.properties.resources.limits`
@@ -1139,7 +1147,7 @@ The count of the GPU resource.
 
 The memory limit in GB of this container instance. To specify a decimal value, use the json() function.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `containers.properties.command`
@@ -1201,7 +1209,7 @@ The liveness probe.
 
 The exposed ports on the container instance.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 **Required parameters**

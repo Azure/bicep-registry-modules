@@ -75,6 +75,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           resources: {
             requests: {
               cpu: 2
+              gpu: {
+                sku: 'K80'
+                count: 1
+              }
               memoryInGB: 2
             }
           }
