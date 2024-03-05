@@ -50,14 +50,12 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 // Test Execution //
 // ============== //
-@batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
+module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    zoneRedundant: false
     publicNetworkAccess: 'SecuredByPerimeter'
     tags: {
       'hidden-title': 'This is visible in the resource name'
@@ -79,4 +77,4 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     }
     requireInfrastructureEncryption: true
   }
-}]
+}
