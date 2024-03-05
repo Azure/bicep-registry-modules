@@ -114,6 +114,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     location: '<location>'
     managedIdentities: {
       systemAssigned: false
+      typeNone: false
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
@@ -160,6 +161,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     "managedIdentities": {
       "value": {
         "systemAssigned": false,
+        "typeNone": false,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
