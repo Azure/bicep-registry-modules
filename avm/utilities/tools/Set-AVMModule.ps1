@@ -135,7 +135,7 @@ function Set-AVMModule {
 You're not using the latest available Bicep CLI version [$latestReleaseVersion] but [$latestInstalledVersion].
 You can find the latest release at: $latestReleaseUrl.
 
-On Windows, you can use chocolatey to update the Bicep CLI by running 'choco upgrade bicep'. Or winget via 'winget update Microsoft.Bicep'.
+On Windows, you can use winget to update the Bicep CLI by running 'winget update Microsoft.Bicep' or chocolatey via 'choco upgrade bicep'.
 For other OSs, please refer to the Bicep documentation (https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install).
 
 Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CLI Bicep extension' version (az bicep version).
