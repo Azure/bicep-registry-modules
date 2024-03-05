@@ -166,7 +166,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource domainServices 'Microsoft.AAD/DomainServices@2021-05-01' = {
+resource domainServices 'Microsoft.AAD/DomainServices@2022-12-01' = {
   name: name
   location: location
   tags: tags
