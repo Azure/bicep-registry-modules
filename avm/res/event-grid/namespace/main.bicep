@@ -76,6 +76,9 @@ param clientGroups array?
 @description('Optional. All namespace Topic Spaces to create.')
 param topicSpaces array?
 
+@description('Optional. All namespace Permission Bindings to create.')
+param permissionBindings array?
+
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
 var identity = !empty(managedIdentities) ? {
@@ -281,6 +284,22 @@ module namespace_topicSpaces 'topic-space/main.bicep' = [for (topicSpaces, index
     topicTemplates: topicSpaces.topicTemplates
     roleAssignments: topicSpaces.?roleAssignments
   }
+}]
+
+module namespace_permissionBindings 'permission-binding/main.bicep' = [for (permissionBinding, index) in (permissionBindings ?? []): {
+  name: '${uniqueString(deployment().name, location)}-Namespace-permissionBinding-${index}'
+  params: {
+    name: permissionBinding.name
+    namespaceName: namespace.name
+    description: permissionBinding.?description
+    clientGroupName: permissionBinding.clientGroupName
+    topicSpaceName: permissionBinding.topicSpaceName
+    permission: permissionBinding.permission
+  }
+  dependsOn: [
+    namespace_clientGroups
+    namespace_topicSpaces
+  ]
 }]
 
 // ============ //

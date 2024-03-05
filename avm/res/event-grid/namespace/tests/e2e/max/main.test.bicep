@@ -328,5 +328,20 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ]
       }
     ]
+    permissionBindings: [
+      {
+        name: 'bindiing1'
+        description: 'this is binding1'
+        clientGroupName: 'group1'
+        topicSpaceName: 'topicSpace1'
+        permission: 'Publisher'
+      }
+      {
+        name: 'bindiing2'
+        clientGroupName: 'group1'
+        topicSpaceName: 'topicSpace2'
+        permission: 'Subscriber'
+      }
+    ]
   }
 }]
