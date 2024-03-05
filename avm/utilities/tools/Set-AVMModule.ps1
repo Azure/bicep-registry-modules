@@ -131,7 +131,7 @@ function Set-AVMModule {
         # --------------------
         if ($latestInstalledVersion -ne $latestReleaseVersion) {
             Write-Warning """
-You're not using the latest available Bicep CLI version [$releaseTag] but [$latestInstalledVersion].
+You're not using the latest available Bicep CLI version [$latestReleaseVersion] but [$latestInstalledVersion].
 On Windows, you can use chocolatey to update the Bicep CLI by running 'choco upgrade bicep'. For other OSs, please refer to the Bicep documentation (https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install).
 
 Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CLI Bicep extension' version (az bicep version).
