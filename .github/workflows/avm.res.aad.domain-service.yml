@@ -1,4 +1,4 @@
-name: "avm.res.compute.disk"
+name: "avm.res.aad.domain-services"
 
 on:
   schedule:
@@ -26,14 +26,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.aad.domain-service.yml"
-      - "avm/res/aad/domain-service/**"
+      - ".github/workflows/avm.res.aad.domain-services.yml"
+      - "avm/res/aad/domain-services/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/aad/domain-service"
-  workflowPath: ".github/workflows/avm.res.aad.domain-service.yml"
+  modulePath: "avm/res/aad/domain-services"
+  workflowPath: ".github/workflows/avm.res.aad.domain-services.yml"
 
 concurrency:
   group: ${{ github.workflow }}

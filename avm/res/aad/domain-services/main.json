@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "7430287497563984512"
+      "templateHash": "11400239544681680284"
     },
     "name": "Azure Active Directory Domain Services",
     "description": "This module deploys an Azure Active Directory Domain Services (AADDS).",
@@ -80,7 +80,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
             }
           },
           "conditionVersion": {
@@ -431,7 +431,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
-      "name": "[format('46d3xbcp.res.aad-domain-service.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.res.aad-domainservices.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -447,7 +447,7 @@
         }
       }
     },
-    "domainService": {
+    "domainServices": {
       "type": "Microsoft.AAD/domainServices",
       "apiVersion": "2021-05-01",
       "name": "[parameters('name')]",
@@ -480,9 +480,9 @@
         "sku": "[parameters('sku')]"
       }
     },
-    "domainService_diagnosticSettings": {
+    "domainServices_diagnosticSettings": {
       "copy": {
-        "name": "domainService_diagnosticSettings",
+        "name": "domainServices_diagnosticSettings",
         "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
       },
       "type": "Microsoft.Insights/diagnosticSettings",
@@ -499,10 +499,10 @@
         "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
       },
       "dependsOn": [
-        "domainService"
+        "domainServices"
       ]
     },
-    "domainService_lock": {
+    "domainServices_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
@@ -513,12 +513,12 @@
         "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
       },
       "dependsOn": [
-        "domainService"
+        "domainServices"
       ]
     },
-    "domainService_roleAssignments": {
+    "domainServices_roleAssignments": {
       "copy": {
-        "name": "domainService_roleAssignments",
+        "name": "domainServices_roleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
@@ -535,7 +535,7 @@
         "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
-        "domainService"
+        "domainServices"
       ]
     }
   },
@@ -566,7 +566,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('domainService', '2021-05-01', 'full').location]"
+      "value": "[reference('domainServices', '2021-05-01', 'full').location]"
     }
   }
 }

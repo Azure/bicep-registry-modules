@@ -26,7 +26,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/aad/domain-service:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/aad/domain-services:<version>`.
 
 - [Using default parameter set](#example-1-using-default-parameter-set)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -42,7 +42,7 @@ This instance deploys the module with default features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
+module domainServices 'br/public:avm/res/aad/domain-services:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-aaddsmin'
   params: {
     // Required parameters
@@ -174,7 +174,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
+module domainServices 'br/public:avm/res/aad/domain-services:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-aaddsmax'
   params: {
     // Required parameters
@@ -306,7 +306,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
+module domainServices 'br/public:avm/res/aad/domain-services:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-aaddswaf'
   params: {
     // Required parameters
