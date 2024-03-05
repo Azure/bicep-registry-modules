@@ -69,4 +69,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     connectionType: 'Vnet2Vnet'
     vpnSharedKey: password
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }]
