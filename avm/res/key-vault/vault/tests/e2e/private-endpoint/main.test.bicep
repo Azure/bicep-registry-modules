@@ -99,3 +99,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     enablePurgeProtection: false
   }
 }]
+
+output resourceId string = testDeployment[1].outputs.resourceId
