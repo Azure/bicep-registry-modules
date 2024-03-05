@@ -17,7 +17,7 @@
       ]
     }
   },
-  "postCreateCommand": "npm install -g prettier && dotnet tool install -g Azure.Bicep.RegistryModuleTool && pwsh -C Install-Module Az.Accounts -Repository PSGallery -Force",
+  "postCreateCommand": "npm install -g prettier && dotnet tool install -g Azure.Bicep.RegistryModuleTool && pwsh -C Install-Module Az.Accounts -Repository PSGallery -Force && pwsh -C Install-Module Az.Resources -Repository PSGallery -Force",
   "postStartCommand": "az bicep install",
   "remoteEnv": {
     "PATH": "${containerEnv:PATH}:/home/node/.dotnet/tools:/home/node/.azure/bin"
