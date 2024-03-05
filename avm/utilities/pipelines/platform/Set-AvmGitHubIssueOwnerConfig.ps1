@@ -132,7 +132,7 @@ A member of the @azure/$($module.ModuleOwnersGHTeam) or @azure/$($module.ModuleC
 
     if ([String]::IsNullOrEmpty($assign)) {
       if ($PSCmdlet.ShouldProcess("missing user comment to issue [$($issue.title)]", 'Add')) {
-        $reply = "This issue couldn't be assigend due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response within 5 business days."
+        $reply = "This issue couldn't be assigend due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support)."
         gh issue comment $issue.url --body $reply --repo $Repo
       }
     }
