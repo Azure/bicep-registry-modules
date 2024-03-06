@@ -114,7 +114,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     location: '<location>'
     managedIdentities: {
       systemAssigned: false
-      typeNone: false
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
@@ -161,7 +160,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     "managedIdentities": {
       "value": {
         "systemAssigned": false,
-        "typeNone": false,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
@@ -1430,19 +1428,11 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`typeNone`](#parameter-managedidentitiestypenone) | bool | Enables identity of type None on the resource. |
 | [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
 Enables system assigned managed identity on the resource.
-
-- Required: No
-- Type: bool
-
-### Parameter: `managedIdentities.typeNone`
-
-Enables identity of type None on the resource.
 
 - Required: No
 - Type: bool
