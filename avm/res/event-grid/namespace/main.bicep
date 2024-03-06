@@ -20,7 +20,26 @@ param enableTelemetry bool = true
 param managedIdentities managedIdentitiesType
 
 @description('Optional. Allows the user to specify if the namespace resource supports zone-redundancy capability or not. If this property is not specified explicitly by the user, its default value depends on the following conditions: a. For Availability Zones enabled regions - The default property value would be true. b. For non-Availability Zones enabled regions - The default property value would be false. Once specified, this property cannot be updated.')
-param isZoneRedundant bool = false
+param isZoneRedundant bool?
+
+@allowed([
+  'Disabled'
+  'Enabled'
+  'SecuredByPerimeter'
+])
+@description('Optional. This determines if traffic is allowed over public network. By default it is enabled. You can further restrict to specific IPs by configuring.')
+param publicNetworkAccess string?
+
+@description('Optional. This can be used to restrict traffic from specific IPs instead of all IPs. Note: These are considered only if PublicNetworkAccess is enabled.')
+param inboundIpRules array?
+
+@allowed([
+  '1.0'
+  '1.1'
+  '1.2'
+])
+@description('Optional. Minimum TLS version of the publisher allowed to publish to this namespace. Only TLS version 1.2 is supported.')
+param minimumTlsVersionAllowed string = '1.2'
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -38,7 +57,7 @@ param privateEndpoints privateEndpointType
   'Enabled'
   'Disabled'
 ])
-@description('Optional. Indicates if Topic Spaces Configuration is enabled for the namespace. This enables the MQTT Broker functionality for the namespace.')
+@description('Optional. Indicates if Topic Spaces Configuration is enabled for the namespace. This enables the MQTT Broker functionality for the namespace. Once enabled, this property cannot be disabled.')
 param topicSpacesState string = 'Disabled'
 
 @allowed([
@@ -138,6 +157,10 @@ resource namespace 'Microsoft.EventGrid/namespaces@2023-12-15-preview' = {
   tags: tags
   identity: identity
   properties: {
+    isZoneRedundant: isZoneRedundant
+    publicNetworkAccess: !empty(publicNetworkAccess) ? publicNetworkAccess : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
+    inboundIpRules: inboundIpRules
+    minimumTlsVersionAllowed: minimumTlsVersionAllowed
     topicSpacesConfiguration: topicSpacesState == 'Enabled' ? {
       state: topicSpacesState
       clientAuthentication: !empty(alternativeAuthenticationNameSources) ? {
