@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using only defaults for Windows'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+
 // ========== //
 // Parameters //
 // ========== //
@@ -12,7 +15,11 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualmachinescales
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmsslinmin'
+param serviceShort string = 'cvmsswinmin'
+
+@description('Optional. The password to leverage for the login.')
+@secure()
+param password string = newGuid()
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
 param enableDefaultTelemetry bool = true
@@ -36,9 +43,6 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-    sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
   }
 }
 
@@ -53,11 +57,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     enableDefaultTelemetry: enableDefaultTelemetry
     name: '${namePrefix}${serviceShort}001'
-    adminUsername: 'scaleSetAdmin'
+    adminUsername: 'localAdminUser'
+    adminPassword: password
     imageReference: {
-      publisher: 'Canonical'
-      offer: '0001-com-ubuntu-server-jammy'
-      sku: '22_04-lts-gen2'
+      publisher: 'MicrosoftWindowsServer'
+      offer: 'WindowsServer'
+      sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
     osDisk: {
@@ -67,9 +72,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         storageAccountType: 'Premium_LRS'
       }
     }
-    osType: 'Linux'
+    osType: 'Windows'
     skuName: 'Standard_B12ms'
-    disablePasswordAuthentication: true
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -83,12 +87,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           }
         ]
         nicSuffix: '-nic01'
-      }
-    ]
-    publicKeys: [
-      {
-        keyData: nestedDependencies.outputs.SSHKeyPublicKey
-        path: '/home/scaleSetAdmin/.ssh/authorized_keys'
       }
     ]
   }

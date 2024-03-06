@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using large parameter set for Windows'
+metadata description = 'This instance deploys the module with most of its features enabled.'
+
 // ========== //
 // Parameters //
 // ========== //
@@ -9,10 +12,14 @@ targetScope = 'subscription'
 param resourceGroupName string = 'dep-${namePrefix}-compute.virtualmachinescalesets-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param location string = 'westeurope' //deployment().location
+param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmsslin'
+param serviceShort string = 'cvmsswinmax'
+
+@description('Optional. The password to leverage for the login.')
+@secure()
+param password string = newGuid()
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
 param enableDefaultTelemetry bool = true
@@ -40,8 +47,7 @@ module nestedDependencies 'dependencies.bicep' = {
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
     storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
-    sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-    sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
+    proximityPlacementGroupName: 'dep-${namePrefix}-ppg-${serviceShort}'
   }
 }
 
@@ -70,11 +76,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     enableDefaultTelemetry: enableDefaultTelemetry
     name: '${namePrefix}${serviceShort}001'
-    adminUsername: 'scaleSetAdmin'
+    adminUsername: 'localAdminUser'
     imageReference: {
-      publisher: 'Canonical'
-      offer: '0001-com-ubuntu-server-jammy'
-      sku: '22_04-lts-gen2'
+      publisher: 'MicrosoftWindowsServer'
+      offer: 'WindowsServer'
+      sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
     osDisk: {
@@ -84,30 +90,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         storageAccountType: 'Premium_LRS'
       }
     }
-    osType: 'Linux'
+    osType: 'Windows'
     skuName: 'Standard_B12ms'
-    availabilityZones: [
-      '2'
-    ]
-    bootDiagnosticStorageAccountName: nestedDependencies.outputs.storageAccountName
-    dataDisks: [
-      {
-        caching: 'ReadOnly'
-        createOption: 'Empty'
-        diskSizeGB: '256'
-        managedDisk: {
-          storageAccountType: 'Premium_LRS'
-        }
-      }
-      {
-        caching: 'ReadOnly'
-        createOption: 'Empty'
-        diskSizeGB: '128'
-        managedDisk: {
-          storageAccountType: 'Premium_LRS'
-        }
-      }
-    ]
+    adminPassword: password
     diagnosticSettings: [
       {
         name: 'customSetting'
@@ -122,8 +107,25 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
-    disablePasswordAuthentication: true
     encryptionAtHost: false
+    extensionAntiMalwareConfig: {
+      enabled: true
+      settings: {
+        AntimalwareEnabled: true
+        Exclusions: {
+          Extensions: '.log;.ldf'
+          Paths: 'D:\\IISlogs;D:\\DatabaseLogs'
+          Processes: 'mssence.svc'
+        }
+        RealtimeProtectionEnabled: true
+        ScheduledScanSettings: {
+          day: '7'
+          isEnabled: 'true'
+          scanType: 'Quick'
+          time: '120'
+        }
+      }
+    }
     extensionCustomScriptConfig: {
       enabled: true
       fileData: [
@@ -133,7 +135,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         }
       ]
       protectedSettings: {
-        commandToExecute: 'sudo apt-get update'
+        commandToExecute: 'powershell -ExecutionPolicy Unrestricted -Command "& ./${nestedDependencies.outputs.storageAccountCSEFileName}"'
       }
     }
     extensionDependencyAgentConfig: {
@@ -151,6 +153,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ResizeOSDisk: 'false'
         VolumeType: 'All'
       }
+    }
+    extensionDSCConfig: {
+      enabled: true
     }
     extensionMonitoringAgentConfig: {
       enabled: true
@@ -177,12 +182,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         nicSuffix: '-nic01'
       }
     ]
-    publicKeys: [
-      {
-        keyData: nestedDependencies.outputs.SSHKeyPublicKey
-        path: '/home/scaleSetAdmin/.ssh/authorized_keys'
-      }
-    ]
+    proximityPlacementGroupResourceId: nestedDependencies.outputs.proximityPlacementGroupResourceId
     roleAssignments: [
       {
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
@@ -190,7 +190,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         principalType: 'ServicePrincipal'
       }
     ]
-    scaleSetFaultDomain: 1
     skuCapacity: 1
     managedIdentities: {
       systemAssigned: true
@@ -199,7 +198,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       ]
     }
     upgradePolicyMode: 'Manual'
-    vmNamePrefix: 'vmsslinvm'
+    vmNamePrefix: 'vmsswinvm'
     vmPriority: 'Regular'
     tags: {
       'hidden-title': 'This is visible in the resource name'
