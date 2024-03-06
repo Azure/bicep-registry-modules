@@ -5,7 +5,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. Name of the key.')
 param name string
 
-@description('Required. Name of the value.')
+@description('Required. The value of the key-value.')
 param value string
 
 @description('Conditional. The name of the parent app configuration store. Required if the template is used in a standalone deployment.')
