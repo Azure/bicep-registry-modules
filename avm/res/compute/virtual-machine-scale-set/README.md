@@ -9,7 +9,7 @@ This module deploys a Virtual Machine Scale Set.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
-- [Notes](#Notes)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -27,22 +27,26 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/compute.virtual-machine-scale-set:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/virtual-machine-scale-set:<version>`.
 
-- [Linux.Min](#example-1-linuxmin)
-- [Linux.Ssecmk](#example-2-linuxssecmk)
-- [Linux](#example-3-linux)
-- [Windows.Min](#example-4-windowsmin)
-- [Windows](#example-5-windows)
+- [Using only defaults for Linux](#example-1-using-only-defaults-for-linux)
+- [Using large parameter set for Linux](#example-2-using-large-parameter-set-for-linux)
+- [Using disk encryption set for the VM.](#example-3-using-disk-encryption-set-for-the-vm)
+- [Using only defaults for Windows](#example-4-using-only-defaults-for-windows)
+- [Using large parameter set for Windows](#example-5-using-large-parameter-set-for-windows)
+- [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Linux.Min_
+### Example 1: _Using only defaults for Linux_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module virtualMachineScaleSet 'br:bicep/modules/compute.virtual-machine-scale-set:1.0.0' = {
+module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cvmsslinmin'
   params: {
     // Required parameters
@@ -66,6 +70,7 @@ module virtualMachineScaleSet 'br:bicep/modules/compute.virtual-machine-scale-se
     // Non-required parameters
     disablePasswordAuthentication: true
     enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -140,6 +145,9 @@ module virtualMachineScaleSet 'br:bicep/modules/compute.virtual-machine-scale-se
     "enableDefaultTelemetry": {
       "value": "<enableDefaultTelemetry>"
     },
+    "location": {
+      "value": "<location>"
+    },
     "nicConfigurations": {
       "value": [
         {
@@ -172,14 +180,395 @@ module virtualMachineScaleSet 'br:bicep/modules/compute.virtual-machine-scale-se
 </details>
 <p>
 
-### Example 2: _Linux.Ssecmk_
+### Example 2: _Using large parameter set for Linux_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module virtualMachineScaleSet 'br:bicep/modules/compute.virtual-machine-scale-set:1.0.0' = {
+module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-cvmsslinmax'
+  params: {
+    // Required parameters
+    adminUsername: 'scaleSetAdmin'
+    imageReference: {
+      offer: '0001-com-ubuntu-server-jammy'
+      publisher: 'Canonical'
+      sku: '22_04-lts-gen2'
+      version: 'latest'
+    }
+    name: 'cvmsslinmax001'
+    osDisk: {
+      createOption: 'fromImage'
+      diskSizeGB: '128'
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    osType: 'Linux'
+    skuName: 'Standard_B12ms'
+    // Non-required parameters
+    availabilityZones: [
+      '2'
+    ]
+    bootDiagnosticStorageAccountName: '<bootDiagnosticStorageAccountName>'
+    dataDisks: [
+      {
+        caching: 'ReadOnly'
+        createOption: 'Empty'
+        diskSizeGB: '256'
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
+      }
+      {
+        caching: 'ReadOnly'
+        createOption: 'Empty'
+        diskSizeGB: '128'
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    disablePasswordAuthentication: true
+    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    encryptionAtHost: false
+    extensionAzureDiskEncryptionConfig: {
+      enabled: true
+      settings: {
+        EncryptionOperation: 'EnableEncryption'
+        KekVaultResourceId: '<KekVaultResourceId>'
+        KeyEncryptionAlgorithm: 'RSA-OAEP'
+        KeyEncryptionKeyURL: '<KeyEncryptionKeyURL>'
+        KeyVaultResourceId: '<KeyVaultResourceId>'
+        KeyVaultURL: '<KeyVaultURL>'
+        ResizeOSDisk: 'false'
+        VolumeType: 'All'
+      }
+    }
+    extensionCustomScriptConfig: {
+      enabled: true
+      fileData: [
+        {
+          storageAccountId: '<storageAccountId>'
+          uri: '<uri>'
+        }
+      ]
+      protectedSettings: {
+        commandToExecute: 'sudo apt-get update'
+      }
+    }
+    extensionDependencyAgentConfig: {
+      enabled: true
+    }
+    extensionMonitoringAgentConfig: {
+      enabled: true
+    }
+    extensionNetworkWatcherAgentConfig: {
+      enabled: true
+    }
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig1'
+            properties: {
+              subnet: {
+                id: '<id>'
+              }
+            }
+          }
+        ]
+        nicSuffix: '-nic01'
+      }
+    ]
+    publicKeys: [
+      {
+        keyData: '<keyData>'
+        path: '/home/scaleSetAdmin/.ssh/authorized_keys'
+      }
+    ]
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    scaleSetFaultDomain: 1
+    skuCapacity: 1
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    upgradePolicyMode: 'Manual'
+    vmNamePrefix: 'vmsslinvm'
+    vmPriority: 'Regular'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminUsername": {
+      "value": "scaleSetAdmin"
+    },
+    "imageReference": {
+      "value": {
+        "offer": "0001-com-ubuntu-server-jammy",
+        "publisher": "Canonical",
+        "sku": "22_04-lts-gen2",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmsslinmax001"
+    },
+    "osDisk": {
+      "value": {
+        "createOption": "fromImage",
+        "diskSizeGB": "128",
+        "managedDisk": {
+          "storageAccountType": "Premium_LRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Linux"
+    },
+    "skuName": {
+      "value": "Standard_B12ms"
+    },
+    // Non-required parameters
+    "availabilityZones": {
+      "value": [
+        "2"
+      ]
+    },
+    "bootDiagnosticStorageAccountName": {
+      "value": "<bootDiagnosticStorageAccountName>"
+    },
+    "dataDisks": {
+      "value": [
+        {
+          "caching": "ReadOnly",
+          "createOption": "Empty",
+          "diskSizeGB": "256",
+          "managedDisk": {
+            "storageAccountType": "Premium_LRS"
+          }
+        },
+        {
+          "caching": "ReadOnly",
+          "createOption": "Empty",
+          "diskSizeGB": "128",
+          "managedDisk": {
+            "storageAccountType": "Premium_LRS"
+          }
+        }
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "disablePasswordAuthentication": {
+      "value": true
+    },
+    "enableDefaultTelemetry": {
+      "value": "<enableDefaultTelemetry>"
+    },
+    "encryptionAtHost": {
+      "value": false
+    },
+    "extensionAzureDiskEncryptionConfig": {
+      "value": {
+        "enabled": true,
+        "settings": {
+          "EncryptionOperation": "EnableEncryption",
+          "KekVaultResourceId": "<KekVaultResourceId>",
+          "KeyEncryptionAlgorithm": "RSA-OAEP",
+          "KeyEncryptionKeyURL": "<KeyEncryptionKeyURL>",
+          "KeyVaultResourceId": "<KeyVaultResourceId>",
+          "KeyVaultURL": "<KeyVaultURL>",
+          "ResizeOSDisk": "false",
+          "VolumeType": "All"
+        }
+      }
+    },
+    "extensionCustomScriptConfig": {
+      "value": {
+        "enabled": true,
+        "fileData": [
+          {
+            "storageAccountId": "<storageAccountId>",
+            "uri": "<uri>"
+          }
+        ],
+        "protectedSettings": {
+          "commandToExecute": "sudo apt-get update"
+        }
+      }
+    },
+    "extensionDependencyAgentConfig": {
+      "value": {
+        "enabled": true
+      }
+    },
+    "extensionMonitoringAgentConfig": {
+      "value": {
+        "enabled": true
+      }
+    },
+    "extensionNetworkWatcherAgentConfig": {
+      "value": {
+        "enabled": true
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "subnet": {
+                  "id": "<id>"
+                }
+              }
+            }
+          ],
+          "nicSuffix": "-nic01"
+        }
+      ]
+    },
+    "publicKeys": {
+      "value": [
+        {
+          "keyData": "<keyData>",
+          "path": "/home/scaleSetAdmin/.ssh/authorized_keys"
+        }
+      ]
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Reader"
+        }
+      ]
+    },
+    "scaleSetFaultDomain": {
+      "value": 1
+    },
+    "skuCapacity": {
+      "value": 1
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "upgradePolicyMode": {
+      "value": "Manual"
+    },
+    "vmNamePrefix": {
+      "value": "vmsslinvm"
+    },
+    "vmPriority": {
+      "value": "Regular"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using disk encryption set for the VM._
+
+This instance deploys the module with disk enryption set.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cvmsslcmk'
   params: {
     // Required parameters
@@ -367,385 +756,17 @@ module virtualMachineScaleSet 'br:bicep/modules/compute.virtual-machine-scale-se
 </details>
 <p>
 
-### Example 3: _Linux_
+### Example 4: _Using only defaults for Windows_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module virtualMachineScaleSet 'br:bicep/modules/compute.virtual-machine-scale-set:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmsslin'
-  params: {
-    // Required parameters
-    adminUsername: 'scaleSetAdmin'
-    imageReference: {
-      offer: '0001-com-ubuntu-server-jammy'
-      publisher: 'Canonical'
-      sku: '22_04-lts-gen2'
-      version: 'latest'
-    }
-    name: 'cvmsslin001'
-    osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
-      managedDisk: {
-        storageAccountType: 'Premium_LRS'
-      }
-    }
-    osType: 'Linux'
-    skuName: 'Standard_B12ms'
-    // Non-required parameters
-    availabilityZones: [
-      '2'
-    ]
-    bootDiagnosticStorageAccountName: '<bootDiagnosticStorageAccountName>'
-    dataDisks: [
-      {
-        caching: 'ReadOnly'
-        createOption: 'Empty'
-        diskSizeGB: '256'
-        managedDisk: {
-          storageAccountType: 'Premium_LRS'
-        }
-      }
-      {
-        caching: 'ReadOnly'
-        createOption: 'Empty'
-        diskSizeGB: '128'
-        managedDisk: {
-          storageAccountType: 'Premium_LRS'
-        }
-      }
-    ]
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    disablePasswordAuthentication: true
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
-    encryptionAtHost: false
-    extensionAzureDiskEncryptionConfig: {
-      enabled: true
-      settings: {
-        EncryptionOperation: 'EnableEncryption'
-        KekVaultResourceId: '<KekVaultResourceId>'
-        KeyEncryptionAlgorithm: 'RSA-OAEP'
-        KeyEncryptionKeyURL: '<KeyEncryptionKeyURL>'
-        KeyVaultResourceId: '<KeyVaultResourceId>'
-        KeyVaultURL: '<KeyVaultURL>'
-        ResizeOSDisk: 'false'
-        VolumeType: 'All'
-      }
-    }
-    extensionCustomScriptConfig: {
-      enabled: true
-      fileData: [
-        {
-          storageAccountId: '<storageAccountId>'
-          uri: '<uri>'
-        }
-      ]
-      protectedSettings: {
-        commandToExecute: 'sudo apt-get update'
-      }
-    }
-    extensionDependencyAgentConfig: {
-      enabled: true
-    }
-    extensionMonitoringAgentConfig: {
-      enabled: true
-    }
-    extensionNetworkWatcherAgentConfig: {
-      enabled: true
-    }
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig1'
-            properties: {
-              subnet: {
-                id: '<id>'
-              }
-            }
-          }
-        ]
-        nicSuffix: '-nic01'
-      }
-    ]
-    publicKeys: [
-      {
-        keyData: '<keyData>'
-        path: '/home/scaleSetAdmin/.ssh/authorized_keys'
-      }
-    ]
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
-    scaleSetFaultDomain: 1
-    skuCapacity: 1
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-    upgradePolicyMode: 'Manual'
-    vmNamePrefix: 'vmsslinvm'
-    vmPriority: 'Regular'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "adminUsername": {
-      "value": "scaleSetAdmin"
-    },
-    "imageReference": {
-      "value": {
-        "offer": "0001-com-ubuntu-server-jammy",
-        "publisher": "Canonical",
-        "sku": "22_04-lts-gen2",
-        "version": "latest"
-      }
-    },
-    "name": {
-      "value": "cvmsslin001"
-    },
-    "osDisk": {
-      "value": {
-        "createOption": "fromImage",
-        "diskSizeGB": "128",
-        "managedDisk": {
-          "storageAccountType": "Premium_LRS"
-        }
-      }
-    },
-    "osType": {
-      "value": "Linux"
-    },
-    "skuName": {
-      "value": "Standard_B12ms"
-    },
-    // Non-required parameters
-    "availabilityZones": {
-      "value": [
-        "2"
-      ]
-    },
-    "bootDiagnosticStorageAccountName": {
-      "value": "<bootDiagnosticStorageAccountName>"
-    },
-    "dataDisks": {
-      "value": [
-        {
-          "caching": "ReadOnly",
-          "createOption": "Empty",
-          "diskSizeGB": "256",
-          "managedDisk": {
-            "storageAccountType": "Premium_LRS"
-          }
-        },
-        {
-          "caching": "ReadOnly",
-          "createOption": "Empty",
-          "diskSizeGB": "128",
-          "managedDisk": {
-            "storageAccountType": "Premium_LRS"
-          }
-        }
-      ]
-    },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "disablePasswordAuthentication": {
-      "value": true
-    },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
-    "encryptionAtHost": {
-      "value": false
-    },
-    "extensionAzureDiskEncryptionConfig": {
-      "value": {
-        "enabled": true,
-        "settings": {
-          "EncryptionOperation": "EnableEncryption",
-          "KekVaultResourceId": "<KekVaultResourceId>",
-          "KeyEncryptionAlgorithm": "RSA-OAEP",
-          "KeyEncryptionKeyURL": "<KeyEncryptionKeyURL>",
-          "KeyVaultResourceId": "<KeyVaultResourceId>",
-          "KeyVaultURL": "<KeyVaultURL>",
-          "ResizeOSDisk": "false",
-          "VolumeType": "All"
-        }
-      }
-    },
-    "extensionCustomScriptConfig": {
-      "value": {
-        "enabled": true,
-        "fileData": [
-          {
-            "storageAccountId": "<storageAccountId>",
-            "uri": "<uri>"
-          }
-        ],
-        "protectedSettings": {
-          "commandToExecute": "sudo apt-get update"
-        }
-      }
-    },
-    "extensionDependencyAgentConfig": {
-      "value": {
-        "enabled": true
-      }
-    },
-    "extensionMonitoringAgentConfig": {
-      "value": {
-        "enabled": true
-      }
-    },
-    "extensionNetworkWatcherAgentConfig": {
-      "value": {
-        "enabled": true
-      }
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "nicConfigurations": {
-      "value": [
-        {
-          "ipConfigurations": [
-            {
-              "name": "ipconfig1",
-              "properties": {
-                "subnet": {
-                  "id": "<id>"
-                }
-              }
-            }
-          ],
-          "nicSuffix": "-nic01"
-        }
-      ]
-    },
-    "publicKeys": {
-      "value": [
-        {
-          "keyData": "<keyData>",
-          "path": "/home/scaleSetAdmin/.ssh/authorized_keys"
-        }
-      ]
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
-    },
-    "scaleSetFaultDomain": {
-      "value": 1
-    },
-    "skuCapacity": {
-      "value": 1
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    },
-    "upgradePolicyMode": {
-      "value": "Manual"
-    },
-    "vmNamePrefix": {
-      "value": "vmsslinvm"
-    },
-    "vmPriority": {
-      "value": "Regular"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 4: _Windows.Min_
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module virtualMachineScaleSet 'br:bicep/modules/compute.virtual-machine-scale-set:1.0.0' = {
+module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cvmsswinmin'
   params: {
     // Required parameters
@@ -769,6 +790,7 @@ module virtualMachineScaleSet 'br:bicep/modules/compute.virtual-machine-scale-se
     // Non-required parameters
     adminPassword: '<adminPassword>'
     enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -837,6 +859,9 @@ module virtualMachineScaleSet 'br:bicep/modules/compute.virtual-machine-scale-se
     "enableDefaultTelemetry": {
       "value": "<enableDefaultTelemetry>"
     },
+    "location": {
+      "value": "<location>"
+    },
     "nicConfigurations": {
       "value": [
         {
@@ -861,15 +886,18 @@ module virtualMachineScaleSet 'br:bicep/modules/compute.virtual-machine-scale-se
 </details>
 <p>
 
-### Example 5: _Windows_
+### Example 5: _Using large parameter set for Windows_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module virtualMachineScaleSet 'br:bicep/modules/compute.virtual-machine-scale-set:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmsswin'
+module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-cvmsswinmax'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
@@ -879,7 +907,7 @@ module virtualMachineScaleSet 'br:bicep/modules/compute.virtual-machine-scale-se
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
-    name: 'cvmsswin001'
+    name: 'cvmsswinmax001'
     osDisk: {
       createOption: 'fromImage'
       diskSizeGB: '128'
@@ -962,6 +990,7 @@ module virtualMachineScaleSet 'br:bicep/modules/compute.virtual-machine-scale-se
     extensionNetworkWatcherAgentConfig: {
       enabled: true
     }
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -1033,7 +1062,7 @@ module virtualMachineScaleSet 'br:bicep/modules/compute.virtual-machine-scale-se
       }
     },
     "name": {
-      "value": "cvmsswin001"
+      "value": "cvmsswinmax001"
     },
     "osDisk": {
       "value": {
@@ -1144,6 +1173,369 @@ module virtualMachineScaleSet 'br:bicep/modules/compute.virtual-machine-scale-se
       "value": {
         "enabled": true
       }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "subnet": {
+                  "id": "<id>"
+                }
+              }
+            }
+          ],
+          "nicSuffix": "-nic01"
+        }
+      ]
+    },
+    "proximityPlacementGroupResourceId": {
+      "value": "<proximityPlacementGroupResourceId>"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Reader"
+        }
+      ]
+    },
+    "skuCapacity": {
+      "value": 1
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "upgradePolicyMode": {
+      "value": "Manual"
+    },
+    "vmNamePrefix": {
+      "value": "vmsswinvm"
+    },
+    "vmPriority": {
+      "value": "Regular"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 6: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Well-Architected Framework for Windows.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-cvmsswinwaf'
+  params: {
+    // Required parameters
+    adminUsername: 'localAdminUser'
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+      version: 'latest'
+    }
+    name: 'cvmsswinwaf001'
+    osDisk: {
+      createOption: 'fromImage'
+      diskSizeGB: '128'
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    osType: 'Windows'
+    skuName: 'Standard_B12ms'
+    // Non-required parameters
+    adminPassword: '<adminPassword>'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    encryptionAtHost: false
+    extensionAntiMalwareConfig: {
+      enabled: true
+      settings: {
+        AntimalwareEnabled: true
+        Exclusions: {
+          Extensions: '.log;.ldf'
+          Paths: 'D:\\IISlogs;D:\\DatabaseLogs'
+          Processes: 'mssence.svc'
+        }
+        RealtimeProtectionEnabled: true
+        ScheduledScanSettings: {
+          day: '7'
+          isEnabled: 'true'
+          scanType: 'Quick'
+          time: '120'
+        }
+      }
+    }
+    extensionAzureDiskEncryptionConfig: {
+      enabled: true
+      settings: {
+        EncryptionOperation: 'EnableEncryption'
+        KekVaultResourceId: '<KekVaultResourceId>'
+        KeyEncryptionAlgorithm: 'RSA-OAEP'
+        KeyEncryptionKeyURL: '<KeyEncryptionKeyURL>'
+        KeyVaultResourceId: '<KeyVaultResourceId>'
+        KeyVaultURL: '<KeyVaultURL>'
+        ResizeOSDisk: 'false'
+        VolumeType: 'All'
+      }
+    }
+    extensionCustomScriptConfig: {
+      enabled: true
+      fileData: [
+        {
+          storageAccountId: '<storageAccountId>'
+          uri: '<uri>'
+        }
+      ]
+      protectedSettings: {
+        commandToExecute: '<commandToExecute>'
+      }
+    }
+    extensionDependencyAgentConfig: {
+      enabled: true
+    }
+    extensionDSCConfig: {
+      enabled: true
+    }
+    extensionMonitoringAgentConfig: {
+      enabled: true
+    }
+    extensionNetworkWatcherAgentConfig: {
+      enabled: true
+    }
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig1'
+            properties: {
+              subnet: {
+                id: '<id>'
+              }
+            }
+          }
+        ]
+        nicSuffix: '-nic01'
+      }
+    ]
+    proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    skuCapacity: 1
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    upgradePolicyMode: 'Manual'
+    vmNamePrefix: 'vmsswinvm'
+    vmPriority: 'Regular'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminUsername": {
+      "value": "localAdminUser"
+    },
+    "imageReference": {
+      "value": {
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "sku": "2022-datacenter-azure-edition",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmsswinwaf001"
+    },
+    "osDisk": {
+      "value": {
+        "createOption": "fromImage",
+        "diskSizeGB": "128",
+        "managedDisk": {
+          "storageAccountType": "Premium_LRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Windows"
+    },
+    "skuName": {
+      "value": "Standard_B12ms"
+    },
+    // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "enableDefaultTelemetry": {
+      "value": "<enableDefaultTelemetry>"
+    },
+    "encryptionAtHost": {
+      "value": false
+    },
+    "extensionAntiMalwareConfig": {
+      "value": {
+        "enabled": true,
+        "settings": {
+          "AntimalwareEnabled": true,
+          "Exclusions": {
+            "Extensions": ".log;.ldf",
+            "Paths": "D:\\IISlogs;D:\\DatabaseLogs",
+            "Processes": "mssence.svc"
+          },
+          "RealtimeProtectionEnabled": true,
+          "ScheduledScanSettings": {
+            "day": "7",
+            "isEnabled": "true",
+            "scanType": "Quick",
+            "time": "120"
+          }
+        }
+      }
+    },
+    "extensionAzureDiskEncryptionConfig": {
+      "value": {
+        "enabled": true,
+        "settings": {
+          "EncryptionOperation": "EnableEncryption",
+          "KekVaultResourceId": "<KekVaultResourceId>",
+          "KeyEncryptionAlgorithm": "RSA-OAEP",
+          "KeyEncryptionKeyURL": "<KeyEncryptionKeyURL>",
+          "KeyVaultResourceId": "<KeyVaultResourceId>",
+          "KeyVaultURL": "<KeyVaultURL>",
+          "ResizeOSDisk": "false",
+          "VolumeType": "All"
+        }
+      }
+    },
+    "extensionCustomScriptConfig": {
+      "value": {
+        "enabled": true,
+        "fileData": [
+          {
+            "storageAccountId": "<storageAccountId>",
+            "uri": "<uri>"
+          }
+        ],
+        "protectedSettings": {
+          "commandToExecute": "<commandToExecute>"
+        }
+      }
+    },
+    "extensionDependencyAgentConfig": {
+      "value": {
+        "enabled": true
+      }
+    },
+    "extensionDSCConfig": {
+      "value": {
+        "enabled": true
+      }
+    },
+    "extensionMonitoringAgentConfig": {
+      "value": {
+        "enabled": true
+      }
+    },
+    "extensionNetworkWatcherAgentConfig": {
+      "value": {
+        "enabled": true
+      }
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -1483,6 +1875,19 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics. |
+
+### Parameter: `diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -2144,634 +2549,6 @@ Do not provide a value! This date value is used to generate a registration token
 
 _None_
 
-## Notes
+## Data Collection
 
-### Parameter Usage: `imageReference`
-
-#### Marketplace images
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"imageReference": {
-    "value": {
-        "publisher": "MicrosoftWindowsServer",
-        "offer": "WindowsServer",
-        "sku": "2022-datacenter-azure-edition",
-        "version": "latest"
-    }
-}
-```
-
-</details>
-
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-imageReference: {
-    publisher: 'MicrosoftWindowsServer'
-    offer: 'WindowsServer'
-    sku: '2022-datacenter-azure-edition'
-    version: 'latest'
-}
-```
-
-</details>
-
-#### Custom images
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"imageReference": {
-    "value": {
-        "id": "/subscriptions/12345-6789-1011-1213-15161718/resourceGroups/rg-name/providers/Microsoft.Compute/images/imagename"
-    }
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-imageReference: {
-    id: '/subscriptions/12345-6789-1011-1213-15161718/resourceGroups/rg-name/providers/Microsoft.Compute/images/imagename'
-}
-```
-
-</details>
-<p>
-
-### Parameter Usage: `plan`
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"plan": {
-    "value": {
-        "name": "qvsa-25",
-        "product": "qualys-virtual-scanner",
-        "publisher": "qualysguard"
-    }
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-plan: {
-    name: 'qvsa-25'
-    product: 'qualys-virtual-scanner'
-    publisher: 'qualysguard'
-}
-```
-
-</details>
-<p>
-
-### Parameter Usage: `osDisk`
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"osDisk": {
-    "value": {
-        "createOption": "fromImage",
-        "diskSizeGB": "128",
-        "managedDisk": {
-            "storageAccountType": "Premium_LRS",
-            "diskEncryptionSet": { // Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VM Scale sets.
-                "id": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/diskEncryptionSets/<desName>"
-            }
-        }
-    }
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-osDisk: {
-    createOption: 'fromImage'
-    diskSizeGB: '128'
-    managedDisk: {
-        storageAccountType: 'Premium_LRS'
-        diskEncryptionSet: { // Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VM Scale sets.
-            id: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/diskEncryptionSets/<desName>'
-        }
-    }
-}
-```
-
-</details>
-<p>
-
-### Parameter Usage: `dataDisks`
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"dataDisks": {
-    "value": [
-        {
-            "caching": "ReadOnly",
-            "createOption": "Empty",
-            "diskSizeGB": "256",
-            "writeAcceleratorEnabled": true,
-            "managedDisk": {
-                "storageAccountType": "Premium_LRS",
-                "diskEncryptionSet": { // Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VM Scale sets.
-                    "id": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/diskEncryptionSets/<desName>"
-                }
-            }
-        },
-        {
-            "caching": "ReadOnly",
-            "createOption": "Empty",
-            "diskSizeGB": "128",
-            "writeAcceleratorEnabled": true,
-            "managedDisk": {
-                "storageAccountType": "Premium_LRS",
-                "diskEncryptionSet": { // Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VM Scale sets.
-                    "id": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/diskEncryptionSets/<desName>"
-                }
-            }
-        }
-    ]
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-dataDisks: [
-    {
-        caching: 'ReadOnly'
-        createOption: 'Empty'
-        diskSizeGB: '256'
-        writeAcceleratorEnabled: true
-        managedDisk: {
-            storageAccountType: 'Premium_LRS'
-            diskEncryptionSet: { // Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VM Scale sets.
-                id: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/diskEncryptionSets/<desName>'
-            }
-        }
-    }
-    {
-        caching: 'ReadOnly'
-        createOption: 'Empty'
-        diskSizeGB: '128'
-        writeAcceleratorEnabled: true
-        managedDisk: {
-            storageAccountType: 'Premium_LRS'diskEncryptionSet: { // Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VM Scale sets.
-                id: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/diskEncryptionSets/<desName>'
-            }
-        }
-    }
-]
-```
-
-</details>
-<p>
-
-### Parameter Usage: `nicConfigurations`
-
-Comments:
-- The field `nicSuffix` is mandatory.
-- If not disabled, `enableAcceleratedNetworking` is considered `true` by default and requires the VMSS to be deployed with a supported OS and VM size.
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"nicConfigurations": {
-    "value": [
-        {
-            "nicSuffix": "-nic01",
-            "ipConfigurations": [
-                {
-                    "name": "ipconfig1",
-                    "properties": {
-                        "subnet": {
-                            "id": "/subscriptions/[[subscriptionId]]/resourceGroups/agents-vmss-rg/providers/Microsoft.Network/virtualNetworks/sxx-az-vnet-x-scaleset/subnets/sxx-az-subnet-scaleset-linux"
-                        }
-                    }
-                }
-            ]
-        }
-    ]
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-nicConfigurations: [
-    {
-        nicSuffix: '-nic01'
-        ipConfigurations: [
-            {
-                name: 'ipconfig1'
-                properties: {
-                    subnet: {
-                        id: '/subscriptions/[[subscriptionId]]/resourceGroups/agents-vmss-rg/providers/Microsoft.Network/virtualNetworks/sxx-az-vnet-x-scaleset/subnets/sxx-az-subnet-scaleset-linux'
-                    }
-                }
-            }
-        ]
-    }
-]
-```
-
-</details>
-<p>
-
-### Parameter Usage: `extensionDomainJoinConfig`
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"extensionDomainJoinConfig": {
-  "value": {
-    "enabled": true,
-    "settings": {
-      "name": "contoso.com",
-      "user": "test.user@testcompany.com",
-      "ouPath": "OU=testOU; DC=contoso; DC=com",
-      "restart": true,
-      "options": 3
-    }
-  }
-},
-"extensionDomainJoinPassword": {
-  "reference": {
-    "keyVault": {
-      "id": "/subscriptions/<<subscriptionId>/resourceGroups/myRG/providers/Microsoft.KeyVault/vaults/myKvlt"
-    },
-    "secretName": "domainJoinUser02-Password"
-  }
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-extensionDomainJoinConfig: {
-    enabled: true
-    settings: {
-      name: 'contoso.com'
-      user: 'test.user@testcompany.com'
-      ouPath: 'OU=testOU; DC=contoso; DC=com'
-      restart: true
-      options: 3
-    }
-}
-
-resource kv1 'Microsoft.KeyVault/vaults@2019-09-01' existing = {
-  name: 'adp-#_namePrefix_#-az-kv-x-001'
-  scope: resourceGroup('[[subscriptionId]]','validation-rg')
-}
-
-extensionDomainJoinPassword: kv1.getSecret('domainJoinUser02-Password')
-```
-
-</details>
-<p>
-
-### Parameter Usage: `extensionNetworkWatcherAgentConfig`
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"extensionNetworkWatcherAgentConfig": {
-    "value": {
-        "enabled": true
-    }
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-extensionNetworkWatcherAgentConfig: {
-    enabled: true
-}
-```
-
-</details>
-<p>
-
-### Parameter Usage: `extensionAntiMalwareConfig`
-
-Only for OSType Windows
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"extensionAntiMalwareConfig": {
-  "value": {
-    "enabled": true,
-    "settings": {
-      "AntimalwareEnabled": true,
-      "Exclusions": {
-        "Extensions": ".log;.ldf",
-        "Paths": "D:\\IISlogs;D:\\DatabaseLogs",
-        "Processes": "mssence.svc"
-      },
-      "RealtimeProtectionEnabled": true,
-      "ScheduledScanSettings": {
-        "isEnabled": "true",
-        "scanType": "Quick",
-        "day": "7",
-        "time": "120"
-      }
-    }
-  }
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-extensionAntiMalwareConfig: {
-    enabled: true
-    settings: {
-        AntimalwareEnabled: true
-        Exclusions: {
-            Extensions: '.log;.ldf'
-            Paths: 'D:\\IISlogs;D:\\DatabaseLogs'
-            Processes: 'mssence.svc'
-        }
-        RealtimeProtectionEnabled: true
-        ScheduledScanSettings: {
-            isEnabled: 'true'
-            scanType: 'Quick'
-            day: '7'
-            time: '120'
-        }
-    }
-}
-```
-
-</details>
-<p>
-
-### Parameter Usage: `extensionAzureDiskEncryptionConfig`
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"extensionAzureDiskEncryptionConfig": {
-    // Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys.
-    "value": {
-        "enabled": true,
-        "settings": {
-            "EncryptionOperation": "EnableEncryption",
-            "KeyVaultURL": "https://mykeyvault.vault.azure.net/",
-            "KeyVaultResourceId": "/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/adp-sxx-az-kv-x-001",
-            "KeyEncryptionKeyURL": "https://mykeyvault.vault.azure.net/keys/keyEncryptionKey/bc3bb46d95c64367975d722f473eeae5", // ID must be updated for new keys
-            "KekVaultResourceId": "/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/adp-sxx-az-kv-x-001",
-            "KeyEncryptionAlgorithm": "RSA-OAEP", //'RSA-OAEP'/'RSA-OAEP-256'/'RSA1_5'
-            "VolumeType": "All", //'OS'/'Data'/'All'
-            "ResizeOSDisk": "false"
-        }
-    }
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-extensionAzureDiskEncryptionConfig: {
-    // Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys.
-    enabled: true
-    settings: {
-        EncryptionOperation: 'EnableEncryption'
-        KeyVaultURL: 'https://mykeyvault.vault.azure.net/'
-        KeyVaultResourceId: '/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/adp-sxx-az-kv-x-001'
-        KeyEncryptionKeyURL: 'https://mykeyvault.vault.azure.net/keys/keyEncryptionKey/bc3bb46d95c64367975d722f473eeae5' // ID must be updated for new keys
-        KekVaultResourceId: '/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/adp-sxx-az-kv-x-001'
-        KeyEncryptionAlgorithm: 'RSA-OAEP' //'RSA-OAEP'/'RSA-OAEP-256'/'RSA1_5'
-        VolumeType: 'All' //'OS'/'Data'/'All'
-        ResizeOSDisk: 'false'
-    }
-}
-```
-
-</details>
-<p>
-
-### Parameter Usage: `extensionCustomScriptConfig`
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"extensionCustomScriptConfig": {
-  "value": {
-    "enabled": true,
-    "fileData": [
-      //storage accounts with SAS token requirement
-      {
-        "uri": "https://mystorageaccount.blob.core.windows.net/avdscripts/File1.ps1",
-        "storageAccountId": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rgName/providers/Microsoft.Storage/storageAccounts/storageAccountName"
-      },
-      {
-        "uri": "https://mystorageaccount.blob.core.windows.net/avdscripts/File2.ps1",
-        "storageAccountId": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rgName/providers/Microsoft.Storage/storageAccounts/storageAccountName"
-      },
-      //storage account with public container (no SAS token is required) OR other public URL (not a storage account)
-      {
-        "uri": "https://github.com/myProject/File3.ps1",
-        "storageAccountId": ""
-      }
-    ],
-    "settings": {
-      "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File testscript.ps1"
-    }
-  }
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-extensionCustomScriptConfig: {
-    enabled: true
-    fileData: [
-        //storage accounts with SAS token requirement
-        {
-            uri: 'https://mystorageaccount.blob.core.windows.net/avdscripts/File1.ps1'
-            storageAccountId: '/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rgName/providers/Microsoft.Storage/storageAccounts/storageAccountName'
-        }
-        {
-            uri: 'https://mystorageaccount.blob.core.windows.net/avdscripts/File2.ps1'
-            storageAccountId: '/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rgName/providers/Microsoft.Storage/storageAccounts/storageAccountName'
-        }
-        //storage account with public container (no SAS token is required) OR other public URL (not a storage account)
-        {
-            uri: 'https://github.com/myProject/File3.ps1'
-            storageAccountId: ''
-        }
-    ]
-    settings: {
-        commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File testscript.ps1'
-    }
-}
-```
-
-</details>
-<p>
-
-### Parameter Usage: `extensionDSCConfig`
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"extensionDSCConfig": {
-    "value": {
-        "enabled": true,
-        "settings": {
-            "wmfVersion": "latest",
-            "configuration": {
-                "url": "http://validURLToConfigLocation",
-                "script": "ConfigurationScript.ps1",
-                "function": "ConfigurationFunction"
-            },
-            "configurationArguments": {
-                "argument1": "Value1",
-                "argument2": "Value2"
-            },
-            "configurationData": {
-                "url": "https://foo.psd1"
-            },
-            "privacy": {
-                "dataCollection": "enable"
-            },
-            "advancedOptions": {
-                "forcePullAndApply": false,
-                "downloadMappings": {
-                    "specificDependencyKey": "https://myCustomDependencyLocation"
-                }
-            }
-        },
-        "protectedSettings": {
-            "configurationArguments": {
-                "mySecret": "MyPlaceholder"
-            },
-            "configurationUrlSasToken": "MyPlaceholder",
-            "configurationDataUrlSasToken": "MyPlaceholder"
-        }
-    }
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-extensionDSCConfig: {
-    enabled: true
-    settings: {
-        wmfVersion: 'latest'
-        configuration: {
-            url: 'http://validURLToConfigLocation'
-            script: 'ConfigurationScript.ps1'
-            function: 'ConfigurationFunction'
-        }
-        configurationArguments: {
-            argument1: 'Value1'
-            argument2: 'Value2'
-        }
-        configurationData: {
-            url: 'https://foo.psd1'
-        }
-        privacy: {
-            dataCollection: 'enable'
-        }
-        advancedOptions: {
-            forcePullAndApply: false
-            downloadMappings: {
-                specificDependencyKey: 'https://myCustomDependencyLocation'
-            }
-        }
-    }
-    protectedSettings: {
-        configurationArguments: {
-            mySecret: 'MyPlaceholder'
-        }
-        configurationUrlSasToken: 'MyPlaceholder'
-        configurationDataUrlSasToken: 'MyPlaceholder'
-    }
-}
-```
-
-</details>
-<p>
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
