@@ -1,4 +1,4 @@
-# Service Endpoint Policies `[Microsoft.Network/serviceEndpointPolicies]`
+# Service-Endpoint-Policy `[Microsoft.Network/serviceEndpointPolicies]`
 
 This module deploys a Service Endpoint Policy.
 
@@ -25,29 +25,22 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/service-endpoint-policy:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/service-endpoint-policy:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Defaults](#example-1-defaults)
+- [Waf-Aligned](#example-2-waf-aligned)
 
-### Example 1: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
+### Example 1: _Defaults_
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module serviceEndpointPolicy 'br:bicep/modules/network.service-endpoint-policy:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-nsnpmin'
+module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-nsepdef'
   params: {
-    // Required parameters
-    name: 'nsnpmin-001'
-    // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    name: 'nsepdef001'
   }
 }
 ```
@@ -64,13 +57,8 @@ module serviceEndpointPolicy 'br:bicep/modules/network.service-endpoint-policy:1
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
-      "value": "nsnpmin-001"
-    },
-    // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+      "value": "nsepdef001"
     }
   }
 }
@@ -79,62 +67,17 @@ module serviceEndpointPolicy 'br:bicep/modules/network.service-endpoint-policy:1
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
-
-This instance deploys the module with most of its features enabled.
-
+### Example 2: _Waf-Aligned_
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module serviceEndpointPolicy 'br:bicep/modules/network.service-endpoint-policy:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-nsnpmax'
+module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-nsepwaf'
   params: {
-    // Required parameters
-    name: 'nsnpmax-001'
-    // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
-    serviceEndpointPolicyDefinitions: [
-      {
-        name: 'Storage.ServiceEndpoint'
-        properties: {
-          description: 'Allow Microsoft.Storage'
-          service: 'Microsoft.Storage'
-          serviceResources: [
-            '<id>'
-          ]
-        }
-        type: 'Microsoft.Network/serviceEndpointPolicies/serviceEndpointPolicyDefinitions'
-      }
-    ]
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
+    name: 'nsepwaf001'
   }
 }
 ```
@@ -151,60 +94,8 @@ module serviceEndpointPolicy 'br:bicep/modules/network.service-endpoint-policy:1
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
-      "value": "nsnpmax-001"
-    },
-    // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
-    },
-    "serviceEndpointPolicyDefinitions": {
-      "value": [
-        {
-          "name": "Storage.ServiceEndpoint",
-          "properties": {
-            "description": "Allow Microsoft.Storage",
-            "service": "Microsoft.Storage",
-            "serviceResources": [
-              "<id>"
-            ]
-          },
-          "type": "Microsoft.Network/serviceEndpointPolicies/serviceEndpointPolicyDefinitions"
-        }
-      ]
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
+      "value": "nsepwaf001"
     }
   }
 }
@@ -212,105 +103,6 @@ module serviceEndpointPolicy 'br:bicep/modules/network.service-endpoint-policy:1
 
 </details>
 <p>
-
-### Example 3: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module serviceEndpointPolicy 'br:bicep/modules/network.service-endpoint-policy:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-nsnpwaf'
-  params: {
-    // Required parameters
-    name: 'nsnpwaf-001'
-    // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    serviceEndpointPolicyDefinitions: [
-      {
-        name: 'Storage.ServiceEndpoint'
-        properties: {
-          description: 'Allow Microsoft.Storage'
-          service: 'Microsoft.Storage'
-          serviceResources: [
-            '<id>'
-          ]
-        }
-        type: 'Microsoft.Network/serviceEndpointPolicies/serviceEndpointPolicyDefinitions'
-      }
-    ]
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "nsnpwaf-001"
-    },
-    // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "serviceEndpointPolicyDefinitions": {
-      "value": [
-        {
-          "name": "Storage.ServiceEndpoint",
-          "properties": {
-            "description": "Allow Microsoft.Storage",
-            "service": "Microsoft.Storage",
-            "serviceResources": [
-              "<id>"
-            ]
-          },
-          "type": "Microsoft.Network/serviceEndpointPolicies/serviceEndpointPolicyDefinitions"
-        }
-      ]
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
 
 
 ## Parameters
@@ -319,16 +111,15 @@ module serviceEndpointPolicy 'br:bicep/modules/network.service-endpoint-policy:1
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The Service Endpoint Policy name. |
+| [`name`](#parameter-name) | string | Name of the Service Endpoint Policy to create. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`contextualServiceEndpointPolicies`](#parameter-contextualserviceendpointpolicies) | array | An Array of contextual service endpoint policy. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
-| [`location`](#parameter-location) | string | Location for all resources. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceAlias`](#parameter-servicealias) | string | The alias indicating if the policy belongs to a service. |
@@ -337,7 +128,7 @@ module serviceEndpointPolicy 'br:bicep/modules/network.service-endpoint-policy:1
 
 ### Parameter: `name`
 
-The Service Endpoint Policy name.
+Name of the Service Endpoint Policy to create.
 
 - Required: Yes
 - Type: string
@@ -350,11 +141,17 @@ An Array of contextual service endpoint policy.
 - Type: array
 - Default: `[]`
 
+### Parameter: `enableTelemetry`
 
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `location`
 
-Location for all resources.
+Location for all Resources.
 
 - Required: No
 - Type: string
@@ -507,23 +304,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
-
-### Parameter: `enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `location`
-
-Location for all Resources.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
 
 
 ## Outputs

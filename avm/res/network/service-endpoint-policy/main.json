@@ -1,14 +1,15 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "10964463953634406660"
+      "templateHash": "6537072163708290098"
     },
-    "name": "Service Endpoint Policies",
-    "description": "This module deploys a Service Endpoint Policy",
+    "name": "Service-Endpoint-Policy",
+    "description": "This module deploys a Service Endpoint Policy.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
@@ -107,8 +108,10 @@
   "parameters": {
     "name": {
       "type": "string",
+      "minLength": 1,
+      "maxLength": 60,
       "metadata": {
-        "description": "Required. Name of the resource to create."
+        "description": "Required. Name of the Service Endpoint Policy to create."
       }
     },
     "location": {
@@ -169,6 +172,7 @@
   "variables": {
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
@@ -176,12 +180,11 @@
     }
   },
   "resources": {
-
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
-      "name": "[format('46d3xbcp.[[REPLACE WITH TELEMETRY IDENTIFIER]].{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[take(format('46d3xbcp.res.network-servicenedpointpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -246,7 +249,6 @@
       ]
     }
   },
-
   "outputs": {
     "resourceGroupName": {
       "type": "string",
