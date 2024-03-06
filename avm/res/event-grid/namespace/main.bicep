@@ -38,7 +38,7 @@ param privateEndpoints privateEndpointType
   'Enabled'
   'Disabled'
 ])
-@description('Optional. Indicate if Topic Spaces Configuration is enabled for the namespace.')
+@description('Optional. Indicates if Topic Spaces Configuration is enabled for the namespace. This enables the MQTT Broker functionality for the namespace.')
 param topicSpacesState string = 'Disabled'
 
 @allowed([
@@ -48,47 +48,44 @@ param topicSpacesState string = 'Disabled'
   'ClientCertificateSubject'
   'ClientCertificateUri'
 ])
-@description('Optional. Alternative authentication name sources related to client authentication settings for namespace resource. This will only take effect if \'topicSpacesState\' is set to \'Enabled\'.')
+@description('Optional. Alternative authentication name sources related to client authentication settings for namespace resource. Used only when MQTT broker is enabled (\'topicSpacesState\' is set to \'Enabled\').')
 param alternativeAuthenticationNameSources array?
 
 @minValue(1)
 @maxValue(8)
-@description('Optional. The maximum session expiry in hours. This will only take effect if \'topicSpacesState\' is set to \'Enabled\'.')
+@description('Optional. The maximum session expiry in hours. Used only when MQTT broker is enabled (\'topicSpacesState\' is set to \'Enabled\').')
 param maximumSessionExpiryInHours int = 1
 
 @minValue(1)
 @maxValue(100)
-@description('Optional. The maximum number of sessions per authentication name. This will only take effect if \'topicSpacesState\' is set to \'Enabled\'.')
+@description('Optional. The maximum number of sessions per authentication name. Used only when MQTT broker is enabled (\'topicSpacesState\' is set to \'Enabled\').')
 param maximumClientSessionsPerAuthenticationName int = 1
 
-@description('Optional. Enables routing of the MQTT messages to an Event Grid Topic. This will only take effect if \'topicSpacesState\' is set to \'Enabled\'.')
-param enableMessageRouting bool = false
-
-@description('Optional. Resource Id for the Event Grid Topic to which events will be routed to from TopicSpaces under a namespace. This topic should reside in the same region where namespace is located. This will only take effect if \'topicSpacesState\' is set to \'Enabled\' and \'enableMessageRouting\' is set to \'true\'.')
+@description('Optional. Resource Id for the Event Grid Topic to which events will be routed to from TopicSpaces under a namespace. This enables routing of the MQTT messages to an Event Grid Topic. Used only when MQTT broker is enabled (\'topicSpacesState\' is set to \'Enabled\'). Note that the topic must exist prior to deployment, meaning: if referencing a topic in the same namespace, the deployment must be launched twice: 1. To create the topic 2. To enable the routing this topic.')
 param routeTopicResourceId string?
 
-@description('Optional. Routing enrichments for topic spaces configuration. This will only take effect if \'topicSpacesState\' is set to \'Enabled\' and \'enableMessageRouting\' is set to \'true\'.')
+@description('Optional. Routing enrichments for topic spaces configuration.  Used only when MQTT broker is enabled (\'topicSpacesState\' is set to \'Enabled\') and routing is enabled (\'routeTopicResourceId\' is set).')
 param routingEnrichments object?
 
-@description('Conditional. Routing identity info for topic spaces configuration. This will only take effect if \'topicSpacesState\' is set to \'Enabled\' and \'enableMessageRouting\' is set to \'true\'.')
+@description('Conditional. Routing identity info for topic spaces configuration. Required if the \'routeTopicResourceId\' points to a topic outside of the current Event Grid Namespace.  Used only when MQTT broker is enabled (\'topicSpacesState\' is set to \'Enabled\') and routing is enabled (\'routeTopicResourceId\' is set).')
 param routingIdentityInfo object?
 
 @description('Optional. All namespace Topics to create.')
 param topics array?
 
-@description('Optional. CA certificates (Root or intermediate) used to sign the client certificates for clients authenticated using CA-signed certificates.')
+@description('Optional. CA certificates (Root or intermediate) used to sign the client certificates for clients authenticated using CA-signed certificates.  Used only when MQTT broker is enabled (\'topicSpacesState\' is set to \'Enabled\').')
 param caCertificates array?
 
-@description('Optional. All namespace Clients to create.')
+@description('Optional. All namespace Clients to create. Used only when MQTT broker is enabled (\'topicSpacesState\' is set to \'Enabled\').')
 param clients array?
 
-@description('Optional. All namespace Client Groups to create.')
+@description('Optional. All namespace Client Groups to create. Used only when MQTT broker is enabled (\'topicSpacesState\' is set to \'Enabled\').')
 param clientGroups array?
 
-@description('Optional. All namespace Topic Spaces to create.')
+@description('Optional. All namespace Topic Spaces to create. Used only when MQTT broker is enabled (\'topicSpacesState\' is set to \'Enabled\').')
 param topicSpaces array?
 
-@description('Optional. All namespace Permission Bindings to create.')
+@description('Optional. All namespace Permission Bindings to create. Used only when MQTT broker is enabled (\'topicSpacesState\' is set to \'Enabled\').')
 param permissionBindings array?
 
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
@@ -148,6 +145,9 @@ resource namespace 'Microsoft.EventGrid/namespaces@2023-12-15-preview' = {
       } : null
       maximumSessionExpiryInHours: maximumSessionExpiryInHours
       maximumClientSessionsPerAuthenticationName: maximumClientSessionsPerAuthenticationName
+      routeTopicResourceId: routeTopicResourceId
+      routingEnrichments: !empty(routeTopicResourceId) ? routingEnrichments : null
+      routingIdentityInfo: !empty(routeTopicResourceId) && !startsWith(routeTopicResourceId ?? '', '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.EventGrid/namespaces/${name}/topics/') ? routingIdentityInfo : null // Use routingIdentityInfo only if the topic is not in the same namespace
     } : null
   }
 }
@@ -253,7 +253,7 @@ module namespace_topics 'topic/main.bicep' = [for (topic, index) in (topics ?? [
   }
 }]
 
-module namespace_caCertificates 'ca-certificate/main.bicep' = [for (caCertificate, index) in (caCertificates ?? []): {
+module namespace_caCertificates 'ca-certificate/main.bicep' = [for (caCertificate, index) in (caCertificates ?? []): if (topicSpacesState == 'Enabled') {
   name: '${uniqueString(deployment().name, location)}-Namespace-caCertificate-${index}'
   params: {
     name: caCertificate.name
@@ -263,7 +263,7 @@ module namespace_caCertificates 'ca-certificate/main.bicep' = [for (caCertificat
   }
 }]
 
-module namespace_clients 'client/main.bicep' = [for (client, index) in (clients ?? []): {
+module namespace_clients 'client/main.bicep' = [for (client, index) in (clients ?? []): if (topicSpacesState == 'Enabled') {
   name: '${uniqueString(deployment().name, location)}-Namespace-Client-${index}'
   params: {
     name: client.name
@@ -277,7 +277,7 @@ module namespace_clients 'client/main.bicep' = [for (client, index) in (clients 
   }
 }]
 
-module namespace_clientGroups 'client-group/main.bicep' = [for (clientGroup, index) in (clientGroups ?? []): {
+module namespace_clientGroups 'client-group/main.bicep' = [for (clientGroup, index) in (clientGroups ?? []): if (topicSpacesState == 'Enabled') {
   name: '${uniqueString(deployment().name, location)}-Namespace-clientGroup-${index}'
   params: {
     name: clientGroup.name
@@ -287,7 +287,7 @@ module namespace_clientGroups 'client-group/main.bicep' = [for (clientGroup, ind
   }
 }]
 
-module namespace_topicSpaces 'topic-space/main.bicep' = [for (topicSpaces, index) in (topicSpaces ?? []): {
+module namespace_topicSpaces 'topic-space/main.bicep' = [for (topicSpaces, index) in (topicSpaces ?? []): if (topicSpacesState == 'Enabled') {
   name: '${uniqueString(deployment().name, location)}-Namespace-topicSpace-${index}'
   params: {
     name: topicSpaces.name
@@ -298,7 +298,7 @@ module namespace_topicSpaces 'topic-space/main.bicep' = [for (topicSpaces, index
   }
 }]
 
-module namespace_permissionBindings 'permission-binding/main.bicep' = [for (permissionBinding, index) in (permissionBindings ?? []): {
+module namespace_permissionBindings 'permission-binding/main.bicep' = [for (permissionBinding, index) in (permissionBindings ?? []): if (topicSpacesState == 'Enabled') {
   name: '${uniqueString(deployment().name, location)}-Namespace-permissionBinding-${index}'
   params: {
     name: permissionBinding.name
