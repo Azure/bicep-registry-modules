@@ -47,7 +47,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmsslinmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmsslinmin'
   params: {
     // Required parameters
     adminUsername: 'scaleSetAdmin'
@@ -191,7 +191,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmsslinmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmsslinmax'
   params: {
     // Required parameters
     adminUsername: 'scaleSetAdmin'
@@ -569,7 +569,7 @@ This instance deploys the module with disk enryption set.
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmsslcmk'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmsslcmk'
   params: {
     // Required parameters
     adminUsername: 'scaleSetAdmin'
@@ -767,7 +767,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmsswinmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmsswinmin'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
@@ -897,7 +897,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmsswinmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmsswinmax'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
@@ -1257,7 +1257,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmsswinwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmsswinwaf'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
