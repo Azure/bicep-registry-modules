@@ -65,7 +65,6 @@ module testDeployment '../../../main.bicep' = {
     skuName: 'Premium'
     managedIdentities: {
       systemAssigned: false
-      typeNone: false
       userAssignedResourceIds: [
         nestedDependencies.outputs.managedIdentityResourceId
       ]
