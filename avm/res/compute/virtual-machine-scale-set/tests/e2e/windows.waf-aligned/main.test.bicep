@@ -46,7 +46,7 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
+    storageAccountName: take('dep${namePrefix}sa${serviceShort}01', 24)
     storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
     proximityPlacementGroupName: 'dep-${namePrefix}-ppg-${serviceShort}'
   }
