@@ -503,11 +503,12 @@ module vmss_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMon
     name: 'AzureMonitorAgent'
     publisher: 'Microsoft.Azure.Monitor'
     type: osType == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
-    typeHandlerVersion: contains(extensionMonitoringAgentConfig, 'typeHandlerVersion') ? extensionMonitoringAgentConfig.typeHandlerVersion : (osType == 'Windows' ? '1.0' : '1.7')
+    typeHandlerVersion: contains(extensionMonitoringAgentConfig, 'typeHandlerVersion') ? extensionMonitoringAgentConfig.typeHandlerVersion : (osType == 'Windows' ? '1.22' : '1.29')
     autoUpgradeMinorVersion: contains(extensionMonitoringAgentConfig, 'autoUpgradeMinorVersion') ? extensionMonitoringAgentConfig.autoUpgradeMinorVersion : true
     enableAutomaticUpgrade: contains(extensionMonitoringAgentConfig, 'enableAutomaticUpgrade') ? extensionMonitoringAgentConfig.enableAutomaticUpgrade : false
     settings: {
       workspaceId: !empty(monitoringWorkspaceId) ? reference(vmss_logAnalyticsWorkspace.id, vmss_logAnalyticsWorkspace.apiVersion).customerId : ''
+      GCS_AUTO_CONFIG: osType == 'Linux' ? true : null
     }
     protectedSettings: {
       workspaceKey: !empty(monitoringWorkspaceId) ? vmss_logAnalyticsWorkspace.listKeys().primarySharedKey : ''
