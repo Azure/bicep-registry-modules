@@ -71,7 +71,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
               privateLinkAlias: ''
               privateLinkApprovalMessage: ''
               privateLinkLocation: ''
-              privateLinkResourceId: ''
               weight: 50
             }
           ]

@@ -132,6 +132,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
       }
       {
         hyperVGeneration: 'V2'
+        isAcceleratedNetworkSupported: false
         isHibernateSupported: true
         maxRecommendedMemory: 16
         maxRecommendedvCPUs: 8
@@ -272,6 +273,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         },
         {
           "hyperVGeneration": "V2",
+          "isAcceleratedNetworkSupported": false,
           "isHibernateSupported": true,
           "maxRecommendedMemory": 16,
           "maxRecommendedvCPUs": 8,

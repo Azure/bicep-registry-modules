@@ -260,6 +260,8 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 | :-- | :-- | :-- |
 | [`amount`](#parameter-amount) | int | The total amount of cost or usage to track with the budget. |
 | [`name`](#parameter-name) | string | The name of the budget. |
+| [`operator`](#parameter-operator) | string | The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`. |
+| [`thresholdType`](#parameter-thresholdtype) | string | The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecast`. |
 
 **Conditional parameters**
 
@@ -296,6 +298,37 @@ The name of the budget.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `operator`
+
+The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`.
+
+- Required: No
+- Type: string
+- Default: `'GreaterThan'`
+- Allowed:
+  ```Bicep
+  [
+    'EqualTo'
+    'GreaterThan'
+    'GreaterThanOrEqualTo'
+  ]
+  ```
+
+### Parameter: `thresholdType`
+
+The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecast`.
+
+- Required: No
+- Type: string
+- Default: `'Actual'`
+- Allowed:
+  ```Bicep
+  [
+    'Actual'
+    'Forecast'
+  ]
+  ```
 
 ### Parameter: `actionGroups`
 
