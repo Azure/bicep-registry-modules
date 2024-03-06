@@ -69,7 +69,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     skuName: 'Standard_B12ms'
     // Non-required parameters
     disablePasswordAuthentication: true
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     nicConfigurations: [
       {
@@ -142,8 +142,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "disablePasswordAuthentication": {
       "value": true
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
@@ -249,7 +249,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     ]
     disablePasswordAuthentication: true
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     encryptionAtHost: false
     extensionAzureDiskEncryptionConfig: {
       enabled: true
@@ -428,8 +428,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "disablePasswordAuthentication": {
       "value": true
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "encryptionAtHost": {
       "value": false
@@ -607,7 +607,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     ]
     disablePasswordAuthentication: true
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     extensionMonitoringAgentConfig: {
       enabled: true
     }
@@ -706,8 +706,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "disablePasswordAuthentication": {
       "value": true
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "extensionMonitoringAgentConfig": {
       "value": {
@@ -789,7 +789,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     skuName: 'Standard_B12ms'
     // Non-required parameters
     adminPassword: '<adminPassword>'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     nicConfigurations: [
       {
@@ -856,8 +856,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "adminPassword": {
       "value": "<adminPassword>"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
@@ -933,7 +933,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     encryptionAtHost: false
     extensionAntiMalwareConfig: {
       enabled: true
@@ -1099,8 +1099,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "encryptionAtHost": {
       "value": false
@@ -1293,7 +1293,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     encryptionAtHost: false
     extensionAntiMalwareConfig: {
       enabled: true
@@ -1459,8 +1459,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "encryptionAtHost": {
       "value": false
@@ -1639,8 +1639,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
 | [`doNotRunExtensionsOnOverprovisionedVMs`](#parameter-donotrunextensionsonoverprovisionedvms) | bool | When Overprovision is enabled, extensions are launched only on the requested number of VMs which are finally kept. This property will hence ensure that the extensions do not run on the extra overprovisioned VMs. |
 | [`enableAutomaticOSUpgrade`](#parameter-enableautomaticosupgrade) | bool | Indicates whether OS upgrades should automatically be applied to scale set instances in a rolling fashion when a newer version of the OS image becomes available. Default value is false. If this is set to true for Windows based scale sets, enableAutomaticUpdates is automatically set to false and cannot be set to true. |
 | [`enableAutomaticUpdates`](#parameter-enableautomaticupdates) | bool | Indicates whether Automatic Updates is enabled for the Windows virtual machine. Default value is true. For virtual machine scale sets, this property can be updated and updates will take effect on OS reprovisioning. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`enableEvictionPolicy`](#parameter-enableevictionpolicy) | bool | Specifies the eviction policy for the low priority virtual machine. Will result in 'Deallocate' eviction policy. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionAtHost`](#parameter-encryptionathost) | bool | This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your virtual machine scale sets. |
 | [`extensionAntiMalwareConfig`](#parameter-extensionantimalwareconfig) | object | The configuration for the [Anti Malware] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionAzureDiskEncryptionConfig`](#parameter-extensionazurediskencryptionconfig) | object | The configuration for the [Azure Disk Encryption] extension. Must at least contain the ["enabled": true] property to be executed. Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys. |
@@ -1950,14 +1950,6 @@ Indicates whether Automatic Updates is enabled for the Windows virtual machine. 
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
-
 ### Parameter: `enableEvictionPolicy`
 
 Specifies the eviction policy for the low priority virtual machine. Will result in 'Deallocate' eviction policy.
@@ -1965,6 +1957,14 @@ Specifies the eviction policy for the low priority virtual machine. Will result 
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `encryptionAtHost`
 
