@@ -149,7 +149,7 @@ var builtInRoleNames = {
 // ============== //
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.aad-domainservices.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.res.aad-domainservice.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -166,7 +166,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource domainServices 'Microsoft.AAD/DomainServices@2022-12-01' = {
+resource domainservice 'Microsoft.AAD/DomainServices@2022-12-01' = {
   name: name
   location: location
   tags: tags
@@ -198,7 +198,7 @@ resource domainServices 'Microsoft.AAD/DomainServices@2022-12-01' = {
   }
 }
 
-resource domainServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+resource domainservice_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
   name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
   properties: {
     storageAccountId: diagnosticSetting.?storageAccountResourceId
@@ -214,20 +214,20 @@ resource domainServices_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
     marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
     logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
   }
-  scope: domainServices
+  scope: domainservice
 }]
 
-resource domainServices_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+resource domainservice_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
     notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
   }
-  scope: domainServices
+  scope: domainservice
 }
 
-resource domainServices_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(domainServices.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+resource domainservice_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
+  name: guid(domainservice.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
   properties: {
     roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
     principalId: roleAssignment.principalId
@@ -237,7 +237,7 @@ resource domainServices_roleAssignments 'Microsoft.Authorization/roleAssignments
     conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
     delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
   }
-  scope: domainServices
+  scope: domainservice
 }]
 
 // ============ //
@@ -245,16 +245,16 @@ resource domainServices_roleAssignments 'Microsoft.Authorization/roleAssignments
 // ============ //
 
 @description('The domain name of the Azure Active Directory Domain Services(Azure ADDS).')
-output name string = domainServices.name
+output name string = domainservice.name
 
 @description('The name of the resource group the Azure Active Directory Domain Services(Azure ADDS) was created in.')
 output resourceGroupName string = resourceGroup().name
 
 @description('The resource ID of the Azure Active Directory Domain Services(Azure ADDS).')
-output resourceId string = domainServices.id
+output resourceId string = domainservice.id
 
 @description('The location the resource was deployed into.')
-output location string = domainServices.location
+output location string = domainservice.location
 
 // ================ //
 // Definitions      //

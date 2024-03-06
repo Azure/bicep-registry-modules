@@ -15,7 +15,7 @@ This module deploys an Azure Active Directory Domain Services (AADDS).
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.AAD/domainServices` | [2021-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AAD/2021-05-01/domainServices) |
+| `Microsoft.AAD/domainServices` | [2022-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AAD/2022-12-01/domainServices) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
@@ -26,11 +26,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/aad/domain-services:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/aad/domain-service:<version>`.
 
 - [Using default parameter set](#example-1-using-default-parameter-set)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Disabling LDAPS](#example-2-disabling-ldaps)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using default parameter set_
 
@@ -42,7 +43,7 @@ This instance deploys the module with default features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module domainServices 'br/public:avm/res/aad/domain-services:<version>' = {
+module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-aaddsmin'
   params: {
     // Required parameters
@@ -164,7 +165,139 @@ module domainServices 'br/public:avm/res/aad/domain-services:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Disabling LDAPS_
+
+This instance deploys the module with disabled LDAPS.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-aaddsmin'
+  params: {
+    // Required parameters
+    domainName: 'onmicrosoft.com'
+    // Non-required parameters
+    additionalRecipients: [
+      '@noreply.github.com'
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    enableTelemetry: '<enableTelemetry>'
+    externalAccess: '<externalAccess>'
+    ldaps: '<ldaps>'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    name: 'aaddsmin001'
+    replicaSets: [
+      {
+        location: 'WestEurope'
+        subnetId: '<subnetId>'
+      }
+    ]
+    sku: 'Standard'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "domainName": {
+      "value": "onmicrosoft.com"
+    },
+    // Non-required parameters
+    "additionalRecipients": {
+      "value": [
+        "@noreply.github.com"
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
+    },
+    "externalAccess": {
+      "value": "<externalAccess>"
+    },
+    "ldaps": {
+      "value": "<ldaps>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "name": {
+      "value": "aaddsmin001"
+    },
+    "replicaSets": {
+      "value": [
+        {
+          "location": "WestEurope",
+          "subnetId": "<subnetId>"
+        }
+      ]
+    },
+    "sku": {
+      "value": "Standard"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -174,7 +307,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module domainServices 'br/public:avm/res/aad/domain-services:<version>' = {
+module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-aaddsmax'
   params: {
     // Required parameters
@@ -296,7 +429,7 @@ module domainServices 'br/public:avm/res/aad/domain-services:<version>' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -306,7 +439,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module domainServices 'br/public:avm/res/aad/domain-services:<version>' = {
+module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-aaddswaf'
   params: {
     // Required parameters
