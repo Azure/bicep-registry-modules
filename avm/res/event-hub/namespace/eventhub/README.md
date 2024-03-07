@@ -49,7 +49,6 @@ This module deploys an Event Hub Namespace Event Hub.
 | [`captureDescriptionSizeLimitInBytes`](#parameter-capturedescriptionsizelimitinbytes) | int | The size window defines the amount of data built up in your Event Hub before an capture operation. |
 | [`captureDescriptionSkipEmptyArchives`](#parameter-capturedescriptionskipemptyarchives) | bool | A value that indicates whether to Skip Empty Archives. |
 | [`consumergroups`](#parameter-consumergroups) | array | The consumer groups to create in this event hub instance. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`messageRetentionInDays`](#parameter-messageretentionindays) | int | Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Will be automatically set to infinite retention if cleanup policy is set to "Compact". |
 | [`partitionCount`](#parameter-partitioncount) | int | Number of partitions created for the Event Hub, allowed values are from 1 to 32 partitions. |
@@ -186,14 +185,6 @@ The consumer groups to create in this event hub instance.
     }
   ]
   ```
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `lock`
 
@@ -394,10 +385,9 @@ Enumerates the possible values for the status of the Event Hub.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `eventHubId` | string | The resource ID of the event hub. |
 | `name` | string | The name of the event hub. |
 | `resourceGroupName` | string | The resource group the event hub was deployed into. |
-| `resourceId` | string | The authentication rule resource ID of the event hub. |
+| `resourceId` | string | The resource ID of the event hub. |
 
 ## Cross-referenced modules
 

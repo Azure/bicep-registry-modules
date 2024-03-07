@@ -109,9 +109,6 @@ param retentionDescriptionRetentionTimeInHours int = 1
 @description('Optional. Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub.')
 param retentionDescriptionTombstoneRetentionTimeInHours int = 1
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
 var eventHubProperties = {
   messageRetentionInDays: messageRetentionInDays
   partitionCount: partitionCount
@@ -150,18 +147,6 @@ var builtInRoleNames = {
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
   'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
-}
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
 }
 
 resource namespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' existing = {
@@ -221,13 +206,10 @@ resource eventHub_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-
 output name string = eventHub.name
 
 @description('The resource ID of the event hub.')
-output eventHubId string = eventHub.id
+output resourceId string = eventHub.id
 
 @description('The resource group the event hub was deployed into.')
 output resourceGroupName string = resourceGroup().name
-
-@description('The authentication rule resource ID of the event hub.')
-output resourceId string = az.resourceId('Microsoft.EventHub/namespaces/authorizationRules', namespaceName, 'RootManageSharedAccessKey')
 
 // =============== //
 //   Definitions   //

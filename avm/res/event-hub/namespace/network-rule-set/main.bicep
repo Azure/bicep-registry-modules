@@ -28,6 +28,9 @@ param virtualNetworkRules array = []
 @description('Optional. An array of objects for the public IP ranges you want to allow via the Event Hub Namespace firewall. Supports IPv4 address or CIDR. It will not be set if publicNetworkAccess is "Disabled". Otherwise, when used, defaultAction will be set to "Deny".')
 param ipRules array = []
 
+@description('Optional. The name of the network ruleset.')
+ param networkRuleSetName string = 'default'
+
 var networkRules = [for (virtualNetworkRule, index) in virtualNetworkRules: {
   ignoreMissingVnetServiceEndpoint: contains(virtualNetworkRule, 'ignoreMissingVnetServiceEndpoint') ? virtualNetworkRule.ignoreMissingVnetServiceEndpoint : null
   subnet: contains(virtualNetworkRule, 'subnetResourceId') ? {
@@ -40,7 +43,7 @@ resource namespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' existing =
 }
 
 resource networkRuleSet 'Microsoft.EventHub/namespaces/networkRuleSets@2022-10-01-preview' = {
-  name: 'default'
+  name: networkRuleSetName
   parent: namespace
   properties: {
     publicNetworkAccess: publicNetworkAccess

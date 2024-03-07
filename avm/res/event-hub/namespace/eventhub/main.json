@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "6590421381129699239"
+      "templateHash": "8657514846937945810"
     },
     "name": "Event Hub Namespace Event Hubs",
     "description": "This module deploys an Event Hub Namespace Event Hub.",
@@ -292,13 +292,6 @@
       "metadata": {
         "description": "Optional. Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub."
       }
-    },
-    "enableDefaultTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-      }
     }
   },
   "variables": {
@@ -341,20 +334,6 @@
     }
   },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
-    },
     "namespace": {
       "existing": true,
       "type": "Microsoft.EventHub/namespaces",
@@ -628,7 +607,7 @@
       },
       "value": "[parameters('name')]"
     },
-    "eventHubId": {
+    "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the event hub."
@@ -641,13 +620,6 @@
         "description": "The resource group the event hub was deployed into."
       },
       "value": "[resourceGroup().name]"
-    },
-    "resourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "The authentication rule resource ID of the event hub."
-      },
-      "value": "[resourceId('Microsoft.EventHub/namespaces/authorizationRules', parameters('namespaceName'), 'RootManageSharedAccessKey')]"
     }
   }
 }

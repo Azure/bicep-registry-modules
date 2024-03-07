@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "14652141971411777965"
+      "templateHash": "11239292624069957748"
     },
     "name": "Event Hub Namespace Network Rule Sets",
     "description": "This module deploys an Event Hub Namespace Network Rule Set.",
@@ -60,6 +60,13 @@
       "metadata": {
         "description": "Optional. An array of objects for the public IP ranges you want to allow via the Event Hub Namespace firewall. Supports IPv4 address or CIDR. It will not be set if publicNetworkAccess is \"Disabled\". Otherwise, when used, defaultAction will be set to \"Deny\"."
       }
+    },
+    "networkRuleSetName": {
+      "type": "string",
+      "defaultValue": "default",
+      "metadata": {
+        "description": "Optional. The name of the network ruleset."
+      }
     }
   },
   "variables": {
@@ -78,7 +85,7 @@
     {
       "type": "Microsoft.EventHub/namespaces/networkRuleSets",
       "apiVersion": "2022-10-01-preview",
-      "name": "[format('{0}/{1}', parameters('namespaceName'), 'default')]",
+      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('networkRuleSetName'))]",
       "properties": {
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "defaultAction": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), null(), if(or(not(empty(parameters('ipRules'))), not(empty(parameters('virtualNetworkRules')))), 'Deny', parameters('defaultAction')))]",
@@ -94,14 +101,14 @@
       "metadata": {
         "description": "The name of the network rule set."
       },
-      "value": "default"
+      "value": "[parameters('networkRuleSetName')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the network rule set."
       },
-      "value": "[resourceId('Microsoft.EventHub/namespaces/networkRuleSets', parameters('namespaceName'), 'default')]"
+      "value": "[resourceId('Microsoft.EventHub/namespaces/networkRuleSets', parameters('namespaceName'), parameters('networkRuleSetName'))]"
     },
     "resourceGroupName": {
       "type": "string",
