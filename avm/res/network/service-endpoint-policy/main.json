@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "1298248563385375466"
+      "templateHash": "15415866438460521787"
     },
     "name": "Service-Endpoint-Policy",
     "description": "This module deploys a Service Endpoint Policy.",
