@@ -27,10 +27,13 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/service-endpoint-policy:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Waf-Aligned](#example-2-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [WAF-aligned](#example-2-waf-aligned)
 
-### Example 1: _Defaults_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -38,10 +41,10 @@ The following section provides usage examples for the module, which were used to
 
 ```bicep
 module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nrtmin'
+  name: '${uniqueString(deployment().name, location)}-test-nsepmin'
   params: {
     // Required parameters
-    name: 'nrtmin001'
+    name: 'nsepmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -62,7 +65,7 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
   "parameters": {
     // Required parameters
     "name": {
-      "value": "nrtmin001"
+      "value": "nsepmin001"
     },
     // Non-required parameters
     "location": {
@@ -75,7 +78,10 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
 </details>
 <p>
 
-### Example 2: _Waf-Aligned_
+### Example 2: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -85,7 +91,19 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
 module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nsepwaf'
   params: {
+    // Required parameters
     name: 'nsepwaf001'
+    // Non-required parameters
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -102,8 +120,26 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "nsepwaf001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }

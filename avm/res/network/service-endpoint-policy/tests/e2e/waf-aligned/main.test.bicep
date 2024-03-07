@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+
 // ========== //
 // Parameters //
 // ========== //
@@ -7,7 +10,7 @@ targetScope = 'subscription'
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 // e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
-param resourceGroupName string = 'dep-${namePrefix}-<provider>-<resourceType>-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-network.serviceendpointpolicy-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
@@ -33,7 +36,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // ============== //
 // Test Execution //
 // ============== //
-
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
@@ -41,5 +43,16 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     // You parameters go here
     name: '${namePrefix}${serviceShort}001'
+    location: location
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+
   }
 }]
