@@ -17,14 +17,14 @@
       ]
     }
   },
-  "postCreateCommand": "npm install -g prettier && dotnet tool install -g Azure.Bicep.RegistryModuleTool",
+  "postCreateCommand": "npm install -g prettier && dotnet tool install -g Azure.Bicep.RegistryModuleTool && pwsh -C Install-Module Az.Accounts -Repository PSGallery -Force && pwsh -C Install-Module Az.Resources -Repository PSGallery -Force && pwsh -C Install-Module Az.KeyVault -Repository PSGallery -Force",
   "postStartCommand": "az bicep install",
   "remoteEnv": {
     "PATH": "${containerEnv:PATH}:/home/node/.dotnet/tools:/home/node/.azure/bin"
   },
   "features": {
     "azure-cli": "latest",
-    "dotnet": "7.0",
+    "dotnet": "8.0",
     "ghcr.io/devcontainers/features/node:1": {},
     "ghcr.io/devcontainers/features/powershell:1": {}
   }
