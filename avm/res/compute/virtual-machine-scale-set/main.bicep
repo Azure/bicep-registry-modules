@@ -489,6 +489,9 @@ module vmss_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extension
     settings: extensionAntiMalwareConfig.settings
     enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
+  dependsOn: [
+    vmss_domainJoinExtension
+  ]
 }
 
 resource vmss_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(monitoringWorkspaceId)) {
@@ -515,6 +518,9 @@ module vmss_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMon
     }
     enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
+  dependsOn: [
+    vmss_microsoftAntiMalwareExtension
+  ]
 }
 
 module vmss_dependencyAgentExtension 'extension/main.bicep' = if (extensionDependencyAgentConfig.enabled) {
@@ -529,6 +535,9 @@ module vmss_dependencyAgentExtension 'extension/main.bicep' = if (extensionDepen
     enableAutomaticUpgrade: contains(extensionDependencyAgentConfig, 'enableAutomaticUpgrade') ? extensionDependencyAgentConfig.enableAutomaticUpgrade : true
     enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
+  dependsOn: [
+    vmss_azureMonitorAgentExtension
+  ]
 }
 
 module vmss_networkWatcherAgentExtension 'extension/main.bicep' = if (extensionNetworkWatcherAgentConfig.enabled) {
@@ -543,6 +552,9 @@ module vmss_networkWatcherAgentExtension 'extension/main.bicep' = if (extensionN
     enableAutomaticUpgrade: contains(extensionNetworkWatcherAgentConfig, 'enableAutomaticUpgrade') ? extensionNetworkWatcherAgentConfig.enableAutomaticUpgrade : false
     enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
+  dependsOn: [
+    vmss_dependencyAgentExtension
+  ]
 }
 
 module vmss_desiredStateConfigurationExtension 'extension/main.bicep' = if (extensionDSCConfig.enabled) {
@@ -559,6 +571,9 @@ module vmss_desiredStateConfigurationExtension 'extension/main.bicep' = if (exte
     protectedSettings: contains(extensionDSCConfig, 'protectedSettings') ? extensionDSCConfig.protectedSettings : {}
     enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
+  dependsOn: [
+    vmss_networkWatcherAgentExtension
+  ]
 }
 
 module vmss_customScriptExtension 'extension/main.bicep' = if (extensionCustomScriptConfig.enabled) {
@@ -579,9 +594,6 @@ module vmss_customScriptExtension 'extension/main.bicep' = if (extensionCustomSc
   }
   dependsOn: [
     vmss_desiredStateConfigurationExtension
-    vmss_networkWatcherAgentExtension
-    vmss_dependencyAgentExtension
-    vmss_azureMonitorAgentExtension
   ]
 }
 
