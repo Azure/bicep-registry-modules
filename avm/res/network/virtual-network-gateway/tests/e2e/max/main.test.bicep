@@ -161,4 +161,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     enableBgpRouteTranslationForNat: true
   }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
 }]
