@@ -87,7 +87,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        service: 'batchAccount'
+        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
@@ -111,7 +112,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             properties: {
               groupId: 'batchAccount'
               memberName: 'batchAccount'
-              privateIPAddress: '10.0.0.10'
+              privateIPAddress: '10.0.16.10'
             }
           }
         ]
@@ -119,10 +120,34 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           {
             fqdn: 'abc.batch.com'
             ipAddresses: [
-              '10.0.0.10'
+              '10.0.16.10'
             ]
           }
         ]
+      }
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        service: 'batchAccount'
+        subnetResourceId: nestedDependencies.outputs.customSubnet2ResourceId
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        service: 'nodeManagement'
+        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
       }
     ]
     networkProfile: {
@@ -166,4 +191,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Role: 'DeploymentValidation'
     }
   }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
 }]
