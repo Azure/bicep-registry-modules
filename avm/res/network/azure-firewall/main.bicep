@@ -14,7 +14,7 @@ param name string
 param azureSkuTier string = 'Standard'
 
 @description('Conditional. Shared services Virtual Network resource ID. The virtual network ID containing AzureFirewallSubnet. If a Public IP is not provided, then the Public IP that is created as part of this module will be applied with the subnet provided in this variable. Required if `virtualHubId` is empty.')
-param vNetId string = ''
+param virtualNetworkId string = ''
 
 @description('Optional. The Public IP resource ID to associate to the AzureFirewallSubnet. If empty, then the Public IP that is created as part of this module will be applied to the AzureFirewallSubnet.')
 param publicIPResourceID string = ''
