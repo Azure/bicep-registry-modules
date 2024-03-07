@@ -7,7 +7,7 @@ param name string = 'default'
 @description('Optional. Instead of overwriting the existing tags, combine them with the new tags.')
 param onlyUpdate bool = false
 
-@description('Optional. Enable telemetry via the Customer Usage Attribution ID (GUID).')
+/*@description('Optional. Enable telemetry via the Customer Usage Attribution ID (GUID).')
 param enableDefaultTelemetry bool = true
 
 resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
@@ -20,7 +20,7 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (ena
       resources: []
     }
   }
-}
+}*/
 
 module readTags '.bicep/readTags.bicep' = if (onlyUpdate) {
   name: '${deployment().name}-ReadTags'

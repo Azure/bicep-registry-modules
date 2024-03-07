@@ -12,7 +12,7 @@ param resourceGroupName string = ''
 @description('Optional. Subscription ID of the subscription to assign the tags to. If no Resource Group name is provided, the module deploys at subscription level, therefore assigns the provided tags to the subscription.')
 param subscriptionId string = subscription().id
 
-@sys.description('Optional. Location deployment metadata.')
+/*@sys.description('Optional. Location deployment metadata.')
 param location string = deployment().location
 
 @description('Optional. Enable telemetry via the Customer Usage Attribution ID (GUID).')
@@ -31,15 +31,15 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (ena
       resources: []
     }
   }
-}
+}*/
 
 module tags_sub 'subscriptions/deploy.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName)) {
   name: '${deployment().name}-Tags-Sub'
   params: {
     onlyUpdate: onlyUpdate
     tags: tags
-    location: location
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    //location: location
+    //enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -49,7 +49,7 @@ module tags_rg 'resourceGroups/deploy.bicep' = if (!empty(resourceGroupName) && 
   params: {
     onlyUpdate: onlyUpdate
     tags: tags
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    //enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }
 

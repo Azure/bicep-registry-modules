@@ -10,8 +10,8 @@ param level string
 @description('Optional. The decription attached to the lock.')
 param notes string = level == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot modify the resource or child resources.'
 
-@description('Optional. Enable telemetry via the Customer Usage Attribution ID (GUID).')
-param enableDefaultTelemetry bool = true
+//@description('Optional. Enable telemetry via the Customer Usage Attribution ID (GUID).')
+//param enableDefaultTelemetry bool = true
 
 @description('Optional. Name of the Resource Group to assign the lock to. If Resource Group name is provided, and Subscription ID is provided, the module deploys at resource group level, therefore assigns the provided lock to the resource group.')
 param resourceGroupName string = ''
@@ -22,9 +22,9 @@ param subscriptionId string = subscription().id
 @sys.description('Optional. Location for all resources.')
 param location string = deployment().location
 
-var enableReferencedModulesTelemetry = false
+//var enableReferencedModulesTelemetry = false
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
+/*resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
   name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
   location: location
   properties: {
@@ -35,7 +35,7 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (ena
       resources: []
     }
   }
-}
+}*/
 
 module lock_sub 'subscription/deploy.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName)) {
   name: '${uniqueString(deployment().name, location)}-Lock-Sub-Module'
@@ -44,7 +44,7 @@ module lock_sub 'subscription/deploy.bicep' = if (!empty(subscriptionId) && empt
     name: '${subscription().displayName}-${level}-lock'
     level: level
     notes: notes
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    //enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -55,7 +55,7 @@ module lock_rg 'resourceGroup/deploy.bicep' = if (!empty(subscriptionId) && !emp
     name: '${resourceGroupName}-${level}-lock'
     level: level
     notes: notes
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    //enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }
 

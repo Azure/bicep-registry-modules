@@ -76,12 +76,12 @@ param hubVirtualNetworkConnections array = []
 @description('Optional. Specify the type of lock.')
 param lock string = ''
 
-@description('Optional. Enable telemetry via the Customer Usage Attribution ID (GUID).')
-param enableDefaultTelemetry bool = true
+//@description('Optional. Enable telemetry via the Customer Usage Attribution ID (GUID).')
+//param enableDefaultTelemetry bool = true
 
-var enableReferencedModulesTelemetry = false
+//var enableReferencedModulesTelemetry = false
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
+/*resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
   name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
   properties: {
     mode: 'Incremental'
@@ -91,7 +91,7 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (ena
       resources: []
     }
   }
-}
+}*/
 
 resource virtualHub 'Microsoft.Network/virtualHubs@2021-05-01' = {
   name: name
@@ -146,7 +146,7 @@ module virtualHub_routeTables 'hubRouteTables/deploy.bicep' = [for (routeTable, 
     name: routeTable.name
     labels: contains(routeTable, 'labels') ? routeTable.labels : []
     routes: contains(routeTable, 'routes') ? routeTable.routes : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    //enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -158,7 +158,7 @@ module virtualHub_hubVirtualNetworkConnections 'hubVirtualNetworkConnections/dep
     enableInternetSecurity: contains(virtualNetworkConnection, 'enableInternetSecurity') ? virtualNetworkConnection.enableInternetSecurity : true
     remoteVirtualNetworkId: virtualNetworkConnection.remoteVirtualNetworkId
     routingConfiguration: contains(virtualNetworkConnection, 'routingConfiguration') ? virtualNetworkConnection.routingConfiguration : {}
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    //enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     virtualHub_routeTables

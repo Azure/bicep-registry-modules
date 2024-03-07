@@ -628,7 +628,7 @@ param resourceProviders object = {
 
 var existingSubscriptionIDEmptyCheck = empty(existingSubscriptionId) ? 'No Subscription ID Provided' : existingSubscriptionId
 
-var cuaPid = '10d75183-0090-47b2-9c1b-48e3a4a36786'
+//var cuaPid = '10d75183-0090-47b2-9c1b-48e3a4a36786'
 
 // Deployment name variables
 // LIMITS: Tenant = 64, Management Group = 64, Subscription = 64, Resource Group = 64
@@ -638,7 +638,7 @@ var deploymentNames = {
 }
 
 // RESOURCES & MODULES
-resource moduleTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (!disableTelemetry) {
+/*resource moduleTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (!disableTelemetry) {
   name: 'pid-${cuaPid}-${uniqueString(deployment().name, virtualNetworkLocation)}'
   location: virtualNetworkLocation
   properties: {
@@ -649,7 +649,7 @@ resource moduleTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (!dis
       resources: []
     }
   }
-}
+}*/
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (!disableTelemetry) {
   name: '46d3xbcp.ptn.lz-subvending.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, virtualNetworkLocation), 0, 4)}'

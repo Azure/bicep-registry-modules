@@ -44,12 +44,12 @@ param conditionVersion string = '2.0'
 ])
 param principalType string = ''
 
-@sys.description('Optional. Enable telemetry via the Customer Usage Attribution ID (GUID).')
-param enableDefaultTelemetry bool = true
+//@sys.description('Optional. Enable telemetry via the Customer Usage Attribution ID (GUID).')
+//param enableDefaultTelemetry bool = true
 
-var enableReferencedModulesTelemetry = false
+//var enableReferencedModulesTelemetry = false
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
+/*resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
   name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
   location: location
   properties: {
@@ -60,7 +60,7 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (ena
       resources: []
     }
   }
-}
+}*/
 
 module roleAssignment_mg 'managementGroup/deploy.bicep' = if (empty(subscriptionId) && empty(resourceGroupName)) {
   name: '${uniqueString(deployment().name, location)}-RoleAssignment-MG-Module'
@@ -74,8 +74,8 @@ module roleAssignment_mg 'managementGroup/deploy.bicep' = if (empty(subscription
     delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId) ? delegatedManagedIdentityResourceId : ''
     conditionVersion: conditionVersion
     condition: !empty(condition) ? condition : ''
-    location: location
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    //location: location
+    //enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -91,8 +91,8 @@ module roleAssignment_sub 'subscription/deploy.bicep' = if (!empty(subscriptionI
     delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId) ? delegatedManagedIdentityResourceId : ''
     conditionVersion: conditionVersion
     condition: !empty(condition) ? condition : ''
-    location: location
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    //location: location
+    //enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -109,7 +109,7 @@ module roleAssignment_rg 'resourceGroup/deploy.bicep' = if (!empty(resourceGroup
     delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId) ? delegatedManagedIdentityResourceId : ''
     conditionVersion: conditionVersion
     condition: !empty(condition) ? condition : ''
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    //enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }
 

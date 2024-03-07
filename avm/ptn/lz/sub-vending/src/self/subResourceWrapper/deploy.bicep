@@ -302,9 +302,6 @@ var virutalWanHubDefaultRouteTableId = {
 var virtualWanHubConnectionPropogatedRouteTables = !empty(virtualNetworkVwanPropagatedRouteTablesResourceIds) ? virtualNetworkVwanPropagatedRouteTablesResourceIds : array(virutalWanHubDefaultRouteTableId)
 var virtualWanHubConnectionPropogatedLabels = !empty(virtualNetworkVwanPropagatedLabels) ? virtualNetworkVwanPropagatedLabels : [ 'default' ]
 
-// Telemetry for CARML flip
-var enableTelemetryForCarml = !disableTelemetry
-
 var resourceProvidersFormatted = replace(string(resourceProviders), '"', '\\"')
 
 // RESOURCES & MODULES
@@ -323,10 +320,8 @@ module tagSubscription '../../resources/Microsoft.Resources/tags/deploy.bicep' =
   name: deploymentNames.tagSubscription
   params: {
     subscriptionId: subscriptionId
-    location: virtualNetworkLocation
     onlyUpdate: true
     tags: subscriptionTags
-    enableDefaultTelemetry: enableTelemetryForCarml
   }
 }
 module createResourceGroupForLzNetworking 'br/public:avm/res/resources/resource-group:0.2.0' = if (virtualNetworkEnabled && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
@@ -354,8 +349,6 @@ module tagResourceGroup '../../resources/Microsoft.Resources/tags/deploy.bicep' 
     resourceGroupName: virtualNetworkResourceGroupName
     onlyUpdate: true
     tags: virtualNetworkResourceGroupTags
-    location: virtualNetworkLocation
-    enableDefaultTelemetry: enableTelemetryForCarml
   }
 }
 
@@ -411,7 +404,6 @@ module createLzVirtualWanConnection '../../resources/Microsoft.Network/virtualHu
         labels: virtualWanHubConnectionPropogatedLabels
       }
     } : {}
-    enableDefaultTelemetry: enableTelemetryForCarml
   }
 }
 
@@ -422,7 +414,6 @@ module createLzRoleAssignmentsSub '../../resources/Microsoft.Authorization/roleA
     principalId: assignment.principalId
     roleDefinitionIdOrName: assignment.definition
     subscriptionId: subscriptionId
-    enableDefaultTelemetry: enableTelemetryForCarml
   }
 }]
 
@@ -437,7 +428,6 @@ module createLzRoleAssignmentsRsgsSelf '../../resources/Microsoft.Authorization/
     roleDefinitionIdOrName: assignment.definition
     subscriptionId: subscriptionId
     resourceGroupName: split(assignment.relativeScope, '/')[2]
-    enableDefaultTelemetry: enableTelemetryForCarml
   }
 }]
 
@@ -449,7 +439,6 @@ module createLzRoleAssignmentsRsgsNotSelf '../../resources/Microsoft.Authorizati
     roleDefinitionIdOrName: assignment.definition
     subscriptionId: subscriptionId
     resourceGroupName: split(assignment.relativeScope, '/')[2]
-    enableDefaultTelemetry: enableTelemetryForCarml
   }
 }]
 
@@ -483,7 +472,6 @@ module createRoleAssignmentsDeploymentScript '../../resources/Microsoft.Authoriz
     principalId: !empty(resourceProviders) ? createManagedIdentityForDeploymentScript.outputs.principalId : ''
     roleDefinitionIdOrName: 'Contributor'
     subscriptionId: subscriptionId
-    enableDefaultTelemetry: enableTelemetryForCarml
   }
 }
 
@@ -493,7 +481,6 @@ module createRoleAssignmentsDeploymentScriptStorageAccount '../../resources/Micr
     location: deploymentScriptLocation
     principalId: !empty(resourceProviders) ? createManagedIdentityForDeploymentScript.outputs.principalId : ''
     roleDefinitionIdOrName: '69566ab7-960f-475b-8e7c-b3118f30c6bd'
-    enableDefaultTelemetry: enableTelemetryForCarml
     subscriptionId: subscriptionId
     resourceGroupName: deploymentScriptResourceGroupName
   }
@@ -595,5 +582,5 @@ module registerResourceProviders 'br/public:avm/res/resources/deployment-script:
 }
 
 // OUTPUTS
-output failedProviders string = !empty(resourceProviders) ? registerResourceProviders.outputs.outputs['failedProvidersRegistrations'] : ''
-output failedFeatures string = !empty(resourceProviders) ? registerResourceProviders.outputs.outputs['failedFeaturesRegistrations'] : ''
+output failedProviders string = !empty(resourceProviders) ? registerResourceProviders.outputs.outputs.failedProvidersRegistrations : ''
+output failedFeatures string = !empty(resourceProviders) ? registerResourceProviders.outputs.outputs.failedFeaturesRegistrations : ''

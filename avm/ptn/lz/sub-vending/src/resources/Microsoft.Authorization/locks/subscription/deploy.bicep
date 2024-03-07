@@ -13,7 +13,7 @@ param level string
 @description('Optional. The decription attached to the lock.')
 param notes string = level == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot modify the resource or child resources.'
 
-@description('Optional. Enable telemetry via the Customer Usage Attribution ID (GUID).')
+/*@description('Optional. Enable telemetry via the Customer Usage Attribution ID (GUID).')
 param enableDefaultTelemetry bool = true
 
 resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
@@ -26,7 +26,7 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (ena
       resources: []
     }
   }
-}
+}*/
 
 resource lock 'Microsoft.Authorization/locks@2017-04-01' = {
   name: name
