@@ -747,6 +747,7 @@ Tags of the resource.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `applicationId` | string | The application ID of the application insights component. |
+| `connectionString` | string | Application Insights Connection String. |
 | `instrumentationKey` | string | Application Insights Instrumentation key. A read-only value that applications can use to identify the destination for all telemetry sent to Azure Application Insights. This value will be supplied upon construction of each new Application Insights component. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the application insights component. |
