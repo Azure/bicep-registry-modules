@@ -11,7 +11,7 @@ param name string?
 @description('Required. Link to another virtual network resource ID.')
 param virtualNetworkResourceId string
 
-@description('Optional. Metadata attached to the forwarding rule.')
+@description('Optional. Metadata attached to the virtual network link.')
 param metadata object?
 
 resource dnsForwardingRuleset 'Microsoft.Network/dnsForwardingRulesets@2022-07-01' existing = {
