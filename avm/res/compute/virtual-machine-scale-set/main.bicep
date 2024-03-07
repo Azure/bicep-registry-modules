@@ -50,7 +50,7 @@ param customData string = ''
 param roleAssignments roleAssignmentType
 
 @description('Optional. Fault Domain count for each placement group.')
-param scaleSetFaultDomain int = 2
+param scaleSetFaultDomain int = 1
 
 @description('Optional. Resource ID of a proximity placement group.')
 param proximityPlacementGroupResourceId string = ''
