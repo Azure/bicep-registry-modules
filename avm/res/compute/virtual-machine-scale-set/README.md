@@ -1780,7 +1780,14 @@ The virtual machine scale set zones. NOTE: Availability zones can only be set wh
 
 - Required: No
 - Type: array
-- Default: `[]`
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `bootDiagnosticStorageAccountName`
 

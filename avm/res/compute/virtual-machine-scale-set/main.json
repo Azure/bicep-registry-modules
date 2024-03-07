@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "16529264994111104054"
+      "templateHash": "16559778527831408516"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -675,7 +675,11 @@
     },
     "availabilityZones": {
       "type": "array",
-      "defaultValue": [],
+      "defaultValue": [
+        1,
+        2,
+        3
+      ],
       "metadata": {
         "description": "Optional. The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set."
       }
@@ -1366,7 +1370,8 @@
         }
       },
       "dependsOn": [
-        "vmss"
+        "vmss",
+        "vmss_domainJoinExtension"
       ]
     },
     "vmss_azureMonitorAgentExtension": {
@@ -1559,7 +1564,8 @@
       },
       "dependsOn": [
         "vmss",
-        "vmss_logAnalyticsWorkspace"
+        "vmss_logAnalyticsWorkspace",
+        "vmss_microsoftAntiMalwareExtension"
       ]
     },
     "vmss_dependencyAgentExtension": {
@@ -1740,7 +1746,8 @@
         }
       },
       "dependsOn": [
-        "vmss"
+        "vmss",
+        "vmss_azureMonitorAgentExtension"
       ]
     },
     "vmss_networkWatcherAgentExtension": {
@@ -1921,7 +1928,8 @@
         }
       },
       "dependsOn": [
-        "vmss"
+        "vmss",
+        "vmss_dependencyAgentExtension"
       ]
     },
     "vmss_desiredStateConfigurationExtension": {
@@ -2106,7 +2114,8 @@
         }
       },
       "dependsOn": [
-        "vmss"
+        "vmss",
+        "vmss_networkWatcherAgentExtension"
       ]
     },
     "vmss_customScriptExtension": {
@@ -2484,7 +2493,6 @@
       },
       "dependsOn": [
         "vmss",
-        "vmss_azureMonitorAgentExtension",
         "vmss_customScriptExtension"
       ]
     }
