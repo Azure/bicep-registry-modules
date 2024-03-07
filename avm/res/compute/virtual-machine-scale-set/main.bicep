@@ -232,7 +232,7 @@ param skuName string
 param skuCapacity int = 1
 
 @description('Optional. The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set.')
-param availabilityZones array = [ 1, 2, 3 ]
+param availabilityZones array = []
 
 @description('Optional. Tags of the resource.')
 param tags object?

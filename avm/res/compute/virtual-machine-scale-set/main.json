@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "3252763710363602475"
+      "templateHash": "3088153730802492517"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -675,11 +675,7 @@
     },
     "availabilityZones": {
       "type": "array",
-      "defaultValue": [
-        1,
-        2,
-        3
-      ],
+      "defaultValue": [],
       "metadata": {
         "description": "Optional. The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set."
       }
