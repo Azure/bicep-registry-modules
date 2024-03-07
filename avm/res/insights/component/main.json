@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "9561238160025481382"
+      "templateHash": "2927135998555920691"
     },
     "name": "Application Insights",
     "description": "This component deploys an Application Insights instance.",
@@ -581,6 +581,13 @@
         "description": "Application Insights Instrumentation key. A read-only value that applications can use to identify the destination for all telemetry sent to Azure Application Insights. This value will be supplied upon construction of each new Application Insights component."
       },
       "value": "[reference('appInsights').InstrumentationKey]"
+    },
+    "connectionString": {
+      "type": "string",
+      "metadata": {
+        "description": "Application Insights Connection String."
+      },
+      "value": "[reference('appInsights').ConnectionString]"
     }
   }
 }

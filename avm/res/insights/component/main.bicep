@@ -185,6 +185,9 @@ output location string = appInsights.location
 @description('Application Insights Instrumentation key. A read-only value that applications can use to identify the destination for all telemetry sent to Azure Application Insights. This value will be supplied upon construction of each new Application Insights component.')
 output instrumentationKey string = appInsights.properties.InstrumentationKey
 
+@description('Application Insights Connection String.')
+output connectionString string = appInsights.properties.ConnectionString
+
 // =============== //
 //   Definitions   //
 // =============== //
