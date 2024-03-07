@@ -188,7 +188,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        service: 'namespace'
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
       }
     ]
