@@ -33,14 +33,6 @@ param publicNetworkAccess string?
 @description('Optional. This can be used to restrict traffic from specific IPs instead of all IPs. Note: These are considered only if PublicNetworkAccess is enabled.')
 param inboundIpRules array?
 
-@allowed([
-  '1.0'
-  '1.1'
-  '1.2'
-])
-@description('Optional. Minimum TLS version of the publisher allowed to publish to this namespace. Only TLS version 1.2 is supported.')
-param minimumTlsVersionAllowed string = '1.2'
-
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
@@ -161,7 +153,6 @@ resource namespace 'Microsoft.EventGrid/namespaces@2023-12-15-preview' = {
     isZoneRedundant: isZoneRedundant
     publicNetworkAccess: !empty(publicNetworkAccess) ? publicNetworkAccess : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
     inboundIpRules: inboundIpRules
-    minimumTlsVersionAllowed: minimumTlsVersionAllowed
     topicSpacesConfiguration: topicSpacesState == 'Enabled' ? {
       state: topicSpacesState
       clientAuthentication: !empty(alternativeAuthenticationNameSources) ? {

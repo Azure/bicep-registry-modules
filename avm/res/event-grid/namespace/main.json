@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "9941291737123823642"
+      "templateHash": "258595735332264308"
     },
     "name": "Event Grid Namespaces",
     "description": "This module deploys an Event Grid Namespace.",
@@ -492,18 +492,6 @@
         "description": "Optional. This can be used to restrict traffic from specific IPs instead of all IPs. Note: These are considered only if PublicNetworkAccess is enabled."
       }
     },
-    "minimumTlsVersionAllowed": {
-      "type": "string",
-      "defaultValue": "1.2",
-      "allowedValues": [
-        "1.0",
-        "1.1",
-        "1.2"
-      ],
-      "metadata": {
-        "description": "Optional. Minimum TLS version of the publisher allowed to publish to this namespace. Only TLS version 1.2 is supported."
-      }
-    },
     "lock": {
       "$ref": "#/definitions/lockType",
       "metadata": {
@@ -686,7 +674,6 @@
         "isZoneRedundant": "[parameters('isZoneRedundant')]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', 'Enabled'))]",
         "inboundIpRules": "[parameters('inboundIpRules')]",
-        "minimumTlsVersionAllowed": "[parameters('minimumTlsVersionAllowed')]",
         "topicSpacesConfiguration": "[if(equals(parameters('topicSpacesState'), 'Enabled'), createObject('state', parameters('topicSpacesState'), 'clientAuthentication', if(not(empty(parameters('alternativeAuthenticationNameSources'))), createObject('alternativeAuthenticationNameSources', parameters('alternativeAuthenticationNameSources')), null()), 'maximumSessionExpiryInHours', parameters('maximumSessionExpiryInHours'), 'maximumClientSessionsPerAuthenticationName', parameters('maximumClientSessionsPerAuthenticationName'), 'routeTopicResourceId', parameters('routeTopicResourceId'), 'routingEnrichments', if(not(empty(parameters('routeTopicResourceId'))), parameters('routingEnrichments'), null()), 'routingIdentityInfo', if(and(not(empty(parameters('routeTopicResourceId'))), not(startsWith(coalesce(parameters('routeTopicResourceId'), ''), format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.EventGrid/namespaces/{2}/topics/', subscription().subscriptionId, resourceGroup().name, parameters('name'))))), parameters('routingIdentityInfo'), null())), null())]"
       }
     },

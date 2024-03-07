@@ -1355,7 +1355,6 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`maximumClientSessionsPerAuthenticationName`](#parameter-maximumclientsessionsperauthenticationname) | int | The maximum number of sessions per authentication name. Used only when MQTT broker is enabled ('topicSpacesState' is set to 'Enabled'). |
 | [`maximumSessionExpiryInHours`](#parameter-maximumsessionexpiryinhours) | int | The maximum session expiry in hours. Used only when MQTT broker is enabled ('topicSpacesState' is set to 'Enabled'). |
-| [`minimumTlsVersionAllowed`](#parameter-minimumtlsversionallowed) | string | Minimum TLS version of the publisher allowed to publish to this namespace. Only TLS version 1.2 is supported. |
 | [`permissionBindings`](#parameter-permissionbindings) | array | All namespace Permission Bindings to create. Used only when MQTT broker is enabled ('topicSpacesState' is set to 'Enabled'). |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | This determines if traffic is allowed over public network. By default it is enabled. You can further restrict to specific IPs by configuring. |
@@ -1674,22 +1673,6 @@ The maximum session expiry in hours. Used only when MQTT broker is enabled ('top
 - Required: No
 - Type: int
 - Default: `1`
-
-### Parameter: `minimumTlsVersionAllowed`
-
-Minimum TLS version of the publisher allowed to publish to this namespace. Only TLS version 1.2 is supported.
-
-- Required: No
-- Type: string
-- Default: `'1.2'`
-- Allowed:
-  ```Bicep
-  [
-    '1.0'
-    '1.1'
-    '1.2'
-  ]
-  ```
 
 ### Parameter: `permissionBindings`
 
