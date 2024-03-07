@@ -53,7 +53,7 @@ body:
         - "avm/res/automation/automation-account"
         - "avm/res/batch/batch-account"
         - "avm/res/cache/redis"
-        # - "avm/res/cdn/profile"
+        - "avm/res/cdn/profile"
         - "avm/res/cognitive-services/account"
         - "avm/res/compute/availability-set"
         - "avm/res/compute/disk"

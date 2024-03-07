@@ -92,6 +92,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       }
     ]
     networkAcls: {
+      resourceAccessRules: [
+        {
+          tenantId: subscription().tenantId
+          resourceId: '/subscriptions/${subscription().subscriptionId}/resourceGroups/*/providers/Microsoft.ContainerRegistry/registries/*'
+        }
+      ]
       bypass: 'AzureServices'
       defaultAction: 'Deny'
       virtualNetworkRules: [
