@@ -192,17 +192,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
       }
     ]
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
     kafkaEnabled: true
     disableLocalAuth: true
     isAutoInflateEnabled: true
