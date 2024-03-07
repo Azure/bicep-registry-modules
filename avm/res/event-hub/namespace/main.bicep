@@ -356,7 +356,7 @@ output resourceId string = eventHubNamespace.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(eventHubNamespace.identity, 'principalId') ? eventHubNamespace.identity.principalId : ''
+output systemAssignedMIPrincipalId string = eventHubNamespace.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = eventHubNamespace.location
