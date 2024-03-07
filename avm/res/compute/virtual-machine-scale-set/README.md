@@ -2396,7 +2396,7 @@ Fault Domain count for each placement group.
 
 - Required: No
 - Type: int
-- Default: `2`
+- Default: `1`
 
 ### Parameter: `scheduledEventsProfile`
 

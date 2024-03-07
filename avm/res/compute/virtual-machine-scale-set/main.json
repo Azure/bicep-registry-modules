@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "16559778527831408516"
+      "templateHash": "3252763710363602475"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -311,7 +311,7 @@
     },
     "scaleSetFaultDomain": {
       "type": "int",
-      "defaultValue": 2,
+      "defaultValue": 1,
       "metadata": {
         "description": "Optional. Fault Domain count for each placement group."
       }
