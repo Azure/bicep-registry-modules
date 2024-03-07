@@ -71,7 +71,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     location: resourceLocation
     enableTelemetry: enableTelemetry
     name: '${namePrefix}${serviceShort}001'
-    vNetId: nestedDependencies.outputs.virtualNetworkResourceId
+    virtualNetworkId: nestedDependencies.outputs.virtualNetworkResourceId
     applicationRuleCollections: [
       {
         name: 'allow-app-rules'

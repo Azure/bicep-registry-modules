@@ -48,7 +48,7 @@ param firewallPolicyId string = ''
 @description('Conditional. IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied.')
 param hubIPAddresses object = {}
 
-@description('Conditional. The virtualHub resource ID to which the firewall belongs. Required if `vNetId` is empty.')
+@description('Conditional. The virtualHub resource ID to which the firewall belongs. Required if `virtualNetworkId` is empty.')
 param virtualHubId string = ''
 
 @allowed([
@@ -84,7 +84,7 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var azureSkuName = empty(vNetId) ? 'AZFW_Hub' : 'AZFW_VNet'
+var azureSkuName = empty(virtualNetworkId) ? 'AZFW_Hub' : 'AZFW_VNet'
 var requiresManagementIp = azureSkuTier == 'Basic' ? true : false
 var isCreateDefaultManagementIP = empty(managementIPResourceID) && requiresManagementIp
 
@@ -107,7 +107,7 @@ var ipConfigurations = concat([
       name: !empty(publicIPResourceID) ? last(split(publicIPResourceID, '/')) : publicIPAddress.outputs.name
       properties: union({
           subnet: {
-            id: '${vNetId}/subnets/AzureFirewallSubnet' // The subnet name must be AzureFirewallSubnet
+            id: '${virtualNetworkId}/subnets/AzureFirewallSubnet' // The subnet name must be AzureFirewallSubnet
           }
         }, (!empty(publicIPResourceID) || !empty(publicIPAddressObject)) ? {
           //Use existing Public IP, new Public IP created in this module, or none if neither
@@ -127,7 +127,7 @@ var managementIPConfiguration = {
   name: !empty(managementIPResourceID) ? last(split(managementIPResourceID, '/')) : managementIPAddress.outputs.name
   properties: union({
       subnet: {
-        id: '${vNetId}/subnets/AzureFirewallManagementSubnet' // The subnet name must be AzureFirewallManagementSubnet for a 'Basic' SKU tier firewall
+        id: '${virtualNetworkId}/subnets/AzureFirewallManagementSubnet' // The subnet name must be AzureFirewallManagementSubnet for a 'Basic' SKU tier firewall
       }
     }, (!empty(publicIPResourceID) || !empty(managementIPAddressObject)) ? {
       // Use existing Management Public IP, new Management Public IP created in this module, or none if neither

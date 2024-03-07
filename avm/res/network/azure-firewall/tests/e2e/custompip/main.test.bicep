@@ -70,7 +70,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     location: resourceLocation
     enableTelemetry: enableTelemetry
     name: '${namePrefix}${serviceShort}001'
-    vNetId: nestedDependencies.outputs.virtualNetworkResourceId
+    virtualNetworkId: nestedDependencies.outputs.virtualNetworkResourceId
     publicIPAddressObject: {
       name: 'new-${namePrefix}-pip-${serviceShort}'
       publicIPAllocationMethod: 'Static'

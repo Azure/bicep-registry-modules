@@ -54,7 +54,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     enableTelemetry: enableTelemetry
     name: '${namePrefix}${serviceShort}001'
-    vNetId: nestedDependencies.outputs.virtualNetworkResourceId
+    virtualNetworkId: nestedDependencies.outputs.virtualNetworkResourceId
     location: resourceLocation
   }
 }]
