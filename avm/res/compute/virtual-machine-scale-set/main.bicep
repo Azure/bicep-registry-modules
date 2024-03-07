@@ -579,6 +579,9 @@ module vmss_customScriptExtension 'extension/main.bicep' = if (extensionCustomSc
   }
   dependsOn: [
     vmss_desiredStateConfigurationExtension
+    vmss_networkWatcherAgentExtension
+    vmss_dependencyAgentExtension
+    vmss_azureMonitorAgentExtension
   ]
 }
 
@@ -598,7 +601,6 @@ module vmss_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionA
   }
   dependsOn: [
     vmss_customScriptExtension
-    vmss_azureMonitorAgentExtension
   ]
 }
 
