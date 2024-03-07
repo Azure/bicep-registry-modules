@@ -41,6 +41,7 @@ var builtInRoleNames = {
   'EventGrid TopicSpaces Subscriber': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4b0f2fd7-60b4-4eca-896f-4435034f8bf5')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
 // ============== //
@@ -101,13 +102,13 @@ module topic_eventSubscriptions 'event-subscription/main.bicep' = [for (eventSub
 // Outputs      //
 // ============ //
 
-@description('The resource ID of the namespace topic.')
+@description('The resource ID of the Namespace Topic.')
 output resourceId string = topic.id
 
-@description('The name of the namespace topic.')
+@description('The name of the Namespace Topic.')
 output name string = topic.name
 
-@description('The name of the resource group the namespace topic was created in.')
+@description('The name of the resource group the Namespace Topic was created in.')
 output resourceGroupName string = resourceGroup().name
 
 // ================ //

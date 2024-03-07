@@ -127,6 +127,7 @@ var builtInRoleNames = {
   'EventGrid TopicSpaces Subscriber': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4b0f2fd7-60b4-4eca-896f-4435034f8bf5')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
 // ============== //
@@ -341,14 +342,17 @@ module namespace_permissionBindings 'permission-binding/main.bicep' = [for (perm
 // Outputs      //
 // ============ //
 
-@description('The resource ID of the resource.')
+@description('The resource ID of the EventGrid Namespace.')
 output resourceId string = namespace.id
 
-@description('The name of the resource.')
+@description('The name of the EventGrid Namespace.')
 output name string = namespace.name
 
-@description('The location the resource was deployed into.')
+@description('The location the EventGrid Namespace was deployed into.')
 output location string = namespace.location
+
+@description('The name of the resource group the EventGrid Namespace was created in.')
+output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string = namespace.?identity.?principalId ?? ''

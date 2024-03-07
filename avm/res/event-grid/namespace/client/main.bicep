@@ -64,13 +64,13 @@ resource client 'Microsoft.EventGrid/namespaces/clients@2023-12-15-preview' = {
 // Outputs      //
 // ============ //
 
-@sys.description('The resource ID of the resource.')
+@sys.description('The resource ID of the Client.')
 output resourceId string = client.id
 
-@sys.description('The name of the resource.')
+@sys.description('The name of the Client.')
 output name string = client.name
 
-@sys.description('The name of the resource group the resource was created in.')
+@sys.description('The name of the resource group the Client was created in.')
 output resourceGroupName string = resourceGroup().name
 
 // ================ //

@@ -35,13 +35,13 @@ resource caCertificate 'Microsoft.EventGrid/namespaces/caCertificates@2023-12-15
 // Outputs      //
 // ============ //
 
-@sys.description('The resource ID of the resource.')
+@sys.description('The resource ID of the CA certificate.')
 output resourceId string = caCertificate.id
 
-@sys.description('The name of the resource.')
+@sys.description('The name of the CA certificate.')
 output name string = caCertificate.name
 
-@sys.description('The name of the resource group the resource was created in.')
+@sys.description('The name of the resource group the CA certificate was created in.')
 output resourceGroupName string = resourceGroup().name
 
 // ================ //

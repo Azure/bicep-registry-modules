@@ -35,13 +35,13 @@ resource clientGroup 'Microsoft.EventGrid/namespaces/clientGroups@2023-12-15-pre
 // Outputs      //
 // ============ //
 
-@sys.description('The resource ID of the resource.')
+@sys.description('The resource ID of the Client Group.')
 output resourceId string = clientGroup.id
 
-@sys.description('The name of the resource.')
+@sys.description('The name of the Client Group.')
 output name string = clientGroup.name
 
-@sys.description('The name of the resource group the resource was created in.')
+@sys.description('The name of the resource group the Client Group was created in.')
 output resourceGroupName string = resourceGroup().name
 
 // ================ //

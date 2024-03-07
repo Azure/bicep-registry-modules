@@ -8,16 +8,16 @@ param namespaceName string
 @description('Conditional. The name of the parent EventGrid namespace topic. Required if the template is used in a standalone deployment.')
 param topicName string
 
-@description('Required. Name of the resource to create.')
+@description('Required. Name of the Event Subscription to create.')
 param name string
 
-@description('Optional. Information about the delivery configuration of the event subscription.')
+@description('Optional. Information about the delivery configuration of the Event Subscription.')
 param deliveryConfiguration object?
 
-@description('Optional. The event delivery schema for the event subscription.')
+@description('Optional. The event delivery schema for the Event Subscription.')
 param eventDeliverySchema string = 'CloudEventSchemaV1_0'
 
-@description('Optional. Information about the filter for the event subscription.')
+@description('Optional. Information about the filter for the Event Subscription.')
 param filtersConfiguration object?
 
 @description('Optional. Array of role assignments to create.')
@@ -36,6 +36,7 @@ var builtInRoleNames = {
   'EventGrid TopicSpaces Subscriber': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4b0f2fd7-60b4-4eca-896f-4435034f8bf5')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
 // ============== //
@@ -80,13 +81,13 @@ resource eventSubscription_roleAssignments 'Microsoft.Authorization/roleAssignme
 
 // Add your outputs here
 
-@description('The resource ID of the resource.')
+@description('The resource ID of the Event Subscription.')
 output resourceId string = eventSubscription.id
 
-@description('The name of the resource.')
+@description('The name of the Event Subscription.')
 output name string = eventSubscription.name
 
-@description('The name of the resource group the namespace topic was created in.')
+@description('The name of the resource group the Event Subscription was created in.')
 output resourceGroupName string = resourceGroup().name
 
 // ================ //
