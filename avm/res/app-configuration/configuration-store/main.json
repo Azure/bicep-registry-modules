@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "16458208999897295049"
+      "templateHash": "2210459796702021612"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store.",
@@ -1561,7 +1561,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('configurationStore', '2023-03-01', 'full').identity, 'principalId')), reference('configurationStore', '2023-03-01', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('configurationStore', '2023-03-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
