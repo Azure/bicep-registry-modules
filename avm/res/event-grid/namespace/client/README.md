@@ -28,14 +28,14 @@ This module deploys an Eventgrid Namespace Client.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`attributes`](#parameter-attributes) | object | Attributes for the client. Supported values are int, bool, string, string[]. |
-| [`clientCertificateAuthenticationAllowedThumbprints`](#parameter-clientcertificateauthenticationallowedthumbprints) | array | The list of thumbprints that are allowed during client authentication. Required only if the clientCertificateAuthenticationValidationSchema is 'ThumbprintMatch'. |
+| [`clientCertificateAuthenticationAllowedThumbprints`](#parameter-clientcertificateauthenticationallowedthumbprints) | array | The list of thumbprints that are allowed during client authentication. Required if the clientCertificateAuthenticationValidationSchema is 'ThumbprintMatch'. |
 | [`namespaceName`](#parameter-namespacename) | string | The name of the parent EventGrid namespace. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`attributes`](#parameter-attributes) | object | Attributes for the client. Supported values are int, bool, string, string[]. |
 | [`authenticationName`](#parameter-authenticationname) | string | The name presented by the client for authentication. The default value is the name of the resource. |
 | [`clientCertificateAuthenticationValidationSchema`](#parameter-clientcertificateauthenticationvalidationschema) | string | The validation scheme used to authenticate the client. |
 | [`description`](#parameter-description) | string | Description of the Client resource. |
@@ -48,16 +48,9 @@ Name of the Client.
 - Required: Yes
 - Type: string
 
-### Parameter: `attributes`
-
-Attributes for the client. Supported values are int, bool, string, string[].
-
-- Required: No
-- Type: object
-
 ### Parameter: `clientCertificateAuthenticationAllowedThumbprints`
 
-The list of thumbprints that are allowed during client authentication. Required only if the clientCertificateAuthenticationValidationSchema is 'ThumbprintMatch'.
+The list of thumbprints that are allowed during client authentication. Required if the clientCertificateAuthenticationValidationSchema is 'ThumbprintMatch'.
 
 - Required: No
 - Type: array
@@ -68,6 +61,13 @@ The name of the parent EventGrid namespace. Required if the template is used in 
 
 - Required: Yes
 - Type: string
+
+### Parameter: `attributes`
+
+Attributes for the client. Supported values are int, bool, string, string[].
+
+- Required: No
+- Type: object
 
 ### Parameter: `authenticationName`
 

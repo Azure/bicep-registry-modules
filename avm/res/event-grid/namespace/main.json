@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "12237012372152023897"
+      "templateHash": "9941291737123823642"
     },
     "name": "Event Grid Namespaces",
     "description": "This module deploys an Event Grid Namespace.",
@@ -2160,7 +2160,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "11926288546021812792"
+              "templateHash": "10531114495322688171"
             },
             "name": "Eventgrid Namespace Clients",
             "description": "This module deploys an Eventgrid Namespace Client.",
@@ -2217,7 +2217,7 @@
               },
               "nullable": true,
               "metadata": {
-                "description": "Conditional. The list of thumbprints that are allowed during client authentication. Required only if the clientCertificateAuthenticationValidationSchema is 'ThumbprintMatch'."
+                "description": "Conditional. The list of thumbprints that are allowed during client authentication. Required if the clientCertificateAuthenticationValidationSchema is 'ThumbprintMatch'."
               }
             },
             "state": {
@@ -2231,7 +2231,7 @@
               "type": "object",
               "nullable": true,
               "metadata": {
-                "description": "Conditional. Attributes for the client. Supported values are int, bool, string, string[]."
+                "description": "Optional. Attributes for the client. Supported values are int, bool, string, string[]."
               }
             }
           },

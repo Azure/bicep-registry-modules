@@ -28,13 +28,13 @@ param authenticationName string?
 @sys.description('Optional. The validation scheme used to authenticate the client.')
 param clientCertificateAuthenticationValidationSchema string = 'SubjectMatchesAuthenticationName'
 
-@sys.description('Conditional. The list of thumbprints that are allowed during client authentication. Required only if the clientCertificateAuthenticationValidationSchema is \'ThumbprintMatch\'.')
+@sys.description('Conditional. The list of thumbprints that are allowed during client authentication. Required if the clientCertificateAuthenticationValidationSchema is \'ThumbprintMatch\'.')
 param clientCertificateAuthenticationAllowedThumbprints string[]?
 
 @sys.description('Optional. Indicates if the client is enabled or not.')
 param state string = 'Enabled'
 
-@sys.description('Conditional. Attributes for the client. Supported values are int, bool, string, string[].')
+@sys.description('Optional. Attributes for the client. Supported values are int, bool, string, string[].')
 param attributes object?
 
 // ============== //
