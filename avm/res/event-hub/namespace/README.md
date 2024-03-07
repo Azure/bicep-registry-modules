@@ -718,6 +718,11 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
           '<privateDNSZoneResourceId>'
         ]
         subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
       }
     ]
     publicNetworkAccess: 'Disabled'
@@ -879,7 +884,12 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
-          "subnetResourceId": "<subnetResourceId>"
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
         }
       ]
     },
