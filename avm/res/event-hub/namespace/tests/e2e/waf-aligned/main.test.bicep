@@ -178,5 +178,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     minimumTlsVersion: '1.2'
     maximumThroughputUnits: 4
     publicNetworkAccess: 'Disabled'
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
   }
 }]

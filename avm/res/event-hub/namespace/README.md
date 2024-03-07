@@ -723,6 +723,11 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     publicNetworkAccess: 'Disabled'
     skuCapacity: 2
     skuName: 'Standard'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
     zoneRedundant: true
   }
 }
@@ -886,6 +891,13 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     },
     "skuName": {
       "value": "Standard"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     },
     "zoneRedundant": {
       "value": true
