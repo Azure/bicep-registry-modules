@@ -190,11 +190,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ]
         service: 'namespace'
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
       }
     ]
     managedIdentities: {
