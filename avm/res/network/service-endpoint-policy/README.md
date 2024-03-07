@@ -38,9 +38,12 @@ The following section provides usage examples for the module, which were used to
 
 ```bicep
 module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nsepdef'
+  name: '${uniqueString(deployment().name, location)}-test-nrtmin'
   params: {
-    name: 'nsepdef001'
+    // Required parameters
+    name: 'nrtmin001'
+    // Non-required parameters
+    location: '<location>'
   }
 }
 ```
@@ -57,8 +60,13 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
-      "value": "nsepdef001"
+      "value": "nrtmin001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
     }
   }
 }
