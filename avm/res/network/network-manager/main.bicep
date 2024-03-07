@@ -20,7 +20,7 @@ param roleAssignments roleAssignmentType
 param tags object?
 
 @maxLength(500)
-@sys.description('Optional. A description of the network manager.')
+@sys.description('Optional. A description of the Network Manager.')
 param description string = ''
 
 @sys.description('Required. Scope Access. String array containing any of "Connectivity", "SecurityAdmin". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs.')
@@ -115,7 +115,7 @@ module networkManager_scopeConnections 'scope-connection/main.bicep' = [for (sco
   params: {
     name: scopeConnection.name
     networkManagerName: networkManager.name
-    description: contains(scopeConnection, 'description') ? scopeConnection.description : ''
+    description: scopeConnection.?description
     resourceId: scopeConnection.resourceId
     tenantId: scopeConnection.tenantId
   }
@@ -126,9 +126,9 @@ module networkManager_securityAdminConfigurations 'security-admin-configuration/
   params: {
     name: securityAdminConfiguration.name
     networkManagerName: networkManager.name
-    description: contains(securityAdminConfiguration, 'description') ? securityAdminConfiguration.description : ''
+    description: securityAdminConfiguration.?description
     applyOnNetworkIntentPolicyBasedServices: securityAdminConfiguration.applyOnNetworkIntentPolicyBasedServices
-    ruleCollections: contains(securityAdminConfiguration, 'ruleCollections') ? securityAdminConfiguration.ruleCollections : []
+    ruleCollections: securityAdminConfiguration.?ruleCollections
   }
   dependsOn: networkManager_networkGroups
 }]
