@@ -8,6 +8,7 @@ param subscriptionBillingScope string
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
+//param namePrefix string = 'avmsb'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ssahs'
@@ -21,7 +22,7 @@ module nestedDependencies 'dependencies.bicep' = {
 }
 
 module createSub '../../../main.bicep' = {
-  name: 'sub-blzv-tests-${namePrefix}-${serviceShort}-blank-sub'
+  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     subscriptionAliasEnabled: true
     deploymentScriptLocation: location
@@ -39,18 +40,9 @@ module createSub '../../../main.bicep' = {
     deploymentScriptResourceGroupName: 'rsg-${location}-ds-${namePrefix}-${serviceShort}'
     deploymentScriptManagedIdentityName: 'id-${location}-${namePrefix}-${serviceShort}'
     deploymentScriptName: 'ds-${location}-${namePrefix}-${serviceShort}'
-    virtualNetworkEnabled: false
     deploymentScriptNetworkSecurityGroupName: 'nsg-${location}-ds-${namePrefix}-${serviceShort}'
     deploymentScriptVirtualNetworkName: 'vnet-${location}-ds-${namePrefix}-${serviceShort}'
     deploymentScriptStorageAccountName: 'stgds${location}${namePrefix}${serviceShort}'
-    roleAssignmentEnabled: true
-    roleAssignments: [
-      {
-        principalId: '7eca0dca-6701-46f1-b7b6-8b424dab50b3'
-        definition: 'Reader'
-        relativeScope: ''
-      }
-    ]
     resourceProviders: {
       'Microsoft.HybridCompute': [ 'ArcServerPrivateLinkPreview' ]
       'Microsoft.AVS': [ 'AzureServicesVm' ]
@@ -86,9 +78,10 @@ module hubSpoke '../../../main.bicep' = {
       {
         principalId: '7eca0dca-6701-46f1-b7b6-8b424dab50b3'
         definition: 'Network Contributor'
-        relativeScope: '/resourceGroups/rsg-${location}-net-hs-${namePrefix}'
+        relativeScope: '/resourceGroups/rsg-${location}-net-hs-${namePrefix}-${serviceShort}'
       }
     ]
+    resourceProviders: {}
   }
 }
 

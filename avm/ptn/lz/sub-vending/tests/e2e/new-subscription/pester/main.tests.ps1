@@ -2,7 +2,11 @@
 param (
   [Parameter(Mandatory)]
   [string]
-  $prNumber,
+  $namePrefix,
+
+  [Parameter(Mandatory)]
+  [string]
+  $serviceShort,
 
   [Parameter(Mandatory)]
   [string]
@@ -30,19 +34,19 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
     }
 
     It "Should have a Subscription with the correct name" {
-      $sub.Name | Should -Be "sub-blzv-tests-pr-$prNumber"
+      $sub.Name | Should -Be "sub-blzv-tests-pr-$namePrefix-$serviceShort"
     }
 
     It "Should have a Subscription that is enabled" {
       $sub.State | Should -Be "Enabled"
     }
 
-    It "Should have a Subscription with a tag key of 'prNumber'" {
-      $sub.Tags.Keys | Should -Contain "prNumber"
+    It "Should have a Subscription with a tag key of 'namePrefix' with a value of '$namePrefix'" {
+      $sub.Tags.namePrefix | Should -Be $namePrefix
     }
 
-    It "Should have a Subscription with a tag key of 'prNumber' with a value of '$prNumber'" {
-      $sub.Tags.prNumber | Should -Be $prNumber
+    It "Should have a Subscription with a tag key of 'serviceShort' with a value of '$serviceShort'" {
+      $sub.Tags.serviceShort | Should -Be $serviceShort
     }
 
     It "Should have a Subscription that is a child of the Management Group with the ID of 'bicep-lz-vending-automation-child'" {
@@ -87,7 +91,7 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
     It "Should Have a Role Assignment for an known AAD Group with the Network Contributor role directly upon the Resource Group" {
       $iterationCount = 0
       do {
-        $roleAssignment = Get-AzRoleAssignment -Scope "/subscriptions/$subId/resourceGroups/rsg-$location-net-hs-pr-$prNumber" -RoleDefinitionName "Network Contributor" -ObjectId "7eca0dca-6701-46f1-b7b6-8b424dab50b3" -ErrorAction SilentlyContinue
+        $roleAssignment = Get-AzRoleAssignment -Scope "/subscriptions/$subId/resourceGroups/rsg-$location-net-hs-pr-$namePrefix-$serviceShort" -RoleDefinitionName "Network Contributor" -ObjectId "7eca0dca-6701-46f1-b7b6-8b424dab50b3" -ErrorAction SilentlyContinue
         if ($null -eq $roleAssignment) {
           Write-Host "Waiting for Resource Group Role Assignments to be eventually consistent... Iteration: $($iterationCount)" -ForegroundColor Yellow
           Start-Sleep -Seconds 40
@@ -99,7 +103,7 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
 
       $roleAssignment.ObjectId | Should -Be "7eca0dca-6701-46f1-b7b6-8b424dab50b3"
       $roleAssignment.RoleDefinitionName | Should -Be "Network Contributor"
-      $roleAssignment.scope | Should -Be "/subscriptions/$subId/resourceGroups/rsg-$location-net-hs-pr-$prNumber"
+      $roleAssignment.scope | Should -Be "/subscriptions/$subId/resourceGroups/rsg-$location-net-hs-pr-$namePrefix-$serviceShort"
     }
   }
 }

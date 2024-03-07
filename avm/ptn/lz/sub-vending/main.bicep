@@ -449,8 +449,8 @@ param roleAssignments array = []
 @description('Optional. Enable/Disable usage telemetry for module.')
 param disableTelemetry bool = false
 
-@description('Optional. Guid for the deployment script resources names based on subscription Id.')
-var deploymentScriptResourcesSubGuid = substring((subscriptionAliasEnabled && empty(existingSubscriptionId)) ? createSubscription.outputs.subscriptionId : existingSubscriptionId, 0, 6)
+//@description('Optional. Guid for the deployment script resources names based on subscription Id.')
+//var deploymentScriptResourcesSubGuid = substring((subscriptionAliasEnabled && empty(existingSubscriptionId)) ? createSubscription.outputs.subscriptionId : existingSubscriptionId, 0, 6)
 
 @description('Optional. The name of the resource group to create the deployment script for resource providers registration.')
 param deploymentScriptResourceGroupName string = 'rsg-${deployment().location}-ds'
@@ -653,6 +653,7 @@ resource moduleTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (!dis
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (!disableTelemetry) {
   name: '46d3xbcp.ptn.lz-subvending.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, virtualNetworkLocation), 0, 4)}'
+  location: virtualNetworkLocation
   properties: {
     mode: 'Incremental'
     template: {
@@ -710,15 +711,15 @@ module createSubscriptionResources 'src/self/subResourceWrapper/deploy.bicep' = 
     roleAssignmentEnabled: roleAssignmentEnabled
     roleAssignments: roleAssignments
     disableTelemetry: disableTelemetry
-    deploymentScriptResourceGroupName: '${deploymentScriptResourceGroupName}-${deploymentScriptResourcesSubGuid}'
-    deploymentScriptName: '${deploymentScriptName}-${deploymentScriptResourcesSubGuid}'
-    deploymentScriptManagedIdentityName: '${deploymentScriptManagedIdentityName}-${deploymentScriptResourcesSubGuid}'
+    deploymentScriptResourceGroupName: deploymentScriptResourceGroupName
+    deploymentScriptName: deploymentScriptName
+    deploymentScriptManagedIdentityName: deploymentScriptManagedIdentityName
     resourceProviders: resourceProviders
     deploymentScriptVirtualNetworkName: deploymentScriptVirtualNetworkName
     deploymentScriptLocation: deploymentScriptLocation
     deploymentScriptNetworkSecurityGroupName: deploymentScriptNetworkSecurityGroupName
     virtualNetworkDeploymentScriptAddressPrefix: virtualNetworkDeploymentScriptAddressPrefix
-    deploymentScriptStorageAccountName: '${deploymentScriptStorageAccountName}${deploymentScriptResourcesSubGuid}'
+    deploymentScriptStorageAccountName: deploymentScriptStorageAccountName
   }
 }
 
