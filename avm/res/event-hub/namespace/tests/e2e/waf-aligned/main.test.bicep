@@ -139,13 +139,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ]
         messageRetentionInDays: 1
         partitionCount: 2
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
         status: 'Active'
         retentionDescriptionCleanupPolicy: 'Delete'
         retentionDescriptionRetentionTimeInHours: 3
