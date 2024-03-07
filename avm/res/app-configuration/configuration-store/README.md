@@ -444,6 +444,12 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
           Role: 'DeploymentValidation'
         }
       }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+      }
     ]
     softDeleteRetentionInDays: 1
   }
@@ -491,6 +497,12 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           }
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },

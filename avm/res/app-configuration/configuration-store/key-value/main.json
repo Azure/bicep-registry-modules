@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "13667600666073687095"
+      "templateHash": "16990071481669469313"
     },
     "name": "App Configuration Stores Key Values",
     "description": "This module deploys an App Configuration Store Key Value.",
@@ -22,7 +22,7 @@
     "value": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the value."
+        "description": "Required. The value of the key-value."
       }
     },
     "appConfigurationName": {

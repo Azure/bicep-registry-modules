@@ -23,7 +23,7 @@ This module deploys an App Configuration Store Key Value.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the key. |
-| [`value`](#parameter-value) | string | Name of the value. |
+| [`value`](#parameter-value) | string | The value of the key-value. |
 
 **Conditional parameters**
 
@@ -47,7 +47,7 @@ Name of the key.
 
 ### Parameter: `value`
 
-Name of the value.
+The value of the key-value.
 
 - Required: Yes
 - Type: string
