@@ -30,7 +30,19 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
       {
         name: 'defaultSubnet'
         properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 16, 0)
+          addressPrefix: cidrSubnet(addressPrefix, 20, 0)
+        }
+      }
+      {
+        name: 'custom-private-subnet'
+        properties: {
+          addressPrefix: cidrSubnet(addressPrefix, 20, 1)
+        }
+      }
+      {
+        name: 'custom-private-subnet-2'
+        properties: {
+          addressPrefix: cidrSubnet(addressPrefix, 20, 2)
         }
       }
     ]
@@ -92,8 +104,14 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 @description('The resource ID of the created Managed Identity.')
 output managedIdentityResourceId string = managedIdentity.id
 
-@description('The resource ID of the created Virtual Network Subnet.')
-output subnetResourceId string = virtualNetwork.properties.subnets[0].id
+@description('The resource ID of the created Virtual Network Default Subnet.')
+output defaultSubnetResourceId string = virtualNetwork.properties.subnets[0].id
+
+@description('The resource ID of the 2nd created Virtual Network Subnet.')
+output customSubnet1ResourceId string = virtualNetwork.properties.subnets[1].id
+
+@description('The resource ID of the 3rd created Virtual Network Subnet.')
+output customSubnet2ResourceId string = virtualNetwork.properties.subnets[2].id
 
 @description('The resource ID of the created Private DNS Zone.')
 output privateDNSZoneResourceId string = privateDNSZone.id
