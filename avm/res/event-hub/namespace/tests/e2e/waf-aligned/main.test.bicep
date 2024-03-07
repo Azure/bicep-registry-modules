@@ -102,13 +102,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     eventhubs: [
       {
         name: '${namePrefix}-az-evh-x-001'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
       }
       {
         name: '${namePrefix}-az-evh-x-002'
