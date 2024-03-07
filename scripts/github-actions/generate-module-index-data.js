@@ -79,6 +79,7 @@ async function getModuleDescription(
  */
 async function generateModuleIndexData({ require, github, context, core }) {
   const fs = require("fs").promises;
+  const { existsSync } = require("fs");
   const axios = require("axios").default;
   const moduleIndexData = [];
 
@@ -91,6 +92,12 @@ async function generateModuleIndexData({ require, github, context, core }) {
 
     for (const moduleName of moduleNames) {
       const modulePath = `${moduleGroupPath}/${moduleName}`;
+      const archivedFilePath = `${modulePath}/ARCHIVED.md`;
+
+      if (existsSync(archivedFilePath)) {
+        continue;
+      }
+
       const mainJsonPath = `${modulePath}/main.json`;
       // BRM module git tags do not include the modules/ prefix.
       const mcrModulePath = modulePath.slice(8);
