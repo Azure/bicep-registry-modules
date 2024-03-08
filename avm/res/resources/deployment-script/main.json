@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "2829457802954364694"
+      "templateHash": "15339204282511584304"
     },
     "name": "Deployment Scripts",
     "description": "This module deploys Deployment Scripts.",
@@ -139,6 +139,9 @@
                 "nullable": true
               }
             }
+          },
+          "metadata": {
+            "description": "Optional. The list of environment variables to pass over to the deployment script."
           }
         }
       },
