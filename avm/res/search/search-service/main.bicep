@@ -68,6 +68,14 @@ param replicaCount int = 1
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
+@allowed([
+  'disabled'
+  'free'
+  'standard'
+])
+@description('Optional. Sets options that control the availability of semantic search. This configuration is only possible for certain search SKUs in certain locations.')
+param semanticSearch string?
+
 @description('Optional. Defines the SKU of an Azure Cognitive Search Service, which determines price tier and capacity limits.')
 @allowed([
   'basic'
@@ -130,7 +138,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource searchService 'Microsoft.Search/searchServices@2022-09-01' = {
+resource searchService 'Microsoft.Search/searchServices@2023-11-01' = {
   location: location
   name: name
   sku: {
@@ -149,6 +157,7 @@ resource searchService 'Microsoft.Search/searchServices@2022-09-01' = {
     partitionCount: partitionCount
     replicaCount: replicaCount
     publicNetworkAccess: publicNetworkAccess
+    semanticSearch: semanticSearch
   }
 }
 
