@@ -186,4 +186,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       }
     ]
   }
+  dependsOn: [
+    nestedDependencies1
+    nestedDependencies2
+    diagnosticDependencies
+  ]
 }]

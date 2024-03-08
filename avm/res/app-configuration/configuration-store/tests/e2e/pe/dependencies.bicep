@@ -19,7 +19,6 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
       {
         name: 'defaultSubnet'
         properties: {
-
           addressPrefix: cidrSubnet(addressPrefix, 16, 0)
         }
       }
@@ -28,11 +27,11 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
 }
 
 resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink${environment().suffixes.sqlServerHostname}'
+  name: 'privatelink.azconfig.io'
   location: 'global'
 
   resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
-    name: '${virtualNetwork.name}-vnetlink'
+    name: '${virtualNetworkName}-vnetlink'
     location: 'global'
     properties: {
       virtualNetwork: {
@@ -43,7 +42,7 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   }
 }
 
-@description('The resource ID of the created virtual network subnet.')
+@description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
 @description('The resource ID of the created Private DNS Zone.')
