@@ -13,7 +13,7 @@ on:
 #   modulesPath: 'modules'
 #   TOKEN_NAMEPREFIX: '${{ secrets.TOKEN_NAMEPREFIX }}'
 env:
-    modulePath: "avm/res/app"
+    modulePath: "avm/res/network"
 
 jobs:
 #   psrule:
