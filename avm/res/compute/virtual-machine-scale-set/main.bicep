@@ -216,7 +216,7 @@ param doNotRunExtensionsOnOverprovisionedVMs bool = false
 param zoneBalance bool = false
 
 @description('Optional. When true this limits the scale set to a single placement group, of max size 100 virtual machines. NOTE: If singlePlacementGroup is true, it may be modified to false. However, if singlePlacementGroup is false, it may not be modified to true.')
-param singlePlacementGroup bool = true
+param singlePlacementGroup bool = false
 
 @description('Optional. Specifies the scale-in policy that decides which virtual machines are chosen for removal when a Virtual Machine Scale Set is scaled-in.')
 param scaleInPolicy object = {
@@ -232,7 +232,7 @@ param skuName string
 param skuCapacity int = 1
 
 @description('Optional. The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set.')
-param availabilityZones array = []
+param availabilityZones array = [ 1, 2, 3 ]
 
 @description('Optional. Tags of the resource.')
 param tags object?
