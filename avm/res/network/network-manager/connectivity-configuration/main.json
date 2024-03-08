@@ -1,0 +1,121 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "16868761662321894920"
+    },
+    "name": "Network Manager Connectivity Configurations",
+    "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "networkManagerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent network manager. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 64,
+      "metadata": {
+        "description": "Required. The name of the connectivity configuration."
+      }
+    },
+    "description": {
+      "type": "string",
+      "defaultValue": "",
+      "maxLength": 500,
+      "metadata": {
+        "description": "Optional. A description of the connectivity configuration."
+      }
+    },
+    "appliesToGroups": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Required. Network Groups for the configuration."
+      }
+    },
+    "connectivityTopology": {
+      "type": "string",
+      "allowedValues": [
+        "HubAndSpoke",
+        "Mesh"
+      ],
+      "metadata": {
+        "description": "Required. Connectivity topology type. \"Mesh\" IS CURRENTLY A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION."
+      }
+    },
+    "hubs": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Conditional. List of hub items. This will create peerings between the specified hub and the virtual networks in the network group specified. Required if connectivityTopology is of type \"HubAndSpoke\"."
+      }
+    },
+    "deleteExistingPeering": {
+      "type": "string",
+      "defaultValue": "False",
+      "allowedValues": [
+        "True",
+        "False"
+      ],
+      "metadata": {
+        "description": "Optional. Flag if need to remove current existing peerings. If set to \"True\", all peerings on virtual networks in selected network groups will be removed and replaced with the peerings defined by this configuration. Optional when connectivityTopology is of type \"HubAndSpoke\"."
+      }
+    },
+    "isGlobal": {
+      "type": "string",
+      "defaultValue": "False",
+      "allowedValues": [
+        "True",
+        "False"
+      ],
+      "metadata": {
+        "description": "Optional. Flag if global mesh is supported. By default, mesh connectivity is applied to virtual networks within the same region. If set to \"True\", a global mesh enables connectivity across regions."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkManagers/connectivityConfigurations",
+      "apiVersion": "2023-04-01",
+      "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
+      "properties": {
+        "appliesToGroups": "[parameters('appliesToGroups')]",
+        "connectivityTopology": "[parameters('connectivityTopology')]",
+        "deleteExistingPeering": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), parameters('deleteExistingPeering'), 'False')]",
+        "description": "[parameters('description')]",
+        "hubs": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), parameters('hubs'), createArray())]",
+        "isGlobal": "[parameters('isGlobal')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed connectivity configuration."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed connectivity configuration."
+      },
+      "value": "[resourceId('Microsoft.Network/networkManagers/connectivityConfigurations', parameters('networkManagerName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the connectivity configuration was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

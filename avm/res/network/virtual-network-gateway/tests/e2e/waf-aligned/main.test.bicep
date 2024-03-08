@@ -126,7 +126,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       }
       {
         name: 'nat-rule-2-dynamic-EgressSnat'
-        type: 'Dynamic'
+        type: 'Static'
         mode: 'EgressSnat'
         internalMappings: [
           {
@@ -142,4 +142,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     enableBgpRouteTranslationForNat: true
   }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
 }]

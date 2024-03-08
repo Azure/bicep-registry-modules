@@ -42,15 +42,129 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/storage/storage-account:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Deploying with a NFS File Share](#example-3-deploying-with-a-nfs-file-share)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-4-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-5-using-customer-managed-keys-with-user-assigned-identity)
-- [Deploying as Storage Account version 1](#example-6-deploying-as-storage-account-version-1)
-- [WAF-aligned](#example-7-waf-aligned)
+- [Deploying as a Blob Storage](#example-1-deploying-as-a-blob-storage)
+- [Deploying as a Block Blob Storage](#example-2-deploying-as-a-block-blob-storage)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Deploying with a NFS File Share](#example-5-deploying-with-a-nfs-file-share)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-6-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-7-using-customer-managed-keys-with-user-assigned-identity)
+- [Deploying as Storage Account version 1](#example-8-deploying-as-storage-account-version-1)
+- [WAF-aligned](#example-9-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Deploying as a Blob Storage_
+
+This instance deploys the module as a Blob Storage account.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssablob'
+  params: {
+    // Required parameters
+    name: 'ssablob001'
+    // Non-required parameters
+    kind: 'BlobStorage'
+    location: '<location>'
+    skuName: 'Standard_LRS'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssablob001"
+    },
+    // Non-required parameters
+    "kind": {
+      "value": "BlobStorage"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "skuName": {
+      "value": "Standard_LRS"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Deploying as a Block Blob Storage_
+
+This instance deploys the module as a Premium Block Blob Storage account.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssablock'
+  params: {
+    // Required parameters
+    name: 'ssablock001'
+    // Non-required parameters
+    kind: 'BlockBlobStorage'
+    location: '<location>'
+    skuName: 'Premium_LRS'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssablock001"
+    },
+    // Non-required parameters
+    "kind": {
+      "value": "BlockBlobStorage"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "skuName": {
+      "value": "Premium_LRS"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -98,7 +212,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -303,6 +417,12 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         {
           action: 'Allow'
           value: '1.1.1.1'
+        }
+      ]
+      resourceAccessRules: [
+        {
+          resourceId: '<resourceId>'
+          tenantId: '<tenantId>'
         }
       ]
       virtualNetworkRules: [
@@ -694,6 +814,12 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             "value": "1.1.1.1"
           }
         ],
+        "resourceAccessRules": [
+          {
+            "resourceId": "<resourceId>",
+            "tenantId": "<tenantId>"
+          }
+        ],
         "virtualNetworkRules": [
           {
             "action": "Allow",
@@ -868,7 +994,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 3: _Deploying with a NFS File Share_
+### Example 5: _Deploying with a NFS File Share_
 
 This instance deploys the module with a NFS File Share.
 
@@ -942,7 +1068,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 6: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -1046,7 +1172,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 5: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 7: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -1166,7 +1292,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 6: _Deploying as Storage Account version 1_
+### Example 8: _Deploying as Storage Account version 1_
 
 This instance deploys the module as Storage Account version 1.
 
@@ -1218,7 +1344,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
+### Example 9: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1779,7 +1905,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Storage Account. |
+| [`name`](#parameter-name) | string | Name of the Storage Account. Must be lower-case. |
 | [`networkAcls`](#parameter-networkacls) | object | Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny. |
 
 **Conditional parameters**
@@ -1831,7 +1957,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 ### Parameter: `name`
 
-Name of the Storage Account.
+Name of the Storage Account. Must be lower-case.
 
 - Required: Yes
 - Type: string
@@ -1862,7 +1988,7 @@ Networks ACLs, this value contains IPs to whitelist and/or Subnet information. I
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`ipRules`](#parameter-networkaclsiprules) | array | Sets the IP ACL rules. |
-| [`resourceAccessRules`](#parameter-networkaclsresourceaccessrules) | array | Sets the resource access rules. |
+| [`resourceAccessRules`](#parameter-networkaclsresourceaccessrules) | array | Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only. |
 | [`virtualNetworkRules`](#parameter-networkaclsvirtualnetworkrules) | array | Sets the virtual network rules. |
 
 ### Parameter: `networkAcls.bypass`
@@ -1908,10 +2034,31 @@ Sets the IP ACL rules.
 
 ### Parameter: `networkAcls.resourceAccessRules`
 
-Sets the resource access rules.
+Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-networkaclsresourceaccessrulesresourceid) | string | The resource ID of the target service. Can also contain a wildcard, if multiple services e.g. in a resource group should be included. |
+| [`tenantId`](#parameter-networkaclsresourceaccessrulestenantid) | string | The ID of the tenant in which the resource resides in. |
+
+### Parameter: `networkAcls.resourceAccessRules.resourceId`
+
+The resource ID of the target service. Can also contain a wildcard, if multiple services e.g. in a resource group should be included.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkAcls.resourceAccessRules.tenantId`
+
+The ID of the tenant in which the resource resides in.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `networkAcls.virtualNetworkRules`
 
@@ -2088,7 +2235,7 @@ The diagnostic settings of the service.
 | [`eventHubName`](#parameter-diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
+| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
@@ -2130,7 +2277,7 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
-The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
 
 - Required: No
 - Type: array
@@ -2139,14 +2286,27 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics. |
+| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-diagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
 ### Parameter: `diagnosticSettings.metricCategories.category`
 
-Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics.
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -2877,6 +3037,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 This is a generic module for deploying a Storage Account. Any customization for different storage needs (such as a diagnostic or other storage account) need to be done through the Archetype.
 The hierarchical namespace of the storage account (see parameter `enableHierarchicalNamespace`), can be only set at creation time.
+
+A list of supported resource types for the parameter ``networkAclsType.resourceAccessRules`` can be found [here](https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-powershell#trusted-access-based-on-a-managed-identity). These can be used with or without wildcards (`*`) in the ``resourceId`` field.
 
 ## Data Collection
 
