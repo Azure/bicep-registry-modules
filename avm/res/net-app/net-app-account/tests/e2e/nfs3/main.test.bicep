@@ -144,4 +144,7 @@ module testDeployment '../../../main.bicep' = {
       ServiceName: 'DeploymentValidation'
     }
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }

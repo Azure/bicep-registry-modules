@@ -57,4 +57,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     ipAddress: '1.2.3.4'
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }]
