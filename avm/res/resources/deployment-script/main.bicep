@@ -37,20 +37,8 @@ param scriptContent string?
 @description('Optional. Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent parameter instead.')
 param primaryScriptUri string?
 
-@metadata({
-  example: '''
-secureList: [
-  {
-    name: 'string'
-    secureValue: 'string'
-    value: 'string'
-  }
-]
-'''
-})
 @description('Optional. The environment variables to pass over to the script. The list is passed as an object with a key name "secureList" and the value is the list of environment variables (array). The list must have a \'name\' and a \'value\' or a \'secretValue\' property for each object.')
-@secure()
-param environmentVariables object = {}
+param environmentVariables environmentVariableType
 
 @description('Optional. List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent).')
 param supportingScriptUris array?
@@ -195,7 +183,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     containerSettings: !empty(containerSettings) ? containerSettings : null
     storageAccountSettings: !empty(storageAccountResourceId) ? storageAccountSettings : null
     arguments: arguments
-    environmentVariables: !empty(environmentVariables) ? environmentVariables.secureList : []
+    environmentVariables: environmentVariables!.secureList ?? []
     scriptContent: !empty(scriptContent) ? scriptContent : null
     primaryScriptUri: !empty(primaryScriptUri) ? primaryScriptUri : null
     supportingScriptUris: !empty(supportingScriptUris) ? supportingScriptUris : null
@@ -264,3 +252,13 @@ type roleAssignmentType = {
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
+
+@secure()
+type environmentVariableType = {
+  @description('Optional. The list of environment variables to pass over to the deployment script.')
+  secureList: {
+    name: string
+    secureValue: string?
+    value: string?
+  }[]
+}?
