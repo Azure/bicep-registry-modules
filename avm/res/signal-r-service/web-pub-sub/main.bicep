@@ -41,11 +41,10 @@ param disableLocalAuth bool = true
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
-  ''
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string?
 
 @allowed([
   'ConnectivityLogs'
@@ -61,12 +60,10 @@ param resourceLogConfigurationsToEnable array = [
 param clientCertEnabled bool = false
 
 @description('Optional. Networks ACLs, this value contains IPs to allow and/or Subnet information. Can only be set if the \'SKU\' is not \'Free_F1\'. For security reasons, it is recommended to set the DefaultAction Deny.')
-param networkAcls object = {}
+param networkAcls object?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
-
-var enableReferencedModulesTelemetry = false
 
 var resourceLogConfiguration = [for configuration in resourceLogConfigurationsToEnable: {
   name: configuration
@@ -127,7 +124,7 @@ resource webPubSub 'Microsoft.SignalRService/webPubSub@2021-10-01' = {
   properties: {
     disableAadAuth: disableAadAuth
     disableLocalAuth: disableLocalAuth
-    networkACLs: !empty(networkAcls) ? any(networkAcls) : null
+    networkACLs: networkAcls
     publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(privateEndpoints) && empty(networkAcls) ? 'Disabled' : null)
     resourceLogConfiguration: {
       categories: resourceLogConfiguration
