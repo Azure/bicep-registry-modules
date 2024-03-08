@@ -1,9 +1,9 @@
 name: '.Platform: PSRule validation for all defaults and waf-aligned tests'
 
 on:
-  push:
-    branches:
-      - feat/psrule-them-all
+  # push:
+  #   branches:
+  #     - feat/psrule-them-all
   workflow_dispatch:
 #   schedule:
 #     - cron: '0 12 * * 0' # Weekly Sunday Analysis
