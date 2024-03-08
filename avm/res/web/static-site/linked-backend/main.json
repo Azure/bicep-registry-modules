@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "7695569913720977108"
+      "version": "0.25.53.49325",
+      "templateHash": "3673239578041396478"
     },
     "name": "Static Web App Site Linked Backends",
     "description": "This module deploys a Custom Function App into a Static Web App Site using the Linked Backends property.",

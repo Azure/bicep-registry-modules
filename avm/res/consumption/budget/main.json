@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.3.34343",
-      "templateHash": "12939685653321530130"
+      "version": "0.25.53.49325",
+      "templateHash": "4486017492010556264"
     },
     "name": "Consumption Budgets",
     "description": "This module deploys a Consumption Budget for Subscriptions.",
@@ -65,6 +65,18 @@
         "description": "Optional. The end date for the budget. If not provided, it will default to 10 years from the start date."
       }
     },
+    "operator": {
+      "type": "string",
+      "defaultValue": "GreaterThan",
+      "allowedValues": [
+        "EqualTo",
+        "GreaterThan",
+        "GreaterThanOrEqualTo"
+      ],
+      "metadata": {
+        "description": "Required. The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`."
+      }
+    },
     "thresholds": {
       "type": "array",
       "defaultValue": [
@@ -98,6 +110,17 @@
       "nullable": true,
       "metadata": {
         "description": "Conditional. List of action group resource IDs that will receive the alert. Required if neither `contactEmails` nor `contactEmails` was provided."
+      }
+    },
+    "thresholdType": {
+      "type": "string",
+      "defaultValue": "Actual",
+      "allowedValues": [
+        "Actual",
+        "Forecast"
+      ],
+      "metadata": {
+        "description": "Required. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecast`."
       }
     },
     "filter": {
@@ -140,12 +163,12 @@
         "input": {
           "[format('Actual_GreaterThan_{0}_Percentage', parameters('thresholds')[copyIndex('notificationsArray')])]": {
             "enabled": true,
-            "operator": "GreaterThan",
+            "operator": "[parameters('operator')]",
             "threshold": "[parameters('thresholds')[copyIndex('notificationsArray')]]",
             "contactEmails": "[parameters('contactEmails')]",
             "contactRoles": "[parameters('contactRoles')]",
             "contactGroups": "[parameters('actionGroups')]",
-            "thresholdType": "Actual"
+            "thresholdType": "[parameters('thresholdType')]"
           }
         }
       }

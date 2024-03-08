@@ -42,6 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     amlWorkspaceName: 'dep-${namePrefix}-aml-${serviceShort}'
     applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     loadBalancerName: 'dep-${namePrefix}-lb-${serviceShort}'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
@@ -161,4 +162,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     requireInfrastructureEncryption: true
     vnetAddressPrefix: '10.100'
   }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
 }]
