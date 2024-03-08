@@ -43,8 +43,7 @@ inputs:
     default: false
   psruleContinueOnError:
     description: "Whether to continue on error caused by non compliant PSRules"
-    required: false
-    default: true
+    required: true
 
 runs:
   using: "composite"
