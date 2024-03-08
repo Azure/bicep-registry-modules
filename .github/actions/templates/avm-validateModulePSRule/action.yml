@@ -145,7 +145,7 @@ runs:
           $ParameterInput = @{
             inputFilePath           = '${{ inputs.templateFilePath}}-PSRule-output.csv'
             outputFilePath          = '${{ inputs.templateFilePath}}-PSRule-output.md'
-            skipPassedRulesReport   = ${{ inputs.skipPassedRulesReport}}
+            skipPassedRulesReport   = $false
           }
 
           Write-Verbose ('Set PS Rule Output with following parameters:`n{0}' -f (ConvertTo-Json $ParameterInput -Depth 10)) -Verbose
