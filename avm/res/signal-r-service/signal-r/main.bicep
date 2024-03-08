@@ -27,6 +27,14 @@ param kind string = 'SignalR'
 ])
 param sku string = 'Standard_S1'
 
+@allowed([
+  'Free'
+  'Premium'
+  'Standard'
+])
+@description('Optional. The tier of the service.')
+param tier string = sku == 'Free_F1' ? 'Free' : sku == 'Standard_S1' || sku == 'Standard_S2' || sku == 'Standard_S3' ? 'Standard' : 'Premium'
+
 @description('Optional. The unit count of the resource.')
 param capacity int = 1
 
@@ -151,7 +159,7 @@ resource signalR 'Microsoft.SignalRService/signalR@2022-02-01' = {
   sku: {
     name: sku
     capacity: capacity
-    tier: sku == 'Free_F1' ? 'Free' : sku == 'Standard_S1' || sku == 'Standard_S2' || sku == 'Standard_S3' ? 'Standard' : 'Premium'
+    tier: tier
   }
   tags: tags
   properties: {
