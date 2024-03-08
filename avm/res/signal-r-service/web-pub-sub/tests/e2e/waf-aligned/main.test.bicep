@@ -36,7 +36,6 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -56,10 +55,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     clientCertEnabled: false
     disableAadAuth: false
     disableLocalAuth: true
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     networkAcls: {
       defaultAction: 'Allow'
       privateEndpoints: [
@@ -96,13 +91,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     resourceLogConfigurationsToEnable: [
       'ConnectivityLogs'
-    ]
-    roleAssignments: [
-      {
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        roleDefinitionIdOrName: 'Reader'
-        principalType: 'ServicePrincipal'
-      }
     ]
     sku: 'Standard_S1'
     managedIdentities: {
