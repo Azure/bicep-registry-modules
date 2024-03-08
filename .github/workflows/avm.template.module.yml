@@ -69,7 +69,7 @@ jobs:
           subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           psrulePath: "avm/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
-          psruleContinueOnError: ${{ (fromJson(inputs.workflowInput)).psruleContinueOnError }}
+          psruleContinueOnError: "${{ (fromJson(inputs.workflowInput)).psruleContinueOnError }}"
 
   #############################
   #   Deployment validation   #
