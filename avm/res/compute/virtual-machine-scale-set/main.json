@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "3088153730802492517"
+      "templateHash": "4707656343960696032"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -644,7 +644,7 @@
     },
     "singlePlacementGroup": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. When true this limits the scale set to a single placement group, of max size 100 virtual machines. NOTE: If singlePlacementGroup is true, it may be modified to false. However, if singlePlacementGroup is false, it may not be modified to true."
       }
@@ -675,7 +675,11 @@
     },
     "availabilityZones": {
       "type": "array",
-      "defaultValue": [],
+      "defaultValue": [
+        1,
+        2,
+        3
+      ],
       "metadata": {
         "description": "Optional. The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set."
       }

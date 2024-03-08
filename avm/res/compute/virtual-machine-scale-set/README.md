@@ -1780,7 +1780,14 @@ The virtual machine scale set zones. NOTE: Availability zones can only be set wh
 
 - Required: No
 - Type: array
-- Default: `[]`
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `bootDiagnosticStorageAccountName`
 
@@ -2429,7 +2436,7 @@ When true this limits the scale set to a single placement group, of max size 100
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `skuCapacity`
 
