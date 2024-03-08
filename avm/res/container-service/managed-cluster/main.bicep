@@ -60,7 +60,7 @@ param loadBalancerSku string = 'standard'
 @description('Optional. Outbound IP Count for the Load balancer.')
 param managedOutboundIPCount int = 0
 
-@description('Optional. Specifies outbound (egress) routing method. - loadBalancer, userDefinedRouting, managedNATGateway or userAssignedNATGateway')
+@description('Optional. Specifies outbound (egress) routing method.')
 @allowed([
   'loadBalancer'
   'userDefinedRouting'
