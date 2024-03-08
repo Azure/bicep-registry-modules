@@ -58,4 +58,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
     location: resourceLocation
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }]

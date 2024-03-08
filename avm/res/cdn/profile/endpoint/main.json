@@ -1,0 +1,326 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "12552673613712108877"
+    },
+    "name": "CDN Profiles Endpoints",
+    "description": "This module deploys a CDN Profile Endpoint.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "profileName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent CDN profile. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the endpoint under the profile which is unique globally."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Resource location."
+      }
+    },
+    "properties": {
+      "type": "object",
+      "metadata": {
+        "description": "Required. Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details)."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Endpoint tags."
+      }
+    }
+  },
+  "resources": {
+    "profile": {
+      "existing": true,
+      "type": "Microsoft.Cdn/profiles",
+      "apiVersion": "2021-06-01",
+      "name": "[parameters('profileName')]"
+    },
+    "endpoint": {
+      "type": "Microsoft.Cdn/profiles/endpoints",
+      "apiVersion": "2021-06-01",
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "properties": "[parameters('properties')]",
+      "tags": "[parameters('tags')]",
+      "dependsOn": [
+        "profile"
+      ]
+    },
+    "endpoint_origins": {
+      "copy": {
+        "name": "endpoint_origins",
+        "count": "[length(parameters('properties').origins)]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-origins-{1}', parameters('name'), parameters('properties').origins[copyIndex()].name)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "endpointName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('properties').origins[copyIndex()].name]"
+          },
+          "hostName": {
+            "value": "[parameters('properties').origins[copyIndex()].properties.hostName]"
+          },
+          "httpPort": {
+            "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'httpPort')]"
+          },
+          "httpsPort": {
+            "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'httpsPort')]"
+          },
+          "enabled": {
+            "value": "[parameters('properties').origins[copyIndex()].properties.enabled]"
+          },
+          "priority": {
+            "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'priority')]"
+          },
+          "weight": {
+            "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'weight')]"
+          },
+          "originHostHeader": {
+            "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'originHostHeader')]"
+          },
+          "privateLinkAlias": {
+            "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'privateLinkAlias')]"
+          },
+          "privateLinkLocation": {
+            "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'privateLinkLocation')]"
+          },
+          "privateLinkResourceId": {
+            "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'privateLinkResourceId')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.25.53.49325",
+              "templateHash": "17135058845123401414"
+            },
+            "name": "CDN Profiles Endpoints Origins",
+            "description": "This module deploys a CDN Profile Endpoint Origin.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "endpointName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the CDN Endpoint."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the origin."
+              }
+            },
+            "enabled": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Whether the origin is enabled for load balancing."
+              }
+            },
+            "hostName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The hostname of the origin."
+              }
+            },
+            "httpPort": {
+              "type": "int",
+              "defaultValue": 80,
+              "metadata": {
+                "description": "Optional. The HTTP port of the origin."
+              }
+            },
+            "httpsPort": {
+              "type": "int",
+              "defaultValue": 443,
+              "metadata": {
+                "description": "Optional. The HTTPS port of the origin."
+              }
+            },
+            "priority": {
+              "type": "int",
+              "defaultValue": -1,
+              "metadata": {
+                "description": "Conditional. The priority of origin in given origin group for load balancing. Required if `weight` is provided."
+              }
+            },
+            "weight": {
+              "type": "int",
+              "defaultValue": -1,
+              "metadata": {
+                "description": "Conditional. The weight of the origin used for load balancing. Required if `priority` is provided."
+              }
+            },
+            "privateLinkAlias": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Conditional. The private link alias of the origin. Required if privateLinkLocation is provided."
+              }
+            },
+            "privateLinkLocation": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Conditional. The private link location of the origin. Required if privateLinkAlias is provided."
+              }
+            },
+            "privateLinkResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The private link resource ID of the origin."
+              }
+            },
+            "originHostHeader": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The host header value sent to the origin."
+              }
+            },
+            "profileName": {
+              "type": "string",
+              "defaultValue": "default",
+              "metadata": {
+                "description": "Optional. The name of the CDN profile. Default to \"default\"."
+              }
+            }
+          },
+          "resources": {
+            "profile": {
+              "existing": true,
+              "type": "Microsoft.Cdn/profiles",
+              "apiVersion": "2021-06-01",
+              "name": "[parameters('profileName')]"
+            },
+            "endpoint": {
+              "existing": true,
+              "type": "Microsoft.Cdn/profiles/endpoints",
+              "apiVersion": "2021-06-01",
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('endpointName'))]",
+              "dependsOn": [
+                "profile"
+              ]
+            },
+            "origin": {
+              "type": "Microsoft.Cdn/profiles/endpoints/origins",
+              "apiVersion": "2021-06-01",
+              "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('endpointName'), parameters('name'))]",
+              "properties": "[union(createObject('hostName', parameters('hostName'), 'httpPort', parameters('httpPort'), 'enabled', parameters('enabled'), 'httpsPort', parameters('httpsPort')), if(or(greater(parameters('priority'), 0), greater(parameters('weight'), 0)), createObject('priority', parameters('priority'), 'weight', parameters('weight')), createObject()), if(and(not(empty(parameters('privateLinkAlias'))), not(empty(parameters('privateLinkLocation')))), createObject('privateLinkAlias', parameters('privateLinkAlias'), 'privateLinkLocation', parameters('privateLinkLocation')), createObject()), if(not(empty(parameters('privateLinkResourceId'))), createObject('privateLinkResourceId', parameters('privateLinkResourceId')), createObject()), if(not(empty(parameters('originHostHeader'))), createObject('originHostHeader', parameters('originHostHeader')), createObject()))]",
+              "dependsOn": [
+                "endpoint"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the endpoint."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the endpoint."
+              },
+              "value": "[resourceId('Microsoft.Cdn/profiles/endpoints/origins', parameters('profileName'), parameters('endpointName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the endpoint was created in."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('endpoint', '2021-06-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "endpoint",
+        "profile"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the endpoint."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the endpoint."
+      },
+      "value": "[resourceId('Microsoft.Cdn/profiles/endpoints', parameters('profileName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the endpoint was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('endpoint', '2021-06-01', 'full').location]"
+    },
+    "endpointProperties": {
+      "type": "object",
+      "metadata": {
+        "description": "The properties of the endpoint."
+      },
+      "value": "[reference('endpoint')]"
+    }
+  }
+}

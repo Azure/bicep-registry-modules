@@ -72,4 +72,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     allowRemoteVnetTraffic: true
     enableBgpRouteTranslationForNat: true
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }]
