@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "8006710941721695942"
+      "templateHash": "15421175909683720085"
     },
     "name": "Search Services",
     "description": "This module deploys a Search Service.",
@@ -540,6 +540,18 @@
         "description": "Optional. Array of role assignments to create."
       }
     },
+    "semanticSearch": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "disabled",
+        "free",
+        "standard"
+      ],
+      "metadata": {
+        "description": "Optional. Sets options that control the availability of semantic search. This configuration is only possible for certain search SKUs in certain locations."
+      }
+    },
     "sku": {
       "type": "string",
       "defaultValue": "standard",
@@ -577,7 +589,7 @@
     }
   },
   "variables": {
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', 'None')), null())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -612,7 +624,7 @@
     },
     "searchService": {
       "type": "Microsoft.Search/searchServices",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2023-11-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -630,7 +642,8 @@
         "networkRuleSet": "[parameters('networkRuleSet')]",
         "partitionCount": "[parameters('partitionCount')]",
         "replicaCount": "[parameters('replicaCount')]",
-        "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+        "semanticSearch": "[parameters('semanticSearch')]"
       }
     },
     "searchService_diagnosticSettings": {
@@ -1400,12 +1413,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "9469125394066728883"
+              "templateHash": "7674026452917741601"
             },
             "name": "Search Services Private Link Resources",
             "description": "This module deploys a Search Service Private Link Resource.",
@@ -1444,25 +1458,34 @@
             },
             "resourceRegion": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Can be used to specify the Azure Resource Manager location of the resource to which a shared private link is to be created. This is only required for those resources whose DNS configuration are regional (such as Azure Kubernetes Service)."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "searchService": {
+              "existing": true,
+              "type": "Microsoft.Search/searchServices",
+              "apiVersion": "2023-11-01",
+              "name": "[parameters('searchServiceName')]"
+            },
+            "sharedPrivateLinkResource": {
               "type": "Microsoft.Search/searchServices/sharedPrivateLinkResources",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2023-11-01",
               "name": "[format('{0}/{1}', parameters('searchServiceName'), parameters('name'))]",
               "properties": {
                 "privateLinkResourceId": "[parameters('privateLinkResourceId')]",
                 "groupId": "[parameters('groupId')]",
                 "requestMessage": "[parameters('requestMessage')]",
-                "resourceRegion": "[if(not(empty(parameters('resourceRegion'))), parameters('resourceRegion'), null())]"
-              }
+                "resourceRegion": "[parameters('resourceRegion')]"
+              },
+              "dependsOn": [
+                "searchService"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -1520,14 +1543,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('searchService', '2022-09-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('searchService', '2023-11-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('searchService', '2022-09-01', 'full').location]"
+      "value": "[reference('searchService', '2023-11-01', 'full').location]"
     }
   }
 }
