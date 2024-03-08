@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "11942882310465268639"
+      "templateHash": "11832942286479289748"
     },
     "name": "Deployment Scripts",
     "description": "This module deploys Deployment Scripts.",
@@ -422,7 +422,7 @@
         "containerSettings": "[if(not(empty(variables('containerSettings'))), variables('containerSettings'), null())]",
         "storageAccountSettings": "[if(not(empty(parameters('storageAccountResourceId'))), if(not(empty(parameters('storageAccountResourceId'))), createObject('storageAccountKey', if(empty(parameters('subnetResourceIds')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '//'), '/')[2], split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), 'dummyAccount'), '/'))), '2023-01-01').keys[0].value, null()), 'storageAccountName', last(split(parameters('storageAccountResourceId'), '/'))), null()), null())]",
         "arguments": "[parameters('arguments')]",
-        "environmentVariables": "[if(contains(parameters('environmentVariables'), 'secureList'), parameters('environmentVariables').secureList, createArray())]",
+        "environmentVariables": "[if(not(equals(parameters('environmentVariables'), null())), parameters('environmentVariables').secureList, createArray())]",
         "scriptContent": "[if(not(empty(parameters('scriptContent'))), parameters('scriptContent'), null())]",
         "primaryScriptUri": "[if(not(empty(parameters('primaryScriptUri'))), parameters('primaryScriptUri'), null())]",
         "supportingScriptUris": "[if(not(empty(parameters('supportingScriptUris'))), parameters('supportingScriptUris'), null())]",

@@ -183,7 +183,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     containerSettings: !empty(containerSettings) ? containerSettings : null
     storageAccountSettings: !empty(storageAccountResourceId) ? storageAccountSettings : null
     arguments: arguments
-    environmentVariables: contains(environmentVariables!, 'secureList') ? environmentVariables!.secureList : []
+    environmentVariables: environmentVariables != null ? environmentVariables!.secureList : []
     scriptContent: !empty(scriptContent) ? scriptContent : null
     primaryScriptUri: !empty(primaryScriptUri) ? primaryScriptUri : null
     supportingScriptUris: !empty(supportingScriptUris) ? supportingScriptUris : null
