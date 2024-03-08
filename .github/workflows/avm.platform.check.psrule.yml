@@ -164,7 +164,8 @@ jobs:
       - name: "Run PSRule validation with [${{ matrix.testCases.path }}]"
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
-          templateFilePath: "${{ env.modulePath }}/${{ matrix.testCases.path }}"
+          #templateFilePath: "${{ env.modulePath }}/${{ matrix.testCases.path }}"
+          templateFilePath: "avm/res/network"
           subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           psrulePath: "avm/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
