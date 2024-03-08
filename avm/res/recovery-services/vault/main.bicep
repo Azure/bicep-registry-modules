@@ -21,15 +21,12 @@ param backupPolicies array = []
 param backupConfig object = {}
 
 @description('Optional. List of all protection containers.')
-@minLength(0)
 param protectionContainers array = []
 
 @description('Optional. List of all replication fabrics.')
-@minLength(0)
 param replicationFabrics array = []
 
 @description('Optional. List of all replication policies.')
-@minLength(0)
 param replicationPolicies array = []
 
 @description('Optional. Replication alert settings.')
@@ -69,7 +66,7 @@ param publicNetworkAccess string = 'Disabled'
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
 var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
   userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
 } : null
 
@@ -130,7 +127,6 @@ module rsv_replicationFabrics 'replication-fabric/main.bicep' = [for (replicatio
     name: contains(replicationFabric, 'name') ? replicationFabric.name : replicationFabric.location
     location: replicationFabric.location
     replicationContainers: contains(replicationFabric, 'replicationContainers') ? replicationFabric.replicationContainers : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     rsv_replicationPolicies
@@ -146,7 +142,6 @@ module rsv_replicationPolicies 'replication-policy/main.bicep' = [for (replicati
     crashConsistentFrequencyInMinutes: contains(replicationPolicy, 'crashConsistentFrequencyInMinutes') ? replicationPolicy.crashConsistentFrequencyInMinutes : 5
     multiVmSyncStatus: contains(replicationPolicy, 'multiVmSyncStatus') ? replicationPolicy.multiVmSyncStatus : 'Enable'
     recoveryPointHistory: contains(replicationPolicy, 'recoveryPointHistory') ? replicationPolicy.recoveryPointHistory : 1440
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -156,7 +151,6 @@ module rsv_backupStorageConfiguration 'backup-storage-config/main.bicep' = if (!
     recoveryVaultName: rsv.name
     storageModelType: backupStorageConfig.storageModelType
     crossRegionRestoreFlag: backupStorageConfig.crossRegionRestoreFlag
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -169,7 +163,6 @@ module rsv_backupFabric_protectionContainers 'backup-fabric/protection-container
     friendlyName: protectionContainer.friendlyName
     backupManagementType: protectionContainer.backupManagementType
     containerType: protectionContainer.containerType
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
     protectedItems: contains(protectionContainer, 'protectedItems') ? protectionContainer.protectedItems : []
     location: location
   }
@@ -181,7 +174,6 @@ module rsv_backupPolicies 'backup-policy/main.bicep' = [for (backupPolicy, index
     recoveryVaultName: rsv.name
     name: backupPolicy.name
     properties: backupPolicy.properties
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -197,7 +189,6 @@ module rsv_backupConfig 'backup-config/main.bicep' = if (!empty(backupConfig)) {
     storageType: contains(backupConfig, 'storageType') ? backupConfig.storageType : 'GeoRedundant'
     storageTypeState: contains(backupConfig, 'storageTypeState') ? backupConfig.storageTypeState : 'Locked'
     isSoftDeleteFeatureStateEditable: contains(backupConfig, 'isSoftDeleteFeatureStateEditable') ? backupConfig.isSoftDeleteFeatureStateEditable : true
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -209,7 +200,6 @@ module rsv_replicationAlertSettings 'replication-alert-setting/main.bicep' = if 
     customEmailAddresses: contains(replicationAlertSettings, 'customEmailAddresses') ? replicationAlertSettings.customEmailAddresses : []
     locale: contains(replicationAlertSettings, 'locale') ? replicationAlertSettings.locale : ''
     sendToOwners: contains(replicationAlertSettings, 'sendToOwners') ? replicationAlertSettings.sendToOwners : 'Send'
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }
 

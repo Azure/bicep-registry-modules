@@ -16,23 +16,6 @@ param name string
 @description('Optional. Replication containers mappings to create.')
 param replicationContainerMappings array = []
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
-var enableReferencedModulesTelemetry = false
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}-rsvPolicy'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
-}
-
 resource replicationContainer 'Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers@2022-10-01' = {
   name: '${recoveryVaultName}/${replicationFabricName}/${name}'
   properties: {
@@ -56,7 +39,6 @@ module fabric_container_containerMappings 'replication-protection-container-mapp
     targetProtectionContainerId: contains(mapping, 'targetProtectionContainerId') ? mapping.targetProtectionContainerId : ''
     targetContainerFabricName: contains(mapping, 'targetContainerFabricName') ? mapping.targetContainerFabricName : replicationFabricName
     targetContainerName: contains(mapping, 'targetContainerName') ? mapping.targetContainerName : ''
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     replicationContainer

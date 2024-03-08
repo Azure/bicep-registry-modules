@@ -38,7 +38,6 @@ This module deploys a Recovery Services Vault Replication Policy for Disaster Re
 | :-- | :-- | :-- |
 | [`appConsistentFrequencyInMinutes`](#parameter-appconsistentfrequencyinminutes) | int | The app consistent snapshot frequency (in minutes). |
 | [`crashConsistentFrequencyInMinutes`](#parameter-crashconsistentfrequencyinminutes) | int | The crash consistent snapshot frequency (in minutes). |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`multiVmSyncStatus`](#parameter-multivmsyncstatus) | string | A value indicating whether multi-VM sync has to be enabled. |
 | [`recoveryPointHistory`](#parameter-recoverypointhistory) | int | The duration in minutes until which the recovery points need to be stored. |
 
@@ -71,14 +70,6 @@ The crash consistent snapshot frequency (in minutes).
 - Required: No
 - Type: int
 - Default: `5`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `multiVmSyncStatus`
 

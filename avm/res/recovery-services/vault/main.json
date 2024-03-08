@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "14378570366030374513"
+      "templateHash": "9915838520340011259"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault.",
@@ -454,7 +454,6 @@
     "protectionContainers": {
       "type": "array",
       "defaultValue": [],
-      "minLength": 0,
       "metadata": {
         "description": "Optional. List of all protection containers."
       }
@@ -462,7 +461,6 @@
     "replicationFabrics": {
       "type": "array",
       "defaultValue": [],
-      "minLength": 0,
       "metadata": {
         "description": "Optional. List of all replication fabrics."
       }
@@ -470,7 +468,6 @@
     "replicationPolicies": {
       "type": "array",
       "defaultValue": [],
-      "minLength": 0,
       "metadata": {
         "description": "Optional. List of all replication policies."
       }
@@ -547,7 +544,7 @@
   },
   "variables": {
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
@@ -681,10 +678,7 @@
           "location": {
             "value": "[parameters('replicationFabrics')[copyIndex()].location]"
           },
-          "replicationContainers": "[if(contains(parameters('replicationFabrics')[copyIndex()], 'replicationContainers'), createObject('value', parameters('replicationFabrics')[copyIndex()].replicationContainers), createObject('value', createArray()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "replicationContainers": "[if(contains(parameters('replicationFabrics')[copyIndex()], 'replicationContainers'), createObject('value', parameters('replicationFabrics')[copyIndex()].replicationContainers), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -693,7 +687,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "16157682273763532593"
+              "templateHash": "9213187265421923503"
             },
             "name": "Recovery Services Vault Replication Fabrics",
             "description": "This module deploys a Replication Fabric for Azure to Azure disaster recovery scenario of Azure Site Recovery.\n\n> Note: this module currently support only the `instanceType: 'Azure'` scenario.",
@@ -726,33 +720,9 @@
               "metadata": {
                 "description": "Optional. Replication containers to create."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
-          "variables": {
-            "enableReferencedModulesTelemetry": false
-          },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}-rsvPolicy', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.RecoveryServices/vaults/replicationFabrics",
               "apiVersion": "2022-10-01",
@@ -787,10 +757,7 @@
                   "replicationFabricName": {
                     "value": "[parameters('name')]"
                   },
-                  "replicationContainerMappings": "[if(contains(parameters('replicationContainers')[copyIndex()], 'replicationContainerMappings'), createObject('value', parameters('replicationContainers')[copyIndex()].replicationContainerMappings), createObject('value', createArray()))]",
-                  "enableDefaultTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
-                  }
+                  "replicationContainerMappings": "[if(contains(parameters('replicationContainers')[copyIndex()], 'replicationContainerMappings'), createObject('value', parameters('replicationContainers')[copyIndex()].replicationContainerMappings), createObject('value', createArray()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -799,7 +766,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.25.53.49325",
-                      "templateHash": "11089890967510767384"
+                      "templateHash": "584392949528635994"
                     },
                     "name": "Recovery Services Vault Replication Fabric Replication Protection Containers",
                     "description": "This module deploys a Recovery Services Vault Replication Protection Container.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",
@@ -830,33 +797,9 @@
                       "metadata": {
                         "description": "Optional. Replication containers mappings to create."
                       }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-                      }
                     }
                   },
-                  "variables": {
-                    "enableReferencedModulesTelemetry": false
-                  },
                   "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}-rsvPolicy', uniqueString(deployment().name))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
-                    },
                     {
                       "type": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers",
                       "apiVersion": "2022-10-01",
@@ -897,10 +840,7 @@
                           },
                           "targetProtectionContainerId": "[if(contains(parameters('replicationContainerMappings')[copyIndex()], 'targetProtectionContainerId'), createObject('value', parameters('replicationContainerMappings')[copyIndex()].targetProtectionContainerId), createObject('value', ''))]",
                           "targetContainerFabricName": "[if(contains(parameters('replicationContainerMappings')[copyIndex()], 'targetContainerFabricName'), createObject('value', parameters('replicationContainerMappings')[copyIndex()].targetContainerFabricName), createObject('value', parameters('replicationFabricName')))]",
-                          "targetContainerName": "[if(contains(parameters('replicationContainerMappings')[copyIndex()], 'targetContainerName'), createObject('value', parameters('replicationContainerMappings')[copyIndex()].targetContainerName), createObject('value', ''))]",
-                          "enableDefaultTelemetry": {
-                            "value": "[variables('enableReferencedModulesTelemetry')]"
-                          }
+                          "targetContainerName": "[if(contains(parameters('replicationContainerMappings')[copyIndex()], 'targetContainerName'), createObject('value', parameters('replicationContainerMappings')[copyIndex()].targetContainerName), createObject('value', ''))]"
                         },
                         "template": {
                           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -909,7 +849,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.25.53.49325",
-                              "templateHash": "1142193748367421799"
+                              "templateHash": "8286726590589779511"
                             },
                             "name": "Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings",
                             "description": "This module deploys a Recovery Services Vault (RSV) Replication Protection Container Mapping.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",
@@ -975,13 +915,6 @@
                               "metadata": {
                                 "description": "Optional. The name of the replication container mapping. If not provided, it will be automatically generated as `<source_container_name>-<target_container_name>`."
                               }
-                            },
-                            "enableDefaultTelemetry": {
-                              "type": "bool",
-                              "defaultValue": true,
-                              "metadata": {
-                                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-                              }
                             }
                           },
                           "variables": {
@@ -990,20 +923,6 @@
                             "mappingName": "[if(not(empty(parameters('name'))), parameters('name'), format('{0}-{1}', parameters('sourceProtectionContainerName'), split(variables('targetProtectionContainerResourceId'), '/')[10]))]"
                           },
                           "resources": [
-                            {
-                              "condition": "[parameters('enableDefaultTelemetry')]",
-                              "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2021-04-01",
-                              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}-rsvPolicy', uniqueString(deployment().name))]",
-                              "properties": {
-                                "mode": "Incremental",
-                                "template": {
-                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                                  "contentVersion": "1.0.0.0",
-                                  "resources": []
-                                }
-                              }
-                            },
                             {
                               "type": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings",
                               "apiVersion": "2022-10-01",
@@ -1130,10 +1049,7 @@
           "appConsistentFrequencyInMinutes": "[if(contains(parameters('replicationPolicies')[copyIndex()], 'appConsistentFrequencyInMinutes'), createObject('value', parameters('replicationPolicies')[copyIndex()].appConsistentFrequencyInMinutes), createObject('value', 60))]",
           "crashConsistentFrequencyInMinutes": "[if(contains(parameters('replicationPolicies')[copyIndex()], 'crashConsistentFrequencyInMinutes'), createObject('value', parameters('replicationPolicies')[copyIndex()].crashConsistentFrequencyInMinutes), createObject('value', 5))]",
           "multiVmSyncStatus": "[if(contains(parameters('replicationPolicies')[copyIndex()], 'multiVmSyncStatus'), createObject('value', parameters('replicationPolicies')[copyIndex()].multiVmSyncStatus), createObject('value', 'Enable'))]",
-          "recoveryPointHistory": "[if(contains(parameters('replicationPolicies')[copyIndex()], 'recoveryPointHistory'), createObject('value', parameters('replicationPolicies')[copyIndex()].recoveryPointHistory), createObject('value', 1440))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "recoveryPointHistory": "[if(contains(parameters('replicationPolicies')[copyIndex()], 'recoveryPointHistory'), createObject('value', parameters('replicationPolicies')[copyIndex()].recoveryPointHistory), createObject('value', 1440))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1142,7 +1058,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "1158671965106689509"
+              "templateHash": "12506498029720805552"
             },
             "name": "Recovery Services Vault Replication Policies",
             "description": "This module deploys a Recovery Services Vault Replication Policy for Disaster Recovery scenario.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",
@@ -1192,30 +1108,9 @@
               "metadata": {
                 "description": "Optional. The duration in minutes until which the recovery points need to be stored."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}-rsvPolicy', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.RecoveryServices/vaults/replicationPolicies",
               "apiVersion": "2023-06-01",
@@ -1279,9 +1174,6 @@
           },
           "crossRegionRestoreFlag": {
             "value": "[parameters('backupStorageConfig').crossRegionRestoreFlag]"
-          },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1291,7 +1183,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "7561008948027616256"
+              "templateHash": "16823125725342753814"
             },
             "name": "Recovery Services Vault Backup Storage Config",
             "description": "This module deploys a Recovery Service Vault Backup Storage Configuration.",
@@ -1330,30 +1222,9 @@
               "metadata": {
                 "description": "Optional. Opt in details of Cross Region Restore feature."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.RecoveryServices/vaults/backupstorageconfig",
               "apiVersion": "2023-01-01",
@@ -1425,9 +1296,6 @@
           "containerType": {
             "value": "[parameters('protectionContainers')[copyIndex()].containerType]"
           },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          },
           "protectedItems": "[if(contains(parameters('protectionContainers')[copyIndex()], 'protectedItems'), createObject('value', parameters('protectionContainers')[copyIndex()].protectedItems), createObject('value', createArray()))]",
           "location": {
             "value": "[parameters('location')]"
@@ -1440,7 +1308,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "15474093619218778634"
+              "templateHash": "17845555013682159796"
             },
             "name": "Recovery Services Vault Protection Container",
             "description": "This module deploys a Recovery Services Vault Protection Container.",
@@ -1524,33 +1392,9 @@
               "metadata": {
                 "description": "Optional. Type of the container."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
-          "variables": {
-            "enableReferencedModulesTelemetry": false
-          },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers",
               "apiVersion": "2023-01-01",
@@ -1596,9 +1440,6 @@
                   },
                   "location": {
                     "value": "[parameters('location')]"
-                  },
-                  "enableDefaultTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -1608,7 +1449,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.25.53.49325",
-                      "templateHash": "4239669129416256373"
+                      "templateHash": "15677187951825533891"
                     },
                     "name": "Recovery Service Vaults Protection Container Protected Item",
                     "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
@@ -1669,30 +1510,9 @@
                       "metadata": {
                         "description": "Required. Resource ID of the resource to back up."
                       }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-                      }
                     }
                   },
                   "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
-                    },
                     {
                       "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
                       "apiVersion": "2023-01-01",
@@ -1786,9 +1606,6 @@
           },
           "properties": {
             "value": "[parameters('backupPolicies')[copyIndex()].properties]"
-          },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1798,7 +1615,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "1326672965135479674"
+              "templateHash": "3329904805287164035"
             },
             "name": "Recovery Services Vault Backup Policies",
             "description": "This module deploys a Recovery Services Vault Backup Policy.",
@@ -1822,30 +1639,9 @@
               "metadata": {
                 "description": "Required. Configuration of the Azure Recovery Service Vault Backup Policy."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.RecoveryServices/vaults/backupPolicies",
               "apiVersion": "2023-01-01",
@@ -1903,10 +1699,7 @@
           "storageModelType": "[if(contains(parameters('backupConfig'), 'storageModelType'), createObject('value', parameters('backupConfig').storageModelType), createObject('value', 'GeoRedundant'))]",
           "storageType": "[if(contains(parameters('backupConfig'), 'storageType'), createObject('value', parameters('backupConfig').storageType), createObject('value', 'GeoRedundant'))]",
           "storageTypeState": "[if(contains(parameters('backupConfig'), 'storageTypeState'), createObject('value', parameters('backupConfig').storageTypeState), createObject('value', 'Locked'))]",
-          "isSoftDeleteFeatureStateEditable": "[if(contains(parameters('backupConfig'), 'isSoftDeleteFeatureStateEditable'), createObject('value', parameters('backupConfig').isSoftDeleteFeatureStateEditable), createObject('value', true()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "isSoftDeleteFeatureStateEditable": "[if(contains(parameters('backupConfig'), 'isSoftDeleteFeatureStateEditable'), createObject('value', parameters('backupConfig').isSoftDeleteFeatureStateEditable), createObject('value', true()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1915,7 +1708,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "14433585910656319573"
+              "templateHash": "15423985878725052790"
             },
             "name": "Recovery Services Vault Backup Config",
             "description": "This module deploys a Recovery Services Vault Backup Config.",
@@ -2001,13 +1794,6 @@
                 "description": "Optional. Once a machine is registered against a resource, the storageTypeState is always Locked."
               }
             },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
-            },
             "isSoftDeleteFeatureStateEditable": {
               "type": "bool",
               "defaultValue": true,
@@ -2017,20 +1803,6 @@
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.RecoveryServices/vaults/backupconfig",
               "apiVersion": "2023-01-01",
@@ -2094,10 +1866,7 @@
           },
           "customEmailAddresses": "[if(contains(parameters('replicationAlertSettings'), 'customEmailAddresses'), createObject('value', parameters('replicationAlertSettings').customEmailAddresses), createObject('value', createArray()))]",
           "locale": "[if(contains(parameters('replicationAlertSettings'), 'locale'), createObject('value', parameters('replicationAlertSettings').locale), createObject('value', ''))]",
-          "sendToOwners": "[if(contains(parameters('replicationAlertSettings'), 'sendToOwners'), createObject('value', parameters('replicationAlertSettings').sendToOwners), createObject('value', 'Send'))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "sendToOwners": "[if(contains(parameters('replicationAlertSettings'), 'sendToOwners'), createObject('value', parameters('replicationAlertSettings').sendToOwners), createObject('value', 'Send'))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2106,7 +1875,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "12735321979332839988"
+              "templateHash": "15609344101830369541"
             },
             "name": "Recovery Services Vault Replication Alert Settings",
             "description": "This module deploys a Recovery Services Vault Replication Alert Settings.",
@@ -2150,30 +1919,9 @@
               "metadata": {
                 "description": "Optional. The value indicating whether to send email to subscription administrator."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.RecoveryServices/vaults/replicationAlertSettings",
               "apiVersion": "2022-10-01",

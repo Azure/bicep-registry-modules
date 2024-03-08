@@ -38,7 +38,6 @@ This module deploys a Recovery Services Vault Replication Protection Container.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`replicationContainerMappings`](#parameter-replicationcontainermappings) | array | Replication containers mappings to create. |
 
 ### Parameter: `name`
@@ -61,14 +60,6 @@ The name of the parent Replication Fabric. Required if the template is used in a
 
 - Required: Yes
 - Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `replicationContainerMappings`
 

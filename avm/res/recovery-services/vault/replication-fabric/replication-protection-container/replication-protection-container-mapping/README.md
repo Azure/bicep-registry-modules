@@ -32,7 +32,6 @@ This module deploys a Recovery Services Vault (RSV) Replication Protection Conta
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`name`](#parameter-name) | string | The name of the replication container mapping. If not provided, it will be automatically generated as `<source_container_name>-<target_container_name>`. |
 | [`policyId`](#parameter-policyid) | string | Resource ID of the replication policy. If defined, policyName will be ignored. |
 | [`policyName`](#parameter-policyname) | string | Name of the replication policy. Will be ignored if policyId is also specified. |
@@ -60,14 +59,6 @@ The name of the parent source Replication container. Required if the template is
 
 - Required: Yes
 - Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `name`
 

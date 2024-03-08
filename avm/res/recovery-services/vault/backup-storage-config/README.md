@@ -29,7 +29,6 @@ This module deploys a Recovery Service Vault Backup Storage Configuration.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`crossRegionRestoreFlag`](#parameter-crossregionrestoreflag) | bool | Opt in details of Cross Region Restore feature. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`name`](#parameter-name) | string | The name of the backup storage config. |
 | [`storageModelType`](#parameter-storagemodeltype) | string | Change Vault Storage Type (Works if vault has not registered any backup instance). |
 
@@ -43,14 +42,6 @@ The name of the parent Azure Recovery Service Vault. Required if the template is
 ### Parameter: `crossRegionRestoreFlag`
 
 Opt in details of Cross Region Restore feature.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
 
 - Required: No
 - Type: bool

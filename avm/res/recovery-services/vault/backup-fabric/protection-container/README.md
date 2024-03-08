@@ -37,7 +37,6 @@ This module deploys a Recovery Services Vault Protection Container.
 | :-- | :-- | :-- |
 | [`backupManagementType`](#parameter-backupmanagementtype) | string | Backup management type to execute the current Protection Container job. |
 | [`containerType`](#parameter-containertype) | string | Type of the container. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`friendlyName`](#parameter-friendlyname) | string | Friendly name of the Protection Container. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`protectedItems`](#parameter-protecteditems) | array | Protected items to register in the container. |
@@ -102,14 +101,6 @@ Type of the container.
     'Windows'
   ]
   ```
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `friendlyName`
 
