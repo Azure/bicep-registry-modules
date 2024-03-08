@@ -48,7 +48,6 @@ module nestedDependencies 'dependencies.bicep' = {
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     storageAccountName: take('dep${namePrefix}sa${serviceShort}01', 24)
     storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
-    proximityPlacementGroupName: 'dep-${namePrefix}-ppg-${serviceShort}'
   }
 }
 
@@ -184,7 +183,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         nicSuffix: '-nic01'
       }
     ]
-    proximityPlacementGroupResourceId: nestedDependencies.outputs.proximityPlacementGroupResourceId
     roleAssignments: [
       {
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId

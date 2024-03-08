@@ -16,9 +16,6 @@ param storageUploadDeploymentScriptName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
-@description('Required. The name of the Proximity Placement Group to create.')
-param proximityPlacementGroupName string
-
 var storageAccountCSEFileName = 'scriptExtensionMasterInstaller.ps1'
 var addressPrefix = '10.0.0.0/16'
 
@@ -130,11 +127,6 @@ resource storageUpload 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   ]
 }
 
-resource proximityPlacementGroup 'Microsoft.Compute/proximityPlacementGroups@2022-03-01' = {
-  name: proximityPlacementGroupName
-  location: location
-}
-
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
@@ -161,6 +153,3 @@ output storageAccountCSEFileUrl string = '${storageAccount.properties.primaryEnd
 
 @description('The name of the Custom Script Extension in the created Storage Account.')
 output storageAccountCSEFileName string = storageAccountCSEFileName
-
-@description('The resource ID of the created Proximity Placement Group.')
-output proximityPlacementGroupResourceId string = proximityPlacementGroup.id

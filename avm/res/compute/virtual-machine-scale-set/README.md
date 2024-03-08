@@ -1016,7 +1016,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         nicSuffix: '-nic01'
       }
     ]
-    proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -1208,9 +1207,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         }
       ]
     },
-    "proximityPlacementGroupResourceId": {
-      "value": "<proximityPlacementGroupResourceId>"
-    },
     "roleAssignments": {
       "value": [
         {
@@ -1376,7 +1372,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         nicSuffix: '-nic01'
       }
     ]
-    proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -1567,9 +1562,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
           "nicSuffix": "-nic01"
         }
       ]
-    },
-    "proximityPlacementGroupResourceId": {
-      "value": "<proximityPlacementGroupResourceId>"
     },
     "roleAssignments": {
       "value": [
