@@ -117,7 +117,7 @@
 #/avm/res/policy-insights/remediation/ @Azure/avm-res-policyinsights-remediation-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/power-bi-dedicated/capacity/ @Azure/avm-res-powerbidedicated-capacity-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/purview/account/ @Azure/avm-res-purview-account-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/recovery-services/vault/ @Azure/avm-res-recoveryservices-vault-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/recovery-services/vault/ @Azure/avm-res-recoveryservices-vault-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/relay/namespace/ @Azure/avm-res-relay-namespace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/resource-graph/query/ @Azure/avm-res-resourcegraph-query-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/resources/deployment-script/ @Azure/avm-res-resources-deploymentscript-module-owners-bicep @Azure/avm-core-team-technical-bicep
