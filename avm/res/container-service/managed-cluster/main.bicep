@@ -577,7 +577,6 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
     }
     azureMonitorProfile: {
       logs: enableAzureMonitorProfileLogs ? {
-        enabled: enableAzureMonitorProfileLogs
         appMonitoring: {
           enabled: enableAppMonitoring
         }
