@@ -102,7 +102,7 @@ param tags object?
 // ============= //
 
 var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? 'SystemAssigned' : null
+  type: (managedIdentities.?systemAssigned ?? false) ? 'SystemAssigned' : 'None'
 } : null
 
 // =============== //
