@@ -32,8 +32,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using Private Endpoints](#example-3-using-private-endpoints)
-- [WAF-aligned](#example-4-waf-aligned)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -373,231 +372,7 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
 </details>
 <p>
 
-### Example 3: _Using Private Endpoints_
-
-This instance deploys the module with Private Endpoints.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvwspe'
-  params: {
-    // Required parameters
-    name: 'dvwspe001'
-    // Non-required parameters
-    location: '<location>'
-    privateEndpoints: [
-      {
-        customDnsConfigs: [
-          {
-            fqdn: 'abc.workspace.com'
-            ipAddresses: [
-              '10.0.0.10'
-              '10.0.0.13'
-            ]
-          }
-        ]
-        ipConfigurations: [
-          {
-            name: 'myIPconfig-feed1'
-            properties: {
-              groupId: 'feed'
-              memberName: 'web-r0'
-              privateIPAddress: '10.0.0.10'
-            }
-          }
-          {
-            name: 'myIPconfig-feed2'
-            properties: {
-              groupId: 'feed'
-              memberName: 'web-r1'
-              privateIPAddress: '10.0.0.13'
-            }
-          }
-        ]
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        service: 'feed'
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
-      }
-      {
-        customDnsConfigs: [
-          {
-            fqdn: 'abc.workspace.com'
-            ipAddresses: [
-              '10.0.0.11'
-            ]
-          }
-        ]
-        ipConfigurations: [
-          {
-            name: 'myIPconfig-global'
-            properties: {
-              groupId: 'global'
-              memberName: 'web'
-              privateIPAddress: '10.0.0.11'
-            }
-          }
-        ]
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        service: 'global'
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
-      }
-    ]
-    publicNetworkAccess: 'Disabled'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "dvwspe001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "customDnsConfigs": [
-            {
-              "fqdn": "abc.workspace.com",
-              "ipAddresses": [
-                "10.0.0.10",
-                "10.0.0.13"
-              ]
-            }
-          ],
-          "ipConfigurations": [
-            {
-              "name": "myIPconfig-feed1",
-              "properties": {
-                "groupId": "feed",
-                "memberName": "web-r0",
-                "privateIPAddress": "10.0.0.10"
-              }
-            },
-            {
-              "name": "myIPconfig-feed2",
-              "properties": {
-                "groupId": "feed",
-                "memberName": "web-r1",
-                "privateIPAddress": "10.0.0.13"
-              }
-            }
-          ],
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "service": "feed",
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
-        },
-        {
-          "customDnsConfigs": [
-            {
-              "fqdn": "abc.workspace.com",
-              "ipAddresses": [
-                "10.0.0.11"
-              ]
-            }
-          ],
-          "ipConfigurations": [
-            {
-              "name": "myIPconfig-global",
-              "properties": {
-                "groupId": "global",
-                "memberName": "web",
-                "privateIPAddress": "10.0.0.11"
-              }
-            }
-          ],
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "service": "global",
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
-        }
-      ]
-    },
-    "publicNetworkAccess": {
-      "value": "Disabled"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 4: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -910,9 +685,10 @@ Configuration details for private endpoints.
 | [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the private endpoint. |
 | [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
+| [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
 | [`location`](#parameter-privateendpointslocation) | string | The location to deploy the private endpoint to. |
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
-| [`manualPrivateLinkServiceConnections`](#parameter-privateendpointsmanualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
+| [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
@@ -1039,6 +815,13 @@ A private IP address obtained from the private endpoint's subnet.
 - Required: Yes
 - Type: string
 
+### Parameter: `privateEndpoints.isManualConnection`
+
+If Manual Private Link Connection is required.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `privateEndpoints.location`
 
 The location to deploy the private endpoint to.
@@ -1082,12 +865,12 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.manualPrivateLinkServiceConnections`
+### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
-Manual PrivateLink Service Connections.
+A message passed to the owner of the remote resource with the manual connection request.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.name`
 
@@ -1326,7 +1109,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm-res-network-privateendpoint:0.1.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.4.0` | Remote reference |
 
 ## Data Collection
 

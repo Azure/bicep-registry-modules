@@ -118,6 +118,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           Role: 'DeploymentValidation'
         }
       }
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      }
     ]
     redisVersion: '6'
     shardCount: 1
@@ -150,4 +156,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       resourceType: 'Redis Cache'
     }
   }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
 }]
