@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "1772646426483930212"
+      "templateHash": "13719053295620709128"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace.",
@@ -962,7 +962,9 @@
           "name": {
             "value": "[format('{0}{1}', parameters('savedSearches')[copyIndex()].name, uniqueString(deployment().name))]"
           },
-          "etag": "[if(contains(parameters('savedSearches')[copyIndex()], 'eTag'), createObject('value', parameters('savedSearches')[copyIndex()].etag), createObject('value', '*'))]",
+          "etag": {
+            "value": "[tryGet(parameters('savedSearches')[copyIndex()], 'etag')]"
+          },
           "displayName": {
             "value": "[parameters('savedSearches')[copyIndex()].displayName]"
           },
@@ -972,9 +974,15 @@
           "query": {
             "value": "[parameters('savedSearches')[copyIndex()].query]"
           },
-          "functionAlias": "[if(contains(parameters('savedSearches')[copyIndex()], 'functionAlias'), createObject('value', parameters('savedSearches')[copyIndex()].functionAlias), createObject('value', ''))]",
-          "functionParameters": "[if(contains(parameters('savedSearches')[copyIndex()], 'functionParameters'), createObject('value', parameters('savedSearches')[copyIndex()].functionParameters), createObject('value', ''))]",
-          "version": "[if(contains(parameters('savedSearches')[copyIndex()], 'version'), createObject('value', parameters('savedSearches')[copyIndex()].version), createObject('value', 2))]"
+          "functionAlias": {
+            "value": "[tryGet(parameters('savedSearches')[copyIndex()], 'functionAlias')]"
+          },
+          "functionParameters": {
+            "value": "[tryGet(parameters('savedSearches')[copyIndex()], 'functionParameters')]"
+          },
+          "version": {
+            "value": "[tryGet(parameters('savedSearches')[copyIndex()], 'version')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -984,7 +992,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "16347089515886811904"
+              "templateHash": "17950009471823327560"
             },
             "name": "Log Analytics Workspace Saved Searches",
             "description": "This module deploys a Log Analytics Workspace Saved Search.",
@@ -1044,7 +1052,7 @@
             },
             "version": {
               "type": "int",
-              "defaultValue": 2,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The version number of the query language."
               }

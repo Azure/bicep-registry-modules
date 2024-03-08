@@ -419,6 +419,12 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           value: '1.1.1.1'
         }
       ]
+      resourceAccessRules: [
+        {
+          resourceId: '<resourceId>'
+          tenantId: '<tenantId>'
+        }
+      ]
       virtualNetworkRules: [
         {
           action: 'Allow'
@@ -848,6 +854,12 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           {
             "action": "Allow",
             "value": "1.1.1.1"
+          }
+        ],
+        "resourceAccessRules": [
+          {
+            "resourceId": "<resourceId>",
+            "tenantId": "<tenantId>"
           }
         ],
         "virtualNetworkRules": [
@@ -1977,7 +1989,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Storage Account. |
+| [`name`](#parameter-name) | string | Name of the Storage Account. Must be lower-case. |
 | [`networkAcls`](#parameter-networkacls) | object | Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny. |
 
 **Conditional parameters**
@@ -2029,7 +2041,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 
 ### Parameter: `name`
 
-Name of the Storage Account.
+Name of the Storage Account. Must be lower-case.
 
 - Required: Yes
 - Type: string
@@ -2060,7 +2072,7 @@ Networks ACLs, this value contains IPs to whitelist and/or Subnet information. I
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`ipRules`](#parameter-networkaclsiprules) | array | Sets the IP ACL rules. |
-| [`resourceAccessRules`](#parameter-networkaclsresourceaccessrules) | array | Sets the resource access rules. |
+| [`resourceAccessRules`](#parameter-networkaclsresourceaccessrules) | array | Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only. |
 | [`virtualNetworkRules`](#parameter-networkaclsvirtualnetworkrules) | array | Sets the virtual network rules. |
 
 ### Parameter: `networkAcls.bypass`
@@ -2106,10 +2118,31 @@ Sets the IP ACL rules.
 
 ### Parameter: `networkAcls.resourceAccessRules`
 
-Sets the resource access rules.
+Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-networkaclsresourceaccessrulesresourceid) | string | The resource ID of the target service. Can also contain a wildcard, if multiple services e.g. in a resource group should be included. |
+| [`tenantId`](#parameter-networkaclsresourceaccessrulestenantid) | string | The ID of the tenant in which the resource resides in. |
+
+### Parameter: `networkAcls.resourceAccessRules.resourceId`
+
+The resource ID of the target service. Can also contain a wildcard, if multiple services e.g. in a resource group should be included.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkAcls.resourceAccessRules.tenantId`
+
+The ID of the tenant in which the resource resides in.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `networkAcls.virtualNetworkRules`
 
@@ -3096,6 +3129,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 This is a generic module for deploying a Storage Account. Any customization for different storage needs (such as a diagnostic or other storage account) need to be done through the Archetype.
 The hierarchical namespace of the storage account (see parameter `enableHierarchicalNamespace`), can be only set at creation time.
+
+A list of supported resource types for the parameter ``networkAclsType.resourceAccessRules`` can be found [here](https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-powershell#trusted-access-based-on-a-managed-identity). These can be used with or without wildcards (`*`) in the ``resourceId`` field.
 
 ## Data Collection
 
