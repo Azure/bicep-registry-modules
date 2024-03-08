@@ -208,10 +208,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       }
     ]
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -517,12 +513,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "managedIdentities": {
       "value": {

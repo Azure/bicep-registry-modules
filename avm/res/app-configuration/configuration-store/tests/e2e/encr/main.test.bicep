@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using Private Endpoints'
-metadata description = 'This instance deploys the module with Private Endpoints.'
+metadata name = 'Using Customer-Managed-Keys with User-Assigned identity'
+metadata description = 'This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.'
 
 // ========== //
 // Parameters //
@@ -9,15 +9,18 @@ metadata description = 'This instance deploys the module with Private Endpoints.
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-keyvault.vaults-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-appconfiguration.configurationstores-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'kvvpe'
+param serviceShort string = 'accencr'
 
-@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
+
+@description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
@@ -26,7 +29,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -35,7 +38,8 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
   }
@@ -52,52 +56,34 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    privateEndpoints: [
+    createMode: 'Default'
+    disableLocalAuth: false
+    enablePurgeProtection: false
+    keyValues: [
       {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
+        contentType: 'contentType'
+        name: 'keyName'
         roleAssignments: [
           {
             roleDefinitionIdOrName: 'Reader'
             principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+
             principalType: 'ServicePrincipal'
           }
         ]
-        ipConfigurations: [
-          {
-            name: 'myIPconfig'
-            properties: {
-              groupId: 'vault'
-              memberName: 'default'
-              privateIPAddress: '10.0.0.10'
-            }
-          }
-        ]
-        customDnsConfigs: [
-          {
-            fqdn: 'abc.keyvault.com'
-            ipAddresses: [
-              '10.0.0.10'
-            ]
-          }
-        ]
+        value: 'valueName'
       }
     ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
+    softDeleteRetentionInDays: 1
+    managedIdentities: {
+      userAssignedResourceIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
     }
-    // Only for testing purposes
-    enablePurgeProtection: false
+    customerManagedKey: {
+      keyName: nestedDependencies.outputs.keyName
+      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+      userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+    }
   }
 }]
-
-output resourceId string = testDeployment[1].outputs.resourceId
