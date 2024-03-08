@@ -147,7 +147,8 @@ jobs:
   #   PSRule validation   #
   #########################
   job_psrule_test: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: "PSRule [${{ matrix.testCases.name }}]"
+    #name: "PSRule [${{ matrix.testCases.name }}]"
+    name: "PSRule [${{ matrix.testCases.path }}]"
     runs-on: ubuntu-latest
     needs:
       - job_initialize_pipeline
