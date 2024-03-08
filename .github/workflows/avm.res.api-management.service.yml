@@ -10,6 +10,11 @@ on:
         description: "Execute static validation"
         required: false
         default: true
+      psruleContinueOnError:
+          type: boolean
+          description: "PSRule continue on error"
+          required: false
+          default: true
       deploymentValidation:
         type: boolean
         description: "Execute deployment validation"
