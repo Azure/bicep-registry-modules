@@ -16,7 +16,8 @@ on:
 #   TOKEN_NAMEPREFIX: '${{ secrets.TOKEN_NAMEPREFIX }}'
 env:
     modulePath: "avm/res/app"
-    templateFilePath: "avm/res/app/container-app/tests/e2e/waf-aligned/main.test.bicep"
+    # templateFilePath: "avm/res/app/container-app/tests/e2e/waf-aligned/main.test.bicep"
+    templateFilePath: "avm/res/app/container-app/"
 
 jobs:
 #   psrule:
