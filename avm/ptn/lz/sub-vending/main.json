@@ -5,10 +5,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "17852250894325954625"
+      "templateHash": "15001679761877351184"
     },
-    "name": "`main.bicep` Parameters",
-    "description": "This module is designed to accelerate deployment of landing zones (aka Subscriptions) within an Azure AD Tenant.",
+    "name": "Key Vaults",
+    "description": "This module deploys a subscription to accelerate deployment of landing zones.",
+    "owner": "Azure/module-maintainers",
     "details": "These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)\n\nThis is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.\n\n> For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)"
   },
   "parameters": {
@@ -316,9 +317,9 @@
         "description": "Optional. Supply an array of objects containing the details of the role assignments to create.\n\nEach object must contain the following `keys`:\n- `principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.\n- `definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:\n  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Network Contributor, Role Based Access Control Administrator (Preview), User Access Administrator, Security Admin). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.\n  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition\n    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`\n  - You can provide the RBAC role Id of a Built-in RBAC Role Definition\n    - e.g. `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`\n- `relativeScope` = 2 options can be provided for input value:\n    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope\n    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group\n\n> See below [example in parameter file](#parameter-file) of various combinations\n\n- Type: `[]` Array\n- Default value: `[]` *(empty array)*.\n"
       }
     },
-    "disableTelemetry": {
+    "enableTelemetry": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
@@ -469,7 +470,7 @@
   },
   "resources": [
     {
-      "condition": "[not(parameters('disableTelemetry'))]",
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
       "name": "[format('46d3xbcp.ptn.lz-subvending.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('virtualNetworkLocation')), 0, 4))]",
@@ -695,9 +696,6 @@
           },
           "roleAssignments": {
             "value": "[parameters('roleAssignments')]"
-          },
-          "disableTelemetry": {
-            "value": "[parameters('disableTelemetry')]"
           },
           "deploymentScriptResourceGroupName": {
             "value": "[parameters('deploymentScriptResourceGroupName')]"
@@ -14441,28 +14439,28 @@
     "subscriptionAcceptOwnershipState": {
       "type": "string",
       "metadata": {
-        "description": "The Subscription Owner State. Only used when creating MCA Subscriptions across tenants"
+        "description": "The Subscription Owner State. Only used when creating MCA Subscriptions across tenants."
       },
       "value": "[if(and(and(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), not(empty(parameters('subscriptionTenantId')))), not(empty(parameters('subscriptionOwnerId')))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionAcceptOwnershipState.value, 'N/A')]"
     },
     "subscriptionAcceptOwnershipUrl": {
       "type": "string",
       "metadata": {
-        "description": "The Subscription Ownership URL. Only used when creating MCA Subscriptions across tenants"
+        "description": "The Subscription Ownership URL. Only used when creating MCA Subscriptions across tenants."
       },
       "value": "[if(and(and(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), not(empty(parameters('subscriptionTenantId')))), not(empty(parameters('subscriptionOwnerId')))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionAcceptOwnershipUrl.value, 'N/A')]"
     },
     "failedResourceProviders": {
       "type": "string",
       "metadata": {
-        "description": "The resource providers that failed to register"
+        "description": "The resource providers that failed to register."
       },
       "value": "[if(not(empty(parameters('resourceProviders'))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscriptionResources), '2022-09-01').outputs.failedProviders.value, '')]"
     },
     "failedResourceProvidersFeatures": {
       "type": "string",
       "metadata": {
-        "description": "The resource providers features that failed to register"
+        "description": "The resource providers features that failed to register."
       },
       "value": "[if(not(empty(parameters('resourceProviders'))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscriptionResources), '2022-09-01').outputs.failedFeatures.value, '')]"
     }

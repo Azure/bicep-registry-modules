@@ -1,6 +1,6 @@
-# `main.bicep` Parameters `[Microsoft.lz/subvending]`
+# Key Vaults `[Microsoft.lz/subvending]`
 
-This module is designed to accelerate deployment of landing zones (aka Subscriptions) within an Azure AD Tenant.
+This module deploys a subscription to accelerate deployment of landing zones.
 
 ## Navigation
 
@@ -55,61 +55,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/lz/sub-vending:<version>`.
 
-- [Hub-Spoke](#example-1-hub-spoke)
-- [New-Subscription](#example-2-new-subscription)
-- [Vwan-Spoke](#example-3-vwan-spoke)
+- [Using only defaults.](#example-1-using-only-defaults)
+- [Hub and spoke topology.](#example-2-hub-and-spoke-topology)
+- [Vwan topology.](#example-3-vwan-topology)
 
-### Example 1: _Hub-Spoke_
+### Example 1: _Using only defaults._
 
-<details>
+This instance deploys the module with the minimum set of required parameters.
 
-<summary>via Bicep module</summary>
-
-```bicep
-module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-}
-module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-
-@description('Optional. The location to deploy resources to.')
-param location string = 'uksouth'
-
-@description('Optional. The subscription billing scope.')
-param subscriptionBillingScope string
-
-@description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
-//param namePrefix string = 'avmsb'
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ssahs'
-
-module nestedDependencies 'dependencies.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
-  params: {
-    hubVirtualNetworkName: 'vnet-uksouth-hub-blzv'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {}
-}
-```
-
-</details>
-<p>
-
-### Example 2: _New-Subscription_
 
 <details>
 
@@ -117,54 +70,129 @@ module nestedDependencies 'dependencies.bicep' = {
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-}
-module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-
-@description('Optional. The location to deploy resources to.')
-param location string = 'uksouth'
-
-@description('Optional. The subscription billing scope.')
-param subscriptionBillingScope string
-
-@description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
-//param namePrefix string = 'avmsb'
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ssamin'
-
-module createSub '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-ssamin'
   params: {
-    subscriptionAliasEnabled: true
-    subscriptionAliasName: 'sub-blzv-tests-ssamin'
-    subscriptionDisplayName: 'sub-blzv-tests-ssamin'
-    subscriptionTags: {
-      namePrefix: namePrefix
-      serviceShort: serviceShort
+    deploymentScriptLocation: '<location>'
+    deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
+    deploymentScriptName: '<deploymentScriptName>'
+    deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
+    deploymentScriptResourceGroupName: '<deploymentScriptResourceGroupName>'
+    deploymentScriptStorageAccountName: 'stgdsssamin'
+    deploymentScriptVirtualNetworkName: '<deploymentScriptVirtualNetworkName>'
+    resourceProviders: {
+      'Microsoft.AVS': [
+        'AzureServicesVm'
+      ]
+      'Microsoft.HybridCompute': [
+        'ArcServerPrivateLinkPreview'
+      ]
     }
-    subscriptionWorkload: 'Production'
-    subscriptionManagementGroupAssociationEnabled: true
-    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
-    deploymentScriptResourceGroupName: 'rsg-${location}-ds-ssamin'
-    deploymentScriptManagedIdentityName: 'id-${location}-ssamin'
-    deploymentScriptName: 'ds-${location}ssamin'
-    virtualNetworkEnabled: false
     roleAssignmentEnabled: true
     roleAssignments: [
       {
-        principalId: '7eca0dca-6701-46f1-b7b6-8b424dab50b3'
         definition: 'Reader'
+        principalId: '7eca0dca-6701-46f1-b7b6-8b424dab50b3'
       }
     ]
-    deploymentScriptNetworkSecurityGroupName: 'nsg-${location}-ds-ssamin'
-    deploymentScriptVirtualNetworkName: 'vnet-${location}-ds-ssamin'
-    deploymentScriptStorageAccountName: 'stgdsssamin'
-    deploymentScriptLocation: '<location>'
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: 'sub-blzv-tests-ssamin'
+    subscriptionDisplayName: 'sub-blzv-tests-ssamin'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionTags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
+    subscriptionWorkload: 'Production'
+    virtualNetworkEnabled: false
     virtualNetworkLocation: '<location>'
-    resourceProviders: {
-      'Microsoft.HybridCompute': [ 'ArcServerPrivateLinkPreview' ]
-      'Microsoft.AVS': [ 'AzureServicesVm' ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentScriptLocation": {
+      "value": "<location>"
+    },
+    "deploymentScriptManagedIdentityName": {
+      "value": "<deploymentScriptManagedIdentityName>"
+    },
+    "deploymentScriptName": {
+      "value": "<deploymentScriptName>"
+    },
+    "deploymentScriptNetworkSecurityGroupName": {
+      "value": "<deploymentScriptNetworkSecurityGroupName>"
+    },
+    "deploymentScriptResourceGroupName": {
+      "value": "<deploymentScriptResourceGroupName>"
+    },
+    "deploymentScriptStorageAccountName": {
+      "value": "stgdsssamin"
+    },
+    "deploymentScriptVirtualNetworkName": {
+      "value": "<deploymentScriptVirtualNetworkName>"
+    },
+    "resourceProviders": {
+      "value": {
+        "Microsoft.AVS": [
+          "AzureServicesVm"
+        ],
+        "Microsoft.HybridCompute": [
+          "ArcServerPrivateLinkPreview"
+        ]
+      }
+    },
+    "roleAssignmentEnabled": {
+      "value": true
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "definition": "Reader",
+          "principalId": "7eca0dca-6701-46f1-b7b6-8b424dab50b3"
+        }
+      ]
+    },
+    "subscriptionAliasEnabled": {
+      "value": true
+    },
+    "subscriptionAliasName": {
+      "value": "sub-blzv-tests-ssamin"
+    },
+    "subscriptionDisplayName": {
+      "value": "sub-blzv-tests-ssamin"
+    },
+    "subscriptionManagementGroupAssociationEnabled": {
+      "value": true
+    },
+    "subscriptionManagementGroupId": {
+      "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionTags": {
+      "value": {
+        "namePrefix": "<namePrefix>",
+        "serviceShort": "<serviceShort>"
+      }
+    },
+    "subscriptionWorkload": {
+      "value": "Production"
+    },
+    "virtualNetworkEnabled": {
+      "value": false
+    },
+    "virtualNetworkLocation": {
+      "value": "<location>"
     }
   }
 }
@@ -173,22 +201,10 @@ module createSub '../../../main.bicep' = {
 </details>
 <p>
 
-<details>
+### Example 2: _Hub and spoke topology._
 
-<summary>via JSON Parameter file</summary>
+This instance deploys a subscription with a hub-spoke network topology.
 
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {}
-}
-```
-
-</details>
-<p>
-
-### Example 3: _Vwan-Spoke_
 
 <details>
 
@@ -196,26 +212,48 @@ module createSub '../../../main.bicep' = {
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-}
-module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-
-@description('Optional. The location to deploy resources to.')
-param location string = 'uksouth'
-
-@description('Optional. The subscription billing scope.')
-param subscriptionBillingScope string
-
-@description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
-//param namePrefix string = 'avmsb'
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ssawan'
-
-module nestedDependencies 'dependencies.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
+  //name: 'sub-blzv-tests-ssahs-add-vnet-spoke'
+  name: '${uniqueString(deployment().name, location)}-test-ssahs'
   params: {
-    hubVirtualNetworkName: 'vnet-uksouth-hub-blzv'
+    deploymentScriptLocation: '<location>'
+    deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
+    deploymentScriptName: '<deploymentScriptName>'
+    deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
+    deploymentScriptResourceGroupName: '<deploymentScriptResourceGroupName>'
+    deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
+    deploymentScriptVirtualNetworkName: '<deploymentScriptVirtualNetworkName>'
+    hubNetworkResourceId: '<hubNetworkResourceId>'
+    resourceProviders: {
+      'Microsoft.AVS': [
+        'AzureServicesVm'
+      ]
+      'Microsoft.HybridCompute': [
+        'ArcServerPrivateLinkPreview'
+      ]
+    }
+    roleAssignmentEnabled: true
+    roleAssignments: [
+      {
+        definition: 'Network Contributor'
+        principalId: '7eca0dca-6701-46f1-b7b6-8b424dab50b3'
+      }
+    ]
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: 'sub-blzv-tests-ssahs'
+    subscriptionDisplayName: 'sub-blzv-tests-ssahs'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionWorkload: 'Production'
+    virtualNetworkAddressSpace: [
+      '10.100.0.0/16'
+    ]
+    virtualNetworkEnabled: true
+    virtualNetworkLocation: '<location>'
+    virtualNetworkName: '<virtualNetworkName>'
+    virtualNetworkPeeringEnabled: true
+    virtualNetworkResourceGroupLockEnabled: false
+    virtualNetworkResourceGroupName: '<virtualNetworkResourceGroupName>'
+    virtualNetworkUseRemoteGateways: false
   }
 }
 ```
@@ -231,7 +269,254 @@ module nestedDependencies 'dependencies.bicep' = {
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {}
+  "parameters": {
+    "deploymentScriptLocation": {
+      "value": "<location>"
+    },
+    "deploymentScriptManagedIdentityName": {
+      "value": "<deploymentScriptManagedIdentityName>"
+    },
+    "deploymentScriptName": {
+      "value": "<deploymentScriptName>"
+    },
+    "deploymentScriptNetworkSecurityGroupName": {
+      "value": "<deploymentScriptNetworkSecurityGroupName>"
+    },
+    "deploymentScriptResourceGroupName": {
+      "value": "<deploymentScriptResourceGroupName>"
+    },
+    "deploymentScriptStorageAccountName": {
+      "value": "<deploymentScriptStorageAccountName>"
+    },
+    "deploymentScriptVirtualNetworkName": {
+      "value": "<deploymentScriptVirtualNetworkName>"
+    },
+    "hubNetworkResourceId": {
+      "value": "<hubNetworkResourceId>"
+    },
+    "resourceProviders": {
+      "value": {
+        "Microsoft.AVS": [
+          "AzureServicesVm"
+        ],
+        "Microsoft.HybridCompute": [
+          "ArcServerPrivateLinkPreview"
+        ]
+      }
+    },
+    "roleAssignmentEnabled": {
+      "value": true
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "definition": "Network Contributor",
+          "principalId": "7eca0dca-6701-46f1-b7b6-8b424dab50b3"
+        }
+      ]
+    },
+    "subscriptionAliasEnabled": {
+      "value": true
+    },
+    "subscriptionAliasName": {
+      "value": "sub-blzv-tests-ssahs"
+    },
+    "subscriptionDisplayName": {
+      "value": "sub-blzv-tests-ssahs"
+    },
+    "subscriptionManagementGroupAssociationEnabled": {
+      "value": true
+    },
+    "subscriptionManagementGroupId": {
+      "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionWorkload": {
+      "value": "Production"
+    },
+    "virtualNetworkAddressSpace": {
+      "value": [
+        "10.100.0.0/16"
+      ]
+    },
+    "virtualNetworkEnabled": {
+      "value": true
+    },
+    "virtualNetworkLocation": {
+      "value": "<location>"
+    },
+    "virtualNetworkName": {
+      "value": "<virtualNetworkName>"
+    },
+    "virtualNetworkPeeringEnabled": {
+      "value": true
+    },
+    "virtualNetworkResourceGroupLockEnabled": {
+      "value": false
+    },
+    "virtualNetworkResourceGroupName": {
+      "value": "<virtualNetworkResourceGroupName>"
+    },
+    "virtualNetworkUseRemoteGateways": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Vwan topology._
+
+This instance deploys a subscription with a vwan network topology.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
+  //name: 'sub-blzv-tests-ssawan-add-vwan-spoke'
+  name: '${uniqueString(deployment().name, location)}-test-ssawan'
+  params: {
+    deploymentScriptLocation: '<location>'
+    deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
+    deploymentScriptName: '<deploymentScriptName>'
+    deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
+    deploymentScriptResourceGroupName: '<deploymentScriptResourceGroupName>'
+    deploymentScriptStorageAccountName: 'stgdsssawan'
+    deploymentScriptVirtualNetworkName: '<deploymentScriptVirtualNetworkName>'
+    hubNetworkResourceId: '<hubNetworkResourceId>'
+    resourceProviders: {}
+    roleAssignmentEnabled: true
+    roleAssignments: [
+      {
+        definition: 'Network Contributor'
+        principalId: '7eca0dca-6701-46f1-b7b6-8b424dab50b3'
+      }
+    ]
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: 'sub-blzv-tests-ssawan'
+    subscriptionDisplayName: 'sub-blzv-tests-ssawan'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionTags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
+    subscriptionWorkload: 'Production'
+    virtualNetworkAddressSpace: [
+      '10.200.0.0/16'
+    ]
+    virtualNetworkEnabled: true
+    virtualNetworkLocation: '<location>'
+    virtualNetworkName: '<virtualNetworkName>'
+    virtualNetworkPeeringEnabled: true
+    virtualNetworkResourceGroupLockEnabled: false
+    virtualNetworkResourceGroupName: '<virtualNetworkResourceGroupName>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentScriptLocation": {
+      "value": "<location>"
+    },
+    "deploymentScriptManagedIdentityName": {
+      "value": "<deploymentScriptManagedIdentityName>"
+    },
+    "deploymentScriptName": {
+      "value": "<deploymentScriptName>"
+    },
+    "deploymentScriptNetworkSecurityGroupName": {
+      "value": "<deploymentScriptNetworkSecurityGroupName>"
+    },
+    "deploymentScriptResourceGroupName": {
+      "value": "<deploymentScriptResourceGroupName>"
+    },
+    "deploymentScriptStorageAccountName": {
+      "value": "stgdsssawan"
+    },
+    "deploymentScriptVirtualNetworkName": {
+      "value": "<deploymentScriptVirtualNetworkName>"
+    },
+    "hubNetworkResourceId": {
+      "value": "<hubNetworkResourceId>"
+    },
+    "resourceProviders": {
+      "value": {}
+    },
+    "roleAssignmentEnabled": {
+      "value": true
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "definition": "Network Contributor",
+          "principalId": "7eca0dca-6701-46f1-b7b6-8b424dab50b3"
+        }
+      ]
+    },
+    "subscriptionAliasEnabled": {
+      "value": true
+    },
+    "subscriptionAliasName": {
+      "value": "sub-blzv-tests-ssawan"
+    },
+    "subscriptionDisplayName": {
+      "value": "sub-blzv-tests-ssawan"
+    },
+    "subscriptionManagementGroupAssociationEnabled": {
+      "value": true
+    },
+    "subscriptionManagementGroupId": {
+      "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionTags": {
+      "value": {
+        "namePrefix": "<namePrefix>",
+        "serviceShort": "<serviceShort>"
+      }
+    },
+    "subscriptionWorkload": {
+      "value": "Production"
+    },
+    "virtualNetworkAddressSpace": {
+      "value": [
+        "10.200.0.0/16"
+      ]
+    },
+    "virtualNetworkEnabled": {
+      "value": true
+    },
+    "virtualNetworkLocation": {
+      "value": "<location>"
+    },
+    "virtualNetworkName": {
+      "value": "<virtualNetworkName>"
+    },
+    "virtualNetworkPeeringEnabled": {
+      "value": true
+    },
+    "virtualNetworkResourceGroupLockEnabled": {
+      "value": false
+    },
+    "virtualNetworkResourceGroupName": {
+      "value": "<virtualNetworkResourceGroupName>"
+    }
+  }
 }
 ```
 
@@ -252,7 +537,7 @@ module nestedDependencies 'dependencies.bicep' = {
 | [`deploymentScriptResourceGroupName`](#parameter-deploymentscriptresourcegroupname) | string | The name of the resource group to create the deployment script for resource providers registration. |
 | [`deploymentScriptStorageAccountName`](#parameter-deploymentscriptstorageaccountname) | string | The name of the storage account for the deployment script. |
 | [`deploymentScriptVirtualNetworkName`](#parameter-deploymentscriptvirtualnetworkname) | string | The name of the private virtual network for the deployment script. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length. |
-| [`disableTelemetry`](#parameter-disabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`existingSubscriptionId`](#parameter-existingsubscriptionid) | string | An existing subscription ID. Use this when you do not want the module to create a new subscription. But do want to manage the management group membership. A subscription ID should be provided in the example format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`.<p><li>Type: String<li>Default value: `''` *(empty string)*.<p> |
 | [`hubNetworkResourceId`](#parameter-hubnetworkresourceid) | string | The resource ID of the Virtual Network or Virtual WAN Hub in the hub to which the created Virtual Network, by this module, will be peered/connected to via Virtual Network Peering or a Virtual WAN Virtual Hub Connection.<p><p>**Example Expected Values:**<li>`''` (empty string)<li>Hub Virtual Network Resource ID: `/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualNetworks/xxxxxxxxxx`<li>Virtual WAN Virtual Hub Resource ID: `/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualHubs/xxxxxxxxxx`<p><li>Type: String<li>Default value: `''` *(empty string)*.<p> |
 | [`resourceProviders`](#parameter-resourceproviders) | object | An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.<p><li>Type: `{}` Object<li>Default value: `{<p>  'Microsoft.ApiManagement'             : []<p>    'Microsoft.AppPlatform'             : []<p>    'Microsoft.Authorization'           : []<p>    'Microsoft.Automation'              : []<p>    'Microsoft.AVS'                     : []<p>    'Microsoft.Blueprint'               : []<p>    'Microsoft.BotService'              : []<p>    'Microsoft.Cache'                   : []<p>    'Microsoft.Cdn'                     : []<p>    'Microsoft.CognitiveServices'       : []<p>    'Microsoft.Compute'                 : []<p>    'Microsoft.ContainerInstance'       : []<p>    'Microsoft.ContainerRegistry'       : []<p>    'Microsoft.ContainerService'        : []<p>    'Microsoft.CostManagement'          : []<p>    'Microsoft.CustomProviders'         : []<p>    'Microsoft.Databricks'              : []<p>    'Microsoft.DataLakeAnalytics'       : []<p>    'Microsoft.DataLakeStore'           : []<p>    'Microsoft.DataMigration'           : []<p>    'Microsoft.DataProtection'          : []<p>    'Microsoft.DBforMariaDB'            : []<p>    'Microsoft.DBforMySQL'              : []<p>    'Microsoft.DBforPostgreSQL'         : []<p>    'Microsoft.DesktopVirtualization'   : []<p>    'Microsoft.Devices'                 : []<p>    'Microsoft.DevTestLab'              : []<p>    'Microsoft.DocumentDB'              : []<p>    'Microsoft.EventGrid'               : []<p>    'Microsoft.EventHub'                : []<p>    'Microsoft.HDInsight'               : []<p>    'Microsoft.HealthcareApis'          : []<p>    'Microsoft.GuestConfiguration'      : []<p>    'Microsoft.KeyVault'                : []<p>    'Microsoft.Kusto'                   : []<p>    'microsoft.insights'                : []<p>    'Microsoft.Logic'                   : []<p>    'Microsoft.MachineLearningServices' : []<p>    'Microsoft.Maintenance'             : []<p>    'Microsoft.ManagedIdentity'         : []<p>    'Microsoft.ManagedServices'         : []<p>    'Microsoft.Management'              : []<p>    'Microsoft.Maps'                    : []<p>    'Microsoft.MarketplaceOrdering'     : []<p>    'Microsoft.Media'                   : []<p>    'Microsoft.MixedReality'            : []<p>    'Microsoft.Network'                 : []<p>    'Microsoft.NotificationHubs'        : []<p>    'Microsoft.OperationalInsights'     : []<p>    'Microsoft.OperationsManagement'    : []<p>    'Microsoft.PolicyInsights'          : []<p>    'Microsoft.PowerBIDedicated'        : []<p>    'Microsoft.Relay'                   : []<p>    'Microsoft.RecoveryServices'        : []<p>    'Microsoft.Resources'               : []<p>    'Microsoft.Search'                  : []<p>    'Microsoft.Security'                : []<p>    'Microsoft.SecurityInsights'        : []<p>    'Microsoft.ServiceBus'              : []<p>    'Microsoft.ServiceFabric'           : []<p>    'Microsoft.Sql'                     : []<p>    'Microsoft.Storage'                 : []<p>    'Microsoft.StreamAnalytics'         : []<p>    'Microsoft.TimeSeriesInsights'      : []<p>    'Microsoft.Web'                     : []<p>}`.<p> |
@@ -343,13 +628,13 @@ The name of the private virtual network for the deployment script. The string mu
 - Type: string
 - Default: `[format('vnet-{0}', deployment().location)]`
 
-### Parameter: `disableTelemetry`
+### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `existingSubscriptionId`
 
@@ -696,10 +981,10 @@ An array of of objects of virtual hub route table resource IDs to propagate rout
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `failedResourceProviders` | string | The resource providers that failed to register |
-| `failedResourceProvidersFeatures` | string | The resource providers features that failed to register |
-| `subscriptionAcceptOwnershipState` | string | The Subscription Owner State. Only used when creating MCA Subscriptions across tenants |
-| `subscriptionAcceptOwnershipUrl` | string | The Subscription Ownership URL. Only used when creating MCA Subscriptions across tenants |
+| `failedResourceProviders` | string | The resource providers that failed to register. |
+| `failedResourceProvidersFeatures` | string | The resource providers features that failed to register. |
+| `subscriptionAcceptOwnershipState` | string | The Subscription Owner State. Only used when creating MCA Subscriptions across tenants. |
+| `subscriptionAcceptOwnershipUrl` | string | The Subscription Ownership URL. Only used when creating MCA Subscriptions across tenants. |
 | `subscriptionId` | string | The Subscription ID that has been created or provided. |
 | `subscriptionResourceId` | string | The Subscription Resource ID that has been created or provided. |
 
