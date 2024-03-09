@@ -118,7 +118,7 @@ This instance deploys the module with a Gremlin Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dddagrm'
+  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-test-dddagrm'
   params: {
     // Required parameters
     locations: [
@@ -386,7 +386,7 @@ This instance deploys the module with a Mongo Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dddamng'
+  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-test-dddamng'
   params: {
     // Required parameters
     locations: [
@@ -920,7 +920,7 @@ This instance deploys the module without a Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dddapln'
+  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-test-dddapln'
   params: {
     // Required parameters
     locations: [
@@ -1072,7 +1072,7 @@ This instance deploys the module with a SQL Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dddasql'
+  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-test-dddasql'
   params: {
     // Required parameters
     locations: [
@@ -1626,7 +1626,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dddawaf'
+  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-test-dddawaf'
   params: {
     // Required parameters
     locations: [
