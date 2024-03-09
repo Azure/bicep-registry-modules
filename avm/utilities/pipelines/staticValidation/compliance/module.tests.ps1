@@ -214,8 +214,9 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
       $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e')
       foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
-        $pathExisting = Test-Path (Join-Path -Path $e2eTestFolderPath 'main.test.bicep')
-        $pathExisting | Should -Be $true
+        $filePath = Join-Path -Path $e2eTestFolderPath 'main.test.bicep'
+        $pathExisting = Test-Path $filePath
+        $pathExisting | Should -Be $true -Because "path [$filePath] is expected to exist."
       }
     }
   }
