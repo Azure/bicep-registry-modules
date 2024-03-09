@@ -64,6 +64,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
+    enableAnalyticalStorage: true
     name: '${namePrefix}${serviceShort}001'
     locations: [
       {
@@ -163,7 +164,7 @@ module testDeployment '../../../main.bicep' = {
             throughput: 600
           }
         ]
-        name: '${namePrefix}-sql-${serviceShort}-001'
+        name: 'all-configs-specified'
       }
       {
         containers: [
@@ -263,6 +264,19 @@ module testDeployment '../../../main.bicep' = {
             ]
           }
         ]
+        name: 'database-and-container-fixed-throughput-level'
+        throughput: 500
+      }
+      {
+        containers: [
+          {
+            name: 'container-003'
+            throughput: 500
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
         name: 'container-fixed-throughput-level'
       }
       {
@@ -281,7 +295,20 @@ module testDeployment '../../../main.bicep' = {
         containers: [
           {
             name: 'container-003'
-            autoscaleSettingsMaxThroughput: 500
+            autoscaleSettingsMaxThroughput: 1000
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'database-and-container-autoscale-level'
+        autoscaleSettingsMaxThroughput: 1000
+      }
+      {
+        containers: [
+          {
+            name: 'container-003'
+            autoscaleSettingsMaxThroughput: 1000
             paths: [
               '/myPartitionKey'
             ]
@@ -299,7 +326,7 @@ module testDeployment '../../../main.bicep' = {
           }
         ]
         name: 'database-autoscale-level'
-        autoscaleSettingsMaxThroughput: 500
+        autoscaleSettingsMaxThroughput: 1000
       }
       {
         containers: [

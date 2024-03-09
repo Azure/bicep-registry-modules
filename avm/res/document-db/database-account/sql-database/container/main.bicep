@@ -80,7 +80,7 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
       } : null
     }
     options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' }) ? null : {
-      throughput: autoscaleSettingsMaxThroughput == null ? throughput : null
+      throughput: autoscaleSettingsMaxThroughput == null && throughput != -1 ? throughput : null
       autoscaleSettings: autoscaleSettingsMaxThroughput != null ? {
         maxThroughput: autoscaleSettingsMaxThroughput
       } : null

@@ -33,6 +33,12 @@ param locations failoverLocations[]
 @description('Optional. Default to Session. The default consistency level of the Cosmos DB account.')
 param defaultConsistencyLevel string = 'Session'
 
+@description('Optional. Default to false. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.')
+param disableLocalAuth bool = false
+
+@description('Optional. Default to false. Flag to indicate whether to enable storage analytics.')
+param enableAnalyticalStorage bool = false
+
 @description('Optional. Default to true. Enable automatic failover for regions.')
 param automaticFailover bool = true
 
@@ -179,18 +185,16 @@ var backupPolicy = backupPolicyType == 'Continuous' ? {
 }
 
 var databaseAccount_properties = union({
-    databaseAccountOfferType: databaseAccountOfferType
-  }, ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases)) ? {
-    // Common properties
-    consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
-    locations: databaseAccount_locations
     capabilities: capabilities
-    enableFreeTier: enableFreeTier
     backupPolicy: backupPolicy
-  } : {}), (!empty(sqlDatabases) ? {
-    // SQLDB properties
+    enableFreeTier: enableFreeTier
+    disableLocalAuth: disableLocalAuth
+    locations: databaseAccount_locations
     enableAutomaticFailover: automaticFailover
-  } : {}), (!empty(mongodbDatabases) ? {
+    enableAnalyticalStorage: enableAnalyticalStorage
+    databaseAccountOfferType: databaseAccountOfferType
+    consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
+  }, (!empty(mongodbDatabases) ? {
     // MongoDb properties
     apiProperties: {
       serverVersion: serverVersion
@@ -286,10 +290,10 @@ resource databaseAccount_roleAssignments 'Microsoft.Authorization/roleAssignment
 module databaseAccount_sqlDatabases 'sql-database/main.bicep' = [for sqlDatabase in sqlDatabases: {
   name: '${uniqueString(deployment().name, location)}-sqldb-${sqlDatabase.name}'
   params: {
-    databaseAccountName: databaseAccount.name
     name: sqlDatabase.name
     containers: sqlDatabase.?containers
     throughput: sqlDatabase.?throughput
+    databaseAccountName: databaseAccount.name
     autoscaleSettingsMaxThroughput: sqlDatabase.?autoscaleSettingsMaxThroughput
   }
 }]

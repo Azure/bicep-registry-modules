@@ -124,3 +124,120 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     diagnosticDependencies
   ]
 }]
+
+module enableAnalyticalStorage '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-analytical-${serviceShort}'
+  params: {
+    location: resourceLocation
+    enableAnalyticalStorage: true
+    name: 'analytical-enabled-acc'
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: resourceLocation
+      }
+    ]
+  }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
+}
+
+module enabledisableLocalAuth '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-disableLocalAuth-${serviceShort}'
+  params: {
+    disableLocalAuth: true
+    location: resourceLocation
+    name: 'disable-local-auth-acc'
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: resourceLocation
+      }
+    ]
+  }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
+}
+
+module enableZoneRedundant '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-zoneRedudant-${serviceShort}'
+  params: {
+    location: resourceLocation
+    name: 'zone-redundant-acc'
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: true
+        locationName: resourceLocation
+      }
+      {
+        failoverPriority: 1
+        isZoneRedundant: true
+        locationName: nestedDependencies.outputs.pairedRegionName
+      }
+    ]
+  }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
+}
+
+module disableAutomaticFailover '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-disableAutomaticFailover-${serviceShort}'
+  params: {
+    automaticFailover: false
+    location: resourceLocation
+    name: 'disable-automatic-failover-acc'
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: true
+        locationName: resourceLocation
+      }
+      {
+        failoverPriority: 1
+        isZoneRedundant: true
+        locationName: nestedDependencies.outputs.pairedRegionName
+      }
+    ]
+  }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
+}
+
+module periodicBackup '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-periodicBackup-${serviceShort}'
+  params: {
+    location: resourceLocation
+    name: 'periodic-backup-acc'
+    backupPolicyType: 'Periodic'
+    backupIntervalInMinutes: 300
+    backupStorageRedundancy: 'Zone'
+    backupRetentionIntervalInHours: 16
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: resourceLocation
+      }
+    ]
+  }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
+}
