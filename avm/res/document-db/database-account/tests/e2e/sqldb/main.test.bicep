@@ -64,6 +64,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
+    location: resourceLocation
     enableAnalyticalStorage: true
     name: '${namePrefix}${serviceShort}001'
     locations: [
@@ -92,7 +93,6 @@ module testDeployment '../../../main.bicep' = {
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
-    location: resourceLocation
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -264,7 +264,7 @@ module testDeployment '../../../main.bicep' = {
             ]
           }
         ]
-        name: 'database-and-container-fixed-throughput-level'
+        name: 'db-and-container-fixed-throughput-level'
         throughput: 500
       }
       {
@@ -301,7 +301,7 @@ module testDeployment '../../../main.bicep' = {
             ]
           }
         ]
-        name: 'database-and-container-autoscale-level'
+        name: 'db-and-container-autoscale-level'
         autoscaleSettingsMaxThroughput: 1000
       }
       {
