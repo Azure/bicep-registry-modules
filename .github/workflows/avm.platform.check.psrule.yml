@@ -16,6 +16,7 @@ on:
 #   TOKEN_NAMEPREFIX: '${{ secrets.TOKEN_NAMEPREFIX }}'
 env:
     modulePath: "avm/res/app"
+    templateFilePath: "avm/res/app"
 
 jobs:
 #   psrule:
@@ -150,7 +151,7 @@ jobs:
   #########################
   job_psrule_test: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     #name: "PSRule [${{ matrix.testCases.name }}]"
-    name: "PSRule [${{ matrix.testCases.path }}]"
+    name: "PSRule on source"
     runs-on: ubuntu-latest
     needs:
       - job_initialize_pipeline
@@ -167,7 +168,7 @@ jobs:
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
           #templateFilePath: "${{ env.modulePath }}/${{ matrix.testCases.path }}"
-          templateFilePath: "avm/res/app"
+          templateFilePath: "${{ env.templateFilePath }}"
           subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           psrulePath: "avm/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
