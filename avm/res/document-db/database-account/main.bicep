@@ -73,7 +73,7 @@ param mongodbDatabases array = []
 @description('Optional. Gremlin Databases configurations.')
 param gremlinDatabases array = []
 
-@description('Optional. Default to true. Enable/Disable usage telemetry for module.')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. The lock settings of the service.')
