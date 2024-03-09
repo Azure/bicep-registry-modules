@@ -85,7 +85,7 @@ body:
         - "avm/res/event-grid/domain"
         - "avm/res/event-grid/system-topic"
         - "avm/res/event-grid/topic"
-        # - "avm/res/event-hub/namespace"
+        - "avm/res/event-hub/namespace"
         - "avm/res/health-bot/health-bot"
         # - "avm/res/healthcare-apis/workspace"
         - "avm/res/insights/action-group"

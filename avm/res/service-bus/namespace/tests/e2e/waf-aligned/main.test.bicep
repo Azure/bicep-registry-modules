@@ -199,4 +199,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     publicNetworkAccess: 'Enabled'
     minimumTlsVersion: '1.2'
   }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
 }]
