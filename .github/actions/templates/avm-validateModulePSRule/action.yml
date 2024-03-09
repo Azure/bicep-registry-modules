@@ -41,9 +41,9 @@ inputs:
     description: "Whether to add the detail of passed PSRule to the output markdown file or to limit the list to the failed ones"
     required: false
     default: false
-  psruleContinueOnError:
-    description: "Whether to continue on error caused by non compliant PSRules"
-    required: true
+  # psruleContinueOnError:
+  #   description: "Whether to continue on error caused by non compliant PSRules"
+  #   required: true
 
 runs:
   using: "composite"
@@ -143,9 +143,9 @@ runs:
 
           # Populate parameter input
           $ParameterInput = @{
-            inputFilePath           = '${{ inputs.templateFilePath}}-PSRule-output.csv'
-            outputFilePath          = '${{ inputs.templateFilePath}}-PSRule-output.md'
-            skipPassedRulesReport   = $false
+            inputFilePath         = '${{ inputs.templateFilePath}}-PSRule-output.csv'
+            outputFilePath        = '${{ inputs.templateFilePath}}-PSRule-output.md'
+            skipPassedRulesReport = '${{ inputs.skipPassedRulesReport}}'
           }
 
           Write-Verbose ('Set PS Rule Output with following parameters:`n{0}' -f (ConvertTo-Json $ParameterInput -Depth 10)) -Verbose
