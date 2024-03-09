@@ -122,7 +122,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
 
 module enableSystemAssignedManagedIdentity '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-analytical-${serviceShort}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-systemMI-${serviceShort}'
   params: {
     location: resourceLocation
     name: 'user-assigned-mi'
@@ -141,7 +141,7 @@ module enableSystemAssignedManagedIdentity '../../../main.bicep' = {
 
 module enableUserAssignedManagedIdentity '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-analytical-${serviceShort}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-userMI-${serviceShort}'
   params: {
     location: resourceLocation
     name: 'user-assigned-mi'
@@ -187,7 +187,7 @@ module enableAnalyticalStorage '../../../main.bicep' = {
 
 module enabledisableLocalAuth '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-disableLocalAuth-${serviceShort}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-disableLocal-${serviceShort}'
   params: {
     disableLocalAuth: true
     location: resourceLocation
@@ -232,7 +232,7 @@ module enableZoneRedundant '../../../main.bicep' = {
 
 module disableAutomaticFailover '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-disableAutomaticFailover-${serviceShort}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-disableAutoFailover-${serviceShort}'
   params: {
     automaticFailover: false
     location: resourceLocation
@@ -254,7 +254,7 @@ module disableAutomaticFailover '../../../main.bicep' = {
 
 module enableContinousBackup '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-periodicBackup-${serviceShort}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-continousBackup-${serviceShort}'
   params: {
     location: resourceLocation
     name: 'periodic-backup-acc'
