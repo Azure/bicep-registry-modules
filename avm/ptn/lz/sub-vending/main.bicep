@@ -1,16 +1,13 @@
-targetScope = 'managementGroup'
-
-// METADATA - Used by PSDocs
-
-metadata name = '`main.bicep` Parameters'
-
-metadata description = 'This module is designed to accelerate deployment of landing zones (aka Subscriptions) within an Azure AD Tenant.'
-
+metadata name = 'Key Vaults'
+metadata description = 'This module deploys a subscription to accelerate deployment of landing zones.'
+metadata owner = 'Azure/module-maintainers'
 metadata details = '''These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)
 
 This is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.
 
 > For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)'''
+
+targetScope = 'managementGroup'
 
 // PARAMETERS
 
@@ -447,7 +444,7 @@ Each object must contain the following `keys`:
 param roleAssignments array = []
 
 @description('Optional. Enable/Disable usage telemetry for module.')
-param disableTelemetry bool = false
+param enableTelemetry bool = true
 
 //@description('Optional. Guid for the deployment script resources names based on subscription Id.')
 //var deploymentScriptResourcesSubGuid = substring((subscriptionAliasEnabled && empty(existingSubscriptionId)) ? createSubscription.outputs.subscriptionId : existingSubscriptionId, 0, 6)
@@ -651,7 +648,7 @@ var deploymentNames = {
   }
 }*/
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (!disableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.lz-subvending.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, virtualNetworkLocation), 0, 4)}'
   location: virtualNetworkLocation
   properties: {
@@ -710,7 +707,6 @@ module createSubscriptionResources 'src/self/subResourceWrapper/deploy.bicep' = 
     vHubRoutingIntentEnabled: vHubRoutingIntentEnabled
     roleAssignmentEnabled: roleAssignmentEnabled
     roleAssignments: roleAssignments
-    disableTelemetry: disableTelemetry
     deploymentScriptResourceGroupName: deploymentScriptResourceGroupName
     deploymentScriptName: deploymentScriptName
     deploymentScriptManagedIdentityName: deploymentScriptManagedIdentityName
@@ -731,14 +727,14 @@ output subscriptionId string = (subscriptionAliasEnabled && empty(existingSubscr
 @description('The Subscription Resource ID that has been created or provided.')
 output subscriptionResourceId string = (subscriptionAliasEnabled && empty(existingSubscriptionId)) ? createSubscription.outputs.subscriptionResourceId : contains(existingSubscriptionIDEmptyCheck, 'No Subscription ID Provided') ? existingSubscriptionIDEmptyCheck : '/subscriptions/${existingSubscriptionId}'
 
-@description('The Subscription Owner State. Only used when creating MCA Subscriptions across tenants')
+@description('The Subscription Owner State. Only used when creating MCA Subscriptions across tenants.')
 output subscriptionAcceptOwnershipState string = (subscriptionAliasEnabled && empty(existingSubscriptionId) && !empty(subscriptionTenantId) && !empty(subscriptionOwnerId)) ? createSubscription.outputs.subscriptionAcceptOwnershipState : 'N/A'
 
-@description('The Subscription Ownership URL. Only used when creating MCA Subscriptions across tenants')
+@description('The Subscription Ownership URL. Only used when creating MCA Subscriptions across tenants.')
 output subscriptionAcceptOwnershipUrl string = (subscriptionAliasEnabled && empty(existingSubscriptionId) && !empty(subscriptionTenantId) && !empty(subscriptionOwnerId)) ? createSubscription.outputs.subscriptionAcceptOwnershipUrl : 'N/A'
 
-@description('The resource providers that failed to register')
+@description('The resource providers that failed to register.')
 output failedResourceProviders string = !empty(resourceProviders) ? createSubscriptionResources.outputs.failedProviders : ''
 
-@description('The resource providers features that failed to register')
+@description('The resource providers features that failed to register.')
 output failedResourceProvidersFeatures string = !empty(resourceProviders) ? createSubscriptionResources.outputs.failedFeatures : ''

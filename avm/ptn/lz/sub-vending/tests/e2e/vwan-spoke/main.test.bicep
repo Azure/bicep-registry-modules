@@ -1,3 +1,6 @@
+metadata name = 'Vwan topology.'
+metadata description = 'This instance deploys a subscription with a vwan network topology.'
+
 targetScope = 'managementGroup'
 
 @description('Optional. The location to deploy resources to.')

@@ -1,3 +1,6 @@
+metadata name = 'Hub and spoke topology.'
+metadata description = 'This instance deploys a subscription with a hub-spoke network topology.'
+
 targetScope = 'managementGroup'
 
 @description('Optional. The location to deploy resources to.')
