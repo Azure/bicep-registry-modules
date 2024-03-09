@@ -45,5 +45,8 @@ resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01
 @description('The name of the paired region.')
 output pairedRegionName string = getPairedRegionScript.properties.outputs.pairedRegionName
 
+@description('The resource ID of the created Managed Identity.')
+output managedIdentityResourceId string = managedIdentity.id
+
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId

@@ -72,11 +72,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         isZoneRedundant: false
         locationName: resourceLocation
       }
-      {
-        failoverPriority: 1
-        isZoneRedundant: false
-        locationName: nestedDependencies.outputs.pairedRegionName
-      }
     ]
     diagnosticSettings: [
       {
@@ -125,6 +120,49 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   ]
 }]
 
+module enableSystemAssignedManagedIdentity '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-analytical-${serviceShort}'
+  params: {
+    location: resourceLocation
+    name: 'user-assigned-mi'
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: resourceLocation
+      }
+    ]
+    managedIdentities: {
+      systemAssigned: true
+    }
+  }
+}
+
+module enableUserAssignedManagedIdentity '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-analytical-${serviceShort}'
+  params: {
+    location: resourceLocation
+    name: 'user-assigned-mi'
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: resourceLocation
+      }
+    ]
+    managedIdentities: {
+      userAssignedResourceIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
+    }
+  }
+  dependsOn: [
+    nestedDependencies
+  ]
+}
+
 module enableAnalyticalStorage '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-analytical-${serviceShort}'
@@ -145,10 +183,6 @@ module enableAnalyticalStorage '../../../main.bicep' = {
       }
     ]
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
 }
 
 module enabledisableLocalAuth '../../../main.bicep' = {
@@ -171,10 +205,6 @@ module enabledisableLocalAuth '../../../main.bicep' = {
       }
     ]
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
 }
 
 /* Cant run this test as the regions selected by the pipeline could not support zone redundant
@@ -197,10 +227,6 @@ module enableZoneRedundant '../../../main.bicep' = {
       }
     ]
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
 }
 */
 
@@ -224,13 +250,32 @@ module disableAutomaticFailover '../../../main.bicep' = {
       }
     ]
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
 }
 
-module periodicBackup '../../../main.bicep' = {
+module enableContinousBackup '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-periodicBackup-${serviceShort}'
+  params: {
+    location: resourceLocation
+    name: 'periodic-backup-acc'
+    backupPolicyType: 'Continuous'
+    backupPolicyContinuousTier: 'Continuous7Days'
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: resourceLocation
+      }
+    ]
+    sqlDatabases: [
+      {
+        name: 'empty-database'
+      }
+    ]
+  }
+}
+
+module enablePeriodicBackup '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-periodicBackup-${serviceShort}'
   params: {
@@ -253,8 +298,4 @@ module periodicBackup '../../../main.bicep' = {
       }
     ]
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
 }
