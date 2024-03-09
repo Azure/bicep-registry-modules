@@ -166,26 +166,77 @@ module testDeployment '../../../main.bicep' = {
         name: '${namePrefix}-sql-${serviceShort}-001'
       }
       {
-        containers: []
-        name: '${namePrefix}-sql-${serviceShort}-002'
-      }
-      {
         containers: [
           {
-            kind: 'Hash'
-            name: 'container-003'
-            autoscaleSettingsMaxThroughput: 1000
+            name: 'container-001'
             indexingPolicy: {
               automatic: true
             }
             paths: [
               '/myPartitionKey'
             ]
-            analyticalStorageTtl: 0
+          }
+        ]
+        name: 'automatic-indexing-policy'
+      }
+      {
+        containers: [
+          {
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
             conflictResolutionPolicy: {
               conflictResolutionPath: '/myCustomId'
               mode: 'LastWriterWins'
             }
+          }
+        ]
+        name: 'last-writer-conflict-resolution-policy'
+      }
+      {
+        containers: [
+          {
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+            analyticalStorageTtl: 1000
+          }
+        ]
+        name: 'fixed-analytical-ttl'
+      }
+      {
+        containers: [
+          {
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+            analyticalStorageTtl: -1
+          }
+        ]
+        name: 'infinite-analytical-ttl'
+      }
+      {
+        containers: [
+          {
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+            defaultTtl: 1000
+          }
+        ]
+        name: 'document-ttl'
+      }
+      {
+        containers: [
+          {
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
             uniqueKeyPolicyKeys: [
               {
                 paths: [
@@ -200,8 +251,99 @@ module testDeployment '../../../main.bicep' = {
             ]
           }
         ]
-        name: '${namePrefix}-sql-${serviceShort}-003'
-        autoscaleSettingsMaxThroughput: 1000
+        name: 'unique-key-policy'
+      }
+      {
+        containers: [
+          {
+            name: 'container-003'
+            throughput: 500
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'container-fixed-throughput-level'
+      }
+      {
+        containers: [
+          {
+            name: 'container-003'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'database-fixed-throughput-level'
+        throughput: 500
+      }
+      {
+        containers: [
+          {
+            name: 'container-003'
+            autoscaleSettingsMaxThroughput: 500
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'container-autoscale-level'
+      }
+      {
+        containers: [
+          {
+            name: 'container-003'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'database-autoscale-level'
+        autoscaleSettingsMaxThroughput: 500
+      }
+      {
+        containers: [
+          {
+            name: 'container-001'
+            kind: 'MultiHash'
+            paths: [
+              '/myPartitionKey1'
+              '/myPartitionKey2'
+              '/myPartitionKey3'
+            ]
+          }
+          {
+            name: 'container-002'
+            kind: 'MultiHash'
+            paths: [
+              'myPartitionKey1'
+              'myPartitionKey2'
+              'myPartitionKey3'
+            ]
+          }
+          {
+            name: 'container-003'
+            kind: 'Hash'
+            paths: [
+              '/myPartitionKey1'
+            ]
+          }
+          {
+            name: 'container-004'
+            kind: 'Hash'
+            paths: [
+              'myPartitionKey1'
+            ]
+          }
+        ]
+        name: 'all-partition-key-types'
+      }
+      {
+        containers: []
+        name: 'empty-containers-array'
+      }
+      {
+        name: 'no-containers-specified'
       }
     ]
     managedIdentities: {
