@@ -139,6 +139,11 @@ module enableAnalyticalStorage '../../../main.bicep' = {
         locationName: resourceLocation
       }
     ]
+    sqlDatabases: [
+      {
+        name: 'empty-database'
+      }
+    ]
   }
   dependsOn: [
     nestedDependencies
@@ -160,6 +165,11 @@ module enabledisableLocalAuth '../../../main.bicep' = {
         locationName: resourceLocation
       }
     ]
+    sqlDatabases: [
+      {
+        name: 'empty-database'
+      }
+    ]
   }
   dependsOn: [
     nestedDependencies
@@ -167,6 +177,7 @@ module enabledisableLocalAuth '../../../main.bicep' = {
   ]
 }
 
+/* Cant run this test as the regions selected by the pipeline could not support zone redundant
 module enableZoneRedundant '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-zoneRedudant-${serviceShort}'
@@ -191,6 +202,7 @@ module enableZoneRedundant '../../../main.bicep' = {
     diagnosticDependencies
   ]
 }
+*/
 
 module disableAutomaticFailover '../../../main.bicep' = {
   scope: resourceGroup
@@ -202,13 +214,13 @@ module disableAutomaticFailover '../../../main.bicep' = {
     locations: [
       {
         failoverPriority: 0
-        isZoneRedundant: true
+        isZoneRedundant: false
         locationName: resourceLocation
       }
+    ]
+    sqlDatabases: [
       {
-        failoverPriority: 1
-        isZoneRedundant: true
-        locationName: nestedDependencies.outputs.pairedRegionName
+        name: 'empty-database'
       }
     ]
   }
@@ -233,6 +245,11 @@ module periodicBackup '../../../main.bicep' = {
         failoverPriority: 0
         isZoneRedundant: false
         locationName: resourceLocation
+      }
+    ]
+    sqlDatabases: [
+      {
+        name: 'empty-database'
       }
     ]
   }

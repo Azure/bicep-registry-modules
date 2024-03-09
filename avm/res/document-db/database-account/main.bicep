@@ -185,16 +185,20 @@ var backupPolicy = backupPolicyType == 'Continuous' ? {
 }
 
 var databaseAccount_properties = union({
-    capabilities: capabilities
-    backupPolicy: backupPolicy
-    enableFreeTier: enableFreeTier
-    disableLocalAuth: disableLocalAuth
+    databaseAccountOfferType: databaseAccountOfferType
+  }, ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases)) ? {
+    // Common properties
+    consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
     locations: databaseAccount_locations
+    capabilities: capabilities
+    enableFreeTier: enableFreeTier
+    backupPolicy: backupPolicy
     enableAutomaticFailover: automaticFailover
     enableAnalyticalStorage: enableAnalyticalStorage
-    databaseAccountOfferType: databaseAccountOfferType
-    consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
-  }, (!empty(mongodbDatabases) ? {
+  } : {}), (!empty(sqlDatabases) ? {
+    // SQLDB properties
+    disableLocalAuth: disableLocalAuth
+  } : {}), (!empty(mongodbDatabases) ? {
     // MongoDb properties
     apiProperties: {
       serverVersion: serverVersion
