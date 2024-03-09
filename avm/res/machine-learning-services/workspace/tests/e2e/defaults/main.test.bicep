@@ -58,4 +58,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     associatedStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
     sku: 'Basic'
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }]
