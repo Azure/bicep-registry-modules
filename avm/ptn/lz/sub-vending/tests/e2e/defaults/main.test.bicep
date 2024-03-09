@@ -16,7 +16,7 @@ param namePrefix string = '#_namePrefix_#'
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ssamin'
 
-module createSub '../../../main.bicep' = {
+module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     subscriptionAliasEnabled: true
@@ -54,4 +54,4 @@ module createSub '../../../main.bicep' = {
   }
 }
 
-output createdSubId string = createSub.outputs.subscriptionId
+output createdSubId string = testDeployment.outputs.subscriptionId

@@ -24,7 +24,7 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
-module createSub '../../../main.bicep' = {
+/*module createSub '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     subscriptionAliasEnabled: true
@@ -51,14 +51,21 @@ module createSub '../../../main.bicep' = {
       'Microsoft.AVS': [ 'AzureServicesVm' ]
     }
   }
-}
+}*/
 
-module hubSpoke '../../../main.bicep' = {
-  name: 'sub-blzv-tests-${namePrefix}-${serviceShort}-add-vnet-spoke'
+module testDeployment '../../../main.bicep' = {
+  //name: 'sub-blzv-tests-${namePrefix}-${serviceShort}-add-vnet-spoke'
+  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     deploymentScriptLocation: location
-    subscriptionAliasEnabled: false
-    existingSubscriptionId: createSub.outputs.subscriptionId
+    subscriptionAliasEnabled: true
+    subscriptionBillingScope: subscriptionBillingScope
+    subscriptionAliasName: 'sub-blzv-tests-${namePrefix}-${serviceShort}'
+    subscriptionDisplayName: 'sub-blzv-tests-${namePrefix}-${serviceShort}'
+    subscriptionWorkload: 'Production'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    //existingSubscriptionId: createSub.outputs.subscriptionId
     virtualNetworkEnabled: true
     virtualNetworkLocation: location
     virtualNetworkResourceGroupName: 'rsg-${location}-net-hs-${namePrefix}-${serviceShort}'
@@ -84,9 +91,12 @@ module hubSpoke '../../../main.bicep' = {
         relativeScope: '/resourceGroups/rsg-${location}-net-hs-${namePrefix}-${serviceShort}'
       }
     ]
-    resourceProviders: {}
+    resourceProviders: {
+      'Microsoft.HybridCompute': [ 'ArcServerPrivateLinkPreview' ]
+      'Microsoft.AVS': [ 'AzureServicesVm' ]
+    }
   }
 }
 
-output createdSubId string = createSub.outputs.subscriptionId
+output createdSubId string = testDeployment.outputs.subscriptionId
 output hubNetworkResourceId string = nestedDependencies.outputs.hubNetworkResourceId

@@ -24,7 +24,7 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
-module createSub '../../../main.bicep' = {
+/*module createSub '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     subscriptionAliasEnabled: true
@@ -51,13 +51,24 @@ module createSub '../../../main.bicep' = {
       'Microsoft.AVS': [ 'AzureServicesVm' ]
     }
   }
-}
+}*/
 
-module vwanSpoke '../../../main.bicep' = {
-  name: 'sub-blzv-tests-${namePrefix}-${serviceShort}-add-vwan-spoke'
+module testDeployment '../../../main.bicep' = {
+  //name: 'sub-blzv-tests-${namePrefix}-${serviceShort}-add-vwan-spoke'
+  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
-    subscriptionAliasEnabled: false
-    existingSubscriptionId: createSub.outputs.subscriptionId
+    subscriptionAliasEnabled: true
+    subscriptionBillingScope: subscriptionBillingScope
+    subscriptionAliasName: 'sub-blzv-tests-${namePrefix}-${serviceShort}'
+    subscriptionDisplayName: 'sub-blzv-tests-${namePrefix}-${serviceShort}'
+    subscriptionTags: {
+      namePrefix: namePrefix
+      serviceShort: serviceShort
+    }
+    subscriptionWorkload: 'Production'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    //existingSubscriptionId: createSub.outputs.subscriptionId
     virtualNetworkEnabled: true
     virtualNetworkLocation: location
     virtualNetworkResourceGroupName: 'rsg-${location}-net-vwan-${namePrefix}-${serviceShort}'
@@ -87,5 +98,5 @@ module vwanSpoke '../../../main.bicep' = {
   }
 }
 
-output createdSubId string = createSub.outputs.subscriptionId
+output createdSubId string = testDeployment.outputs.subscriptionId
 output hubNetworkResourceId string = nestedDependencies.outputs.hubNetworkResourceId
