@@ -48,7 +48,13 @@ function Set-PSRuleGitHubOutput {
 
         $results = Import-Csv -Path $inputFilePath
 
-        Write-Verbose ($results[0].psobject.properties.name) -Verbose
+        $headers = $results | Get-Member
+
+        Write-Verbose ('typer [{0}]' -f $headers.getType() ) -Verbose
+        Write-Verbose ('Csv properties [{0}]' -f $headers ) -Verbose
+
+
+
 
         $passedRules += $results | Where-Object { $_.Outcome -EQ 'Pass' } | Sort-Object -Property 'RuleName' -Unique
         $failedRules += $results | Where-Object { $_.Outcome -EQ 'Fail' } | Sort-Object -Property 'RuleName' -Unique
