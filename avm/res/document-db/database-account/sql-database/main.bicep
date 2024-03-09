@@ -11,10 +11,10 @@ param name string
 @description('Optional. Array of containers to deploy in the SQL database.')
 param containers object[] = []
 
-@description('Optional. Request units per second. Will be set to null if autoscaleSettingsMaxThroughput is used.')
+@description('Optional. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.')
 param throughput int?
 
-@description('Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to -1, then the property will be set to null and autoscale will be disabled.')
+@description('Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled.')
 param autoscaleSettingsMaxThroughput int?
 
 @description('Optional. Tags of the SQL database resource.')
@@ -54,7 +54,7 @@ module container 'container/main.bicep' = [for container in containers: {
     indexingPolicy: container.?indexingPolicy
     kind: container.?kind
     paths: container.?paths
-    throughput: throughput != null && container.?throughput == null ? -1 : container.?throughput
+    throughput: (throughput != null || autoscaleSettingsMaxThroughput != null) && container.?throughput == null ? -1 : container.?throughput
     uniqueKeyPolicyKeys: container.?uniqueKeyPolicyKeys
   }
 }]
