@@ -49,6 +49,7 @@ function Set-PSRuleGitHubOutput {
         $results = Import-Csv -Path $inputFilePath
 
         $headers = $results | Get-Member
+        Write-Host ($results | Format-Table | Out-String)
 
         Write-Verbose ('typer [{0}]' -f $headers.getType() ) -Verbose
         Write-Verbose ('Csv properties [{0}]' -f $headers ) -Verbose
