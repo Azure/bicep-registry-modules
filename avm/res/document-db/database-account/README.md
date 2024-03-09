@@ -2006,7 +2006,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Default to false. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication. |
 | [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Default to false. Flag to indicate whether to enable storage analytics. |
 | [`enableFreeTier`](#parameter-enablefreetier) | bool | Default to false. Flag to indicate whether Free Tier is enabled. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Default to true. Enable/Disable usage telemetry for module. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`gremlinDatabases`](#parameter-gremlindatabases) | array | Gremlin Databases configurations. |
 | [`location`](#parameter-location) | string | Default to current resource group scope location. Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -2327,7 +2327,7 @@ Default to false. Flag to indicate whether Free Tier is enabled.
 
 ### Parameter: `enableTelemetry`
 
-Default to true. Enable/Disable usage telemetry for module.
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool

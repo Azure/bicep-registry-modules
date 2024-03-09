@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "16596956778379031528"
+      "templateHash": "5850069931975802152"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -761,7 +761,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Default to true. Enable/Disable usage telemetry for module."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "lock": {
