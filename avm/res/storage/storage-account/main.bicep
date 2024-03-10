@@ -3,7 +3,7 @@ metadata description = 'This module deploys a Storage Account.'
 metadata owner = 'Azure/module-maintainers'
 
 @maxLength(24)
-@description('Required. Name of the Storage Account.')
+@description('Required. Name of the Storage Account. Must be lower-case.')
 param name string
 
 @description('Optional. Location for all resources.')
@@ -300,6 +300,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     largeFileSharesState: (skuName == 'Standard_LRS') || (skuName == 'Standard_ZRS') ? largeFileSharesState : null
     minimumTlsVersion: minimumTlsVersion
     networkAcls: !empty(networkAcls) ? {
+      resourceAccessRules: networkAcls.?resourceAccessRules
       bypass: networkAcls.?bypass
       defaultAction: networkAcls.?defaultAction
       virtualNetworkRules: networkAcls.?virtualNetworkRules
@@ -352,12 +353,13 @@ resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments
   scope: storageAccount
 }]
 
-module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-StorageAccount-PrivateEndpoint-${index}'
   params: {
-    privateLinkServiceConnections: [
+    name: privateEndpoint.?name ?? 'pep-${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
+    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
         properties: {
           privateLinkServiceId: storageAccount.id
           groupIds: [
@@ -365,8 +367,19 @@ module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoi
           ]
         }
       }
-    ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
+    ] : null
+    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
+      {
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
+        properties: {
+          privateLinkServiceId: storageAccount.id
+          groupIds: [
+            privateEndpoint.service
+          ]
+          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+        }
+      }
+    ] : null
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
@@ -375,7 +388,6 @@ module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoi
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
     roleAssignments: privateEndpoint.?roleAssignments
     tags: privateEndpoint.?tags ?? tags
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
     customDnsConfigs: privateEndpoint.?customDnsConfigs
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
@@ -529,8 +541,14 @@ type roleAssignmentType = {
 }[]?
 
 type networkAclsType = {
-  @description('Optional. Sets the resource access rules.')
-  resourceAccessRules: array?
+  @description('Optional. Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only.')
+  resourceAccessRules: {
+    @description('Required. The ID of the tenant in which the resource resides in.')
+    tenantId: string
+
+    @description('Required. The resource ID of the target service. Can also contain a wildcard, if multiple services e.g. in a resource group should be included.')
+    resourceId: string
+  }[]?
 
   @description('Required. Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging,Metrics,AzureServices (For example, "Logging, Metrics"), or None to bypass none of those traffics.')
   bypass: ('None' | 'AzureServices' | 'Logging' | 'Metrics' | 'AzureServices, Logging' | 'AzureServices, Metrics' | 'AzureServices, Logging, Metrics' | 'Logging, Metrics')
@@ -563,6 +581,13 @@ type privateEndpointType = {
 
   @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
   privateDnsZoneResourceIds: string[]?
+
+  @description('Optional. Manual PrivateLink Service Connections.')
+  isManualConnection: bool?
+
+  @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
+  @maxLength(140)
+  manualConnectionRequestMessage: string?
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
@@ -605,9 +630,6 @@ type privateEndpointType = {
 
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
   tags: object?
-
-  @description('Optional. Manual PrivateLink Service Connections.')
-  manualPrivateLinkServiceConnections: array?
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?

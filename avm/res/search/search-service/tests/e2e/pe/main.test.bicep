@@ -69,6 +69,12 @@ module testDeployment '../../../main.bicep' = {
           Role: 'DeploymentValidation'
         }
       }
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      }
     ]
     sharedPrivateLinkResources: [
       {
@@ -89,4 +95,7 @@ module testDeployment '../../../main.bicep' = {
       Role: 'DeploymentValidation'
     }
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }

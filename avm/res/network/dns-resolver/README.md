@@ -1,4 +1,4 @@
-# DNS Resolvers `[Microsoft.Network/dnsResolvers]`
+# DNS Resolver `[Microsoft.Network/dnsResolvers]`
 
 This module deploys a DNS Resolver.
 
@@ -332,31 +332,31 @@ module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Private DNS Resolver. |
-| [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | ResourceId of the virtual network to attach the Private DNS Resolver to. |
+| [`name`](#parameter-name) | string | Name of the DNS Private Resolver. |
+| [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | ResourceId of the virtual network to attach the DNS Private Resolver to. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`inboundEndpoints`](#parameter-inboundendpoints) | array | Inbound Endpoints for Private DNS Resolver. |
+| [`inboundEndpoints`](#parameter-inboundendpoints) | array | Inbound Endpoints for DNS Private Resolver. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`outboundEndpoints`](#parameter-outboundendpoints) | array | Outbound Endpoints for Private DNS Resolver. |
+| [`outboundEndpoints`](#parameter-outboundendpoints) | array | Outbound Endpoints for DNS Private Resolver. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
 
-Name of the Private DNS Resolver.
+Name of the DNS Private Resolver.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `virtualNetworkResourceId`
 
-ResourceId of the virtual network to attach the Private DNS Resolver to.
+ResourceId of the virtual network to attach the DNS Private Resolver to.
 
 - Required: Yes
 - Type: string
@@ -371,10 +371,75 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `inboundEndpoints`
 
-Inbound Endpoints for Private DNS Resolver.
+Inbound Endpoints for DNS Private Resolver.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-inboundendpointsname) | string | Name of the inbound endpoint. |
+| [`subnetResourceId`](#parameter-inboundendpointssubnetresourceid) | string | The reference to the subnet bound to the IP configuration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-inboundendpointslocation) | string | Location for all resources. |
+| [`privateIpAddress`](#parameter-inboundendpointsprivateipaddress) | string | Private IP address of the IP configuration. |
+| [`privateIpAllocationMethod`](#parameter-inboundendpointsprivateipallocationmethod) | string | Private IP address allocation method. |
+| [`tags`](#parameter-inboundendpointstags) | object | Tags for the resource. |
+
+### Parameter: `inboundEndpoints.name`
+
+Name of the inbound endpoint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `inboundEndpoints.subnetResourceId`
+
+The reference to the subnet bound to the IP configuration.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `inboundEndpoints.location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+
+### Parameter: `inboundEndpoints.privateIpAddress`
+
+Private IP address of the IP configuration.
+
+- Required: No
+- Type: string
+
+### Parameter: `inboundEndpoints.privateIpAllocationMethod`
+
+Private IP address allocation method.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dynamic'
+    'Static'
+  ]
+  ```
+
+### Parameter: `inboundEndpoints.tags`
+
+Tags for the resource.
+
+- Required: No
+- Type: object
 
 ### Parameter: `location`
 
@@ -422,10 +487,52 @@ Specify the name of lock.
 
 ### Parameter: `outboundEndpoints`
 
-Outbound Endpoints for Private DNS Resolver.
+Outbound Endpoints for DNS Private Resolver.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-outboundendpointsname) | string | Name of the outbound endpoint. |
+| [`subnetResourceId`](#parameter-outboundendpointssubnetresourceid) | string | ResourceId of the subnet to attach the outbound endpoint to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-outboundendpointslocation) | string | Location for all resources. |
+| [`tags`](#parameter-outboundendpointstags) | object | Tags of the resource. |
+
+### Parameter: `outboundEndpoints.name`
+
+Name of the outbound endpoint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `outboundEndpoints.subnetResourceId`
+
+ResourceId of the subnet to attach the outbound endpoint to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `outboundEndpoints.location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+
+### Parameter: `outboundEndpoints.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
 
 ### Parameter: `roleAssignments`
 
@@ -529,9 +636,9 @@ Tags of the resource.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the Private DNS Resolver. |
-| `resourceGroupName` | string | The resource group the Private DNS Resolver was deployed into. |
-| `resourceId` | string | The resource ID of the Private DNS Resolver. |
+| `name` | string | The name of the DNS Private Resolver. |
+| `resourceGroupName` | string | The resource group the DNS Private Resolver was deployed into. |
+| `resourceId` | string | The resource ID of the DNS Private Resolver. |
 
 ## Cross-referenced modules
 

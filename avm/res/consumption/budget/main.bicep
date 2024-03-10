@@ -34,6 +34,14 @@ param startDate string = '${utcNow('yyyy')}-${utcNow('MM')}-01T00:00:00Z'
 @description('Optional. The end date for the budget. If not provided, it will default to 10 years from the start date.')
 param endDate string = ''
 
+@allowed([
+  'EqualTo'
+  'GreaterThan'
+  'GreaterThanOrEqualTo'
+])
+@description('Required. The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`.')
+param operator string = 'GreaterThan'
+
 @maxLength(5)
 @description('Optional. Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000.')
 param thresholds array = [
@@ -53,6 +61,13 @@ param contactRoles array?
 @description('Conditional. List of action group resource IDs that will receive the alert. Required if neither `contactEmails` nor `contactEmails` was provided.')
 param actionGroups array?
 
+@allowed([
+  'Actual'
+  'Forecast'
+])
+@description('Required. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecast`.')
+param thresholdType string = 'Actual'
+
 @description('Optional. The filter to use for restricting which resources are considered within the budget.')
 param filter object?
 
@@ -68,12 +83,12 @@ param location string = deployment().location
 var notificationsArray = [for threshold in thresholds: {
   'Actual_GreaterThan_${threshold}_Percentage': {
     enabled: true
-    operator: 'GreaterThan'
+    operator: operator
     threshold: threshold
     contactEmails: contactEmails
     contactRoles: contactRoles
     contactGroups: actionGroups
-    thresholdType: 'Actual'
+    thresholdType: thresholdType
   }
 }]
 

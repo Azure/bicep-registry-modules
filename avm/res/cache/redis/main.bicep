@@ -213,12 +213,13 @@ resource redis_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-
   scope: redis
 }]
 
-module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-KeyVault-PrivateEndpoint-${index}'
   params: {
+    name: privateEndpoint.?name ?? 'pep-${last(split(redis.id, '/'))}-${privateEndpoint.?service ?? 'redisCache'}-${index}'
     privateLinkServiceConnections: [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(redis.id, '/'))}-${privateEndpoint.?service ?? 'redisCache'}-${index}'
         properties: {
           privateLinkServiceId: redis.id
           groupIds: [
@@ -227,7 +228,18 @@ module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1'
         }
       }
     ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(redis.id, '/'))}-${privateEndpoint.?service ?? 'redisCache'}-${index}'
+    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
+      {
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(redis.id, '/'))}-${privateEndpoint.?service ?? 'redisCache'}-${index}'
+        properties: {
+          privateLinkServiceId: redis.id
+          groupIds: [
+            privateEndpoint.?service ?? 'redisCache'
+          ]
+          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+        }
+      }
+    ] : null
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
@@ -236,7 +248,6 @@ module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1'
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
     roleAssignments: privateEndpoint.?roleAssignments
     tags: privateEndpoint.?tags ?? tags
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
     customDnsConfigs: privateEndpoint.?customDnsConfigs
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
@@ -289,14 +300,13 @@ type lockType = {
 }?
 
 type privateEndpointType = {
-
   @description('Optional. The name of the private endpoint.')
   name: string?
 
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
-  @description('Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".')
+  @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
   service: string?
 
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
@@ -307,6 +317,13 @@ type privateEndpointType = {
 
   @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
   privateDnsZoneResourceIds: string[]?
+
+  @description('Optional. If Manual Private Link Connection is required.')
+  isManualConnection: bool?
+
+  @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
+  @maxLength(140)
+  manualConnectionRequestMessage: string?
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
@@ -349,9 +366,6 @@ type privateEndpointType = {
 
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
   tags: object?
-
-  @description('Optional. Manual PrivateLink Service Connections.')
-  manualPrivateLinkServiceConnections: array?
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
