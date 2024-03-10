@@ -259,9 +259,9 @@ module searchService_sharedPrivateLinkResources 'shared-private-link-resource/ma
     name: contains(sharedPrivateLinkResource, 'name') ? sharedPrivateLinkResource.name : 'spl-${last(split(searchService.id, '/'))}-${sharedPrivateLinkResource.groupId}-${index}'
     searchServiceName: searchService.name
     privateLinkResourceId: sharedPrivateLinkResource.privateLinkResourceId
-    groupId: contains(sharedPrivateLinkResource, 'groupId') ? sharedPrivateLinkResource.groupId : ''
-    requestMessage: contains(sharedPrivateLinkResource, 'requestMessage') ? sharedPrivateLinkResource.requestMessage : ''
-    resourceRegion: contains(sharedPrivateLinkResource, 'resourceRegion') ? sharedPrivateLinkResource.resourceRegion : ''
+    groupId: sharedPrivateLinkResource.groupId
+    requestMessage: sharedPrivateLinkResource.requestMessage
+    resourceRegion: sharedPrivateLinkResource.?resourceRegion
   }
 }]
 
