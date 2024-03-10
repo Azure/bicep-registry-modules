@@ -128,7 +128,7 @@ module enableSystemAssignedManagedIdentity '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, eastUsResourceLocation)}-systemMI-${serviceShort}'
   params: {
     location: eastUsResourceLocation
-    name: 'user-assigned-mi'
+    name: 'system-assigned-mi'
     locations: [
       {
         failoverPriority: 0
@@ -258,7 +258,7 @@ module enableContinousBackup '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, eastUsResourceLocation)}-continousBackup-${serviceShort}'
   params: {
     location: eastUsResourceLocation
-    name: 'periodic-backup-acc'
+    name: 'continous-backup-acc'
     backupPolicyType: 'Continuous'
     backupPolicyContinuousTier: 'Continuous7Days'
     locations: [
