@@ -496,6 +496,9 @@ module vm_domainJoinExtension 'extension/main.bicep' = if (extensionDomainJoinCo
       Password: extensionDomainJoinPassword
     }
   }
+  dependsOn: [
+    vm_aadJoinExtension
+  ]
 }
 
 module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAntiMalwareConfig.enabled) {
@@ -512,6 +515,9 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
     settings: extensionAntiMalwareConfig.settings
     tags: extensionAntiMalwareConfig.?tags ?? tags
   }
+  dependsOn: [
+    vm_domainJoinExtension
+  ]
 }
 
 resource vm_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId)) {
@@ -539,6 +545,9 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonit
       workspaceKey: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '') ? vm_logAnalyticsWorkspace.listKeys().primarySharedKey : ''
     }
   }
+  dependsOn: [
+    vm_microsoftAntiMalwareExtension
+  ]
 }
 
 module vm_dependencyAgentExtension 'extension/main.bicep' = if (extensionDependencyAgentConfig.enabled) {
@@ -554,6 +563,9 @@ module vm_dependencyAgentExtension 'extension/main.bicep' = if (extensionDepende
     enableAutomaticUpgrade: contains(extensionDependencyAgentConfig, 'enableAutomaticUpgrade') ? extensionDependencyAgentConfig.enableAutomaticUpgrade : true
     tags: extensionDependencyAgentConfig.?tags ?? tags
   }
+  dependsOn: [
+    vm_azureMonitorAgentExtension
+  ]
 }
 
 module vm_networkWatcherAgentExtension 'extension/main.bicep' = if (extensionNetworkWatcherAgentConfig.enabled) {
@@ -569,6 +581,9 @@ module vm_networkWatcherAgentExtension 'extension/main.bicep' = if (extensionNet
     enableAutomaticUpgrade: contains(extensionNetworkWatcherAgentConfig, 'enableAutomaticUpgrade') ? extensionNetworkWatcherAgentConfig.enableAutomaticUpgrade : false
     tags: extensionNetworkWatcherAgentConfig.?tags ?? tags
   }
+  dependsOn: [
+    vm_dependencyAgentExtension
+  ]
 }
 
 module vm_desiredStateConfigurationExtension 'extension/main.bicep' = if (extensionDSCConfig.enabled) {
@@ -586,6 +601,9 @@ module vm_desiredStateConfigurationExtension 'extension/main.bicep' = if (extens
     tags: extensionDSCConfig.?tags ?? tags
     protectedSettings: contains(extensionDSCConfig, 'protectedSettings') ? extensionDSCConfig.protectedSettings : {}
   }
+  dependsOn: [
+    vm_networkWatcherAgentExtension
+  ]
 }
 
 module vm_customScriptExtension 'extension/main.bicep' = if (extensionCustomScriptConfig.enabled) {
@@ -627,7 +645,6 @@ module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzu
   }
   dependsOn: [
     vm_customScriptExtension
-    vm_azureMonitorAgentExtension
   ]
 }
 
@@ -644,14 +661,7 @@ module vm_backup 'modules/protected-item.bicep' = if (!empty(backupVaultName)) {
   }
   scope: az.resourceGroup(backupVaultResourceGroup)
   dependsOn: [
-    vm_aadJoinExtension
-    vm_domainJoinExtension
-    vm_azureMonitorAgentExtension
-    vm_microsoftAntiMalwareExtension
-    vm_networkWatcherAgentExtension
-    vm_dependencyAgentExtension
-    vm_desiredStateConfigurationExtension
-    vm_customScriptExtension
+    vm_azureDiskEncryptionExtension
   ]
 }
 
