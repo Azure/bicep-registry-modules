@@ -21,7 +21,7 @@ param serviceShort string = 'miuaiwaf'
 param namePrefix string = '#_namePrefix_#'
 
 // Set to fixed location as the RP function returns unsupported locations
-// Right now (2024/03) the following locations are NOT supported: East Asia, Qatar Central, Malaysia South, Italy North, Israel Central
+// Right now (2024/03) the following locations are NOT supported for federated identity credentials: East Asia, Qatar Central, Malaysia South, Italy North, Israel Central
 param enforcedLocation string = 'westeurope'
 
 // ============ //
