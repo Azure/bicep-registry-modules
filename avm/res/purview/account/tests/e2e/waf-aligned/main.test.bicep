@@ -19,6 +19,10 @@ param serviceShort string = 'pvawaf'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+// Set to fixed location as the RP function returns unsupported locations
+// Right now (2024/03) the following locations are supported: eastus, eastus2, southcentralus, westcentralus, westus, westus2, westus3
+param enforcedLocation string = 'eastus'
+
 // =========== //
 // Deployments //
 // =========== //
@@ -36,7 +40,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    location: resourceLocation
+    location: enforcedLocation
   }
 }
 
@@ -50,7 +54,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
-    location: resourceLocation
+    location: enforcedLocation
 
   }
 }
@@ -65,7 +69,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
+    location: enforcedLocation
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
@@ -127,4 +131,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       }
     ]
   }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
 }]

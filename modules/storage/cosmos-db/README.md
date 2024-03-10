@@ -1,3 +1,9 @@
+<h1 style="color: steelblue;">⚠️ Upcoming changes ⚠️</h1>
+
+This module has been replaced by the following equivalent module in Azure Verified Modules (AVM): [avm/res/document-db/database-account](https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/document-db/database-account).
+
+For more information, see the informational notice [here](https://github.com/Azure/bicep-registry-modules?tab=readme-ov-file#%EF%B8%8F-upcoming-changes-%EF%B8%8F).
+
 # Azure Cosmos DB
 
 Bicep module for simplified deployment of Cosmos DB; enables VNet integration and offers flexible configuration options.
@@ -150,11 +156,11 @@ output cosmosCassandraDbResourceId string = cosmosCassandraDb.outputs.id
 ```
 
 > **Importanat note on setting up throughput parameters**<br><br>
-> 
+>
 > Throughtput can be povisioned for both Keyspaces and tables within it or just for Tables. Provisioned throughput at the keyspace level will be shared across all tables within the keyspace.
-> 
+>
 > You can optionally provision dedicated throughput for a table within a keyspace that has throughput provisioned. This dedicated throughput amount will not be shared with other tables in the keyspace and does not count towards the throughput you provisioned for the keyspace. This throughput amount will be billed in addition to the throughput amount you provisioned at the keyspace level.
-> 
+>
 > This is applicable for all other backend api type Cosmos DB account resources.
 
 ### Example 3
