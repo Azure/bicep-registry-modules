@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "6460875846510627165"
+      "templateHash": "17771942408984778128"
     },
     "name": "SignalR Web PubSub Services",
     "description": "This module deploys a SignalR Web PubSub Service.",
@@ -1263,7 +1263,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('webPubSub', '2021-10-01', 'full').identity, 'principalId')), reference('webPubSub', '2021-10-01', 'full').identity.principalId, '')]"
+      "value": "[tryGet(tryGet(reference('webPubSub', '2021-10-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
