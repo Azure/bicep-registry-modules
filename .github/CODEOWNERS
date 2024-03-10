@@ -127,7 +127,7 @@
 /avm/res/service-bus/namespace/ @Azure/avm-res-servicebus-namespace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/service-fabric/cluster/ @Azure/avm-res-servicefabric-cluster-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/signal-r-service/signal-r/ @Azure/avm-res-signalrservice-signalr-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/signal-r-service/web-pub-sub/ @Azure/avm-res-signalrservice-webpubsub-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/signal-r-service/web-pub-sub/ @Azure/avm-res-signalrservice-webpubsub-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/sql/managed-instance/ @Azure/avm-res-sql-managedinstance-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/sql/server/ @Azure/avm-res-sql-server-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/storage/storage-account/ @Azure/avm-res-storage-storageaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
