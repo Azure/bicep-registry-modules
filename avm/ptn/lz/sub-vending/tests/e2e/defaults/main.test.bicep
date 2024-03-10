@@ -6,9 +6,6 @@ targetScope = 'managementGroup'
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = 'uksouth'
 
-@description('Optional. The subscription billing scope.')
-param subscriptionBillingScope string
-
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 //param namePrefix string = 'avmsb'
@@ -16,11 +13,16 @@ param namePrefix string = '#_namePrefix_#'
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ssamin'
 
+module nestedDependencies 'dependencies.bicep' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  scope: tenant()
+}
+
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     subscriptionAliasEnabled: true
-    subscriptionBillingScope: subscriptionBillingScope
+    subscriptionBillingScope: nestedDependencies.outputs.billingScopeId
     subscriptionAliasName: 'sub-blzv-tests-${namePrefix}-${serviceShort}'
     subscriptionDisplayName: 'sub-blzv-tests-${namePrefix}-${serviceShort}'
     subscriptionTags: {

@@ -7,7 +7,7 @@ targetScope = 'managementGroup'
 param resourceLocation string = 'uksouth'
 
 @description('Optional. The subscription billing scope.')
-param subscriptionBillingScope string
+param subscriptionBillingScope string = ''
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
