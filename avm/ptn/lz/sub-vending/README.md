@@ -70,9 +70,9 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ssamin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssamin'
   params: {
-    deploymentScriptLocation: '<location>'
+    deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
     deploymentScriptName: '<deploymentScriptName>'
     deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
@@ -105,7 +105,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     }
     subscriptionWorkload: 'Production'
     virtualNetworkEnabled: false
-    virtualNetworkLocation: '<location>'
+    virtualNetworkLocation: '<virtualNetworkLocation>'
   }
 }
 ```
@@ -123,7 +123,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "deploymentScriptLocation": {
-      "value": "<location>"
+      "value": "<deploymentScriptLocation>"
     },
     "deploymentScriptManagedIdentityName": {
       "value": "<deploymentScriptManagedIdentityName>"
@@ -192,7 +192,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": false
     },
     "virtualNetworkLocation": {
-      "value": "<location>"
+      "value": "<virtualNetworkLocation>"
     }
   }
 }
@@ -213,9 +213,9 @@ This instance deploys a subscription with a hub-spoke network topology.
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   //name: 'sub-blzv-tests-ssahs-add-vnet-spoke'
-  name: '${uniqueString(deployment().name, location)}-test-ssahs'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssahs'
   params: {
-    deploymentScriptLocation: '<location>'
+    deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
     deploymentScriptName: '<deploymentScriptName>'
     deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
@@ -248,7 +248,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       '10.100.0.0/16'
     ]
     virtualNetworkEnabled: true
-    virtualNetworkLocation: '<location>'
+    virtualNetworkLocation: '<virtualNetworkLocation>'
     virtualNetworkName: '<virtualNetworkName>'
     virtualNetworkPeeringEnabled: true
     virtualNetworkResourceGroupLockEnabled: false
@@ -271,7 +271,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "deploymentScriptLocation": {
-      "value": "<location>"
+      "value": "<deploymentScriptLocation>"
     },
     "deploymentScriptManagedIdentityName": {
       "value": "<deploymentScriptManagedIdentityName>"
@@ -342,7 +342,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "virtualNetworkLocation": {
-      "value": "<location>"
+      "value": "<virtualNetworkLocation>"
     },
     "virtualNetworkName": {
       "value": "<virtualNetworkName>"
@@ -378,9 +378,9 @@ This instance deploys a subscription with a vwan network topology.
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   //name: 'sub-blzv-tests-ssawan-add-vwan-spoke'
-  name: '${uniqueString(deployment().name, location)}-test-ssawan'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssawan'
   params: {
-    deploymentScriptLocation: '<location>'
+    deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
     deploymentScriptName: '<deploymentScriptName>'
     deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
@@ -410,7 +410,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       '10.200.0.0/16'
     ]
     virtualNetworkEnabled: true
-    virtualNetworkLocation: '<location>'
+    virtualNetworkLocation: '<virtualNetworkLocation>'
     virtualNetworkName: '<virtualNetworkName>'
     virtualNetworkPeeringEnabled: true
     virtualNetworkResourceGroupLockEnabled: false
@@ -432,7 +432,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "deploymentScriptLocation": {
-      "value": "<location>"
+      "value": "<deploymentScriptLocation>"
     },
     "deploymentScriptManagedIdentityName": {
       "value": "<deploymentScriptManagedIdentityName>"
@@ -502,7 +502,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "virtualNetworkLocation": {
-      "value": "<location>"
+      "value": "<virtualNetworkLocation>"
     },
     "virtualNetworkName": {
       "value": "<virtualNetworkName>"

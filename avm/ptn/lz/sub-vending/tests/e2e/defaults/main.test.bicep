@@ -4,7 +4,7 @@ metadata description = 'This instance deploys the module with the minimum set of
 targetScope = 'managementGroup'
 
 @description('Optional. The location to deploy resources to.')
-param location string = 'uksouth'
+param resourceLocation string = 'uksouth'
 
 @description('Optional. The subscription billing scope.')
 param subscriptionBillingScope string
@@ -17,7 +17,7 @@ param namePrefix string = '#_namePrefix_#'
 param serviceShort string = 'ssamin'
 
 module testDeployment '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     subscriptionAliasEnabled: true
     subscriptionBillingScope: subscriptionBillingScope
@@ -30,9 +30,9 @@ module testDeployment '../../../main.bicep' = {
     subscriptionWorkload: 'Production'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
-    deploymentScriptResourceGroupName: 'rsg-${location}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptManagedIdentityName: 'id-${location}-${namePrefix}-${serviceShort}'
-    deploymentScriptName: 'ds-${location}${namePrefix}${serviceShort}'
+    deploymentScriptResourceGroupName: 'rsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
+    deploymentScriptManagedIdentityName: 'id-${resourceLocation}-${namePrefix}-${serviceShort}'
+    deploymentScriptName: 'ds-${resourceLocation}${namePrefix}${serviceShort}'
     virtualNetworkEnabled: false
     roleAssignmentEnabled: true
     roleAssignments: [
@@ -42,11 +42,11 @@ module testDeployment '../../../main.bicep' = {
         relativeScope: ''
       }
     ]
-    deploymentScriptNetworkSecurityGroupName: 'nsg-${location}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptVirtualNetworkName: 'vnet-${location}-ds-${namePrefix}-${serviceShort}'
+    deploymentScriptNetworkSecurityGroupName: 'nsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
+    deploymentScriptVirtualNetworkName: 'vnet-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
     deploymentScriptStorageAccountName: 'stgds${namePrefix}${serviceShort}'
-    deploymentScriptLocation: location
-    virtualNetworkLocation: location
+    deploymentScriptLocation: resourceLocation
+    virtualNetworkLocation: resourceLocation
     resourceProviders: {
       'Microsoft.HybridCompute': [ 'ArcServerPrivateLinkPreview' ]
       'Microsoft.AVS': [ 'AzureServicesVm' ]

@@ -4,7 +4,7 @@ metadata description = 'This instance deploys a subscription with a vwan network
 targetScope = 'managementGroup'
 
 @description('Optional. The location to deploy resources to.')
-param location string = 'uksouth'
+param resourceLocation string = 'uksouth'
 
 @description('Optional. The subscription billing scope.')
 param subscriptionBillingScope string
@@ -17,7 +17,7 @@ param namePrefix string = '#_namePrefix_#'
 param serviceShort string = 'ssawan'
 
 module nestedDependencies 'dependencies.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   scope: resourceGroup('e4e7395f-dc45-411e-b425-95f75e470e16', 'rsg-blzv-perm-hubs-001')
   params: {
     hubVirtualNetworkName: 'vnet-uksouth-hub-blzv'
@@ -55,7 +55,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 module testDeployment '../../../main.bicep' = {
   //name: 'sub-blzv-tests-${namePrefix}-${serviceShort}-add-vwan-spoke'
-  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     subscriptionAliasEnabled: true
     subscriptionBillingScope: subscriptionBillingScope
@@ -70,12 +70,12 @@ module testDeployment '../../../main.bicep' = {
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
     //existingSubscriptionId: createSub.outputs.subscriptionId
     virtualNetworkEnabled: true
-    virtualNetworkLocation: location
-    virtualNetworkResourceGroupName: 'rsg-${location}-net-vwan-${namePrefix}-${serviceShort}'
-    deploymentScriptResourceGroupName: 'rsg-${location}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptManagedIdentityName: 'id-${location}-${namePrefix}-${serviceShort}'
-    deploymentScriptName: 'ds-${location}-${namePrefix}-${serviceShort}'
-    virtualNetworkName: 'vnet-${location}-vwan-${namePrefix}-${serviceShort}'
+    virtualNetworkLocation: resourceLocation
+    virtualNetworkResourceGroupName: 'rsg-${resourceLocation}-net-vwan-${namePrefix}-${serviceShort}'
+    deploymentScriptResourceGroupName: 'rsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
+    deploymentScriptManagedIdentityName: 'id-${resourceLocation}-${namePrefix}-${serviceShort}'
+    deploymentScriptName: 'ds-${resourceLocation}-${namePrefix}-${serviceShort}'
+    virtualNetworkName: 'vnet-${resourceLocation}-vwan-${namePrefix}-${serviceShort}'
     virtualNetworkAddressSpace: [
       '10.200.0.0/16'
     ]
@@ -87,13 +87,13 @@ module testDeployment '../../../main.bicep' = {
       {
         principalId: '7eca0dca-6701-46f1-b7b6-8b424dab50b3'
         definition: 'Network Contributor'
-        relativeScope: '/resourceGroups/rsg-${location}-net-hs-${namePrefix}-${serviceShort}'
+        relativeScope: '/resourceGroups/rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
       }
     ]
-    deploymentScriptNetworkSecurityGroupName: 'nsg-${location}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptVirtualNetworkName: 'vnet-${location}-ds-${namePrefix}-${serviceShort}'
+    deploymentScriptNetworkSecurityGroupName: 'nsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
+    deploymentScriptVirtualNetworkName: 'vnet-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
     deploymentScriptStorageAccountName: 'stgds${namePrefix}${serviceShort}'
-    deploymentScriptLocation: location
+    deploymentScriptLocation: resourceLocation
     resourceProviders: {}
   }
 }
