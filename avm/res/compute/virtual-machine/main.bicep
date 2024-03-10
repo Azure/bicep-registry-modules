@@ -133,7 +133,7 @@ param extensionDomainJoinConfig object = {
   enabled: false
 }
 
-@description('Optional. The configuration for the [AAD Join] extension. Must at least contain the ["enabled": true] property to be executed. To enroll in Intune, add the setting mdmId: "0000000a-0000-0000-c000-000000000000"')
+@description('Optional. The configuration for the [AAD Join] extension. Must at least contain the ["enabled": true] property to be executed. To enroll in Intune, add the setting mdmId: "0000000a-0000-0000-c000-000000000000".')
 param extensionAadJoinConfig object = {
   enabled: false
 }
