@@ -3646,7 +3646,7 @@ extensionDomainJoinConfig: {
     }
 }
 resource kv1 'Microsoft.KeyVault/vaults@2019-09-01' existing = {
-  name: 'adp-[[namePrefix]]-az-kv-x-001'
+  name: 'adp-#_namePrefix_#-az-kv-x-001'
   scope: resourceGroup('[[subscriptionId]]','validation-rg')
 }
 extensionDomainJoinPassword: kv1.getSecret('domainJoinUser02-Password')
