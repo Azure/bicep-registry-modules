@@ -51,6 +51,8 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
     virtualHubId: nestedDependencies.outputs.virtualHubResourceId
-
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }

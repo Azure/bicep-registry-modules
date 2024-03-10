@@ -75,6 +75,7 @@ module testDeployment '../../../main.bicep' = {
     hostingMode: 'highDensity'
     partitionCount: 2
     replicaCount: 3
+    semanticSearch: 'standard'
     managedIdentities: {
       systemAssigned: true
     }
@@ -129,4 +130,8 @@ module testDeployment '../../../main.bicep' = {
       Role: 'DeploymentValidation'
     }
   }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
 }
