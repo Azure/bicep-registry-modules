@@ -133,7 +133,7 @@ param extensionDomainJoinConfig object = {
   enabled: false
 }
 
-@description('Optional. The configuration for the [AAD Join] extension. Must at least contain the ["enabled": true] property to be executed.')
+@description('Optional. The configuration for the [AAD Join] extension. Must at least contain the ["enabled": true] property to be executed. To enroll in Intune, add the setting mdmId: "0000000a-0000-0000-c000-000000000000"')
 param extensionAadJoinConfig object = {
   enabled: false
 }
@@ -172,6 +172,16 @@ param extensionDSCConfig object = {
 param extensionCustomScriptConfig object = {
   enabled: false
   fileData: []
+}
+
+@description('Optional. The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least contain the ["enabled": true] property to be executed.')
+param extensionNvidiaGpuDriverWindows object = {
+  enabled: false
+}
+
+@description('Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed.')
+param extensionHostPoolRegistration object = {
+  enabled: false
 }
 
 @description('Optional. Any object that contains the extension specific protected settings.')
@@ -471,7 +481,7 @@ module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.e
     location: location
     publisher: 'Microsoft.Azure.ActiveDirectory'
     type: osType == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginforLinux'
-    typeHandlerVersion: contains(extensionAadJoinConfig, 'typeHandlerVersion') ? extensionAadJoinConfig.typeHandlerVersion : '1.0'
+    typeHandlerVersion: contains(extensionAadJoinConfig, 'typeHandlerVersion') ? extensionAadJoinConfig.typeHandlerVersion : '2.0'
     autoUpgradeMinorVersion: contains(extensionAadJoinConfig, 'autoUpgradeMinorVersion') ? extensionAadJoinConfig.autoUpgradeMinorVersion : true
     enableAutomaticUpgrade: contains(extensionAadJoinConfig, 'enableAutomaticUpgrade') ? extensionAadJoinConfig.enableAutomaticUpgrade : false
     settings: contains(extensionAadJoinConfig, 'settings') ? extensionAadJoinConfig.settings : {}
@@ -648,6 +658,43 @@ module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzu
   ]
 }
 
+module vm_nvidiaGpuDriverWindowsExtension 'extension/main.bicep' = if (extensionNvidiaGpuDriverWindows.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-NvidiaGpuDriverWindows'
+  params: {
+    virtualMachineName: vm.name
+    name: 'NvidiaGpuDriverWindows'
+    location: location
+    publisher: 'Microsoft.HpcCompute'
+    type: 'NvidiaGpuDriverWindows'
+    typeHandlerVersion: contains(extensionNvidiaGpuDriverWindows, 'typeHandlerVersion') ? extensionNvidiaGpuDriverWindows.typeHandlerVersion : '1.4'
+    autoUpgradeMinorVersion: contains(extensionNvidiaGpuDriverWindows, 'autoUpgradeMinorVersion') ? extensionNvidiaGpuDriverWindows.autoUpgradeMinorVersion : true
+    enableAutomaticUpgrade: contains(extensionNvidiaGpuDriverWindows, 'enableAutomaticUpgrade') ? extensionNvidiaGpuDriverWindows.enableAutomaticUpgrade : false
+    tags: extensionNvidiaGpuDriverWindows.?tags ?? tags
+  }
+  dependsOn: [
+    vm_azureDiskEncryptionExtension
+  ]
+}
+
+module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHostPoolRegistration.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-HostPoolRegistration'
+  params: {
+    virtualMachineName: vm.name
+    name: 'HostPoolRegistration'
+    location: location
+    publisher: 'Microsoft.PowerShell'
+    type: 'DSC'
+    typeHandlerVersion: contains(extensionHostPoolRegistration, 'typeHandlerVersion') ? extensionHostPoolRegistration.typeHandlerVersion : '2.73'
+    autoUpgradeMinorVersion: contains(extensionHostPoolRegistration, 'autoUpgradeMinorVersion') ? extensionHostPoolRegistration.autoUpgradeMinorVersion : true
+    enableAutomaticUpgrade: contains(extensionHostPoolRegistration, 'enableAutomaticUpgrade') ? extensionHostPoolRegistration.enableAutomaticUpgrade : false
+    settings: extensionHostPoolRegistration.settings
+    tags: extensionHostPoolRegistration.?tags ?? tags
+  }
+  dependsOn: [
+    vm_nvidiaGpuDriverWindowsExtension
+  ]
+}
+
 module vm_backup 'modules/protected-item.bicep' = if (!empty(backupVaultName)) {
   name: '${uniqueString(deployment().name, location)}-VM-Backup'
   params: {
@@ -661,7 +708,7 @@ module vm_backup 'modules/protected-item.bicep' = if (!empty(backupVaultName)) {
   }
   scope: az.resourceGroup(backupVaultResourceGroup)
   dependsOn: [
-    vm_azureDiskEncryptionExtension
+    vm_hostPoolRegistrationExtension
   ]
 }
 
