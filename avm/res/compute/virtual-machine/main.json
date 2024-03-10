@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "2854193023656120172"
+      "templateHash": "4781094864340250429"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -398,7 +398,7 @@
         "enabled": false
       },
       "metadata": {
-        "description": "Optional. The configuration for the [AAD Join] extension. Must at least contain the [\"enabled\": true] property to be executed. To enroll in Intune, add the setting mdmId: \"0000000a-0000-0000-c000-000000000000\""
+        "description": "Optional. The configuration for the [AAD Join] extension. Must at least contain the [\"enabled\": true] property to be executed. To enroll in Intune, add the setting mdmId: \"0000000a-0000-0000-c000-000000000000\"."
       }
     },
     "extensionAntiMalwareConfig": {
