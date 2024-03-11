@@ -1,11 +1,11 @@
 name: '.Platform: PSRule validation for all defaults and waf-aligned tests'
 
 on:
-  push:
-    branches:
-      - feat/psrule-them-all
-    paths:
-      - ".github/workflows/avm.platform.check.psrule.yml"
+  # push:
+  #   branches:
+  #     - feat/psrule-them-all
+  #   paths:
+  #     - ".github/workflows/avm.platform.check.psrule.yml"
   workflow_dispatch:
     inputs:
       targetPath:

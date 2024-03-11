@@ -52,7 +52,7 @@ jobs:
   job_psrule_test: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "PSRule [${{ matrix.testCases.name }}]"
     runs-on: ubuntu-latest
-    continue-on-error: true
+    continue-on-error: true # Soft fail while PSRule gets bedded in, in this project
     if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
     strategy:
       fail-fast: false
@@ -69,9 +69,7 @@ jobs:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
           subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
-          psrulePath: "avm/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
-          # psruleContinueOnError: "${{ (fromJson(inputs.workflowInput)).psruleContinueOnError }}"
-          psruleContinueOnError: "true"
+          psrulePath: "avm/utilities/pipelines/staticValidation/psrule"
 
   #############################
   #   Deployment validation   #

@@ -41,9 +41,6 @@ inputs:
     description: "Whether to add the detail of passed PSRule to the output markdown file or to limit the list to the failed ones"
     required: false
     default: $false
-  # psruleContinueOnError:
-  #   description: "Whether to continue on error caused by non compliant PSRules"
-  #   required: true
 
 runs:
   using: "composite"
@@ -118,8 +115,6 @@ runs:
     #-----------------------------
     - name: Run PSRule analysis
       uses: microsoft/ps-rule@v2.9.0
-      # continue-on-error: true # Setting this whilst PSRule gets bedded in, in this project
-      # continue-on-error: ${{ inputs.psruleContinueOnError }} # Setting this whilst PSRule gets bedded in, in this project
       with:
         modules: "PSRule.Rules.Azure"
         inputPath: "${{ inputs.templateFilePath}}"
