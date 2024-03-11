@@ -73,10 +73,10 @@ This module deploys a Web or Function App Deployment Slot.
 | [`redundancyMode`](#parameter-redundancymode) | string | Site redundancy mode. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serverFarmResourceId`](#parameter-serverfarmresourceid) | string | The resource ID of the app service plan to use for the slot. |
-| [`setAzureWebJobsDashboard`](#parameter-setazurewebjobsdashboard) | bool | For function apps. If true the app settings "AzureWebJobsDashboard" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons. |
 | [`siteConfig`](#parameter-siteconfig) | object | The site config object. |
 | [`storageAccountRequired`](#parameter-storageaccountrequired) | bool | Checks if Customer provided storage account is required. |
 | [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions. |
+| [`storageAccountUseIdentityAuthentication`](#parameter-storageaccountuseidentityauthentication) | bool | If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualNetworkSubnetId`](#parameter-virtualnetworksubnetid) | string | Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}. |
 | [`vnetContentShareEnabled`](#parameter-vnetcontentshareenabled) | bool | To enable accessing content over virtual network. |
@@ -942,14 +942,6 @@ The resource ID of the app service plan to use for the slot.
 - Required: No
 - Type: string
 
-### Parameter: `setAzureWebJobsDashboard`
-
-For function apps. If true the app settings "AzureWebJobsDashboard" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons.
-
-- Required: No
-- Type: bool
-- Default: `[if(contains(parameters('kind'), 'functionapp'), true(), false())]`
-
 ### Parameter: `siteConfig`
 
 The site config object.
@@ -971,6 +963,14 @@ Required if app of kind functionapp. Resource ID of the storage account to manag
 
 - Required: No
 - Type: string
+
+### Parameter: `storageAccountUseIdentityAuthentication`
+
+If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `tags`
 

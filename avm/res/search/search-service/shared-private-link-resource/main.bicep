@@ -18,24 +18,24 @@ param groupId string
 param requestMessage string
 
 @description('Optional. Can be used to specify the Azure Resource Manager location of the resource to which a shared private link is to be created. This is only required for those resources whose DNS configuration are regional (such as Azure Kubernetes Service).')
-param resourceRegion string = ''
+param resourceRegion string?
 
 // =============== //
 //   Deployments   //
 // =============== //
 
-resource searchService 'Microsoft.Search/searchServices@2022-09-01' existing = {
+resource searchService 'Microsoft.Search/searchServices@2023-11-01' existing = {
   name: searchServiceName
 }
 
-resource sharedPrivateLinkResource 'Microsoft.Search/searchServices/sharedPrivateLinkResources@2022-09-01' = {
+resource sharedPrivateLinkResource 'Microsoft.Search/searchServices/sharedPrivateLinkResources@2023-11-01' = {
   parent: searchService
   name: name
   properties: {
     privateLinkResourceId: privateLinkResourceId
     groupId: groupId
     requestMessage: requestMessage
-    resourceRegion: !empty(resourceRegion) ? resourceRegion : null
+    resourceRegion: resourceRegion
   }
 }
 
