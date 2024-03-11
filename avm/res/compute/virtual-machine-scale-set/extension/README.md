@@ -39,7 +39,6 @@ This module deploys a Virtual Machine Scale Set Extension.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`forceUpdateTag`](#parameter-forceupdatetag) | string | How the extension handler should be forced to update even if the extension configuration has not changed. |
 | [`protectedSettings`](#parameter-protectedsettings) | secureObject | Any object that contains the extension specific protected settings. |
 | [`settings`](#parameter-settings) | object | Any object that contains the extension specific settings. |
@@ -93,14 +92,6 @@ The name of the parent virtual machine scale set that extension is provisioned f
 
 - Required: Yes
 - Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `forceUpdateTag`
 

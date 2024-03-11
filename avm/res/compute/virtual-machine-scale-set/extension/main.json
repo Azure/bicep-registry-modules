@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "10107873299297123369"
+      "templateHash": "3680417048986934448"
     },
     "name": "Virtual Machine Scale Set Extensions",
     "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -81,30 +81,9 @@
       "metadata": {
         "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
       }
-    },
-    "enableDefaultTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-      }
     }
   },
   "resources": [
-    {
-      "condition": "[parameters('enableDefaultTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
-    },
     {
       "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
       "apiVersion": "2022-11-01",
