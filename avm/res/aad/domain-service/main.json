@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "2449559583418397170"
+      "templateHash": "14688363150119598801"
     },
     "name": "Azure Active Directory Domain Services",
     "description": "This module deploys an Azure Active Directory Domain Services (AADDS).",
@@ -191,6 +191,28 @@
         }
       },
       "nullable": true
+    },
+    "replicaSetType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Virtual network location"
+            }
+          },
+          "subnetId": {
+            "type": "string",
+            "metadata": {
+              "example": "[[concat(\"/subscriptions/\", subscription().subscriptionId, \"/resourceGroups/\", resourceGroup().name, \"/providers/Microsoft.Network/virtualNetworks/\", parameters(\"vnetName\"), \"/subnets/\", parameters(\"subnetName\"))]",
+              "description": "Required. The id of the subnet that Domain Services will be deployed on."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -206,7 +228,7 @@
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Optional. The location to deploy the Azure ADDS Services."
+        "description": "Optional. The location to deploy the Azure ADDS Services. Uses the resource group location if not specified."
       }
     },
     "enableTelemetry": {
@@ -218,10 +240,11 @@
     },
     "domainName": {
       "type": "string",
-      "minLength": 1,
       "metadata": {
+        "example": "  - 'contoso.onmicrosoft.com'\n  - 'aaddscontoso.com'\n  ",
         "description": "Required. The domain name specific to the Azure ADDS service."
-      }
+      },
+      "minLength": 1
     },
     "sku": {
       "type": "string",
@@ -236,8 +259,7 @@
       }
     },
     "replicaSets": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/replicaSetType",
       "metadata": {
         "description": "Optional. Additional replica set for the managed domain."
       }
@@ -246,7 +268,7 @@
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. The certificate required to configure Secure LDAP. Should be a base64encoded representation of the certificate PFX file. Required if secure LDAP is enabled and must be valid more than 30 days."
+        "description": "Conditional. The certificate required to configure Secure LDAP. Should be a base64encoded representation of the certificate PFX file and contain the domainName as CN. Required if secure LDAP is enabled and must be valid more than 30 days."
       }
     },
     "pfxCertificatePassword": {
@@ -260,6 +282,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
+        "example": "  - ['john@doh.org']\n  - ['john@doh.org','jane@doh.org']\n  ",
         "description": "Optional. The email recipient value to receive alerts."
       }
     },
@@ -401,6 +424,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
+        "example": "  {\n      \"key1\": \"value1\",\n      \"key2\": \"value2\"\n  }\n  ",
         "description": "Optional. Tags of the resource."
       }
     },

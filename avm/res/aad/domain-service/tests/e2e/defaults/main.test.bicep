@@ -42,6 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    namePrefix: namePrefix
     certDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
   }
 }
@@ -91,9 +92,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       }
     ]
     lock: {
-      kind: 'CanNotDelete'
+      kind: 'None'
       name: 'myCustomLockName'
     }
+    ldaps: 'Enabled'
     pfxCertificate: keyVault.getSecret(nestedDependencies.outputs.certSecretName)
     pfxCertificatePassword: keyVault.getSecret(nestedDependencies.outputs.certPWSecretName)
     replicaSets: [

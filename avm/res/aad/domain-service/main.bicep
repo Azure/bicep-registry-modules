@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Optional. The name of the AADDS resource. Defaults to the domain name specific to the Azure ADDS service.')
 param name string = domainName
 
-@description('Optional. The location to deploy the Azure ADDS Services.')
+@description('Optional. The location to deploy the Azure ADDS Services. Uses the resource group location if not specified.')
 param location string = resourceGroup().location
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -17,6 +17,12 @@ param enableTelemetry bool = true
 // ============ //
 
 @minLength(1)
+@metadata({
+  example: '''
+  - 'contoso.onmicrosoft.com'
+  - 'aaddscontoso.com'
+  '''
+})
 @description('Required. The domain name specific to the Azure ADDS service.')
 param domainName string
 
@@ -29,9 +35,9 @@ param domainName string
 param sku string = 'Standard'
 
 @description('Optional. Additional replica set for the managed domain.')
-param replicaSets array = []
+param replicaSets replicaSetType
 
-@description('Conditional. The certificate required to configure Secure LDAP. Should be a base64encoded representation of the certificate PFX file. Required if secure LDAP is enabled and must be valid more than 30 days.')
+@description('Conditional. The certificate required to configure Secure LDAP. Should be a base64encoded representation of the certificate PFX file and contain the domainName as CN. Required if secure LDAP is enabled and must be valid more than 30 days.')
 @secure()
 param pfxCertificate string = ''
 
@@ -39,6 +45,12 @@ param pfxCertificate string = ''
 @secure()
 param pfxCertificatePassword string = ''
 
+@metadata({
+  example: '''
+  - ['john@doh.org']
+  - ['john@doh.org','jane@doh.org']
+  '''
+})
 @description('Optional. The email recipient value to receive alerts.')
 param additionalRecipients array = []
 
@@ -127,6 +139,14 @@ param ldaps string = 'Enabled'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
+@metadata({
+  example: '''
+  {
+      "key1": "value1",
+      "key2": "value2"
+  }
+  '''
+})
 @description('Optional. Tags of the resource.')
 param tags object?
 
@@ -321,4 +341,15 @@ type diagnosticSettingType = {
 
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
+}[]?
+
+type replicaSetType = {
+  @description('Required. Virtual network location')
+  location: string
+
+  @metadata({
+    example: '[concat("/subscriptions/", subscription().subscriptionId, "/resourceGroups/", resourceGroup().name, "/providers/Microsoft.Network/virtualNetworks/", parameters("vnetName"), "/subnets/", parameters("subnetName"))]'
+  })
+  @description('Required. The id of the subnet that Domain Services will be deployed on.')
+  subnetId: string
 }[]?

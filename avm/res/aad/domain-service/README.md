@@ -9,6 +9,7 @@ This module deploys an Azure Active Directory Domain Services (AADDS).
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -29,9 +30,6 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/aad/domain-service:<version>`.
 
 - [Using default parameter set](#example-1-using-default-parameter-set)
-- [Disabling LDAPS](#example-2-disabling-ldaps)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using default parameter set_
 
@@ -62,9 +60,10 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
       }
     ]
     enableTelemetry: '<enableTelemetry>'
+    ldaps: 'Enabled'
     location: '<location>'
     lock: {
-      kind: 'CanNotDelete'
+      kind: 'None'
       name: 'myCustomLockName'
     }
     name: 'aaddsmin001'
@@ -121,414 +120,21 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
     },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "name": {
-      "value": "aaddsmin001"
-    },
-    "pfxCertificate": {
-      "value": "<pfxCertificate>"
-    },
-    "pfxCertificatePassword": {
-      "value": "<pfxCertificatePassword>"
-    },
-    "replicaSets": {
-      "value": [
-        {
-          "location": "WestEurope",
-          "subnetId": "<subnetId>"
-        }
-      ]
-    },
-    "sku": {
-      "value": "Standard"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 2: _Disabling LDAPS_
-
-This instance deploys the module with disabled LDAPS.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-aaddsmin'
-  params: {
-    // Required parameters
-    domainName: 'onmicrosoft.com'
-    // Non-required parameters
-    additionalRecipients: [
-      '@noreply.github.com'
-    ]
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    enableTelemetry: '<enableTelemetry>'
-    externalAccess: '<externalAccess>'
-    ldaps: '<ldaps>'
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    name: 'aaddsmin001'
-    replicaSets: [
-      {
-        location: 'WestEurope'
-        subnetId: '<subnetId>'
-      }
-    ]
-    sku: 'Standard'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "domainName": {
-      "value": "onmicrosoft.com"
-    },
-    // Non-required parameters
-    "additionalRecipients": {
-      "value": [
-        "@noreply.github.com"
-      ]
-    },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
-    "externalAccess": {
-      "value": "<externalAccess>"
     },
     "ldaps": {
-      "value": "<ldaps>"
+      "value": "Enabled"
     },
     "location": {
       "value": "<location>"
     },
     "lock": {
       "value": {
-        "kind": "CanNotDelete",
+        "kind": "None",
         "name": "myCustomLockName"
       }
     },
     "name": {
       "value": "aaddsmin001"
-    },
-    "replicaSets": {
-      "value": [
-        {
-          "location": "WestEurope",
-          "subnetId": "<subnetId>"
-        }
-      ]
-    },
-    "sku": {
-      "value": "Standard"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 3: _Using large parameter set_
-
-This instance deploys the module with most of its features enabled.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-aaddsmax'
-  params: {
-    // Required parameters
-    domainName: 'onmicrosoft.com'
-    // Non-required parameters
-    additionalRecipients: [
-      '@noreply.github.com'
-    ]
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    enableTelemetry: '<enableTelemetry>'
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    name: 'aaddsmax001'
-    pfxCertificate: '<pfxCertificate>'
-    pfxCertificatePassword: '<pfxCertificatePassword>'
-    replicaSets: [
-      {
-        location: 'WestEurope'
-        subnetId: '<subnetId>'
-      }
-    ]
-    sku: 'Standard'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "domainName": {
-      "value": "onmicrosoft.com"
-    },
-    // Non-required parameters
-    "additionalRecipients": {
-      "value": [
-        "@noreply.github.com"
-      ]
-    },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "name": {
-      "value": "aaddsmax001"
-    },
-    "pfxCertificate": {
-      "value": "<pfxCertificate>"
-    },
-    "pfxCertificatePassword": {
-      "value": "<pfxCertificatePassword>"
-    },
-    "replicaSets": {
-      "value": [
-        {
-          "location": "WestEurope",
-          "subnetId": "<subnetId>"
-        }
-      ]
-    },
-    "sku": {
-      "value": "Standard"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 4: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-aaddswaf'
-  params: {
-    // Required parameters
-    domainName: 'onmicrosoft.com'
-    // Non-required parameters
-    additionalRecipients: [
-      '@noreply.github.com'
-    ]
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    enableTelemetry: '<enableTelemetry>'
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    name: 'aaddswaf001'
-    pfxCertificate: '<pfxCertificate>'
-    pfxCertificatePassword: '<pfxCertificatePassword>'
-    replicaSets: [
-      {
-        location: 'WestEurope'
-        subnetId: '<subnetId>'
-      }
-    ]
-    sku: 'Standard'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "domainName": {
-      "value": "onmicrosoft.com"
-    },
-    // Non-required parameters
-    "additionalRecipients": {
-      "value": [
-        "@noreply.github.com"
-      ]
-    },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "name": {
-      "value": "aaddswaf001"
     },
     "pfxCertificate": {
       "value": "<pfxCertificate>"
@@ -574,7 +180,7 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`pfxCertificate`](#parameter-pfxcertificate) | securestring | The certificate required to configure Secure LDAP. Should be a base64encoded representation of the certificate PFX file. Required if secure LDAP is enabled and must be valid more than 30 days. |
+| [`pfxCertificate`](#parameter-pfxcertificate) | securestring | The certificate required to configure Secure LDAP. Should be a base64encoded representation of the certificate PFX file and contain the domainName as CN. Required if secure LDAP is enabled and must be valid more than 30 days. |
 | [`pfxCertificatePassword`](#parameter-pfxcertificatepassword) | securestring | The password to decrypt the provided Secure LDAP certificate PFX file. Required if secure LDAP is enabled. |
 
 **Optional parameters**
@@ -590,7 +196,7 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
 | [`kerberosArmoring`](#parameter-kerberosarmoring) | string | The value is to enable to provide a protected channel between the Kerberos client and the KDC. |
 | [`kerberosRc4Encryption`](#parameter-kerberosrc4encryption) | string | The value is to enable Kerberos requests that use RC4 encryption. |
 | [`ldaps`](#parameter-ldaps) | string | A flag to determine whether or not Secure LDAP is enabled or disabled. |
-| [`location`](#parameter-location) | string | The location to deploy the Azure ADDS Services. |
+| [`location`](#parameter-location) | string | The location to deploy the Azure ADDS Services. Uses the resource group location if not specified. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`name`](#parameter-name) | string | The name of the AADDS resource. Defaults to the domain name specific to the Azure ADDS service. |
 | [`notifyDcAdmins`](#parameter-notifydcadmins) | string | The value is to notify the DC Admins. |
@@ -613,7 +219,7 @@ The domain name specific to the Azure ADDS service.
 
 ### Parameter: `pfxCertificate`
 
-The certificate required to configure Secure LDAP. Should be a base64encoded representation of the certificate PFX file. Required if secure LDAP is enabled and must be valid more than 30 days.
+The certificate required to configure Secure LDAP. Should be a base64encoded representation of the certificate PFX file and contain the domainName as CN. Required if secure LDAP is enabled and must be valid more than 30 days.
 
 - Required: No
 - Type: securestring
@@ -832,7 +438,7 @@ A flag to determine whether or not Secure LDAP is enabled or disabled.
 
 ### Parameter: `location`
 
-The location to deploy the Azure ADDS Services.
+The location to deploy the Azure ADDS Services. Uses the resource group location if not specified.
 
 - Required: No
 - Type: string
@@ -933,7 +539,27 @@ Additional replica set for the managed domain.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-replicasetslocation) | string | Virtual network location |
+| [`subnetId`](#parameter-replicasetssubnetid) | string | The id of the subnet that Domain Services will be deployed on. |
+
+### Parameter: `replicaSets.location`
+
+Virtual network location
+
+- Required: Yes
+- Type: string
+
+### Parameter: `replicaSets.subnetId`
+
+The id of the subnet that Domain Services will be deployed on.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `roleAssignments`
 
@@ -1105,6 +731,67 @@ The value is to enable clients making request using TLSv1.
 ## Cross-referenced modules
 
 _None_
+
+## Notes
+
+This module requires prerequisites, that can't be done via ARM/Bicep at the moment. The prerequisites to create a managed domain are outlined [here](https://learn.microsoft.com/en-us/entra/identity/domain-services/template-create-instance#prerequisites).
+
+>**Note**: Please make sure you follow the steps to make sure the prerequisites are fullfilled before using the module.
+
+### Create a Service Principal
+
+Follow the steps [Create required Microsoft Entra resources](https://learn.microsoft.com/en-us/entra/identity/domain-services/template-create-instance#create-required-microsoft-entra-resources), which are summarized in the following steps:
+
+1. Prepare PowerShell for Graph interaction
+   - [Install the Microsoft Graph PowerShell SDK](https://learn.microsoft.com/en-us/powershell/microsoftgraph/installation?view=graph-powershell-1.0) ```Install-Module Microsoft.Graph -Scope CurrentUser```
+   - Import the needed module ```Import-Module -Name Microsoft.Graph.Identity.Governance -Force```
+
+1. [Assign](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/manage-roles-portal) the [Application Developer](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference#application-developer) to the current user to add the required Service Principal.
+
+   ```powershell
+   # Connect (will open a browser)
+   Connect-MgGraph -Scopes "User.Read.All,Application.ReadWrite.All"
+   # Replace with your user
+   $user = Get-MgUser -Filter "userPrincipalName eq 'johndoe@contoso.com'"
+   # Get the role to assign it to the user
+   $roledefinition = Get-MgRoleManagementDirectoryRoleDefinition -Filter "DisplayName eq 'Application Developer'"
+   # Assign the role (without PIM)
+   $roleassignment = New-MgRoleManagementDirectoryRoleAssignment -DirectoryScopeId '/' -RoleDefinitionId $roledefinition.Id -PrincipalId $user.Id
+   ```
+
+   If you have PIM activated, assign the role like this:
+
+   ```powershell
+   # limit the assignment to 1 hour
+   $params = @{
+      "PrincipalId" = $user.Id
+      "RoleDefinitionId" = $roledefinition.Id
+      "Justification" = "Add eligible assignment"
+      "DirectoryScopeId" = "/"
+      "Action" = "AdminAssign"
+      "ScheduleInfo" = @{
+         "StartDateTime" = Get-Date
+         "Expiration" = @{
+            "Type" = "AfterDuration"
+            "Duration" = "PT1H"
+         }
+      }
+   }
+   New-MgRoleManagementDirectoryRoleEligibilityScheduleRequest -BodyParameter $params | Format-List Id, Status, Action, AppScopeId, DirectoryScopeId, RoleDefinitionId, IsValidationOnly, Justification, PrincipalId, CompletedDateTime, CreatedDateTime
+   ```
+
+3. Create the necessary Service Principal
+
+   ```powershell
+   New-MgServicePrincipal -AppId 2565bd9d-da50-47d4-8b85-4c97f669dc36 -DisplayName "Domain Controller Services"
+   ```
+
+### References
+
+- [Prerequisites to use PowerShell or Graph Explorer for Microsoft Entra roles](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/prerequisites)
+- [Assign Microsoft Entra roles to users](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/manage-roles-portal)
+- [New-MgServicePrincipal](https://learn.microsoft.com/en-us/powershell/module/microsoft.graph.applications/new-mgserviceprincipal)
+- [Create a Microsoft Entra Domain Services managed domain using an Azure Resource Manager template](https://learn.microsoft.com/en-us/entra/identity/domain-services/template-create-instance)
 
 ## Data Collection
 

@@ -10,6 +10,9 @@ param keyVaultName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
+@description('Required. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
+param namePrefix string
+
 @description('Required. The name of the Deployment Script to create for the Certificate generation.')
 param certDeploymentScriptName string
 
@@ -30,7 +33,64 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
       {
         name: 'defaultSubnet'
         properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 16, 0)
+          addressPrefix: cidrSubnet(addressPrefix, 24, 0)
+        }
+      }
+      {
+        name: 'aadds-subnet'
+        properties: {
+          addressPrefix: cidrSubnet(addressPrefix, 24, 1)
+          networkSecurityGroup: {
+            id: nsgAaddSubnet.id
+          }
+        }
+      }
+    ]
+  }
+}
+
+resource nsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2023-09-01' = {
+  name: '${virtualNetworkName}-aadds-subnet-nsg'
+  location: location
+  properties: {
+    securityRules: [
+      {
+        name: 'AllowSyncWithAzureAD'
+        properties: {
+          access: 'Allow'
+          priority: 101
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          sourceAddressPrefix: 'AzureActiveDirectoryDomainServices'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '443'
+        }
+      }
+      {
+        name: 'AllowPSRemoting'
+        properties: {
+          access: 'Allow'
+          priority: 301
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          sourceAddressPrefix: 'AzureActiveDirectoryDomainServices'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '5986'
+        }
+      }
+      {
+        name: 'AllowRD'
+        properties: {
+          access: 'Allow'
+          priority: 201
+          direction: 'Inbound'
+          protocol: 'Tcp'
+          sourceAddressPrefix: 'CorpNetSaw'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '3389'
         }
       }
     ]
@@ -81,15 +141,15 @@ resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01'
     }
   }
   properties: {
-    azPowerShellVersion: '3.0'
+    azPowerShellVersion: '11.0'
     retentionInterval: 'P1D'
-    arguments: ' -KeyVaultName "${keyVault.name}" -ResourceGroupName "${resourceGroup().name}" -CertPWSecretName "${certPWSecretName}" -CertSecretName "${certSecretName}"'
+    arguments: ' -KeyVaultName "${keyVault.name}" -ResourceGroupName "${resourceGroup().name}" -NamePrefix "${namePrefix}" -CertPWSecretName "${certPWSecretName}" -CertSecretName "${certSecretName}"'
     scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-PfxCertificateInKeyVault.ps1')
   }
 }
 
 @description('The resource ID of the created Virtual Network Subnet.')
-output subnetResourceId string = virtualNetwork.properties.subnets[0].id
+output subnetResourceId string = '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${virtualNetwork.name}/subnets/${virtualNetwork.properties.subnets[1].name}'
 
 @description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id
