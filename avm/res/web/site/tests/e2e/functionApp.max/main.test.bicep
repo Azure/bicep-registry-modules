@@ -206,13 +206,13 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         principalType: 'ServicePrincipal'
       }
     ]
-    setAzureWebJobsDashboard: true
     keyVaultAccessIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
     siteConfig: {
       alwaysOn: true
       use32BitWorkerProcess: false
     }
     storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+    storageAccountUseIdentityAuthentication: true
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [

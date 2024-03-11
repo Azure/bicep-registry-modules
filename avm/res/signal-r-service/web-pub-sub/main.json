@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "3319927828453224724"
+      "templateHash": "11458194827556582454"
     },
-    "name": "Search Services",
-    "description": "This module deploys a Search Service.",
+    "name": "SignalR Web PubSub Services",
+    "description": "This module deploys a SignalR Web PubSub Service.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
@@ -21,6 +21,16 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource."
           }
         }
       },
@@ -299,206 +309,20 @@
         }
       },
       "nullable": true
-    },
-    "diagnosticSettingType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of diagnostic setting."
-            }
-          },
-          "logCategoriesAndGroups": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                  }
-                },
-                "categoryGroup": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
-            }
-          },
-          "metricCategories": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
-            }
-          },
-          "logAnalyticsDestinationType": {
-            "type": "string",
-            "allowedValues": [
-              "AzureDiagnostics",
-              "Dedicated"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-            }
-          },
-          "workspaceResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "storageAccountResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "eventHubAuthorizationRuleResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-            }
-          },
-          "eventHubName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "marketplacePartnerResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-            }
-          }
-        }
-      },
-      "nullable": true
     }
   },
   "parameters": {
-    "name": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. The name of the Azure Cognitive Search service to create or update. Search service names must only contain lowercase letters, digits or dashes, cannot use dash as the first two or last one characters, cannot contain consecutive dashes, and must be between 2 and 60 characters in length. Search service names must be globally unique since they are part of the service URI (https://<name>.search.windows.net). You cannot change the service name after the service is created."
-      }
-    },
-    "authOptions": {
-      "type": "object",
-      "defaultValue": {},
-      "metadata": {
-        "description": "Optional. Defines the options for how the data plane API of a Search service authenticates requests. Must remain an empty object {} if 'disableLocalAuth' is set to true."
-      }
-    },
-    "disableLocalAuth": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. When set to true, calls to the search service will not be permitted to utilize API keys for authentication. This cannot be set to true if 'authOptions' are defined."
-      }
-    },
-    "enableTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable/Disable usage telemetry for module."
-      }
-    },
-    "cmkEnforcement": {
-      "type": "string",
-      "defaultValue": "Unspecified",
-      "allowedValues": [
-        "Disabled",
-        "Enabled",
-        "Unspecified"
-      ],
-      "metadata": {
-        "description": "Optional. Describes a policy that determines how resources within the search service are to be encrypted with Customer Managed Keys."
-      }
-    },
-    "hostingMode": {
-      "type": "string",
-      "defaultValue": "default",
-      "allowedValues": [
-        "default",
-        "highDensity"
-      ],
-      "metadata": {
-        "description": "Optional. Applicable only for the standard3 SKU. You can set this property to enable up to 3 high density partitions that allow up to 1000 indexes, which is much higher than the maximum indexes allowed for any other SKU. For the standard3 SKU, the value is either 'default' or 'highDensity'. For all other SKUs, this value must be 'default'."
-      }
-    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Optional. Location for all Resources."
+        "description": "Optional. The location for the resource."
       }
     },
-    "lock": {
-      "$ref": "#/definitions/lockType",
+    "name": {
+      "type": "string",
       "metadata": {
-        "description": "Optional. The lock settings of the service."
-      }
-    },
-    "networkRuleSet": {
-      "type": "object",
-      "defaultValue": {},
-      "metadata": {
-        "description": "Optional. Network specific rules that determine how the Azure Cognitive Search service may be reached."
-      }
-    },
-    "partitionCount": {
-      "type": "int",
-      "defaultValue": 1,
-      "minValue": 1,
-      "maxValue": 12,
-      "metadata": {
-        "description": "Optional. The number of partitions in the search service; if specified, it can be 1, 2, 3, 4, 6, or 12. Values greater than 1 are only valid for standard SKUs. For 'standard3' services with hostingMode set to 'highDensity', the allowed values are between 1 and 3."
+        "description": "Required. The name of the Web PubSub Service resource."
       }
     },
     "privateEndpoints": {
@@ -507,31 +331,10 @@
         "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
       }
     },
-    "sharedPrivateLinkResources": {
-      "type": "array",
-      "defaultValue": [],
+    "lock": {
+      "$ref": "#/definitions/lockType",
       "metadata": {
-        "description": "Optional. The sharedPrivateLinkResources to create as part of the search Service."
-      }
-    },
-    "publicNetworkAccess": {
-      "type": "string",
-      "defaultValue": "enabled",
-      "allowedValues": [
-        "enabled",
-        "disabled"
-      ],
-      "metadata": {
-        "description": "Optional. This value can be set to 'enabled' to avoid breaking changes on existing customer resources and templates. If set to 'disabled', traffic over public interface is not allowed, and private endpoint connections would be the exclusive access method."
-      }
-    },
-    "replicaCount": {
-      "type": "int",
-      "defaultValue": 1,
-      "minValue": 1,
-      "maxValue": 12,
-      "metadata": {
-        "description": "Optional. The number of replicas in the search service. If specified, it must be a value between 1 and 12 inclusive for standard SKUs or between 1 and 3 inclusive for basic SKU."
+        "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
@@ -540,65 +343,125 @@
         "description": "Optional. Array of role assignments to create."
       }
     },
-    "semanticSearch": {
-      "type": "string",
+    "tags": {
+      "type": "object",
       "nullable": true,
-      "allowedValues": [
-        "disabled",
-        "free",
-        "standard"
-      ],
       "metadata": {
-        "description": "Optional. Sets options that control the availability of semantic search. This configuration is only possible for certain search SKUs in certain locations."
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "capacity": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Optional. The unit count of the resource. 1 by default."
       }
     },
     "sku": {
       "type": "string",
-      "defaultValue": "standard",
+      "defaultValue": "Standard_S1",
       "allowedValues": [
-        "basic",
-        "free",
-        "standard",
-        "standard2",
-        "standard3",
-        "storage_optimized_l1",
-        "storage_optimized_l2"
+        "Free_F1",
+        "Standard_S1"
       ],
       "metadata": {
-        "description": "Optional. Defines the SKU of an Azure Cognitive Search Service, which determines price tier and capacity limits."
+        "description": "Optional. Pricing tier of the resource."
       }
     },
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentitiesType",
       "metadata": {
-        "description": "Optional. The managed identity definition for this resource."
+        "description": "Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both."
       }
     },
-    "diagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
+    "disableAadAuth": {
+      "type": "bool",
+      "defaultValue": false,
       "metadata": {
-        "description": "Optional. The diagnostic settings of the service."
+        "description": "Optional. When set as true, connection with AuthType=aad won't work."
       }
     },
-    "tags": {
+    "disableLocalAuth": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Disables all authentication methods other than AAD authentication. For security reasons, this value should be set to `true`."
+      }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set."
+      }
+    },
+    "resourceLogConfigurationsToEnable": {
+      "type": "array",
+      "defaultValue": [
+        "ConnectivityLogs",
+        "MessagingLogs"
+      ],
+      "allowedValues": [
+        "ConnectivityLogs",
+        "MessagingLogs"
+      ],
+      "metadata": {
+        "description": "Optional. Control permission for data plane traffic coming from public networks while private endpoint is enabled."
+      }
+    },
+    "clientCertEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Request client certificate during TLS handshake if enabled."
+      }
+    },
+    "networkAcls": {
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Tags to help categorize the resource in the Azure portal."
+        "description": "Optional. Networks ACLs, this value contains IPs to allow and/or Subnet information. Can only be set if the 'SKU' is not 'Free_F1'. For security reasons, it is recommended to set the DefaultAction Deny."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
   "variables": {
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', 'None')), null())]",
+    "copy": [
+      {
+        "name": "resourceLogConfiguration",
+        "count": "[length(parameters('resourceLogConfigurationsToEnable'))]",
+        "input": {
+          "name": "[parameters('resourceLogConfigurationsToEnable')[copyIndex('resourceLogConfiguration')]]",
+          "enabled": "true"
+        }
+      }
+    ],
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
-      "Search Index Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8ebe5a00-799e-43f5-93ac-243d3dce84a7')]",
-      "Search Index Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1407120a-92aa-4202-b7e9-c0e197c71c8f')]",
-      "Search Service Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7ca78c08-252a-4471-8644-bb5ff32d4ba0')]",
-      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+      "SignalR AccessKey Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '04165923-9d83-45d5-8227-78b77b0a687e')]",
+      "SignalR App Server": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '420fcaa2-552c-430f-98ca-3264be4806c7')]",
+      "SignalR REST API Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fd53cd77-2268-407a-8f46-7e7863d0f521')]",
+      "SignalR REST API Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ddde6b66-c0df-4114-a159-3618637b3035')]",
+      "SignalR Service Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7e4f1700-ea5a-4f59-8f37-079cfe29dce3')]",
+      "SignalR/Web PubSub Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8cf5e20a-e4b2-4e9d-b3a1-5ceb692c2761')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+      "Web PubSub Service Owner (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12cf5a90-567b-43ae-8102-96cf46c7d9b4')]",
+      "Web PubSub Service Reader (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'bfb1c7d2-fb1a-466b-b2ba-aee63b92deaf')]"
     }
   },
   "resources": {
@@ -606,7 +469,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
-      "name": "[format('46d3xbcp.search-searchservice.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.res.signalrservice-webpubsub.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -622,94 +485,54 @@
         }
       }
     },
-    "searchService": {
-      "type": "Microsoft.Search/searchServices",
-      "apiVersion": "2023-11-01",
+    "webPubSub": {
+      "type": "Microsoft.SignalRService/webPubSub",
+      "apiVersion": "2021-10-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
-      "sku": {
-        "name": "[parameters('sku')]"
-      },
       "tags": "[parameters('tags')]",
+      "sku": {
+        "capacity": "[parameters('capacity')]",
+        "name": "[parameters('sku')]",
+        "tier": "[if(equals(parameters('sku'), 'Standard_S1'), 'Standard', 'Free')]"
+      },
       "identity": "[variables('identity')]",
       "properties": {
-        "authOptions": "[if(not(empty(parameters('authOptions'))), parameters('authOptions'), null())]",
+        "disableAadAuth": "[parameters('disableAadAuth')]",
         "disableLocalAuth": "[parameters('disableLocalAuth')]",
-        "encryptionWithCmk": {
-          "enforcement": "[parameters('cmkEnforcement')]"
+        "networkACLs": "[parameters('networkAcls')]",
+        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkAcls'))), 'Disabled', null()))]",
+        "resourceLogConfiguration": {
+          "categories": "[variables('resourceLogConfiguration')]"
         },
-        "hostingMode": "[parameters('hostingMode')]",
-        "networkRuleSet": "[parameters('networkRuleSet')]",
-        "partitionCount": "[parameters('partitionCount')]",
-        "replicaCount": "[parameters('replicaCount')]",
-        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
-        "semanticSearch": "[parameters('semanticSearch')]"
+        "tls": {
+          "clientCertEnabled": "[parameters('clientCertEnabled')]"
+        }
       }
     },
-    "searchService_diagnosticSettings": {
-      "copy": {
-        "name": "searchService_diagnosticSettings",
-        "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
-      },
-      "type": "Microsoft.Insights/diagnosticSettings",
-      "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Search/searchServices/{0}', parameters('name'))]",
-      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
-      "properties": {
-        "copy": [
-          {
-            "name": "metrics",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
-            "input": {
-              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
-              "timeGrain": null
-            }
-          },
-          {
-            "name": "logs",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
-            "input": {
-              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
-              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
-            }
-          }
-        ],
-        "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
-        "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
-        "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
-        "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
-        "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
-        "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
-      },
-      "dependsOn": [
-        "searchService"
-      ]
-    },
-    "searchService_lock": {
+    "webPubSub_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Search/searchServices/{0}', parameters('name'))]",
+      "scope": "[format('Microsoft.SignalRService/webPubSub/{0}', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
         "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
       },
       "dependsOn": [
-        "searchService"
+        "webPubSub"
       ]
     },
-    "searchService_roleAssignments": {
+    "webPubSub_roleAssignments": {
       "copy": {
-        "name": "searchService_roleAssignments",
+        "name": "webPubSub_roleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Search/searchServices/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.Search/searchServices', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "scope": "[format('Microsoft.SignalRService/webPubSub/{0}', parameters('name'))]",
+      "name": "[guid(resourceId('Microsoft.SignalRService/webPubSub', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
       "properties": {
         "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
         "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
@@ -720,17 +543,17 @@
         "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
-        "searchService"
+        "webPubSub"
       ]
     },
-    "searchService_privateEndpoints": {
+    "webPubSub_privateEndpoints": {
       "copy": {
-        "name": "searchService_privateEndpoints",
+        "name": "webPubSub_privateEndpoints",
         "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-SearchService-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-webPubSub-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -738,10 +561,10 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Search/searchServices', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'searchService'), copyIndex()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.SignalRService/webPubSub', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'webpubsub'), copyIndex()))]"
           },
-          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Search/searchServices', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'searchService'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Search/searchServices', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'searchService')))))), createObject('value', null()))]",
-          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Search/searchServices', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'searchService'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Search/searchServices', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'searchService')), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.SignalRService/webPubSub', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'webpubsub'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.SignalRService/webPubSub', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'webpubsub')))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.SignalRService/webPubSub', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'webpubsub'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.SignalRService/webPubSub', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'webpubsub')), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
@@ -786,8 +609,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "2592884001616184297"
+              "version": "0.25.53.49325",
+              "templateHash": "4120048060064073955"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -1152,7 +975,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1257,8 +1080,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "9321937464667207030"
+                      "version": "0.25.53.49325",
+                      "templateHash": "11244630631275470040"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -1381,144 +1204,7 @@
         }
       },
       "dependsOn": [
-        "searchService"
-      ]
-    },
-    "searchService_sharedPrivateLinkResources": {
-      "copy": {
-        "name": "searchService_sharedPrivateLinkResources",
-        "count": "[length(parameters('sharedPrivateLinkResources'))]",
-        "mode": "serial",
-        "batchSize": 1
-      },
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-searchService-SharedPrivateLink-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "name": "[if(contains(parameters('sharedPrivateLinkResources')[copyIndex()], 'name'), createObject('value', parameters('sharedPrivateLinkResources')[copyIndex()].name), createObject('value', format('spl-{0}-{1}-{2}', last(split(resourceId('Microsoft.Search/searchServices', parameters('name')), '/')), parameters('sharedPrivateLinkResources')[copyIndex()].groupId, copyIndex())))]",
-          "searchServiceName": {
-            "value": "[parameters('name')]"
-          },
-          "privateLinkResourceId": {
-            "value": "[parameters('sharedPrivateLinkResources')[copyIndex()].privateLinkResourceId]"
-          },
-          "groupId": {
-            "value": "[parameters('sharedPrivateLinkResources')[copyIndex()].groupId]"
-          },
-          "requestMessage": {
-            "value": "[parameters('sharedPrivateLinkResources')[copyIndex()].requestMessage]"
-          },
-          "resourceRegion": {
-            "value": "[tryGet(parameters('sharedPrivateLinkResources')[copyIndex()], 'resourceRegion')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "7674026452917741601"
-            },
-            "name": "Search Services Private Link Resources",
-            "description": "This module deploys a Search Service Private Link Resource.",
-            "owner": "Azure/module-maintainers"
-          },
-          "parameters": {
-            "searchServiceName": {
-              "type": "string",
-              "metadata": {
-                "description": "Conditional. The name of the parent searchServices. Required if the template is used in a standalone deployment."
-              }
-            },
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the shared private link resource managed by the Azure Cognitive Search service within the specified resource group."
-              }
-            },
-            "privateLinkResourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The resource ID of the resource the shared private link resource is for."
-              }
-            },
-            "groupId": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The group ID from the provider of resource the shared private link resource is for."
-              }
-            },
-            "requestMessage": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The request message for requesting approval of the shared private link resource."
-              }
-            },
-            "resourceRegion": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Can be used to specify the Azure Resource Manager location of the resource to which a shared private link is to be created. This is only required for those resources whose DNS configuration are regional (such as Azure Kubernetes Service)."
-              }
-            }
-          },
-          "resources": {
-            "searchService": {
-              "existing": true,
-              "type": "Microsoft.Search/searchServices",
-              "apiVersion": "2023-11-01",
-              "name": "[parameters('searchServiceName')]"
-            },
-            "sharedPrivateLinkResource": {
-              "type": "Microsoft.Search/searchServices/sharedPrivateLinkResources",
-              "apiVersion": "2023-11-01",
-              "name": "[format('{0}/{1}', parameters('searchServiceName'), parameters('name'))]",
-              "properties": {
-                "privateLinkResourceId": "[parameters('privateLinkResourceId')]",
-                "groupId": "[parameters('groupId')]",
-                "requestMessage": "[parameters('requestMessage')]",
-                "resourceRegion": "[parameters('resourceRegion')]"
-              },
-              "dependsOn": [
-                "searchService"
-              ]
-            }
-          },
-          "outputs": {
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the shared private link resource."
-              },
-              "value": "[parameters('name')]"
-            },
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource ID of the shared private link resource."
-              },
-              "value": "[resourceId('Microsoft.Search/searchServices/sharedPrivateLinkResources', parameters('searchServiceName'), parameters('name'))]"
-            },
-            "resourceGroupName": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the resource group the shared private link resource was created in."
-              },
-              "value": "[resourceGroup().name]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "searchService"
+        "webPubSub"
       ]
     }
   },
@@ -1526,37 +1212,65 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the search service."
+        "description": "The Web PubSub name."
       },
       "value": "[parameters('name')]"
-    },
-    "resourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "The resource ID of the search service."
-      },
-      "value": "[resourceId('Microsoft.Search/searchServices', parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the resource group the search service was created in."
+        "description": "The Web PubSub resource group."
       },
       "value": "[resourceGroup().name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Web PubSub resource ID."
+      },
+      "value": "[resourceId('Microsoft.SignalRService/webPubSub', parameters('name'))]"
+    },
+    "externalIP": {
+      "type": "string",
+      "metadata": {
+        "description": "The Web PubSub externalIP."
+      },
+      "value": "[reference('webPubSub').externalIP]"
+    },
+    "hostName": {
+      "type": "string",
+      "metadata": {
+        "description": "The Web PubSub hostName."
+      },
+      "value": "[reference('webPubSub').hostName]"
+    },
+    "publicPort": {
+      "type": "int",
+      "metadata": {
+        "description": "The Web PubSub publicPort."
+      },
+      "value": "[reference('webPubSub').publicPort]"
+    },
+    "serverPort": {
+      "type": "int",
+      "metadata": {
+        "description": "The Web PubSub serverPort."
+      },
+      "value": "[reference('webPubSub').serverPort]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('searchService', '2023-11-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('webPubSub', '2021-10-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('searchService', '2023-11-01', 'full').location]"
+      "value": "[reference('webPubSub', '2021-10-01', 'full').location]"
     }
   }
 }

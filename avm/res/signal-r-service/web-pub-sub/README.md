@@ -1,6 +1,11 @@
-# Search Services `[Microsoft.Search/searchServices]`
+# SignalR Web PubSub Services `[Microsoft.SignalRService/webPubSub]`
 
-This module deploys a Search Service.
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
+This module deploys a SignalR Web PubSub Service.
 
 ## Navigation
 
@@ -17,11 +22,9 @@ This module deploys a Search Service.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Search/searchServices` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2023-11-01/searchServices) |
-| `Microsoft.Search/searchServices/sharedPrivateLinkResources` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2023-11-01/searchServices/sharedPrivateLinkResources) |
+| `Microsoft.SignalRService/webPubSub` | [2021-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SignalRService/2021-10-01/webPubSub) |
 
 ## Usage examples
 
@@ -29,12 +32,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/search/search-service:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/signal-r-service/web-pub-sub:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Private endpoint-enabled deployment](#example-3-private-endpoint-enabled-deployment)
-- [WAF-aligned](#example-4-waf-aligned)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -46,11 +48,11 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module searchService 'br/public:avm/res/search/search-service:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-sssmin'
+module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-srswpsmin'
   params: {
     // Required parameters
-    name: 'sssmin001'
+    name: 'srswpsmin-001'
     // Non-required parameters
     location: '<location>'
   }
@@ -71,7 +73,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sssmin001"
+      "value": "srswpsmin-001"
     },
     // Non-required parameters
     "location": {
@@ -94,34 +96,16 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module searchService 'br/public:avm/res/search/search-service:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-sssmax'
+module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-srswpsmax'
   params: {
     // Required parameters
-    name: 'sssmax001'
+    name: 'srswpsmax-001'
     // Non-required parameters
-    authOptions: {
-      aadOrApiKey: {
-        aadAuthFailureMode: 'http401WithBearerChallenge'
-      }
-    }
-    cmkEnforcement: 'Enabled'
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    disableLocalAuth: false
-    hostingMode: 'highDensity'
+    capacity: 2
+    clientCertEnabled: false
+    disableAadAuth: false
+    disableLocalAuth: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -130,18 +114,49 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     managedIdentities: {
       systemAssigned: true
     }
-    networkRuleSet: {
-      ipRules: [
+    networkAcls: {
+      defaultAction: 'Allow'
+      privateEndpoints: [
         {
-          value: '40.74.28.0/23'
-        }
-        {
-          value: '87.147.204.13'
+          allow: []
+          deny: [
+            'ServerConnection'
+            'Trace'
+          ]
+          name: 'pe-srswpsmax-001'
         }
       ]
+      publicNetwork: {
+        allow: []
+        deny: [
+          'RESTAPI'
+          'Trace'
+        ]
+      }
     }
-    partitionCount: 2
-    replicaCount: 3
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'webpubsub'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    resourceLogConfigurationsToEnable: [
+      'ConnectivityLogs'
+    ]
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -159,8 +174,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    semanticSearch: 'standard'
-    sku: 'standard3'
+    sku: 'Standard_S1'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -184,40 +198,20 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sssmax001"
+      "value": "srswpsmax-001"
     },
     // Non-required parameters
-    "authOptions": {
-      "value": {
-        "aadOrApiKey": {
-          "aadAuthFailureMode": "http401WithBearerChallenge"
-        }
-      }
+    "capacity": {
+      "value": 2
     },
-    "cmkEnforcement": {
-      "value": "Enabled"
-    },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "disableLocalAuth": {
+    "clientCertEnabled": {
       "value": false
     },
-    "hostingMode": {
-      "value": "highDensity"
+    "disableAadAuth": {
+      "value": false
+    },
+    "disableLocalAuth": {
+      "value": true
     },
     "location": {
       "value": "<location>"
@@ -233,23 +227,54 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
         "systemAssigned": true
       }
     },
-    "networkRuleSet": {
+    "networkAcls": {
       "value": {
-        "ipRules": [
+        "defaultAction": "Allow",
+        "privateEndpoints": [
           {
-            "value": "40.74.28.0/23"
-          },
-          {
-            "value": "87.147.204.13"
+            "allow": [],
+            "deny": [
+              "ServerConnection",
+              "Trace"
+            ],
+            "name": "pe-srswpsmax-001"
           }
-        ]
+        ],
+        "publicNetwork": {
+          "allow": [],
+          "deny": [
+            "RESTAPI",
+            "Trace"
+          ]
+        }
       }
     },
-    "partitionCount": {
-      "value": 2
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "webpubsub",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
     },
-    "replicaCount": {
-      "value": 3
+    "resourceLogConfigurationsToEnable": {
+      "value": [
+        "ConnectivityLogs"
+      ]
     },
     "roleAssignments": {
       "value": [
@@ -270,11 +295,8 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
         }
       ]
     },
-    "semanticSearch": {
-      "value": "standard"
-    },
     "sku": {
-      "value": "standard3"
+      "value": "Standard_S1"
     },
     "tags": {
       "value": {
@@ -290,143 +312,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 </details>
 <p>
 
-### Example 3: _Private endpoint-enabled deployment_
-
-This instance deploys the module with private endpoints.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module searchService 'br/public:avm/res/search/search-service:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssspe'
-  params: {
-    // Required parameters
-    name: 'ssspe001'
-    // Non-required parameters
-    location: '<location>'
-    privateEndpoints: [
-      {
-        applicationSecurityGroupResourceIds: [
-          '<applicationSecurityGroupResourceId>'
-        ]
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
-      }
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        subnetResourceId: '<subnetResourceId>'
-      }
-    ]
-    publicNetworkAccess: 'disabled'
-    sharedPrivateLinkResources: [
-      {
-        groupId: 'blob'
-        privateLinkResourceId: '<privateLinkResourceId>'
-        requestMessage: 'Please approve this request'
-        resourceRegion: '<resourceRegion>'
-      }
-      {
-        groupId: 'vault'
-        privateLinkResourceId: '<privateLinkResourceId>'
-        requestMessage: 'Please approve this request'
-      }
-    ]
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "ssspe001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "applicationSecurityGroupResourceIds": [
-            "<applicationSecurityGroupResourceId>"
-          ],
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "Role": "DeploymentValidation"
-          }
-        },
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "subnetResourceId": "<subnetResourceId>"
-        }
-      ]
-    },
-    "publicNetworkAccess": {
-      "value": "disabled"
-    },
-    "sharedPrivateLinkResources": {
-      "value": [
-        {
-          "groupId": "blob",
-          "privateLinkResourceId": "<privateLinkResourceId>",
-          "requestMessage": "Please approve this request",
-          "resourceRegion": "<resourceRegion>"
-        },
-        {
-          "groupId": "vault",
-          "privateLinkResourceId": "<privateLinkResourceId>",
-          "requestMessage": "Please approve this request"
-        }
-      ]
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 4: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -436,55 +322,58 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module searchService 'br/public:avm/res/search/search-service:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssswaf'
+module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-srswpswaf'
   params: {
     // Required parameters
-    name: 'ssswaf001'
+    name: 'srswpswaf-001'
     // Non-required parameters
-    authOptions: {
-      aadOrApiKey: {
-        aadAuthFailureMode: 'http401WithBearerChallenge'
-      }
-    }
-    cmkEnforcement: 'Enabled'
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    disableLocalAuth: false
-    hostingMode: 'highDensity'
+    capacity: 2
+    clientCertEnabled: false
+    disableAadAuth: false
+    disableLocalAuth: true
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedIdentities: {
       systemAssigned: true
     }
-    networkRuleSet: {
-      ipRules: [
+    networkAcls: {
+      defaultAction: 'Allow'
+      privateEndpoints: [
         {
-          value: '40.74.28.0/23'
-        }
-        {
-          value: '87.147.204.13'
+          allow: []
+          deny: [
+            'ServerConnection'
+            'Trace'
+          ]
+          name: 'pe-srswpswaf-001'
         }
       ]
+      publicNetwork: {
+        allow: []
+        deny: [
+          'RESTAPI'
+          'Trace'
+        ]
+      }
     }
-    partitionCount: 2
-    replicaCount: 3
-    sku: 'standard3'
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'webpubsub'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+    resourceLogConfigurationsToEnable: [
+      'ConnectivityLogs'
+    ]
+    sku: 'Standard_S1'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -508,75 +397,74 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssswaf001"
+      "value": "srswpswaf-001"
     },
     // Non-required parameters
-    "authOptions": {
-      "value": {
-        "aadOrApiKey": {
-          "aadAuthFailureMode": "http401WithBearerChallenge"
-        }
-      }
+    "capacity": {
+      "value": 2
     },
-    "cmkEnforcement": {
-      "value": "Enabled"
-    },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "disableLocalAuth": {
+    "clientCertEnabled": {
       "value": false
     },
-    "hostingMode": {
-      "value": "highDensity"
+    "disableAadAuth": {
+      "value": false
+    },
+    "disableLocalAuth": {
+      "value": true
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "managedIdentities": {
       "value": {
         "systemAssigned": true
       }
     },
-    "networkRuleSet": {
+    "networkAcls": {
       "value": {
-        "ipRules": [
+        "defaultAction": "Allow",
+        "privateEndpoints": [
           {
-            "value": "40.74.28.0/23"
-          },
-          {
-            "value": "87.147.204.13"
+            "allow": [],
+            "deny": [
+              "ServerConnection",
+              "Trace"
+            ],
+            "name": "pe-srswpswaf-001"
           }
-        ]
+        ],
+        "publicNetwork": {
+          "allow": [],
+          "deny": [
+            "RESTAPI",
+            "Trace"
+          ]
+        }
       }
     },
-    "partitionCount": {
-      "value": 2
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "webpubsub",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        }
+      ]
     },
-    "replicaCount": {
-      "value": 3
+    "resourceLogConfigurationsToEnable": {
+      "value": [
+        "ConnectivityLogs"
+      ]
     },
     "sku": {
-      "value": "standard3"
+      "value": "Standard_S1"
     },
     "tags": {
       "value": {
@@ -599,212 +487,62 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the Azure Cognitive Search service to create or update. Search service names must only contain lowercase letters, digits or dashes, cannot use dash as the first two or last one characters, cannot contain consecutive dashes, and must be between 2 and 60 characters in length. Search service names must be globally unique since they are part of the service URI (https://<name>.search.windows.net). You cannot change the service name after the service is created. |
+| [`name`](#parameter-name) | string | The name of the Web PubSub Service resource. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`authOptions`](#parameter-authoptions) | object | Defines the options for how the data plane API of a Search service authenticates requests. Must remain an empty object {} if 'disableLocalAuth' is set to true. |
-| [`cmkEnforcement`](#parameter-cmkenforcement) | string | Describes a policy that determines how resources within the search service are to be encrypted with Customer Managed Keys. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | When set to true, calls to the search service will not be permitted to utilize API keys for authentication. This cannot be set to true if 'authOptions' are defined. |
+| [`capacity`](#parameter-capacity) | int | The unit count of the resource. 1 by default. |
+| [`clientCertEnabled`](#parameter-clientcertenabled) | bool | Request client certificate during TLS handshake if enabled. |
+| [`disableAadAuth`](#parameter-disableaadauth) | bool | When set as true, connection with AuthType=aad won't work. |
+| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Disables all authentication methods other than AAD authentication. For security reasons, this value should be set to `true`. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`hostingMode`](#parameter-hostingmode) | string | Applicable only for the standard3 SKU. You can set this property to enable up to 3 high density partitions that allow up to 1000 indexes, which is much higher than the maximum indexes allowed for any other SKU. For the standard3 SKU, the value is either 'default' or 'highDensity'. For all other SKUs, this value must be 'default'. |
-| [`location`](#parameter-location) | string | Location for all Resources. |
+| [`location`](#parameter-location) | string | The location for the resource. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`networkRuleSet`](#parameter-networkruleset) | object | Network specific rules that determine how the Azure Cognitive Search service may be reached. |
-| [`partitionCount`](#parameter-partitioncount) | int | The number of partitions in the search service; if specified, it can be 1, 2, 3, 4, 6, or 12. Values greater than 1 are only valid for standard SKUs. For 'standard3' services with hostingMode set to 'highDensity', the allowed values are between 1 and 3. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both. |
+| [`networkAcls`](#parameter-networkacls) | object | Networks ACLs, this value contains IPs to allow and/or Subnet information. Can only be set if the 'SKU' is not 'Free_F1'. For security reasons, it is recommended to set the DefaultAction Deny. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | This value can be set to 'enabled' to avoid breaking changes on existing customer resources and templates. If set to 'disabled', traffic over public interface is not allowed, and private endpoint connections would be the exclusive access method. |
-| [`replicaCount`](#parameter-replicacount) | int | The number of replicas in the search service. If specified, it must be a value between 1 and 12 inclusive for standard SKUs or between 1 and 3 inclusive for basic SKU. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
+| [`resourceLogConfigurationsToEnable`](#parameter-resourcelogconfigurationstoenable) | array | Control permission for data plane traffic coming from public networks while private endpoint is enabled. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`semanticSearch`](#parameter-semanticsearch) | string | Sets options that control the availability of semantic search. This configuration is only possible for certain search SKUs in certain locations. |
-| [`sharedPrivateLinkResources`](#parameter-sharedprivatelinkresources) | array | The sharedPrivateLinkResources to create as part of the search Service. |
-| [`sku`](#parameter-sku) | string | Defines the SKU of an Azure Cognitive Search Service, which determines price tier and capacity limits. |
-| [`tags`](#parameter-tags) | object | Tags to help categorize the resource in the Azure portal. |
+| [`sku`](#parameter-sku) | string | Pricing tier of the resource. |
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
 
-The name of the Azure Cognitive Search service to create or update. Search service names must only contain lowercase letters, digits or dashes, cannot use dash as the first two or last one characters, cannot contain consecutive dashes, and must be between 2 and 60 characters in length. Search service names must be globally unique since they are part of the service URI (https://<name>.search.windows.net). You cannot change the service name after the service is created.
+The name of the Web PubSub Service resource.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `authOptions`
+### Parameter: `capacity`
 
-Defines the options for how the data plane API of a Search service authenticates requests. Must remain an empty object {} if 'disableLocalAuth' is set to true.
-
-- Required: No
-- Type: object
-- Default: `{}`
-
-### Parameter: `cmkEnforcement`
-
-Describes a policy that determines how resources within the search service are to be encrypted with Customer Managed Keys.
+The unit count of the resource. 1 by default.
 
 - Required: No
-- Type: string
-- Default: `'Unspecified'`
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-    'Unspecified'
-  ]
-  ```
+- Type: int
+- Default: `1`
 
-### Parameter: `diagnosticSettings`
+### Parameter: `clientCertEnabled`
 
-The diagnostic settings of the service.
-
-- Required: No
-- Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`eventHubAuthorizationRuleResourceId`](#parameter-diagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
-| [`eventHubName`](#parameter-diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
-| [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
-| [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-
-### Parameter: `diagnosticSettings.eventHubAuthorizationRuleResourceId`
-
-Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.eventHubName`
-
-Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
-
-A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AzureDiagnostics'
-    'Dedicated'
-  ]
-  ```
-
-### Parameter: `diagnosticSettings.logCategoriesAndGroups`
-
-The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
-
-- Required: No
-- Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
-| [`enabled`](#parameter-diagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
-
-### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
-
-Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
-
-Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
-
-Enable or disable the category explicitly. Default is `true`.
+Request client certificate during TLS handshake if enabled.
 
 - Required: No
 - Type: bool
+- Default: `False`
 
-### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
+### Parameter: `disableAadAuth`
 
-The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.metricCategories`
-
-The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`enabled`](#parameter-diagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
-
-### Parameter: `diagnosticSettings.metricCategories.category`
-
-Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `diagnosticSettings.metricCategories.enabled`
-
-Enable or disable the category explicitly. Default is `true`.
+When set as true, connection with AuthType=aad won't work.
 
 - Required: No
 - Type: bool
-
-### Parameter: `diagnosticSettings.name`
-
-The name of diagnostic setting.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.storageAccountResourceId`
-
-Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.workspaceResourceId`
-
-Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
-
-- Required: No
-- Type: string
+- Default: `False`
 
 ### Parameter: `disableLocalAuth`
 
-When set to true, calls to the search service will not be permitted to utilize API keys for authentication. This cannot be set to true if 'authOptions' are defined.
+Disables all authentication methods other than AAD authentication. For security reasons, this value should be set to `true`.
 
 - Required: No
 - Type: bool
@@ -818,24 +556,9 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `hostingMode`
-
-Applicable only for the standard3 SKU. You can set this property to enable up to 3 high density partitions that allow up to 1000 indexes, which is much higher than the maximum indexes allowed for any other SKU. For the standard3 SKU, the value is either 'default' or 'highDensity'. For all other SKUs, this value must be 'default'.
-
-- Required: No
-- Type: string
-- Default: `'default'`
-- Allowed:
-  ```Bicep
-  [
-    'default'
-    'highDensity'
-  ]
-  ```
-
 ### Parameter: `location`
 
-Location for all Resources.
+The location for the resource.
 
 - Required: No
 - Type: string
@@ -879,7 +602,7 @@ Specify the name of lock.
 
 ### Parameter: `managedIdentities`
 
-The managed identity definition for this resource.
+The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.
 
 - Required: No
 - Type: object
@@ -889,6 +612,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -897,21 +621,19 @@ Enables system assigned managed identity on the resource.
 - Required: No
 - Type: bool
 
-### Parameter: `networkRuleSet`
+### Parameter: `managedIdentities.userAssignedResourceIds`
 
-Network specific rules that determine how the Azure Cognitive Search service may be reached.
+The resource ID(s) to assign to the resource.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkAcls`
+
+Networks ACLs, this value contains IPs to allow and/or Subnet information. Can only be set if the 'SKU' is not 'Free_F1'. For security reasons, it is recommended to set the DefaultAction Deny.
 
 - Required: No
 - Type: object
-- Default: `{}`
-
-### Parameter: `partitionCount`
-
-The number of partitions in the search service; if specified, it can be 1, 2, 3, 4, 6, or 12. Values greater than 1 are only valid for standard SKUs. For 'standard3' services with hostingMode set to 'highDensity', the allowed values are between 1 and 3.
-
-- Required: No
-- Type: int
-- Default: `1`
 
 ### Parameter: `privateEndpoints`
 
@@ -1242,26 +964,38 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 ### Parameter: `publicNetworkAccess`
 
-This value can be set to 'enabled' to avoid breaking changes on existing customer resources and templates. If set to 'disabled', traffic over public interface is not allowed, and private endpoint connections would be the exclusive access method.
+Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.
 
 - Required: No
 - Type: string
-- Default: `'enabled'`
 - Allowed:
   ```Bicep
   [
-    'disabled'
-    'enabled'
+    'Disabled'
+    'Enabled'
   ]
   ```
 
-### Parameter: `replicaCount`
+### Parameter: `resourceLogConfigurationsToEnable`
 
-The number of replicas in the search service. If specified, it must be a value between 1 and 12 inclusive for standard SKUs or between 1 and 3 inclusive for basic SKU.
+Control permission for data plane traffic coming from public networks while private endpoint is enabled.
 
 - Required: No
-- Type: int
-- Default: `1`
+- Type: array
+- Default:
+  ```Bicep
+  [
+    'ConnectivityLogs'
+    'MessagingLogs'
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    'ConnectivityLogs'
+    'MessagingLogs'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -1352,52 +1086,24 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `semanticSearch`
-
-Sets options that control the availability of semantic search. This configuration is only possible for certain search SKUs in certain locations.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'disabled'
-    'free'
-    'standard'
-  ]
-  ```
-
-### Parameter: `sharedPrivateLinkResources`
-
-The sharedPrivateLinkResources to create as part of the search Service.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
 ### Parameter: `sku`
 
-Defines the SKU of an Azure Cognitive Search Service, which determines price tier and capacity limits.
+Pricing tier of the resource.
 
 - Required: No
 - Type: string
-- Default: `'standard'`
+- Default: `'Standard_S1'`
 - Allowed:
   ```Bicep
   [
-    'basic'
-    'free'
-    'standard'
-    'standard2'
-    'standard3'
-    'storage_optimized_l1'
-    'storage_optimized_l2'
+    'Free_F1'
+    'Standard_S1'
   ]
   ```
 
 ### Parameter: `tags`
 
-Tags to help categorize the resource in the Azure portal.
+Tags of the resource.
 
 - Required: No
 - Type: object
@@ -1407,10 +1113,14 @@ Tags to help categorize the resource in the Azure portal.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `externalIP` | string | The Web PubSub externalIP. |
+| `hostName` | string | The Web PubSub hostName. |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the search service. |
-| `resourceGroupName` | string | The name of the resource group the search service was created in. |
-| `resourceId` | string | The resource ID of the search service. |
+| `name` | string | The Web PubSub name. |
+| `publicPort` | int | The Web PubSub publicPort. |
+| `resourceGroupName` | string | The Web PubSub resource group. |
+| `resourceId` | string | The Web PubSub resource ID. |
+| `serverPort` | int | The Web PubSub serverPort. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
@@ -1419,7 +1129,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
 
 ## Data Collection
 
