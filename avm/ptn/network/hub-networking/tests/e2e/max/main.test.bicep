@@ -28,7 +28,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -67,13 +67,26 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         flowTimeoutInMinutes: 30
         ddosProtectionPlanResourceId: ''
         dnsServers: [ '10.0.1.4', '10.0.1.5' ]
-        diagnosticSettings: []
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            name: 'customSetting'
+            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          }
+        ]
         location: 'westeurope'
         lock: {
           kind: 'CanNotDelete'
           name: 'hub1Lock'
         }
-        peeringEnabled: false
+        enablePeering: false
         peerings: [
           {
             name: 'hub1-to-hub2'
@@ -81,7 +94,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             allowForwardedTraffic: false
             allowGatewayTransit: false
             allowVirtualNetworkAccess: true
-            useRemoteGateways: false }
+            useRemoteGateways: false
+          }
         ]
         roleAssignments: []
         subnets: [
@@ -108,13 +122,13 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         location: 'westus2'
         lock: {
           kind: 'CanNotDelete'
-          name: 'hub1Lock'
+          name: 'hub2Lock'
         }
-        peeringEnabled: false
+        enablePeering: false
         roleAssignments: []
         subnets: [
           {
-            name: 'subnet2'
+            name: 'subnet1'
             addressPrefix: '10.1.1.0/24'
           }
         ]

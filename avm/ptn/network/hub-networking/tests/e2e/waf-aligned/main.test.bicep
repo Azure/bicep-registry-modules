@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -63,40 +63,44 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       hub1: {
         name: 'hub1'
         addressPrefixes: array(addressPrefix)
+        enableTelemetry: true
+        flowTimeoutInMinutes: 30
+        ddosProtectionPlanResourceId: ''
+        dnsServers: [ '10.0.1.6', '10.0.1.7' ]
         diagnosticSettings: [
           {
-            name: 'customSetting'
+            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
             metricCategories: [
               {
                 category: 'AllMetrics'
               }
             ]
-            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+            name: 'customSetting'
             storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
             workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
           }
         ]
-        dnsServers: [ '10.0.1.4', '10.0.1.5' ]
+        location: 'westus'
         lock: {
           kind: 'CanNotDelete'
-          name: 'hub1CustomLockName'
+          name: 'hub1Lock'
         }
-        enableTelemetry: true
-        flowTimeoutInMinutes: 20
-        location: 'westeurope'
-        subnets : [
+        enablePeering: false
+        enableBastion: true
+        roleAssignments: []
+        subnets: [
           {
             name: 'GatewaySubnet'
             addressPrefix: cidrSubnet(addressPrefix, 26, 0)
           }
           {
             name: 'AzureFirewallSubnet'
-            addressPrefix: cidrSubnet(addressPrefix, 26, 0)
+            addressPrefix: cidrSubnet(addressPrefix, 26, 1)
           }
           {
             name: 'AzureBastionSubnet'
-            addressPrefix: cidrSubnet(addressPrefix, 26, 0)
+            addressPrefix: cidrSubnet(addressPrefix, 26, 2)
           }
         ]
         tags: {
@@ -104,6 +108,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
+        vnetEncryption: false
+        vnetEncryptionEnforcement: 'AllowUnencrypted'
       }
     }
   }

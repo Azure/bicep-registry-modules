@@ -16,7 +16,7 @@ param enableTelemetry bool = true
 //
 
 @description('Optional. A map of the hub virtual networks to create.')
-param hubVirtualNetworks hubVirtualNetworkType
+param hubVirtualNetworks hubVirtualNetworkObject
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
@@ -43,8 +43,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [for hub in items(hubVirtualNetworks ?? {}): {
-  name: '${uniqueString(deployment().name, location)}-${hub.value.name}'
+module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [for (hub, index) in items(hubVirtualNetworks ?? {}): {
+  name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nvn'
   params: {
     // Required parameters
     name: hub.value.name
@@ -57,7 +57,7 @@ module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [fo
     flowTimeoutInMinutes: hub.value.flowTimeoutInMinutes ?? 0
     location: hub.value.location ?? ''
     lock: hub.value.lock ?? {}
-    peerings                    : hub.value.peeringEnabled ? hub.value.peerings : []
+    peerings: hub.value.enablePeering ? hub.value.peerings : []
     roleAssignments: hub.value.roleAssignments ?? []
     subnets: hub.value.subnets ?? []
     tags: hub.value.tags ?? {}
@@ -66,7 +66,7 @@ module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [fo
   }
 }]
 
-resource hubVirtualNetwork_lock 'Microsoft.Authorization/locks@2020-05-01' = [for hub in items(hubVirtualNetworks ?? {}): if (!empty(hub.value.lock ?? {}) && hub.value.lock.?kind != 'None') {
+resource hubVirtualNetwork_lock 'Microsoft.Authorization/locks@2020-05-01' = [for (hub, index) in items(hubVirtualNetworks ?? {}): if (!empty(hub.value.lock ?? {}) && hub.value.lock.?kind != 'None') {
   name: hub.value.lock.?name ?? 'lock-${hub.value.name}'
   properties: {
     level: hub.value.lock.?kind ?? ''
@@ -96,6 +96,34 @@ resource hubVirtualNetwork_diagnosticSettings 'Microsoft.Insights/diagnosticSett
   }
 }]
 
+module hubRouteTable 'br/public:avm/res/network/route-table:0.2.2' = [for (hub, index) in items(hubVirtualNetworks ?? {}): {
+  name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nrt'
+  params: {
+    name: hub.value.name
+    location: hub.value.location ?? location
+    disableBgpRoutePropagation: true
+    enableTelemetry: hub.value.enableTelemetry ?? true
+    roleAssignments: hub.value.roleAssignments ?? []
+    routes: []
+    tags: hub.value.tags ?? {}
+  }
+}]
+
+module hubBastion 'br/public:avm/res/network/bastion-host:0.1.1' = [for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableBastion) {
+  name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nbh'
+  params: {
+    // Required parameters
+    name: hub.value.name
+    vNetId: hubVirtualNetwork[index].outputs.resourceId
+    // Non-required parameters
+    diagnosticSettings: hub.value.diagnosticSettings ?? []
+    location: hub.value.location ?? location
+    enableTelemetry: hub.value.enableTelemetry ?? true
+    roleAssignments: hub.value.roleAssignments ?? []
+    tags: hub.value.tags ?? {}
+  }
+}]
+
 //
 // Add your resources here
 //
@@ -104,21 +132,23 @@ resource hubVirtualNetwork_diagnosticSettings 'Microsoft.Insights/diagnosticSett
 // Outputs      //
 // ============ //
 
-// Add your outputs here
+@description('The resource group the virtual network was deployed into.')
+output resourceGroupName string[] = [for (hub, index) in items(hubVirtualNetworks ?? {}): hubVirtualNetwork[index].outputs.resourceGroupName]
 
-// @description('The name of the resource.')
-// output name string = <Resource>.name
+@description('The location the virtual network was deployed into.')
+output location string[] = [for (hub, index) in items(hubVirtualNetworks ?? {}): hubVirtualNetwork[index].outputs.location]
 
-@description('The names of the Hub Networks.')
-output name array = [for i in range(0, length(hubVirtualNetworks ?? {})): {
-  name: hubVirtualNetwork[i].outputs.name
-}]
+@description('The name of the hub virtual network.')
+output hubVirtualNetworkName string[] = [for (hub, index) in items(hubVirtualNetworks ?? {}): hubVirtualNetwork[index].outputs.name]
 
-@description('The resource group names of the Hub Networks.')
-output resourceGroupName array = [for i in range(0, length(hubVirtualNetworks ?? {})): {
-  resourceGroupName: hubVirtualNetwork[i].outputs.resourceGroupName
-}]
+@description('The resource ID of the hub virtual network.')
+output hubVirtualNetworkResourceId string[] = [for (hub, index) in items(hubVirtualNetworks ?? {}): hubVirtualNetwork[index].outputs.resourceId]
 
+@description('The name of the bastion host.')
+output hubBastionName string[] = [for (hub, index) in items(hubVirtualNetworks ?? {}): hubBastion[index].outputs.name]
+
+@description('The resource ID of the bastion host.')
+output hubBastionResourceId string[] = [for (hub, index) in items(hubVirtualNetworks ?? {}): hubBastion[index].outputs.resourceId]
 // ================ //
 // Definitions      //
 // ================ //
@@ -185,21 +215,25 @@ type diagnosticSettingType = {
   @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
   logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
 
-  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value.')
   workspaceResourceId: string?
 
-  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value.')
   storageAccountResourceId: string?
 
   @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
   eventHubAuthorizationRuleResourceId: string?
 
-  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
+  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value.')
   eventHubName: string?
 
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
 }[]?
+
+type hubVirtualNetworkObject = {
+  *: hubVirtualNetworkType?
+}?
 
 type hubVirtualNetworkType = {
   @description('Required. The name of the virtual network.')
@@ -232,6 +266,9 @@ type hubVirtualNetworkType = {
   @description('Optional. The flow timeout in minutes.')
   flowTimeoutInMinutes: int?
 
+  @description('Optional. Enable/Disable peering for the virtual network.')
+  enablePeering: bool?
+
   @description('Optional. The peerings of the virtual network.')
   peerings: array?
 
@@ -247,6 +284,56 @@ type hubVirtualNetworkType = {
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
 
-  @description('Optional. Enable/Disable peering for the virtual network.')
-  peeringEnabled: bool?
+  @description('Optional. Enable/Disable Azure Bastion for the virtual network.')
+  enableBastion: bool?
+
+  @description('Optional. Enable/Disable Azure Firewall for the virtual network.')
+  enableAzureFirewall: bool?
+
+  @description('Optional. The Azure Firewall config.')
+  azureFirewallSettings: azureFirewallType?
+}
+
+type azureFirewallType = {
+  @description('Required. The name of the Azure Firewall.')
+  name: string?
+
+  @description('Optional. The location of the Azure Firewall. Defaults to the location of the resource group.')
+  location: string?
+
+  @description('Optional. The zones of the Azure Firewall.')
+  zones: array?
+
+  @description('Optional. The additional properties of the Azure Firewall.')
+  additionalProperties: object?
+
+  @description('Optional. The application rule collections of the Azure Firewall.')
+  applicationRuleCollections: array?
+
+  @description('Optional. The firewall policy of the Azure Firewall.')
+  firewallPolicy: string?
+
+  @description('Optional. The hub IP addresses of the Azure Firewall.')
+  hubIpAddresses: object?
+
+  @description('Optional. The IP configurations of the Azure Firewall.')
+  ipConfigurations: array?
+
+  @description('Optional. The management IP configuration of the Azure Firewall.')
+  managementIpConfiguration: string?
+
+  @description('Optional. The NAT rule collections of the Azure Firewall.')
+  natRuleCollections: array?
+
+  @description('Optional. The network rule collections of the Azure Firewall.')
+  networkRuleCollections: array?
+
+  @description('Optional. The SKU of the Azure Firewall.')
+  sku: object?
+
+  @description('Optional. The threat intel mode of the Azure Firewall.')
+  threatIntelMode: string?
+
+  @description('Optional. The virtual hub of the Azure Firewall.')
+  virtualHub: string?
 }?
