@@ -68,13 +68,16 @@ runs:
 
         # Output values to be accessed by next jobs
         $psRuleCompressedOutput = $psRuleTestFilePaths | ForEach-Object {
-          @{
-            path = $_
-            name = if ((Split-Path (Split-Path $_) -Leaf) -eq ($moduleFolderPath.Split('/')[-1]) ) {
-              "module-bicep-file"
+          if ((Split-Path (Split-Path $_) -Leaf) -eq ($moduleFolderPath.Split('/')[-1])) {
+            @{
+              path = $_
+              name = "module-bicep-file"
             }
-            else {
-              Split-Path (Split-Path $_) -Leaf
+          }
+          else {
+            @{
+              path = $_
+              name = Split-Path (Split-Path $_) -Leaf
             }
           }
         } | ConvertTo-Json -Compress
