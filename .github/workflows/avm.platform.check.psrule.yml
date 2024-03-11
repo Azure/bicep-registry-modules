@@ -7,15 +7,14 @@ on:
     paths:
       - ".github/workflows/avm.platform.check.psrule.yml"
   workflow_dispatch:
-#   schedule:
-#     - cron: '0 12 * * 0' # Weekly Sunday Analysis
+  schedule:
+    - cron: '0 12 * * 0' # Weekly Sunday Analysis
 
 env:
-    targetPath: "avm/res/"
+    targetPath: "avm/res/api-management/"
     psRuleFilterRegex: "(defaults|waf-aligned)" # The regex used to filter PSRule compliant files
     psrulePath: "avm/utilities/pipelines/staticValidation/psrule"
     skipPassedRulesReport: $true
-
     ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
     ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
     ARM_TENANT_ID: "${{ secrets.ARM_TENANT_ID }}"
@@ -100,13 +99,6 @@ jobs:
               $ConvertTokensInputs.Tokens['namePrefix'] = '${{ env.TOKEN_NAMEPREFIX }}'
             }
 
-            # # Add custom tokens (passed in via the pipeline)
-            # if(-not [String]::IsNullOrEmpty('${{  inputs.customTokens }}')) {
-            #   $customTokens = '${{ inputs.customTokens }}' | ConvertFrom-Json -AsHashTable
-            #   Write-Verbose ('Using custom parameter file tokens [{0}]' -f ($customTokens.Keys -join ', ')) -Verbose
-            #   $ConvertTokensInputs.Tokens += $customTokens
-            # }
-
             Write-Verbose "Convert Tokens Input:`n $($ConvertTokensInputs | ConvertTo-Json -Depth 10)" -Verbose
 
             # Invoke Token Replacement Functionality [For Module]
@@ -118,15 +110,23 @@ jobs:
       # # ---------------------------
       # - name: "Get output path"
       #   uses: azure/powershell@v1
+      #   id: get-psrule-output-path
       #   with:
       #     azPSVersion: "latest"
       #     inlineScript: |
-      #       # Grouping task logs
+      #       Grouping task logs
       #       Write-Output '::group::Get output path'
 
-      #       # Load used functions
-      #       . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
-      #       . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-LocallyReferencedFileList.ps1')
+      #       $targetPath = Join-Path $env:GITHUB_WORKSPACE '${{ env.targetPath }}'
+      #       Write-Verbose ('targetPath [{0}]' -f $targetPath) -Verbose
+
+      #       Get target files
+      #       if (Test-Path -Path $targetPath -PathType Leaf){
+      #         Add the template file
+
+      #       } else {
+      #       }
+      #       Write-Output '::endgroup::'
 
       # [PSRule validation] task(s)
       #-----------------------------
@@ -136,7 +136,7 @@ jobs:
           modules: "PSRule.Rules.Azure"
           inputPath: "${{ env.targetPath }}"
           outputFormat: Csv
-          outputPath: "${{ env.targetPath }}/PSRule-output.csv"
+          outputPath: "${{ env.targetPath }}PSRule-output.csv"
           option: "${{ github.workspace }}/${{ env.psrulePath}}/ps-rule.yaml" # Path to PSRule configuration options file
           source: "${{ env.psrulePath}}/.ps-rule/" # Path to folder containing suppression rules to use for analysis.
           summary: false # Disabling as taken care in customized task
