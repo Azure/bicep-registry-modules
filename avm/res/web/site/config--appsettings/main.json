@@ -39,18 +39,18 @@
         "description": "Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions."
       }
     },
+    "storageAccountUseIdentityAuthentication": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'."
+      }
+    },
     "appInsightResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
         "description": "Optional. Resource ID of the app insight to leverage for this resource."
-      }
-    },
-    "setAzureWebJobsDashboard": {
-      "type": "bool",
-      "defaultValue": "[if(contains(parameters('kind'), 'functionapp'), true(), false())]",
-      "metadata": {
-        "description": "Optional. For function apps. If true the app settings \"AzureWebJobsDashboard\" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons."
       }
     },
     "appSettingsKeyValuePairs": {
@@ -91,7 +91,7 @@
       "apiVersion": "2022-09-01",
       "name": "[format('{0}/{1}', parameters('appName'), 'appsettings')]",
       "kind": "[parameters('kind')]",
-      "properties": "[union(coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(not(empty(parameters('storageAccountResourceId'))), union(createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value)), if(equals(parameters('setAzureWebJobsDashboard'), true()), createObject('AzureWebJobsDashboard', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value)), createObject())), createObject()), if(not(empty(parameters('appInsightResourceId'))), createObject('APPINSIGHTS_INSTRUMENTATIONKEY', reference('appInsight').InstrumentationKey, 'APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
+      "properties": "[union(coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), union(createObject('AzureWebJobsStorage__accountName', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), createObject('AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob)), createObject())), if(not(empty(parameters('appInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
       "dependsOn": [
         "app",
         "appInsight",
