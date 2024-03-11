@@ -161,7 +161,7 @@ body:
         - "avm/res/service-bus/namespace"
         # - "avm/res/service-fabric/cluster"
         # - "avm/res/signal-r-service/signal-r"
-        # - "avm/res/signal-r-service/web-pub-sub"
+        - "avm/res/signal-r-service/web-pub-sub"
         # - "avm/res/sql/managed-instance"
         - "avm/res/sql/server"
         - "avm/res/storage/storage-account"
