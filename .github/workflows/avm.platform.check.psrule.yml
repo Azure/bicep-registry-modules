@@ -131,7 +131,8 @@ jobs:
       # [PSRule validation] task(s)
       #-----------------------------
       - name: Run PSRule analysis
-        uses: microsoft/ps-rule@v2.9.0
+        # uses: microsoft/ps-rule@v2.9.0
+        uses: microsoft/ps-rule@main
         with:
           # modules: "PSRule.Rules.Azure"
           baseline: "Azure.Pillar.Reliability"
