@@ -81,8 +81,8 @@ jobs:
 
             # Add enforced tokens
             $ConvertTokensInputs.Tokens += @{
-              subscriptionId    = '${{ env.subscriptionId }}'
-              managementGroupId = '${{ env.managementGroupId }}'
+              subscriptionId    = '${{ env.ARM_SUBSCRIPTION_ID }}'
+              managementGroupId = '${{ env.ARM_MGMTGROUP_ID }}'
             }
 
             # Add local (source control) tokens
