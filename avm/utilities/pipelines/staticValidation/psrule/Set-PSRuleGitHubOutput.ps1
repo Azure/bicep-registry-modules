@@ -153,7 +153,7 @@ function Set-PSRuleGitHubOutput {
             foreach ($content in $passedRules ) {
                 # Shorten the target name for deployment resoure type
                 if ($content.TargetType -eq 'Microsoft.Resources/deployments') {
-                    $content.TargetName = $content.TargetName.replace('/home/runner/work/ResourceModules/ResourceModules/modules/', '')
+                    $content.TargetName = $content.TargetName.replace('/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/', '')
                 }
 
                 # Build hyperlinks to PSRule documentation for the rules
