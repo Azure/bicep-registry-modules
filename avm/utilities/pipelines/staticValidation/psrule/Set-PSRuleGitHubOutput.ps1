@@ -45,33 +45,9 @@ function Set-PSRuleGitHubOutput {
         Write-Warning ('Input File [{0}] not found' -f $inputFilePath)
         return ''
     } else {
-
         $results = Import-Csv -Path $inputFilePath
-
-        $headers = $results | Get-Member
-        Write-Host ($results | Format-List | Out-String)
-
-        Write-Verbose ('typer [{0}]' -f $headers.getType() ) -Verbose
-        Write-Verbose ('Csv properties [{0}]' -f $headers ) -Verbose
-
-        # $passedRules += $results | Where-Object { $_.Outcome -EQ 'Pass' } | Sort-Object -Property 'RuleName' -Unique
-        # $failedRules += $results | Where-Object { $_.Outcome -EQ 'Fail' } | Sort-Object -Property 'RuleName' -Unique
-
-        # $passedRules += $results |
-        #     Where-Object { $_.Outcome -EQ 'Pass' } |
-        #     Sort-Object -Property @{Expression = "TargetName"}, @{Expression = "RuleName"} -Unique
-
-        # $failedRules += $results |
-        #     Where-Object { $_.Outcome -EQ 'Fail' } | Sort-Object -Property @{Expression = "TargetName"; Descending = $true},
-        #                   @{Expression = "RuleName"; Descending = $false} -Unique
-
-        $passedRules += $results | Where-Object { $_.Outcome -EQ 'Pass' } | Sort-Object -Property 'TargetName','RuleName' #-Unique
-
-        $failedRules += $results | Where-Object { $_.Outcome -EQ 'Fail' } | Sort-Object -Property 'TargetName','RuleName' #-Unique
-
-        Write-Verbose ('total [{0}]' -f $results.Count ) -Verbose
-        Write-Verbose ('passedRules [{0}]' -f $passedRules.Count ) -Verbose
-        Write-Verbose ('failedRules [{0}]' -f $failedRules.Count ) -Verbose
+        $passedRules += $results | Where-Object { $_.Outcome -EQ 'Pass' } | Sort-Object -Property 'TargetName','RuleName' -Unique
+        $failedRules += $results | Where-Object { $_.Outcome -EQ 'Fail' } | Sort-Object -Property 'TargetName','RuleName' -Unique
 
         ######################
         # Set output content #
