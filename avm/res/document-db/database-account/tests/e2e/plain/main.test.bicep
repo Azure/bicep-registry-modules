@@ -128,7 +128,7 @@ module enableSystemAssignedManagedIdentity '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, eastUsResourceLocation)}-systemMI-${serviceShort}'
   params: {
     location: eastUsResourceLocation
-    name: 'system-assigned-mi'
+    name: '${namePrefix}-system-mi'
     locations: [
       {
         failoverPriority: 0
@@ -147,7 +147,7 @@ module enableUserAssignedManagedIdentity '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, eastUsResourceLocation)}-userMI-${serviceShort}'
   params: {
     location: eastUsResourceLocation
-    name: 'user-assigned-mi'
+    name: '${namePrefix}-user-mi'
     locations: [
       {
         failoverPriority: 0
@@ -172,7 +172,7 @@ module enableAnalyticalStorage '../../../main.bicep' = {
   params: {
     location: eastUsResourceLocation
     enableAnalyticalStorage: true
-    name: 'analytical-enabled-acc'
+    name: '${namePrefix}-analytical'
     locations: [
       {
         failoverPriority: 0
@@ -188,13 +188,13 @@ module enableAnalyticalStorage '../../../main.bicep' = {
   }
 }
 
-module enabledisableLocalAuth '../../../main.bicep' = {
+module disableLocalAuth '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, eastUsResourceLocation)}-disableLocal-${serviceShort}'
   params: {
     disableLocalAuth: true
     location: eastUsResourceLocation
-    name: 'disable-local-auth-acc'
+    name: '${namePrefix}-local-auth-off'
     locations: [
       {
         failoverPriority: 0
@@ -215,7 +215,7 @@ module enableZoneRedundant '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, eastUsResourceLocation)}-zoneRedudant-${serviceShort}'
   params: {
     location: eastUsResourceLocation
-    name: 'zone-redundant-acc'
+    name: '${namePrefix}-zone-redundant'
     locations: [
       {
         failoverPriority: 0
@@ -233,11 +233,11 @@ module enableZoneRedundant '../../../main.bicep' = {
 
 module disableAutomaticFailover '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-disableAutoFailover-${serviceShort}'
+  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-autoFailoverOff-${serviceShort}'
   params: {
     automaticFailover: false
     location: eastUsResourceLocation
-    name: 'disable-automatic-failover-acc'
+    name: '${namePrefix}-auto-failover-off'
     locations: [
       {
         failoverPriority: 0
@@ -255,10 +255,10 @@ module disableAutomaticFailover '../../../main.bicep' = {
 
 module enableContinousBackup '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-continousBackup-${serviceShort}'
+  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-continousBckup-${serviceShort}'
   params: {
     location: eastUsResourceLocation
-    name: 'continous-backup-acc'
+    name: '${namePrefix}-continous-bckup'
     backupPolicyType: 'Continuous'
     backupPolicyContinuousTier: 'Continuous7Days'
     locations: [
@@ -278,10 +278,10 @@ module enableContinousBackup '../../../main.bicep' = {
 
 module enablePeriodicBackup '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-periodicBackup-${serviceShort}'
+  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-periodicBckup-${serviceShort}'
   params: {
     location: eastUsResourceLocation
-    name: 'periodic-backup-acc'
+    name: '${namePrefix}-periodic-bckup'
     backupPolicyType: 'Periodic'
     backupIntervalInMinutes: 300
     backupStorageRedundancy: 'Zone'
