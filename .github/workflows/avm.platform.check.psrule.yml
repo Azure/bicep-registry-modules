@@ -131,11 +131,9 @@ jobs:
       # [PSRule validation] task(s)
       #-----------------------------
       - name: Run PSRule analysis
-        # uses: microsoft/ps-rule@v2.9.0
-        uses: microsoft/ps-rule@main
+        uses: microsoft/ps-rule@v2.9.0
         with:
-          # modules: "PSRule.Rules.Azure"
-          baseline: "Azure.Pillar.Reliability"
+          modules: "PSRule.Rules.Azure"
           inputPath: "${{ env.targetPath }}"
           outputFormat: Csv
           outputPath: "${{ env.targetPath }}PSRule-output.csv"
