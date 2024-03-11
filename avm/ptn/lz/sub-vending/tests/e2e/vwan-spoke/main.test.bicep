@@ -16,6 +16,9 @@ param namePrefix string = '#_namePrefix_#'
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ssawan'
 
+@description('Optional. A unique identifier for the the subscription.')
+param subscriptionGuid string = substring(newGuid(), 0, 5)
+
 module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   scope: resourceGroup('e4e7395f-dc45-411e-b425-95f75e470e16', 'rsg-blzv-perm-hubs-001')
@@ -59,8 +62,8 @@ module testDeployment '../../../main.bicep' = {
   params: {
     subscriptionAliasEnabled: true
     subscriptionBillingScope: subscriptionBillingScope
-    subscriptionAliasName: 'sub-blzv-tests-${namePrefix}-${serviceShort}'
-    subscriptionDisplayName: 'sub-blzv-tests-${namePrefix}-${serviceShort}'
+    subscriptionAliasName: 'sub-blzv-tests-${namePrefix}-${serviceShort}-${subscriptionGuid}'
+    subscriptionDisplayName: 'sub-blzv-tests-${namePrefix}-${serviceShort}-${subscriptionGuid}'
     subscriptionTags: {
       namePrefix: namePrefix
       serviceShort: serviceShort
