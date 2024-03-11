@@ -11,7 +11,7 @@ on:
     - cron: '0 12 * * 0' # Weekly Sunday Analysis
 
 env:
-    targetPath: "avm/res/api-management/"
+    targetPath: "avm/res/api-management/service/tests/e2e/waf-aligned/main.test.bicep"
     psRuleFilterRegex: "(defaults|waf-aligned)" # The regex used to filter PSRule compliant files
     psrulePath: "avm/utilities/pipelines/staticValidation/psrule"
     skipPassedRulesReport: $true
