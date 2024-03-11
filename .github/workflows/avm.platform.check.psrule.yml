@@ -70,7 +70,7 @@ jobs:
               $targetFileList = @()
               # Retrieve all relevant test files in targetPath
               $allTestFiles = (Get-ChildItem -Path $targetPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object
-              # $relevantTestFiles = $allTestFiles | Where-Object { $_ -match $psRuleFilterRegex }
+              $relevantTestFiles = $allTestFiles | Where-Object { $_ -match $psRuleFilterRegex }
               # Add all module template files as they may contain tokens
               foreach ($relevantTestFile in $relevantTestFiles) {
                 $targetFileList += (Get-LocallyReferencedFileList -FilePath $relevantTestFile)
