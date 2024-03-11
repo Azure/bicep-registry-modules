@@ -109,7 +109,65 @@ runs:
 
     # [PSRule validation] task(s)
     #-----------------------------
-    - name: Run PSRule analysis
+    - name: Run PSRule analysis - WAF Reliability Pillar
+      uses: microsoft/ps-rule@v2.9.0
+      continue-on-error: true # Setting this whilst PSRule gets bedded in, in this project
+      with:
+        modules: "PSRule.Rules.Azure"
+        baseline: "Azure.Pillar.Reliability"
+        inputPath: "${{ inputs.templateFilePath}}"
+        outputFormat: Csv
+        outputPath: "${{ inputs.templateFilePath}}-PSRule-output-waf-reliability.csv"
+        option: "${{ github.workspace }}/${{ inputs.psrulePath}}/ps-rule-waf-reliability.yaml" # Path to PSRule configuration options file
+        source: "${{ inputs.psrulePath}}/.ps-rule/" # Path to folder containing suppression rules to use for analysis.
+        summary: false # Disabling as taken care in customized task
+
+    - name: "Parse CSV content - WAF Reliability Pillar"
+      if: always()
+      uses: azure/powershell@v1
+      with:
+        azPSVersion: "latest"
+        inlineScript: |
+          # Grouping task logs
+          Write-Output '::group::Parse CSV content'
+
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'staticValidation' 'psrule' 'Set-PSRuleGitHubOutput.ps1')
+
+          # Populate parameter input
+          $ParameterInput = @{
+            inputFilePath           = '${{ inputs.templateFilePath}}-PSRule-output-waf-reliability.csv'
+            outputFilePath          = '${{ inputs.templateFilePath}}-PSRule-output-waf-reliability.md'
+            skipPassedRulesReport   = $false
+          }
+
+          Write-Verbose ('Set PS Rule WAF Reliability Output with following parameters:`n{0}' -f (ConvertTo-Json $ParameterInput -Depth 10)) -Verbose
+
+          # Invoke Set PSRule Output Functionality
+          $null = Set-PSRuleGitHubOutput @ParameterInput
+
+          Write-Output '::endgroup::'
+
+    - name: "Output to GitHub job summaries - WAF Reliability Pillar"
+      if: always()
+      shell: pwsh
+      run: |
+        # Grouping task logs
+        Write-Output '::group::Output to GitHub job summaries'
+
+        $mdPSRuleOutputFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath}}-PSRule-output-waf-reliability.md'
+
+        if (-not (Test-Path $mdPSRuleOutputFilePath)) {
+          Write-Warning ('Input file [{0}] not found. Please check if the previous task threw an error and try again.' -f $mdPSRuleOutputFilePath)
+          return ''
+        } else {
+          Get-Content $mdPSRuleOutputFilePath >> $env:GITHUB_STEP_SUMMARY
+          Write-Verbose ('Successfully printed out file [{0}] to Job Summaries' -f $mdPSRuleOutputFilePath) -Verbose
+        }
+
+        Write-Output '::endgroup::'
+
+    - name: Run PSRule analysis - All Pillars
       uses: microsoft/ps-rule@v2.9.0
       continue-on-error: true # Setting this whilst PSRule gets bedded in, in this project
       with:
