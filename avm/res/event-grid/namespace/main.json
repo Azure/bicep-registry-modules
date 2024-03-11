@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "258595735332264308"
+      "templateHash": "6122431651057596356"
     },
     "name": "Event Grid Namespaces",
     "description": "This module deploys an Event Grid Namespace.",
@@ -2810,6 +2810,16 @@
         "description": "The principal ID of the system assigned identity."
       },
       "value": "[coalesce(tryGet(tryGet(reference('namespace', '2023-12-15-preview', 'full'), 'identity'), 'principalId'), '')]"
+    },
+    "topicResourceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The Resources IDs of the EventGrid Namespace Topics."
+      },
+      "copy": {
+        "count": "[length(range(0, length(coalesce(parameters('topics'), createArray()))))]",
+        "input": "[reference(format('namespace_topics[{0}]', range(0, length(coalesce(parameters('topics'), createArray())))[copyIndex()])).outputs.resourceId.value]"
+      }
     }
   }
 }

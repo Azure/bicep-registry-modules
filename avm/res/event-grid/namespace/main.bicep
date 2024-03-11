@@ -348,6 +348,9 @@ output resourceGroupName string = resourceGroup().name
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string = namespace.?identity.?principalId ?? ''
 
+@sys.description('The Resources IDs of the EventGrid Namespace Topics.')
+output topicResourceIds array = [for index in range(0, length(topics ?? [])): namespace_topics[index].outputs.resourceId]
+
 // ================ //
 // Definitions      //
 // ================ //

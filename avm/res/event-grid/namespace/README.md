@@ -2172,6 +2172,7 @@ Indicates if Topic Spaces Configuration is enabled for the namespace. This enabl
 | `resourceGroupName` | string | The name of the resource group the EventGrid Namespace was created in. |
 | `resourceId` | string | The resource ID of the EventGrid Namespace. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+| `topicResourceIds` | array | The Resources IDs of the EventGrid Namespace Topics. |
 
 ## Cross-referenced modules
 
