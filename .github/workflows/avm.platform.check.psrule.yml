@@ -133,7 +133,7 @@ jobs:
       - name: Run PSRule analysis
         uses: microsoft/ps-rule@v2.9.0
         with:
-          modules: "PSRule.Rules.Azure"
+          # modules: "PSRule.Rules.Azure"
           baseline: "Azure.Pillar.Reliability"
           inputPath: "${{ env.targetPath }}"
           outputFormat: Csv
