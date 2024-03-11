@@ -182,6 +182,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           Role: 'DeploymentValidation'
         }
       }
+      {
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+      }
     ]
     roleAssignments: [
       {
@@ -200,13 +206,13 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         principalType: 'ServicePrincipal'
       }
     ]
-    setAzureWebJobsDashboard: true
     keyVaultAccessIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
     siteConfig: {
       alwaysOn: true
       use32BitWorkerProcess: false
     }
     storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+    storageAccountUseIdentityAuthentication: true
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -220,4 +226,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       }
     ]
   }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
 }]

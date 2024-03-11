@@ -56,4 +56,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     releaseNamespace: 'flux-system'
     releaseTrain: 'Stable'
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }]

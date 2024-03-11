@@ -60,11 +60,11 @@ param siteConfig object?
 @description('Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.')
 param storageAccountResourceId string?
 
+@description('Optional. If the provided storage account requires Identity based authentication (\'allowSharedKeyAccess\' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is \'Storage Blob Data Owner\'.')
+param storageAccountUseIdentityAuthentication bool = false
+
 @description('Optional. Resource ID of the app insight to leverage for this resource.')
 param appInsightResourceId string?
-
-@description('Optional. For function apps. If true the app settings "AzureWebJobsDashboard" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons.')
-param setAzureWebJobsDashboard bool = contains(kind, 'functionapp') ? true : false
 
 @description('Optional. The app settings-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING.')
 param appSettingsKeyValuePairs object?
@@ -234,8 +234,8 @@ module app_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettings
     appName: app.name
     kind: kind
     storageAccountResourceId: storageAccountResourceId
+    storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
     appInsightResourceId: appInsightResourceId
-    setAzureWebJobsDashboard: setAzureWebJobsDashboard
     appSettingsKeyValuePairs: appSettingsKeyValuePairs
   }
 }
@@ -267,8 +267,8 @@ module app_slots 'slot/main.bicep' = [for (slot, index) in (slots ?? []): {
     virtualNetworkSubnetId: slot.?virtualNetworkSubnetId ?? virtualNetworkSubnetId
     siteConfig: slot.?siteConfig ?? siteConfig
     storageAccountResourceId: slot.?storageAccountResourceId ?? storageAccountResourceId
+    storageAccountUseIdentityAuthentication: slot.?storageAccountUseIdentityAuthentication ?? storageAccountUseIdentityAuthentication
     appInsightResourceId: slot.?appInsightResourceId ?? appInsightResourceId
-    setAzureWebJobsDashboard: slot.?setAzureWebJobsDashboard ?? setAzureWebJobsDashboard
     authSettingV2Configuration: slot.?authSettingV2Configuration ?? authSettingV2Configuration
     diagnosticSettings: slot.?diagnosticSettings
     roleAssignments: slot.?roleAssignments ?? roleAssignments
@@ -362,12 +362,13 @@ resource app_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01
   scope: app
 }]
 
-module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.2' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-app-PrivateEndpoint-${index}'
+module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+  name: '${uniqueString(deployment().name, location)}-App-PrivateEndpoint-${index}'
   params: {
-    privateLinkServiceConnections: [
+    name: privateEndpoint.?name ?? 'pep-${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites'}-${index}'
+    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites'}-${index}'
         properties: {
           privateLinkServiceId: app.id
           groupIds: [
@@ -375,8 +376,19 @@ module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.2' =
           ]
         }
       }
-    ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites'}-${index}'
+    ] : null
+    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
+      {
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites'}-${index}'
+        properties: {
+          privateLinkServiceId: app.id
+          groupIds: [
+            privateEndpoint.?service ?? 'sites'
+          ]
+          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+        }
+      }
+    ] : null
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
@@ -385,7 +397,6 @@ module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.2' =
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
     roleAssignments: privateEndpoint.?roleAssignments
     tags: privateEndpoint.?tags ?? tags
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
     customDnsConfigs: privateEndpoint.?customDnsConfigs
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
@@ -470,24 +481,31 @@ type privateEndpointType = {
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
-  @description('Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".')
+  @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
   service: string?
 
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.')
+  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
   privateDnsZoneGroupName: string?
 
   @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
   privateDnsZoneResourceIds: string[]?
 
+  @description('Optional. If Manual Private Link Connection is required.')
+  isManualConnection: bool?
+
+  @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
+  @maxLength(140)
+  manualConnectionRequestMessage: string?
+
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint ip address.')
+    @description('Required. Fqdn that resolves to private endpoint IP address.')
     fqdn: string?
 
-    @description('Required. A list of private ip addresses of the private endpoint.')
+    @description('Required. A list of private IP addresses of the private endpoint.')
     ipAddresses: string[]
   }[]?
 
@@ -504,7 +522,7 @@ type privateEndpointType = {
       @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
       memberName: string
 
-      @description('Required. A private ip address obtained from the private endpoint\'s subnet.')
+      @description('Required. A private IP address obtained from the private endpoint\'s subnet.')
       privateIPAddress: string
     }
   }[]?
@@ -523,9 +541,6 @@ type privateEndpointType = {
 
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
   tags: object?
-
-  @description('Optional. Manual PrivateLink Service Connections.')
-  manualPrivateLinkServiceConnections: array?
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
