@@ -57,11 +57,15 @@ function Set-PSRuleGitHubOutput {
         # $passedRules += $results | Where-Object { $_.Outcome -EQ 'Pass' } | Sort-Object -Property 'RuleName' -Unique
         # $failedRules += $results | Where-Object { $_.Outcome -EQ 'Fail' } | Sort-Object -Property 'RuleName' -Unique
 
-        $passedRules += $results | Where-Object { $_.Outcome -EQ 'Pass' } | Sort-Object -Property @{Expression = "TargetName"; Descending = $true},
-                          @{Expression = "RuleName"; Descending = $false} -Unique
+        # $passedRules += $results | Where-Object { $_.Outcome -EQ 'Pass' } | Sort-Object -Property @{Expression = "TargetName"; Descending = $true},
+        #                   @{Expression = "RuleName"; Descending = $false} -Unique
 
-        $failedRules += $results | Where-Object { $_.Outcome -EQ 'Fail' } | Sort-Object -Property @{Expression = "TargetName"; Descending = $true},
-                          @{Expression = "RuleName"; Descending = $false} -Unique
+        # $failedRules += $results | Where-Object { $_.Outcome -EQ 'Fail' } | Sort-Object -Property @{Expression = "TargetName"; Descending = $true},
+        #                   @{Expression = "RuleName"; Descending = $false} -Unique
+
+        $passedRules += $results | Where-Object { $_.Outcome -EQ 'Pass' } | Sort-Object -Property {'TargetName', 'RuleName'} -Unique
+
+        $failedRules += $results | Where-Object { $_.Outcome -EQ 'Fail' } | Sort-Object -Property {'TargetName', 'RuleName'} -Unique
 
         Write-Verbose ('total [{0}]' -f $results.Count ) -Verbose
         Write-Verbose ('passedRules [{0}]' -f $passedRules.Count ) -Verbose
