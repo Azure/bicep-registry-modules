@@ -8,7 +8,7 @@ inputs:
   psRuleFilterRegex:
     description: "The regex used to filter PSRule compliant files"
     required: true
-    default: "(defaults|waf-aligned)"
+    default: "(main.bicep|defaults|waf-aligned)"
 
 outputs:
   moduleTestFilePaths:
@@ -31,7 +31,7 @@ runs:
         # Get the list of parameter file paths
         $moduleFolderPath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}'
 
-        $testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object
+        $testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Include 'main.test.bicep', 'main.bicep').FullName | Sort-Object
         $testFilePaths = $testFilePaths | ForEach-Object {
           $_.Replace($moduleFolderPath, '').Trim('\').Trim('/')
         }
@@ -40,7 +40,7 @@ runs:
         $testFilePaths | ForEach-Object { Write-Verbose "- [$_]" -Verbose }
 
         # Output values to be accessed by next jobs
-        $deployCompressedOutput = $testFilePaths | ForEach-Object {
+        $deployCompressedOutput = $testFilePaths | Where-Object { $_ -notmatch '(main.bicep)' } | ForEach-Object {
           @{
             path = $_
             name = Split-Path (Split-Path $_) -Leaf
@@ -66,7 +66,12 @@ runs:
         $psRuleCompressedOutput = $psRuleTestFilePaths | ForEach-Object {
           @{
             path = $_
-            name = Split-Path (Split-Path $_) -Leaf
+            name = if ((Split-Path (Split-Path $_) -Leaf) -eq ($moduleFolderPath.Split('/')[-1]) ) {
+              "module-bicep-file"
+            }
+            else {
+              Split-Path (Split-Path $_) -Leaf
+            }
           }
         } | ConvertTo-Json -Compress
 
