@@ -15,7 +15,7 @@ env:
     targetPath: "avm/res/app/"
     psRuleFilterRegex: "(defaults|waf-aligned)" # The regex used to filter PSRule compliant files
     psrulePath: "avm/utilities/pipelines/staticValidation/psrule"
-    skipPassedRulesReport: $true
+    skipPassedRulesReport: $false
 
     ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
     ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
