@@ -74,7 +74,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   params: {
     deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
-    deploymentScriptName: '<deploymentScriptName>'
+    deploymentScriptName: 'ds-ssamin'
     deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
     deploymentScriptResourceGroupName: '<deploymentScriptResourceGroupName>'
     deploymentScriptStorageAccountName: 'stgdsssamin'
@@ -129,7 +129,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": "<deploymentScriptManagedIdentityName>"
     },
     "deploymentScriptName": {
-      "value": "<deploymentScriptName>"
+      "value": "ds-ssamin"
     },
     "deploymentScriptNetworkSecurityGroupName": {
       "value": "<deploymentScriptNetworkSecurityGroupName>"
@@ -217,7 +217,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   params: {
     deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
-    deploymentScriptName: '<deploymentScriptName>'
+    deploymentScriptName: 'ds-ssahs'
     deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
     deploymentScriptResourceGroupName: '<deploymentScriptResourceGroupName>'
     deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
@@ -277,7 +277,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": "<deploymentScriptManagedIdentityName>"
     },
     "deploymentScriptName": {
-      "value": "<deploymentScriptName>"
+      "value": "ds-ssahs"
     },
     "deploymentScriptNetworkSecurityGroupName": {
       "value": "<deploymentScriptNetworkSecurityGroupName>"
@@ -382,7 +382,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   params: {
     deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
-    deploymentScriptName: '<deploymentScriptName>'
+    deploymentScriptName: 'ds-ssawan'
     deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
     deploymentScriptResourceGroupName: '<deploymentScriptResourceGroupName>'
     deploymentScriptStorageAccountName: 'stgdsssawan'
@@ -438,7 +438,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": "<deploymentScriptManagedIdentityName>"
     },
     "deploymentScriptName": {
-      "value": "<deploymentScriptName>"
+      "value": "ds-ssawan"
     },
     "deploymentScriptNetworkSecurityGroupName": {
       "value": "<deploymentScriptNetworkSecurityGroupName>"
