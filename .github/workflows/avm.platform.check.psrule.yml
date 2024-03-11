@@ -71,8 +71,9 @@ jobs:
               # Retrieve all relevant test files in targetPath
               $allTestFiles = (Get-ChildItem -Path $targetPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object
               $relevantTestFiles = $allTestFiles | Where-Object { $_ -match $psRuleFilterRegex }
-              # Add all module template files as they may contain tokens
+              # Add all relevant test files and related module template files as they may contain tokens
               foreach ($relevantTestFile in $relevantTestFiles) {
+                $targetFileList += $relevantTestFile
                 $targetFileList += (Get-LocallyReferencedFileList -FilePath $relevantTestFile)
               }
             }
