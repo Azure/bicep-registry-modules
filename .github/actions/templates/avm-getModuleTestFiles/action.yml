@@ -68,7 +68,7 @@ runs:
 
         # Output values to be accessed by next jobs
         $psRuleCompressedOutput = $psRuleTestFilePaths | ForEach-Object {
-          if ((Split-Path (Split-Path $_) -Leaf) -eq ($moduleFolderPath.Split('/')[-1])) {
+          if ((Split-Path (Split-Path $_) -Leaf) -eq (Split-Path $moduleFolderPath -Leaf)) {
             @{
               path = $_
               name = "module-bicep-file"
