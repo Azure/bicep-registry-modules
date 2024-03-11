@@ -14,7 +14,7 @@ This module deploys a Search Service Private Link Resource.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Search/searchServices/sharedPrivateLinkResources` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2022-09-01/searchServices/sharedPrivateLinkResources) |
+| `Microsoft.Search/searchServices/sharedPrivateLinkResources` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2023-11-01/searchServices/sharedPrivateLinkResources) |
 
 ## Parameters
 
@@ -80,7 +80,6 @@ Can be used to specify the Azure Resource Manager location of the resource to wh
 
 - Required: No
 - Type: string
-- Default: `''`
 
 
 ## Outputs
