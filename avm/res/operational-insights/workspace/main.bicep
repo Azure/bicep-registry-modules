@@ -217,13 +217,13 @@ module logAnalyticsWorkspace_savedSearches 'saved-search/main.bicep' = [for (sav
   params: {
     logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
     name: '${savedSearch.name}${uniqueString(deployment().name)}'
-    etag: contains(savedSearch, 'eTag') ? savedSearch.etag : '*'
+    etag: savedSearch.?etag
     displayName: savedSearch.displayName
     category: savedSearch.category
     query: savedSearch.query
-    functionAlias: contains(savedSearch, 'functionAlias') ? savedSearch.functionAlias : ''
-    functionParameters: contains(savedSearch, 'functionParameters') ? savedSearch.functionParameters : ''
-    version: contains(savedSearch, 'version') ? savedSearch.version : 2
+    functionAlias: savedSearch.?functionAlias
+    functionParameters: savedSearch.?functionParameters
+    version: savedSearch.?version
   }
   dependsOn: [
     logAnalyticsWorkspace_linkedStorageAccounts

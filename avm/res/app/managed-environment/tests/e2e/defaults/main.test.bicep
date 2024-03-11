@@ -52,4 +52,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     location: resourceLocation
     logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }]
