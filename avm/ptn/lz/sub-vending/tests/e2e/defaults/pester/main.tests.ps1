@@ -11,7 +11,7 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
     $serviceShort = $TestInputData.DeploymentOutputs.serviceShort.value
     $location = $TestInputData.DeploymentOutputs.resourceLocation.value
     Update-AzConfig -DisplayBreakingChangeWarning $false
-    Select-AzSubscription -subscriptionId $TestInputData.DeploymentOutputs.createdSubId.value
+    Select-AzSubscription -subscriptionId $subscriptionId
   }
 
   Context "Subscription Tests" {
