@@ -54,11 +54,12 @@ function Set-PSRuleGitHubOutput {
         Write-Verbose ('typer [{0}]' -f $headers.getType() ) -Verbose
         Write-Verbose ('Csv properties [{0}]' -f $headers ) -Verbose
 
-
-
-
         $passedRules += $results | Where-Object { $_.Outcome -EQ 'Pass' } | Sort-Object -Property 'RuleName' -Unique
         $failedRules += $results | Where-Object { $_.Outcome -EQ 'Fail' } | Sort-Object -Property 'RuleName' -Unique
+
+        Write-Verbose ('total [{0}]' -f $results.Count ) -Verbose
+        Write-Verbose ('passedRules [{0}]' -f $passedRules.Count ) -Verbose
+        Write-Verbose ('failedRules [{0}]' -f $passedRules.Count ) -Verbose
 
         ######################
         # Set output content #

@@ -10,10 +10,6 @@ on:
 #   schedule:
 #     - cron: '0 12 * * 0' # Weekly Sunday Analysis
 
-# env:
-#   variablesPath: 'settings.yml'
-#   modulesPath: 'modules'
-#   TOKEN_NAMEPREFIX: '${{ secrets.TOKEN_NAMEPREFIX }}'
 env:
     # modulePath: "avm/res/app"
     # templateFilePath: "avm/res/app/container-app/"
