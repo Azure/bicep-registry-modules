@@ -14,7 +14,7 @@ param namePrefix string = '#_namePrefix_#'
 //param namePrefix string = 'avmsb'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'sshs'
+param serviceShort string = 'ssahs'
 
 module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
@@ -75,7 +75,7 @@ module testDeployment '../../../main.bicep' = {
     virtualNetworkName: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
     deploymentScriptNetworkSecurityGroupName: 'nsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
     deploymentScriptVirtualNetworkName: 'vnet-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptStorageAccountName: 'stgds${resourceLocation}${namePrefix}${serviceShort}'
+    deploymentScriptStorageAccountName: 'stgds${namePrefix}${serviceShort}'
     virtualNetworkAddressSpace: [
       '10.100.0.0/16'
     ]
