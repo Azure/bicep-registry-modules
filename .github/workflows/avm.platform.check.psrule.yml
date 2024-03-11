@@ -11,7 +11,7 @@ on:
 #     - cron: '0 12 * * 0' # Weekly Sunday Analysis
 
 env:
-    ### templateFilePath: "avm/res/app/container-app/"
+    ## templateFilePath: "avm/res/app/container-app/"
     targetPath: "avm/res/app/"
     psRuleFilterRegex: "(defaults|waf-aligned)" # The regex used to filter PSRule compliant files
     psrulePath: "avm/utilities/pipelines/staticValidation/psrule"
