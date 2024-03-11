@@ -6,10 +6,10 @@ param (
 Describe "Bicep Landing Zone (Sub) Vending Tests" {
 
   BeforeAll {
-    $subscriptionId = $TestInputData.DeploymentOutputs.createdSubId.value
-    $namePrefix = $TestInputData.DeploymentOutputs.namePrefix.value
-    $serviceShort = $TestInputData.DeploymentOutputs.serviceShort.value
-    $location = $TestInputData.DeploymentOutputs.resourceLocation.value
+    $subscriptionId = $TestInputData.DeploymentOutputs.createdSubId.Value
+    $namePrefix = $TestInputData.DeploymentOutputs.namePrefix.Value
+    $serviceShort = $TestInputData.DeploymentOutputs.serviceShort.Value
+    $location = $TestInputData.DeploymentOutputs.resourceLocation.Value
     Update-AzConfig -DisplayBreakingChangeWarning $false
     Select-AzSubscription -subscriptionId $subscriptionId
   }
