@@ -21,9 +21,6 @@ param serviceShort string = 'cvmsswinwaf'
 @secure()
 param password string = newGuid()
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableTelemetry bool = true
-
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -75,7 +72,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
     location: resourceLocation
-    enableTelemetry: enableTelemetry
     name: '${namePrefix}${serviceShort}001'
     adminUsername: 'localAdminUser'
     imageReference: {
@@ -108,7 +104,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
-    encryptionAtHost: false
+    encryptionAtHost: true
     extensionAntiMalwareConfig: {
       enabled: true
       settings: {
@@ -164,10 +160,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     extensionNetworkWatcherAgentConfig: {
       enabled: true
     }
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -181,13 +173,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           }
         ]
         nicSuffix: '-nic01'
-      }
-    ]
-    roleAssignments: [
-      {
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        roleDefinitionIdOrName: 'Reader'
-        principalType: 'ServicePrincipal'
       }
     ]
     skuCapacity: 1

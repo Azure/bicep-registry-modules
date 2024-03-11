@@ -20,9 +20,6 @@ param serviceShort string = 'cvmsslcmk'
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableTelemetry bool = true
-
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -63,7 +60,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     extensionMonitoringAgentConfig: {
       enabled: true
     }
-    enableTelemetry: enableTelemetry
     location: resourceLocation
     name: '${namePrefix}${serviceShort}001'
     adminUsername: 'scaleSetAdmin'
@@ -120,10 +116,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         path: '/home/scaleSetAdmin/.ssh/authorized_keys'
       }
     ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
   }
 }]

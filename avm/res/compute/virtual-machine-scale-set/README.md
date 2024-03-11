@@ -69,7 +69,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     skuName: 'Standard_B12ms'
     // Non-required parameters
     disablePasswordAuthentication: true
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     nicConfigurations: [
       {
@@ -141,9 +140,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     // Non-required parameters
     "disablePasswordAuthentication": {
       "value": true
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
@@ -249,7 +245,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     ]
     disablePasswordAuthentication: true
-    enableTelemetry: '<enableTelemetry>'
     encryptionAtHost: false
     extensionAzureDiskEncryptionConfig: {
       enabled: true
@@ -428,9 +423,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "disablePasswordAuthentication": {
       "value": true
     },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "encryptionAtHost": {
       "value": false
     },
@@ -607,7 +599,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     ]
     disablePasswordAuthentication: true
-    enableTelemetry: '<enableTelemetry>'
     extensionMonitoringAgentConfig: {
       enabled: true
     }
@@ -633,11 +624,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         path: '/home/scaleSetAdmin/.ssh/authorized_keys'
       }
     ]
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -706,9 +692,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "disablePasswordAuthentication": {
       "value": true
     },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "extensionMonitoringAgentConfig": {
       "value": {
         "enabled": true
@@ -741,13 +724,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
           "path": "/home/scaleSetAdmin/.ssh/authorized_keys"
         }
       ]
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -789,7 +765,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     skuName: 'Standard_B12ms'
     // Non-required parameters
     adminPassword: '<adminPassword>'
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     nicConfigurations: [
       {
@@ -855,9 +830,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
@@ -933,7 +905,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableTelemetry: '<enableTelemetry>'
     encryptionAtHost: false
     extensionAntiMalwareConfig: {
       enabled: true
@@ -1097,9 +1068,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "encryptionAtHost": {
       "value": false
@@ -1289,8 +1257,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableTelemetry: '<enableTelemetry>'
-    encryptionAtHost: false
+    encryptionAtHost: true
     extensionAntiMalwareConfig: {
       enabled: true
       settings: {
@@ -1347,10 +1314,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       enabled: true
     }
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -1370,13 +1333,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
           }
         ]
         nicSuffix: '-nic01'
-      }
-    ]
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
       }
     ]
     skuCapacity: 1
@@ -1454,11 +1410,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         }
       ]
     },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "encryptionAtHost": {
-      "value": false
+      "value": true
     },
     "extensionAntiMalwareConfig": {
       "value": {
@@ -1532,12 +1485,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true,
@@ -1560,15 +1507,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
             }
           ],
           "nicSuffix": "-nic01"
-        }
-      ]
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
         }
       ]
     },
@@ -1827,8 +1765,9 @@ The diagnostic settings of the service.
 | [`eventHubAuthorizationRuleResourceId`](#parameter-diagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
 | [`eventHubName`](#parameter-diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
+| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
 | [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
@@ -1861,6 +1800,42 @@ A string indicating whether the export to Log Analytics should use the default d
   ]
   ```
 
+### Parameter: `diagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-diagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
@@ -1870,7 +1845,7 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
-The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
 
 - Required: No
 - Type: array
@@ -1879,14 +1854,27 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics. |
+| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-diagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
 ### Parameter: `diagnosticSettings.metricCategories.category`
 
-Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics.
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `diagnosticSettings.name`
 

@@ -21,9 +21,6 @@ param serviceShort string = 'cvmsswinmin'
 @secure()
 param password string = newGuid()
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableTelemetry bool = true
-
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -57,7 +54,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
     location: resourceLocation
-    enableTelemetry: enableTelemetry
     name: '${namePrefix}${serviceShort}001'
     adminUsername: 'localAdminUser'
     adminPassword: password

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "4707656343960696032"
+      "templateHash": "1285898314066696839"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -139,6 +139,39 @@
               "description": "Optional. The name of diagnostic setting."
             }
           },
+          "logCategoriesAndGroups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                  }
+                },
+                "categoryGroup": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                  }
+                },
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+            }
+          },
           "metricCategories": {
             "type": "array",
             "items": {
@@ -147,14 +180,21 @@
                 "category": {
                   "type": "string",
                   "metadata": {
-                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics."
+                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                  }
+                },
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                   }
                 }
               }
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
             }
           },
           "logAnalyticsDestinationType": {
@@ -962,11 +1002,30 @@
       "scope": "[format('Microsoft.Compute/virtualMachineScaleSets/{0}', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
+        "copy": [
+          {
+            "name": "metrics",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+            "input": {
+              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+              "timeGrain": null
+            }
+          },
+          {
+            "name": "logs",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "input": {
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+            }
+          }
+        ],
         "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
         "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
         "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
         "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
-        "metrics": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]",
         "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
         "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
       },
@@ -1029,9 +1088,6 @@
             "value": {
               "Password": "[parameters('extensionDomainJoinPassword')]"
             }
-          },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1041,7 +1097,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "10107873299297123369"
+              "templateHash": "3680417048986934448"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1117,30 +1173,9 @@
               "metadata": {
                 "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
               "apiVersion": "2022-11-01",
@@ -1215,9 +1250,6 @@
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionAntiMalwareConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionAntiMalwareConfig').enableAutomaticUpgrade), createObject('value', false()))]",
           "settings": {
             "value": "[parameters('extensionAntiMalwareConfig').settings]"
-          },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1227,7 +1259,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "10107873299297123369"
+              "templateHash": "3680417048986934448"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1303,30 +1335,9 @@
               "metadata": {
                 "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
               "apiVersion": "2022-11-01",
@@ -1408,9 +1419,6 @@
             "value": {
               "workspaceKey": "[if(not(empty(parameters('monitoringWorkspaceId'))), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '//'), '/')[2], split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '////'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), 'law'), '/'))), '2021-06-01').primarySharedKey, '')]"
             }
-          },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1420,7 +1428,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "10107873299297123369"
+              "templateHash": "3680417048986934448"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1496,30 +1504,9 @@
               "metadata": {
                 "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
               "apiVersion": "2022-11-01",
@@ -1591,10 +1578,7 @@
           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'DependencyAgentWindows'), createObject('value', 'DependencyAgentLinux'))]",
           "typeHandlerVersion": "[if(contains(parameters('extensionDependencyAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionDependencyAgentConfig').typeHandlerVersion), createObject('value', '9.5'))]",
           "autoUpgradeMinorVersion": "[if(contains(parameters('extensionDependencyAgentConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionDependencyAgentConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionDependencyAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDependencyAgentConfig').enableAutomaticUpgrade), createObject('value', true()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "enableAutomaticUpgrade": "[if(contains(parameters('extensionDependencyAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDependencyAgentConfig').enableAutomaticUpgrade), createObject('value', true()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1603,7 +1587,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "10107873299297123369"
+              "templateHash": "3680417048986934448"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1679,30 +1663,9 @@
               "metadata": {
                 "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
               "apiVersion": "2022-11-01",
@@ -1773,10 +1736,7 @@
           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'NetworkWatcherAgentWindows'), createObject('value', 'NetworkWatcherAgentLinux'))]",
           "typeHandlerVersion": "[if(contains(parameters('extensionNetworkWatcherAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionNetworkWatcherAgentConfig').typeHandlerVersion), createObject('value', '1.4'))]",
           "autoUpgradeMinorVersion": "[if(contains(parameters('extensionNetworkWatcherAgentConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionNetworkWatcherAgentConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionNetworkWatcherAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionNetworkWatcherAgentConfig').enableAutomaticUpgrade), createObject('value', false()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "enableAutomaticUpgrade": "[if(contains(parameters('extensionNetworkWatcherAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionNetworkWatcherAgentConfig').enableAutomaticUpgrade), createObject('value', false()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1785,7 +1745,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "10107873299297123369"
+              "templateHash": "3680417048986934448"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -1861,30 +1821,9 @@
               "metadata": {
                 "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
               "apiVersion": "2022-11-01",
@@ -1959,10 +1898,7 @@
           "autoUpgradeMinorVersion": "[if(contains(parameters('extensionDSCConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionDSCConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionDSCConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDSCConfig').enableAutomaticUpgrade), createObject('value', false()))]",
           "settings": "[if(contains(parameters('extensionDSCConfig'), 'settings'), createObject('value', parameters('extensionDSCConfig').settings), createObject('value', createObject()))]",
-          "protectedSettings": "[if(contains(parameters('extensionDSCConfig'), 'protectedSettings'), createObject('value', parameters('extensionDSCConfig').protectedSettings), createObject('value', createObject()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "protectedSettings": "[if(contains(parameters('extensionDSCConfig'), 'protectedSettings'), createObject('value', parameters('extensionDSCConfig').protectedSettings), createObject('value', createObject()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1971,7 +1907,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "10107873299297123369"
+              "templateHash": "3680417048986934448"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -2047,30 +1983,9 @@
               "metadata": {
                 "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
               "apiVersion": "2022-11-01",
@@ -2151,10 +2066,7 @@
               ]
             }
           },
-          "protectedSettings": "[if(contains(parameters('extensionCustomScriptConfig'), 'protectedSettings'), createObject('value', parameters('extensionCustomScriptConfig').protectedSettings), createObject('value', createObject()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "protectedSettings": "[if(contains(parameters('extensionCustomScriptConfig'), 'protectedSettings'), createObject('value', parameters('extensionCustomScriptConfig').protectedSettings), createObject('value', createObject()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2163,7 +2075,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "10107873299297123369"
+              "templateHash": "3680417048986934448"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -2239,30 +2151,9 @@
               "metadata": {
                 "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
               "apiVersion": "2022-11-01",
@@ -2337,9 +2228,6 @@
           "forceUpdateTag": "[if(contains(parameters('extensionAzureDiskEncryptionConfig'), 'forceUpdateTag'), createObject('value', parameters('extensionAzureDiskEncryptionConfig').forceUpdateTag), createObject('value', '1.0'))]",
           "settings": {
             "value": "[parameters('extensionAzureDiskEncryptionConfig').settings]"
-          },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2349,7 +2237,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "10107873299297123369"
+              "templateHash": "3680417048986934448"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension.",
@@ -2425,30 +2313,9 @@
               "metadata": {
                 "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
               "apiVersion": "2022-11-01",
@@ -2524,7 +2391,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('vmss', '2022-11-01', 'full').identity, 'principalId')), reference('vmss', '2022-11-01', 'full').identity.principalId, '')]"
+      "value": "[tryGet(tryGet(reference('vmss', '2022-11-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
