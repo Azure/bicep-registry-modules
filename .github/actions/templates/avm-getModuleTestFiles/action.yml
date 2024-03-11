@@ -59,8 +59,12 @@ runs:
         Write-Output '::group::Get PSRule test files'
         $psRuleTestFilePaths = $testFilePaths | Where-Object { $_ -match '${{ inputs.psRuleFilterRegex }}' }
 
+        Write-Output $psRuleTestFilePaths
+
         Write-Verbose 'Found PSRule module test files' -Verbose
         $psRuleTestFilePaths | ForEach-Object { Write-Verbose "- [$_]" -Verbose }
+
+        Write-Output $psRuleTestFilePaths
 
         # Output values to be accessed by next jobs
         $psRuleCompressedOutput = $psRuleTestFilePaths | ForEach-Object {
