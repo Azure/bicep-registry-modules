@@ -32,7 +32,7 @@ module testDeployment '../../../main.bicep' = {
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
     deploymentScriptResourceGroupName: 'rsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
     deploymentScriptManagedIdentityName: 'id-${resourceLocation}-${namePrefix}-${serviceShort}'
-    deploymentScriptName: 'ds-${resourceLocation}${namePrefix}${serviceShort}'
+    deploymentScriptName: 'ds-${resourceLocation}-${namePrefix}-${serviceShort}'
     virtualNetworkEnabled: false
     roleAssignmentEnabled: true
     roleAssignments: [
@@ -55,3 +55,6 @@ module testDeployment '../../../main.bicep' = {
 }
 
 output createdSubId string = testDeployment.outputs.subscriptionId
+output namePrefix string = namePrefix
+output serviceShort string = serviceShort
+output resourceLocation string = resourceLocation
