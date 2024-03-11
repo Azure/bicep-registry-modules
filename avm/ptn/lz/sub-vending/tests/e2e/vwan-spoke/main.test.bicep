@@ -74,7 +74,7 @@ module testDeployment '../../../main.bicep' = {
     virtualNetworkResourceGroupName: 'rsg-${resourceLocation}-net-vwan-${namePrefix}-${serviceShort}'
     deploymentScriptResourceGroupName: 'rsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
     deploymentScriptManagedIdentityName: 'id-${resourceLocation}-${namePrefix}-${serviceShort}'
-    deploymentScriptName: 'ds-${resourceLocation}-${namePrefix}-${serviceShort}'
+    deploymentScriptName: 'ds-${namePrefix}-${serviceShort}'
     virtualNetworkName: 'vnet-${resourceLocation}-vwan-${namePrefix}-${serviceShort}'
     virtualNetworkAddressSpace: [
       '10.200.0.0/16'
@@ -87,7 +87,7 @@ module testDeployment '../../../main.bicep' = {
       {
         principalId: '7eca0dca-6701-46f1-b7b6-8b424dab50b3'
         definition: 'Network Contributor'
-        relativeScope: '/resourceGroups/rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
+        relativeScope: '/resourceGroups/rsg-${resourceLocation}-net-vwan-${namePrefix}-${serviceShort}'
       }
     ]
     deploymentScriptNetworkSecurityGroupName: 'nsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'

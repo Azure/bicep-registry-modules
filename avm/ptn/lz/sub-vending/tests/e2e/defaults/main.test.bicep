@@ -32,7 +32,7 @@ module testDeployment '../../../main.bicep' = {
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
     deploymentScriptResourceGroupName: 'rsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
     deploymentScriptManagedIdentityName: 'id-${resourceLocation}-${namePrefix}-${serviceShort}'
-    deploymentScriptName: 'ds-${resourceLocation}-${namePrefix}-${serviceShort}'
+    deploymentScriptName: 'ds-${namePrefix}-${serviceShort}'
     virtualNetworkEnabled: false
     roleAssignmentEnabled: true
     roleAssignments: [
