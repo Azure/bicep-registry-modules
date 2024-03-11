@@ -39,6 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     serverFarmName: 'dep-${namePrefix}-sf-${serviceShort}'
     relayNamespaceName: 'dep-${namePrefix}-ns-${serviceShort}'
+    storageAccountName: 'dep${namePrefix}st${serviceShort}'
     hybridConnectionName: 'dep-${namePrefix}-hc-${serviceShort}'
     location: resourceLocation
   }
@@ -151,6 +152,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             }
           ]
         }
+        storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+        storageAccountUseIdentityAuthentication: true
         hybridConnectionRelays: [
           {
             resourceId: nestedDependencies.outputs.hybridConnectionResourceId
@@ -168,6 +171,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             name: 'scm'
           }
         ]
+        storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+        storageAccountUseIdentityAuthentication: true
       }
     ]
     privateEndpoints: [
@@ -215,6 +220,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         }
       ]
     }
+    storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+    storageAccountUseIdentityAuthentication: true
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
