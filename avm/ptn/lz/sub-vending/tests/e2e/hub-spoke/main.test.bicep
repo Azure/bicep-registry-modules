@@ -14,7 +14,7 @@ param namePrefix string = '#_namePrefix_#'
 //param namePrefix string = 'avmsb'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ssahs'
+param serviceShort string = 'sshs'
 
 module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
