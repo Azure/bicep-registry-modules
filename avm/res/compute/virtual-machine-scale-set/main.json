@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "1285898314066696839"
+      "templateHash": "9003500835997399545"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set.",
@@ -2391,7 +2391,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('vmss', '2022-11-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[coalesce(tryGet(tryGet(reference('vmss', '2022-11-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",
