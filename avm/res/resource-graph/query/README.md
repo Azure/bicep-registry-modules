@@ -279,7 +279,7 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the Resource Graph Query. |
-| [`query`](#parameter-query) | string | KQL query that will be graph. |
+| [`query`](#parameter-query) | string | The KQL query that will be graph. |
 
 **Optional parameters**
 
@@ -301,7 +301,7 @@ The name of the Resource Graph Query.
 
 ### Parameter: `query`
 
-KQL query that will be graph.
+The KQL query that will be graph.
 
 - Required: Yes
 - Type: string
