@@ -37,8 +37,8 @@ This module deploys a Site App Setting.
 | :-- | :-- | :-- |
 | [`appInsightResourceId`](#parameter-appinsightresourceid) | string | Resource ID of the app insight to leverage for this resource. |
 | [`appSettingsKeyValuePairs`](#parameter-appsettingskeyvaluepairs) | object | The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING. |
-| [`setAzureWebJobsDashboard`](#parameter-setazurewebjobsdashboard) | bool | For function apps. If true the app settings "AzureWebJobsDashboard" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons. |
 | [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions. |
+| [`storageAccountUseIdentityAuthentication`](#parameter-storageaccountuseidentityauthentication) | bool | If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'. |
 
 ### Parameter: `kind`
 
@@ -78,20 +78,20 @@ The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDas
 - Required: No
 - Type: object
 
-### Parameter: `setAzureWebJobsDashboard`
-
-For function apps. If true the app settings "AzureWebJobsDashboard" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons.
-
-- Required: No
-- Type: bool
-- Default: `[if(contains(parameters('kind'), 'functionapp'), true(), false())]`
-
 ### Parameter: `storageAccountResourceId`
 
 Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.
 
 - Required: No
 - Type: string
+
+### Parameter: `storageAccountUseIdentityAuthentication`
+
+If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 
 ## Outputs

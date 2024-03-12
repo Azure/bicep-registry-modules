@@ -20,6 +20,10 @@ param serviceShort string = 'miuaimax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+// Set to fixed location as the RP function returns unsupported locations
+// Right now (2024/03) the following locations are NOT supported: East Asia, Qatar Central, Malaysia South, Italy North, Israel Central
+param enforcedLocation string = 'westeurope'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -36,7 +40,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: resourceLocation
+    location: enforcedLocation
   }
 }
 
@@ -50,7 +54,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
+    location: enforcedLocation
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'

@@ -341,7 +341,43 @@ The federated identity credentials list to indicate which token from the externa
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`audiences`](#parameter-federatedidentitycredentialsaudiences) | array | The list of audiences that can appear in the issued token. |
+| [`issuer`](#parameter-federatedidentitycredentialsissuer) | string | The URL of the issuer to be trusted. |
+| [`name`](#parameter-federatedidentitycredentialsname) | string | The name of the federated identity credential. |
+| [`subject`](#parameter-federatedidentitycredentialssubject) | string | The identifier of the external identity. |
+
+### Parameter: `federatedIdentityCredentials.audiences`
+
+The list of audiences that can appear in the issued token.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `federatedIdentityCredentials.issuer`
+
+The URL of the issuer to be trusted.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `federatedIdentityCredentials.name`
+
+The name of the federated identity credential.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `federatedIdentityCredentials.subject`
+
+The identifier of the external identity.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `location`
 
