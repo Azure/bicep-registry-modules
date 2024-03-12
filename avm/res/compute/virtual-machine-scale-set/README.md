@@ -1257,7 +1257,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    encryptionAtHost: true
     extensionAntiMalwareConfig: {
       enabled: true
       settings: {
@@ -1409,9 +1408,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "encryptionAtHost": {
-      "value": true
     },
     "extensionAntiMalwareConfig": {
       "value": {
