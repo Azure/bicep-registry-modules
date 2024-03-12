@@ -806,7 +806,6 @@ The environment variables to pass over to the script. The list is passed as an o
 
 - Required: No
 - Type: secureObject
-- Default: `{}`
 
 ### Parameter: `location`
 
