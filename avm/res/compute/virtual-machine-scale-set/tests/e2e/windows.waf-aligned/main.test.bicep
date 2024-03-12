@@ -104,6 +104,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
+    encryptionAtHost: false
     extensionAntiMalwareConfig: {
       enabled: true
       settings: {
