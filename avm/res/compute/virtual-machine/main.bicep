@@ -701,7 +701,7 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHo
 }
 
 module vm_azureGuestConfigurationExtension 'extension/main.bicep' = if (extensionGuestConfigurationExtension.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VM-AzureDiskEncryption'
+  name: '${uniqueString(deployment().name, location)}-VM-GuestConfiguration'
   params: {
     virtualMachineName: vm.name
     name: 'GuestConfiguration'
