@@ -21,40 +21,41 @@ param serviceShort string = 'dddapln'
 param namePrefix string = '#_namePrefix_#'
 
 // Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
-var eastUsResourceLocation = 'eastus'
+var enforcedLocation = 'eastus'
 
 // ============ //
 // Dependencies //
 // ============ //
 
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
-  name: resourceGroupName
-  location: eastUsResourceLocation
-}
-
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-    location: eastUsResourceLocation
+    location: enforcedLocation
   }
 }
 
+// ============== //
+// General resources
+// ============== //
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+  name: resourceGroupName
+  location: enforcedLocation
+}
+
+// ============== //
 // Diagnostics
-// ===========
+// ============== //
 module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: eastUsResourceLocation
+    location: enforcedLocation
   }
 }
 
@@ -65,15 +66,15 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-test-${serviceShort}-${iteration}'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: eastUsResourceLocation
+    location: enforcedLocation
     locations: [
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: eastUsResourceLocation
+        locationName: enforcedLocation
       }
     ]
     diagnosticSettings: [
@@ -122,181 +123,3 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     diagnosticDependencies
   ]
 }]
-
-module enableSystemAssignedManagedIdentity '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-systemMI-${serviceShort}'
-  params: {
-    location: eastUsResourceLocation
-    name: '${namePrefix}-system-mi'
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: eastUsResourceLocation
-      }
-    ]
-    managedIdentities: {
-      systemAssigned: true
-    }
-  }
-}
-
-module enableUserAssignedManagedIdentity '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-userMI-${serviceShort}'
-  params: {
-    location: eastUsResourceLocation
-    name: '${namePrefix}-user-mi'
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: eastUsResourceLocation
-      }
-    ]
-    managedIdentities: {
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
-  }
-  dependsOn: [
-    nestedDependencies
-  ]
-}
-
-module enableAnalyticalStorage '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-analytical-${serviceShort}'
-  params: {
-    location: eastUsResourceLocation
-    enableAnalyticalStorage: true
-    name: '${namePrefix}-analytical'
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: eastUsResourceLocation
-      }
-    ]
-    sqlDatabases: [
-      {
-        name: 'empty-database'
-      }
-    ]
-  }
-}
-
-module disableLocalAuth '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-disableLocal-${serviceShort}'
-  params: {
-    disableLocalAuth: true
-    location: eastUsResourceLocation
-    name: '${namePrefix}-local-auth-off'
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: eastUsResourceLocation
-      }
-    ]
-    sqlDatabases: [
-      {
-        name: 'empty-database'
-      }
-    ]
-  }
-}
-
-module enableZoneRedundant '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-zoneRedudant-${serviceShort}'
-  params: {
-    location: eastUsResourceLocation
-    name: '${namePrefix}-zone-redundant'
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: true
-        locationName: eastUsResourceLocation
-      }
-      {
-        failoverPriority: 1
-        isZoneRedundant: true
-        locationName: nestedDependencies.outputs.pairedRegionName
-      }
-    ]
-  }
-}
-
-module disableAutomaticFailover '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-autoFailoverOff-${serviceShort}'
-  params: {
-    automaticFailover: false
-    location: eastUsResourceLocation
-    name: '${namePrefix}-auto-failover-off'
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: eastUsResourceLocation
-      }
-    ]
-    sqlDatabases: [
-      {
-        name: 'empty-database'
-      }
-    ]
-  }
-}
-
-module enableContinousBackup '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-continousBckup-${serviceShort}'
-  params: {
-    location: eastUsResourceLocation
-    name: '${namePrefix}-continous-bckup'
-    backupPolicyType: 'Continuous'
-    backupPolicyContinuousTier: 'Continuous7Days'
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: eastUsResourceLocation
-      }
-    ]
-    sqlDatabases: [
-      {
-        name: 'empty-database'
-      }
-    ]
-  }
-}
-
-module enablePeriodicBackup '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-periodicBckup-${serviceShort}'
-  params: {
-    location: eastUsResourceLocation
-    name: '${namePrefix}-periodic-bckup'
-    backupPolicyType: 'Periodic'
-    backupIntervalInMinutes: 300
-    backupStorageRedundancy: 'Zone'
-    backupRetentionIntervalInHours: 16
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: eastUsResourceLocation
-      }
-    ]
-    sqlDatabases: [
-      {
-        name: 'empty-database'
-      }
-    ]
-  }
-}

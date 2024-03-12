@@ -21,17 +21,14 @@ param serviceShort string = 'dddasql'
 param namePrefix string = '#_namePrefix_#'
 
 // Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
-var eastUsResourceLocation = 'eastus'
+var enforcedLocation = 'eastus'
 
-// ============ //
-// Dependencies //
-// ============ //
-
+// ============== //
 // General resources
-// =================
+// ============== //
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: resourceGroupName
-  location: eastUsResourceLocation
+  location: enforcedLocation
 }
 
 // ============== //
@@ -40,16 +37,16 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
-    location: eastUsResourceLocation
+    location: enforcedLocation
     enableAnalyticalStorage: true
     name: '${namePrefix}${serviceShort}001'
     locations: [
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: eastUsResourceLocation
+        locationName: enforcedLocation
       }
     ]
     sqlDatabases: [

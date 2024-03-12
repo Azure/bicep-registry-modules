@@ -21,7 +21,7 @@ param serviceShort string = 'dddamng'
 param namePrefix string = '#_namePrefix_#'
 
 // Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
-var eastUsResourceLocation = 'eastus'
+var enforcedLocation = 'eastus'
 
 // ============ //
 // Dependencies //
@@ -31,16 +31,16 @@ var eastUsResourceLocation = 'eastus'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: resourceGroupName
-  location: eastUsResourceLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-    location: eastUsResourceLocation
+    location: enforcedLocation
   }
 }
 
@@ -48,13 +48,13 @@ module nestedDependencies 'dependencies.bicep' = {
 // ===========
 module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: eastUsResourceLocation
+    location: enforcedLocation
   }
 }
 
@@ -65,14 +65,14 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-test-${serviceShort}-${iteration}'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
     locations: [
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: eastUsResourceLocation
+        locationName: enforcedLocation
       }
       {
         failoverPriority: 1
@@ -94,7 +94,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
-    location: eastUsResourceLocation
+    location: enforcedLocation
     mongodbDatabases: [
       {
         collections: [
