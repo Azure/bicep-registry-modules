@@ -1,0 +1,76 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "3673239578041396478"
+    },
+    "name": "Static Web App Site Linked Backends",
+    "description": "This module deploys a Custom Function App into a Static Web App Site using the Linked Backends property.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "backendResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource ID of the backend linked to the static site."
+      }
+    },
+    "region": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. The region of the backend linked to the static site."
+      }
+    },
+    "staticSiteName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Static Web App. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "[uniqueString(parameters('backendResourceId'))]",
+      "metadata": {
+        "description": "Optional. Name of the backend to link to the static site."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/staticSites/linkedBackends",
+      "apiVersion": "2022-03-01",
+      "name": "[format('{0}/{1}', parameters('staticSiteName'), parameters('name'))]",
+      "properties": {
+        "backendResourceId": "[parameters('backendResourceId')]",
+        "region": "[parameters('region')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the static site linked backend."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the static site linked backend."
+      },
+      "value": "[resourceId('Microsoft.Web/staticSites/linkedBackends', parameters('staticSiteName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the static site linked backend was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

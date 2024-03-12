@@ -15,9 +15,13 @@ Mandatory. The path to the deployment file
 .PARAMETER PublicRegistryServer
 Mandatory. The public registry server.
 
-.EXAMPLE
-Publish-ModuleFromPathToPBR -TemplateFilePath 'C:\avm\res\key-vault\vault\main.bicep -PublicRegistryServer '<secureString>'
+.PARAMETER RepoRoot
+Optional. Path to the root of the repository.
 
+.EXAMPLE
+Publish-ModuleFromPathToPBR -TemplateFilePath 'C:\avm\res\key-vault\vault\main.bicep -PublicRegistryServer (ConvertTo-SecureString 'myServer' -AsPlainText -Force)
+
+Publish the module in path 'key-vault/vault' to the public registry server 'myServer'
 #>
 function Publish-ModuleFromPathToPBR {
 
@@ -27,19 +31,22 @@ function Publish-ModuleFromPathToPBR {
     [string] $TemplateFilePath,
 
     [Parameter(Mandatory = $true)]
-    [secureString] $PublicRegistryServer
+    [secureString] $PublicRegistryServer,
+
+    [Parameter(Mandatory = $false)]
+    [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
   )
 
   # Load used functions
-  . (Join-Path $PSScriptRoot 'helper' 'Get-ModulesToPublish.ps1')
-  . (Join-Path $PSScriptRoot 'helper' 'Get-ModuleTargetVersion.ps1')
-  . (Join-Path $PSScriptRoot 'helper' 'Get-BRMRepositoryName.ps1')
-  . (Join-Path $PSScriptRoot 'helper' 'New-ModuleReleaseTag.ps1')
-  . (Join-Path $PSScriptRoot 'helper' 'Get-ModuleReadmeLink.ps1')
-  . (Join-Path (Split-Path $PSScriptRoot -Parent) 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModulesToPublish.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModuleTargetVersion.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'publish' 'helper' 'New-ModuleReleaseTag.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModuleReadmeLink.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-BRMRepositoryName.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
 
   $moduleFolderPath = Split-Path $TemplateFilePath -Parent
-  $moduleJsonFilePath = Join-Path $moduleFolderPath 'main.json'
+  $moduleBicepFilePath = Join-Path $moduleFolderPath 'main.bicep'
 
   # 1. Test if module qualifies for publishing
   if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath)) {
@@ -59,9 +66,9 @@ function Publish-ModuleFromPathToPBR {
   # 5. Get the documentation link
   $documentationUri = Get-ModuleReadmeLink -TagName $tagName -ModuleFolderPath $moduleFolderPath
 
-  # 6. Replace telemetry version value (in JSON)
+  # 6. Replace telemetry version value (in Bicep)
   $tokenConfiguration = @{
-    FilePathList   = @($moduleJsonFilePath)
+    FilePathList   = @($moduleBicepFilePath)
     AbsoluteTokens = @{
       '-..--..-' = $targetVersion
     }
@@ -70,11 +77,11 @@ function Publish-ModuleFromPathToPBR {
   $null = Convert-TokensInFileList @tokenConfiguration
 
   # Double-check that tokens are correctly replaced
-  $templateContent = Get-Content -Path $moduleJsonFilePath
+  $templateContent = Get-Content -Path $moduleBicepFilePath
   $incorrectLines = @()
   for ($index = 0; $index -lt $templateContent.Count; $index++) {
     if ($templateContent[$index] -match '-..--..-') {
-      $incorrectLines += ('You have the token [{0}] in line [{1}] of file [{2}]. Please seek advice from the AVM team.' -f $matches[0], ($index + 1), $moduleJsonFilePath)
+      $incorrectLines += ('You have the token [{0}] in line [{1}] of file [{2}]. Please seek advice from the AVM team.' -f $matches[0], ($index + 1), $moduleBicepFilePath)
     }
   }
   if ($incorrectLines) {
@@ -87,11 +94,19 @@ function Publish-ModuleFromPathToPBR {
   $plainPublicRegistryServer = ConvertFrom-SecureString $PublicRegistryServer -AsPlainText
 
   $publishInput = @(
-    $moduleJsonFilePath
+    $moduleBicepFilePath
     '--target', ("br:{0}/public/bicep/{1}:{2}" -f $plainPublicRegistryServer, $publishedModuleName, $targetVersion)
     '--documentationUri', $documentationUri
+    '--with-source'
     '--force'
   )
   # TODO move to its own task to show that as skipped if no file qualifies for new version
+  Write-Verbose "Publish Input:`n $($publishInput | ConvertTo-Json -Depth 10)" -Verbose
+
   bicep publish @publishInput
+
+  return @{
+    version             = $targetVersion
+    publishedModuleName = $publishedModuleName
+  }
 }

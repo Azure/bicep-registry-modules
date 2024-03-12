@@ -1,0 +1,112 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "2449431200083704591"
+    },
+    "name": "Virtual Hub Virtual Network Connections",
+    "description": "This module deploys a Virtual Hub Virtual Network Connection.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The connection name."
+      }
+    },
+    "virtualHubName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent virtual hub. Required if the template is used in a standalone deployment."
+      }
+    },
+    "enableInternetSecurity": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable internet security."
+      }
+    },
+    "remoteVirtualNetworkId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Resource ID of the virtual network to link to."
+      }
+    },
+    "routingConfiguration": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Routing Configuration indicating the associated and propagated route tables for this connection."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('46d3xbcp.res.network-virtualhub.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
+      "apiVersion": "2022-11-01",
+      "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
+      "properties": {
+        "enableInternetSecurity": "[parameters('enableInternetSecurity')]",
+        "remoteVirtualNetwork": {
+          "id": "[parameters('remoteVirtualNetworkId')]"
+        },
+        "routingConfiguration": "[if(not(empty(parameters('routingConfiguration'))), parameters('routingConfiguration'), null())]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the virtual hub connection was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the virtual hub connection."
+      },
+      "value": "[resourceId('Microsoft.Network/virtualHubs/hubVirtualNetworkConnections', parameters('virtualHubName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the virtual hub connection."
+      },
+      "value": "[parameters('name')]"
+    }
+  }
+}
