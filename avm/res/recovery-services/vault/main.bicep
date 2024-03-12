@@ -157,10 +157,10 @@ module rsv_backupFabric_protectionContainers 'backup-fabric/protection-container
   params: {
     recoveryVaultName: rsv.name
     name: protectionContainer.name
-    sourceResourceId: protectionContainer.sourceResourceId
-    friendlyName: protectionContainer.friendlyName
-    backupManagementType: protectionContainer.backupManagementType
-    containerType: protectionContainer.containerType
+    sourceResourceId: protectionContainer.?sourceResourceId
+    friendlyName: protectionContainer.?friendlyName
+    backupManagementType: protectionContainer.?backupManagementType
+    containerType: protectionContainer.?containerType
     protectedItems: contains(protectionContainer, 'protectedItems') ? protectionContainer.protectedItems : []
     location: location
   }

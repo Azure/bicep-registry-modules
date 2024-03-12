@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "2174737998628956597"
+      "templateHash": "2649153257419349604"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault.",
@@ -1277,16 +1277,16 @@
             "value": "[parameters('protectionContainers')[copyIndex()].name]"
           },
           "sourceResourceId": {
-            "value": "[parameters('protectionContainers')[copyIndex()].sourceResourceId]"
+            "value": "[tryGet(parameters('protectionContainers')[copyIndex()], 'sourceResourceId')]"
           },
           "friendlyName": {
-            "value": "[parameters('protectionContainers')[copyIndex()].friendlyName]"
+            "value": "[tryGet(parameters('protectionContainers')[copyIndex()], 'friendlyName')]"
           },
           "backupManagementType": {
-            "value": "[parameters('protectionContainers')[copyIndex()].backupManagementType]"
+            "value": "[tryGet(parameters('protectionContainers')[copyIndex()], 'backupManagementType')]"
           },
           "containerType": {
-            "value": "[parameters('protectionContainers')[copyIndex()].containerType]"
+            "value": "[tryGet(parameters('protectionContainers')[copyIndex()], 'containerType')]"
           },
           "protectedItems": "[if(contains(parameters('protectionContainers')[copyIndex()], 'protectedItems'), createObject('value', parameters('protectionContainers')[copyIndex()].protectedItems), createObject('value', createArray()))]",
           "location": {
