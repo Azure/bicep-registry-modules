@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "17845555013682159796"
+      "templateHash": "5887508216739936022"
     },
     "name": "Recovery Services Vault Protection Container",
     "description": "This module deploys a Recovery Services Vault Protection Container.",
@@ -33,7 +34,7 @@
     },
     "backupManagementType": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
         "AzureBackupServer",
         "AzureIaasVM",
@@ -43,8 +44,7 @@
         "DPM",
         "DefaultBackup",
         "Invalid",
-        "MAB",
-        ""
+        "MAB"
       ],
       "metadata": {
         "description": "Optional. Backup management type to execute the current Protection Container job."
@@ -52,14 +52,14 @@
     },
     "sourceResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Resource ID of the target resource for the Protection Container."
       }
     },
     "friendlyName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Friendly name of the Protection Container."
       }
@@ -73,7 +73,7 @@
     },
     "containerType": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
         "AzureBackupServerContainer",
         "AzureSqlContainer",
@@ -83,27 +83,26 @@
         "SQLAGWorkLoadContainer",
         "StorageContainer",
         "VMAppContainer",
-        "Windows",
-        ""
+        "Windows"
       ],
       "metadata": {
         "description": "Optional. Type of the container."
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "protectionContainer": {
       "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers",
       "apiVersion": "2023-01-01",
       "name": "[format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name'))]",
       "properties": {
-        "sourceResourceId": "[if(not(empty(parameters('sourceResourceId'))), parameters('sourceResourceId'), null())]",
-        "friendlyName": "[if(not(empty(parameters('friendlyName'))), parameters('friendlyName'), null())]",
-        "backupManagementType": "[if(not(empty(parameters('backupManagementType'))), parameters('backupManagementType'), null())]",
+        "sourceResourceId": "[parameters('sourceResourceId')]",
+        "friendlyName": "[parameters('friendlyName')]",
+        "backupManagementType": "[parameters('backupManagementType')]",
         "containerType": "[if(not(empty(parameters('containerType'))), parameters('containerType'), null())]"
       }
     },
-    {
+    "protectionContainer_protectedItems": {
       "copy": {
         "name": "protectionContainer_protectedItems",
         "count": "[length(parameters('protectedItems'))]"
@@ -127,7 +126,7 @@
             "value": "[parameters('protectedItems')[copyIndex()].protectedItemType]"
           },
           "protectionContainerName": {
-            "value": "[parameters('name')]"
+            "value": "[format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name'))]"
           },
           "recoveryVaultName": {
             "value": "[parameters('recoveryVaultName')]"
@@ -248,10 +247,10 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers', split(format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[0], split(format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[1], split(format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[2])]"
+        "protectionContainer"
       ]
     }
-  ],
+  },
   "outputs": {
     "resourceGroupName": {
       "type": "string",

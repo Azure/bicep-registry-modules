@@ -62,11 +62,9 @@ Backup management type to execute the current Protection Container job.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'AzureBackupServer'
     'AzureIaasVM'
     'AzureSql'
@@ -85,11 +83,9 @@ Type of the container.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'AzureBackupServerContainer'
     'AzureSqlContainer'
     'GenericContainer'
@@ -108,7 +104,6 @@ Friendly name of the Protection Container.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `location`
 
@@ -132,7 +127,6 @@ Resource ID of the target resource for the Protection Container.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 
 ## Outputs

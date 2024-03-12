@@ -22,15 +22,14 @@ param location string = resourceGroup().location
   'DefaultBackup'
   'Invalid'
   'MAB'
-  ''
 ])
-param backupManagementType string = ''
+param backupManagementType string?
 
 @description('Optional. Resource ID of the target resource for the Protection Container.')
-param sourceResourceId string = ''
+param sourceResourceId string?
 
 @description('Optional. Friendly name of the Protection Container.')
-param friendlyName string = ''
+param friendlyName string?
 
 @description('Optional. Protected items to register in the container.')
 param protectedItems array = []
@@ -46,16 +45,15 @@ param protectedItems array = []
   'StorageContainer'
   'VMAppContainer'
   'Windows'
-  ''
 ])
-param containerType string = ''
+param containerType string?
 
 resource protectionContainer 'Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers@2023-01-01' = {
   name: '${recoveryVaultName}/Azure/${name}'
   properties: {
-    sourceResourceId: !empty(sourceResourceId) ? sourceResourceId : null
-    friendlyName: !empty(friendlyName) ? friendlyName : null
-    backupManagementType: !empty(backupManagementType) ? backupManagementType : null
+    sourceResourceId: sourceResourceId
+    friendlyName: friendlyName
+    backupManagementType: backupManagementType
     containerType: !empty(containerType) ? any(containerType) : null
   }
 }
@@ -66,14 +64,11 @@ module protectionContainer_protectedItems 'protected-item/main.bicep' = [for (pr
     policyId: protectedItem.policyId
     name: protectedItem.name
     protectedItemType: protectedItem.protectedItemType
-    protectionContainerName: name
+    protectionContainerName: protectionContainer.name
     recoveryVaultName: recoveryVaultName
     sourceResourceId: protectedItem.sourceResourceId
     location: location
   }
-  dependsOn: [
-    protectionContainer
-  ]
 }]
 
 @description('The name of the Resource Group the Protection Container was created in.')

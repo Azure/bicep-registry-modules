@@ -341,15 +341,18 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     }
     privateEndpoints: [
       {
+        ipConfigurations: {
+          name: 'myIPconfig'
+          properties: {
+            groupId: 'account'
+            memberName: 'default'
+            privateIPAddress: '10.0.0.10'
+          }
+        }
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
       }
     ]
     roleAssignments: [
