@@ -7,6 +7,10 @@ on:
         type: string
         description: "Input from the workflow caller in JSON format"
         required: true
+      triggerInput:
+        type: string
+        description: "Input based on pipeline trigger and publishing qualifier in JSON format"
+        required: true
       moduleTestFilePaths:
         type: string
         description: "List of relative path to the module test files in JSON format"
@@ -112,7 +116,10 @@ jobs:
   job_publish_module: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Publishing"
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && success()
+    if: |
+      success() &&
+      github.ref == 'refs/heads/main' &&
+      (fromJson(inputs.triggerInput)).publishing == 'true'
     needs:
       - job_module_deploy_validation
     steps:
