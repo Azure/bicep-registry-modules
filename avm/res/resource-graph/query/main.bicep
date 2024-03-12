@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 // Parameters       //
 // ================ //
 
-@description('Required. Name of the Resource Graph Query.')
+@description('Required. The name of the Resource Graph Query.')
 param name string
 
 @description('Optional. Location for all resources.')
