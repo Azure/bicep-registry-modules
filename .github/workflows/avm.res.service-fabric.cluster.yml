@@ -1,4 +1,4 @@
-name: "avm.res.service-fabric.cluster.namespace"
+name: "avm.res.service-fabric.cluster"
 
 on:
   schedule:
