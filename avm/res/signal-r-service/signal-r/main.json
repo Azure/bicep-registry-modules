@@ -6,36 +6,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "18245734514085730321"
+      "templateHash": "12709667084412433453"
     },
-    "name": "Static Web Apps",
-    "description": "This module deploys a Static Web App.",
+    "name": "SignalR Service SignalR",
+    "description": "This module deploys a SignalR Service SignalR.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
-    "managedIdentitiesType": {
-      "type": "object",
-      "properties": {
-        "systemAssigned": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
-          }
-        },
-        "userAssignedResourceIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
-          }
-        }
-      },
-      "nullable": true
-    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -312,109 +289,171 @@
     }
   },
   "parameters": {
-    "name": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 40,
-      "metadata": {
-        "description": "Required. The name of the static site."
-      }
-    },
-    "sku": {
-      "type": "string",
-      "defaultValue": "Free",
-      "allowedValues": [
-        "Free",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Optional. The service tier and name of the resource SKU."
-      }
-    },
-    "allowConfigFileUpdates": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. False if config file is locked for this static web app; otherwise, true."
-      }
-    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Optional. Location for all resources."
+        "description": "Optional. The location for the resource."
       }
     },
-    "stagingEnvironmentPolicy": {
+    "name": {
       "type": "string",
-      "defaultValue": "Enabled",
+      "metadata": {
+        "description": "Required. The name of the SignalR Service resource."
+      }
+    },
+    "kind": {
+      "type": "string",
+      "defaultValue": "SignalR",
+      "allowedValues": [
+        "SignalR",
+        "RawWebSockets"
+      ],
+      "metadata": {
+        "description": "Optional. The kind of the service."
+      }
+    },
+    "sku": {
+      "type": "string",
+      "defaultValue": "Standard_S1",
+      "allowedValues": [
+        "Free_F1",
+        "Standard_S1",
+        "Standard_S2",
+        "Standard_S3",
+        "Premium_P1",
+        "Premium_P2",
+        "Premium_P3"
+      ],
+      "metadata": {
+        "description": "Optional. The SKU of the service."
+      }
+    },
+    "tier": {
+      "type": "string",
+      "defaultValue": "[if(equals(parameters('sku'), 'Free_F1'), 'Free', if(or(or(equals(parameters('sku'), 'Standard_S1'), equals(parameters('sku'), 'Standard_S2')), equals(parameters('sku'), 'Standard_S3')), 'Standard', 'Premium'))]",
+      "allowedValues": [
+        "Free",
+        "Premium",
+        "Standard"
+      ],
+      "metadata": {
+        "description": "Optional. The tier of the service."
+      }
+    },
+    "capacity": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Optional. The unit count of the resource."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The tags of the resource."
+      }
+    },
+    "allowedOrigins": {
+      "type": "array",
+      "defaultValue": [
+        "*"
+      ],
+      "metadata": {
+        "description": "Optional. The allowed origin settings of the resource."
+      }
+    },
+    "disableAadAuth": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. The disable Azure AD auth settings of the resource."
+      }
+    },
+    "disableLocalAuth": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. The disable local auth settings of the resource."
+      }
+    },
+    "features": {
+      "type": "array",
+      "defaultValue": [
+        {
+          "flag": "ServiceMode",
+          "value": "Serverless"
+        }
+      ],
+      "metadata": {
+        "description": "Optional. The features settings of the resource, `ServiceMode` is the only required feature. See https://learn.microsoft.com/en-us/azure/templates/microsoft.signalrservice/signalr?pivots=deployment-language-bicep#signalrfeature for more information."
+      }
+    },
+    "networkAcls": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Networks ACLs, this value contains IPs to allow and/or Subnet information. Can only be set if the 'SKU' is not 'Free_F1'. For security reasons, it is recommended to set the DefaultAction Deny."
+      }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "nullable": true,
       "allowedValues": [
         "Enabled",
         "Disabled"
       ],
       "metadata": {
-        "description": "Optional. State indicating whether staging environments are allowed or not allowed for a static web app."
+        "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set."
       }
     },
-    "enterpriseGradeCdnStatus": {
-      "type": "string",
-      "defaultValue": "Disabled",
+    "liveTraceCatagoriesToEnable": {
+      "type": "array",
+      "defaultValue": [
+        "ConnectivityLogs",
+        "MessagingLogs"
+      ],
       "allowedValues": [
-        "Disabled",
-        "Disabling",
-        "Enabled",
-        "Enabling"
+        "ConnectivityLogs",
+        "MessagingLogs"
       ],
       "metadata": {
-        "description": "Optional. State indicating the status of the enterprise grade CDN serving traffic to the static web app."
+        "description": "Optional. Control permission for data plane traffic coming from public networks while private endpoint is enabled."
       }
     },
-    "buildProperties": {
-      "type": "object",
+    "resourceLogConfigurationsToEnable": {
+      "type": "array",
+      "defaultValue": [
+        "ConnectivityLogs",
+        "MessagingLogs"
+      ],
+      "allowedValues": [
+        "ConnectivityLogs",
+        "MessagingLogs"
+      ],
+      "metadata": {
+        "description": "Optional. Control permission for data plane traffic coming from public networks while private endpoint is enabled."
+      }
+    },
+    "clientCertEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Request client certificate during TLS handshake if enabled."
+      }
+    },
+    "upstreamTemplatesToEnable": {
+      "type": "array",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Build properties for the static site."
+        "description": "Optional. Upstream templates to enable. For more information, see https://learn.microsoft.com/en-us/azure/templates/microsoft.signalrservice/2022-02-01/signalr?pivots=deployment-language-bicep#upstreamtemplate."
       }
     },
-    "templateProperties": {
-      "type": "object",
-      "nullable": true,
+    "privateEndpoints": {
+      "$ref": "#/definitions/privateEndpointType",
       "metadata": {
-        "description": "Optional. Template Options for the static site."
-      }
-    },
-    "provider": {
-      "type": "string",
-      "defaultValue": "None",
-      "metadata": {
-        "description": "Optional. The provider that submitted the last deployment to the primary environment of the static site."
-      }
-    },
-    "repositoryToken": {
-      "type": "securestring",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The Personal Access Token for accessing the GitHub repository."
-      }
-    },
-    "repositoryUrl": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The name of the GitHub repository."
-      }
-    },
-    "branch": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The branch name of the GitHub repository."
-      }
-    },
-    "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
-      "metadata": {
-        "description": "Optional. The managed identity definition for this resource."
+        "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
       }
     },
     "lock": {
@@ -423,17 +462,10 @@
         "description": "Optional. The lock settings of the service."
       }
     },
-    "privateEndpoints": {
-      "$ref": "#/definitions/privateEndpointType",
+    "roleAssignments": {
+      "$ref": "#/definitions/roleAssignmentType",
       "metadata": {
-        "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'sku' to be 'Standard'."
-      }
-    },
-    "tags": {
-      "type": "object",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Tags of the resource."
+        "description": "Optional. Array of role assignments to create."
       }
     },
     "enableTelemetry": {
@@ -442,53 +474,41 @@
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
-    },
-    "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
-      "metadata": {
-        "description": "Optional. Array of role assignments to create."
-      }
-    },
-    "linkedBackend": {
-      "type": "object",
-      "defaultValue": {},
-      "metadata": {
-        "description": "Optional. Object with \"resourceId\" and \"location\" of the a user defined function app."
-      }
-    },
-    "appSettings": {
-      "type": "object",
-      "defaultValue": {},
-      "metadata": {
-        "description": "Optional. Static site app settings."
-      }
-    },
-    "functionAppSettings": {
-      "type": "object",
-      "defaultValue": {},
-      "metadata": {
-        "description": "Optional. Function app settings."
-      }
-    },
-    "customDomains": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. The custom domains associated with this static site. The deployment will fail as long as the validation records are not present."
-      }
     }
   },
   "variables": {
-    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "copy": [
+      {
+        "name": "liveTraceCatagories",
+        "count": "[length(parameters('liveTraceCatagoriesToEnable'))]",
+        "input": {
+          "name": "[parameters('liveTraceCatagoriesToEnable')[copyIndex('liveTraceCatagories')]]",
+          "enabled": "true"
+        }
+      },
+      {
+        "name": "resourceLogConfiguration",
+        "count": "[length(parameters('resourceLogConfigurationsToEnable'))]",
+        "input": {
+          "name": "[parameters('resourceLogConfigurationsToEnable')[copyIndex('resourceLogConfiguration')]]",
+          "enabled": "true"
+        }
+      }
+    ],
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "SignalR AccessKey Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '04165923-9d83-45d5-8227-78b77b0a687e')]",
+      "SignalR App Server": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '420fcaa2-552c-430f-98ca-3264be4806c7')]",
+      "SignalR REST API Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fd53cd77-2268-407a-8f46-7e7863d0f521')]",
+      "SignalR REST API Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ddde6b66-c0df-4114-a159-3618637b3035')]",
+      "SignalR Service Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7e4f1700-ea5a-4f59-8f37-079cfe29dce3')]",
+      "SignalR/Web PubSub Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8cf5e20a-e4b2-4e9d-b3a1-5ceb692c2761')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
-      "Web Plan Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2cc479cb-7b4d-49a8-b449-8c00fd0f0a4b')]",
-      "Website Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'de139f84-1756-47ae-9be6-808fbbe84772')]"
+      "Web PubSub Service Owner (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12cf5a90-567b-43ae-8102-96cf46c7d9b4')]",
+      "Web PubSub Service Reader (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'bfb1c7d2-fb1a-466b-b2ba-aee63b92deaf')]"
     }
   },
   "resources": {
@@ -496,7 +516,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
-      "name": "[format('46d3xbcp.res.web-staticSite.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.res.signalrservice-signalr.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -512,52 +532,60 @@
         }
       }
     },
-    "staticSite": {
-      "type": "Microsoft.Web/staticSites",
-      "apiVersion": "2021-03-01",
+    "signalR": {
+      "type": "Microsoft.SignalRService/signalR",
+      "apiVersion": "2022-02-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
-      "tags": "[parameters('tags')]",
-      "identity": "[variables('identity')]",
+      "kind": "[parameters('kind')]",
       "sku": {
         "name": "[parameters('sku')]",
-        "tier": "[parameters('sku')]"
+        "capacity": "[parameters('capacity')]",
+        "tier": "[parameters('tier')]"
       },
+      "tags": "[parameters('tags')]",
       "properties": {
-        "allowConfigFileUpdates": "[parameters('allowConfigFileUpdates')]",
-        "stagingEnvironmentPolicy": "[parameters('stagingEnvironmentPolicy')]",
-        "enterpriseGradeCdnStatus": "[parameters('enterpriseGradeCdnStatus')]",
-        "provider": "[if(not(empty(parameters('provider'))), parameters('provider'), 'None')]",
-        "branch": "[parameters('branch')]",
-        "buildProperties": "[parameters('buildProperties')]",
-        "repositoryToken": "[parameters('repositoryToken')]",
-        "repositoryUrl": "[parameters('repositoryUrl')]",
-        "templateProperties": "[parameters('templateProperties')]"
+        "cors": {
+          "allowedOrigins": "[parameters('allowedOrigins')]"
+        },
+        "disableAadAuth": "[parameters('disableAadAuth')]",
+        "disableLocalAuth": "[parameters('disableLocalAuth')]",
+        "features": "[parameters('features')]",
+        "liveTraceConfiguration": "[if(not(empty(parameters('liveTraceCatagoriesToEnable'))), createObject('categories', variables('liveTraceCatagories')), createObject())]",
+        "networkACLs": "[if(not(empty(parameters('networkAcls'))), parameters('networkAcls'), null())]",
+        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkAcls'))), 'Disabled', null()))]",
+        "resourceLogConfiguration": {
+          "categories": "[variables('resourceLogConfiguration')]"
+        },
+        "tls": {
+          "clientCertEnabled": "[parameters('clientCertEnabled')]"
+        },
+        "upstream": "[if(not(empty(parameters('upstreamTemplatesToEnable'))), createObject('templates', parameters('upstreamTemplatesToEnable')), createObject())]"
       }
     },
-    "staticSite_lock": {
+    "signalR_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Web/staticSites/{0}', parameters('name'))]",
+      "scope": "[format('Microsoft.SignalRService/signalR/{0}', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
         "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
       },
       "dependsOn": [
-        "staticSite"
+        "signalR"
       ]
     },
-    "staticSite_roleAssignments": {
+    "signalR_roleAssignments": {
       "copy": {
-        "name": "staticSite_roleAssignments",
+        "name": "signalR_roleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Web/staticSites/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.Web/staticSites', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "scope": "[format('Microsoft.SignalRService/signalR/{0}', parameters('name'))]",
+      "name": "[guid(resourceId('Microsoft.SignalRService/signalR', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
       "properties": {
         "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
         "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
@@ -568,402 +596,17 @@
         "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
-        "staticSite"
+        "signalR"
       ]
     },
-    "staticSite_linkedBackend": {
-      "condition": "[not(empty(parameters('linkedBackend')))]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-StaticSite-UserDefinedFunction', uniqueString(deployment().name, parameters('location')))]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "staticSiteName": {
-            "value": "[parameters('name')]"
-          },
-          "backendResourceId": {
-            "value": "[parameters('linkedBackend').resourceId]"
-          },
-          "region": "[if(contains(parameters('linkedBackend'), 'location'), createObject('value', parameters('linkedBackend').location), createObject('value', parameters('location')))]"
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "3673239578041396478"
-            },
-            "name": "Static Web App Site Linked Backends",
-            "description": "This module deploys a Custom Function App into a Static Web App Site using the Linked Backends property.",
-            "owner": "Azure/module-maintainers"
-          },
-          "parameters": {
-            "backendResourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The resource ID of the backend linked to the static site."
-              }
-            },
-            "region": {
-              "type": "string",
-              "defaultValue": "[resourceGroup().location]",
-              "metadata": {
-                "description": "Optional. The region of the backend linked to the static site."
-              }
-            },
-            "staticSiteName": {
-              "type": "string",
-              "metadata": {
-                "description": "Conditional. The name of the parent Static Web App. Required if the template is used in a standalone deployment."
-              }
-            },
-            "name": {
-              "type": "string",
-              "defaultValue": "[uniqueString(parameters('backendResourceId'))]",
-              "metadata": {
-                "description": "Optional. Name of the backend to link to the static site."
-              }
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.Web/staticSites/linkedBackends",
-              "apiVersion": "2022-03-01",
-              "name": "[format('{0}/{1}', parameters('staticSiteName'), parameters('name'))]",
-              "properties": {
-                "backendResourceId": "[parameters('backendResourceId')]",
-                "region": "[parameters('region')]"
-              }
-            }
-          ],
-          "outputs": {
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the static site linked backend."
-              },
-              "value": "[parameters('name')]"
-            },
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource ID of the static site linked backend."
-              },
-              "value": "[resourceId('Microsoft.Web/staticSites/linkedBackends', parameters('staticSiteName'), parameters('name'))]"
-            },
-            "resourceGroupName": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource group the static site linked backend was deployed into."
-              },
-              "value": "[resourceGroup().name]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "staticSite"
-      ]
-    },
-    "staticSite_appSettings": {
-      "condition": "[not(empty(parameters('appSettings')))]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-StaticSite-appSettings', uniqueString(deployment().name, parameters('location')))]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "kind": {
-            "value": "appsettings"
-          },
-          "staticSiteName": {
-            "value": "[parameters('name')]"
-          },
-          "properties": {
-            "value": "[parameters('appSettings')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "17053065769415076723"
-            },
-            "name": "Static Web App Site Config",
-            "description": "This module deploys a Static Web App Site Config.",
-            "owner": "Azure/module-maintainers"
-          },
-          "parameters": {
-            "kind": {
-              "type": "string",
-              "allowedValues": [
-                "appsettings",
-                "functionappsettings"
-              ],
-              "metadata": {
-                "description": "Required. Type of settings to apply."
-              }
-            },
-            "properties": {
-              "type": "object",
-              "metadata": {
-                "description": "Required. App settings."
-              }
-            },
-            "staticSiteName": {
-              "type": "string",
-              "metadata": {
-                "description": "Conditional. The name of the parent Static Web App. Required if the template is used in a standalone deployment."
-              }
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.Web/staticSites/config",
-              "apiVersion": "2022-03-01",
-              "name": "[format('{0}/{1}', parameters('staticSiteName'), parameters('kind'))]",
-              "properties": "[parameters('properties')]"
-            }
-          ],
-          "outputs": {
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the config."
-              },
-              "value": "[parameters('kind')]"
-            },
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource ID of the config."
-              },
-              "value": "[resourceId('Microsoft.Web/staticSites/config', parameters('staticSiteName'), parameters('kind'))]"
-            },
-            "resourceGroupName": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the resource group the config was created in."
-              },
-              "value": "[resourceGroup().name]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "staticSite"
-      ]
-    },
-    "staticSite_functionAppSettings": {
-      "condition": "[not(empty(parameters('functionAppSettings')))]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-StaticSite-functionAppSettings', uniqueString(deployment().name, parameters('location')))]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "kind": {
-            "value": "functionappsettings"
-          },
-          "staticSiteName": {
-            "value": "[parameters('name')]"
-          },
-          "properties": {
-            "value": "[parameters('functionAppSettings')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "17053065769415076723"
-            },
-            "name": "Static Web App Site Config",
-            "description": "This module deploys a Static Web App Site Config.",
-            "owner": "Azure/module-maintainers"
-          },
-          "parameters": {
-            "kind": {
-              "type": "string",
-              "allowedValues": [
-                "appsettings",
-                "functionappsettings"
-              ],
-              "metadata": {
-                "description": "Required. Type of settings to apply."
-              }
-            },
-            "properties": {
-              "type": "object",
-              "metadata": {
-                "description": "Required. App settings."
-              }
-            },
-            "staticSiteName": {
-              "type": "string",
-              "metadata": {
-                "description": "Conditional. The name of the parent Static Web App. Required if the template is used in a standalone deployment."
-              }
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.Web/staticSites/config",
-              "apiVersion": "2022-03-01",
-              "name": "[format('{0}/{1}', parameters('staticSiteName'), parameters('kind'))]",
-              "properties": "[parameters('properties')]"
-            }
-          ],
-          "outputs": {
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the config."
-              },
-              "value": "[parameters('kind')]"
-            },
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource ID of the config."
-              },
-              "value": "[resourceId('Microsoft.Web/staticSites/config', parameters('staticSiteName'), parameters('kind'))]"
-            },
-            "resourceGroupName": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the resource group the config was created in."
-              },
-              "value": "[resourceGroup().name]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "staticSite"
-      ]
-    },
-    "staticSite_customDomains": {
+    "signalR_privateEndpoints": {
       "copy": {
-        "name": "staticSite_customDomains",
-        "count": "[length(parameters('customDomains'))]"
-      },
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-StaticSite-customDomains-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "name": {
-            "value": "[parameters('customDomains')[copyIndex()]]"
-          },
-          "staticSiteName": {
-            "value": "[parameters('name')]"
-          },
-          "validationMethod": "[if(equals(indexOf(parameters('customDomains')[copyIndex()], '.'), lastIndexOf(parameters('customDomains')[copyIndex()], '.')), createObject('value', 'dns-txt-token'), createObject('value', 'cname-delegation'))]"
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "3581008276102913900"
-            },
-            "name": "Static Web App Site Custom Domains",
-            "description": "This module deploys a Static Web App Site Custom Domain.",
-            "owner": "Azure/module-maintainers"
-          },
-          "parameters": {
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The custom domain name."
-              }
-            },
-            "staticSiteName": {
-              "type": "string",
-              "metadata": {
-                "description": "Conditional. The name of the parent Static Web App. Required if the template is used in a standalone deployment."
-              }
-            },
-            "validationMethod": {
-              "type": "string",
-              "defaultValue": "cname-delegation",
-              "metadata": {
-                "description": "Optional. Validation method for adding a custom domain."
-              }
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.Web/staticSites/customDomains",
-              "apiVersion": "2022-03-01",
-              "name": "[format('{0}/{1}', parameters('staticSiteName'), parameters('name'))]",
-              "properties": {
-                "validationMethod": "[parameters('validationMethod')]"
-              }
-            }
-          ],
-          "outputs": {
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the static site custom domain."
-              },
-              "value": "[parameters('name')]"
-            },
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource ID of the static site custom domain."
-              },
-              "value": "[resourceId('Microsoft.Web/staticSites/customDomains', parameters('staticSiteName'), parameters('name'))]"
-            },
-            "resourceGroupName": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource group the static site custom domain was deployed into."
-              },
-              "value": "[resourceGroup().name]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "staticSite"
-      ]
-    },
-    "staticSite_privateEndpoints": {
-      "copy": {
-        "name": "staticSite_privateEndpoints",
+        "name": "signalR_privateEndpoints",
         "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-StaticSite-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-signalR-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -971,10 +614,10 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Web/staticSites', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'staticSites'), copyIndex()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.SignalRService/signalR', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'signalr'), copyIndex()))]"
           },
-          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Web/staticSites', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'staticSites'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Web/staticSites', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'staticSites')))))), createObject('value', null()))]",
-          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Web/staticSites', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'staticSites'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Web/staticSites', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'staticSites')), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.SignalRService/signalR', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'signalr'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.SignalRService/signalR', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'signalr')))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.SignalRService/signalR', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'signalr'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.SignalRService/signalR', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'signalr')), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
@@ -1019,8 +662,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "2592884001616184297"
+              "version": "0.25.53.49325",
+              "templateHash": "4120048060064073955"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -1385,7 +1028,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1490,8 +1133,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "9321937464667207030"
+                      "version": "0.25.53.49325",
+                      "templateHash": "11244630631275470040"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -1614,7 +1257,7 @@
         }
       },
       "dependsOn": [
-        "staticSite"
+        "signalR"
       ]
     }
   },
@@ -1622,44 +1265,30 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the static site."
+        "description": "The SignalR name."
       },
       "value": "[parameters('name')]"
-    },
-    "resourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "The resource ID of the static site."
-      },
-      "value": "[resourceId('Microsoft.Web/staticSites', parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the static site was deployed into."
+        "description": "The SignalR resource group."
       },
       "value": "[resourceGroup().name]"
     },
-    "systemAssignedMIPrincipalId": {
+    "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The principal ID of the system assigned identity."
+        "description": "The SignalR resource ID."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('staticSite', '2021-03-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[resourceId('Microsoft.SignalRService/signalR', parameters('name'))]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('staticSite', '2021-03-01', 'full').location]"
-    },
-    "defaultHostname": {
-      "type": "string",
-      "metadata": {
-        "description": "The default autogenerated hostname for the static site."
-      },
-      "value": "[reference('staticSite').defaultHostname]"
+      "value": "[reference('signalR', '2022-02-01', 'full').location]"
     }
   }
 }

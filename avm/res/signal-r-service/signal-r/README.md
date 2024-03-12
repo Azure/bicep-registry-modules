@@ -1,6 +1,11 @@
-# Static Web Apps `[Microsoft.Web/staticSites]`
+# SignalR Service SignalR `[Microsoft.SignalRService/signalR]`
 
-This module deploys a Static Web App.
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
+This module deploys a SignalR Service SignalR.
 
 ## Navigation
 
@@ -19,10 +24,7 @@ This module deploys a Static Web App.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Web/staticSites` | [2021-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2021-03-01/staticSites) |
-| `Microsoft.Web/staticSites/config` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/staticSites/config) |
-| `Microsoft.Web/staticSites/customDomains` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-03-01/staticSites/customDomains) |
-| `Microsoft.Web/staticSites/linkedBackends` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-03-01/staticSites/linkedBackends) |
+| `Microsoft.SignalRService/signalR` | [2022-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SignalRService/2022-02-01/signalR) |
 
 ## Usage examples
 
@@ -30,7 +32,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/web/static-site:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/signal-r-service/signal-r:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -46,11 +48,11 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module staticSite 'br/public:avm/res/web/static-site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wssmin'
+module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-srsdrmin'
   params: {
     // Required parameters
-    name: 'wssmin001'
+    name: 'srsdrmin-001'
     // Non-required parameters
     location: '<location>'
   }
@@ -71,7 +73,7 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "wssmin001"
+      "value": "srsdrmin-001"
     },
     // Non-required parameters
     "location": {
@@ -94,35 +96,41 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module staticSite 'br/public:avm/res/web/static-site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wssmax'
+module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-srssrmax'
   params: {
     // Required parameters
-    name: 'wssmax001'
+    name: 'srssrmax-001'
     // Non-required parameters
-    allowConfigFileUpdates: true
-    appSettings: {
-      foo: 'bar'
-      setting: 1
-    }
-    enterpriseGradeCdnStatus: 'Disabled'
-    functionAppSettings: {
-      foo: 'bar'
-      setting: 1
-    }
-    linkedBackend: {
-      resourceId: '<resourceId>'
-    }
+    capacity: 2
+    clientCertEnabled: false
+    disableAadAuth: false
+    disableLocalAuth: true
+    kind: 'SignalR'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
+    networkAcls: {
+      defaultAction: 'Allow'
+      privateEndpoints: [
+        {
+          allow: []
+          deny: [
+            'ServerConnection'
+            'Trace'
+          ]
+          name: 'pe-srssrmax-001'
+        }
       ]
+      publicNetwork: {
+        allow: []
+        deny: [
+          'RESTAPI'
+          'Trace'
+        ]
+      }
     }
     privateEndpoints: [
       {
@@ -143,6 +151,9 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
+    resourceLogConfigurationsToEnable: [
+      'ConnectivityLogs'
+    ]
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -160,8 +171,7 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    sku: 'Standard'
-    stagingEnvironmentPolicy: 'Enabled'
+    sku: 'Standard_S1'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -185,31 +195,23 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "wssmax001"
+      "value": "srssrmax-001"
     },
     // Non-required parameters
-    "allowConfigFileUpdates": {
+    "capacity": {
+      "value": 2
+    },
+    "clientCertEnabled": {
+      "value": false
+    },
+    "disableAadAuth": {
+      "value": false
+    },
+    "disableLocalAuth": {
       "value": true
     },
-    "appSettings": {
-      "value": {
-        "foo": "bar",
-        "setting": 1
-      }
-    },
-    "enterpriseGradeCdnStatus": {
-      "value": "Disabled"
-    },
-    "functionAppSettings": {
-      "value": {
-        "foo": "bar",
-        "setting": 1
-      }
-    },
-    "linkedBackend": {
-      "value": {
-        "resourceId": "<resourceId>"
-      }
+    "kind": {
+      "value": "SignalR"
     },
     "location": {
       "value": "<location>"
@@ -220,12 +222,26 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
         "name": "myCustomLockName"
       }
     },
-    "managedIdentities": {
+    "networkAcls": {
       "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
+        "defaultAction": "Allow",
+        "privateEndpoints": [
+          {
+            "allow": [],
+            "deny": [
+              "ServerConnection",
+              "Trace"
+            ],
+            "name": "pe-srssrmax-001"
+          }
+        ],
+        "publicNetwork": {
+          "allow": [],
+          "deny": [
+            "RESTAPI",
+            "Trace"
+          ]
+        }
       }
     },
     "privateEndpoints": {
@@ -249,6 +265,11 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
         }
       ]
     },
+    "resourceLogConfigurationsToEnable": {
+      "value": [
+        "ConnectivityLogs"
+      ]
+    },
     "roleAssignments": {
       "value": [
         {
@@ -269,10 +290,7 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
       ]
     },
     "sku": {
-      "value": "Standard"
-    },
-    "stagingEnvironmentPolicy": {
-      "value": "Enabled"
+      "value": "Standard_S1"
     },
     "tags": {
       "value": {
@@ -298,29 +316,37 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module staticSite 'br/public:avm/res/web/static-site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsswaf'
+module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-srssrwaf'
   params: {
     // Required parameters
-    name: 'wsswaf001'
+    name: 'srssrwaf-001'
     // Non-required parameters
-    allowConfigFileUpdates: true
-    appSettings: {
-      foo: 'bar'
-      setting: 1
-    }
-    enterpriseGradeCdnStatus: 'Disabled'
-    functionAppSettings: {
-      foo: 'bar'
-      setting: 1
-    }
-    linkedBackend: {
-      resourceId: '<resourceId>'
-    }
+    capacity: 2
+    clientCertEnabled: false
+    disableAadAuth: false
+    disableLocalAuth: true
+    kind: 'SignalR'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+    networkAcls: {
+      defaultAction: 'Allow'
+      privateEndpoints: [
+        {
+          allow: []
+          deny: [
+            'ServerConnection'
+            'Trace'
+          ]
+          name: 'pe-srssrwaf-001'
+        }
+      ]
+      publicNetwork: {
+        allow: []
+        deny: [
+          'RESTAPI'
+          'Trace'
+        ]
+      }
     }
     privateEndpoints: [
       {
@@ -335,8 +361,10 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
         }
       }
     ]
-    sku: 'Standard'
-    stagingEnvironmentPolicy: 'Enabled'
+    resourceLogConfigurationsToEnable: [
+      'ConnectivityLogs'
+    ]
+    sku: 'Standard_S1'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -360,39 +388,47 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "wsswaf001"
+      "value": "srssrwaf-001"
     },
     // Non-required parameters
-    "allowConfigFileUpdates": {
+    "capacity": {
+      "value": 2
+    },
+    "clientCertEnabled": {
+      "value": false
+    },
+    "disableAadAuth": {
+      "value": false
+    },
+    "disableLocalAuth": {
       "value": true
     },
-    "appSettings": {
-      "value": {
-        "foo": "bar",
-        "setting": 1
-      }
-    },
-    "enterpriseGradeCdnStatus": {
-      "value": "Disabled"
-    },
-    "functionAppSettings": {
-      "value": {
-        "foo": "bar",
-        "setting": 1
-      }
-    },
-    "linkedBackend": {
-      "value": {
-        "resourceId": "<resourceId>"
-      }
+    "kind": {
+      "value": "SignalR"
     },
     "location": {
       "value": "<location>"
     },
-    "lock": {
+    "networkAcls": {
       "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
+        "defaultAction": "Allow",
+        "privateEndpoints": [
+          {
+            "allow": [],
+            "deny": [
+              "ServerConnection",
+              "Trace"
+            ],
+            "name": "pe-srssrwaf-001"
+          }
+        ],
+        "publicNetwork": {
+          "allow": [],
+          "deny": [
+            "RESTAPI",
+            "Trace"
+          ]
+        }
       }
     },
     "privateEndpoints": {
@@ -410,11 +446,13 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
         }
       ]
     },
-    "sku": {
-      "value": "Standard"
+    "resourceLogConfigurationsToEnable": {
+      "value": [
+        "ConnectivityLogs"
+      ]
     },
-    "stagingEnvironmentPolicy": {
-      "value": "Enabled"
+    "sku": {
+      "value": "Standard_S1"
     },
     "tags": {
       "value": {
@@ -437,78 +475,84 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the static site. |
+| [`name`](#parameter-name) | string | The name of the SignalR Service resource. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`allowConfigFileUpdates`](#parameter-allowconfigfileupdates) | bool | False if config file is locked for this static web app; otherwise, true. |
-| [`appSettings`](#parameter-appsettings) | object | Static site app settings. |
-| [`branch`](#parameter-branch) | string | The branch name of the GitHub repository. |
-| [`buildProperties`](#parameter-buildproperties) | object | Build properties for the static site. |
-| [`customDomains`](#parameter-customdomains) | array | The custom domains associated with this static site. The deployment will fail as long as the validation records are not present. |
+| [`allowedOrigins`](#parameter-allowedorigins) | array | The allowed origin settings of the resource. |
+| [`capacity`](#parameter-capacity) | int | The unit count of the resource. |
+| [`clientCertEnabled`](#parameter-clientcertenabled) | bool | Request client certificate during TLS handshake if enabled. |
+| [`disableAadAuth`](#parameter-disableaadauth) | bool | The disable Azure AD auth settings of the resource. |
+| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | The disable local auth settings of the resource. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`enterpriseGradeCdnStatus`](#parameter-enterprisegradecdnstatus) | string | State indicating the status of the enterprise grade CDN serving traffic to the static web app. |
-| [`functionAppSettings`](#parameter-functionappsettings) | object | Function app settings. |
-| [`linkedBackend`](#parameter-linkedbackend) | object | Object with "resourceId" and "location" of the a user defined function app. |
-| [`location`](#parameter-location) | string | Location for all resources. |
+| [`features`](#parameter-features) | array | The features settings of the resource, `ServiceMode` is the only required feature. See https://learn.microsoft.com/en-us/azure/templates/microsoft.signalrservice/signalr?pivots=deployment-language-bicep#signalrfeature for more information. |
+| [`kind`](#parameter-kind) | string | The kind of the service. |
+| [`liveTraceCatagoriesToEnable`](#parameter-livetracecatagoriestoenable) | array | Control permission for data plane traffic coming from public networks while private endpoint is enabled. |
+| [`location`](#parameter-location) | string | The location for the resource. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'sku' to be 'Standard'. |
-| [`provider`](#parameter-provider) | string | The provider that submitted the last deployment to the primary environment of the static site. |
-| [`repositoryToken`](#parameter-repositorytoken) | securestring | The Personal Access Token for accessing the GitHub repository. |
-| [`repositoryUrl`](#parameter-repositoryurl) | string | The name of the GitHub repository. |
+| [`networkAcls`](#parameter-networkacls) | object | Networks ACLs, this value contains IPs to allow and/or Subnet information. Can only be set if the 'SKU' is not 'Free_F1'. For security reasons, it is recommended to set the DefaultAction Deny. |
+| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
+| [`resourceLogConfigurationsToEnable`](#parameter-resourcelogconfigurationstoenable) | array | Control permission for data plane traffic coming from public networks while private endpoint is enabled. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`sku`](#parameter-sku) | string | The service tier and name of the resource SKU. |
-| [`stagingEnvironmentPolicy`](#parameter-stagingenvironmentpolicy) | string | State indicating whether staging environments are allowed or not allowed for a static web app. |
-| [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`templateProperties`](#parameter-templateproperties) | object | Template Options for the static site. |
+| [`sku`](#parameter-sku) | string | The SKU of the service. |
+| [`tags`](#parameter-tags) | object | The tags of the resource. |
+| [`tier`](#parameter-tier) | string | The tier of the service. |
+| [`upstreamTemplatesToEnable`](#parameter-upstreamtemplatestoenable) | array | Upstream templates to enable. For more information, see https://learn.microsoft.com/en-us/azure/templates/microsoft.signalrservice/2022-02-01/signalr?pivots=deployment-language-bicep#upstreamtemplate. |
 
 ### Parameter: `name`
 
-The name of the static site.
+The name of the SignalR Service resource.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `allowConfigFileUpdates`
+### Parameter: `allowedOrigins`
 
-False if config file is locked for this static web app; otherwise, true.
+The allowed origin settings of the resource.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    '*'
+  ]
+  ```
+
+### Parameter: `capacity`
+
+The unit count of the resource.
+
+- Required: No
+- Type: int
+- Default: `1`
+
+### Parameter: `clientCertEnabled`
+
+Request client certificate during TLS handshake if enabled.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `disableAadAuth`
+
+The disable Azure AD auth settings of the resource.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `disableLocalAuth`
+
+The disable local auth settings of the resource.
 
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `appSettings`
-
-Static site app settings.
-
-- Required: No
-- Type: object
-- Default: `{}`
-
-### Parameter: `branch`
-
-The branch name of the GitHub repository.
-
-- Required: No
-- Type: string
-
-### Parameter: `buildProperties`
-
-Build properties for the static site.
-
-- Required: No
-- Type: object
-
-### Parameter: `customDomains`
-
-The custom domains associated with this static site. The deployment will fail as long as the validation records are not present.
-
-- Required: No
-- Type: array
-- Default: `[]`
 
 ### Parameter: `enableTelemetry`
 
@@ -518,42 +562,61 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `enterpriseGradeCdnStatus`
+### Parameter: `features`
 
-State indicating the status of the enterprise grade CDN serving traffic to the static web app.
+The features settings of the resource, `ServiceMode` is the only required feature. See https://learn.microsoft.com/en-us/azure/templates/microsoft.signalrservice/signalr?pivots=deployment-language-bicep#signalrfeature for more information.
 
 - Required: No
-- Type: string
-- Default: `'Disabled'`
-- Allowed:
+- Type: array
+- Default:
   ```Bicep
   [
-    'Disabled'
-    'Disabling'
-    'Enabled'
-    'Enabling'
+    {
+      flag: 'ServiceMode'
+      value: 'Serverless'
+    }
   ]
   ```
 
-### Parameter: `functionAppSettings`
+### Parameter: `kind`
 
-Function app settings.
-
-- Required: No
-- Type: object
-- Default: `{}`
-
-### Parameter: `linkedBackend`
-
-Object with "resourceId" and "location" of the a user defined function app.
+The kind of the service.
 
 - Required: No
-- Type: object
-- Default: `{}`
+- Type: string
+- Default: `'SignalR'`
+- Allowed:
+  ```Bicep
+  [
+    'RawWebSockets'
+    'SignalR'
+  ]
+  ```
+
+### Parameter: `liveTraceCatagoriesToEnable`
+
+Control permission for data plane traffic coming from public networks while private endpoint is enabled.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    'ConnectivityLogs'
+    'MessagingLogs'
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    'ConnectivityLogs'
+    'MessagingLogs'
+  ]
+  ```
 
 ### Parameter: `location`
 
-Location for all resources.
+The location for the resource.
 
 - Required: No
 - Type: string
@@ -595,37 +658,17 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `managedIdentities`
+### Parameter: `networkAcls`
 
-The managed identity definition for this resource.
+Networks ACLs, this value contains IPs to allow and/or Subnet information. Can only be set if the 'SKU' is not 'Free_F1'. For security reasons, it is recommended to set the DefaultAction Deny.
 
 - Required: No
 - Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
-
-### Parameter: `managedIdentities.systemAssigned`
-
-Enables system assigned managed identity on the resource.
-
-- Required: No
-- Type: bool
-
-### Parameter: `managedIdentities.userAssignedResourceIds`
-
-The resource ID(s) to assign to the resource.
-
-- Required: No
-- Type: array
+- Default: `{}`
 
 ### Parameter: `privateEndpoints`
 
-Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'sku' to be 'Standard'.
+Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
 
 - Required: No
 - Type: array
@@ -950,27 +993,40 @@ Tags to be applied on all resources/resource groups in this deployment.
 - Required: No
 - Type: object
 
-### Parameter: `provider`
+### Parameter: `publicNetworkAccess`
 
-The provider that submitted the last deployment to the primary environment of the static site.
-
-- Required: No
-- Type: string
-- Default: `'None'`
-
-### Parameter: `repositoryToken`
-
-The Personal Access Token for accessing the GitHub repository.
-
-- Required: No
-- Type: securestring
-
-### Parameter: `repositoryUrl`
-
-The name of the GitHub repository.
+Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `resourceLogConfigurationsToEnable`
+
+Control permission for data plane traffic coming from public networks while private endpoint is enabled.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    'ConnectivityLogs'
+    'MessagingLogs'
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    'ConnectivityLogs'
+    'MessagingLogs'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -1063,59 +1119,63 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `sku`
 
-The service tier and name of the resource SKU.
+The SKU of the service.
 
 - Required: No
 - Type: string
-- Default: `'Free'`
+- Default: `'Standard_S1'`
 - Allowed:
   ```Bicep
   [
-    'Free'
-    'Standard'
-  ]
-  ```
-
-### Parameter: `stagingEnvironmentPolicy`
-
-State indicating whether staging environments are allowed or not allowed for a static web app.
-
-- Required: No
-- Type: string
-- Default: `'Enabled'`
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
+    'Free_F1'
+    'Premium_P1'
+    'Premium_P2'
+    'Premium_P3'
+    'Standard_S1'
+    'Standard_S2'
+    'Standard_S3'
   ]
   ```
 
 ### Parameter: `tags`
 
-Tags of the resource.
+The tags of the resource.
 
 - Required: No
 - Type: object
 
-### Parameter: `templateProperties`
+### Parameter: `tier`
 
-Template Options for the static site.
+The tier of the service.
 
 - Required: No
-- Type: object
+- Type: string
+- Default: `[if(equals(parameters('sku'), 'Free_F1'), 'Free', if(or(or(equals(parameters('sku'), 'Standard_S1'), equals(parameters('sku'), 'Standard_S2')), equals(parameters('sku'), 'Standard_S3')), 'Standard', 'Premium'))]`
+- Allowed:
+  ```Bicep
+  [
+    'Free'
+    'Premium'
+    'Standard'
+  ]
+  ```
+
+### Parameter: `upstreamTemplatesToEnable`
+
+Upstream templates to enable. For more information, see https://learn.microsoft.com/en-us/azure/templates/microsoft.signalrservice/2022-02-01/signalr?pivots=deployment-language-bicep#upstreamtemplate.
+
+- Required: No
+- Type: array
 
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `defaultHostname` | string | The default autogenerated hostname for the static site. |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the static site. |
-| `resourceGroupName` | string | The resource group the static site was deployed into. |
-| `resourceId` | string | The resource ID of the static site. |
-| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+| `name` | string | The SignalR name. |
+| `resourceGroupName` | string | The SignalR resource group. |
+| `resourceId` | string | The SignalR resource ID. |
 
 ## Cross-referenced modules
 
@@ -1123,7 +1183,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
 
 ## Data Collection
 
