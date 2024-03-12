@@ -184,6 +184,11 @@ param extensionHostPoolRegistration object = {
   enabled: false
 }
 
+@description('Optional. The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed.')
+param extensionGuestConfigurationExtension object = {
+  enabled: false
+}
+
 @description('Optional. Any object that contains the extension specific protected settings.')
 @secure()
 param extensionCustomScriptProtectedSetting object = {}
@@ -695,6 +700,27 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHo
   ]
 }
 
+module vm_azureGuestConfigurationExtension 'extension/main.bicep' = if (extensionGuestConfigurationExtension.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-AzureDiskEncryption'
+  params: {
+    virtualMachineName: vm.name
+    name: 'GuestConfiguration'
+    location: location
+    publisher: 'Microsoft.GuestConfiguration'
+    type: osType == 'Windows' ? 'AzurePolicyforWindows' : 'AzurePolicyforLinux'
+    typeHandlerVersion: contains(extensionGuestConfigurationExtension, 'typeHandlerVersion') ? extensionGuestConfigurationExtension.typeHandlerVersion : (osType == 'Windows' ? '1.0' : '1.0')
+    autoUpgradeMinorVersion: contains(extensionGuestConfigurationExtension, 'autoUpgradeMinorVersion') ? extensionGuestConfigurationExtension.autoUpgradeMinorVersion : true
+    enableAutomaticUpgrade: contains(extensionGuestConfigurationExtension, 'enableAutomaticUpgrade') ? extensionGuestConfigurationExtension.enableAutomaticUpgrade : true
+    forceUpdateTag: contains(extensionGuestConfigurationExtension, 'forceUpdateTag') ? extensionGuestConfigurationExtension.forceUpdateTag : '1.0'
+    settings: extensionGuestConfigurationExtension.settings
+    protectedSettings: extensionGuestConfigurationExtension.protectedSettings
+    tags: extensionGuestConfigurationExtension.?tags ?? tags
+  }
+  dependsOn: [
+    vm_hostPoolRegistrationExtension
+  ]
+}
+
 module vm_backup 'modules/protected-item.bicep' = if (!empty(backupVaultName)) {
   name: '${uniqueString(deployment().name, location)}-VM-Backup'
   params: {
@@ -708,7 +734,7 @@ module vm_backup 'modules/protected-item.bicep' = if (!empty(backupVaultName)) {
   }
   scope: az.resourceGroup(backupVaultResourceGroup)
   dependsOn: [
-    vm_hostPoolRegistrationExtension
+    vm_azureGuestConfigurationExtension
   ]
 }
 
