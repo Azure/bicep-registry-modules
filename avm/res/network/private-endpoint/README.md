@@ -9,6 +9,7 @@ This module deploys a Private Endpoint.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -34,8 +35,6 @@ The following section provides usage examples for the module, which were used to
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-
 
 
 <details>
@@ -44,7 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-npemin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-npemin'
   params: {
     // Required parameters
     name: 'npemin001'
@@ -160,7 +159,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-npemax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-npemax'
   params: {
     // Required parameters
     name: 'npemax001'
@@ -364,7 +363,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-npewaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-npewaf'
   params: {
     // Required parameters
     name: 'npewaf001'
@@ -625,6 +624,35 @@ Properties of private endpoint IP configurations.
 - Required: Yes
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupId`](#parameter-ipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`memberName`](#parameter-ipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateIPAddress`](#parameter-ipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
+
+### Parameter: `ipConfigurations.properties.groupId`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipConfigurations.properties.memberName`
+
+The member name of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipConfigurations.properties.privateIPAddress`
+
+A private IP address obtained from the private endpoint's subnet.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `location`
 
 Location for all Resources.
@@ -697,6 +725,40 @@ Properties of private link service connection.
 - Required: Yes
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupIds`](#parameter-manualprivatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateLinkServiceId`](#parameter-manualprivatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`requestMessage`](#parameter-manualprivatelinkserviceconnectionspropertiesrequestmessage) | string | A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
+
+### Parameter: `manualPrivateLinkServiceConnections.properties.groupIds`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `manualPrivateLinkServiceConnections.properties.privateLinkServiceId`
+
+The resource id of private link service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `manualPrivateLinkServiceConnections.properties.requestMessage`
+
+A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `privateDnsZoneGroupName`
 
 The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
@@ -739,6 +801,40 @@ Properties of private link service connection.
 - Required: Yes
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupIds`](#parameter-privatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateLinkServiceId`](#parameter-privatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`requestMessage`](#parameter-privatelinkserviceconnectionspropertiesrequestmessage) | string | A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
+
+### Parameter: `privateLinkServiceConnections.properties.groupIds`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `privateLinkServiceConnections.properties.privateLinkServiceId`
+
+The resource id of private link service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateLinkServiceConnections.properties.requestMessage`
+
+A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
@@ -757,7 +853,7 @@ Array of role assignments to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
@@ -779,7 +875,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 ### Parameter: `roleAssignments.condition`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
@@ -840,6 +936,7 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `groupId` | string | The group Id for the private endpoint Group. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the private endpoint. |
 | `resourceGroupName` | string | The resource group the private endpoint was deployed into. |
@@ -848,3 +945,7 @@ Tags to be applied on all resources/resource groups in this deployment.
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

@@ -9,6 +9,7 @@ This module deploys a Power BI Dedicated Capacity.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -41,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-pbdcapmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-pbdcapmin'
   params: {
     // Required parameters
     members: [
@@ -105,7 +106,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-pbdcapmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-pbdcapmax'
   params: {
     // Required parameters
     members: [
@@ -235,7 +236,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-pbdcapwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-pbdcapwaf'
   params: {
     // Required parameters
     members: [
@@ -325,7 +326,7 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`mode`](#parameter-mode) | string | Mode of the resource. |
@@ -408,7 +409,7 @@ The tier of the SKU.
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -491,7 +492,7 @@ Array of role assignments to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
@@ -513,7 +514,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 ### Parameter: `roleAssignments.condition`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
@@ -582,3 +583,7 @@ Tags of the resource.
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

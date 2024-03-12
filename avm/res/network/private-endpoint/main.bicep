@@ -141,6 +141,9 @@ output name string = privateEndpoint.name
 @description('The location the resource was deployed into.')
 output location string = privateEndpoint.location
 
+@description('The group Id for the private endpoint Group.')
+output groupId string = !empty(privateEndpoint.properties.manualPrivateLinkServiceConnections) ?  privateEndpoint.properties.manualPrivateLinkServiceConnections[0].properties.groupIds[0] : privateEndpoint.properties.privateLinkServiceConnections[0].properties.groupIds[0]
+
 // ================ //
 // Definitions      //
 // ================ //
@@ -158,7 +161,7 @@ type roleAssignmentType = {
   @description('Optional. The description of the role assignment.')
   description: string?
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
+  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
   @description('Optional. Version of the condition.')

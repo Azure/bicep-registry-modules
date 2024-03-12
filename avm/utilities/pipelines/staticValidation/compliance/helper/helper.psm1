@@ -162,18 +162,160 @@ function Remove-JSONMetadata {
     # Case: Hashtable
     $resourceIdentifiers = $TemplateObject.resources.Keys
     for ($index = 0; $index -lt $resourceIdentifiers.Count; $index++) {
-      if ($TemplateObject.resources[$resourceIdentifiers[$index]].type -eq 'Microsoft.Resources/deployments') {
+      if ($TemplateObject.resources[$resourceIdentifiers[$index]].type -eq 'Microsoft.Resources/deployments' -and $TemplateObject.resources[$resourceIdentifiers[$index]].properties.template.GetType().BaseType.Name -eq 'Hashtable') {
         $TemplateObject.resources[$resourceIdentifiers[$index]] = Remove-JSONMetadata -TemplateObject $TemplateObject.resources[$resourceIdentifiers[$index]].properties.template
       }
     }
   } else {
     # Case: Array
     for ($index = 0; $index -lt $TemplateObject.resources.Count; $index++) {
-      if ($TemplateObject.resources[$index].type -eq 'Microsoft.Resources/deployments') {
+      if ($TemplateObject.resources[$index].type -eq 'Microsoft.Resources/deployments' -and $TemplateObject.resources[$index].properties.template.GetType().BaseType.Name -eq 'Hashtable') {
         $TemplateObject.resources[$index] = Remove-JSONMetadata -TemplateObject $TemplateObject.resources[$index].properties.template
       }
     }
   }
 
   return $TemplateObject
+}
+
+<#
+.SYNOPSIS
+Get a flat list of all parameters in a given template
+
+.DESCRIPTION
+Get a flat list of all parameters in a given template
+
+.PARAMETER TemplateFileContent
+Mandatory. The template containing all the data
+
+.PARAMETER Properties
+Optional. Hashtable of the user defined properties
+
+.PARAMETER ParentName
+Optional. Name of the parameter, that has the user defined types
+
+.EXAMPLE
+Resolve-ReadMeParameterList -TemplateFileContent @{ resource = @{}; parameters = @{}; ... }
+
+Top-level invocation. Will start from the TemplateFile's parameters object and recursively crawl through all children.
+
+.EXAMPLE
+Resolve-ReadMeParameterList -TemplateFileContent @{ resource = @{}; parameters = @{}; ... } -Properties @{ @{ name = @{ type = 'string'; 'allowedValues' = @('A1','A2','A3','A4','A5','A6'); 'nullable' = $true; (...) } -ParentName 'diagnosticSettings'
+
+Child-level invocation during recursion.
+
+.NOTES
+The function is recursive and will also output grand, great grand children, ... .
+#>
+function Resolve-ReadMeParameterList {
+  param (
+    [Parameter(Mandatory = $true)]
+    [hashtable] $TemplateFileContent,
+
+    [Parameter(Mandatory = $false)]
+    [hashtable] $Properties,
+
+    [Parameter(Mandatory = $false)]
+    [string] $ParentName
+  )
+
+  $parameterSet = @{}
+
+  if (-not $Properties) {
+    # Top-level invocation
+    # Add name as property for later reference
+    $TemplateFileContent.parameters.Keys | ForEach-Object { $TemplateFileContent.parameters[$_]['name'] = $_ }
+    [array] $parameters = $TemplateFileContent.parameters.Values | Sort-Object -Property 'Name' -Culture 'en-US'
+  } else {
+    # Add name as property for later reference
+    $Properties.Keys | ForEach-Object { $Properties[$_]['name'] = $_ }
+    $parameters = $Properties.Values | Sort-Object -Property 'Name' -Culture 'en-US'
+  }
+
+  foreach ($parameter in $parameters) {
+
+    ######################
+    #   Gather details   #
+    ######################
+
+    $paramIdentifier = (-not [String]::IsNullOrEmpty($ParentName)) ? '{0}.{1}' -f $ParentName, $parameter.name : $parameter.name
+
+    # definition type (if any)
+    if ($parameter.Keys -contains '$ref') {
+      $identifier = Split-Path $parameter.'$ref' -Leaf
+      $definition = $TemplateFileContent.definitions[$identifier]
+      # $type = $definition['type']
+    } elseif ($parameter.Keys -contains 'items' -and $parameter.items.type -in @('object', 'array') -or $parameter.type -eq 'object') {
+      # Array has nested non-primitive type (array/object)
+      $definition = $parameter
+    } else {
+      $definition = $null
+    }
+
+    $parameterSet[$paramIdentifier] = $parameter
+
+    #recursive call for children
+    if ($definition) {
+      if ($definition.ContainsKey('items') -and $definition['items'].ContainsKey('properties')) {
+        $childProperties = $definition['items']['properties']
+      } elseif ($definition.type -eq 'object' -and $definition['properties']) {
+        $childProperties = $definition['properties']
+      } else {
+        $childProperties = $null
+      }
+
+      if ($childProperties) {
+        $parameterSet += Resolve-ReadMeParameterList -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier
+      }
+    }
+  }
+
+  return $parameterSet
+}
+
+<#
+Get a hashtable of all environment variables in the given GitHub workflow
+
+.DESCRIPTION
+Get a hashtable of all environment variables in the given GitHub workflow
+
+.PARAMETER WorkflowPath
+Mandatory. The path of the workflow to get the environment variables from
+
+.EXAMPLE
+Get-WorkflowEnvVariablesAsObject -WorkflowPath 'C:/bicep-registry-modules/.github/workflows/test.yml'
+
+Get the environment variables from the given workflow
+#>
+function Get-WorkflowEnvVariablesAsObject {
+
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory)]
+    [string] $WorkflowPath
+  )
+
+  $contentFileContent = Get-Content -Path $workflowPath
+
+  $envStartIndex = $contentFileContent.IndexOf('env:')
+
+  if (-not $envStartIndex) {
+    # No env variables defined in the given workflow
+    return @{}
+  }
+
+  $searchIndex = $envStartIndex + 1
+  $envVars = @{}
+
+  while ($searchIndex -lt $contentFileContent.Count) {
+    $line = $contentFileContent[$searchIndex]
+    if ($line -match "^\s+(\w+): (?:`"|')*([^`"'\s]+)(?:`"|')*$") {
+      $envVars[($Matches[1])] = $Matches[2]
+    } else {
+      break
+    }
+    $searchIndex++
+  }
+
+  return $envVars
 }

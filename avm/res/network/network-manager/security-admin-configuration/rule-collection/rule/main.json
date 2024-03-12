@@ -1,0 +1,162 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "4678937950332023656"
+    },
+    "name": "Network Manager Security Admin Configuration Rule Collection Rules",
+    "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "networkManagerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent network manager. Required if the template is used in a standalone deployment."
+      }
+    },
+    "securityAdminConfigurationName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent security admin configuration. Required if the template is used in a standalone deployment."
+      }
+    },
+    "ruleCollectionName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent rule collection. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 64,
+      "metadata": {
+        "description": "Required. The name of the rule."
+      }
+    },
+    "description": {
+      "type": "string",
+      "defaultValue": "",
+      "maxLength": 500,
+      "metadata": {
+        "description": "Optional. A description of the rule."
+      }
+    },
+    "access": {
+      "type": "string",
+      "allowedValues": [
+        "Allow",
+        "AlwaysAllow",
+        "Deny"
+      ],
+      "metadata": {
+        "description": "Required. Indicates the access allowed for this particular rule. \"Allow\" means traffic matching this rule will be allowed. \"Deny\" means traffic matching this rule will be blocked. \"AlwaysAllow\" means that traffic matching this rule will be allowed regardless of other rules with lower priority or user-defined NSGs."
+      }
+    },
+    "destinationPortRanges": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
+      }
+    },
+    "destinations": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
+      }
+    },
+    "direction": {
+      "type": "string",
+      "allowedValues": [
+        "Inbound",
+        "Outbound"
+      ],
+      "metadata": {
+        "description": "Required. Indicates if the traffic matched against the rule in inbound or outbound."
+      }
+    },
+    "priority": {
+      "type": "int",
+      "minValue": 1,
+      "maxValue": 4096,
+      "metadata": {
+        "description": "Required. The priority of the rule. The value can be between 1 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
+      }
+    },
+    "protocol": {
+      "type": "string",
+      "allowedValues": [
+        "Ah",
+        "Any",
+        "Esp",
+        "Icmp",
+        "Tcp",
+        "Udp"
+      ],
+      "metadata": {
+        "description": "Required. Network protocol this rule applies to."
+      }
+    },
+    "sourcePortRanges": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
+      }
+    },
+    "sources": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules",
+      "apiVersion": "2023-04-01",
+      "name": "[format('{0}/{1}/{2}/{3}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('ruleCollectionName'), parameters('name'))]",
+      "kind": "Custom",
+      "properties": {
+        "access": "[parameters('access')]",
+        "description": "[parameters('description')]",
+        "destinationPortRanges": "[parameters('destinationPortRanges')]",
+        "destinations": "[parameters('destinations')]",
+        "direction": "[parameters('direction')]",
+        "priority": "[parameters('priority')]",
+        "protocol": "[parameters('protocol')]",
+        "sourcePortRanges": "[parameters('sourcePortRanges')]",
+        "sources": "[parameters('sources')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed rule."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed rule."
+      },
+      "value": "[resourceId('Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('ruleCollectionName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the rule was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

@@ -37,25 +37,13 @@ param scriptContent string?
 @description('Optional. Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent parameter instead.')
 param primaryScriptUri string?
 
-@metadata({
-  example: '''
-secureList: [
-  {
-    name: 'string'
-    secureValue: 'string'
-    value: 'string'
-  }
-]
-'''
-})
 @description('Optional. The environment variables to pass over to the script. The list is passed as an object with a key name "secureList" and the value is the list of environment variables (array). The list must have a \'name\' and a \'value\' or a \'secretValue\' property for each object.')
-@secure()
-param environmentVariables object = {}
+param environmentVariables environmentVariableType
 
 @description('Optional. List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent).')
 param supportingScriptUris array?
 
-@description('Optional. List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network.')
+@description('Optional. List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network. When using a private network, the `Storage File Data Privileged Contributor` role needs to be assigned to the user-assigned managed identity and the deployment principal needs to have permissions to list the storage account keys. Also, Shared-Keys must not be disabled on the used storage account [ref](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet).')
 param subnetResourceIds string[]?
 
 @description('Optional. Command-line arguments to pass to the script. Arguments are separated by spaces.')
@@ -130,7 +118,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' existing 
 }
 
 var storageAccountSettings = !empty(storageAccountResourceId) ? {
-  storageAccountKey: listKeys(storageAccount.id, '2023-01-01').keys[0].value
+  storageAccountKey: empty(subnetResourceIds) ? listKeys(storageAccount.id, '2023-01-01').keys[0].value : null
   storageAccountName: last(split(storageAccountResourceId, '/'))
 } : null
 
@@ -195,7 +183,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     containerSettings: !empty(containerSettings) ? containerSettings : null
     storageAccountSettings: !empty(storageAccountResourceId) ? storageAccountSettings : null
     arguments: arguments
-    environmentVariables: !empty(environmentVariables) ? environmentVariables.secureList : []
+    environmentVariables: environmentVariables != null ? environmentVariables!.secureList : []
     scriptContent: !empty(scriptContent) ? scriptContent : null
     primaryScriptUri: !empty(primaryScriptUri) ? primaryScriptUri : null
     supportingScriptUris: !empty(supportingScriptUris) ? supportingScriptUris : null
@@ -255,7 +243,7 @@ type roleAssignmentType = {
   @description('Optional. The description of the role assignment.')
   description: string?
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
+  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
   @description('Optional. Version of the condition.')
@@ -264,3 +252,13 @@ type roleAssignmentType = {
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
+
+@secure()
+type environmentVariableType = {
+  @description('Optional. The list of environment variables to pass over to the deployment script.')
+  secureList: {
+    name: string
+    secureValue: string?
+    value: string?
+  }[]
+}?

@@ -27,7 +27,7 @@ param functionAlias string = ''
 param functionParameters string = ''
 
 @description('Optional. The version number of the query language.')
-param version int = 2
+param version int?
 
 @description('Optional. The ETag of the saved search. To override an existing saved search, use "*" or specify the current Etag.')
 param etag string = '*'
@@ -41,6 +41,7 @@ resource savedSearch 'Microsoft.OperationalInsights/workspaces/savedSearches@202
   parent: workspace
   //etag: etag // According to API, the variable should be here, but it doesn't work here.
   properties: {
+    #disable-next-line BCP037 // This is a false positive, the 'etag' property works here even if the documentation suggests that it sohuld be placed one leve higher.
     etag: etag
     tags: tags ?? []
     displayName: displayName

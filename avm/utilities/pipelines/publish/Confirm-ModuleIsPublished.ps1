@@ -33,21 +33,30 @@ function Confirm-ModuleIsPublished {
 
     $time_limit_seconds = 3600 # 1h
     $end_time = (Get-Date).AddSeconds($time_limit_seconds)
-    $retry_seconds = 5
+    $retry_seconds = 60
+    $index = 0
 
     #####################################
     ##   Confirm module is published   ##
     #####################################
+    Write-Verbose "Invoking WebRequest for [$catalogUrl] to fetch modules" -Verbose
     while ($true) {
-        $catalogContentRaw = (Invoke-WebRequest -Uri $catalogUrl -UseBasicParsing).Content
-        $bicepCatalogContent = ($catalogContentRaw | ConvertFrom-Json).repositories | Select-String 'bicep/'
+        $index++
+
+        try {
+            $catalogContentRaw = (Invoke-WebRequest -Uri $catalogUrl -UseBasicParsing).Content
+            $bicepCatalogContent = ($catalogContentRaw | ConvertFrom-Json).repositories | Select-String 'bicep/'
+        } catch {
+            Write-Warning ('WebRequest failed: {0}' -f $_.Exception.Message)
+        }
+
         Write-Verbose ("Bicep modules found in MCR catalog:`n{0}" -f ($bicepCatalogContent | Out-String))
 
         if ($bicepCatalogContent -match "bicep/$PublishedModuleName") {
             Write-Verbose "Passed: Found module [$PublishedModuleName] in the MCR catalog" -Verbose
             break
         } else {
-            Write-Warning "Warning: Module [$PublishedModuleName] is not in the MCR catalog. Retrying in [$retry_seconds] seconds"
+            Write-Warning "Warning: Module [$PublishedModuleName] is not in the MCR catalog. Retrying in [$retry_seconds] seconds [$index/$($time_limit_seconds/$retry_seconds)]"
             Start-Sleep -Seconds $retry_seconds
         }
 
@@ -59,23 +68,29 @@ function Confirm-ModuleIsPublished {
     #############################################
     ##   Confirm module version is published   ##
     #############################################
+    Write-Verbose "Invoking WebRequest for [$moduleVersionsUrl] to fetch modules versions" -Verbose
     while ($true) {
-        $tagsContentRaw = (Invoke-WebRequest -Uri $moduleVersionsUrl -UseBasicParsing).Content
-        $tagsContent = ($tagsContentRaw | ConvertFrom-Json).tags
+        $index++
+
+        try {
+            $tagsContentRaw = (Invoke-WebRequest -Uri $moduleVersionsUrl -UseBasicParsing).Content
+            $tagsContent = ($tagsContentRaw | ConvertFrom-Json).tags
+        } catch {
+            Write-Warning ('WebRequest failed: {0}' -f $_.Exception.Message)
+        }
 
         Write-Verbose ("Tags for module in path [$PublishedModuleName] found in MCR catalog:`n{0}" -f ($tagsContent | Out-String))
 
         if ($tagsContent -match $Version) {
-            Write-Host "Passed: Found new tag [$Version] for published module"
+            Write-Verbose "Passed: Found new tag [$Version] for published module" -Verbose
             break
         } else {
-            Write-Warning "Warning: Could not find new tag [$Version] for published module. Retrying in [$retry_seconds] seconds"
+            Write-Warning "Warning: Could not find new tag [$Version] for published module. Retrying in [$retry_seconds] seconds [$index/$($time_limit_seconds/$retry_seconds)]"
             Start-Sleep -Seconds $retry_seconds
         }
 
         if ((Get-Date) -ge $end_time) {
-            Write-Host 'Time limit reached. Failed to validate publish within the specified time.'
-            exit 1
+            throw "Time limit reached. Failed to validate published version of module in path [$PublishedModuleName] within the specified time."
         }
     }
 }
