@@ -1548,7 +1548,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`nodeResourceGroup`](#parameter-noderesourcegroup) | string | Name of the resource group containing agent pool nodes. |
 | [`omsAgentEnabled`](#parameter-omsagentenabled) | bool | Specifies whether the OMS agent is enabled. |
 | [`openServiceMeshEnabled`](#parameter-openservicemeshenabled) | bool | Specifies whether the openServiceMesh add-on is enabled or not. |
-| [`outboundType`](#parameter-outboundtype) | string | Specifies outbound (egress) routing method. - loadBalancer or userDefinedRouting. |
+| [`outboundType`](#parameter-outboundtype) | string | Specifies outbound (egress) routing method. |
 | [`podCidr`](#parameter-podcidr) | string | Specifies the CIDR notation IP range from which to assign pod IPs when kubenet is used. |
 | [`podIdentityProfileAllowNetworkPluginKubenet`](#parameter-podidentityprofileallownetworkpluginkubenet) | bool | Running in Kubenet is disabled by default due to the security related nature of AAD Pod Identity and the risks of IP spoofing. |
 | [`podIdentityProfileEnable`](#parameter-podidentityprofileenable) | bool | Whether the pod identity addon is enabled. |
@@ -2993,7 +2993,7 @@ Specifies whether the openServiceMesh add-on is enabled or not.
 
 ### Parameter: `outboundType`
 
-Specifies outbound (egress) routing method. - loadBalancer or userDefinedRouting.
+Specifies outbound (egress) routing method.
 
 - Required: No
 - Type: string
@@ -3002,6 +3002,8 @@ Specifies outbound (egress) routing method. - loadBalancer or userDefinedRouting
   ```Bicep
   [
     'loadBalancer'
+    'managedNATGateway'
+    'userAssignedNATGateway'
     'userDefinedRouting'
   ]
   ```
