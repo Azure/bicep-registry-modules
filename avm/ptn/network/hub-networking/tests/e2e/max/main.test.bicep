@@ -51,6 +51,9 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // Test Execution //
 // ============== //
 
+var addressPrefix = '10.0.0.0/16'
+var addressPrefix2 = '10.1.0.0/16'
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
@@ -62,9 +65,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     hubVirtualNetworks: {
       hub1: {
         name: 'hub1'
-        addressPrefixes: [ '10.0.0.0/16' ]
-        enableTelemetry: true
-        flowTimeoutInMinutes: 30
+        addressPrefixes: array(addressPrefix)
         ddosProtectionPlanResourceId: ''
         dnsServers: [ '10.0.1.4', '10.0.1.5' ]
         diagnosticSettings: [
@@ -81,27 +82,37 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
           }
         ]
-        location: 'westeurope'
+        enableBastion: true
+        enablePeering: false
+        enableTelemetry: true
+        flowTimeoutInMinutes: 30
+        location: 'westus'
         lock: {
           kind: 'CanNotDelete'
           name: 'hub1Lock'
         }
-        enablePeering: false
-        peerings: [
+        peeringSettings: [
           {
-            name: 'hub1-to-hub2'
-            remoteVirtualNetworkId: 'hub2'
-            allowForwardedTraffic: false
+            allowForwardedTraffic: true
             allowGatewayTransit: false
             allowVirtualNetworkAccess: true
             useRemoteGateways: false
+            remoteVirtualNetworkName: 'hub2'
           }
         ]
         roleAssignments: []
         subnets: [
           {
-            name: 'subnet1'
-            addressPrefix: '10.0.1.0/24'
+            name: 'GatewaySubnet'
+            addressPrefix: cidrSubnet(addressPrefix, 26, 0)
+          }
+          {
+            name: 'AzureFirewallSubnet'
+            addressPrefix: cidrSubnet(addressPrefix, 26, 1)
+          }
+          {
+            name: 'AzureBastionSubnet'
+            addressPrefix: cidrSubnet(addressPrefix, 26, 2)
           }
         ]
         tags: {
@@ -114,22 +125,41 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       }
       hub2: {
         name: 'hub2'
-        addressPrefixes: [ '10.1.0.0/16' ]
-        enableTelemetry: false
-        flowTimeoutInMinutes: 10
+        addressPrefixes: array(addressPrefix2)
+        ddosProtectionPlanResourceId: ''
         dnsServers: []
         diagnosticSettings: []
+        enableBastion: true
+        enablePeering: false
+        enableTelemetry: false
+        flowTimeoutInMinutes: 10
         location: 'westus2'
         lock: {
           kind: 'CanNotDelete'
           name: 'hub2Lock'
         }
-        enablePeering: false
+        peeringSettings: [
+          {
+            allowForwardedTraffic: true
+            allowGatewayTransit: false
+            allowVirtualNetworkAccess: true
+            useRemoteGateways: false
+            remoteVirtualNetworkName: 'hub1'
+          }
+        ]
         roleAssignments: []
         subnets: [
           {
-            name: 'subnet1'
-            addressPrefix: '10.1.1.0/24'
+            name: 'GatewaySubnet'
+            addressPrefix: cidrSubnet(addressPrefix2, 26, 0)
+          }
+          {
+            name: 'AzureFirewallSubnet'
+            addressPrefix: cidrSubnet(addressPrefix2, 26, 1)
+          }
+          {
+            name: 'AzureBastionSubnet'
+            addressPrefix: cidrSubnet(addressPrefix2, 26, 2)
           }
         ]
         tags: {

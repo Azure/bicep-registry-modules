@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "2887446139100748971"
+      "templateHash": "14062419453889169005"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.",
@@ -310,8 +310,33 @@
             "description": "Optional. Enable/Disable peering for the virtual network."
           }
         },
-        "peerings": {
+        "peeringSettings": {
           "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "allowForwardedTraffic": {
+                "type": "bool",
+                "nullable": true
+              },
+              "allowGatewayTransit": {
+                "type": "bool",
+                "nullable": true
+              },
+              "allowVirtualNetworkAccess": {
+                "type": "bool",
+                "nullable": true
+              },
+              "useRemoteGateways": {
+                "type": "bool",
+                "nullable": true
+              },
+              "remoteVirtualNetworkName": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          },
           "nullable": true,
           "metadata": {
             "description": "Optional. The peerings of the virtual network."
@@ -499,12 +524,6 @@
       "metadata": {
         "description": "Optional. A map of the hub virtual networks to create."
       }
-    },
-    "diagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
-      "metadata": {
-        "description": "Optional. The diagnostic settings of the service."
-      }
     }
   },
   "resources": {
@@ -528,57 +547,6 @@
         }
       }
     },
-    "hubVirtualNetwork_lock": {
-      "copy": {
-        "name": "hubVirtualNetwork_lock",
-        "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]"
-      },
-      "condition": "[and(not(empty(coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.lock, createObject()))), not(equals(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.lock, 'kind'), 'None')))]",
-      "type": "Microsoft.Authorization/locks",
-      "apiVersion": "2020-05-01",
-      "name": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.lock, 'name'), format('lock-{0}', items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.name))]",
-      "properties": {
-        "level": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.lock, 'kind'), '')]",
-        "notes": "[if(equals(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.lock, 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
-      }
-    },
-    "hubVirtualNetwork_diagnosticSettings": {
-      "copy": {
-        "name": "hubVirtualNetwork_diagnosticSettings",
-        "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
-      },
-      "type": "Microsoft.Insights/diagnosticSettings",
-      "apiVersion": "2021-05-01-preview",
-      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
-      "properties": {
-        "copy": [
-          {
-            "name": "metrics",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
-            "input": {
-              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
-              "timeGrain": null
-            }
-          },
-          {
-            "name": "logs",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
-            "input": {
-              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
-              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
-            }
-          }
-        ],
-        "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
-        "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
-        "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
-        "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
-        "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
-        "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
-      }
-    },
     "hubVirtualNetwork": {
       "copy": {
         "name": "hubVirtualNetwork",
@@ -586,7 +554,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-nvn', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.name)]",
+      "name": "[format('{{uniqueString(deployment().name, location)}}-{0}-nvn-{1}', items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.name, parameters('name'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -620,7 +588,6 @@
           "lock": {
             "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.lock, createObject())]"
           },
-          "peerings": "[if(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enablePeering, createObject('value', items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.peerings), createObject('value', createArray()))]",
           "roleAssignments": {
             "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.roleAssignments, createArray())]"
           },
@@ -1777,7 +1744,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-nrt', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.name)]",
+      "name": "[format('{0}-{1}-nrt-{2}', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.name, parameters('name'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2144,7 +2111,7 @@
       "condition": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableBastion]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-nbh', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.name)]",
+      "name": "[format('{0}-{1}-nbh-{2}', uniqueString(deployment().name, parameters('location')), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.name, parameters('name'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

@@ -18,9 +18,6 @@ param enableTelemetry bool = true
 @description('Optional. A map of the hub virtual networks to create.')
 param hubVirtualNetworks hubVirtualNetworkObject
 
-@description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
-
 // ============== //
 // Resources      //
 // ============== //
@@ -44,7 +41,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 }
 
 module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [for (hub, index) in items(hubVirtualNetworks ?? {}): {
-  name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nvn'
+  name: '{uniqueString(deployment().name, location)}-${hub.value.name}-nvn-${name}'
   params: {
     // Required parameters
     name: hub.value.name
@@ -57,7 +54,6 @@ module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [fo
     flowTimeoutInMinutes: hub.value.flowTimeoutInMinutes ?? 0
     location: hub.value.location ?? ''
     lock: hub.value.lock ?? {}
-    peerings: hub.value.enablePeering ? hub.value.peerings : []
     roleAssignments: hub.value.roleAssignments ?? []
     subnets: hub.value.subnets ?? []
     tags: hub.value.tags ?? {}
@@ -66,38 +62,8 @@ module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [fo
   }
 }]
 
-resource hubVirtualNetwork_lock 'Microsoft.Authorization/locks@2020-05-01' = [for (hub, index) in items(hubVirtualNetworks ?? {}): if (!empty(hub.value.lock ?? {}) && hub.value.lock.?kind != 'None') {
-  name: hub.value.lock.?name ?? 'lock-${hub.value.name}'
-  properties: {
-    level: hub.value.lock.?kind ?? ''
-    notes: hub.value.lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
-  }
-}]
-
-resource hubVirtualNetwork_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
-      category: group.category
-      enabled: group.?enabled ?? true
-      timeGrain: null
-    }]
-    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
-      categoryGroup: group.?categoryGroup
-      category: group.?category
-      enabled: group.?enabled ?? true
-    }]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
-  }
-}]
-
 module hubRouteTable 'br/public:avm/res/network/route-table:0.2.2' = [for (hub, index) in items(hubVirtualNetworks ?? {}): {
-  name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nrt'
+  name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nrt-${name}'
   params: {
     name: hub.value.name
     location: hub.value.location ?? location
@@ -109,8 +75,10 @@ module hubRouteTable 'br/public:avm/res/network/route-table:0.2.2' = [for (hub, 
   }
 }]
 
+// AzureBastionSubnet is required to deploy Bastion service. This subnet must exist in the parsubnets array if you enable Bastion Service.
+// There is a minimum subnet requirement of /27 prefix.
 module hubBastion 'br/public:avm/res/network/bastion-host:0.1.1' = [for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableBastion) {
-  name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nbh'
+  name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nbh-${name}'
   params: {
     // Required parameters
     name: hub.value.name
@@ -123,6 +91,8 @@ module hubBastion 'br/public:avm/res/network/bastion-host:0.1.1' = [for (hub, in
     tags: hub.value.tags ?? {}
   }
 }]
+
+// Fireall module will go here
 
 //
 // Add your resources here
@@ -270,7 +240,13 @@ type hubVirtualNetworkType = {
   enablePeering: bool?
 
   @description('Optional. The peerings of the virtual network.')
-  peerings: array?
+  peeringSettings: {
+    allowForwardedTraffic: bool?
+    allowGatewayTransit: bool?
+    allowVirtualNetworkAccess: bool?
+    useRemoteGateways: bool?
+    remoteVirtualNetworkName: string?
+  }[]?
 
   @description('Optional. The subnets of the virtual network.')
   subnets: array?
