@@ -193,10 +193,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         resourceId: nestedDependencies.outputs.storageAccountResourceId
       }
     ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     publicNetworkAccessForIngestion: 'Disabled'
     publicNetworkAccessForQuery: 'Disabled'
     savedSearches: [
@@ -342,4 +338,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Role: 'DeploymentValidation'
     }
   }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
 }]

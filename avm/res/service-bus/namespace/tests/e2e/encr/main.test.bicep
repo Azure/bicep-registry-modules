@@ -73,4 +73,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
     }
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }]
