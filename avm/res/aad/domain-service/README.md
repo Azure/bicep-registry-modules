@@ -545,7 +545,7 @@ Additional replica set for the managed domain.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`location`](#parameter-replicasetslocation) | string | Virtual network location |
-| [`subnetId`](#parameter-replicasetssubnetid) | string | The id of the subnet that Domain Services will be deployed on. |
+| [`subnetId`](#parameter-replicasetssubnetid) | string | The id of the subnet that Domain Services will be deployed on. The subnet has some requirements, which are outlined in the [notes section](#Network-Security-Group-NSG-requirements-for-AADDS) of the documentation. |
 
 ### Parameter: `replicaSets.location`
 
@@ -556,7 +556,7 @@ Virtual network location
 
 ### Parameter: `replicaSets.subnetId`
 
-The id of the subnet that Domain Services will be deployed on.
+The id of the subnet that Domain Services will be deployed on. The subnet has some requirements, which are outlined in the [notes section](#Network-Security-Group-NSG-requirements-for-AADDS) of the documentation.
 
 - Required: Yes
 - Type: string
@@ -785,6 +785,38 @@ Follow the steps [Create required Microsoft Entra resources](https://learn.micro
    ```powershell
    New-MgServicePrincipal -AppId 2565bd9d-da50-47d4-8b85-4c97f669dc36 -DisplayName "Domain Controller Services"
    ```
+
+### Network Security Group (NSG) requirements for AADDS
+
+- A network security group has to be created and assigned to the designated AADDS subnet before deploying this module
+  - The following inbound rules should be allowed on the network security group
+    | Name | Protocol | Source Port Range | Source Address Prefix | Destination Port Range | Destination Address Prefix |
+    | - | - | - | - | - | - |
+    | AllowSyncWithAzureAD | TCP | `*` | `AzureActiveDirectoryDomainServices` | `443` | `*` |
+    | AllowPSRemoting | TCP | `*` | `AzureActiveDirectoryDomainServices` | `5986` | `*` |
+    | AllowLDAPs | TCP | `*` | `VirtualNetwork` | `5986` | `*` |
+- Associating a route table to the AADDS subnet is not recommended
+- The network used for AADDS must have its [DNS Servers configured](https://learn.microsoft.com/en-us/azure/active-directory-domain-services/tutorial-configure-networking#configure-dns-servers-in-the-peered-virtual-network) (e.g. with IPs `10.0.1.4` & `10.0.1.5`)
+
+### Create self-signed certificate for secure LDAP
+Follow the below PowerShell commands to get base64 encoded string of a self-signed certificate (with a `pfxCertificatePassword`)
+
+```PowerShell
+$pfxCertificatePassword = ConvertTo-SecureString '[[YourPfxCertificatePassword]]' -AsPlainText -Force
+$certInputObject = @{
+    Subject           = 'CN=*.[[YourDomainName]]'
+    DnsName           = '*.[[YourDomainName]]'
+    CertStoreLocation = 'cert:\LocalMachine\My'
+    KeyExportPolicy   = 'Exportable'
+    Provider          = 'Microsoft Enhanced RSA and AES Cryptographic Provider'
+    NotAfter          = (Get-Date).AddMonths(3)
+    HashAlgorithm     = 'SHA256'
+}
+$rawCert = New-SelfSignedCertificate @certInputObject
+Export-PfxCertificate -Cert ('Cert:\localmachine\my\' + $rawCert.Thumbprint) -FilePath "$home/aadds.pfx" -Password $pfxCertificatePassword -Force
+$rawCertByteStream = Get-Content "$home/aadds.pfx" -AsByteStream
+$pfxCertificate = [System.Convert]::ToBase64String($rawCertByteStream)
+```
 
 ### References
 

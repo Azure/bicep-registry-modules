@@ -350,6 +350,6 @@ type replicaSetType = {
   @metadata({
     example: '[concat("/subscriptions/", subscription().subscriptionId, "/resourceGroups/", resourceGroup().name, "/providers/Microsoft.Network/virtualNetworks/", parameters("vnetName"), "/subnets/", parameters("subnetName"))]'
   })
-  @description('Required. The id of the subnet that Domain Services will be deployed on.')
+  @description('Required. The id of the subnet that Domain Services will be deployed on. The subnet has some requirements, which are outlined in the [notes section](#Network-Security-Group-NSG-requirements-for-AADDS) of the documentation.')
   subnetId: string
 }[]?

@@ -19,6 +19,7 @@ param certDeploymentScriptName string
 var certPWSecretName = 'pfxCertificatePassword'
 var certSecretName = 'pfxBase64Certificate'
 var addressPrefix = '10.0.0.0/16'
+var aadsSubnetAddressPrefix = cidrSubnet(addressPrefix, 24, 1)
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   name: virtualNetworkName
@@ -28,6 +29,10 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
       addressPrefixes: [
         addressPrefix
       ]
+    }
+    dhcpOptions: {
+      // set the DNS servers to the 4th and 5th addresses in the subnet
+      dnsServers: [for i in range(3, 2): cidrHost(aadsSubnetAddressPrefix, i)]
     }
     subnets: [
       {
@@ -39,7 +44,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
       {
         name: 'aadds-subnet'
         properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 24, 1)
+          addressPrefix: aadsSubnetAddressPrefix
           networkSecurityGroup: {
             id: nsgAaddSubnet.id
           }
@@ -81,16 +86,16 @@ resource nsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2023-09-01' = {
         }
       }
       {
-        name: 'AllowRD'
+        name: 'AllowLDAPs'
         properties: {
           access: 'Allow'
           priority: 201
           direction: 'Inbound'
           protocol: 'Tcp'
-          sourceAddressPrefix: 'CorpNetSaw'
+          sourceAddressPrefix: 'VirtualNetwork'
           sourcePortRange: '*'
           destinationAddressPrefix: '*'
-          destinationPortRange: '3389'
+          destinationPortRange: '636'
         }
       }
     ]
