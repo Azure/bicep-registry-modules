@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "12712034346035097235"
+      "version": "0.25.53.49325",
+      "templateHash": "11885081769153040344"
     },
     "name": "Activity Log Alerts",
     "description": "This module deploys an Activity Log Alert.",

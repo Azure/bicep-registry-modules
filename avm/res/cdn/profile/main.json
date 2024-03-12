@@ -1,0 +1,2122 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "5590822157258383721"
+    },
+    "name": "CDN Profiles",
+    "description": "This module deploys a CDN Profile.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "roleAssignmentType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "roleDefinitionIdOrName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+            }
+          },
+          "principalId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+            }
+          },
+          "principalType": {
+            "type": "string",
+            "allowedValues": [
+              "Device",
+              "ForeignGroup",
+              "Group",
+              "ServicePrincipal",
+              "User"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The principal type of the assigned principal ID."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The description of the role assignment."
+            }
+          },
+          "condition": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+            }
+          },
+          "conditionVersion": {
+            "type": "string",
+            "allowedValues": [
+              "2.0"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Version of the condition."
+            }
+          },
+          "delegatedManagedIdentityResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The Resource Id of the delegated managed identity resource."
+            }
+          }
+        }
+      },
+      "nullable": true
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the CDN profile."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all Resources."
+      }
+    },
+    "sku": {
+      "type": "string",
+      "allowedValues": [
+        "Custom_Verizon",
+        "Premium_AzureFrontDoor",
+        "Premium_Verizon",
+        "StandardPlus_955BandWidth_ChinaCdn",
+        "StandardPlus_AvgBandWidth_ChinaCdn",
+        "StandardPlus_ChinaCdn",
+        "Standard_955BandWidth_ChinaCdn",
+        "Standard_Akamai",
+        "Standard_AvgBandWidth_ChinaCdn",
+        "Standard_AzureFrontDoor",
+        "Standard_ChinaCdn",
+        "Standard_Microsoft",
+        "Standard_Verizon"
+      ],
+      "metadata": {
+        "description": "Required. The pricing tier (defines a CDN provider, feature list and rate) of the CDN profile."
+      }
+    },
+    "originResponseTimeoutSeconds": {
+      "type": "int",
+      "defaultValue": 60,
+      "metadata": {
+        "description": "Optional. Send and receive timeout on forwarding request to the origin."
+      }
+    },
+    "endpointName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Name of the endpoint under the profile which is unique globally."
+      }
+    },
+    "endpointProperties": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details)."
+      }
+    },
+    "secrets": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Array of secret objects."
+      }
+    },
+    "customDomains": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Array of custom domain objects."
+      }
+    },
+    "origionGroups": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Conditional. Array of origin group objects. Required if the afdEndpoints is specified."
+      }
+    },
+    "ruleSets": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Array of rule set objects."
+      }
+    },
+    "afdEndpoints": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Array of AFD endpoint objects."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Endpoint tags."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "roleAssignments": {
+      "$ref": "#/definitions/roleAssignmentType",
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "variables": {
+    "builtInRoleNames": {
+      "CDN Endpoint Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '426e0c7f-0c7e-4658-b36f-ff54d6c29b45')]",
+      "CDN Endpoint Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '871e35f6-b5c1-49cc-a043-bde969a0f2cd')]",
+      "CDN Profile Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ec156ff8-a8d1-4d15-830c-5b80698ca432')]",
+      "CDN Profile Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8f96442b-4075-438f-813d-ad51ab4019af')]",
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.cdn-profile.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "profile": {
+      "type": "Microsoft.Cdn/profiles",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('sku')]"
+      },
+      "properties": {
+        "originResponseTimeoutSeconds": "[parameters('originResponseTimeoutSeconds')]"
+      },
+      "tags": "[parameters('tags')]"
+    },
+    "profile_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Cdn/profiles/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "profile"
+      ]
+    },
+    "profile_roleAssignments": {
+      "copy": {
+        "name": "profile_roleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.Cdn/profiles/{0}', parameters('name'))]",
+      "name": "[guid(resourceId('Microsoft.Cdn/profiles', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "properties": {
+        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "profile"
+      ]
+    },
+    "profile_endpoint": {
+      "condition": "[not(empty(parameters('endpointProperties')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Profile-Endpoint', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('endpointName'), format('{0}-endpoint', parameters('name')))]"
+          },
+          "properties": {
+            "value": "[coalesce(parameters('endpointProperties'), createObject())]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "profileName": {
+            "value": "[parameters('name')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.25.53.49325",
+              "templateHash": "12552673613712108877"
+            },
+            "name": "CDN Profiles Endpoints",
+            "description": "This module deploys a CDN Profile Endpoint.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "profileName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent CDN profile. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the endpoint under the profile which is unique globally."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Resource location."
+              }
+            },
+            "properties": {
+              "type": "object",
+              "metadata": {
+                "description": "Required. Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details)."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Endpoint tags."
+              }
+            }
+          },
+          "resources": {
+            "profile": {
+              "existing": true,
+              "type": "Microsoft.Cdn/profiles",
+              "apiVersion": "2021-06-01",
+              "name": "[parameters('profileName')]"
+            },
+            "endpoint": {
+              "type": "Microsoft.Cdn/profiles/endpoints",
+              "apiVersion": "2021-06-01",
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
+              "location": "[parameters('location')]",
+              "properties": "[parameters('properties')]",
+              "tags": "[parameters('tags')]",
+              "dependsOn": [
+                "profile"
+              ]
+            },
+            "endpoint_origins": {
+              "copy": {
+                "name": "endpoint_origins",
+                "count": "[length(parameters('properties').origins)]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-origins-{1}', parameters('name'), parameters('properties').origins[copyIndex()].name)]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "profileName": {
+                    "value": "[parameters('profileName')]"
+                  },
+                  "endpointName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "name": {
+                    "value": "[parameters('properties').origins[copyIndex()].name]"
+                  },
+                  "hostName": {
+                    "value": "[parameters('properties').origins[copyIndex()].properties.hostName]"
+                  },
+                  "httpPort": {
+                    "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'httpPort')]"
+                  },
+                  "httpsPort": {
+                    "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'httpsPort')]"
+                  },
+                  "enabled": {
+                    "value": "[parameters('properties').origins[copyIndex()].properties.enabled]"
+                  },
+                  "priority": {
+                    "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'priority')]"
+                  },
+                  "weight": {
+                    "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'weight')]"
+                  },
+                  "originHostHeader": {
+                    "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'originHostHeader')]"
+                  },
+                  "privateLinkAlias": {
+                    "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'privateLinkAlias')]"
+                  },
+                  "privateLinkLocation": {
+                    "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'privateLinkLocation')]"
+                  },
+                  "privateLinkResourceId": {
+                    "value": "[tryGet(parameters('properties').origins[copyIndex()].properties, 'privateLinkResourceId')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.25.53.49325",
+                      "templateHash": "17135058845123401414"
+                    },
+                    "name": "CDN Profiles Endpoints Origins",
+                    "description": "This module deploys a CDN Profile Endpoint Origin.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "endpointName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the CDN Endpoint."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the origin."
+                      }
+                    },
+                    "enabled": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Whether the origin is enabled for load balancing."
+                      }
+                    },
+                    "hostName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The hostname of the origin."
+                      }
+                    },
+                    "httpPort": {
+                      "type": "int",
+                      "defaultValue": 80,
+                      "metadata": {
+                        "description": "Optional. The HTTP port of the origin."
+                      }
+                    },
+                    "httpsPort": {
+                      "type": "int",
+                      "defaultValue": 443,
+                      "metadata": {
+                        "description": "Optional. The HTTPS port of the origin."
+                      }
+                    },
+                    "priority": {
+                      "type": "int",
+                      "defaultValue": -1,
+                      "metadata": {
+                        "description": "Conditional. The priority of origin in given origin group for load balancing. Required if `weight` is provided."
+                      }
+                    },
+                    "weight": {
+                      "type": "int",
+                      "defaultValue": -1,
+                      "metadata": {
+                        "description": "Conditional. The weight of the origin used for load balancing. Required if `priority` is provided."
+                      }
+                    },
+                    "privateLinkAlias": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Conditional. The private link alias of the origin. Required if privateLinkLocation is provided."
+                      }
+                    },
+                    "privateLinkLocation": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Conditional. The private link location of the origin. Required if privateLinkAlias is provided."
+                      }
+                    },
+                    "privateLinkResourceId": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The private link resource ID of the origin."
+                      }
+                    },
+                    "originHostHeader": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The host header value sent to the origin."
+                      }
+                    },
+                    "profileName": {
+                      "type": "string",
+                      "defaultValue": "default",
+                      "metadata": {
+                        "description": "Optional. The name of the CDN profile. Default to \"default\"."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "profile": {
+                      "existing": true,
+                      "type": "Microsoft.Cdn/profiles",
+                      "apiVersion": "2021-06-01",
+                      "name": "[parameters('profileName')]"
+                    },
+                    "endpoint": {
+                      "existing": true,
+                      "type": "Microsoft.Cdn/profiles/endpoints",
+                      "apiVersion": "2021-06-01",
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('endpointName'))]",
+                      "dependsOn": [
+                        "profile"
+                      ]
+                    },
+                    "origin": {
+                      "type": "Microsoft.Cdn/profiles/endpoints/origins",
+                      "apiVersion": "2021-06-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('endpointName'), parameters('name'))]",
+                      "properties": "[union(createObject('hostName', parameters('hostName'), 'httpPort', parameters('httpPort'), 'enabled', parameters('enabled'), 'httpsPort', parameters('httpsPort')), if(or(greater(parameters('priority'), 0), greater(parameters('weight'), 0)), createObject('priority', parameters('priority'), 'weight', parameters('weight')), createObject()), if(and(not(empty(parameters('privateLinkAlias'))), not(empty(parameters('privateLinkLocation')))), createObject('privateLinkAlias', parameters('privateLinkAlias'), 'privateLinkLocation', parameters('privateLinkLocation')), createObject()), if(not(empty(parameters('privateLinkResourceId'))), createObject('privateLinkResourceId', parameters('privateLinkResourceId')), createObject()), if(not(empty(parameters('originHostHeader'))), createObject('originHostHeader', parameters('originHostHeader')), createObject()))]",
+                      "dependsOn": [
+                        "endpoint"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the endpoint."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the endpoint."
+                      },
+                      "value": "[resourceId('Microsoft.Cdn/profiles/endpoints/origins', parameters('profileName'), parameters('endpointName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the endpoint was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The location the resource was deployed into."
+                      },
+                      "value": "[reference('endpoint', '2021-06-01', 'full').location]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "endpoint",
+                "profile"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the endpoint."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the endpoint."
+              },
+              "value": "[resourceId('Microsoft.Cdn/profiles/endpoints', parameters('profileName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the endpoint was created in."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('endpoint', '2021-06-01', 'full').location]"
+            },
+            "endpointProperties": {
+              "type": "object",
+              "metadata": {
+                "description": "The properties of the endpoint."
+              },
+              "value": "[reference('endpoint')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "profile"
+      ]
+    },
+    "profile_secrets": {
+      "copy": {
+        "name": "profile_secrets",
+        "count": "[length(parameters('secrets'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Profile-Secret-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('secrets')[copyIndex()].name]"
+          },
+          "profileName": {
+            "value": "[parameters('name')]"
+          },
+          "type": {
+            "value": "[parameters('secrets')[copyIndex()].type]"
+          },
+          "secretSourceResourceId": {
+            "value": "[parameters('secrets')[copyIndex()].secretSourceResourceId]"
+          },
+          "subjectAlternativeNames": {
+            "value": "[tryGet(parameters('secrets')[copyIndex()], 'subjectAlternativeNames')]"
+          },
+          "useLatestVersion": {
+            "value": "[tryGet(parameters('secrets')[copyIndex()], 'useLatestVersion')]"
+          },
+          "secretVersion": {
+            "value": "[parameters('secrets')[copyIndex()].secretVersion]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.25.53.49325",
+              "templateHash": "3645784765890890733"
+            },
+            "name": "CDN Profiles Secret",
+            "description": "This module deploys a CDN Profile Secret.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the secrect."
+              }
+            },
+            "profileName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent CDN profile. Required if the template is used in a standalone deployment."
+              }
+            },
+            "type": {
+              "type": "string",
+              "defaultValue": "AzureFirstPartyManagedCertificate",
+              "allowedValues": [
+                "AzureFirstPartyManagedCertificate",
+                "CustomerCertificate",
+                "ManagedCertificate",
+                "UrlSigningKey"
+              ],
+              "metadata": {
+                "description": "Required. The type of the secrect."
+              }
+            },
+            "secretSourceResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Conditional. The resource ID of the secret source. Required if the `type` is \"CustomerCertificate\"."
+              }
+            },
+            "secretVersion": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The version of the secret."
+              }
+            },
+            "subjectAlternativeNames": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The subject alternative names of the secrect."
+              }
+            },
+            "useLatestVersion": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Indicates whether to use the latest version of the secrect."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Cdn/profiles/secrets",
+              "apiVersion": "2023-05-01",
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
+              "properties": {
+                "parameters": "[if(equals(parameters('type'), 'CustomerCertificate'), createObject('type', parameters('type'), 'secretSource', createObject('id', parameters('secretSourceResourceId')), 'secretVersion', parameters('secretVersion'), 'subjectAlternativeNames', parameters('subjectAlternativeNames'), 'useLatestVersion', parameters('useLatestVersion')), null())]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the secrect."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the secrect."
+              },
+              "value": "[resourceId('Microsoft.Cdn/profiles/secrets', parameters('profileName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the secret was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "profile"
+      ]
+    },
+    "profile_customDomains": {
+      "copy": {
+        "name": "profile_customDomains",
+        "count": "[length(parameters('customDomains'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-CustomDomain-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('customDomains')[copyIndex()].name]"
+          },
+          "profileName": {
+            "value": "[parameters('name')]"
+          },
+          "hostName": {
+            "value": "[parameters('customDomains')[copyIndex()].hostName]"
+          },
+          "azureDnsZoneResourceId": {
+            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'azureDnsZoneResourceId')]"
+          },
+          "extendedProperties": {
+            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'extendedProperties')]"
+          },
+          "certificateType": {
+            "value": "[parameters('customDomains')[copyIndex()].certificateType]"
+          },
+          "minimumTlsVersion": {
+            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'minimumTlsVersion')]"
+          },
+          "preValidatedCustomDomainResourceId": {
+            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'preValidatedCustomDomainResourceId')]"
+          },
+          "secretName": {
+            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'secretName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.25.53.49325",
+              "templateHash": "14057037772702090927"
+            },
+            "name": "CDN Profiles Custom Domains",
+            "description": "This module deploys a CDN Profile Custom Domains.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the custom domain."
+              }
+            },
+            "profileName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the CDN profile."
+              }
+            },
+            "hostName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The host name of the domain. Must be a domain name."
+              }
+            },
+            "azureDnsZoneResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optonal. Resource reference to the Azure DNS zone."
+              }
+            },
+            "extendedProperties": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Key-Value pair representing migration properties for domains."
+              }
+            },
+            "preValidatedCustomDomainResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Resource reference to the Azure resource where custom domain ownership was prevalidated."
+              }
+            },
+            "certificateType": {
+              "type": "string",
+              "allowedValues": [
+                "CustomerCertificate",
+                "ManagedCertificate"
+              ],
+              "metadata": {
+                "description": "Required. The type of the certificate used for secure delivery."
+              }
+            },
+            "minimumTlsVersion": {
+              "type": "string",
+              "defaultValue": "TLS12",
+              "allowedValues": [
+                "TLS10",
+                "TLS12"
+              ],
+              "metadata": {
+                "description": "Optional. The minimum TLS version required for the custom domain. Default value: TLS12."
+              }
+            },
+            "secretName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The name of the secret. ie. subs/rg/profile/secret."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Cdn/profiles/customDomains",
+              "apiVersion": "2023-05-01",
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
+              "properties": {
+                "azureDnsZone": "[if(not(empty(parameters('azureDnsZoneResourceId'))), createObject('id', parameters('azureDnsZoneResourceId')), null())]",
+                "extendedProperties": "[if(not(empty(parameters('extendedProperties'))), parameters('extendedProperties'), null())]",
+                "hostName": "[parameters('hostName')]",
+                "preValidatedCustomDomainResourceId": "[if(not(empty(parameters('preValidatedCustomDomainResourceId'))), createObject('id', parameters('preValidatedCustomDomainResourceId')), null())]",
+                "tlsSettings": {
+                  "certificateType": "[parameters('certificateType')]",
+                  "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
+                  "secret": "[if(not(empty(parameters('secretName'))), createObject('id', resourceId('Microsoft.Cdn/profiles/secrets', parameters('profileName'), parameters('secretName'))), null())]"
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the custom domain."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource id of the custom domain."
+              },
+              "value": "[resourceId('Microsoft.Cdn/profiles/customDomains', parameters('profileName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the custom domain was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "profile",
+        "profile_secrets"
+      ]
+    },
+    "profile_originGroups": {
+      "copy": {
+        "name": "profile_originGroups",
+        "count": "[length(parameters('origionGroups'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Profile-OrigionGroup-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('origionGroups')[copyIndex()].name]"
+          },
+          "profileName": {
+            "value": "[parameters('name')]"
+          },
+          "loadBalancingSettings": {
+            "value": "[parameters('origionGroups')[copyIndex()].loadBalancingSettings]"
+          },
+          "healthProbeSettings": {
+            "value": "[tryGet(parameters('origionGroups')[copyIndex()], 'healthProbeSettings')]"
+          },
+          "sessionAffinityState": {
+            "value": "[tryGet(parameters('origionGroups')[copyIndex()], 'sessionAffinityState')]"
+          },
+          "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": {
+            "value": "[tryGet(parameters('origionGroups')[copyIndex()], 'trafficRestorationTimeToHealedOrNewEndpointsInMinutes')]"
+          },
+          "origins": {
+            "value": "[parameters('origionGroups')[copyIndex()].origins]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.25.53.49325",
+              "templateHash": "8675132561244182118"
+            },
+            "name": "CDN Profiles Origin Group",
+            "description": "This module deploys a CDN Profile Origin Group.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the origin group."
+              }
+            },
+            "profileName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the CDN profile."
+              }
+            },
+            "healthProbeSettings": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Health probe settings to the origin that is used to determine the health of the origin."
+              }
+            },
+            "loadBalancingSettings": {
+              "type": "object",
+              "metadata": {
+                "description": "Required. Load balancing settings for a backend pool."
+              }
+            },
+            "sessionAffinityState": {
+              "type": "string",
+              "defaultValue": "Disabled",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "metadata": {
+                "description": "Optional. Whether to allow session affinity on this host."
+              }
+            },
+            "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": {
+              "type": "int",
+              "defaultValue": 10,
+              "metadata": {
+                "description": "Optional. Time in minutes to shift the traffic to the endpoint gradually when an unhealthy endpoint comes healthy or a new endpoint is added. Default is 10 mins."
+              }
+            },
+            "origins": {
+              "type": "array",
+              "metadata": {
+                "description": "Required. The list of origins within the origin group."
+              }
+            }
+          },
+          "resources": {
+            "profile": {
+              "existing": true,
+              "type": "Microsoft.Cdn/profiles",
+              "apiVersion": "2023-05-01",
+              "name": "[parameters('profileName')]"
+            },
+            "originGroup": {
+              "type": "Microsoft.Cdn/profiles/originGroups",
+              "apiVersion": "2023-05-01",
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
+              "properties": {
+                "healthProbeSettings": "[parameters('healthProbeSettings')]",
+                "loadBalancingSettings": "[parameters('loadBalancingSettings')]",
+                "sessionAffinityState": "[parameters('sessionAffinityState')]",
+                "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": "[parameters('trafficRestorationTimeToHealedOrNewEndpointsInMinutes')]"
+              },
+              "dependsOn": [
+                "profile"
+              ]
+            },
+            "originGroup_origins": {
+              "copy": {
+                "name": "originGroup_origins",
+                "count": "[length(parameters('origins'))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-OriginGroup-Origin-{1}', uniqueString(deployment().name), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[parameters('origins')[copyIndex()].name]"
+                  },
+                  "profileName": {
+                    "value": "[parameters('profileName')]"
+                  },
+                  "hostName": {
+                    "value": "[parameters('origins')[copyIndex()].hostName]"
+                  },
+                  "originGroupName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "enabledState": {
+                    "value": "[tryGet(parameters('origins')[copyIndex()], 'enabledState')]"
+                  },
+                  "enforceCertificateNameCheck": {
+                    "value": "[tryGet(parameters('origins')[copyIndex()], 'enforceCertificateNameCheck')]"
+                  },
+                  "httpPort": {
+                    "value": "[tryGet(parameters('origins')[copyIndex()], 'httpPort')]"
+                  },
+                  "httpsPort": {
+                    "value": "[tryGet(parameters('origins')[copyIndex()], 'httpsPort')]"
+                  },
+                  "originHostHeader": {
+                    "value": "[coalesce(tryGet(parameters('origins')[copyIndex()], 'originHostHeader'), parameters('origins')[copyIndex()].hostName)]"
+                  },
+                  "priority": {
+                    "value": "[tryGet(parameters('origins')[copyIndex()], 'priority')]"
+                  },
+                  "weight": {
+                    "value": "[tryGet(parameters('origins')[copyIndex()], 'weight')]"
+                  },
+                  "sharedPrivateLinkResource": {
+                    "value": "[tryGet(parameters('origins')[copyIndex()], 'sharedPrivateLinkResource')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.25.53.49325",
+                      "templateHash": "17323276561210856523"
+                    },
+                    "name": "CDN Profiles Origin",
+                    "description": "This module deploys a CDN Profile Origin.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the origion."
+                      }
+                    },
+                    "profileName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the CDN profile."
+                      }
+                    },
+                    "originGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the group."
+                      }
+                    },
+                    "enabledState": {
+                      "type": "string",
+                      "defaultValue": "Enabled",
+                      "allowedValues": [
+                        "Disabled",
+                        "Enabled"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Whether to enable health probes to be made against backends defined under backendPools. Health probes can only be disabled if there is a single enabled backend in single enabled backend pool."
+                      }
+                    },
+                    "enforceCertificateNameCheck": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Whether to enable certificate name check at origin level."
+                      }
+                    },
+                    "hostName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The address of the origin. Domain names, IPv4 addresses, and IPv6 addresses are supported.This should be unique across all origins in an endpoint."
+                      }
+                    },
+                    "httpPort": {
+                      "type": "int",
+                      "defaultValue": 80,
+                      "metadata": {
+                        "description": "Optional. The value of the HTTP port. Must be between 1 and 65535."
+                      }
+                    },
+                    "httpsPort": {
+                      "type": "int",
+                      "defaultValue": 443,
+                      "metadata": {
+                        "description": "Optional. The value of the HTTPS port. Must be between 1 and 65535."
+                      }
+                    },
+                    "originHostHeader": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The host header value sent to the origin with each request. If you leave this blank, the request hostname determines this value. Azure Front Door origins, such as Web Apps, Blob Storage, and Cloud Services require this host header value to match the origin hostname by default. This overrides the host header defined at Endpoint."
+                      }
+                    },
+                    "priority": {
+                      "type": "int",
+                      "defaultValue": 1,
+                      "metadata": {
+                        "description": "Optional. Priority of origin in given origin group for load balancing. Higher priorities will not be used for load balancing if any lower priority origin is healthy.Must be between 1 and 5."
+                      }
+                    },
+                    "sharedPrivateLinkResource": {
+                      "type": "object",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The properties of the private link resource for private origin."
+                      }
+                    },
+                    "weight": {
+                      "type": "int",
+                      "defaultValue": 1000,
+                      "metadata": {
+                        "description": "Optional. Weight of the origin in given origin group for load balancing. Must be between 1 and 1000."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "profile::originGroup": {
+                      "existing": true,
+                      "type": "Microsoft.Cdn/profiles/originGroups",
+                      "apiVersion": "2023-05-01",
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
+                      "dependsOn": [
+                        "profile"
+                      ]
+                    },
+                    "profile": {
+                      "existing": true,
+                      "type": "Microsoft.Cdn/profiles",
+                      "apiVersion": "2023-05-01",
+                      "name": "[parameters('profileName')]"
+                    },
+                    "origin": {
+                      "type": "Microsoft.Cdn/profiles/originGroups/origins",
+                      "apiVersion": "2023-05-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('originGroupName'), parameters('name'))]",
+                      "properties": {
+                        "enabledState": "[parameters('enabledState')]",
+                        "enforceCertificateNameCheck": "[parameters('enforceCertificateNameCheck')]",
+                        "hostName": "[parameters('hostName')]",
+                        "httpPort": "[parameters('httpPort')]",
+                        "httpsPort": "[parameters('httpsPort')]",
+                        "originHostHeader": "[parameters('originHostHeader')]",
+                        "priority": "[parameters('priority')]",
+                        "sharedPrivateLinkResource": "[parameters('sharedPrivateLinkResource')]",
+                        "weight": "[parameters('weight')]"
+                      },
+                      "dependsOn": [
+                        "profile::originGroup"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the origin."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource id of the origin."
+                      },
+                      "value": "[resourceId('Microsoft.Cdn/profiles/originGroups/origins', parameters('profileName'), parameters('originGroupName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the origin was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "originGroup"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the origin group."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource id of the origin group."
+              },
+              "value": "[resourceId('Microsoft.Cdn/profiles/originGroups', parameters('profileName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the origin group was created in."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('profile', '2023-05-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "profile"
+      ]
+    },
+    "profile_ruleSets": {
+      "copy": {
+        "name": "profile_ruleSets",
+        "count": "[length(parameters('ruleSets'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Profile-RuleSet-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('ruleSets')[copyIndex()].name]"
+          },
+          "profileName": {
+            "value": "[parameters('name')]"
+          },
+          "rules": {
+            "value": "[parameters('ruleSets')[copyIndex()].rules]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.25.53.49325",
+              "templateHash": "4615747470717464878"
+            },
+            "name": "CDN Profiles Rule Sets",
+            "description": "This module deploys a CDN Profile rule set.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the rule set."
+              }
+            },
+            "profileName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the CDN profile."
+              }
+            },
+            "rules": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optinal. The rules to apply to the rule set."
+              }
+            }
+          },
+          "resources": {
+            "profile": {
+              "existing": true,
+              "type": "Microsoft.Cdn/profiles",
+              "apiVersion": "2023-05-01",
+              "name": "[parameters('profileName')]"
+            },
+            "ruleSet": {
+              "type": "Microsoft.Cdn/profiles/ruleSets",
+              "apiVersion": "2023-05-01",
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
+              "dependsOn": [
+                "profile"
+              ]
+            },
+            "ruleSet_rules": {
+              "copy": {
+                "name": "ruleSet_rules",
+                "count": "[length(coalesce(parameters('rules'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-RuleSet-Rule-{1}-{2}', uniqueString(deployment().name), coalesce(parameters('rules'), createArray())[copyIndex()].name, copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "profileName": {
+                    "value": "[parameters('profileName')]"
+                  },
+                  "ruleSetName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "name": {
+                    "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].name]"
+                  },
+                  "order": {
+                    "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].order]"
+                  },
+                  "actions": {
+                    "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'actions')]"
+                  },
+                  "conditions": {
+                    "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'conditions')]"
+                  },
+                  "matchProcessingBehavior": {
+                    "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'matchProcessingBehavior')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.25.53.49325",
+                      "templateHash": "9936176531232217343"
+                    },
+                    "name": "CDN Profiles Rules",
+                    "description": "This module deploys a CDN Profile rule.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the rule."
+                      }
+                    },
+                    "profileName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the profile."
+                      }
+                    },
+                    "ruleSetName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the rule set."
+                      }
+                    },
+                    "order": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Required. The order in which this rule will be applied. Rules with a lower order are applied before rules with a higher order."
+                      }
+                    },
+                    "actions": {
+                      "type": "array",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. A list of actions that are executed when all the conditions of a rule are satisfied."
+                      }
+                    },
+                    "conditions": {
+                      "type": "array",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. A list of conditions that must be matched for the actions to be executed."
+                      }
+                    },
+                    "matchProcessingBehavior": {
+                      "type": "string",
+                      "defaultValue": "Continue",
+                      "allowedValues": [
+                        "Continue",
+                        "Stop"
+                      ],
+                      "metadata": {
+                        "description": "Optional. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "profile::ruleSet": {
+                      "existing": true,
+                      "type": "Microsoft.Cdn/profiles/ruleSets",
+                      "apiVersion": "2023-05-01",
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSetName'))]",
+                      "dependsOn": [
+                        "profile"
+                      ]
+                    },
+                    "profile": {
+                      "existing": true,
+                      "type": "Microsoft.Cdn/profiles",
+                      "apiVersion": "2023-05-01",
+                      "name": "[parameters('profileName')]"
+                    },
+                    "rule": {
+                      "type": "Microsoft.Cdn/profiles/ruleSets/rules",
+                      "apiVersion": "2023-05-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('ruleSetName'), parameters('name'))]",
+                      "properties": {
+                        "order": "[parameters('order')]",
+                        "actions": "[parameters('actions')]",
+                        "conditions": "[parameters('conditions')]",
+                        "matchProcessingBehavior": "[parameters('matchProcessingBehavior')]"
+                      },
+                      "dependsOn": [
+                        "profile::ruleSet"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the rule."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource id of the rule."
+                      },
+                      "value": "[resourceId('Microsoft.Cdn/profiles/ruleSets/rules', parameters('profileName'), parameters('ruleSetName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the custom domain was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the rule set."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource id of the rule set."
+              },
+              "value": "[resourceId('Microsoft.Cdn/profiles/ruleSets', parameters('profileName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the custom domain was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "profile"
+      ]
+    },
+    "profile_afdEndpoints": {
+      "copy": {
+        "name": "profile_afdEndpoints",
+        "count": "[length(parameters('afdEndpoints'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Profile-AfdEndpoint-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('afdEndpoints')[copyIndex()].name]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "profileName": {
+            "value": "[parameters('name')]"
+          },
+          "autoGeneratedDomainNameLabelScope": {
+            "value": "[tryGet(parameters('afdEndpoints')[copyIndex()], 'autoGeneratedDomainNameLabelScope')]"
+          },
+          "enabledState": {
+            "value": "[tryGet(parameters('afdEndpoints')[copyIndex()], 'enabledState')]"
+          },
+          "routes": {
+            "value": "[tryGet(parameters('afdEndpoints')[copyIndex()], 'routes')]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(parameters('afdEndpoints')[copyIndex()], 'tags'), parameters('tags'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.25.53.49325",
+              "templateHash": "694786816081848742"
+            },
+            "name": "CDN Profiles AFD Endpoints",
+            "description": "This module deploys a CDN Profile AFD Endpoint.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the AFD Endpoint."
+              }
+            },
+            "profileName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent CDN profile. Required if the template is used in a standalone deployment."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. The location of the AFD Endpoint."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The tags of the AFD Endpoint."
+              }
+            },
+            "autoGeneratedDomainNameLabelScope": {
+              "type": "string",
+              "defaultValue": "TenantReuse",
+              "allowedValues": [
+                "NoReuse",
+                "ResourceGroupReuse",
+                "SubscriptionReuse",
+                "TenantReuse"
+              ],
+              "metadata": {
+                "description": "Optional. Indicates the endpoint name reuse scope. The default value is TenantReuse."
+              }
+            },
+            "enabledState": {
+              "type": "string",
+              "defaultValue": "Enabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. Indicates whether the AFD Endpoint is enabled. The default value is Enabled."
+              }
+            },
+            "routes": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of routes for this AFD Endpoint."
+              }
+            }
+          },
+          "resources": {
+            "profile": {
+              "existing": true,
+              "type": "Microsoft.Cdn/profiles",
+              "apiVersion": "2023-05-01",
+              "name": "[parameters('profileName')]"
+            },
+            "afdEndpoint": {
+              "type": "Microsoft.Cdn/profiles/afdEndpoints",
+              "apiVersion": "2023-05-01",
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "autoGeneratedDomainNameLabelScope": "[parameters('autoGeneratedDomainNameLabelScope')]",
+                "enabledState": "[parameters('enabledState')]"
+              },
+              "dependsOn": [
+                "profile"
+              ]
+            },
+            "afdEndpoint_routes": {
+              "copy": {
+                "name": "afdEndpoint_routes",
+                "count": "[length(coalesce(parameters('routes'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-Profile-AfdEndpoint-Route', uniqueString(deployment().name, coalesce(parameters('routes'), createArray())[copyIndex()].name))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[coalesce(parameters('routes'), createArray())[copyIndex()].name]"
+                  },
+                  "profileName": {
+                    "value": "[parameters('profileName')]"
+                  },
+                  "afdEndpointName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "cacheConfiguration": {
+                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'cacheConfiguration')]"
+                  },
+                  "customDomainName": {
+                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'customDomainName')]"
+                  },
+                  "enabledState": {
+                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'enabledState')]"
+                  },
+                  "forwardingProtocol": {
+                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'forwardingProtocol')]"
+                  },
+                  "httpsRedirect": {
+                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'httpsRedirect')]"
+                  },
+                  "linkToDefaultDomain": {
+                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'linkToDefaultDomain')]"
+                  },
+                  "originGroupName": {
+                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'originGroupName')]"
+                  },
+                  "originPath": {
+                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'originPath')]"
+                  },
+                  "patternsToMatch": {
+                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'patternsToMatch')]"
+                  },
+                  "ruleSets": {
+                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'ruleSets')]"
+                  },
+                  "supportedProtocols": {
+                    "value": "[tryGet(coalesce(parameters('routes'), createArray())[copyIndex()], 'supportedProtocols')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.25.53.49325",
+                      "templateHash": "16844846729595835268"
+                    },
+                    "name": "CDN Profiles AFD Endpoint Route",
+                    "description": "This module deploys a CDN Profile AFD Endpoint route.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the route."
+                      }
+                    },
+                    "profileName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the parent CDN profile."
+                      }
+                    },
+                    "afdEndpointName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the AFD endpoint."
+                      }
+                    },
+                    "cacheConfiguration": {
+                      "type": "object",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The caching configuration for this route. To disable caching, do not provide a cacheConfiguration object."
+                      }
+                    },
+                    "customDomainName": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The name of the custom domain. The custom domain must be defined in the profile customDomains."
+                      }
+                    },
+                    "forwardingProtocol": {
+                      "type": "string",
+                      "defaultValue": "MatchRequest",
+                      "allowedValues": [
+                        "HttpOnly",
+                        "HttpsOnly",
+                        "MatchRequest"
+                      ],
+                      "metadata": {
+                        "description": "Optional. The protocol this rule will use when forwarding traffic to backends."
+                      }
+                    },
+                    "enabledState": {
+                      "type": "string",
+                      "defaultValue": "Enabled",
+                      "allowedValues": [
+                        "Disabled",
+                        "Enabled"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Whether this route is enabled."
+                      }
+                    },
+                    "httpsRedirect": {
+                      "type": "string",
+                      "defaultValue": "Enabled",
+                      "allowedValues": [
+                        "Disabled",
+                        "Enabled"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Whether to automatically redirect HTTP traffic to HTTPS traffic."
+                      }
+                    },
+                    "linkToDefaultDomain": {
+                      "type": "string",
+                      "defaultValue": "Enabled",
+                      "allowedValues": [
+                        "Disabled",
+                        "Enabled"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Whether this route will be linked to the default endpoint domain."
+                      }
+                    },
+                    "originGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the origin group. The origin group must be defined in the profile originGroups."
+                      }
+                    },
+                    "originPath": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. A directory path on the origin that AzureFrontDoor can use to retrieve content from, e.g. contoso.cloudapp.net/originpath."
+                      }
+                    },
+                    "patternsToMatch": {
+                      "type": "array",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The route patterns of the rule."
+                      }
+                    },
+                    "ruleSets": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "Optional. The rule sets of the rule. The rule sets must be defined in the profile ruleSets."
+                      }
+                    },
+                    "supportedProtocols": {
+                      "type": "array",
+                      "nullable": true,
+                      "allowedValues": [
+                        "Http",
+                        "Https"
+                      ],
+                      "metadata": {
+                        "description": "Optional. The supported protocols of the rule."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "profile::afdEndpoint": {
+                      "existing": true,
+                      "type": "Microsoft.Cdn/profiles/afdEndpoints",
+                      "apiVersion": "2023-05-01",
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('afdEndpointName'))]",
+                      "dependsOn": [
+                        "profile"
+                      ]
+                    },
+                    "profile::customDomain": {
+                      "condition": "[not(empty(parameters('customDomainName')))]",
+                      "existing": true,
+                      "type": "Microsoft.Cdn/profiles/customDomains",
+                      "apiVersion": "2023-05-01",
+                      "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainName'), ''))]",
+                      "dependsOn": [
+                        "profile"
+                      ]
+                    },
+                    "profile::originGroup": {
+                      "existing": true,
+                      "type": "Microsoft.Cdn/profiles/originGroups",
+                      "apiVersion": "2023-05-01",
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
+                      "dependsOn": [
+                        "profile"
+                      ]
+                    },
+                    "profile::ruleSet": {
+                      "copy": {
+                        "name": "ruleSet",
+                        "count": "[length(parameters('ruleSets'))]"
+                      },
+                      "existing": true,
+                      "type": "Microsoft.Cdn/profiles/ruleSets",
+                      "apiVersion": "2023-05-01",
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSets')[copyIndex()].name)]",
+                      "dependsOn": [
+                        "profile"
+                      ]
+                    },
+                    "profile": {
+                      "existing": true,
+                      "type": "Microsoft.Cdn/profiles",
+                      "apiVersion": "2023-05-01",
+                      "name": "[parameters('profileName')]"
+                    },
+                    "route": {
+                      "type": "Microsoft.Cdn/profiles/afdEndpoints/routes",
+                      "apiVersion": "2023-05-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('afdEndpointName'), parameters('name'))]",
+                      "properties": {
+                        "copy": [
+                          {
+                            "name": "ruleSets",
+                            "count": "[length(parameters('ruleSets'))]",
+                            "input": {
+                              "id": "[resourceId('Microsoft.Cdn/profiles/ruleSets', parameters('profileName'), parameters('ruleSets')[copyIndex('ruleSets')].name)]"
+                            }
+                          }
+                        ],
+                        "cacheConfiguration": "[parameters('cacheConfiguration')]",
+                        "customDomains": "[if(not(empty(parameters('customDomainName'))), createArray(createObject('id', resourceId('Microsoft.Cdn/profiles/customDomains', parameters('profileName'), coalesce(parameters('customDomainName'), '')))), createArray())]",
+                        "enabledState": "[parameters('enabledState')]",
+                        "forwardingProtocol": "[parameters('forwardingProtocol')]",
+                        "httpsRedirect": "[parameters('httpsRedirect')]",
+                        "linkToDefaultDomain": "[parameters('linkToDefaultDomain')]",
+                        "originGroup": {
+                          "id": "[resourceId('Microsoft.Cdn/profiles/originGroups', parameters('profileName'), parameters('originGroupName'))]"
+                        },
+                        "originPath": "[parameters('originPath')]",
+                        "patternsToMatch": "[parameters('patternsToMatch')]",
+                        "supportedProtocols": "[parameters('supportedProtocols')]"
+                      },
+                      "dependsOn": [
+                        "profile::afdEndpoint"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the route."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The ID of the route."
+                      },
+                      "value": "[resourceId('Microsoft.Cdn/profiles/afdEndpoints/routes', parameters('profileName'), parameters('afdEndpointName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the route was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "afdEndpoint",
+                "profile"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the AFD Endpoint."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource id of the AFD Endpoint."
+              },
+              "value": "[resourceId('Microsoft.Cdn/profiles/afdEndpoints', parameters('profileName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the endpoint was created in."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('afdEndpoint', '2023-05-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "profile",
+        "profile_customDomains",
+        "profile_originGroups",
+        "profile_ruleSets"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the CDN profile."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the CDN profile."
+      },
+      "value": "[resourceId('Microsoft.Cdn/profiles', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group where the CDN profile is deployed."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "profileType": {
+      "type": "string",
+      "metadata": {
+        "description": "The type of the CDN profile."
+      },
+      "value": "Microsoft.Cdn/profiles"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('profile', '2023-05-01', 'full').location]"
+    }
+  }
+}

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "12935822983257775198"
+      "version": "0.25.53.49325",
+      "templateHash": "18311728331837293497"
     },
     "name": "VPN Gateways",
     "description": "This module deploys a VPN Gateway.",
@@ -221,17 +221,22 @@
           "externalMappings": "[if(contains(parameters('natRules')[copyIndex()], 'externalMappings'), createObject('value', parameters('natRules')[copyIndex()].externalMappings), createObject('value', createArray()))]",
           "internalMappings": "[if(contains(parameters('natRules')[copyIndex()], 'internalMappings'), createObject('value', parameters('natRules')[copyIndex()].internalMappings), createObject('value', createArray()))]",
           "ipConfigurationId": "[if(contains(parameters('natRules')[copyIndex()], 'ipConfigurationId'), createObject('value', parameters('natRules')[copyIndex()].ipConfigurationId), createObject('value', ''))]",
-          "mode": "[if(contains(parameters('natRules')[copyIndex()], 'mode'), createObject('value', parameters('natRules')[copyIndex()].mode), createObject('value', ''))]",
-          "type": "[if(contains(parameters('natRules')[copyIndex()], 'type'), createObject('value', parameters('natRules')[copyIndex()].type), createObject('value', ''))]"
+          "mode": {
+            "value": "[tryGet(parameters('natRules')[copyIndex()], 'mode')]"
+          },
+          "type": {
+            "value": "[tryGet(parameters('natRules')[copyIndex()], 'type')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "12544565901642791038"
+              "version": "0.25.53.49325",
+              "templateHash": "10009969919084019961"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a VPN Gateway NAT Rule.",
@@ -266,16 +271,15 @@
             },
             "ipConfigurationId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A NAT rule must be configured to a specific VPN Gateway instance. This is applicable to Dynamic NAT only. Static NAT rules are automatically applied to both VPN Gateway instances."
               }
             },
             "mode": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "allowedValues": [
-                "",
                 "EgressSnat",
                 "IngressSnat"
               ],
@@ -285,9 +289,8 @@
             },
             "type": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "allowedValues": [
-                "",
                 "Dynamic",
                 "Static"
               ],
@@ -296,20 +299,29 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "vpnGateway": {
+              "existing": true,
+              "type": "Microsoft.Network/vpnGateways",
+              "apiVersion": "2023-04-01",
+              "name": "[parameters('vpnGatewayName')]"
+            },
+            "natRule": {
               "type": "Microsoft.Network/vpnGateways/natRules",
               "apiVersion": "2023-04-01",
               "name": "[format('{0}/{1}', parameters('vpnGatewayName'), parameters('name'))]",
               "properties": {
                 "externalMappings": "[parameters('externalMappings')]",
                 "internalMappings": "[parameters('internalMappings')]",
-                "ipConfigurationId": "[if(not(empty(parameters('ipConfigurationId'))), parameters('ipConfigurationId'), null())]",
-                "mode": "[if(not(empty(parameters('mode'))), parameters('mode'), null())]",
-                "type": "[if(not(empty(parameters('type'))), parameters('type'), null())]"
-              }
+                "ipConfigurationId": "[parameters('ipConfigurationId')]",
+                "mode": "[parameters('mode')]",
+                "type": "[parameters('type')]"
+              },
+              "dependsOn": [
+                "vpnGateway"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -405,8 +417,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "1538972740652771448"
+              "version": "0.25.53.49325",
+              "templateHash": "2523279657002252302"
             },
             "name": "VPN Gateway VPN Connections",
             "description": "This module deploys a VPN Gateway VPN Connection.",

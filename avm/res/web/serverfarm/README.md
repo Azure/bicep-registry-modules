@@ -43,7 +43,7 @@ This instance deploys the module with a base set of parameters. Note it does inc
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsfmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsfmin'
   params: {
     // Required parameters
     name: 'wsfmin001'
@@ -55,7 +55,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       tier: 'Premium'
     }
     // Non-required parameters
-    location: 'eastus'
+    location: '<location>'
   }
 }
 ```
@@ -87,7 +87,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     },
     // Non-required parameters
     "location": {
-      "value": "eastus"
+      "value": "<location>"
     }
   }
 }
@@ -107,7 +107,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsfmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsfmax'
   params: {
     // Required parameters
     name: 'wsfmax001'
@@ -134,7 +134,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       }
     ]
     kind: 'App'
-    location: 'eastus'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'lock'
@@ -213,7 +213,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       "value": "App"
     },
     "location": {
-      "value": "eastus"
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -271,7 +271,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsfwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsfwaf'
   params: {
     // Required parameters
     name: 'wsfwaf001'
@@ -298,7 +298,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       }
     ]
     kind: 'App'
-    location: 'eastus'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'lock'
@@ -359,7 +359,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       "value": "App"
     },
     "location": {
-      "value": "eastus"
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -464,7 +464,7 @@ The diagnostic settings of the service.
 | [`eventHubName`](#parameter-diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to '' to disable metric collection. |
+| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
 | [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
@@ -506,10 +506,36 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
-The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to '' to disable metric collection.
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-diagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `diagnosticSettings.name`
 
