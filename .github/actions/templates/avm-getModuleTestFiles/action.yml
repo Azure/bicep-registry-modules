@@ -57,6 +57,7 @@ runs:
         Write-Output '::endgroup::'
 
         Write-Output '::group::Get PSRule test files'
+        $testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Include 'main.test.bicep', 'main.bicep').FullName | Sort-Object
         $psRuleTestFilePaths = $testFilePaths | Where-Object { $_ -match '${{ inputs.psRuleFilterRegex }}' }
 
         Write-Output $psRuleTestFilePaths
