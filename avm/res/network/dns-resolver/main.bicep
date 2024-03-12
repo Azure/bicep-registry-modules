@@ -1,8 +1,8 @@
-metadata name = 'DNS Resolvers'
+metadata name = 'DNS Resolver'
 metadata description = 'This module deploys a DNS Resolver.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. Name of the Private DNS Resolver.')
+@description('Required. Name of the DNS Private Resolver.')
 @minLength(1)
 param name string
 
@@ -12,22 +12,22 @@ param location string = resourceGroup().location
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
-@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+@description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Required. ResourceId of the virtual network to attach the Private DNS Resolver to.')
+@description('Required. ResourceId of the virtual network to attach the DNS Private Resolver to.')
 param virtualNetworkResourceId string
 
-@description('Optional. Outbound Endpoints for Private DNS Resolver.')
-param outboundEndpoints array?
+@description('Optional. Outbound Endpoints for DNS Private Resolver.')
+param outboundEndpoints outboundEndpointType
 
-@description('Optional. Inbound Endpoints for Private DNS Resolver.')
-param inboundEndpoints array?
+@description('Optional. Inbound Endpoints for DNS Private Resolver.')
+param inboundEndpoints inboundEndpointType
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 var builtInRoleNames = {
@@ -84,7 +84,7 @@ resource dnsResolver_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empt
 resource dnsResolver_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
   name: guid(dnsResolver.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
   properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
+    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
     principalId: roleAssignment.principalId
     description: roleAssignment.?description
     principalType: roleAssignment.?principalType
@@ -105,7 +105,6 @@ module dnsResolver_inboundEndpoints 'inbound-endpoint/main.bicep' = [for (inboun
     subnetResourceId: inboundEndpoint.subnetResourceId
     privateIpAddress: inboundEndpoint.?privateIpAddress
     privateIpAllocationMethod: inboundEndpoint.?privateIpAllocationMethod
-
   }
 }]
 
@@ -120,13 +119,13 @@ module dnsResolver_outboundEndpoints 'outbound-endpoint/main.bicep' = [for (outb
   }
 }]
 
-@description('The resource group the Private DNS Resolver was deployed into.')
+@description('The resource group the DNS Private Resolver was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The resource ID of the Private DNS Resolver.')
+@description('The resource ID of the DNS Private Resolver.')
 output resourceId string = dnsResolver.id
 
-@description('The name of the Private DNS Resolver.')
+@description('The name of the DNS Private Resolver.')
 output name string = dnsResolver.name
 
 @description('The location the resource was deployed into.')
@@ -137,7 +136,7 @@ output location string = dnsResolver.location
 // ================ //
 
 type roleAssignmentType = {
-  @description('Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.')
+  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
   @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
@@ -149,7 +148,7 @@ type roleAssignmentType = {
   @description('Optional. The description of the role assignment.')
   description: string?
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
+  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
   @description('Optional. Version of the condition.')
@@ -166,3 +165,37 @@ type lockType = {
   @description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
+
+type inboundEndpointType = {
+  @description('Required. Name of the inbound endpoint.')
+  name: string
+
+  @description('Required. The reference to the subnet bound to the IP configuration.')
+  subnetResourceId: string
+
+  @description('Optional. Tags for the resource.')
+  tags: object?
+
+  @description('Optional. Location for all resources.')
+  location: string?
+
+  @description('Optional. Private IP address of the IP configuration.')
+  privateIpAddress: string?
+
+  @description('Optional. Private IP address allocation method.')
+  privateIpAllocationMethod: ('Dynamic' | 'Static')?
+}[]?
+
+type outboundEndpointType = {
+  @description('Required. Name of the outbound endpoint.')
+  name: string
+
+  @description('Required. ResourceId of the subnet to attach the outbound endpoint to.')
+  subnetResourceId: string
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
+
+  @description('Optional. Location for all resources.')
+  location: string?
+}[]?

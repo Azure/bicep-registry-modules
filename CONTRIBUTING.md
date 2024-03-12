@@ -37,7 +37,7 @@ Add a new directory under the `modules` folder in your local bicep-registry-modu
 
 Open a terminal and navigate to the newly created folder. From there, run the following command to generate the required files for the Bicep public registry module:
 
-```
+```shell
 brm generate
 ```
 
@@ -105,7 +105,7 @@ Each template should include the following 3 parameters: `location`, `prefix` an
 ##### Outputs
 
 - The `name` output should link to the `name` parameter.
-- THe `id` output should link to the main resource of the deployment. Additional ID parameters may be provided.
+- The `id` output should link to the main resource of the deployment. Additional ID parameters may be provided.
 
 ##### Zone Redundancy
 
@@ -172,13 +172,15 @@ Instead go with:
 - `./modules/storage.bicep`
 - `./modules/compute.bicep`
 
-## User-Defined Types (Preview)
+## User-Defined Types
 
-The repository has been setup to leverage the preview feature, [user-defined types](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/user-defined-data-types), on a per module basis.
+User-defined type `type` assignments should be declared to the end of the file, after the declaration of `outputs`.
 
-While the feature is in Preview, [to enable](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/user-defined-data-types#enable-the-preview-feature) include a `bicepconfig.json` in your module directory.
+Types should include descriptions, which can be copied from the Azure API documentation when wrapping existing resource provider objects. Nested `type` declarations do not need a description. Types are reserved for use in complex cases and should not be used to in place of primitive types.
 
-`type` assignments should be declared to the end of the file, after the declaration of `outputs`. Types should include descriptions, which can be copied from the Azure API documentation when wrapping existing RP objects. Nested `type` declarations do not need a description. `type` should be reserved for use in complex cases and should not be used to in place of primitive types.
+To utilize `type` it is required to use Bicep version of 0.24.24 or higher.
+
+Follow these patterns:
 
 ```bicep
 @description('The properties of a storage account’s Blob service.')
@@ -210,7 +212,7 @@ type containerDeleteRetentionPolicy = {
 }
 ```
 
-Avoid these patterns.
+Avoid these patterns:
 
 ```bicep
 type enabled = bool  // Avoid setting aliases for primitive types
@@ -298,7 +300,7 @@ If your change is non-breaking but does not require updating the MINOR version, 
 
 You may use the Bicep registry module tool to validate the contents of the registry module files. To do so, invoke the follow command from the module folder:
 
-```
+```shell
 brm validate
 ```
 
@@ -310,19 +312,18 @@ The `brm validate` command mentioned in the above step does not deploy the `test
 
 Once the module files are validated locally, you can commit your changes and open a pull request. You must link the new module proposal in the pull request description if you are trying to add a new module. Adding or updating multiple modules is not supported and will cause a failure in the pull request validation CI, so please only add or change one module at a time.
 
-## Prefix the PR TItle based on the type of change.
+## Prefix the pull request title based on the type of change
 
-The modules in the repository follow Semantic Versioning.
-A GitHub action checks that PRs include a prefix. This acts as a stepping stone to automating the version incrementing, this action requires each PR have a semantic prefix.
+The modules in the repository follow Semantic Versioning. A GitHub action checks that pull requests include a prefix. This acts as a stepping stone to automating the version incrementing, this GitHub action requires each pull request to have a semantic prefix.
 
-Example PR Tiles:
+Example pull request titles:
 
 - Creating a new module: `feat(new): Storage Account Module`
 - Add a bug fix to existing module: `fix: Storage Account does not properly format output`
 - Add a feature to existing module `feat: Add input parameter to deploy storage into vnet`
 - Add a breaking change to a module due to refactoring: `refactor!: Use custom types in storage account`
 
-More details can be found [here] about each prefix(https://www.conventionalcommits.org/en/v1.0.0/).
+More details on prefixes can be found [here](https://www.conventionalcommits.org/en/v1.0.0/).
 
 Recommend prefixes include:
 

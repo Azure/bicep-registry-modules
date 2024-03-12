@@ -5,10 +5,10 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "8204369866925392451"
+      "version": "0.25.53.49325",
+      "templateHash": "11674721033032796270"
     },
-    "name": "DNS Resolvers",
+    "name": "DNS Resolver",
     "description": "This module deploys a DNS Resolver.",
     "owner": "Azure/module-maintainers"
   },
@@ -21,7 +21,7 @@
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
-              "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
             }
           },
           "principalId": {
@@ -55,7 +55,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
             }
           },
           "conditionVersion": {
@@ -103,6 +103,94 @@
         }
       },
       "nullable": true
+    },
+    "inboundEndpointType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Name of the inbound endpoint."
+            }
+          },
+          "subnetResourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The reference to the subnet bound to the IP configuration."
+            }
+          },
+          "tags": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Tags for the resource."
+            }
+          },
+          "location": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Location for all resources."
+            }
+          },
+          "privateIpAddress": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Private IP address of the IP configuration."
+            }
+          },
+          "privateIpAllocationMethod": {
+            "type": "string",
+            "allowedValues": [
+              "Dynamic",
+              "Static"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Private IP address allocation method."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "outboundEndpointType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Name of the outbound endpoint."
+            }
+          },
+          "subnetResourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. ResourceId of the subnet to attach the outbound endpoint to."
+            }
+          },
+          "tags": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Tags of the resource."
+            }
+          },
+          "location": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Location for all resources."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -110,7 +198,7 @@
       "type": "string",
       "minLength": 1,
       "metadata": {
-        "description": "Required. Name of the Private DNS Resolver."
+        "description": "Required. Name of the DNS Private Resolver."
       }
     },
     "location": {
@@ -129,7 +217,7 @@
     "roleAssignments": {
       "$ref": "#/definitions/roleAssignmentType",
       "metadata": {
-        "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+        "description": "Optional. Array of role assignments to create."
       }
     },
     "tags": {
@@ -142,28 +230,26 @@
     "virtualNetworkResourceId": {
       "type": "string",
       "metadata": {
-        "description": "Required. ResourceId of the virtual network to attach the Private DNS Resolver to."
+        "description": "Required. ResourceId of the virtual network to attach the DNS Private Resolver to."
       }
     },
     "outboundEndpoints": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/outboundEndpointType",
       "metadata": {
-        "description": "Optional. Outbound Endpoints for Private DNS Resolver."
+        "description": "Optional. Outbound Endpoints for DNS Private Resolver."
       }
     },
     "inboundEndpoints": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/inboundEndpointType",
       "metadata": {
-        "description": "Optional. Inbound Endpoints for Private DNS Resolver."
+        "description": "Optional. Inbound Endpoints for DNS Private Resolver."
       }
     },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
@@ -238,7 +324,7 @@
       "scope": "[format('Microsoft.Network/dnsResolvers/{0}', parameters('name'))]",
       "name": "[guid(resourceId('Microsoft.Network/dnsResolvers', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
         "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
         "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
         "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
@@ -293,8 +379,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "4959933150619557451"
+              "version": "0.25.53.49325",
+              "templateHash": "8672047882378700944"
             },
             "name": "DNS Resolver Inbound Endpoint",
             "description": "This module deploys a DNS Resolver Inbound Endpoint.",
@@ -305,7 +391,7 @@
               "type": "string",
               "minLength": 1,
               "metadata": {
-                "description": "Required. Name of the Private DNS Resolver."
+                "description": "Required. Name of the DNS Private Resolver."
               }
             },
             "location": {
@@ -444,8 +530,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "5115868945023493966"
+              "version": "0.25.53.49325",
+              "templateHash": "7237665514415394760"
             },
             "name": "DNS Resolver Outbound Endpoint",
             "description": "This module deploys a DNS Resolver Outbound Endpoint.",
@@ -456,7 +542,7 @@
               "type": "string",
               "minLength": 1,
               "metadata": {
-                "description": "Required. Name of the Private DNS Resolver."
+                "description": "Required. Name of the DNS Private Resolver."
               }
             },
             "location": {
@@ -543,21 +629,21 @@
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the Private DNS Resolver was deployed into."
+        "description": "The resource group the DNS Private Resolver was deployed into."
       },
       "value": "[resourceGroup().name]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the Private DNS Resolver."
+        "description": "The resource ID of the DNS Private Resolver."
       },
       "value": "[resourceId('Microsoft.Network/dnsResolvers', parameters('name'))]"
     },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the Private DNS Resolver."
+        "description": "The name of the DNS Private Resolver."
       },
       "value": "[parameters('name')]"
     },

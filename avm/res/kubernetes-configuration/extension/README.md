@@ -10,13 +10,14 @@ This module deploys a Kubernetes Configuration Extension.
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.KubernetesConfiguration/extensions` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2022-03-01/extensions) |
-| `Microsoft.KubernetesConfiguration/fluxConfigurations` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2022-03-01/fluxConfigurations) |
+| `Microsoft.KubernetesConfiguration/fluxConfigurations` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/fluxConfigurations) |
 
 ## Usage examples
 
@@ -33,8 +34,6 @@ The following section provides usage examples for the module, which were used to
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-
 
 
 <details>
@@ -43,21 +42,16 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kcemin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-kcemin'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
     extensionType: 'microsoft.flux'
     name: 'kcemin001'
     // Non-required parameters
-    configurationProtectedSettings: '<configurationProtectedSettings>'
-    configurationSettings: '<configurationSettings>'
-    fluxConfigurations: '<fluxConfigurations>'
     location: '<location>'
     releaseNamespace: 'flux-system'
     releaseTrain: 'Stable'
-    targetNamespace: '<targetNamespace>'
-    version: '<version>'
   }
 }
 ```
@@ -85,15 +79,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
       "value": "kcemin001"
     },
     // Non-required parameters
-    "configurationProtectedSettings": {
-      "value": "<configurationProtectedSettings>"
-    },
-    "configurationSettings": {
-      "value": "<configurationSettings>"
-    },
-    "fluxConfigurations": {
-      "value": "<fluxConfigurations>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -102,12 +87,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     },
     "releaseTrain": {
       "value": "Stable"
-    },
-    "targetNamespace": {
-      "value": "<targetNamespace>"
-    },
-    "version": {
-      "value": "<version>"
     }
   }
 }
@@ -127,14 +106,13 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kcemax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-kcemax'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
     extensionType: 'microsoft.flux'
     name: 'kcemax001'
     // Non-required parameters
-    configurationProtectedSettings: '<configurationProtectedSettings>'
     configurationSettings: {
       'image-automation-controller.enabled': 'false'
       'image-reflector-controller.enabled': 'false'
@@ -153,6 +131,11 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
           timeoutInSeconds: 180
           url: 'https://github.com/mspnp/aks-baseline'
         }
+        kustomizations: {
+          unified: {
+            path: './cluster-manifests'
+          }
+        }
         namespace: 'flux-system'
         suspend: false
       }
@@ -160,7 +143,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     location: '<location>'
     releaseNamespace: 'flux-system'
     releaseTrain: 'Stable'
-    targetNamespace: '<targetNamespace>'
     version: '0.5.2'
   }
 }
@@ -189,9 +171,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
       "value": "kcemax001"
     },
     // Non-required parameters
-    "configurationProtectedSettings": {
-      "value": "<configurationProtectedSettings>"
-    },
     "configurationSettings": {
       "value": {
         "image-automation-controller.enabled": "false",
@@ -213,6 +192,11 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
             "timeoutInSeconds": 180,
             "url": "https://github.com/mspnp/aks-baseline"
           },
+          "kustomizations": {
+            "unified": {
+              "path": "./cluster-manifests"
+            }
+          },
           "namespace": "flux-system",
           "suspend": false
         }
@@ -226,9 +210,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     },
     "releaseTrain": {
       "value": "Stable"
-    },
-    "targetNamespace": {
-      "value": "<targetNamespace>"
     },
     "version": {
       "value": "0.5.2"
@@ -251,14 +232,13 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kcewaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-kcewaf'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
     extensionType: 'microsoft.flux'
     name: 'kcewaf001'
     // Non-required parameters
-    configurationProtectedSettings: '<configurationProtectedSettings>'
     configurationSettings: {
       'image-automation-controller.enabled': 'false'
       'image-reflector-controller.enabled': 'false'
@@ -277,6 +257,11 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
           timeoutInSeconds: 180
           url: 'https://github.com/mspnp/aks-baseline'
         }
+        kustomizations: {
+          unified: {
+            path: './cluster-manifests'
+          }
+        }
         namespace: 'flux-system'
         suspend: false
       }
@@ -284,7 +269,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     location: '<location>'
     releaseNamespace: 'flux-system'
     releaseTrain: 'Stable'
-    targetNamespace: '<targetNamespace>'
     version: '0.5.2'
   }
 }
@@ -313,9 +297,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
       "value": "kcewaf001"
     },
     // Non-required parameters
-    "configurationProtectedSettings": {
-      "value": "<configurationProtectedSettings>"
-    },
     "configurationSettings": {
       "value": {
         "image-automation-controller.enabled": "false",
@@ -337,6 +318,11 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
             "timeoutInSeconds": 180,
             "url": "https://github.com/mspnp/aks-baseline"
           },
+          "kustomizations": {
+            "unified": {
+              "path": "./cluster-manifests"
+            }
+          },
           "namespace": "flux-system",
           "suspend": false
         }
@@ -350,9 +336,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     },
     "releaseTrain": {
       "value": "Stable"
-    },
-    "targetNamespace": {
-      "value": "<targetNamespace>"
     },
     "version": {
       "value": "0.5.2"
@@ -392,74 +375,86 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
 ### Parameter: `clusterName`
 
 The name of the AKS cluster that should be configured.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `extensionType`
+
+Type of the extension, of which this resource is an instance of. It must be one of the Extension Types registered with Microsoft.KubernetesConfiguration by the extension publisher.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `name`
+
+The name of the Flux Configuration.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `configurationProtectedSettings`
 
 Configuration settings that are sensitive, as name-value pairs for configuring this extension.
+
 - Required: No
 - Type: secureObject
 
 ### Parameter: `configurationSettings`
 
 Configuration settings, as name-value pairs for configuring this extension.
+
 - Required: No
 - Type: object
 
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
+
 - Required: No
 - Type: bool
 - Default: `True`
 
-### Parameter: `extensionType`
-
-Type of the extension, of which this resource is an instance of. It must be one of the Extension Types registered with Microsoft.KubernetesConfiguration by the extension publisher.
-- Required: Yes
-- Type: string
-
 ### Parameter: `fluxConfigurations`
 
 A list of flux configuraitons.
+
 - Required: No
 - Type: array
 
 ### Parameter: `location`
 
 Location for all resources.
+
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
 
-### Parameter: `name`
-
-The name of the Flux Configuration.
-- Required: Yes
-- Type: string
-
 ### Parameter: `releaseNamespace`
 
 Namespace where the extension Release must be placed, for a Cluster scoped extension. If this namespace does not exist, it will be created.
+
 - Required: No
 - Type: string
 
 ### Parameter: `releaseTrain`
 
 ReleaseTrain this extension participates in for auto-upgrade (e.g. Stable, Preview, etc.) - only if autoUpgradeMinorVersion is "true".
+
 - Required: No
 - Type: string
 
 ### Parameter: `targetNamespace`
 
 Namespace where the extension will be created for an Namespace scoped extension. If this namespace does not exist, it will be created.
+
 - Required: No
 - Type: string
 
 ### Parameter: `version`
 
 Version of the extension for this extension, if it is "pinned" to a specific version.
+
 - Required: No
 - Type: string
 
@@ -478,7 +473,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/kubernetes-configuration/flux-configuration:0.2.0` | Remote reference |
+| `br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.1` | Remote reference |
 
 ## Notes
 
@@ -497,3 +492,7 @@ az provider register --namespace Microsoft.KubernetesConfiguration
 ```
 
 For more details see [Prerequisites](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2)
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
