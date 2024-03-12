@@ -41,7 +41,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 }
 
 module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [for (hub, index) in items(hubVirtualNetworks ?? {}): {
-  name: '{uniqueString(deployment().name, location)}-${hub.value.name}-nvn-${name}'
+  name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nvn'
   params: {
     // Required parameters
     name: hub.value.name
@@ -63,7 +63,7 @@ module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [fo
 }]
 
 module hubRouteTable 'br/public:avm/res/network/route-table:0.2.2' = [for (hub, index) in items(hubVirtualNetworks ?? {}): {
-  name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nrt-${name}'
+  name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nrt'
   params: {
     name: hub.value.name
     location: hub.value.location ?? location
@@ -78,7 +78,7 @@ module hubRouteTable 'br/public:avm/res/network/route-table:0.2.2' = [for (hub, 
 // AzureBastionSubnet is required to deploy Bastion service. This subnet must exist in the parsubnets array if you enable Bastion Service.
 // There is a minimum subnet requirement of /27 prefix.
 module hubBastion 'br/public:avm/res/network/bastion-host:0.1.1' = [for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableBastion) {
-  name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nbh-${name}'
+  name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nbh'
   params: {
     // Required parameters
     name: hub.value.name
