@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "7616867894603792614"
+      "templateHash": "11885849494373802730"
     },
     "name": "Purview Accounts",
     "description": "This module deploys a Purview Account.",
@@ -4020,7 +4020,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(contains(reference('account', '2021-07-01', 'full').identity, 'principalId'), reference('account', '2021-07-01', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('account', '2021-07-01', 'full'), 'identity'), 'principalId'), '')]"
     }
   }
 }
