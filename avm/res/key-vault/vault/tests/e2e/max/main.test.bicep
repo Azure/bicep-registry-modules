@@ -292,3 +292,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     diagnosticDependencies
   ]
 }]
+
+output resourceId string = testDeployment[0].outputs.resourceId

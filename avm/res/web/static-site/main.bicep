@@ -2,7 +2,7 @@ metadata name = 'Static Web Apps'
 metadata description = 'This module deploys a Static Web App.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. Name of the static site.')
+@description('Required. The name of the static site.')
 @minLength(1)
 @maxLength(40)
 param name string
@@ -11,7 +11,7 @@ param name string
   'Free'
   'Standard'
 ])
-@description('Optional. Type of static site to deploy.')
+@description('Optional. The service tier and name of the resource SKU.')
 param sku string = 'Free'
 
 @description('Optional. False if config file is locked for this static web app; otherwise, true.')
