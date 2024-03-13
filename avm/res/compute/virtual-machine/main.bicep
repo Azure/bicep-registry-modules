@@ -184,6 +184,13 @@ param extensionHostPoolRegistration object = {
   enabled: false
 }
 
+@description('Optional. Required if host pool registiration extension is used. Name of the host pool.')
+param hostPoolName string
+
+@description('Optional. Required if host pool registiration extension is used. Valid registration token of the host pool.')
+@secure()
+param registrationInfoToken string
+
 @description('Optional. The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionGuestConfigurationExtension object = {
   enabled: false
@@ -692,7 +699,15 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHo
     typeHandlerVersion: contains(extensionHostPoolRegistration, 'typeHandlerVersion') ? extensionHostPoolRegistration.typeHandlerVersion : '2.73'
     autoUpgradeMinorVersion: contains(extensionHostPoolRegistration, 'autoUpgradeMinorVersion') ? extensionHostPoolRegistration.autoUpgradeMinorVersion : true
     enableAutomaticUpgrade: contains(extensionHostPoolRegistration, 'enableAutomaticUpgrade') ? extensionHostPoolRegistration.enableAutomaticUpgrade : false
-    settings: extensionHostPoolRegistration.settings
+    settings: {
+      modulesUrl: 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
+      configurationFunction: 'Configuration.ps1\\AddSessionHost'
+      properties: {
+        hostPoolName: hostPoolName
+        registrationInfoToken: registrationInfoToken
+        aadJoin: true
+      }
+    }
     tags: extensionHostPoolRegistration.?tags ?? tags
   }
   dependsOn: [
@@ -712,8 +727,8 @@ module vm_azureGuestConfigurationExtension 'extension/main.bicep' = if (extensio
     autoUpgradeMinorVersion: contains(extensionGuestConfigurationExtension, 'autoUpgradeMinorVersion') ? extensionGuestConfigurationExtension.autoUpgradeMinorVersion : true
     enableAutomaticUpgrade: contains(extensionGuestConfigurationExtension, 'enableAutomaticUpgrade') ? extensionGuestConfigurationExtension.enableAutomaticUpgrade : true
     forceUpdateTag: contains(extensionGuestConfigurationExtension, 'forceUpdateTag') ? extensionGuestConfigurationExtension.forceUpdateTag : '1.0'
-    settings: extensionGuestConfigurationExtension.settings
-    protectedSettings: extensionGuestConfigurationExtension.protectedSettings
+    settings: contains(extensionGuestConfigurationExtension, 'settings') ? extensionGuestConfigurationExtension.settings : {}
+    protectedSettings: contains(extensionGuestConfigurationExtension, 'protectedSettings') ? extensionGuestConfigurationExtension.protectedSettings : {}
     tags: extensionGuestConfigurationExtension.?tags ?? tags
   }
   dependsOn: [
