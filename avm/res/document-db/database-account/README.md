@@ -63,7 +63,7 @@ This instance deploys the module with analytical storage enabled.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-analytical-dddaanl'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddaanl'
   params: {
     // Required parameters
     locations: [
@@ -143,7 +143,7 @@ This instance deploys the module disabling automatic failover.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-autoFailoverOff-dddaauo'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddaauo'
   params: {
     // Required parameters
     locations: [
@@ -233,7 +233,7 @@ This instance deploys the module specifying a default consistency level.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-bounded-dddabco'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddabco'
   params: {
     // Required parameters
     locations: [
@@ -321,7 +321,7 @@ This instance deploys the module enabling continous backups.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-continousBckup-dddacbc'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddacbc'
   params: {
     // Required parameters
     locations: [
@@ -469,7 +469,7 @@ This instance deploys the module disabling local authentication.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-disableLocal-dddadlo'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddadlo'
   params: {
     // Required parameters
     locations: [
@@ -1351,7 +1351,7 @@ This instance deploys the module enabling periodic backups.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-periodicBckup-dddapbc'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddapbc'
   params: {
     // Required parameters
     locations: [
@@ -2149,7 +2149,7 @@ This instance deploys the module with an assigned system assigned managed identi
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-systemMI-dddasmi'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddasmi'
   params: {
     // Required parameters
     locations: [
@@ -2221,7 +2221,7 @@ This instance deploys the module with an assigned user assigned managed identity
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-userMI-dddaumi'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddaumi'
   params: {
     // Required parameters
     locations: [
@@ -2507,7 +2507,7 @@ This instance deploys the module enabling multiple zone redundant in multiple re
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-zoneRedudant-dddazr'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddazr'
   params: {
     // Required parameters
     locations: [
