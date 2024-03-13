@@ -74,7 +74,7 @@ function Publish-ModuleFromPathToPBR {
     }
   }
   Write-Verbose "Convert Tokens Input:`n $($tokenConfiguration | ConvertTo-Json -Depth 10)" -Verbose
-  $null = Convert-TokensInFileList @tokenConfiguration
+  # $null = Convert-TokensInFileList @tokenConfiguration
 
   # Double-check that tokens are correctly replaced
   $templateContent = bicep build $moduleBicepFilePath --stdout
