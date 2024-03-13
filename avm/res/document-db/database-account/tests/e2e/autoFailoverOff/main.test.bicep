@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'autoFailoverOff'
+metadata name = 'Without automatic failover'
 metadata description = 'This instance deploys the module disabling automatic failover.'
 
 // ========== //
@@ -49,7 +49,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // Test Execution //
 // ============== //
 
-module disableAutomaticFailover '../../../main.bicep' = {
+module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-autoFailoverOff-${serviceShort}'
   params: {

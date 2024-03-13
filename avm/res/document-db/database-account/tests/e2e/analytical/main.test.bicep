@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'analytical'
+metadata name = 'Using analytical storage'
 metadata description = 'This instance deploys the module with analytical storage enabled.'
 
 // ========== //
@@ -35,7 +35,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // Test Execution //
 // ============== //
 
-module enableAnalyticalStorage '../../../main.bicep' = {
+module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-analytical-${serviceShort}'
   params: {

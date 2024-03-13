@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'disable Local'
+metadata name = 'Disabling local authentication. i.e. access keys'
 metadata description = 'This instance deploys the module disabling local authentication.'
 
 // ========== //
@@ -34,7 +34,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // Test Execution //
 // ============== //
 
-module disableLocalAuth '../../../main.bicep' = {
+module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-disableLocal-${serviceShort}'
   params: {

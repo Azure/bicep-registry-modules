@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Germlin Database'
+metadata name = 'Gremlin Database'
 metadata description = 'This instance deploys the module with a Gremlin Database.'
 
 // ========== //

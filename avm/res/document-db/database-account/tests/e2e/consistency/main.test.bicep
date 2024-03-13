@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'bounded'
+metadata name = 'Using bounded consistency'
 metadata description = 'This instance deploys the module specifying a default consistency level.'
 
 // ========== //
@@ -35,7 +35,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // Test Execution //
 // ============== //
 
-module boundedStalenessConsistency '../../../main.bicep' = {
+module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-bounded-${serviceShort}'
   params: {

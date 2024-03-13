@@ -36,14 +36,365 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/document-db/database-account:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Germlin Database](#example-2-germlin-database)
-- [Mongo Database](#example-3-mongo-database)
-- [Plain](#example-4-plain)
-- [SQL Database](#example-5-sql-database)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using analytical storage](#example-1-using-analytical-storage)
+- [Without automatic failover](#example-2-without-automatic-failover)
+- [Using bounded consistency](#example-3-using-bounded-consistency)
+- [Enabling continous backups](#example-4-enabling-continous-backups)
+- [Using only defaults](#example-5-using-only-defaults)
+- [Disabling local authentication. i.e. access keys](#example-6-disabling-local-authentication-ie-access-keys)
+- [Gremlin Database](#example-7-gremlin-database)
+- [Mongo Database](#example-8-mongo-database)
+- [Using periodic backups](#example-9-using-periodic-backups)
+- [Plain](#example-10-plain)
+- [SQL Database](#example-11-sql-database)
+- [Deploying with a System-Assigned Identity](#example-12-deploying-with-a-system-assigned-identity)
+- [Deploying with a User-Assigned Identity](#example-13-deploying-with-a-user-assigned-identity)
+- [WAF-aligned](#example-14-waf-aligned)
+- [Using zone redundant regions](#example-15-using-zone-redundant-regions)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using analytical storage_
+
+This instance deploys the module with analytical storage enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-analytical-dddaanl'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    name: 'analytical'
+    // Non-required parameters
+    enableAnalyticalStorage: true
+    location: '<location>'
+    sqlDatabases: [
+      {
+        name: 'empty-database'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "name": {
+      "value": "analytical"
+    },
+    // Non-required parameters
+    "enableAnalyticalStorage": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "name": "empty-database"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Without automatic failover_
+
+This instance deploys the module disabling automatic failover.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-autoFailoverOff-dddaauo'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+      {
+        failoverPriority: 1
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    name: 'auto-failover-off'
+    // Non-required parameters
+    automaticFailover: false
+    location: '<location>'
+    sqlDatabases: [
+      {
+        name: 'empty-database'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        },
+        {
+          "failoverPriority": 1,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "name": {
+      "value": "auto-failover-off"
+    },
+    // Non-required parameters
+    "automaticFailover": {
+      "value": false
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "name": "empty-database"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using bounded consistency_
+
+This instance deploys the module specifying a default consistency level.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-bounded-dddabco'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    name: 'bounded'
+    // Non-required parameters
+    defaultConsistencyLevel: 'BoundedStaleness'
+    location: '<location>'
+    maxIntervalInSeconds: 600
+    maxStalenessPrefix: 200000
+    sqlDatabases: [
+      {
+        name: 'empty-database'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "name": {
+      "value": "bounded"
+    },
+    // Non-required parameters
+    "defaultConsistencyLevel": {
+      "value": "BoundedStaleness"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "maxIntervalInSeconds": {
+      "value": 600
+    },
+    "maxStalenessPrefix": {
+      "value": 200000
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "name": "empty-database"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Enabling continous backups_
+
+This instance deploys the module enabling continous backups.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-continousBckup-dddacbc'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    name: 'continous-bckup'
+    // Non-required parameters
+    backupPolicyContinuousTier: 'Continuous7Days'
+    backupPolicyType: 'Continuous'
+    location: '<location>'
+    sqlDatabases: [
+      {
+        name: 'empty-database'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "name": {
+      "value": "continous-bckup"
+    },
+    // Non-required parameters
+    "backupPolicyContinuousTier": {
+      "value": "Continuous7Days"
+    },
+    "backupPolicyType": {
+      "value": "Continuous"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "name": "empty-database"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -54,7 +405,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dddamin'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddamin'
   params: {
     // Required parameters
     locations: [
@@ -107,7 +458,87 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 2: _Germlin Database_
+### Example 6: _Disabling local authentication. i.e. access keys_
+
+This instance deploys the module disabling local authentication.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-disableLocal-dddadlo'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    name: 'local-auth-off'
+    // Non-required parameters
+    disableLocalAuth: true
+    location: '<location>'
+    sqlDatabases: [
+      {
+        name: 'empty-database'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "name": {
+      "value": "local-auth-off"
+    },
+    // Non-required parameters
+    "disableLocalAuth": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "name": "empty-database"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Gremlin Database_
 
 This instance deploys the module with a Gremlin Database.
 
@@ -118,7 +549,7 @@ This instance deploys the module with a Gremlin Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-test-dddagrm'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddagrm'
   params: {
     // Required parameters
     locations: [
@@ -375,7 +806,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 3: _Mongo Database_
+### Example 8: _Mongo Database_
 
 This instance deploys the module with a Mongo Database.
 
@@ -386,7 +817,7 @@ This instance deploys the module with a Mongo Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-test-dddamng'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddamng'
   params: {
     // Required parameters
     locations: [
@@ -909,7 +1340,99 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 4: _Plain_
+### Example 9: _Using periodic backups_
+
+This instance deploys the module enabling periodic backups.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-periodicBckup-dddapbc'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    name: 'periodic-bckup'
+    // Non-required parameters
+    backupIntervalInMinutes: 300
+    backupPolicyType: 'Periodic'
+    backupRetentionIntervalInHours: 16
+    backupStorageRedundancy: 'Zone'
+    location: '<location>'
+    sqlDatabases: [
+      {
+        name: 'empty-database'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "name": {
+      "value": "periodic-bckup"
+    },
+    // Non-required parameters
+    "backupIntervalInMinutes": {
+      "value": 300
+    },
+    "backupPolicyType": {
+      "value": "Periodic"
+    },
+    "backupRetentionIntervalInHours": {
+      "value": 16
+    },
+    "backupStorageRedundancy": {
+      "value": "Zone"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "name": "empty-database"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 10: _Plain_
 
 This instance deploys the module without a Database.
 
@@ -920,7 +1443,7 @@ This instance deploys the module without a Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-test-dddapln'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddapln'
   params: {
     // Required parameters
     locations: [
@@ -1061,7 +1584,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 5: _SQL Database_
+### Example 11: _SQL Database_
 
 This instance deploys the module with a SQL Database.
 
@@ -1072,7 +1595,7 @@ This instance deploys the module with a SQL Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-test-dddasql'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddasql'
   params: {
     // Required parameters
     locations: [
@@ -1615,7 +2138,155 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 12: _Deploying with a System-Assigned Identity_
+
+This instance deploys the module with an assigned system assigned managed identity.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-systemMI-dddasmi'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    name: 'system-mi'
+    // Non-required parameters
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "name": {
+      "value": "system-mi"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 13: _Deploying with a User-Assigned Identity_
+
+This instance deploys the module with an assigned user assigned managed identity.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-userMI-dddaumi'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    name: 'user-mi'
+    // Non-required parameters
+    location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "name": {
+      "value": "user-mi"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 14: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1626,7 +2297,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, eastUsResourceLocation)}-test-dddawaf'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddawaf'
   params: {
     // Required parameters
     locations: [
@@ -1817,6 +2488,70 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 15: _Using zone redundant regions_
+
+This instance deploys the module enabling multiple zone redundant in multiple regions.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-zoneRedudant-dddazr'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: true
+        locationName: '<locationName>'
+      }
+    ]
+    name: 'zone-redundant'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": true,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "name": {
+      "value": "zone-redundant"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
     }
   }
 }

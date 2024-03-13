@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'zoneRedundant'
+metadata name = 'Using zone redundant regions'
 metadata description = 'This instance deploys the module enabling multiple zone redundant in multiple regions.'
 
 // ========== //
@@ -35,7 +35,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // Test Execution //
 // ============== //
 
-module enableZoneRedundant '../../../main.bicep' = {
+module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-zoneRedudant-${serviceShort}'
   params: {

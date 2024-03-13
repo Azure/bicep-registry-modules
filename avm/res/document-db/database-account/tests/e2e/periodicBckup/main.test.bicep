@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'periodicBckup'
+metadata name = 'Using periodic backups'
 metadata description = 'This instance deploys the module enabling periodic backups.'
 
 // ========== //
@@ -35,7 +35,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // Test Execution //
 // ============== //
 
-module enablePeriodicBackup '../../../main.bicep' = {
+module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-periodicBckup-${serviceShort}'
   params: {

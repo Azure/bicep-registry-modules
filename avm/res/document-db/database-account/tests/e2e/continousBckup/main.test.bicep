@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'continousBckup'
+metadata name = 'Enabling continous backups'
 metadata description = 'This instance deploys the module enabling continous backups.'
 
 // ========== //
@@ -35,7 +35,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // Test Execution //
 // ============== //
 
-module enableContinousBackup '../../../main.bicep' = {
+module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-continousBckup-${serviceShort}'
   params: {

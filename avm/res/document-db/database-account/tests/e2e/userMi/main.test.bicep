@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'userMi'
+metadata name = 'Deploying with a User-Assigned Identity'
 metadata description = 'This instance deploys the module with an assigned user assigned managed identity.'
 
 // ========== //
@@ -48,7 +48,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // Test Execution //
 // ============== //
 
-module enableUserAssignedManagedIdentity '../../../main.bicep' = {
+module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-userMI-${serviceShort}'
   params: {
