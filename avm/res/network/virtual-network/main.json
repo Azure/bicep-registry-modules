@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "17055439590426138357"
+      "templateHash": "10848130532872395336"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet).",
@@ -333,12 +333,6 @@
     }
   },
   "variables": {
-    "dnsServersVar": {
-      "dnsServers": "[array(parameters('dnsServers'))]"
-    },
-    "ddosProtectionPlan": {
-      "id": "[parameters('ddosProtectionPlanResourceId')]"
-    },
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
@@ -402,8 +396,8 @@
         "addressSpace": {
           "addressPrefixes": "[parameters('addressPrefixes')]"
         },
-        "ddosProtectionPlan": "[if(not(empty(parameters('ddosProtectionPlanResourceId'))), variables('ddosProtectionPlan'), null())]",
-        "dhcpOptions": "[if(not(empty(parameters('dnsServers'))), variables('dnsServersVar'), null())]",
+        "ddosProtectionPlan": "[if(not(empty(parameters('ddosProtectionPlanResourceId'))), createObject('id', parameters('ddosProtectionPlanResourceId')), null())]",
+        "dhcpOptions": "[if(not(empty(parameters('dnsServers'))), createObject('dnsServers', array(parameters('dnsServers'))), null())]",
         "enableDdosProtection": "[not(empty(parameters('ddosProtectionPlanResourceId')))]",
         "encryption": "[if(equals(parameters('vnetEncryption'), true()), createObject('enabled', parameters('vnetEncryption'), 'enforcement', parameters('vnetEncryptionEnforcement')), null())]",
         "flowTimeoutInMinutes": "[if(not(equals(parameters('flowTimeoutInMinutes'), 0)), parameters('flowTimeoutInMinutes'), null())]"

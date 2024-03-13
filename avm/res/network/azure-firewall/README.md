@@ -71,7 +71,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         }
       ]
     }
-    virtualNetworkId: '<virtualNetworkId>'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
   }
 }
 ```
@@ -119,8 +119,8 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         ]
       }
     },
-    "virtualNetworkId": {
-      "value": "<virtualNetworkId>"
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
     }
   }
 }
@@ -174,7 +174,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       skuName: 'Standard'
       skuTier: 'Regional'
     }
-    virtualNetworkId: '<virtualNetworkId>'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
   }
 }
 ```
@@ -229,8 +229,8 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         "skuTier": "Regional"
       }
     },
-    "virtualNetworkId": {
-      "value": "<virtualNetworkId>"
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
     }
   }
 }
@@ -256,7 +256,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     name: 'nafmin001'
     // Non-required parameters
     location: '<location>'
-    virtualNetworkId: '<virtualNetworkId>'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
   }
 }
 ```
@@ -281,8 +281,8 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "virtualNetworkId": {
-      "value": "<virtualNetworkId>"
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
     }
   }
 }
@@ -562,7 +562,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    virtualNetworkId: '<virtualNetworkId>'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
     zones: [
       '1'
       '2'
@@ -728,8 +728,8 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         "Role": "DeploymentValidation"
       }
     },
-    "virtualNetworkId": {
-      "value": "<virtualNetworkId>"
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
     },
     "zones": {
       "value": [
@@ -863,7 +863,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    virtualNetworkId: '<virtualNetworkId>'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
     zones: [
       '1'
       '2'
@@ -1004,8 +1004,8 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         "Role": "DeploymentValidation"
       }
     },
-    "virtualNetworkId": {
-      "value": "<virtualNetworkId>"
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
     },
     "zones": {
       "value": [
@@ -1036,7 +1036,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
 | :-- | :-- | :-- |
 | [`hubIPAddresses`](#parameter-hubipaddresses) | object | IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied. |
 | [`virtualHubId`](#parameter-virtualhubid) | string | The virtualHub resource ID to which the firewall belongs. Required if `virtualNetworkId` is empty. |
-| [`virtualNetworkId`](#parameter-virtualnetworkid) | string | Shared services Virtual Network resource ID. The virtual network ID containing AzureFirewallSubnet. If a Public IP is not provided, then the Public IP that is created as part of this module will be applied with the subnet provided in this variable. Required if `virtualHubId` is empty. |
+| [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | Shared services Virtual Network resource ID. The virtual network ID containing AzureFirewallSubnet. If a Public IP is not provided, then the Public IP that is created as part of this module will be applied with the subnet provided in this variable. Required if `virtualHubId` is empty. |
 
 **Optional parameters**
 
@@ -1084,7 +1084,7 @@ The virtualHub resource ID to which the firewall belongs. Required if `virtualNe
 - Type: string
 - Default: `''`
 
-### Parameter: `virtualNetworkId`
+### Parameter: `virtualNetworkResourceId`
 
 Shared services Virtual Network resource ID. The virtual network ID containing AzureFirewallSubnet. If a Public IP is not provided, then the Public IP that is created as part of this module will be applied with the subnet provided in this variable. Required if `virtualHubId` is empty.
 
