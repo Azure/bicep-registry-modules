@@ -185,11 +185,11 @@ param extensionHostPoolRegistration object = {
 }
 
 @description('Optional. Required if host pool registiration extension is used. Name of the host pool.')
-param hostPoolName string
+param hostPoolName string = ''
 
 @description('Optional. Required if host pool registiration extension is used. Valid registration token of the host pool.')
 @secure()
-param registrationInfoToken string
+param registrationInfoToken string = ''
 
 @description('Optional. The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionGuestConfigurationExtension object = {

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "17794954656051461678"
+      "templateHash": "7387322211349987792"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -481,6 +481,20 @@
       },
       "metadata": {
         "description": "Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the [\"enabled\": true] property to be executed."
+      }
+    },
+    "hostPoolName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Required if host pool registiration extension is used. Name of the host pool."
+      }
+    },
+    "registrationInfoToken": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Required if host pool registiration extension is used. Valid registration token of the host pool."
       }
     },
     "extensionGuestConfigurationExtension": {
@@ -4407,7 +4421,15 @@
           "autoUpgradeMinorVersion": "[if(contains(parameters('extensionHostPoolRegistration'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionHostPoolRegistration').autoUpgradeMinorVersion), createObject('value', true()))]",
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionHostPoolRegistration'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionHostPoolRegistration').enableAutomaticUpgrade), createObject('value', false()))]",
           "settings": {
-            "value": "[parameters('extensionHostPoolRegistration').settings]"
+            "value": {
+              "modulesUrl": "[format('https://wvdportalstorageblob.blob.{0}/galleryartifacts/Configuration_09-08-2022.zip', environment().suffixes.storage)]",
+              "configurationFunction": "Configuration.ps1\\AddSessionHost",
+              "properties": {
+                "hostPoolName": "[parameters('hostPoolName')]",
+                "registrationInfoToken": "[parameters('registrationInfoToken')]",
+                "aadJoin": true
+              }
+            }
           },
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionHostPoolRegistration'), 'tags'), parameters('tags'))]"
@@ -4583,7 +4605,7 @@
       "condition": "[parameters('extensionGuestConfigurationExtension').enabled]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-VM-AzureDiskEncryption', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-VM-GuestConfiguration', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -4607,12 +4629,8 @@
           "autoUpgradeMinorVersion": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionGuestConfigurationExtension').autoUpgradeMinorVersion), createObject('value', true()))]",
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionGuestConfigurationExtension').enableAutomaticUpgrade), createObject('value', true()))]",
           "forceUpdateTag": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'forceUpdateTag'), createObject('value', parameters('extensionGuestConfigurationExtension').forceUpdateTag), createObject('value', '1.0'))]",
-          "settings": {
-            "value": "[parameters('extensionGuestConfigurationExtension').settings]"
-          },
-          "protectedSettings": {
-            "value": "[parameters('extensionGuestConfigurationExtension').protectedSettings]"
-          },
+          "settings": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'settings'), createObject('value', parameters('extensionGuestConfigurationExtension').settings), createObject('value', createObject()))]",
+          "protectedSettings": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'protectedSettings'), createObject('value', parameters('extensionGuestConfigurationExtension').protectedSettings), createObject('value', createObject()))]",
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionGuestConfigurationExtension'), 'tags'), parameters('tags'))]"
           }
