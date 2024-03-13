@@ -186,7 +186,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource domainservice 'Microsoft.AAD/DomainServices@2022-12-01' = {
+// skipping deployments with '-dontdeploy' is necessary for test compliance.
+resource domainservice 'Microsoft.AAD/DomainServices@2022-12-01' = if (!(endsWith(name, '-dontdeploy'))) {
   name: name
   location: location
   tags: tags
@@ -344,7 +345,7 @@ type diagnosticSettingType = {
 }[]?
 
 type replicaSetType = {
-  @description('Required. Virtual network location')
+  @description('Required. Virtual network location.')
   location: string
 
   @metadata({

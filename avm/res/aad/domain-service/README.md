@@ -30,6 +30,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/aad/domain-service:<version>`.
 
 - [Using default parameter set](#example-1-using-default-parameter-set)
+- [WAF-aligned](#example-2-waf-aligned)
 
 ### Example 1: _Using default parameter set_
 
@@ -159,6 +160,66 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-aaddswaf'
+  params: {
+    // Required parameters
+    domainName: 'onmicrosoft.com'
+    // Non-required parameters
+    externalAccess: 'Disabled'
+    ldaps: 'Enabled'
+    location: '<location>'
+    name: 'aaddswaf001-dontdeploy'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "domainName": {
+      "value": "onmicrosoft.com"
+    },
+    // Non-required parameters
+    "externalAccess": {
+      "value": "Disabled"
+    },
+    "ldaps": {
+      "value": "Enabled"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "name": {
+      "value": "aaddswaf001-dontdeploy"
     }
   }
 }
@@ -544,12 +605,12 @@ Additional replica set for the managed domain.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`location`](#parameter-replicasetslocation) | string | Virtual network location |
+| [`location`](#parameter-replicasetslocation) | string | Virtual network location. |
 | [`subnetId`](#parameter-replicasetssubnetid) | string | The id of the subnet that Domain Services will be deployed on. The subnet has some requirements, which are outlined in the [notes section](#Network-Security-Group-NSG-requirements-for-AADDS) of the documentation. |
 
 ### Parameter: `replicaSets.location`
 
-Virtual network location
+Virtual network location.
 
 - Required: Yes
 - Type: string
