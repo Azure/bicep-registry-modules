@@ -74,7 +74,7 @@ function Publish-ModuleFromPathToPBR {
     }
   }
   Write-Verbose "Convert Tokens Input:`n $($tokenConfiguration | ConvertTo-Json -Depth 10)" -Verbose
-  # $null = Convert-TokensInFileList @tokenConfiguration
+  $null = Convert-TokensInFileList @tokenConfiguration
 
   # Double-check that tokens are correctly replaced
   $templateContent = bicep build $moduleBicepFilePath --stdout
@@ -103,7 +103,7 @@ function Publish-ModuleFromPathToPBR {
   # TODO move to its own task to show that as skipped if no file qualifies for new version
   Write-Verbose "Publish Input:`n $($publishInput | ConvertTo-Json -Depth 10)" -Verbose
 
-  # bicep publish @publishInput
+  bicep publish @publishInput
 
   return @{
     version             = $targetVersion
