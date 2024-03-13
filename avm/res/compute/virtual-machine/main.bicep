@@ -493,7 +493,7 @@ module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.e
     location: location
     publisher: 'Microsoft.Azure.ActiveDirectory'
     type: osType == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginforLinux'
-    typeHandlerVersion: contains(extensionAadJoinConfig, 'typeHandlerVersion') ? extensionAadJoinConfig.typeHandlerVersion : '2.0'
+    typeHandlerVersion: contains(extensionAadJoinConfig, 'typeHandlerVersion') ? extensionAadJoinConfig.typeHandlerVersion : (osType == 'Windows' ? '2.0' : '1.0')
     autoUpgradeMinorVersion: contains(extensionAadJoinConfig, 'autoUpgradeMinorVersion') ? extensionAadJoinConfig.autoUpgradeMinorVersion : true
     enableAutomaticUpgrade: contains(extensionAadJoinConfig, 'enableAutomaticUpgrade') ? extensionAadJoinConfig.enableAutomaticUpgrade : false
     settings: contains(extensionAadJoinConfig, 'settings') ? extensionAadJoinConfig.settings : {}
