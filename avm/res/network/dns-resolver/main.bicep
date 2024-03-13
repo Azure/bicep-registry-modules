@@ -1,8 +1,8 @@
-metadata name = 'DNS Resolvers'
+metadata name = 'DNS Resolver'
 metadata description = 'This module deploys a DNS Resolver.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. Name of the Private DNS Resolver.')
+@description('Required. Name of the DNS Private Resolver.')
 @minLength(1)
 param name string
 
@@ -18,16 +18,16 @@ param roleAssignments roleAssignmentType
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Required. ResourceId of the virtual network to attach the Private DNS Resolver to.')
+@description('Required. ResourceId of the virtual network to attach the DNS Private Resolver to.')
 param virtualNetworkResourceId string
 
-@description('Optional. Outbound Endpoints for Private DNS Resolver.')
-param outboundEndpoints array?
+@description('Optional. Outbound Endpoints for DNS Private Resolver.')
+param outboundEndpoints outboundEndpointType
 
-@description('Optional. Inbound Endpoints for Private DNS Resolver.')
-param inboundEndpoints array?
+@description('Optional. Inbound Endpoints for DNS Private Resolver.')
+param inboundEndpoints inboundEndpointType
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 var builtInRoleNames = {
@@ -105,7 +105,6 @@ module dnsResolver_inboundEndpoints 'inbound-endpoint/main.bicep' = [for (inboun
     subnetResourceId: inboundEndpoint.subnetResourceId
     privateIpAddress: inboundEndpoint.?privateIpAddress
     privateIpAllocationMethod: inboundEndpoint.?privateIpAllocationMethod
-
   }
 }]
 
@@ -120,13 +119,13 @@ module dnsResolver_outboundEndpoints 'outbound-endpoint/main.bicep' = [for (outb
   }
 }]
 
-@description('The resource group the Private DNS Resolver was deployed into.')
+@description('The resource group the DNS Private Resolver was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The resource ID of the Private DNS Resolver.')
+@description('The resource ID of the DNS Private Resolver.')
 output resourceId string = dnsResolver.id
 
-@description('The name of the Private DNS Resolver.')
+@description('The name of the DNS Private Resolver.')
 output name string = dnsResolver.name
 
 @description('The location the resource was deployed into.')
@@ -149,7 +148,7 @@ type roleAssignmentType = {
   @description('Optional. The description of the role assignment.')
   description: string?
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
+  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
   @description('Optional. Version of the condition.')
@@ -166,3 +165,37 @@ type lockType = {
   @description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
+
+type inboundEndpointType = {
+  @description('Required. Name of the inbound endpoint.')
+  name: string
+
+  @description('Required. The reference to the subnet bound to the IP configuration.')
+  subnetResourceId: string
+
+  @description('Optional. Tags for the resource.')
+  tags: object?
+
+  @description('Optional. Location for all resources.')
+  location: string?
+
+  @description('Optional. Private IP address of the IP configuration.')
+  privateIpAddress: string?
+
+  @description('Optional. Private IP address allocation method.')
+  privateIpAllocationMethod: ('Dynamic' | 'Static')?
+}[]?
+
+type outboundEndpointType = {
+  @description('Required. Name of the outbound endpoint.')
+  name: string
+
+  @description('Required. ResourceId of the subnet to attach the outbound endpoint to.')
+  subnetResourceId: string
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
+
+  @description('Optional. Location for all resources.')
+  location: string?
+}[]?

@@ -20,7 +20,7 @@ param eventSubscriptions array = []
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
-@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+@description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
 @description('Optional. The lock settings of the service.')
@@ -97,7 +97,6 @@ module systemTopics_eventSubscriptions 'event-subscription/main.bicep' = [for (e
     expirationTimeUtc: contains(eventSubscription, 'expirationTimeUtc') ? eventSubscription.expirationTimeUtc : ''
     filter: contains(eventSubscription, 'filter') ? eventSubscription.filter : {}
     labels: contains(eventSubscription, 'labels') ? eventSubscription.labels : []
-    location: contains(eventSubscription, 'location') ? eventSubscription.location : systemTopic.location
     retryPolicy: contains(eventSubscription, 'retryPolicy') ? eventSubscription.retryPolicy : {}
   }
 }]
@@ -118,19 +117,16 @@ resource systemTopic_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2
     workspaceId: diagnosticSetting.?workspaceResourceId
     eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
     eventHubName: diagnosticSetting.?eventHubName
-    metrics: diagnosticSetting.?metricCategories ?? [
-      {
-        category: 'AllMetrics'
-        timeGrain: null
-        enabled: true
-      }
-    ]
-    logs: diagnosticSetting.?logCategoriesAndGroups ?? [
-      {
-        categoryGroup: 'AllLogs'
-        enabled: true
-      }
-    ]
+    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
+      category: group.category
+      enabled: group.?enabled ?? true
+      timeGrain: null
+    }]
+    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
+      categoryGroup: group.?categoryGroup
+      category: group.?category
+      enabled: group.?enabled ?? true
+    }]
     marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
     logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
   }
@@ -161,7 +157,7 @@ output resourceId string = systemTopic.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(systemTopic.identity, 'principalId') ? systemTopic.identity.principalId : ''
+output systemAssignedMIPrincipalId string = systemTopic.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = systemTopic.location
@@ -187,7 +183,7 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
-  @description('Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.')
+  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
   @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
@@ -199,7 +195,7 @@ type roleAssignmentType = {
   @description('Optional. The description of the role assignment.')
   description: string?
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
+  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
   @description('Optional. Version of the condition.')
@@ -213,19 +209,25 @@ type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
 
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
+  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
   logCategoriesAndGroups: {
     @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
     category: string?
 
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to \'AllLogs\' to collect all logs.')
+    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
     categoryGroup: string?
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
   }[]?
 
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
+  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
   metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to \'AllMetrics\' to collect all metrics.')
+    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
     category: string
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
   }[]?
 
   @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')

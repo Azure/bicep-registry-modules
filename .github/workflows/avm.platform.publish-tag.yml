@@ -22,12 +22,15 @@ jobs:
         with:
           ref: ${{ github.event.inputs.tag }}
 
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+
       - name: Log in to Azure
         uses: azure/login@v1
         with:
-          client-id: ${{ env.PUBLISH_CLIENT_ID }}
-          tenant-id: ${{ env.PUBLISH_TENANT_ID }}
-          subscription-id: ${{ env.PUBLISH_SUBSCRIPTION_ID }}
+          client-id: "${{ secrets.PUBLISH_CLIENT_ID }}"
+          tenant-id: "${{ secrets.PUBLISH_TENANT_ID }}"
+          subscription-id: "${{ secrets.PUBLISH_SUBSCRIPTION_ID }}"
 
       # Adding a step to explicitly install the latest Bicep CLI because there is
       # always a delay in updating Bicep CLI in the job runner environments.
@@ -40,6 +43,7 @@ jobs:
           bicep --version
 
       - name: "Publish tagged module to public bicep registry"
+        id: publish_tag
         uses: azure/powershell@v1
         with:
           azPSVersion: "latest"
@@ -59,6 +63,33 @@ jobs:
             Write-Verbose 'Invoke function with' -Verbose
             Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-            Publish-ModuleFromTagToPBR @functionInput -Verbose
+            if($publishOutputs = Publish-ModuleFromTagToPBR @functionInput -Verbose) {
+              Write-Output ('{0}={1}' -f 'version', $publishOutputs.version) >> $env:GITHUB_OUTPUT
+              Write-Output ('{0}={1}' -f 'publishedModuleName', $publishOutputs.publishedModuleName) >> $env:GITHUB_OUTPUT
+            }
+
+            Write-Output '::endgroup::'
+
+      - name: "Validate publish"
+        uses: azure/powershell@v1
+        if: ${{ steps.publish_tag.outputs.version != '' && steps.publish_tag.outputs.publishedModuleName != '' }}
+        with:
+          azPSVersion: "latest"
+          inlineScript: |
+            # Grouping task logs
+            Write-Output '::group::Validate publish'
+
+            # Load used functions
+            . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
+
+            $functionInput = @{
+              Version             = "${{ steps.publish_tag.outputs.version }}"
+              PublishedModuleName = "${{ steps.publish_tag.outputs.publishedModuleName }}"
+            }
+
+            Write-Verbose "Invoke function with" -Verbose
+            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+            Confirm-ModuleIsPublished @functionInput
 
             Write-Output '::endgroup::'

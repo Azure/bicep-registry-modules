@@ -158,7 +158,7 @@ type roleAssignmentType = {
   @sys.description('Optional. The description of the role assignment.')
   description: string?
 
-  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
+  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
   @sys.description('Optional. Version of the condition.')

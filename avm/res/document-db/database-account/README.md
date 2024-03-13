@@ -1,10 +1,5 @@
 # DocumentDB Database Accounts `[Microsoft.DocumentDB/databaseAccounts]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a DocumentDB Database Account.
 
 ## Navigation
@@ -14,6 +9,7 @@ This module deploys a DocumentDB Database Account.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -40,14 +36,365 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/document-db/database-account:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Germlin Database](#example-2-germlin-database)
-- [Mongo Database](#example-3-mongo-database)
-- [Plain](#example-4-plain)
-- [SQL Database](#example-5-sql-database)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using analytical storage](#example-1-using-analytical-storage)
+- [Without automatic failover](#example-2-without-automatic-failover)
+- [Using bounded consistency](#example-3-using-bounded-consistency)
+- [Enabling continous backups](#example-4-enabling-continous-backups)
+- [Using only defaults](#example-5-using-only-defaults)
+- [Disabling local authentication. i.e. access keys](#example-6-disabling-local-authentication-ie-access-keys)
+- [Gremlin Database](#example-7-gremlin-database)
+- [Mongo Database](#example-8-mongo-database)
+- [Using periodic backups](#example-9-using-periodic-backups)
+- [Plain](#example-10-plain)
+- [SQL Database](#example-11-sql-database)
+- [Deploying with a System-Assigned Identity](#example-12-deploying-with-a-system-assigned-identity)
+- [Deploying with a User-Assigned Identity](#example-13-deploying-with-a-user-assigned-identity)
+- [WAF-aligned](#example-14-waf-aligned)
+- [Using zone redundant regions](#example-15-using-zone-redundant-regions)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using analytical storage_
+
+This instance deploys the module with analytical storage enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddaanl'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    name: 'analytical'
+    // Non-required parameters
+    enableAnalyticalStorage: true
+    location: '<location>'
+    sqlDatabases: [
+      {
+        name: 'empty-database'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "name": {
+      "value": "analytical"
+    },
+    // Non-required parameters
+    "enableAnalyticalStorage": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "name": "empty-database"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Without automatic failover_
+
+This instance deploys the module disabling automatic failover.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddaauo'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+      {
+        failoverPriority: 1
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    name: 'auto-failover-off'
+    // Non-required parameters
+    automaticFailover: false
+    location: '<location>'
+    sqlDatabases: [
+      {
+        name: 'empty-database'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        },
+        {
+          "failoverPriority": 1,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "name": {
+      "value": "auto-failover-off"
+    },
+    // Non-required parameters
+    "automaticFailover": {
+      "value": false
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "name": "empty-database"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using bounded consistency_
+
+This instance deploys the module specifying a default consistency level.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddabco'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    name: 'bounded'
+    // Non-required parameters
+    defaultConsistencyLevel: 'BoundedStaleness'
+    location: '<location>'
+    maxIntervalInSeconds: 600
+    maxStalenessPrefix: 200000
+    sqlDatabases: [
+      {
+        name: 'empty-database'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "name": {
+      "value": "bounded"
+    },
+    // Non-required parameters
+    "defaultConsistencyLevel": {
+      "value": "BoundedStaleness"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "maxIntervalInSeconds": {
+      "value": 600
+    },
+    "maxStalenessPrefix": {
+      "value": 200000
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "name": "empty-database"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Enabling continous backups_
+
+This instance deploys the module enabling continous backups.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddacbc'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    name: 'continous-bckup'
+    // Non-required parameters
+    backupPolicyContinuousTier: 'Continuous7Days'
+    backupPolicyType: 'Continuous'
+    location: '<location>'
+    sqlDatabases: [
+      {
+        name: 'empty-database'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "name": {
+      "value": "continous-bckup"
+    },
+    // Non-required parameters
+    "backupPolicyContinuousTier": {
+      "value": "Continuous7Days"
+    },
+    "backupPolicyType": {
+      "value": "Continuous"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "name": "empty-database"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -58,14 +405,14 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dddamin'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddamin'
   params: {
     // Required parameters
     locations: [
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: '<location>'
+        locationName: '<locationName>'
       }
     ]
     name: 'dddamin001'
@@ -93,7 +440,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "failoverPriority": 0,
           "isZoneRedundant": false,
-          "locationName": "<location>"
+          "locationName": "<locationName>"
         }
       ]
     },
@@ -111,7 +458,87 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 2: _Germlin Database_
+### Example 6: _Disabling local authentication. i.e. access keys_
+
+This instance deploys the module disabling local authentication.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddadlo'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    name: 'local-auth-off'
+    // Non-required parameters
+    disableLocalAuth: true
+    location: '<location>'
+    sqlDatabases: [
+      {
+        name: 'empty-database'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "name": {
+      "value": "local-auth-off"
+    },
+    // Non-required parameters
+    "disableLocalAuth": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "name": "empty-database"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Gremlin Database_
 
 This instance deploys the module with a Gremlin Database.
 
@@ -122,14 +549,14 @@ This instance deploys the module with a Gremlin Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dddagrm'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddagrm'
   params: {
     // Required parameters
     locations: [
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: '<location>'
+        locationName: '<locationName>'
       }
       {
         failoverPriority: 1
@@ -253,7 +680,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "failoverPriority": 0,
           "isZoneRedundant": false,
-          "locationName": "<location>"
+          "locationName": "<locationName>"
         },
         {
           "failoverPriority": 1,
@@ -379,7 +806,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 3: _Mongo Database_
+### Example 8: _Mongo Database_
 
 This instance deploys the module with a Mongo Database.
 
@@ -390,14 +817,14 @@ This instance deploys the module with a Mongo Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dddamng'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddamng'
   params: {
     // Required parameters
     locations: [
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: '<location>'
+        locationName: '<locationName>'
       }
       {
         failoverPriority: 1
@@ -655,7 +1082,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "failoverPriority": 0,
           "isZoneRedundant": false,
-          "locationName": "<location>"
+          "locationName": "<locationName>"
         },
         {
           "failoverPriority": 1,
@@ -913,7 +1340,99 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 4: _Plain_
+### Example 9: _Using periodic backups_
+
+This instance deploys the module enabling periodic backups.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddapbc'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    name: 'periodic-bckup'
+    // Non-required parameters
+    backupIntervalInMinutes: 300
+    backupPolicyType: 'Periodic'
+    backupRetentionIntervalInHours: 16
+    backupStorageRedundancy: 'Zone'
+    location: '<location>'
+    sqlDatabases: [
+      {
+        name: 'empty-database'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "name": {
+      "value": "periodic-bckup"
+    },
+    // Non-required parameters
+    "backupIntervalInMinutes": {
+      "value": 300
+    },
+    "backupPolicyType": {
+      "value": "Periodic"
+    },
+    "backupRetentionIntervalInHours": {
+      "value": 16
+    },
+    "backupStorageRedundancy": {
+      "value": "Zone"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "name": "empty-database"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 10: _Plain_
 
 This instance deploys the module without a Database.
 
@@ -924,17 +1443,12 @@ This instance deploys the module without a Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dddapln'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddapln'
   params: {
     // Required parameters
     locations: [
       {
         failoverPriority: 0
-        isZoneRedundant: false
-        locationName: '<location>'
-      }
-      {
-        failoverPriority: 1
         isZoneRedundant: false
         locationName: '<locationName>'
       }
@@ -1004,11 +1518,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "failoverPriority": 0,
           "isZoneRedundant": false,
-          "locationName": "<location>"
-        },
-        {
-          "failoverPriority": 1,
-          "isZoneRedundant": false,
           "locationName": "<locationName>"
         }
       ]
@@ -1075,7 +1584,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 5: _SQL Database_
+### Example 11: _SQL Database_
 
 This instance deploys the module with a SQL Database.
 
@@ -1086,74 +1595,20 @@ This instance deploys the module with a SQL Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dddasql'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddasql'
   params: {
     // Required parameters
     locations: [
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: '<location>'
-      }
-      {
-        failoverPriority: 1
-        isZoneRedundant: false
         locationName: '<locationName>'
       }
     ]
     name: 'dddasql001'
     // Non-required parameters
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
+    enableAnalyticalStorage: true
     location: '<location>'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        service: 'Sql'
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
-      }
-    ]
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
     sqlDatabases: [
       {
         containers: [
@@ -1187,27 +1642,77 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             ]
           }
         ]
-        name: 'sql-dddasql-001'
+        name: 'all-configs-specified'
       }
       {
-        containers: []
-        name: 'sql-dddasql-002'
-      }
-      {
-        autoscaleSettingsMaxThroughput: 1000
         containers: [
           {
-            analyticalStorageTtl: 0
-            autoscaleSettingsMaxThroughput: 1000
+            indexingPolicy: {
+              automatic: true
+            }
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'automatic-indexing-policy'
+      }
+      {
+        containers: [
+          {
             conflictResolutionPolicy: {
               conflictResolutionPath: '/myCustomId'
               mode: 'LastWriterWins'
             }
-            indexingPolicy: {
-              automatic: true
-            }
-            kind: 'Hash'
-            name: 'container-003'
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'last-writer-conflict-resolution-policy'
+      }
+      {
+        containers: [
+          {
+            analyticalStorageTtl: 1000
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'fixed-analytical-ttl'
+      }
+      {
+        containers: [
+          {
+            analyticalStorageTtl: -1
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'infinite-analytical-ttl'
+      }
+      {
+        containers: [
+          {
+            defaultTtl: 1000
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'document-ttl'
+      }
+      {
+        containers: [
+          {
+            name: 'container-001'
             paths: [
               '/myPartitionKey'
             ]
@@ -1225,14 +1730,127 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             ]
           }
         ]
-        name: 'sql-dddasql-003'
+        name: 'unique-key-policy'
+      }
+      {
+        containers: [
+          {
+            name: 'container-003'
+            paths: [
+              '/myPartitionKey'
+            ]
+            throughput: 500
+          }
+        ]
+        name: 'db-and-container-fixed-throughput-level'
+        throughput: 500
+      }
+      {
+        containers: [
+          {
+            name: 'container-003'
+            paths: [
+              '/myPartitionKey'
+            ]
+            throughput: 500
+          }
+        ]
+        name: 'container-fixed-throughput-level'
+      }
+      {
+        containers: [
+          {
+            name: 'container-003'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'database-fixed-throughput-level'
+        throughput: 500
+      }
+      {
+        autoscaleSettingsMaxThroughput: 1000
+        containers: [
+          {
+            autoscaleSettingsMaxThroughput: 1000
+            name: 'container-003'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'db-and-container-autoscale-level'
+      }
+      {
+        containers: [
+          {
+            autoscaleSettingsMaxThroughput: 1000
+            name: 'container-003'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'container-autoscale-level'
+      }
+      {
+        autoscaleSettingsMaxThroughput: 1000
+        containers: [
+          {
+            name: 'container-003'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'database-autoscale-level'
+      }
+      {
+        containers: [
+          {
+            kind: 'MultiHash'
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey1'
+              '/myPartitionKey2'
+              '/myPartitionKey3'
+            ]
+          }
+          {
+            kind: 'MultiHash'
+            name: 'container-002'
+            paths: [
+              'myPartitionKey1'
+              'myPartitionKey2'
+              'myPartitionKey3'
+            ]
+          }
+          {
+            kind: 'Hash'
+            name: 'container-003'
+            paths: [
+              '/myPartitionKey1'
+            ]
+          }
+          {
+            kind: 'Hash'
+            name: 'container-004'
+            paths: [
+              'myPartitionKey1'
+            ]
+          }
+        ]
+        name: 'all-partition-key-types'
+      }
+      {
+        containers: []
+        name: 'empty-containers-array'
+      }
+      {
+        name: 'no-containers-specified'
       }
     ]
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -1255,11 +1873,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "failoverPriority": 0,
           "isZoneRedundant": false,
-          "locationName": "<location>"
-        },
-        {
-          "failoverPriority": 1,
-          "isZoneRedundant": false,
           "locationName": "<locationName>"
         }
       ]
@@ -1268,66 +1881,11 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "dddasql001"
     },
     // Non-required parameters
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
+    "enableAnalyticalStorage": {
+      "value": true
     },
     "location": {
       "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "service": "Sql",
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
-        }
-      ]
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
     },
     "sqlDatabases": {
       "value": [
@@ -1363,27 +1921,77 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               ]
             }
           ],
-          "name": "sql-dddasql-001"
+          "name": "all-configs-specified"
         },
         {
-          "containers": [],
-          "name": "sql-dddasql-002"
-        },
-        {
-          "autoscaleSettingsMaxThroughput": 1000,
           "containers": [
             {
-              "analyticalStorageTtl": 0,
-              "autoscaleSettingsMaxThroughput": 1000,
+              "indexingPolicy": {
+                "automatic": true
+              },
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "automatic-indexing-policy"
+        },
+        {
+          "containers": [
+            {
               "conflictResolutionPolicy": {
                 "conflictResolutionPath": "/myCustomId",
                 "mode": "LastWriterWins"
               },
-              "indexingPolicy": {
-                "automatic": true
-              },
-              "kind": "Hash",
-              "name": "container-003",
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "last-writer-conflict-resolution-policy"
+        },
+        {
+          "containers": [
+            {
+              "analyticalStorageTtl": 1000,
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "fixed-analytical-ttl"
+        },
+        {
+          "containers": [
+            {
+              "analyticalStorageTtl": -1,
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "infinite-analytical-ttl"
+        },
+        {
+          "containers": [
+            {
+              "defaultTtl": 1000,
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "document-ttl"
+        },
+        {
+          "containers": [
+            {
+              "name": "container-001",
               "paths": [
                 "/myPartitionKey"
               ],
@@ -1401,15 +2009,198 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               ]
             }
           ],
-          "name": "sql-dddasql-003"
+          "name": "unique-key-policy"
+        },
+        {
+          "containers": [
+            {
+              "name": "container-003",
+              "paths": [
+                "/myPartitionKey"
+              ],
+              "throughput": 500
+            }
+          ],
+          "name": "db-and-container-fixed-throughput-level",
+          "throughput": 500
+        },
+        {
+          "containers": [
+            {
+              "name": "container-003",
+              "paths": [
+                "/myPartitionKey"
+              ],
+              "throughput": 500
+            }
+          ],
+          "name": "container-fixed-throughput-level"
+        },
+        {
+          "containers": [
+            {
+              "name": "container-003",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "database-fixed-throughput-level",
+          "throughput": 500
+        },
+        {
+          "autoscaleSettingsMaxThroughput": 1000,
+          "containers": [
+            {
+              "autoscaleSettingsMaxThroughput": 1000,
+              "name": "container-003",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "db-and-container-autoscale-level"
+        },
+        {
+          "containers": [
+            {
+              "autoscaleSettingsMaxThroughput": 1000,
+              "name": "container-003",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "container-autoscale-level"
+        },
+        {
+          "autoscaleSettingsMaxThroughput": 1000,
+          "containers": [
+            {
+              "name": "container-003",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "database-autoscale-level"
+        },
+        {
+          "containers": [
+            {
+              "kind": "MultiHash",
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey1",
+                "/myPartitionKey2",
+                "/myPartitionKey3"
+              ]
+            },
+            {
+              "kind": "MultiHash",
+              "name": "container-002",
+              "paths": [
+                "myPartitionKey1",
+                "myPartitionKey2",
+                "myPartitionKey3"
+              ]
+            },
+            {
+              "kind": "Hash",
+              "name": "container-003",
+              "paths": [
+                "/myPartitionKey1"
+              ]
+            },
+            {
+              "kind": "Hash",
+              "name": "container-004",
+              "paths": [
+                "myPartitionKey1"
+              ]
+            }
+          ],
+          "name": "all-partition-key-types"
+        },
+        {
+          "containers": [],
+          "name": "empty-containers-array"
+        },
+        {
+          "name": "no-containers-specified"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 12: _Deploying with a System-Assigned Identity_
+
+This instance deploys the module with an assigned system assigned managed identity.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddasmi'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    name: 'system-mi'
+    // Non-required parameters
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
         }
       ]
     },
-    "tags": {
+    "name": {
+      "value": "system-mi"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
       "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
+        "systemAssigned": true
       }
     }
   }
@@ -1419,7 +2210,83 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 13: _Deploying with a User-Assigned Identity_
+
+This instance deploys the module with an assigned user assigned managed identity.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddaumi'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    name: 'user-mi'
+    // Non-required parameters
+    location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "name": {
+      "value": "user-mi"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 14: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1430,14 +2297,14 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dddawaf'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddawaf'
   params: {
     // Required parameters
     locations: [
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: '<location>'
+        locationName: '<locationName>'
       }
       {
         failoverPriority: 1
@@ -1456,6 +2323,20 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       }
     ]
     location: '<location>'
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'Sql'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
     sqlDatabases: [
       {
         containers: [
@@ -1520,7 +2401,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "failoverPriority": 0,
           "isZoneRedundant": false,
-          "locationName": "<location>"
+          "locationName": "<locationName>"
         },
         {
           "failoverPriority": 1,
@@ -1545,6 +2426,22 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     },
     "location": {
       "value": "<location>"
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "Sql",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        }
+      ]
     },
     "sqlDatabases": {
       "value": [
@@ -1599,6 +2496,70 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
+### Example 15: _Using zone redundant regions_
+
+This instance deploys the module enabling multiple zone redundant in multiple regions.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddazr'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: true
+        locationName: '<locationName>'
+      }
+    ]
+    name: 'zone-redundant'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": true,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "name": {
+      "value": "zone-redundant"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
 
 ## Parameters
 
@@ -1613,28 +2574,30 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`automaticFailover`](#parameter-automaticfailover) | bool | Enable automatic failover for regions. |
-| [`backupIntervalInMinutes`](#parameter-backupintervalinminutes) | int | An integer representing the interval in minutes between two backups. Only applies to periodic backup type. |
-| [`backupPolicyContinuousTier`](#parameter-backuppolicycontinuoustier) | string | Configuration values for continuous mode backup. |
-| [`backupPolicyType`](#parameter-backuppolicytype) | string | Describes the mode of backups. |
-| [`backupRetentionIntervalInHours`](#parameter-backupretentionintervalinhours) | int | An integer representing the time (in hours) that each backup is retained. Only applies to periodic backup type. |
-| [`backupStorageRedundancy`](#parameter-backupstorageredundancy) | string | Enum to indicate type of backup residency. Only applies to periodic backup type. |
+| [`automaticFailover`](#parameter-automaticfailover) | bool | Default to true. Enable automatic failover for regions. |
+| [`backupIntervalInMinutes`](#parameter-backupintervalinminutes) | int | Default to 240. An integer representing the interval in minutes between two backups. Only applies to periodic backup type. |
+| [`backupPolicyContinuousTier`](#parameter-backuppolicycontinuoustier) | string | Default to Continuous30Days. Configuration values for continuous mode backup. |
+| [`backupPolicyType`](#parameter-backuppolicytype) | string | Default to Continuous. Describes the mode of backups. |
+| [`backupRetentionIntervalInHours`](#parameter-backupretentionintervalinhours) | int | Default to 8. An integer representing the time (in hours) that each backup is retained. Only applies to periodic backup type. |
+| [`backupStorageRedundancy`](#parameter-backupstorageredundancy) | string | Default to Local. Enum to indicate type of backup residency. Only applies to periodic backup type. |
 | [`capabilitiesToAdd`](#parameter-capabilitiestoadd) | array | List of Cosmos DB capabilities for the account. |
-| [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | The offer type for the Cosmos DB database account. |
-| [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | The default consistency level of the Cosmos DB account. |
+| [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | Default to Standard. The offer type for the Cosmos DB database account. |
+| [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | Default to Session. The default consistency level of the Cosmos DB account. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableFreeTier`](#parameter-enablefreetier) | bool | Flag to indicate whether Free Tier is enabled. |
+| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Default to false. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication. |
+| [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Default to false. Flag to indicate whether to enable storage analytics. |
+| [`enableFreeTier`](#parameter-enablefreetier) | bool | Default to false. Flag to indicate whether Free Tier is enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`gremlinDatabases`](#parameter-gremlindatabases) | array | Gremlin Databases configurations. |
-| [`location`](#parameter-location) | string | Location for all resources. |
+| [`location`](#parameter-location) | string | Default to current resource group scope location. Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`maxIntervalInSeconds`](#parameter-maxintervalinseconds) | int | Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400. |
-| [`maxStalenessPrefix`](#parameter-maxstalenessprefix) | int | Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000. |
+| [`maxIntervalInSeconds`](#parameter-maxintervalinseconds) | int | Default to 300. Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400. |
+| [`maxStalenessPrefix`](#parameter-maxstalenessprefix) | int | Default to 100000. Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000. |
 | [`mongodbDatabases`](#parameter-mongodbdatabases) | array | MongoDB Databases configurations. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalIds' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`serverVersion`](#parameter-serverversion) | string | Specifies the MongoDB server version to use. |
+| [`serverVersion`](#parameter-serverversion) | string | Default to 4.2. Specifies the MongoDB server version to use. |
 | [`sqlDatabases`](#parameter-sqldatabases) | array | SQL Databases configurations. |
 | [`tags`](#parameter-tags) | object | Tags of the Database Account resource. |
 
@@ -1654,7 +2617,7 @@ Name of the Database Account.
 
 ### Parameter: `automaticFailover`
 
-Enable automatic failover for regions.
+Default to true. Enable automatic failover for regions.
 
 - Required: No
 - Type: bool
@@ -1662,7 +2625,7 @@ Enable automatic failover for regions.
 
 ### Parameter: `backupIntervalInMinutes`
 
-An integer representing the interval in minutes between two backups. Only applies to periodic backup type.
+Default to 240. An integer representing the interval in minutes between two backups. Only applies to periodic backup type.
 
 - Required: No
 - Type: int
@@ -1670,7 +2633,7 @@ An integer representing the interval in minutes between two backups. Only applie
 
 ### Parameter: `backupPolicyContinuousTier`
 
-Configuration values for continuous mode backup.
+Default to Continuous30Days. Configuration values for continuous mode backup.
 
 - Required: No
 - Type: string
@@ -1685,7 +2648,7 @@ Configuration values for continuous mode backup.
 
 ### Parameter: `backupPolicyType`
 
-Describes the mode of backups.
+Default to Continuous. Describes the mode of backups.
 
 - Required: No
 - Type: string
@@ -1700,7 +2663,7 @@ Describes the mode of backups.
 
 ### Parameter: `backupRetentionIntervalInHours`
 
-An integer representing the time (in hours) that each backup is retained. Only applies to periodic backup type.
+Default to 8. An integer representing the time (in hours) that each backup is retained. Only applies to periodic backup type.
 
 - Required: No
 - Type: int
@@ -1708,7 +2671,7 @@ An integer representing the time (in hours) that each backup is retained. Only a
 
 ### Parameter: `backupStorageRedundancy`
 
-Enum to indicate type of backup residency. Only applies to periodic backup type.
+Default to Local. Enum to indicate type of backup residency. Only applies to periodic backup type.
 
 - Required: No
 - Type: string
@@ -1743,7 +2706,7 @@ List of Cosmos DB capabilities for the account.
 
 ### Parameter: `databaseAccountOfferType`
 
-The offer type for the Cosmos DB database account.
+Default to Standard. The offer type for the Cosmos DB database account.
 
 - Required: No
 - Type: string
@@ -1757,7 +2720,7 @@ The offer type for the Cosmos DB database account.
 
 ### Parameter: `defaultConsistencyLevel`
 
-The default consistency level of the Cosmos DB account.
+Default to Session. The default consistency level of the Cosmos DB account.
 
 - Required: No
 - Type: string
@@ -1787,9 +2750,9 @@ The diagnostic settings of the service.
 | [`eventHubAuthorizationRuleResourceId`](#parameter-diagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
 | [`eventHubName`](#parameter-diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
+| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
+| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
 | [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
@@ -1824,10 +2787,39 @@ A string indicating whether the export to Log Analytics should use the default d
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
-The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
 
 - Required: No
 - Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-diagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -1838,10 +2830,36 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
-The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-diagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -1864,9 +2882,25 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
+### Parameter: `disableLocalAuth`
+
+Default to false. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enableAnalyticalStorage`
+
+Default to false. Flag to indicate whether to enable storage analytics.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `enableFreeTier`
 
-Flag to indicate whether Free Tier is enabled.
+Default to false. Flag to indicate whether Free Tier is enabled.
 
 - Required: No
 - Type: bool
@@ -1890,7 +2924,7 @@ Gremlin Databases configurations.
 
 ### Parameter: `location`
 
-Location for all resources.
+Default to current resource group scope location. Location for all resources.
 
 - Required: No
 - Type: string
@@ -1962,7 +2996,7 @@ The resource ID(s) to assign to the resource.
 
 ### Parameter: `maxIntervalInSeconds`
 
-Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.
+Default to 300. Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.
 
 - Required: No
 - Type: int
@@ -1970,7 +3004,7 @@ Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Regi
 
 ### Parameter: `maxStalenessPrefix`
 
-Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000.
+Default to 100000. Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000.
 
 - Required: No
 - Type: int
@@ -1995,7 +3029,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`service`](#parameter-privateendpointsservice) | string | The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file". |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -2007,9 +3041,10 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the private endpoint. |
 | [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
+| [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
 | [`location`](#parameter-privateendpointslocation) | string | The location to deploy the private endpoint to. |
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
-| [`manualPrivateLinkServiceConnections`](#parameter-privateendpointsmanualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
+| [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
@@ -2018,7 +3053,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 ### Parameter: `privateEndpoints.service`
 
-The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".
+The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".
 
 - Required: Yes
 - Type: string
@@ -2044,6 +3079,27 @@ Custom DNS configurations.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint ip address. |
+| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private ip addresses of the private endpoint. |
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+Fqdn that resolves to private endpoint ip address.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
+
+A list of private ip addresses of the private endpoint.
+
+- Required: Yes
+- Type: array
+
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
 The custom name of the network interface attached to the private endpoint.
@@ -2064,6 +3120,63 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsipconfigurationsname) | string | The name of the resource that is unique within a resource group. |
+| [`properties`](#parameter-privateendpointsipconfigurationsproperties) | object | Properties of private endpoint IP configurations. |
+
+### Parameter: `privateEndpoints.ipConfigurations.name`
+
+The name of the resource that is unique within a resource group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties`
+
+Properties of private endpoint IP configurations.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private ip address obtained from the private endpoint's subnet. |
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
+
+The member name of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
+
+A private ip address obtained from the private endpoint's subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.isManualConnection`
+
+If Manual Private Link Connection is required.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `privateEndpoints.location`
 
@@ -2108,12 +3221,12 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.manualPrivateLinkServiceConnections`
+### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
-Manual PrivateLink Service Connections.
+A message passed to the owner of the remote resource with the manual connection request.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.name`
 
@@ -2154,7 +3267,7 @@ Array of role assignments to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-privateendpointsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`condition`](#parameter-privateendpointsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
 | [`conditionVersion`](#parameter-privateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-privateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-privateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
@@ -2176,7 +3289,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 ### Parameter: `privateEndpoints.roleAssignments.condition`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
@@ -2250,7 +3363,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
@@ -2272,7 +3385,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 ### Parameter: `roleAssignments.condition`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
@@ -2323,7 +3436,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `serverVersion`
 
-Specifies the MongoDB server version to use.
+Default to 4.2. Specifies the MongoDB server version to use.
 
 - Required: No
 - Type: string
@@ -2370,4 +3483,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.3.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.4.0` | Remote reference |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

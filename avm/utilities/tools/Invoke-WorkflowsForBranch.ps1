@@ -65,10 +65,14 @@ function Invoke-GitHubWorkflow {
         } | ConvertTo-Json
     }
     if ($PSCmdlet.ShouldProcess("GitHub workflow [$WorkflowFileName] for branch [$TargetBranch]", 'Invoke')) {
-        $response = Invoke-RestMethod @requestInputObject -Verbose:$false
-
+        try {
+            $response = Invoke-RestMethod @requestInputObject -Verbose:$false
+        } catch {
+            Write-Error ("Request failed for [$WorkflowFileName]. Response: [{0}]" -f $_.ErrorDetails)
+            return $false
+        }
         if ($response) {
-            Write-Error "Request failed. Reponse: [$response]"
+            Write-Error "Request failed. Response: [$response]"
             return $false
         }
     }
@@ -154,7 +158,7 @@ Trigger all workflows for the given GitHub repository. By default, pipelines are
 Mandatory. The PAT to use to interact with either GitHub / Azure DevOps.
 
 .PARAMETER TargetBranch
-Mandatory. The branch to run the pipelines for (e.g. `main`).
+Optional. The branch to run the pipelines for (e.g. `main`). Defaults to currently checked-out branch.
 
 .PARAMETER PipelineFilter
 Optional. The pipeline files to filter down to. By default only files with a name that starts with 'avm.res.*' are considered. E.g. 'avm.res.*'.
@@ -168,6 +172,12 @@ Optional. The GitHub organization to run the workfows in.
 .PARAMETER RepositoryName
 Optional. The GitHub repository to run the workfows in.
 
+.PARAMETER WorkflowInputs
+Optional. The inputs to pass into the workflows. Defaults to only run static validation.
+
+.PARAMETER InvokeForDiff
+Optional. Trigger workflows only for those who's module files have changed (based on diff of branch to main)
+
 .EXAMPLE
 Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm.res.*' -WorkflowInputs @{ staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' }
 
@@ -177,6 +187,11 @@ Run all GitHub workflows that start with'avm.res.*' using branch 'feature/branch
 Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm.res.*' -WorkflowInputs @{ staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' } -WhatIf
 
 Only simulate the triggering of all GitHub workflows that start with'avm.res.*' using branch 'feature/branch'. Hence ONLY returns all GitHub status badges.
+
+.EXAMPLE
+Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -RepositoryOwner 'MyFork'
+
+Only simulate the triggering of all GitHub workflows of project [MyFork/bicep-registry-modules] that start with'avm.res.*', using the current locally checked out branch. Also returns all GitHub status badges.
 #>
 function Invoke-WorkflowsForBranch {
 
@@ -185,11 +200,14 @@ function Invoke-WorkflowsForBranch {
         [Parameter(Mandatory = $true)]
         [string] $PersonalAccessToken,
 
-        [Parameter(Mandatory = $true)]
-        [string] $TargetBranch,
+        [Parameter(Mandatory = $false)]
+        [string] $TargetBranch = (git branch --show-current),
 
         [Parameter(Mandatory = $false)]
         [string] $PipelineFilter = 'avm.res.*',
+
+        [Parameter(Mandatory = $false)]
+        [switch] $InvokeForDiff,
 
         [Parameter(Mandatory = $false)]
         [switch] $SkipPipelineBadges,
@@ -201,10 +219,13 @@ function Invoke-WorkflowsForBranch {
         [string] $RepositoryName = 'bicep-registry-modules',
 
         [Parameter(Mandatory = $false)]
+        [string] $RepoRoot = (Get-Item $PSScriptRoot).Parent.Parent.FullName,
+
+        [Parameter(Mandatory = $false)]
         [hashtable] $WorkflowInputs = @{
-            prerelease           = 'false'
+            staticValidation     = 'true'
             deploymentValidation = 'false'
-            removeDeployment     = 'true'
+            removeDeployment     = 'false'
         }
     )
 
@@ -216,6 +237,31 @@ function Invoke-WorkflowsForBranch {
 
     Write-Verbose 'Fetching current GitHub workflows' -Verbose
     $workflows = Get-GitHubModuleWorkflowList @baseInputObject -Filter $PipelineFilter
+    Write-Verbose ("Fetched [{0}] workflows" -f $workflows.Count) -Verbose
+
+    if ($InvokeForDiff) {
+        # Load used function
+        . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-PipelineFileName.ps1')
+
+        # Get diff
+        $diff = git diff 'main' --name-only
+
+        # Identify pipeline names
+        $pipelineNames = [System.Collections.ArrayList]@()
+        $pipelineNames = $diff | ForEach-Object {
+            $folderPath = Split-Path $_ -Parent
+            $pipelineFileName = Get-PipelineFileName -ResourceIdentifier $folderPath
+            if ($pipelineFileName -match $PipelineFilter) {
+                $pipelineFileName
+            }
+        } | Select-Object -Unique
+
+        # Filter workflows
+        $workflows = $workflows | Where-Object { $pipelineNames -contains (Split-Path $_.path -Leaf) }
+
+        Write-Verbose ("As per 'diff', filtered workflows down to [{0}]" -f $workflows.Count)
+    }
+
 
     $gitHubWorkflowBadges = [System.Collections.ArrayList]@()
 

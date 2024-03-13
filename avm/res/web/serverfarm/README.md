@@ -9,6 +9,7 @@ This module deploys an App Service Plan.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -42,7 +43,7 @@ This instance deploys the module with a base set of parameters. Note it does inc
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsfmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsfmin'
   params: {
     // Required parameters
     name: 'wsfmin001'
@@ -54,7 +55,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       tier: 'Premium'
     }
     // Non-required parameters
-    location: 'eastus'
+    location: '<location>'
   }
 }
 ```
@@ -86,7 +87,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     },
     // Non-required parameters
     "location": {
-      "value": "eastus"
+      "value": "<location>"
     }
   }
 }
@@ -106,7 +107,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsfmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsfmax'
   params: {
     // Required parameters
     name: 'wsfmax001'
@@ -133,7 +134,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       }
     ]
     kind: 'App'
-    location: 'eastus'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'lock'
@@ -212,7 +213,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       "value": "App"
     },
     "location": {
-      "value": "eastus"
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -270,7 +271,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsfwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsfwaf'
   params: {
     // Required parameters
     name: 'wsfwaf001'
@@ -297,7 +298,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       }
     ]
     kind: 'App'
-    location: 'eastus'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'lock'
@@ -358,7 +359,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       "value": "App"
     },
     "location": {
-      "value": "eastus"
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -463,6 +464,7 @@ The diagnostic settings of the service.
 | [`eventHubName`](#parameter-diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
 | [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
@@ -501,6 +503,39 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+
+### Parameter: `diagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-diagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -627,7 +662,7 @@ Array of role assignments to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
@@ -649,7 +684,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 ### Parameter: `roleAssignments.condition`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
@@ -758,3 +793,7 @@ Zone Redundancy can only be used on Premium or ElasticPremium SKU Tiers within Z
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

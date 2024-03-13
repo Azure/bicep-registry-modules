@@ -8,6 +8,7 @@ This module deploys a SQL Database in a CosmosDB Account.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -34,10 +35,10 @@ This module deploys a SQL Database in a CosmosDB Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`autoscaleSettingsMaxThroughput`](#parameter-autoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to -1, then the property will be set to null and autoscale will be disabled. |
+| [`autoscaleSettingsMaxThroughput`](#parameter-autoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. |
 | [`containers`](#parameter-containers) | array | Array of containers to deploy in the SQL database. |
 | [`tags`](#parameter-tags) | object | Tags of the SQL database resource. |
-| [`throughput`](#parameter-throughput) | int | Request units per second. Will be set to null if autoscaleSettingsMaxThroughput is used. |
+| [`throughput`](#parameter-throughput) | int | Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. |
 
 ### Parameter: `name`
 
@@ -55,7 +56,7 @@ The name of the parent Database Account. Required if the template is used in a s
 
 ### Parameter: `autoscaleSettingsMaxThroughput`
 
-Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to -1, then the property will be set to null and autoscale will be disabled.
+Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled.
 
 - Required: No
 - Type: int
@@ -77,11 +78,10 @@ Tags of the SQL database resource.
 
 ### Parameter: `throughput`
 
-Request units per second. Will be set to null if autoscaleSettingsMaxThroughput is used.
+Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.
 
 - Required: No
 - Type: int
-- Default: `400`
 
 
 ## Outputs
@@ -95,3 +95,7 @@ Request units per second. Will be set to null if autoscaleSettingsMaxThroughput 
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

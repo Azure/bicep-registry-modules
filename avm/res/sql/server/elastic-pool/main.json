@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "3978881342800176671"
+      "version": "0.25.53.49325",
+      "templateHash": "3404184459089621320"
     },
     "name": "SQL Server Elastic Pool",
     "description": "This module deploys an Azure SQL Server Elastic Pool.",

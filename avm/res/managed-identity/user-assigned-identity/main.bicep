@@ -9,7 +9,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object.')
-param federatedIdentityCredentials array = []
+param federatedIdentityCredentials federatedIdentityCredentialsType
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -20,7 +20,7 @@ param roleAssignments roleAssignmentType
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 var builtInRoleNames = {
@@ -66,7 +66,7 @@ resource userAssignedIdentity_lock 'Microsoft.Authorization/locks@2020-05-01' = 
   scope: userAssignedIdentity
 }
 
-module userAssignedIdentity_federatedIdentityCredentials 'federated-identity-credential/main.bicep' = [for (federatedIdentityCredential, index) in federatedIdentityCredentials: {
+module userAssignedIdentity_federatedIdentityCredentials 'federated-identity-credential/main.bicep' = [for (federatedIdentityCredential, index) in (federatedIdentityCredentials ?? []): {
   name: '${uniqueString(deployment().name, location)}-UserMSI-FederatedIdentityCredential-${index}'
   params: {
     name: federatedIdentityCredential.name
@@ -134,7 +134,7 @@ type roleAssignmentType = {
   @description('Optional. The description of the role assignment.')
   description: string?
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
+  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
   @description('Optional. Version of the condition.')
@@ -142,4 +142,18 @@ type roleAssignmentType = {
 
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
+}[]?
+
+type federatedIdentityCredentialsType = {
+  @description('Required. The name of the federated identity credential.')
+  name: string
+
+  @description('Required. The list of audiences that can appear in the issued token.')
+  audiences: string[]
+
+  @description('Required. The URL of the issuer to be trusted.')
+  issuer: string
+
+  @description('Required. The identifier of the external identity.')
+  subject: string
 }[]?

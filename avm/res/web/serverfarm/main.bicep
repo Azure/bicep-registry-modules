@@ -83,7 +83,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
+  'Role Based Access Control Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
   'Web Plan Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2cc479cb-7b4d-49a8-b449-8c00fd0f0a4b')
   'Website Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'de139f84-1756-47ae-9be6-808fbbe84772')
@@ -134,13 +134,11 @@ resource appServicePlan_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
     workspaceId: diagnosticSetting.?workspaceResourceId
     eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
     eventHubName: diagnosticSetting.?eventHubName
-    metrics: diagnosticSetting.?metricCategories ?? [
-      {
-        category: 'AllMetrics'
-        timeGrain: null
-        enabled: true
-      }
-    ]
+    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
+      category: group.category
+      enabled: group.?enabled ?? true
+      timeGrain: null
+    }]
     marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
     logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
   }
@@ -207,7 +205,7 @@ type roleAssignmentType = {
   @description('Optional. The description of the role assignment.')
   description: string?
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
+  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
   @description('Optional. Version of the condition.')
@@ -221,9 +219,13 @@ type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
 
+  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
   metricCategories: {
     @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
     category: string
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
   }[]?
 
   @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')

@@ -5,9 +5,6 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. Name of the resource to create.')
 param name string
 
-@description('Optional. Location for all Resources.')
-param location string = resourceGroup().location
-
 //
 // Add your parameters here
 //
@@ -32,8 +29,8 @@ param location string = resourceGroup().location
 // @description('The name of the resource.')
 // output name string = <Resource>.name
 
-// @description('The location the resource was deployed into.')
-// output location string = <Resource>.location
+// @description('The name of the resource group the resource was created in.')
+// output resourceGroupName string = resourceGroup().name
 
 // ================ //
 // Definitions      //
