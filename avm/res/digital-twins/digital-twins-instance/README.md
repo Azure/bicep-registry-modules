@@ -117,6 +117,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
         userAssignedResourceId: '<userAssignedResourceId>'
       }
     }
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -207,6 +208,9 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
           "userAssignedResourceId": "<userAssignedResourceId>"
         }
       }
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -307,6 +311,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
         userAssignedResourceId: '<userAssignedResourceId>'
       }
     }
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -432,6 +437,9 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
           "userAssignedResourceId": "<userAssignedResourceId>"
         }
       }
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
