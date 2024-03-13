@@ -9,7 +9,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Required. Shared services Virtual Network resource Id.')
-param vNetResourceId string
+param virtualNetworkResourceId string
 
 @description('Optional. The Public IP resource ID to associate to the azureBastionSubnet. If empty, then the Public IP that is created as part of this module will be applied to the azureBastionSubnet.')
 param bastionSubnetPublicIpResourceId string = ''
@@ -68,7 +68,7 @@ var ipConfigurations = [
     name: 'IpConfAzureBastionSubnet'
     properties: union({
         subnet: {
-          id: '${vNetResourceId}/subnets/AzureBastionSubnet' // The subnet name must be AzureBastionSubnet
+          id: '${virtualNetworkResourceId}/subnets/AzureBastionSubnet' // The subnet name must be AzureBastionSubnet
         }
       }, {
         //Use existing Public IP, new Public IP created in this module

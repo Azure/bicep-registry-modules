@@ -49,7 +49,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
   params: {
     // Required parameters
     name: 'nbhctmpip001'
-    vNetResourceId: '<vNetResourceId>'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     location: '<location>'
     publicIPAddressObject: {
@@ -110,8 +110,8 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     "name": {
       "value": "nbhctmpip001"
     },
-    "vNetResourceId": {
-      "value": "<vNetResourceId>"
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
     },
     // Non-required parameters
     "location": {
@@ -179,7 +179,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
   params: {
     // Required parameters
     name: 'nbhmin001'
-    vNetResourceId: '<vNetResourceId>'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     location: '<location>'
   }
@@ -202,8 +202,8 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     "name": {
       "value": "nbhmin001"
     },
-    "vNetResourceId": {
-      "value": "<vNetResourceId>"
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
     },
     // Non-required parameters
     "location": {
@@ -231,7 +231,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
   params: {
     // Required parameters
     name: 'nbhmax001'
-    vNetResourceId: '<vNetResourceId>'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     bastionSubnetPublicIpResourceId: '<bastionSubnetPublicIpResourceId>'
     diagnosticSettings: [
@@ -296,8 +296,8 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     "name": {
       "value": "nbhmax001"
     },
-    "vNetResourceId": {
-      "value": "<vNetResourceId>"
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
     },
     // Non-required parameters
     "bastionSubnetPublicIpResourceId": {
@@ -389,7 +389,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
   params: {
     // Required parameters
     name: 'nbhwaf001'
-    vNetResourceId: '<vNetResourceId>'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     bastionSubnetPublicIpResourceId: '<bastionSubnetPublicIpResourceId>'
     diagnosticSettings: [
@@ -433,8 +433,8 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     "name": {
       "value": "nbhwaf001"
     },
-    "vNetResourceId": {
-      "value": "<vNetResourceId>"
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
     },
     // Non-required parameters
     "bastionSubnetPublicIpResourceId": {
@@ -494,7 +494,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Azure Bastion resource. |
-| [`vNetResourceId`](#parameter-vnetresourceid) | string | Shared services Virtual Network resource Id. |
+| [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | Shared services Virtual Network resource Id. |
 
 **Optional parameters**
 
@@ -523,7 +523,7 @@ Name of the Azure Bastion resource.
 - Required: Yes
 - Type: string
 
-### Parameter: `vNetResourceId`
+### Parameter: `virtualNetworkResourceId`
 
 Shared services Virtual Network resource Id.
 
