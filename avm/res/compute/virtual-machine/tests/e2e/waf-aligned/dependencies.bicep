@@ -211,6 +211,17 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 }
 
+resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Key-Vault-Crypto-User-RoleAssignment')
+  scope: keyVault::key
+  properties: {
+    // principalId: '268f6a53-9f68-4a38-ae47-166f730d86af' // Backup Management Service Enterprise Application Object Id (Note: this is tenant specific)
+    principalId: 'be766fc3-eac4-4627-b8f5-298e35c8aea4' // BitConstruct02 tenant - DELETE ME
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424') // Key Vault Crypto User
+    principalType: 'ServicePrincipal'
+  }
+}
+
 resource msiKVReadRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-KeyVault-Key-Read-RoleAssignment')
   scope: keyVault::key
