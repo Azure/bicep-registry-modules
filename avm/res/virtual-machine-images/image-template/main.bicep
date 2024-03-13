@@ -2,13 +2,13 @@ metadata name = 'Virtual Machine Image Templates'
 metadata description = 'This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB).'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. Name prefix of the Image Template to be built by the Azure Image Builder service.')
+@description('Required. The name prefix of the Image Template to be built by the Azure Image Builder service.')
 param name string
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. Image build timeout in minutes. 0 means the default 240 minutes.')
+@description('Optional. The image build timeout in minutes. 0 means the default 240 minutes.')
 @minValue(0)
 @maxValue(960)
 param buildTimeoutInMinutes int = 0

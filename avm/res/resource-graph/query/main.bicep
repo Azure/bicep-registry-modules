@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 // Parameters       //
 // ================ //
 
-@description('Required. Name of the Resource Graph Query.')
+@description('Required. The name of the Resource Graph Query.')
 param name string
 
 @description('Optional. Location for all resources.')
@@ -24,7 +24,7 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Required. KQL query that will be graph.')
+@description('Required. The KQL query that will be graph.')
 param query string
 
 @description('Optional. The description of a graph query.')

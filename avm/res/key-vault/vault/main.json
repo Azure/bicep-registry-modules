@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "18302928297760675801"
+      "templateHash": "5604749365634791124"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -1126,7 +1126,7 @@
             "value": "[parameters('name')]"
           },
           "attributesEnabled": {
-            "value": "[coalesce(tryGet(variables('secretList')[copyIndex()], 'attributesEnabled'), true())]"
+            "value": "[tryGet(variables('secretList')[copyIndex()], 'attributesEnabled')]"
           },
           "attributesExp": {
             "value": "[tryGet(variables('secretList')[copyIndex()], 'attributesExp')]"
@@ -1403,7 +1403,7 @@
             "value": "[parameters('name')]"
           },
           "attributesEnabled": {
-            "value": "[coalesce(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesEnabled'), true())]"
+            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesEnabled')]"
           },
           "attributesExp": {
             "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesExp')]"
