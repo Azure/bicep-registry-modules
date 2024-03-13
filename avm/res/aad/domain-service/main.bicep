@@ -187,7 +187,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 }
 
 // skipping deployments with '-dontdeploy' is necessary for test compliance.
-resource domainservice 'Microsoft.AAD/DomainServices@2022-12-01' = if (!(endsWith(name, '-dontdeploy'))) {
+resource domainservice 'Microsoft.AAD/domainServices@2022-12-01' = if (!(endsWith(name, '-dontdeploy'))) {
   name: name
   location: location
   tags: tags
@@ -349,7 +349,7 @@ type replicaSetType = {
   location: string
 
   @metadata({
-    example: '[concat("/subscriptions/", subscription().subscriptionId, "/resourceGroups/", resourceGroup().name, "/providers/Microsoft.Network/virtualNetworks/", parameters("vnetName"), "/subnets/", parameters("subnetName"))]'
+    example: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/<resourceGroup>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>'
   })
   @description('Required. The id of the subnet that Domain Services will be deployed on. The subnet has some requirements, which are outlined in the [notes section](#Network-Security-Group-NSG-requirements-for-AADDS) of the documentation.')
   subnetId: string

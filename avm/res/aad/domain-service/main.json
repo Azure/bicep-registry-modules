@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "16225434432102434995"
+      "templateHash": "14676392147915563928"
     },
     "name": "Azure Active Directory Domain Services",
     "description": "This module deploys an Azure Active Directory Domain Services (AADDS).",
@@ -200,13 +200,13 @@
           "location": {
             "type": "string",
             "metadata": {
-              "description": "Required. Virtual network location"
+              "description": "Required. Virtual network location."
             }
           },
           "subnetId": {
             "type": "string",
             "metadata": {
-              "example": "[[concat(\"/subscriptions/\", subscription().subscriptionId, \"/resourceGroups/\", resourceGroup().name, \"/providers/Microsoft.Network/virtualNetworks/\", parameters(\"vnetName\"), \"/subnets/\", parameters(\"subnetName\"))]",
+              "example": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/<resourceGroup>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>",
               "description": "Required. The id of the subnet that Domain Services will be deployed on. The subnet has some requirements, which are outlined in the [notes section](#Network-Security-Group-NSG-requirements-for-AADDS) of the documentation."
             }
           }
@@ -472,6 +472,7 @@
       }
     },
     "domainservice": {
+      "condition": "[not(endsWith(parameters('name'), '-dontdeploy'))]",
       "type": "Microsoft.AAD/domainServices",
       "apiVersion": "2022-12-01",
       "name": "[parameters('name')]",
