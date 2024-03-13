@@ -162,4 +162,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     requireInfrastructureEncryption: true
     vnetAddressPrefix: '10.100'
   }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
 }]

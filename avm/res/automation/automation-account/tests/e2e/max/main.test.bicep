@@ -102,7 +102,19 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
         service: 'Webhook'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        service: 'Webhook'
+        subnetResourceId: nestedDependencies.outputs.customSubnet2ResourceId
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
@@ -114,7 +126,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
         service: 'DSCAndHybridWorker'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
@@ -256,4 +268,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Role: 'DeploymentValidation'
     }
   }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
 }]

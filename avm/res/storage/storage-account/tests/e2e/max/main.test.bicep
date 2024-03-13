@@ -80,7 +80,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     privateEndpoints: [
       {
         service: 'blob'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
@@ -90,14 +90,62 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           Role: 'DeploymentValidation'
         }
       }
+      {
+        service: 'blob'
+        subnetResourceId: nestedDependencies.outputs.customSubnet2ResourceId
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+      }
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
+        service: 'table'
+      }
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
+        service: 'queue'
+      }
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
+        service: 'file'
+      }
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
+        service: 'web'
+      }
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
+        service: 'dfs'
+      }
     ]
     networkAcls: {
+      resourceAccessRules: [
+        {
+          tenantId: subscription().tenantId
+          resourceId: '/subscriptions/${subscription().subscriptionId}/resourceGroups/*/providers/Microsoft.ContainerRegistry/registries/*'
+        }
+      ]
       bypass: 'AzureServices'
       defaultAction: 'Deny'
       virtualNetworkRules: [
         {
           action: 'Allow'
-          id: nestedDependencies.outputs.subnetResourceId
+          id: nestedDependencies.outputs.defaultSubnetResourceId
         }
       ]
       ipRules: [
@@ -407,4 +455,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Role: 'DeploymentValidation'
     }
   }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
 }]

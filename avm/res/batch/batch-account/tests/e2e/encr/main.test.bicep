@@ -74,4 +74,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       'hidden-title': 'This is visible in the resource name'
     }
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }]
