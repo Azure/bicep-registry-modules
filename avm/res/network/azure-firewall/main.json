@@ -10,7 +10,7 @@
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall.",
-    "owner": "Azure/module-maintainerssss"
+    "owner": "Azure/module-maintainers"
   },
   "definitions": {
     "lockType": {
