@@ -60,10 +60,12 @@ param loadBalancerSku string = 'standard'
 @description('Optional. Outbound IP Count for the Load balancer.')
 param managedOutboundIPCount int = 0
 
-@description('Optional. Specifies outbound (egress) routing method. - loadBalancer or userDefinedRouting.')
+@description('Optional. Specifies outbound (egress) routing method.')
 @allowed([
   'loadBalancer'
   'userDefinedRouting'
+  'managedNATGateway'
+  'userAssignedNATGateway'
 ])
 param outboundType string = 'loadBalancer'
 
@@ -575,7 +577,6 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
     }
     azureMonitorProfile: {
       logs: enableAzureMonitorProfileLogs ? {
-        enabled: enableAzureMonitorProfileLogs
         appMonitoring: {
           enabled: enableAppMonitoring
         }
