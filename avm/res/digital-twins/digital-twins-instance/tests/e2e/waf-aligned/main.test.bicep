@@ -87,7 +87,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     }
     eventGridEndpoint: {
       eventGridDomainId: nestedDependencies.outputs.eventGridDomainResourceId
-      topicEndpoint: nestedDependencies.outputs.eventGridEndpoint
+      topicEndpoint: nestedDependencies.outputs.eventGridTopicResourceId
     }
     name: '${namePrefix}${serviceShort}001'
     managedIdentities: {
