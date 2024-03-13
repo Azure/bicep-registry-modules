@@ -356,7 +356,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
             roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
-        service: 'vault'
+        service: 'API'
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -490,7 +490,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
               "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
-          "service": "vault",
+          "service": "API",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
