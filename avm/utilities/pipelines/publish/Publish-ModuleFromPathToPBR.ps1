@@ -103,7 +103,7 @@ function Publish-ModuleFromPathToPBR {
   # TODO move to its own task to show that as skipped if no file qualifies for new version
   Write-Verbose "Publish Input:`n $($publishInput | ConvertTo-Json -Depth 10)" -Verbose
 
-  bicep publish @publishInput
+  # bicep publish @publishInput
 
   return @{
     version             = $targetVersion
