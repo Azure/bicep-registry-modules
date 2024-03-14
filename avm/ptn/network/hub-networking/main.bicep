@@ -22,77 +22,132 @@ param hubVirtualNetworks hubVirtualNetworkObject
 // Resources      //
 // ============== //
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.network-hubnetworking.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.ptn.network-hubnetworking.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
-module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [for (hub, index) in items(hubVirtualNetworks ?? {}): {
-  name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nvn'
-  params: {
-    // Required parameters
-    name: hub.value.name
-    addressPrefixes: hub.value.addressPrefixes
-    // Non-required parameters
-    ddosProtectionPlanResourceId: hub.value.ddosProtectionPlanResourceId ?? ''
-    diagnosticSettings: hub.value.diagnosticSettings ?? []
-    dnsServers: hub.value.dnsServers ?? []
-    enableTelemetry: hub.value.enableTelemetry ?? true
-    flowTimeoutInMinutes: hub.value.flowTimeoutInMinutes ?? 0
-    location: hub.value.location ?? ''
-    lock: hub.value.lock ?? {}
-    roleAssignments: hub.value.roleAssignments ?? []
-    subnets: hub.value.subnets ?? []
-    tags: hub.value.tags ?? {}
-    vnetEncryption: hub.value.vnetEncryption ?? false
-    vnetEncryptionEnforcement: hub.value.vnetEncryptionEnforcement ?? ''
+module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [
+  for (hub, index) in items(hubVirtualNetworks ?? {}): {
+    name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nvn'
+    params: {
+      // Required parameters
+      name: hub.value.name
+      addressPrefixes: hub.value.addressPrefixes
+      // Non-required parameters
+      ddosProtectionPlanResourceId: hub.value.ddosProtectionPlanResourceId ?? ''
+      diagnosticSettings: hub.value.diagnosticSettings ?? []
+      dnsServers: hub.value.dnsServers ?? []
+      enableTelemetry: hub.value.enableTelemetry ?? true
+      flowTimeoutInMinutes: hub.value.flowTimeoutInMinutes ?? 0
+      location: hub.value.location ?? ''
+      lock: hub.value.lock ?? {}
+      roleAssignments: hub.value.roleAssignments ?? []
+      subnets: hub.value.subnets ?? []
+      tags: hub.value.tags ?? {}
+      vnetEncryption: hub.value.vnetEncryption ?? false
+      vnetEncryptionEnforcement: hub.value.vnetEncryptionEnforcement ?? ''
+    }
   }
-}]
+]
 
-module hubRouteTable 'br/public:avm/res/network/route-table:0.2.2' = [for (hub, index) in items(hubVirtualNetworks ?? {}): {
-  name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nrt'
-  params: {
-    name: hub.value.name
-    location: hub.value.location ?? location
-    disableBgpRoutePropagation: true
-    enableTelemetry: hub.value.enableTelemetry ?? true
-    roleAssignments: hub.value.roleAssignments ?? []
-    routes: []
-    tags: hub.value.tags ?? {}
+var hubVirtualNetworkPeerings = [
+  for (hub, index) in items(hubVirtualNetworks ?? {}): (hub.value.enablePeering) ? hub.value.peeringSettings : []
+]
+
+/* resource hubVirtualNetwork_remote 'Microsoft.Network/virtualNetworks@2023-09-01' existing = [for (peer, index) in hubVirtualNetworkPeerings: if (!empty(peer)) {
+  name: peer.?remoteVirtualNetworkName
+}] */
+
+/* resource hubVirtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2023-09-01' = [for (peer, index) in (hubVirtualNetworkPeerings ?? []): {
+  name: '${hubVirtualNetwork[index].name}-to-${hubVirtualNetwork_remote[index].name}'
+  properties: {
+    allowForwardedTraffic: peer.allowForwardedTraffic ?? false
+    allowGatewayTransit: peer.allowGatewayTransit ?? false
+    allowVirtualNetworkAccess: peer.allowVirtualNetworkAccess ?? true
+    useRemoteGateways: peer.useRemoteGateways ?? false
+    remoteVirtualNetwork: {
+      id: hubVirtualNetwork_remote[index].id
+    }
   }
-}]
+}] */
+
+module hubRouteTable 'br/public:avm/res/network/route-table:0.2.2' = [
+  for (hub, index) in items(hubVirtualNetworks ?? {}): {
+    name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nrt'
+    params: {
+      name: hub.value.name
+      location: hub.value.location ?? location
+      disableBgpRoutePropagation: true
+      enableTelemetry: hub.value.enableTelemetry ?? true
+      roleAssignments: hub.value.roleAssignments ?? []
+      routes: []
+      tags: hub.value.tags ?? {}
+    }
+  }
+]
 
 // AzureBastionSubnet is required to deploy Bastion service. This subnet must exist in the parsubnets array if you enable Bastion Service.
 // There is a minimum subnet requirement of /27 prefix.
-module hubBastion 'br/public:avm/res/network/bastion-host:0.1.1' = [for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableBastion) {
-  name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nbh'
-  params: {
-    // Required parameters
-    name: hub.value.name
-    vNetId: hubVirtualNetwork[index].outputs.resourceId
-    // Non-required parameters
-    diagnosticSettings: hub.value.diagnosticSettings ?? []
-    location: hub.value.location ?? location
-    enableTelemetry: hub.value.enableTelemetry ?? true
-    roleAssignments: hub.value.roleAssignments ?? []
-    tags: hub.value.tags ?? {}
+module hubBastion 'br/public:avm/res/network/bastion-host:0.1.1' = [
+  for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableBastion) {
+    name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nbh'
+    params: {
+      // Required parameters
+      name: hub.value.name
+      vNetId: hubVirtualNetwork[index].outputs.resourceId
+      // Non-required parameters
+      diagnosticSettings: hub.value.diagnosticSettings ?? []
+      location: hub.value.location ?? location
+      enableTelemetry: hub.value.enableTelemetry ?? true
+      roleAssignments: hub.value.roleAssignments ?? []
+      tags: hub.value.tags ?? {}
+    }
   }
-}]
+]
 
-// Fireall module will go here
+// Firewall module will go here
+module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.1.1' = [
+  for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableAzureFirewall) {
+    name: '${uniqueString(deployment().name, location)}-${hub.value.name}-naf'
+    params: {
+      // Required parameters
+      name: hub.value.name
+      virtualNetworkResourceId: hubVirtualNetwork[index].outputs.resourceId
+      // Non-required parameters
+      applicationRuleCollections: hub.value.azureFirewallSettings.applicationRuleCollections ?? []
+      diagnosticSettings: hub.value.diagnosticSettings ?? []
+      firewallPolicyId: hub.value.azureFirewallSettings.firewallPolicy ?? ''
+      hubIPAddresses: hub.value.azureFirewallSettings.hubIpAddresses ?? {}
+      publicIPAddressObject: hub.value.azureFirewallSettings.ipConfigurations ?? []
+      location: hub.value.location ?? location
+      managementIPAddressObject: hub.value.azureFirewallSettings.managementIpConfiguration ?? ''
+      natRuleCollections: hub.value.azureFirewallSettings.natRuleCollections ?? []
+      networkRuleCollections: hub.value.azureFirewallSettings.networkRuleCollections ?? []
+      azureSkuTier: hub.value.azureFirewallSettings.sku ?? {}
+      threatIntelMode: hub.value.azureFirewallSettings.threatIntelMode ?? ''
+      virtualHubId: hub.value.azureFirewallSettings.virtualHub ?? ''
+      zones: hub.value.azureFirewallSettings.zones ?? []
+      enableTelemetry: hub.value.enableTelemetry ?? true
+      roleAssignments: hub.value.roleAssignments ?? []
+      tags: hub.value.tags ?? {}
+    }
+  }
+]
 
 //
 // Add your resources here
@@ -103,22 +158,36 @@ module hubBastion 'br/public:avm/res/network/bastion-host:0.1.1' = [for (hub, in
 // ============ //
 
 @description('The resource group the virtual network was deployed into.')
-output resourceGroupName string[] = [for (hub, index) in items(hubVirtualNetworks ?? {}): hubVirtualNetwork[index].outputs.resourceGroupName]
+output resourceGroupName string[] = [
+  for (hub, index) in items(hubVirtualNetworks ?? {}): hubVirtualNetwork[index].outputs.resourceGroupName
+]
 
 @description('The location the virtual network was deployed into.')
-output location string[] = [for (hub, index) in items(hubVirtualNetworks ?? {}): hubVirtualNetwork[index].outputs.location]
+output location string[] = [
+  for (hub, index) in items(hubVirtualNetworks ?? {}): hubVirtualNetwork[index].outputs.location
+]
 
 @description('The name of the hub virtual network.')
-output hubVirtualNetworkName string[] = [for (hub, index) in items(hubVirtualNetworks ?? {}): hubVirtualNetwork[index].outputs.name]
+output hubVirtualNetworkName string[] = [
+  for (hub, index) in items(hubVirtualNetworks ?? {}): hubVirtualNetwork[index].outputs.name
+]
 
 @description('The resource ID of the hub virtual network.')
-output hubVirtualNetworkResourceId string[] = [for (hub, index) in items(hubVirtualNetworks ?? {}): hubVirtualNetwork[index].outputs.resourceId]
+output hubVirtualNetworkResourceId string[] = [
+  for (hub, index) in items(hubVirtualNetworks ?? {}): hubVirtualNetwork[index].outputs.resourceId
+]
 
 @description('The name of the bastion host.')
 output hubBastionName string[] = [for (hub, index) in items(hubVirtualNetworks ?? {}): hubBastion[index].outputs.name]
 
 @description('The resource ID of the bastion host.')
-output hubBastionResourceId string[] = [for (hub, index) in items(hubVirtualNetworks ?? {}): hubBastion[index].outputs.resourceId]
+output hubBastionResourceId string[] = [
+  for (hub, index) in items(hubVirtualNetworks ?? {}): hubBastion[index].outputs.resourceId
+]
+
+@description('The peers of the hub virtual network.')
+output hubVirtualNetworkPeers array = hubVirtualNetworkPeerings
+
 // ================ //
 // Definitions      //
 // ================ //
@@ -240,13 +309,7 @@ type hubVirtualNetworkType = {
   enablePeering: bool?
 
   @description('Optional. The peerings of the virtual network.')
-  peeringSettings: {
-    allowForwardedTraffic: bool?
-    allowGatewayTransit: bool?
-    allowVirtualNetworkAccess: bool?
-    useRemoteGateways: bool?
-    remoteVirtualNetworkName: string?
-  }[]?
+  peeringSettings: peeringSettingsType?
 
   @description('Optional. The subnets of the virtual network.')
   subnets: array?
@@ -269,6 +332,19 @@ type hubVirtualNetworkType = {
   @description('Optional. The Azure Firewall config.')
   azureFirewallSettings: azureFirewallType?
 }
+
+type peerSettingsObject = {
+  *: peeringSettingsType?
+}[]?
+
+type peeringSettingsType = {
+  @description('Optional. The peerings of the virtual network.')
+  allowForwardedTraffic: bool?
+  allowGatewayTransit: bool?
+  allowVirtualNetworkAccess: bool?
+  useRemoteGateways: bool?
+  remoteVirtualNetworkName: string?
+}[]?
 
 type azureFirewallType = {
   @description('Required. The name of the Azure Firewall.')
