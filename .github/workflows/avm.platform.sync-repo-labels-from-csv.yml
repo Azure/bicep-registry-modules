@@ -1,0 +1,32 @@
+# Workflow for syncing CSV labels to GitHub Labels
+name: avm.platform.sync-repo-labels-from-csv
+
+on:
+  schedule:
+    - cron: 45 11 * * * # Run daily at 3:45 AM PST
+  workflow_dispatch: {}
+
+# Allow one concurrent deployment
+concurrency:
+  group: "labels"
+  cancel-in-progress: true
+
+permissions:
+  issues: write
+  pull-requests: write
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  sync-labels:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Sync AVM Labels To Repos GitHub Labels
+        run: |
+          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/main/docs/static/scripts/Set-AvmGitHubLabels.ps1" -OutFile "./Set-AvmGitHubLabels.ps1"
+          ./Set-AvmGitHubLabels.ps1 -RepositoryName "${{ github.repository }}" -CreateCsvLabelExports $false -RemoveExistingLabels $false -NoUserPrompts $true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
