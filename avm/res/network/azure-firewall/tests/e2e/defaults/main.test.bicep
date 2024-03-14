@@ -50,7 +50,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    virtualNetworkId: nestedDependencies.outputs.virtualNetworkResourceId
+    virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
     location: resourceLocation
   }
 }]
