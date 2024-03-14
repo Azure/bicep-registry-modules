@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "12361616235413083464"
+      "templateHash": "199483993688319459"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace.",
@@ -984,7 +984,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.25.53.49325",
-              "templateHash": "2498604793784722860"
+              "templateHash": "29131182338463302"
             },
             "name": "Synapse Workspaces Keys",
             "description": "This module deploys a Synapse Workspaces Key.",
@@ -994,7 +994,7 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "Required. Encryption key name."
+                "description": "Required. The name of the Synapse Workspaces Key."
               }
             },
             "workspaceName": {

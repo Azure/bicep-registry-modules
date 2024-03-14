@@ -1,0 +1,85 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "13620127830367721222"
+    },
+    "name": "Eventgrid Namespace CA Certificates",
+    "description": "This module deploys an Eventgrid Namespace CA Certificate.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "namespaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent EventGrid namespace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the CA certificate."
+      }
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Description for the CA Certificate resource."
+      }
+    },
+    "encodedCertificate": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Base64 encoded PEM (Privacy Enhanced Mail) format certificate data."
+      }
+    }
+  },
+  "resources": {
+    "namespace": {
+      "existing": true,
+      "type": "Microsoft.EventGrid/namespaces",
+      "apiVersion": "2023-12-15-preview",
+      "name": "[parameters('namespaceName')]"
+    },
+    "caCertificate": {
+      "type": "Microsoft.EventGrid/namespaces/caCertificates",
+      "apiVersion": "2023-12-15-preview",
+      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
+      "properties": {
+        "description": "[parameters('description')]",
+        "encodedCertificate": "[parameters('encodedCertificate')]"
+      },
+      "dependsOn": [
+        "namespace"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the CA certificate."
+      },
+      "value": "[resourceId('Microsoft.EventGrid/namespaces/caCertificates', parameters('namespaceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the CA certificate."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the CA certificate was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

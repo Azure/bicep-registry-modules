@@ -75,7 +75,7 @@ runs:
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'regionSelector' 'Get-AzAvailableResourceLocation.ps1')
 
-          # Set fucntion input parameters
+          # Set function input parameters
           $functionInput = @{
               ModuleRoot = '${{ inputs.modulePath }}'
               GlobalResourceGroupLocation = '${{ inputs.deploymentMetadataLocation }}'
@@ -86,7 +86,6 @@ runs:
 
           $resourceLocation = Get-AzAvailableResourceLocation @functionInput -Verbose
 
-          $deploymentLocation = @{}
           Write-Verbose ('{0}-{1}' -f 'resourceLocation', $resourceLocation) -Verbose
           Write-Output ('{0}={1}' -f 'resourceLocation', $resourceLocation) >> $env:GITHUB_OUTPUT
 

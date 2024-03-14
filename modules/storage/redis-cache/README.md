@@ -1,3 +1,9 @@
+<h1 style="color: steelblue;">⚠️ Upcoming changes ⚠️</h1>
+
+This module has been replaced by the following equivalent module in Azure Verified Modules (AVM): [avm/res/cache/redis](https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/cache/redis).
+
+For more information, see the informational notice [here](https://github.com/Azure/bicep-registry-modules?tab=readme-ov-file#%EF%B8%8F-upcoming-changes-%EF%B8%8F).
+
 # Azure Cache for Redis
 
 This module deploys Azure Cache for Redis(Microsoft.Cache/redis) and optionally available integrations.
