@@ -20,38 +20,42 @@ param serviceShort string = 'dddapln'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+// Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
+var enforcedLocation = 'eastus'
+
 // ============ //
 // Dependencies //
 // ============ //
 
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
-  name: resourceGroupName
-  location: resourceLocation
-}
-
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-    location: resourceLocation
+    location: enforcedLocation
   }
 }
 
+// ============== //
+// General resources
+// ============== //
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+  name: resourceGroupName
+  location: enforcedLocation
+}
+
+// ============== //
 // Diagnostics
-// ===========
+// ============== //
 module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceLocation
+    location: enforcedLocation
   }
 }
 
@@ -62,20 +66,15 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
+    location: enforcedLocation
     locations: [
       {
         failoverPriority: 0
         isZoneRedundant: false
-        locationName: resourceLocation
-      }
-      {
-        failoverPriority: 1
-        isZoneRedundant: false
-        locationName: nestedDependencies.outputs.pairedRegionName
+        locationName: enforcedLocation
       }
     ]
     diagnosticSettings: [
