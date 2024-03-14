@@ -5,7 +5,7 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. Name of the Database Account.')
 param name string
 
-@description('Optional. Location for all resources.')
+@description('Optional. Default to current resource group scope location. Location for all resources.')
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the Database Account resource.')
@@ -14,14 +14,14 @@ param tags object?
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
-@description('Optional. The offer type for the Cosmos DB database account.')
+@description('Optional. Default to Standard. The offer type for the Cosmos DB database account.')
 @allowed([
   'Standard'
 ])
 param databaseAccountOfferType string = 'Standard'
 
 @description('Required. Locations enabled for the Cosmos DB account.')
-param locations array
+param locations failoverLocations[]
 
 @allowed([
   'Eventual'
@@ -30,26 +30,32 @@ param locations array
   'BoundedStaleness'
   'Strong'
 ])
-@description('Optional. The default consistency level of the Cosmos DB account.')
+@description('Optional. Default to Session. The default consistency level of the Cosmos DB account.')
 param defaultConsistencyLevel string = 'Session'
 
-@description('Optional. Enable automatic failover for regions.')
+@description('Optional. Default to false. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.')
+param disableLocalAuth bool = false
+
+@description('Optional. Default to false. Flag to indicate whether to enable storage analytics.')
+param enableAnalyticalStorage bool = false
+
+@description('Optional. Default to true. Enable automatic failover for regions.')
 param automaticFailover bool = true
 
-@description('Optional. Flag to indicate whether Free Tier is enabled.')
+@description('Optional. Default to false. Flag to indicate whether Free Tier is enabled.')
 param enableFreeTier bool = false
 
-@minValue(10)
+@minValue(1)
 @maxValue(2147483647)
-@description('Optional. Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000.')
+@description('Optional. Default to 100000. Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000.')
 param maxStalenessPrefix int = 100000
 
 @minValue(5)
 @maxValue(86400)
-@description('Optional. Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.')
+@description('Optional. Default to 300. Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.')
 param maxIntervalInSeconds int = 300
 
-@description('Optional. Specifies the MongoDB server version to use.')
+@description('Optional. Default to 4.2. Specifies the MongoDB server version to use.')
 @allowed([
   '3.2'
   '3.6'
@@ -59,7 +65,7 @@ param maxIntervalInSeconds int = 300
 param serverVersion string = '4.2'
 
 @description('Optional. SQL Databases configurations.')
-param sqlDatabases array = []
+param sqlDatabases sqlDatabase[] = []
 
 @description('Optional. MongoDB Databases configurations.')
 param mongodbDatabases array = []
@@ -88,30 +94,30 @@ param diagnosticSettings diagnosticSettingType
   'EnableServerless'
 ])
 @description('Optional. List of Cosmos DB capabilities for the account.')
-param capabilitiesToAdd array = []
+param capabilitiesToAdd string[] = []
 
 @allowed([
   'Periodic'
   'Continuous'
 ])
-@description('Optional. Describes the mode of backups.')
+@description('Optional. Default to Continuous. Describes the mode of backups.')
 param backupPolicyType string = 'Continuous'
 
 @allowed([
   'Continuous30Days'
   'Continuous7Days'
 ])
-@description('Optional. Configuration values for continuous mode backup.')
+@description('Optional. Default to Continuous30Days. Configuration values for continuous mode backup.')
 param backupPolicyContinuousTier string = 'Continuous30Days'
 
 @minValue(60)
 @maxValue(1440)
-@description('Optional. An integer representing the interval in minutes between two backups. Only applies to periodic backup type.')
+@description('Optional. Default to 240. An integer representing the interval in minutes between two backups. Only applies to periodic backup type.')
 param backupIntervalInMinutes int = 240
 
 @minValue(2)
 @maxValue(720)
-@description('Optional. An integer representing the time (in hours) that each backup is retained. Only applies to periodic backup type.')
+@description('Optional. Default to 8. An integer representing the time (in hours) that each backup is retained. Only applies to periodic backup type.')
 param backupRetentionIntervalInHours int = 8
 
 @allowed([
@@ -119,7 +125,7 @@ param backupRetentionIntervalInHours int = 8
   'Local'
   'Zone'
 ])
-@description('Optional. Enum to indicate type of backup residency. Only applies to periodic backup type.')
+@description('Optional. Default to Local. Enum to indicate type of backup residency. Only applies to periodic backup type.')
 param backupStorageRedundancy string = 'Local'
 
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
@@ -187,9 +193,11 @@ var databaseAccount_properties = union({
     capabilities: capabilities
     enableFreeTier: enableFreeTier
     backupPolicy: backupPolicy
+    enableAutomaticFailover: automaticFailover
+    enableAnalyticalStorage: enableAnalyticalStorage
   } : {}), (!empty(sqlDatabases) ? {
     // SQLDB properties
-    enableAutomaticFailover: automaticFailover
+    disableLocalAuth: disableLocalAuth
   } : {}), (!empty(mongodbDatabases) ? {
     // MongoDb properties
     apiProperties: {
@@ -286,10 +294,10 @@ resource databaseAccount_roleAssignments 'Microsoft.Authorization/roleAssignment
 module databaseAccount_sqlDatabases 'sql-database/main.bicep' = [for sqlDatabase in sqlDatabases: {
   name: '${uniqueString(deployment().name, location)}-sqldb-${sqlDatabase.name}'
   params: {
-    databaseAccountName: databaseAccount.name
     name: sqlDatabase.name
-    containers: contains(sqlDatabase, 'containers') ? sqlDatabase.containers : []
-    throughput: contains(sqlDatabase, 'throughput') ? sqlDatabase.throughput : 400
+    containers: sqlDatabase.?containers
+    throughput: sqlDatabase.?throughput
+    databaseAccountName: databaseAccount.name
     autoscaleSettingsMaxThroughput: sqlDatabase.?autoscaleSettingsMaxThroughput
   }
 }]
@@ -532,3 +540,77 @@ type diagnosticSettingType = {
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
 }[]?
+
+type failoverLocations = {
+  @description('Required. The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists.')
+  failoverPriority: int
+
+  @description('Required. Flag to indicate whether or not this region is an AvailabilityZone region')
+  isZoneRedundant: bool
+
+  @description('Required. The name of the region.')
+  locationName: string
+}
+
+type sqlDatabase = {
+  @description('Required. Name of the SQL database .')
+  name: string
+
+  @description('Optional. Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.')
+  throughput: int?
+
+  @description('Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled.')
+  autoscaleSettingsMaxThroughput: int?
+
+  @description('Optional. Array of containers to deploy in the SQL database.')
+  containers: sqlDatabaseContainer[]?
+}
+
+type sqlDatabaseContainer = {
+  @description('Required. Name of the container.')
+  name: string
+
+  @maxLength(3)
+  @minLength(1)
+  @description('Required. List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1.')
+  paths: string[]
+
+  @description('Optional. Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store.')
+  analyticalStorageTtl: int?
+
+  @maxValue(1000000)
+  @description('Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled.')
+  autoscaleSettingsMaxThroughput: int?
+
+  @description('Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions.')
+  conflictResolutionPolicy: {
+    @description('Required if mode=LastWriterWins. The conflict resolution path in the case of LastWriterWins mode.')
+    conflictResolutionPath: string?
+
+    @description('Required if mode=Custom. The procedure to resolve conflicts in the case of custom mode.')
+    conflictResolutionProcedure: string?
+
+    @description('Required. Indicates the conflict resolution mode.')
+    mode: ('Custom' | 'LastWriterWins')
+  }?
+
+  @maxValue(2147483647)
+  @minValue(-1)
+  @description('Optional. Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don\'t expire by default.')
+  defaultTtl: int?
+
+  @description('Optional. Indexing policy of the container.')
+  indexingPolicy: object?
+
+  @description('Optional. Default to Hash. Indicates the kind of algorithm used for partitioning.')
+  kind: ('Hash' | 'MultiHash' | 'Range')?
+
+  @description('Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.')
+  throughput: int?
+
+  @description('Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
+  uniqueKeyPolicyKeys: {
+    @description('List of paths must be unique for each document in the Azure Cosmos DB service')
+    paths: string[]
+  }[]?
+}
