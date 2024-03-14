@@ -1484,7 +1484,6 @@ Address prefix for Managed virtual network.
 | `resourceId` | string | The resource ID of the deployed databricks workspace. |
 | `storageAccountId` | string | The resource ID of the DBFS storage account. |
 | `storageAccountName` | string | The name of the DBFS storage account. |
-| `uiDefinitionUri` | string | The blob URI where the UI definition file is located. |
 | `workspaceId` | string | The unique identifier of the databricks workspace in databricks control plane. |
 | `workspaceUrl` | string | The workspace URL which is of the format 'adb-{workspaceId}.{random}.azuredatabricks.net'. |
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "7260088050158330320"
+      "templateHash": "14721883097630470062"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace.",
@@ -1536,13 +1536,6 @@
         "description": "The resource ID of the DBFS storage account."
       },
       "value": "[resourceId(last(split(reference('workspace').managedResourceGroupId, '/')), 'microsoft.storage/storageAccounts', reference('workspace').parameters.storageAccountName.value)]"
-    },
-    "uiDefinitionUri": {
-      "type": "string",
-      "metadata": {
-        "description": "The blob URI where the UI definition file is located."
-      },
-      "value": "[reference('workspace').uiDefinitionUri]"
     },
     "workspaceUrl": {
       "type": "string",
