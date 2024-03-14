@@ -342,6 +342,15 @@ output storageAccountName string = workspace.properties.parameters.storageAccoun
 @description('The resource ID of the DBFS storage account.')
 output storageAccountId string = resourceId(last(split(workspace.properties.managedResourceGroupId, '/')), 'microsoft.storage/storageAccounts', workspace.properties.parameters.storageAccountName.value)
 
+@description('The blob URI where the UI definition file is located.')
+output uiDefinitionUri string = workspace.properties.uiDefinitionUri
+
+@description('The workspace URL which is of the format \'adb-{workspaceId}.{random}.azuredatabricks.net\'.')
+output workspaceUrl string = workspace.properties.workspaceUrl
+
+@description('The unique identifier of the databricks workspace in databricks control plane.')
+output workspaceId string = workspace.properties.workspaceId
+
 @description('The private endpoints for the Databricks Workspace.')
 output privateEndpoints array = [for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
   name: workspace_privateEndpoints[i].outputs.name
