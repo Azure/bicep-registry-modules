@@ -593,18 +593,25 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     }
     privateEndpoints: [
       {
-        ipConfigurations: {
-          name: 'myIPconfig'
-          properties: {
-            groupId: 'account'
-            memberName: 'default'
-            privateIPAddress: '10.0.0.10'
+        ipConfigurations: [
+          {
+            name: 'myIpConfig'
+            properties: {
+              groupId: 'account'
+              memberName: 'default'
+              privateIPAddress: '10.0.0.10'
+            }
           }
-        }
+        ]
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
         subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
       }
     ]
     replicationAlertSettings: {
@@ -955,18 +962,25 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "ipConfigurations": {
-            "name": "myIPconfig",
-            "properties": {
-              "groupId": "account",
-              "memberName": "default",
-              "privateIPAddress": "10.0.0.10"
+          "ipConfigurations": [
+            {
+              "name": "myIpConfig",
+              "properties": {
+                "groupId": "account",
+                "memberName": "default",
+                "privateIPAddress": "10.0.0.10"
+              }
             }
-          },
+          ],
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
-          "subnetResourceId": "<subnetResourceId>"
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
         }
       ]
     },
@@ -1309,18 +1323,25 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     }
     privateEndpoints: [
       {
-        ipConfigurations: {
-          name: 'myIPconfig'
-          properties: {
-            groupId: 'account'
-            memberName: 'default'
-            privateIPAddress: '10.0.0.10'
+        ipConfigurations: [
+          {
+            name: 'myIpConfig'
+            properties: {
+              groupId: 'account'
+              memberName: 'default'
+              privateIPAddress: '10.0.0.10'
+            }
           }
-        }
+        ]
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
         subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
       }
     ]
     replicationAlertSettings: {
@@ -1654,18 +1675,25 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "ipConfigurations": {
-            "name": "myIPconfig",
-            "properties": {
-              "groupId": "account",
-              "memberName": "default",
-              "privateIPAddress": "10.0.0.10"
+          "ipConfigurations": [
+            {
+              "name": "myIpConfig",
+              "properties": {
+                "groupId": "account",
+                "memberName": "default",
+                "privateIPAddress": "10.0.0.10"
+              }
             }
-          },
+          ],
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
-          "subnetResourceId": "<subnetResourceId>"
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
         }
       ]
     },
@@ -2013,15 +2041,21 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`applicationSecurityGroupResourceIds`](#parameter-privateendpointsapplicationsecuritygroupresourceids) | array | Application security groups in which the private endpoint IP configuration is included. |
 | [`customDnsConfigs`](#parameter-privateendpointscustomdnsconfigs) | array | Custom DNS configurations. |
-| [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | object | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
+| [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the private endpoint. |
+| [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
 | [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
 | [`location`](#parameter-privateendpointslocation) | string | The location to deploy the private endpoint to. |
+| [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
+| [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
@@ -2029,6 +2063,13 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
+
+Application security groups in which the private endpoint IP configuration is included.
+
+- Required: No
+- Type: array
 
 ### Parameter: `privateEndpoints.customDnsConfigs`
 
@@ -2058,12 +2099,26 @@ A list of private IP addresses of the private endpoint.
 - Required: Yes
 - Type: array
 
+### Parameter: `privateEndpoints.customNetworkInterfaceName`
+
+The custom name of the network interface attached to the private endpoint.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `privateEndpoints.ipConfigurations`
 
 A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.
 
-- Required: Yes
-- Type: object
+- Required: No
+- Type: array
 
 **Required parameters**
 
@@ -2129,6 +2184,42 @@ The location to deploy the private endpoint to.
 - Required: No
 - Type: string
 
+### Parameter: `privateEndpoints.lock`
+
+Specify the type of lock.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+
+### Parameter: `privateEndpoints.lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `privateEndpoints.lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
 ### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
 A message passed to the owner of the remote resource with the manual connection request.
@@ -2157,12 +2248,108 @@ The private DNS zone groups to associate the private endpoint with. A DNS zone g
 - Required: No
 - Type: array
 
+### Parameter: `privateEndpoints.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-privateendpointsroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-privateendpointsroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-privateendpointsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-privateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-privateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-privateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-privateendpointsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `privateEndpoints.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `privateEndpoints.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
 ### Parameter: `privateEndpoints.service`
 
 The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".
 
 - Required: No
 - Type: string
+
+### Parameter: `privateEndpoints.tags`
+
+Tags to be applied on all resources/resource groups in this deployment.
+
+- Required: No
+- Type: object
 
 ### Parameter: `protectionContainers`
 

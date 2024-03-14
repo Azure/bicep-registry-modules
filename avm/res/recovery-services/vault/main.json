@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "2649153257419349604"
+      "templateHash": "916737030536129910"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault.",
@@ -220,43 +220,90 @@
             }
           },
           "ipConfigurations": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. The name of the resource that is unique within a resource group."
-                }
-              },
+            "type": "array",
+            "items": {
+              "type": "object",
               "properties": {
-                "type": "object",
-                "properties": {
-                  "groupId": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
-                    }
-                  },
-                  "memberName": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
-                    }
-                  },
-                  "privateIPAddress": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. A private IP address obtained from the private endpoint's subnet."
-                    }
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the resource that is unique within a resource group."
                   }
                 },
-                "metadata": {
-                  "description": "Required. Properties of private endpoint IP configurations."
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "groupId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                      }
+                    },
+                    "memberName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
+                      }
+                    },
+                    "privateIPAddress": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Properties of private endpoint IP configurations."
+                  }
                 }
               }
             },
+            "nullable": true,
             "metadata": {
               "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
+            }
+          },
+          "applicationSecurityGroupResourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
+            }
+          },
+          "customNetworkInterfaceName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The custom name of the network interface attached to the private endpoint."
+            }
+          },
+          "lock": {
+            "$ref": "#/definitions/lockType",
+            "metadata": {
+              "description": "Optional. Specify the type of lock."
+            }
+          },
+          "roleAssignments": {
+            "$ref": "#/definitions/roleAssignmentType",
+            "metadata": {
+              "description": "Optional. Array of role assignments to create."
+            }
+          },
+          "tags": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
+            }
+          },
+          "enableTelemetry": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Enable/Disable usage telemetry for module."
             }
           }
         }
