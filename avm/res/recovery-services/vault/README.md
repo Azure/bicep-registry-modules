@@ -595,11 +595,43 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
       {
         ipConfigurations: [
           {
-            name: 'myIpConfig'
+            name: 'myIpConfig-1'
             properties: {
-              groupId: 'account'
-              memberName: 'default'
+              groupId: 'AzureSiteRecovery'
+              memberName: 'SiteRecovery-tel1'
               privateIPAddress: '10.0.0.10'
+            }
+          }
+          {
+            name: 'myIPconfig-2'
+            properties: {
+              groupId: 'AzureSiteRecovery'
+              memberName: 'SiteRecovery-prot2'
+              privateIPAddress: '10.0.0.11'
+            }
+          }
+          {
+            name: 'myIPconfig-3'
+            properties: {
+              groupId: 'AzureSiteRecovery'
+              memberName: 'SiteRecovery-srs1'
+              privateIPAddress: '10.0.0.12'
+            }
+          }
+          {
+            name: 'myIPconfig-4'
+            properties: {
+              groupId: 'AzureSiteRecovery'
+              memberName: 'SiteRecovery-rcm1'
+              privateIPAddress: '10.0.0.13'
+            }
+          }
+          {
+            name: 'myIPconfig-5'
+            properties: {
+              groupId: 'AzureSiteRecovery'
+              memberName: 'SiteRecovery-id1'
+              privateIPAddress: '10.0.0.14'
             }
           }
         ]
@@ -964,11 +996,43 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         {
           "ipConfigurations": [
             {
-              "name": "myIpConfig",
+              "name": "myIpConfig-1",
               "properties": {
-                "groupId": "account",
-                "memberName": "default",
+                "groupId": "AzureSiteRecovery",
+                "memberName": "SiteRecovery-tel1",
                 "privateIPAddress": "10.0.0.10"
+              }
+            },
+            {
+              "name": "myIPconfig-2",
+              "properties": {
+                "groupId": "AzureSiteRecovery",
+                "memberName": "SiteRecovery-prot2",
+                "privateIPAddress": "10.0.0.11"
+              }
+            },
+            {
+              "name": "myIPconfig-3",
+              "properties": {
+                "groupId": "AzureSiteRecovery",
+                "memberName": "SiteRecovery-srs1",
+                "privateIPAddress": "10.0.0.12"
+              }
+            },
+            {
+              "name": "myIPconfig-4",
+              "properties": {
+                "groupId": "AzureSiteRecovery",
+                "memberName": "SiteRecovery-rcm1",
+                "privateIPAddress": "10.0.0.13"
+              }
+            },
+            {
+              "name": "myIPconfig-5",
+              "properties": {
+                "groupId": "AzureSiteRecovery",
+                "memberName": "SiteRecovery-id1",
+                "privateIPAddress": "10.0.0.14"
               }
             }
           ],
@@ -1325,11 +1389,43 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
       {
         ipConfigurations: [
           {
-            name: 'myIpConfig'
+            name: 'myIpConfig-1'
             properties: {
-              groupId: 'account'
-              memberName: 'default'
+              groupId: 'AzureSiteRecovery'
+              memberName: 'SiteRecovery-tel1'
               privateIPAddress: '10.0.0.10'
+            }
+          }
+          {
+            name: 'myIPconfig-2'
+            properties: {
+              groupId: 'AzureSiteRecovery'
+              memberName: 'SiteRecovery-prot2'
+              privateIPAddress: '10.0.0.11'
+            }
+          }
+          {
+            name: 'myIPconfig-3'
+            properties: {
+              groupId: 'AzureSiteRecovery'
+              memberName: 'SiteRecovery-srs1'
+              privateIPAddress: '10.0.0.12'
+            }
+          }
+          {
+            name: 'myIPconfig-4'
+            properties: {
+              groupId: 'AzureSiteRecovery'
+              memberName: 'SiteRecovery-rcm1'
+              privateIPAddress: '10.0.0.13'
+            }
+          }
+          {
+            name: 'myIPconfig-5'
+            properties: {
+              groupId: 'AzureSiteRecovery'
+              memberName: 'SiteRecovery-id1'
+              privateIPAddress: '10.0.0.14'
             }
           }
         ]
@@ -1677,11 +1773,43 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         {
           "ipConfigurations": [
             {
-              "name": "myIpConfig",
+              "name": "myIpConfig-1",
               "properties": {
-                "groupId": "account",
-                "memberName": "default",
+                "groupId": "AzureSiteRecovery",
+                "memberName": "SiteRecovery-tel1",
                 "privateIPAddress": "10.0.0.10"
+              }
+            },
+            {
+              "name": "myIPconfig-2",
+              "properties": {
+                "groupId": "AzureSiteRecovery",
+                "memberName": "SiteRecovery-prot2",
+                "privateIPAddress": "10.0.0.11"
+              }
+            },
+            {
+              "name": "myIPconfig-3",
+              "properties": {
+                "groupId": "AzureSiteRecovery",
+                "memberName": "SiteRecovery-srs1",
+                "privateIPAddress": "10.0.0.12"
+              }
+            },
+            {
+              "name": "myIPconfig-4",
+              "properties": {
+                "groupId": "AzureSiteRecovery",
+                "memberName": "SiteRecovery-rcm1",
+                "privateIPAddress": "10.0.0.13"
+              }
+            },
+            {
+              "name": "myIPconfig-5",
+              "properties": {
+                "groupId": "AzureSiteRecovery",
+                "memberName": "SiteRecovery-id1",
+                "privateIPAddress": "10.0.0.14"
               }
             }
           ],
