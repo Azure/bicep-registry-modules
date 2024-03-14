@@ -1,0 +1,133 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "10531114495322688171"
+    },
+    "name": "Eventgrid Namespace Clients",
+    "description": "This module deploys an Eventgrid Namespace Client.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "namespaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent EventGrid namespace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "metadata": {
+        "description": "Required. Name of the Client."
+      }
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Description of the Client resource."
+      }
+    },
+    "authenticationName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The name presented by the client for authentication. The default value is the name of the resource."
+      }
+    },
+    "clientCertificateAuthenticationValidationSchema": {
+      "type": "string",
+      "defaultValue": "SubjectMatchesAuthenticationName",
+      "allowedValues": [
+        "DnsMatchesAuthenticationName",
+        "EmailMatchesAuthenticationName",
+        "IpMatchesAuthenticationName",
+        "SubjectMatchesAuthenticationName",
+        "ThumbprintMatch",
+        "UriMatchesAuthenticationName"
+      ],
+      "metadata": {
+        "description": "Optional. The validation scheme used to authenticate the client."
+      }
+    },
+    "clientCertificateAuthenticationAllowedThumbprints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The list of thumbprints that are allowed during client authentication. Required if the clientCertificateAuthenticationValidationSchema is 'ThumbprintMatch'."
+      }
+    },
+    "state": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "metadata": {
+        "description": "Optional. Indicates if the client is enabled or not."
+      }
+    },
+    "attributes": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Attributes for the client. Supported values are int, bool, string, string[]."
+      }
+    }
+  },
+  "resources": {
+    "namespace": {
+      "existing": true,
+      "type": "Microsoft.EventGrid/namespaces",
+      "apiVersion": "2023-12-15-preview",
+      "name": "[parameters('namespaceName')]"
+    },
+    "client": {
+      "type": "Microsoft.EventGrid/namespaces/clients",
+      "apiVersion": "2023-12-15-preview",
+      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
+      "properties": {
+        "description": "[parameters('description')]",
+        "authenticationName": "[if(not(empty(parameters('authenticationName'))), parameters('authenticationName'), parameters('name'))]",
+        "attributes": "[parameters('attributes')]",
+        "clientCertificateAuthentication": {
+          "validationScheme": "[parameters('clientCertificateAuthenticationValidationSchema')]",
+          "allowedThumbprints": "[if(equals(parameters('clientCertificateAuthenticationValidationSchema'), 'ThumbprintMatch'), parameters('clientCertificateAuthenticationAllowedThumbprints'), null())]"
+        },
+        "state": "[parameters('state')]"
+      },
+      "dependsOn": [
+        "namespace"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Client."
+      },
+      "value": "[resourceId('Microsoft.EventGrid/namespaces/clients', parameters('namespaceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Client."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the Client was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

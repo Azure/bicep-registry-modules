@@ -209,7 +209,7 @@ module keyVault_secrets 'secret/main.bicep' = [for (secret, index) in secretList
     name: secret.name
     value: secret.value
     keyVaultName: keyVault.name
-    attributesEnabled: secret.?attributesEnabled ?? true
+    attributesEnabled: secret.?attributesEnabled
     attributesExp: secret.?attributesExp
     attributesNbf: secret.?attributesNbf
     contentType: secret.?contentType
@@ -223,7 +223,7 @@ module keyVault_keys 'key/main.bicep' = [for (key, index) in (keys ?? []): {
   params: {
     name: key.name
     keyVaultName: keyVault.name
-    attributesEnabled: key.?attributesEnabled ?? true
+    attributesEnabled: key.?attributesEnabled
     attributesExp: key.?attributesExp
     attributesNbf: key.?attributesNbf
     curveName: key.?curveName ?? 'P-256'
