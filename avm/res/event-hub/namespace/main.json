@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "2606348480823352941"
+      "templateHash": "11007166139796021582"
     },
     "name": "Event Hub Namespaces",
     "description": "This module deploys an Event Hub Namespace.",
@@ -2535,6 +2535,16 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('eventHubNamespace', '2022-10-01-preview', 'full').location]"
+    },
+    "eventHubResourceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The Resources IDs of the EventHubs within this eventspace."
+      },
+      "copy": {
+        "count": "[length(range(0, length(coalesce(parameters('eventhubs'), createArray()))))]",
+        "input": "[reference(format('eventHubNamespace_eventhubs[{0}]', range(0, length(coalesce(parameters('eventhubs'), createArray())))[copyIndex()])).outputs.resourceId.value]"
+      }
     }
   }
 }

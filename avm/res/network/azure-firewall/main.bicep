@@ -14,7 +14,7 @@ param name string
 param azureSkuTier string = 'Standard'
 
 @description('Conditional. Shared services Virtual Network resource ID. The virtual network ID containing AzureFirewallSubnet. If a Public IP is not provided, then the Public IP that is created as part of this module will be applied with the subnet provided in this variable. Required if `virtualHubId` is empty.')
-param virtualNetworkId string = ''
+param virtualNetworkResourceId string = ''
 
 @description('Optional. The Public IP resource ID to associate to the AzureFirewallSubnet. If empty, then the Public IP that is created as part of this module will be applied to the AzureFirewallSubnet.')
 param publicIPResourceID string = ''
@@ -84,7 +84,7 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var azureSkuName = empty(virtualNetworkId) ? 'AZFW_Hub' : 'AZFW_VNet'
+var azureSkuName = empty(virtualNetworkResourceId) ? 'AZFW_Hub' : 'AZFW_VNet'
 var requiresManagementIp = azureSkuTier == 'Basic' ? true : false
 var isCreateDefaultManagementIP = empty(managementIPResourceID) && requiresManagementIp
 
@@ -107,7 +107,7 @@ var ipConfigurations = concat([
       name: !empty(publicIPResourceID) ? last(split(publicIPResourceID, '/')) : publicIPAddress.outputs.name
       properties: union({
           subnet: {
-            id: '${virtualNetworkId}/subnets/AzureFirewallSubnet' // The subnet name must be AzureFirewallSubnet
+            id: '${virtualNetworkResourceId}/subnets/AzureFirewallSubnet' // The subnet name must be AzureFirewallSubnet
           }
         }, (!empty(publicIPResourceID) || !empty(publicIPAddressObject)) ? {
           //Use existing Public IP, new Public IP created in this module, or none if neither
@@ -127,7 +127,7 @@ var managementIPConfiguration = {
   name: !empty(managementIPResourceID) ? last(split(managementIPResourceID, '/')) : managementIPAddress.outputs.name
   properties: union({
       subnet: {
-        id: '${virtualNetworkId}/subnets/AzureFirewallManagementSubnet' // The subnet name must be AzureFirewallManagementSubnet for a 'Basic' SKU tier firewall
+        id: '${virtualNetworkResourceId}/subnets/AzureFirewallManagementSubnet' // The subnet name must be AzureFirewallManagementSubnet for a 'Basic' SKU tier firewall
       }
     }, (!empty(publicIPResourceID) || !empty(managementIPAddressObject)) ? {
       // Use existing Management Public IP, new Management Public IP created in this module, or none if neither
