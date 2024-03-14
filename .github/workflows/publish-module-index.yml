@@ -50,7 +50,7 @@ jobs:
           subscription-id: ${{ secrets.PUBLISH_SUBSCRIPTION_ID }}
 
       - name: Upload to blob storage
-        uses: azure/CLI@v1
+        uses: azure/CLI@v2
         with:
           inlineScript: |
             az storage blob upload --account-name biceplivedatasaprod --container-name bicep-cdn-live-data-container --name module-index --file moduleIndex.json --auth-mode login --overwrite
