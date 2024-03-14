@@ -1815,6 +1815,7 @@ Switch to make the Event Hub Namespace zone redundant.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `eventHubResourceIds` | array | The Resources IDs of the EventHubs within this eventspace. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the eventspace. |
 | `resourceGroupName` | string | The resource group where the namespace is deployed. |
