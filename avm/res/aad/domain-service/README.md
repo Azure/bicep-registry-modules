@@ -43,7 +43,7 @@ This instance deploys the module with default features enabled.
 
 ```bicep
 module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-aaddsmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-aaddsmin'
   params: {
     // Required parameters
     domainName: 'onmicrosoft.com'
@@ -179,7 +179,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-aaddswaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-aaddswaf'
   params: {
     // Required parameters
     domainName: 'onmicrosoft.com'
