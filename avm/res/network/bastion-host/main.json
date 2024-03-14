@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "17052449880021967417"
+      "templateHash": "403145241490619459"
     },
     "name": "Bastion Hosts",
     "description": "This module deploys a Bastion Host.",
@@ -214,10 +214,10 @@
         "description": "Optional. Location for all resources."
       }
     },
-    "vNetId": {
+    "virtualNetworkResourceId": {
       "type": "string",
       "metadata": {
-        "description": "Required. Shared services Virtual Network resource identifier."
+        "description": "Required. Shared services Virtual Network resource Id."
       }
     },
     "bastionSubnetPublicIpResourceId": {
@@ -361,7 +361,7 @@
       "sku": {
         "name": "[parameters('skuName')]"
       },
-      "properties": "[union(createObject('scaleUnits', if(equals(parameters('skuName'), 'Basic'), 2, parameters('scaleUnits')), 'ipConfigurations', createArray(createObject('name', 'IpConfAzureBastionSubnet', 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureBastionSubnet', parameters('vNetId')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('bastionSubnetPublicIpResourceId'))), parameters('bastionSubnetPublicIpResourceId'), reference('publicIPAddress').outputs.resourceId.value)))))), 'enableKerberos', parameters('enableKerberos')), if(equals(parameters('skuName'), 'Standard'), createObject('enableTunneling', equals(parameters('skuName'), 'Standard'), 'disableCopyPaste', parameters('disableCopyPaste'), 'enableFileCopy', parameters('enableFileCopy'), 'enableIpConnect', parameters('enableIpConnect'), 'enableShareableLink', parameters('enableShareableLink')), createObject()))]",
+      "properties": "[union(createObject('scaleUnits', if(equals(parameters('skuName'), 'Basic'), 2, parameters('scaleUnits')), 'ipConfigurations', createArray(createObject('name', 'IpConfAzureBastionSubnet', 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureBastionSubnet', parameters('virtualNetworkResourceId')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('bastionSubnetPublicIpResourceId'))), parameters('bastionSubnetPublicIpResourceId'), reference('publicIPAddress').outputs.resourceId.value)))))), 'enableKerberos', parameters('enableKerberos')), if(equals(parameters('skuName'), 'Standard'), createObject('enableTunneling', equals(parameters('skuName'), 'Standard'), 'disableCopyPaste', parameters('disableCopyPaste'), 'enableFileCopy', parameters('enableFileCopy'), 'enableIpConnect', parameters('enableIpConnect'), 'enableShareableLink', parameters('enableShareableLink')), createObject()))]",
       "dependsOn": [
         "publicIPAddress"
       ]
