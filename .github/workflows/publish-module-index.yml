@@ -37,7 +37,7 @@ jobs:
             await script({ require, github, context, core })
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: moduleIndex.json
           path: moduleIndex.json
@@ -78,7 +78,7 @@ jobs:
             await script({ require, github, context, core })
 
       - name: Upload Markdown artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: ./docs/jekyll/index.md
           name: index.md
