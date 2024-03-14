@@ -23,7 +23,6 @@ jobs:
   sync-labels:
     runs-on: ubuntu-latest
     steps:
-
       - name: Sync AVM Labels To Repos GitHub Labels
         run: |
           Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/main/docs/static/scripts/Set-AvmGitHubLabels.ps1" -OutFile "./Set-AvmGitHubLabels.ps1"
