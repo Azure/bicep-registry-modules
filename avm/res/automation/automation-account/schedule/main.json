@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "17013504570786383965"
+      "version": "0.25.53.49325",
+      "templateHash": "3130545991088336783"
     },
     "name": "Automation Account Schedules",
     "description": "This module deploys an Azure Automation Account Schedule.",
@@ -103,7 +103,7 @@
         "expiryTime": "[if(not(empty(parameters('expiryTime'))), parameters('expiryTime'), null())]",
         "frequency": "[if(not(empty(parameters('frequency'))), parameters('frequency'), 'OneTime')]",
         "interval": "[if(not(equals(parameters('interval'), 0)), parameters('interval'), null())]",
-        "startTime": "[if(not(empty(parameters('startTime'))), parameters('startTime'), dateTimeAdd(parameters('baseTime'), 'PT10M'))]",
+        "startTime": "[if(not(empty(parameters('startTime'))), parameters('startTime'), dateTimeAdd(parameters('baseTime'), 'PT15M'))]",
         "timeZone": "[if(not(empty(parameters('timeZone'))), parameters('timeZone'), null())]"
       }
     }

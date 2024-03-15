@@ -5,10 +5,10 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "9938371933399319052"
+      "version": "0.25.53.49325",
+      "templateHash": "11674721033032796270"
     },
-    "name": "DNS Resolvers",
+    "name": "DNS Resolver",
     "description": "This module deploys a DNS Resolver.",
     "owner": "Azure/module-maintainers"
   },
@@ -103,6 +103,94 @@
         }
       },
       "nullable": true
+    },
+    "inboundEndpointType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Name of the inbound endpoint."
+            }
+          },
+          "subnetResourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The reference to the subnet bound to the IP configuration."
+            }
+          },
+          "tags": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Tags for the resource."
+            }
+          },
+          "location": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Location for all resources."
+            }
+          },
+          "privateIpAddress": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Private IP address of the IP configuration."
+            }
+          },
+          "privateIpAllocationMethod": {
+            "type": "string",
+            "allowedValues": [
+              "Dynamic",
+              "Static"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Private IP address allocation method."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "outboundEndpointType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Name of the outbound endpoint."
+            }
+          },
+          "subnetResourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. ResourceId of the subnet to attach the outbound endpoint to."
+            }
+          },
+          "tags": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Tags of the resource."
+            }
+          },
+          "location": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Location for all resources."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -110,7 +198,7 @@
       "type": "string",
       "minLength": 1,
       "metadata": {
-        "description": "Required. Name of the Private DNS Resolver."
+        "description": "Required. Name of the DNS Private Resolver."
       }
     },
     "location": {
@@ -142,21 +230,19 @@
     "virtualNetworkResourceId": {
       "type": "string",
       "metadata": {
-        "description": "Required. ResourceId of the virtual network to attach the Private DNS Resolver to."
+        "description": "Required. ResourceId of the virtual network to attach the DNS Private Resolver to."
       }
     },
     "outboundEndpoints": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/outboundEndpointType",
       "metadata": {
-        "description": "Optional. Outbound Endpoints for Private DNS Resolver."
+        "description": "Optional. Outbound Endpoints for DNS Private Resolver."
       }
     },
     "inboundEndpoints": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/inboundEndpointType",
       "metadata": {
-        "description": "Optional. Inbound Endpoints for Private DNS Resolver."
+        "description": "Optional. Inbound Endpoints for DNS Private Resolver."
       }
     },
     "enableTelemetry": {
@@ -293,8 +379,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "12086001893141712398"
+              "version": "0.25.53.49325",
+              "templateHash": "8672047882378700944"
             },
             "name": "DNS Resolver Inbound Endpoint",
             "description": "This module deploys a DNS Resolver Inbound Endpoint.",
@@ -305,7 +391,7 @@
               "type": "string",
               "minLength": 1,
               "metadata": {
-                "description": "Required. Name of the Private DNS Resolver."
+                "description": "Required. Name of the DNS Private Resolver."
               }
             },
             "location": {
@@ -444,8 +530,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "10188821198018164568"
+              "version": "0.25.53.49325",
+              "templateHash": "7237665514415394760"
             },
             "name": "DNS Resolver Outbound Endpoint",
             "description": "This module deploys a DNS Resolver Outbound Endpoint.",
@@ -456,7 +542,7 @@
               "type": "string",
               "minLength": 1,
               "metadata": {
-                "description": "Required. Name of the Private DNS Resolver."
+                "description": "Required. Name of the DNS Private Resolver."
               }
             },
             "location": {
@@ -543,21 +629,21 @@
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the Private DNS Resolver was deployed into."
+        "description": "The resource group the DNS Private Resolver was deployed into."
       },
       "value": "[resourceGroup().name]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the Private DNS Resolver."
+        "description": "The resource ID of the DNS Private Resolver."
       },
       "value": "[resourceId('Microsoft.Network/dnsResolvers', parameters('name'))]"
     },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the Private DNS Resolver."
+        "description": "The name of the DNS Private Resolver."
       },
       "value": "[parameters('name')]"
     },

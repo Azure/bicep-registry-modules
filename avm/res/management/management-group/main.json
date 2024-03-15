@@ -1,0 +1,99 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "14104914545746658709"
+    },
+    "name": "Management Groups",
+    "description": "This template will prepare the management group structure based on the provided parameter.\n\nThis module has some known **limitations**:\n- It's not possible to change the display name of the root management group (the one that has the tenant GUID as ID)\n- It can't manage the Root (/) management group",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The group ID of the Management group."
+      }
+    },
+    "displayName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The friendly name of the management group. If no value is passed then this field will be set to the group ID."
+      }
+    },
+    "parentId": {
+      "type": "string",
+      "defaultValue": "[last(split(managementGroup().id, '/'))]",
+      "metadata": {
+        "description": "Optional. The management group parent ID. Defaults to current scope."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[deployment().location]",
+      "metadata": {
+        "description": "Optional. Location deployment metadata."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.management-managementgroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Management/managementGroups",
+      "apiVersion": "2021-04-01",
+      "scope": "/",
+      "name": "[parameters('name')]",
+      "properties": {
+        "displayName": "[parameters('displayName')]",
+        "details": "[if(not(empty(parameters('parentId'))), createObject('parent', createObject('id', tenantResourceId('Microsoft.Management/managementGroups', parameters('parentId')))), null())]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the management group."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the management group."
+      },
+      "value": "[tenantResourceId('Microsoft.Management/managementGroups', parameters('name'))]"
+    }
+  }
+}

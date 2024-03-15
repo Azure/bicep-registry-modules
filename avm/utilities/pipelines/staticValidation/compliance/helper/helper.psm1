@@ -162,14 +162,14 @@ function Remove-JSONMetadata {
     # Case: Hashtable
     $resourceIdentifiers = $TemplateObject.resources.Keys
     for ($index = 0; $index -lt $resourceIdentifiers.Count; $index++) {
-      if ($TemplateObject.resources[$resourceIdentifiers[$index]].type -eq 'Microsoft.Resources/deployments') {
+      if ($TemplateObject.resources[$resourceIdentifiers[$index]].type -eq 'Microsoft.Resources/deployments' -and $TemplateObject.resources[$resourceIdentifiers[$index]].properties.template.GetType().BaseType.Name -eq 'Hashtable') {
         $TemplateObject.resources[$resourceIdentifiers[$index]] = Remove-JSONMetadata -TemplateObject $TemplateObject.resources[$resourceIdentifiers[$index]].properties.template
       }
     }
   } else {
     # Case: Array
     for ($index = 0; $index -lt $TemplateObject.resources.Count; $index++) {
-      if ($TemplateObject.resources[$index].type -eq 'Microsoft.Resources/deployments') {
+      if ($TemplateObject.resources[$index].type -eq 'Microsoft.Resources/deployments' -and $TemplateObject.resources[$index].properties.template.GetType().BaseType.Name -eq 'Hashtable') {
         $TemplateObject.resources[$index] = Remove-JSONMetadata -TemplateObject $TemplateObject.resources[$index].properties.template
       }
     }
@@ -245,6 +245,9 @@ function Resolve-ReadMeParameterList {
       $identifier = Split-Path $parameter.'$ref' -Leaf
       $definition = $TemplateFileContent.definitions[$identifier]
       # $type = $definition['type']
+    } elseif ($parameter.Keys -contains 'items' -and $parameter.items.type -in @('object', 'array') -or $parameter.type -eq 'object') {
+      # Array has nested non-primitive type (array/object)
+      $definition = $parameter
     } else {
       $definition = $null
     }

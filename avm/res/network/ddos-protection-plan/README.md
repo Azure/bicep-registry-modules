@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ndppmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ndppmin'
   params: {
     // Required parameters
     name: 'ndppmin001'
@@ -90,7 +90,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ndppmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ndppmax'
   params: {
     // Required parameters
     name: 'ndppmax001'
@@ -196,7 +196,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ndppwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-ndppwaf'
   params: {
     // Required parameters
     name: 'ndppwaf001'

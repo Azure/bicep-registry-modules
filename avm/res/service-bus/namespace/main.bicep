@@ -284,31 +284,29 @@ resource serviceBusNamespace_diagnosticSettings 'Microsoft.Insights/diagnosticSe
     workspaceId: diagnosticSetting.?workspaceResourceId
     eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
     eventHubName: diagnosticSetting.?eventHubName
-    metrics: diagnosticSetting.?metricCategories ?? [
-      {
-        category: 'AllMetrics'
-        timeGrain: null
-        enabled: true
-      }
-    ]
-    logs: diagnosticSetting.?logCategoriesAndGroups ?? [
-      {
-        categoryGroup: 'AllLogs'
-        enabled: true
-      }
-    ]
+    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
+      category: group.category
+      enabled: group.?enabled ?? true
+      timeGrain: null
+    }]
+    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
+      categoryGroup: group.?categoryGroup
+      category: group.?category
+      enabled: group.?enabled ?? true
+    }]
     marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
     logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
   }
   scope: serviceBusNamespace
 }]
 
-module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-serviceBusNamespace-PrivateEndpoint-${index}'
+module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+  name: '${uniqueString(deployment().name, location)}-ServiceBusNamespace-PrivateEndpoint-${index}'
   params: {
-    privateLinkServiceConnections: [
+    name: privateEndpoint.?name ?? 'pep-${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
+    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
         properties: {
           privateLinkServiceId: serviceBusNamespace.id
           groupIds: [
@@ -316,8 +314,19 @@ module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-e
           ]
         }
       }
-    ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'vault'}-${index}'
+    ] : null
+    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
+      {
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
+        properties: {
+          privateLinkServiceId: serviceBusNamespace.id
+          groupIds: [
+            privateEndpoint.?service ?? 'namespace'
+          ]
+          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+        }
+      }
+    ] : null
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
@@ -326,7 +335,6 @@ module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-e
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
     roleAssignments: privateEndpoint.?roleAssignments
     tags: privateEndpoint.?tags ?? tags
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
     customDnsConfigs: privateEndpoint.?customDnsConfigs
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
@@ -358,7 +366,7 @@ output resourceGroupName string = resourceGroup().name
 output name string = serviceBusNamespace.name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(serviceBusNamespace.identity, 'principalId') ? serviceBusNamespace.identity.principalId : ''
+output systemAssignedMIPrincipalId string = serviceBusNamespace.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = serviceBusNamespace.location
@@ -413,17 +421,24 @@ type privateEndpointType = {
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
-  @description('Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".')
+  @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
   service: string?
 
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.')
+  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
   privateDnsZoneGroupName: string?
 
   @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
   privateDnsZoneResourceIds: string[]?
+
+  @description('Optional. If Manual Private Link Connection is required.')
+  isManualConnection: bool?
+
+  @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
+  @maxLength(140)
+  manualConnectionRequestMessage: string?
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
@@ -467,9 +482,6 @@ type privateEndpointType = {
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
   tags: object?
 
-  @description('Optional. Manual PrivateLink Service Connections.')
-  manualPrivateLinkServiceConnections: array?
-
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
 }[]?
@@ -478,19 +490,25 @@ type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
 
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
+  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
   logCategoriesAndGroups: {
     @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
     category: string?
 
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to \'AllLogs\' to collect all logs.')
+    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
     categoryGroup: string?
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
   }[]?
 
-  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to \'\' to disable metric collection.')
+  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
   metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to \'AllMetrics\' to collect all metrics.')
+    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
     category: string
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
   }[]?
 
   @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
