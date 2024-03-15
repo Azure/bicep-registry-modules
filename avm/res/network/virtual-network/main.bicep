@@ -2,7 +2,7 @@ metadata name = 'Virtual Networks'
 metadata description = 'This module deploys a Virtual Network (vNet).'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. The Virtual Network (vNet) Name.')
+@description('Required. The name of the Virtual Network (vNet).')
 param name string
 
 @description('Optional. Location for all resources.')
@@ -52,14 +52,6 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var dnsServersVar = {
-  dnsServers: array(dnsServers)
-}
-
-var ddosProtectionPlan = {
-  id: ddosProtectionPlanResourceId
-}
-
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   'Network Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')
@@ -99,8 +91,12 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
     addressSpace: {
       addressPrefixes: addressPrefixes
     }
-    ddosProtectionPlan: !empty(ddosProtectionPlanResourceId) ? ddosProtectionPlan : null
-    dhcpOptions: !empty(dnsServers) ? dnsServersVar : null
+    ddosProtectionPlan: !empty(ddosProtectionPlanResourceId) ? {
+      id: ddosProtectionPlanResourceId
+    } : null
+    dhcpOptions: !empty(dnsServers) ? {
+      dnsServers: array(dnsServers)
+    } : null
     enableDdosProtection: !empty(ddosProtectionPlanResourceId)
     encryption: vnetEncryption == true ? {
       enabled: vnetEncryption
@@ -209,19 +205,16 @@ resource virtualNetwork_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
     workspaceId: diagnosticSetting.?workspaceResourceId
     eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
     eventHubName: diagnosticSetting.?eventHubName
-    metrics: diagnosticSetting.?metricCategories ?? [
-      {
-        category: 'AllMetrics'
-        timeGrain: null
-        enabled: true
-      }
-    ]
-    logs: diagnosticSetting.?logCategoriesAndGroups ?? [
-      {
-        categoryGroup: 'AllLogs'
-        enabled: true
-      }
-    ]
+    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
+      category: group.category
+      enabled: group.?enabled ?? true
+      timeGrain: null
+    }]
+    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
+      categoryGroup: group.?categoryGroup
+      category: group.?category
+      enabled: group.?enabled ?? true
+    }]
     marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
     logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
   }
@@ -299,19 +292,25 @@ type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
 
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
+  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
   logCategoriesAndGroups: {
     @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
     category: string?
 
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to \'AllLogs\' to collect all logs.')
+    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
     categoryGroup: string?
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
   }[]?
 
-  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to \'\' to disable metric collection.')
+  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
   metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to \'AllMetrics\' to collect all metrics.')
+    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
     category: string
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
   }[]?
 
   @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')

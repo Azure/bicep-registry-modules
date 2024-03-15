@@ -1,10 +1,5 @@
 # Azure Compute Galleries `[Microsoft.Compute/galleries]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).
 
 ## Navigation
@@ -49,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cgmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cgmin'
   params: {
     // Required parameters
     name: 'cgmin001'
@@ -97,7 +92,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cgmax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cgmax'
   params: {
     // Required parameters
     name: 'cgmax001'
@@ -137,6 +132,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
       }
       {
         hyperVGeneration: 'V2'
+        isAcceleratedNetworkSupported: false
         isHibernateSupported: true
         maxRecommendedMemory: 16
         maxRecommendedvCPUs: 8
@@ -277,6 +273,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         },
         {
           "hyperVGeneration": "V2",
+          "isAcceleratedNetworkSupported": false,
           "isHibernateSupported": true,
           "maxRecommendedMemory": 16,
           "maxRecommendedvCPUs": 8,
@@ -385,7 +382,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cgwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-cgwaf'
   params: {
     // Required parameters
     name: 'cgwaf001'

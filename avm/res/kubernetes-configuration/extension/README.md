@@ -34,8 +34,6 @@ The following section provides usage examples for the module, which were used to
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-
 
 
 <details>
@@ -44,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kcemin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-kcemin'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
@@ -108,7 +106,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kcemax'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-kcemax'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
@@ -234,7 +232,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-kcewaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-kcewaf'
   params: {
     // Required parameters
     clusterName: '<clusterName>'

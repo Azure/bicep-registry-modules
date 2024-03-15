@@ -1,0 +1,79 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "17486786144236938726"
+    },
+    "name": "Site Slot Auth Settings V2 Config",
+    "description": "This module deploys a Site Auth Settings V2 Configuration.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "appName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent site resource. Required if the template is used in a standalone deployment."
+      }
+    },
+    "slotName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Slot name to be configured."
+      }
+    },
+    "kind": {
+      "type": "string",
+      "allowedValues": [
+        "functionapp",
+        "functionapp,linux",
+        "functionapp,workflowapp",
+        "functionapp,workflowapp,linux",
+        "app"
+      ],
+      "metadata": {
+        "description": "Required. Type of slot to deploy."
+      }
+    },
+    "authSettingV2Configuration": {
+      "type": "object",
+      "metadata": {
+        "description": "Required. The auth settings V2 configuration."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/sites/slots/config",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), 'authsettingsV2')]",
+      "kind": "[parameters('kind')]",
+      "properties": "[parameters('authSettingV2Configuration')]"
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the slot config."
+      },
+      "value": "authsettingsV2"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the slot config."
+      },
+      "value": "[resourceId('Microsoft.Web/sites/slots/config', parameters('appName'), parameters('slotName'), 'authsettingsV2')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the slot config was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

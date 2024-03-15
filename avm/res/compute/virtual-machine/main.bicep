@@ -2,7 +2,6 @@ metadata name = 'Virtual Machines'
 metadata description = 'This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.'
 metadata owner = 'Azure/module-maintainers'
 
-// Main resource
 @description('Required. The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory.')
 param name string
 
@@ -515,23 +514,30 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
   }
 }
 
-// resource vm_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(monitoringWorkspaceId)) {
-//   name: last(split((!empty(monitoringWorkspaceId) ? monitoringWorkspaceId : 'law'), '/'))!
-//   scope: az.resourceGroup(split((!empty(monitoringWorkspaceId) ? monitoringWorkspaceId : '//'), '/')[2], split((!empty(monitoringWorkspaceId) ? monitoringWorkspaceId : '////'), '/')[4])
-// }
+resource vm_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId)) {
+  name: last(split((!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '') ? extensionMonitoringAgentConfig.monitoringWorkspaceId : 'law'), '/'))!
+  scope: az.resourceGroup(split((!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '') ? extensionMonitoringAgentConfig.monitoringWorkspaceId : '//'), '/')[2], split((!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '') ? extensionMonitoringAgentConfig.monitoringWorkspaceId : '////'), '/')[4])
+}
 
-module vm_azureMonitoringAgentExtension 'extension/main.bicep' = if (extensionMonitoringAgentConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VM-AzureMonitoringAgent'
+module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonitoringAgentConfig.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-AzureMonitorAgent'
   params: {
     virtualMachineName: vm.name
     name: 'AzureMonitorAgent'
     location: location
     publisher: 'Microsoft.Azure.Monitor'
     type: osType == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
-    typeHandlerVersion: contains(extensionMonitoringAgentConfig, 'typeHandlerVersion') ? extensionMonitoringAgentConfig.typeHandlerVersion : (osType == 'Windows' ? '1.0' : '1.21')
-    autoUpgradeMinorVersion: contains(extensionMonitoringAgentConfig, 'autoUpgradeMinorVersion') ? extensionMonitoringAgentConfig.autoUpgradeMinorVersion : true
-    enableAutomaticUpgrade: contains(extensionMonitoringAgentConfig, 'enableAutomaticUpgrade') ? extensionMonitoringAgentConfig.enableAutomaticUpgrade : true
+    typeHandlerVersion: extensionMonitoringAgentConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '1.22' : '1.29')
+    autoUpgradeMinorVersion: extensionMonitoringAgentConfig.?autoUpgradeMinorVersion ?? true
+    enableAutomaticUpgrade: extensionMonitoringAgentConfig.?enableAutomaticUpgrade ?? false
+    settings: {
+      workspaceId: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '') ? vm_logAnalyticsWorkspace.properties.customerId : ''
+      GCS_AUTO_CONFIG: osType == 'Linux' ? true : null
+    }
     tags: extensionMonitoringAgentConfig.?tags ?? tags
+    protectedSettings: {
+      workspaceKey: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '') ? vm_logAnalyticsWorkspace.listKeys().primarySharedKey : ''
+    }
   }
 }
 
@@ -621,7 +627,7 @@ module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzu
   }
   dependsOn: [
     vm_customScriptExtension
-    vm_azureMonitoringAgentExtension
+    vm_azureMonitorAgentExtension
   ]
 }
 
@@ -640,7 +646,7 @@ module vm_backup 'modules/protected-item.bicep' = if (!empty(backupVaultName)) {
   dependsOn: [
     vm_aadJoinExtension
     vm_domainJoinExtension
-    vm_azureMonitoringAgentExtension
+    vm_azureMonitorAgentExtension
     vm_microsoftAntiMalwareExtension
     vm_networkWatcherAgentExtension
     vm_dependencyAgentExtension
@@ -682,7 +688,7 @@ output resourceId string = vm.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(vm.identity, 'principalId') ? vm.identity.principalId : ''
+output systemAssignedMIPrincipalId string = vm.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = vm.location
@@ -728,42 +734,4 @@ type roleAssignmentType = {
 
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
-}[]?
-
-type diagnosticSettingType = {
-  @description('Optional. The name of diagnostic setting.')
-  name: string?
-
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
-  logCategoriesAndGroups: {
-    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
-
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to \'AllLogs\' to collect all logs.')
-    categoryGroup: string?
-  }[]?
-
-  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to \'\' to disable metric collection.')
-  metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to \'AllMetrics\' to collect all metrics.')
-    category: string
-  }[]?
-
-  @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
-
-  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
 }[]?
