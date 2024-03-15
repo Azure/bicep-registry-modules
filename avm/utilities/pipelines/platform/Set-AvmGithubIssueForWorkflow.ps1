@@ -89,7 +89,7 @@ function Set-AvmGithubIssueForWorkflow {
             $notifyTeam = "Azure/$($workflowRun.workflowName.Replace(".","-"))-module-owners-bicep"
           }
 
-          $comment = "@$($notifyTeam), please investigate the failed workflow run."
+          $comment = "@$($notifyTeam), unfortunately the workflow failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over."
           gh issue comment $issueUrl --body $comment --repo $Repo
         }
 
