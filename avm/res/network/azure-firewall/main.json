@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "1020924055893877667"
+      "templateHash": "4205211650529288648"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall.",
@@ -244,7 +244,7 @@
         "description": "Optional. Tier of an Azure Firewall."
       }
     },
-    "virtualNetworkId": {
+    "virtualNetworkResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -406,7 +406,7 @@
         }
       }
     ],
-    "azureSkuName": "[if(empty(parameters('virtualNetworkId')), 'AZFW_Hub', 'AZFW_VNet')]",
+    "azureSkuName": "[if(empty(parameters('virtualNetworkResourceId')), 'AZFW_Hub', 'AZFW_VNet')]",
     "requiresManagementIp": "[if(equals(parameters('azureSkuTier'), 'Basic'), true(), false())]",
     "isCreateDefaultManagementIP": "[and(empty(parameters('managementIPResourceID')), variables('requiresManagementIp'))]",
     "builtInRoleNames": {
@@ -445,7 +445,7 @@
       "location": "[parameters('location')]",
       "zones": "[if(equals(length(parameters('zones')), 0), null(), parameters('zones'))]",
       "tags": "[parameters('tags')]",
-      "properties": "[if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('threatIntelMode', parameters('threatIntelMode'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'ipConfigurations', concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), reference('publicIPAddress').outputs.name.value), 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkId')))), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), reference('publicIPAddress').outputs.resourceId.value))), createObject())))), variables('additionalPublicIpConfigurationsVar')), 'managementIpConfiguration', if(variables('requiresManagementIp'), createObject('name', if(not(empty(parameters('managementIPResourceID'))), last(split(parameters('managementIPResourceID'), '/')), reference('managementIPAddress').outputs.name.value), 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallManagementSubnet', parameters('virtualNetworkId')))), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('managementIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('managementIPResourceID'))), parameters('managementIPResourceID'), reference('managementIPAddress').outputs.resourceId.value))), createObject()))), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'applicationRuleCollections', parameters('applicationRuleCollections'), 'natRuleCollections', parameters('natRuleCollections'), 'networkRuleCollections', parameters('networkRuleCollections')), createObject('firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'hubIPAddresses', if(not(empty(parameters('hubIPAddresses'))), parameters('hubIPAddresses'), null()), 'virtualHub', if(not(empty(parameters('virtualHubId'))), createObject('id', parameters('virtualHubId')), null())))]",
+      "properties": "[if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('threatIntelMode', parameters('threatIntelMode'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'ipConfigurations', concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), reference('publicIPAddress').outputs.name.value), 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), reference('publicIPAddress').outputs.resourceId.value))), createObject())))), variables('additionalPublicIpConfigurationsVar')), 'managementIpConfiguration', if(variables('requiresManagementIp'), createObject('name', if(not(empty(parameters('managementIPResourceID'))), last(split(parameters('managementIPResourceID'), '/')), reference('managementIPAddress').outputs.name.value), 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallManagementSubnet', parameters('virtualNetworkResourceId')))), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('managementIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('managementIPResourceID'))), parameters('managementIPResourceID'), reference('managementIPAddress').outputs.resourceId.value))), createObject()))), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'applicationRuleCollections', parameters('applicationRuleCollections'), 'natRuleCollections', parameters('natRuleCollections'), 'networkRuleCollections', parameters('networkRuleCollections')), createObject('firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'hubIPAddresses', if(not(empty(parameters('hubIPAddresses'))), parameters('hubIPAddresses'), null()), 'virtualHub', if(not(empty(parameters('virtualHubId'))), createObject('id', parameters('virtualHubId')), null())))]",
       "dependsOn": [
         "managementIPAddress",
         "publicIPAddress"
