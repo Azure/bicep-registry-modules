@@ -82,7 +82,15 @@ function Set-AvmGithubIssueForWorkflow {
 
       if ($issues.title -notcontains $issueName) {
         if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Create')) {
-          gh issue create --title "$issueName" --body "$failedrun" --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --repo $Repo
+          $issueUrl = gh issue create --title "$issueName" --body "$failedrun" --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --repo $Repo
+          $notifyTeam = "Azure/avm-core-team"
+
+          if ($workflowRun.workflowName -match "avm/(?:res|ptn)") {
+            $notifyTeam = "Azure/$($workflowRun.workflowName.Replace(".","-"))-module-owners-bicep"
+          }
+
+          $comment = "@$($notifyTeam), please investigate the failed workflow run."
+          gh issue comment $issueUrl --body $comment --repo $Repo
         }
 
         $issuesCreated++
