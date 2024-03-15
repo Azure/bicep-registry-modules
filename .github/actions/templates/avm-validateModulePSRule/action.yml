@@ -132,6 +132,7 @@ runs:
       if: ${{ inputs.psruleBaseline == 'Azure.Pillar.Reliability' }}
       with:
         modules: "PSRule.Rules.Azure"
+        prerelease: true
         baseline: "${{ inputs.psruleBaseline }}"
         inputPath: "${{ inputs.templateFilePath}}"
         outputFormat: Csv
