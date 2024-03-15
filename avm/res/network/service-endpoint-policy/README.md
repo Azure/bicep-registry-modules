@@ -41,7 +41,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nsepmin'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nsepmin'
   params: {
     // Required parameters
     name: 'nsepmin001'
@@ -89,7 +89,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nsepwaf'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nsepwaf'
   params: {
     // Required parameters
     name: 'nsepwaf001'

@@ -21,7 +21,6 @@ on:
         description: "Remove deployed module"
         required: false
         default: true
-
   push:
     branches:
       - main
