@@ -85,7 +85,7 @@ function Set-AvmGithubIssueForWorkflow {
       if ($issues.title -notcontains $issueName) {
         if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Create')) {
           $issueUrl = gh issue create --title "$issueName" --body "$failedrun" --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --repo $Repo
-          $notifyTeam = "Azure/avm-core-team-technical-bicep"
+          $comment = "@Azure/avm-core-team-technical-bicep, unfortunately the workflow failed. Please investigate the failed workflow run."
 
           if ($workflowRun.workflowName -match "avm.(?:res|ptn)") {
             $moduleName = $workflowRun.workflowName.Replace('.', '/')
@@ -93,11 +93,10 @@ function Set-AvmGithubIssueForWorkflow {
             $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
 
             if (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle))) {
-              $notifyTeam = $module.ModuleOwnersGHTeam
+              $comment = "@$($module.ModuleOwnersGHTeam), unfortunately the workflow failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over."
             }
           }
 
-          $comment = "@$($notifyTeam), unfortunately the workflow failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over."
           gh issue comment $issueUrl --body $comment --repo $Repo
         }
 
