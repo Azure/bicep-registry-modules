@@ -19,7 +19,7 @@ Publish-ModuleFromTagToPBR -ModuleReleaseTagName 'avm/res/key-vault/vault/0.3.0'
 
 Publish the module 'avm/res/key-vault/vault' of git tag 'avm/res/key-vault/vault/0.3.0' to the public registry server 'myServer'
 #>
-function Publish-ModuleFromTagToPBR { #TODO: remove
+function Publish-ModuleFromTagToPBR {
 
   [CmdletBinding(SupportsShouldProcess)]
   param (
