@@ -67,6 +67,30 @@ module testDeployment '../../../main.bicep' = [
         hub1: {
           name: 'hub1'
           addressPrefixes: array(addressPrefix)
+          azureFirewallSettings: {
+            hubIpAddresses: {}
+            virtualHub: ''
+            additionalPublicIpConfigurations: []
+            applicationRuleCollections: []
+            azureSkuTier: 'Standard'
+            diagnosticSettings: []
+            enableTelemetry: true
+            firewallPolicyId: ''
+            location: 'westus'
+            lock: {}
+            managementIPAddressObject: {}
+            managementIPResourceID: ''
+            natRuleCollections: []
+            networkRuleCollections: []
+            publicIPAddressObject: {
+              name: 'hub1PublicIp'
+            }
+            publicIPResourceID: ''
+            roleAssignments: []
+            tags: {}
+            threatIntelMode: 'Alert'
+            zones: []
+          }
           ddosProtectionPlanResourceId: ''
           dnsServers: ['10.0.1.4', '10.0.1.5']
           diagnosticSettings: [
@@ -128,10 +152,38 @@ module testDeployment '../../../main.bicep' = [
         hub2: {
           name: 'hub2'
           addressPrefixes: array(addressPrefix2)
+          azureFirewallSettings: {
+            hubIpAddresses: {}
+            virtualHub: ''
+            additionalPublicIpConfigurations: []
+            applicationRuleCollections: []
+            azureSkuTier: 'Standard'
+            diagnosticSettings: []
+            enableTelemetry: true
+            firewallPolicyId: ''
+            location: 'westus2'
+            lock: {}
+            managementIPAddressObject: {}
+            managementIPResourceID: ''
+            natRuleCollections: []
+            networkRuleCollections: []
+            publicIPAddressObject: {
+              name: 'hub2PublicIp'
+            }
+            publicIPResourceID: ''
+            roleAssignments: []
+            tags: {}
+            threatIntelMode: 'Alert'
+            zones: [
+              '1'
+              '2'
+              '3'
+            ]
+          }
           ddosProtectionPlanResourceId: ''
           dnsServers: []
           diagnosticSettings: []
-          enableAzureFirewall: false
+          enableAzureFirewall: true
           enableBastion: true
           enablePeering: false
           enableTelemetry: false

@@ -18,6 +18,11 @@ param enableTelemetry bool = true
 @description('Optional. A map of the hub virtual networks to create.')
 param hubVirtualNetworks hubVirtualNetworkObject
 
+//
+// Add your variables here
+var hubVirtualNetworkPeerings = [for (hub, index) in items(hubVirtualNetworks ?? {}): hub.value.peeringSettings ?? []]
+var hubVirtualNetworkNames = [for (hub, index) in items(hubVirtualNetworks ?? {}): hub.value.name]
+
 // ============== //
 // Resources      //
 // ============== //
@@ -41,6 +46,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
+// Create hub virtual networks
 module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): {
     name: '${uniqueString(deployment().name, location)}-${hub.value.name}-nvn'
@@ -65,26 +71,33 @@ module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.1.1' = [
   }
 ]
 
-var hubVirtualNetworkPeerings = [
-  for (hub, index) in items(hubVirtualNetworks ?? {}): (hub.value.enablePeering) ? hub.value.peeringSettings : []
+// Create hub virtual network peerings
+resource hubVirtualNetworkPeer_remote 'Microsoft.Network/virtualNetworks@2023-09-01' existing = [
+  for (peer, index) in flatten(hubVirtualNetworkPeerings): {
+    name: peer.remoteVirtualNetworkName
+  }
 ]
 
-/* resource hubVirtualNetwork_remote 'Microsoft.Network/virtualNetworks@2023-09-01' existing = [for (peer, index) in hubVirtualNetworkPeerings: if (!empty(peer)) {
-  name: peer.?remoteVirtualNetworkName
-}] */
+resource hubVirtualNetworkPeer_local 'Microsoft.Network/virtualNetworks@2023-09-01' existing = [
+  for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enablePeering) {
+    name: hub.value.name
+  }
+]
 
-/* resource hubVirtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2023-09-01' = [for (peer, index) in (hubVirtualNetworkPeerings ?? []): {
-  name: '${hubVirtualNetwork[index].name}-to-${hubVirtualNetwork_remote[index].name}'
-  properties: {
-    allowForwardedTraffic: peer.allowForwardedTraffic ?? false
-    allowGatewayTransit: peer.allowGatewayTransit ?? false
-    allowVirtualNetworkAccess: peer.allowVirtualNetworkAccess ?? true
-    useRemoteGateways: peer.useRemoteGateways ?? false
-    remoteVirtualNetwork: {
-      id: hubVirtualNetwork_remote[index].id
+resource hubVirtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2023-09-01' = [
+  for (peer, index) in (flatten(hubVirtualNetworkPeerings) ?? []): {
+    name: '${hubVirtualNetworkPeer_local[index].name}/${hubVirtualNetworkPeer_local[index].name}-to-${hubVirtualNetworkPeer_remote[index].name}'
+    properties: {
+      allowForwardedTraffic: peer.allowForwardedTraffic ?? false
+      allowGatewayTransit: peer.allowGatewayTransit ?? false
+      allowVirtualNetworkAccess: peer.allowVirtualNetworkAccess ?? true
+      useRemoteGateways: peer.useRemoteGateways ?? false
+      remoteVirtualNetwork: {
+        id: hubVirtualNetworkPeer_remote[index].id
+      }
     }
   }
-}] */
+]
 
 module hubRouteTable 'br/public:avm/res/network/route-table:0.2.2' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): {
@@ -101,6 +114,7 @@ module hubRouteTable 'br/public:avm/res/network/route-table:0.2.2' = [
   }
 ]
 
+// Create Bastion host if enabled
 // AzureBastionSubnet is required to deploy Bastion service. This subnet must exist in the parsubnets array if you enable Bastion Service.
 // There is a minimum subnet requirement of /27 prefix.
 module hubBastion 'br/public:avm/res/network/bastion-host:0.1.1' = [
@@ -120,31 +134,37 @@ module hubBastion 'br/public:avm/res/network/bastion-host:0.1.1' = [
   }
 ]
 
-// Firewall module will go here
+// Create Azure Firewall if enabled
+// AzureFirewallSubnet is required to deploy Azure Firewall service. This subnet must exist in the parsubnets array if you enable Azure Firewall.
 module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.1.1' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableAzureFirewall) {
     name: '${uniqueString(deployment().name, location)}-${hub.value.name}-naf'
     params: {
       // Required parameters
       name: hub.value.name
-      virtualNetworkResourceId: hubVirtualNetwork[index].outputs.resourceId
-      // Non-required parameters
-      applicationRuleCollections: hub.value.azureFirewallSettings.applicationRuleCollections ?? []
-      diagnosticSettings: hub.value.diagnosticSettings ?? []
-      firewallPolicyId: hub.value.azureFirewallSettings.firewallPolicy ?? ''
+      // Conditional parameters
       hubIPAddresses: hub.value.azureFirewallSettings.hubIpAddresses ?? {}
-      publicIPAddressObject: hub.value.azureFirewallSettings.ipConfigurations ?? []
+      virtualHubId: hub.value.azureFirewallSettings.virtualHub ?? ''
+      virtualNetworkResourceId: hubVirtualNetwork[index].outputs.resourceId ?? ''
+      // Non-required parameters
+      additionalPublicIpConfigurations: hub.value.azureFirewallSettings.additionalPublicIpConfigurations ?? []
+      applicationRuleCollections: hub.value.azureFirewallSettings.applicationRuleCollections ?? []
+      azureSkuTier: hub.value.azureFirewallSettings.azureSkuTier ?? {}
+      diagnosticSettings: hub.value.diagnosticSettings ?? []
+      enableTelemetry: hub.value.enableTelemetry ?? true
+      firewallPolicyId: hub.value.azureFirewallSettings.firewallPolicyId ?? ''
       location: hub.value.location ?? location
-      managementIPAddressObject: hub.value.azureFirewallSettings.managementIpConfiguration ?? ''
+      lock: hub.value.lock ?? {}
+      managementIPAddressObject: hub.value.azureFirewallSettings.managementIPAddressObject ?? ''
+      managementIPResourceID: hub.value.azureFirewallSettings.managementIPResourceID ?? ''
       natRuleCollections: hub.value.azureFirewallSettings.natRuleCollections ?? []
       networkRuleCollections: hub.value.azureFirewallSettings.networkRuleCollections ?? []
-      azureSkuTier: hub.value.azureFirewallSettings.sku ?? {}
-      threatIntelMode: hub.value.azureFirewallSettings.threatIntelMode ?? ''
-      virtualHubId: hub.value.azureFirewallSettings.virtualHub ?? ''
-      zones: hub.value.azureFirewallSettings.zones ?? []
-      enableTelemetry: hub.value.enableTelemetry ?? true
+      publicIPAddressObject: hub.value.azureFirewallSettings.publicIPAddressObject ?? {}
+      publicIPResourceID: hub.value.azureFirewallSettings.publicIPResourceID ?? ''
       roleAssignments: hub.value.roleAssignments ?? []
       tags: hub.value.tags ?? {}
+      threatIntelMode: hub.value.azureFirewallSettings.threatIntelMode ?? ''
+      zones: hub.value.azureFirewallSettings.zones ?? []
     }
   }
 ]
@@ -187,6 +207,9 @@ output hubBastionResourceId string[] = [
 
 @description('The peers of the hub virtual network.')
 output hubVirtualNetworkPeers array = hubVirtualNetworkPeerings
+
+@description('The names of the hub virtual network.')
+output hubVirtualNetworkNames array = hubVirtualNetworkNames
 
 // ================ //
 // Definitions      //
@@ -347,45 +370,44 @@ type peeringSettingsType = {
 }[]?
 
 type azureFirewallType = {
-  @description('Required. The name of the Azure Firewall.')
-  name: string?
-
-  @description('Optional. The location of the Azure Firewall. Defaults to the location of the resource group.')
-  location: string?
-
-  @description('Optional. The zones of the Azure Firewall.')
-  zones: array?
-
-  @description('Optional. The additional properties of the Azure Firewall.')
-  additionalProperties: object?
-
-  @description('Optional. The application rule collections of the Azure Firewall.')
-  applicationRuleCollections: array?
-
-  @description('Optional. The firewall policy of the Azure Firewall.')
-  firewallPolicy: string?
-
-  @description('Optional. The hub IP addresses of the Azure Firewall.')
+  @description('Optional. Hub IP addresses.')
   hubIpAddresses: object?
-
-  @description('Optional. The IP configurations of the Azure Firewall.')
-  ipConfigurations: array?
-
-  @description('Optional. The management IP configuration of the Azure Firewall.')
-  managementIpConfiguration: string?
-
-  @description('Optional. The NAT rule collections of the Azure Firewall.')
-  natRuleCollections: array?
-
-  @description('Optional. The network rule collections of the Azure Firewall.')
-  networkRuleCollections: array?
-
-  @description('Optional. The SKU of the Azure Firewall.')
-  sku: object?
-
-  @description('Optional. The threat intel mode of the Azure Firewall.')
-  threatIntelMode: string?
-
-  @description('Optional. The virtual hub of the Azure Firewall.')
+  @description('Optional. Virtual Hub ID.')
   virtualHub: string?
+  @description('Optional. Additional public IP configurations.')
+  additionalPublicIpConfigurations: array?
+  @description('Optional. Application rule collections.')
+  applicationRuleCollections: array?
+  @description('Optional. Azure Firewall SKU.')
+  azureSkuTier: string?
+  @description('Optional. Diagnostic settings.')
+  diagnosticSettings: diagnosticSettingType?
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
+  @description('Optional. Firewall policy ID.')
+  firewallPolicyId: string?
+  @description('Optional. The location of the virtual network. Defaults to the location of the resource group.')
+  location: string?
+  @description('Optional. Lock settings.')
+  lock: lockType?
+  @description('Optional. Management IP address configuration.')
+  managementIPAddressObject: object?
+  @description('Optional. Management IP resource ID.')
+  managementIPResourceID: string?
+  @description('Optional. NAT rule collections.')
+  natRuleCollections: array?
+  @description('Optional. Network rule collections.')
+  networkRuleCollections: array?
+  @description('Optional. Public IP address object.')
+  publicIPAddressObject: object?
+  @description('Optional. Public IP resource ID.')
+  publicIPResourceID: string?
+  @description('Optional. Role assignments.')
+  roleAssignments: roleAssignmentType?
+  @description('Optional. Tags.')
+  tags: object?
+  @description('Optional. Threat Intel mode.')
+  threatIntelMode: string?
+  @description('Optional. Zones.')
+  zones: array?
 }?
