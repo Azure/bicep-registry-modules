@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.cache.redis.yml"
       - "avm/res/cache/redis/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
