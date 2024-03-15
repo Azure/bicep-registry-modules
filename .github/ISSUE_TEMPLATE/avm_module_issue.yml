@@ -139,7 +139,7 @@ body:
         - "avm/res/network/public-ip-address"
         - "avm/res/network/public-ip-prefix"
         - "avm/res/network/route-table"
-        # - "avm/res/network/service-endpoint-policy"
+        - "avm/res/network/service-endpoint-policy"
         - "avm/res/network/trafficmanagerprofile"
         - "avm/res/network/virtual-hub"
         - "avm/res/network/virtual-network"
