@@ -26,7 +26,7 @@ Get-AzAvailableResourceLocation -ModuleRoot ".\avm\res\resources\resource-group"
 Get the recommended paired regions available for the service.
 #>
 
-function Get-AzAvailableResourceLocation { #TODO: remove
+function Get-AzAvailableResourceLocation {
   param (
 
     [Parameter(Mandatory = $false)]
