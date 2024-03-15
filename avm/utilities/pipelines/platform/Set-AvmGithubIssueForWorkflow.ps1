@@ -88,8 +88,8 @@ function Set-AvmGithubIssueForWorkflow {
           $notifyTeam = "Azure/avm-core-team-technical-bicep"
 
           if ($workflowRun.workflowName -match "avm.(?:res|ptn)") {
-            $moduleIndex = $moduleName.StartsWith("avm/res") ? "Bicep-Resource" : "Bicep-Pattern"
-            $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
+            $moduleIndex = $workflowRun.workflowName.StartsWith("avm/res") ? "Bicep-Resource" : "Bicep-Pattern"
+            $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $workflowRun.workflowName
 
             if (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle))) {
               $notifyTeam = $module.ModuleOwnersGHTeam
