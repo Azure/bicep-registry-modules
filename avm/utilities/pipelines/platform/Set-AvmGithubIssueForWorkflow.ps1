@@ -85,7 +85,7 @@ function Set-AvmGithubIssueForWorkflow {
           $issueUrl = gh issue create --title "$issueName" --body "$failedrun" --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --repo $Repo
           $notifyTeam = "Azure/avm-core-team"
 
-          if ($workflowRun.workflowName -match "avm/(?:res|ptn)") {
+          if ($workflowRun.workflowName -match "avm.(?:res|ptn)") {
             $notifyTeam = "Azure/$($workflowRun.workflowName.Replace(".","-"))-module-owners-bicep"
           }
 
