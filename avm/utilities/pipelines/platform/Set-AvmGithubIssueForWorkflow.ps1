@@ -40,6 +40,8 @@ function Set-AvmGithubIssueForWorkflow {
     [Parameter(Mandatory = $false)]
     [String[]] $IgnoreWorkflows = @()
   )
+  # Load used functions
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'Get-AvmCsvData.ps1')
 
   $issues = gh issue list --state open --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --json 'title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
   $runs = gh run list --json 'url,workflowName,headBranch,startedAt' --limit $LimitNumberOfRuns --repo $Repo | ConvertFrom-Json -Depth 100
@@ -86,7 +88,12 @@ function Set-AvmGithubIssueForWorkflow {
           $notifyTeam = "Azure/avm-core-team-technical-bicep"
 
           if ($workflowRun.workflowName -match "avm.(?:res|ptn)") {
-            $notifyTeam = "Azure/$($workflowRun.workflowName.Replace(".","-"))-module-owners-bicep"
+            $moduleIndex = $moduleName.StartsWith("avm/res") ? "Bicep-Resource" : "Bicep-Pattern"
+            $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
+
+            if (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle))) {
+              $notifyTeam = $module.ModuleOwnersGHTeam
+            }
           }
 
           $comment = "@$($notifyTeam), unfortunately the workflow failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over."
