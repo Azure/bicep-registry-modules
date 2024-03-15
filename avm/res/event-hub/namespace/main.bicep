@@ -156,7 +156,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-
 resource eventHubNamespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' = {
   name: name
   location: location
@@ -360,6 +359,9 @@ output systemAssignedMIPrincipalId string = eventHubNamespace.?identity.?princip
 
 @description('The location the resource was deployed into.')
 output location string = eventHubNamespace.location
+
+@description('The Resources IDs of the EventHubs within this eventspace.')
+output eventHubResourceIds array = [for index in range(0, length(eventhubs ?? [])): eventHubNamespace_eventhubs[index].outputs.resourceId]
 
 // =============== //
 //   Definitions   //
