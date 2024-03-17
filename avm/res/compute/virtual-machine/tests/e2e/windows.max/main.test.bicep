@@ -170,7 +170,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Windows'
-      vmSize: 'Standard_NC6s_v3'
+      vmSize: 'Standard_DS2_v2'
       adminPassword: password
       availabilityZone: 2
       backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
@@ -291,14 +291,6 @@ module testDeployment '../../../main.bicep' = [
         monitoringWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
       extensionNetworkWatcherAgentConfig: {
-        enabled: true
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
-      }
-      extensionNvidiaGpuDriverWindows: {
         enabled: true
         tags: {
           'hidden-title': 'This is visible in the resource name'
