@@ -36,7 +36,6 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -68,10 +67,6 @@ module testDeployment '../../../main.bicep' = [
       #disable-next-line BCP334 // Minimum length is ensured by the `namePrefix` and `serviceShort` parameters
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       skuName: 'Standard'
       tags: {
         'hidden-title': 'This is visible in the resource name'
@@ -120,37 +115,17 @@ module testDeployment '../../../main.bicep' = [
       hybridConnections: [
         {
           name: '${namePrefix}${serviceShort}hc001'
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Reader'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
           userMetadata: '[{"key":"endpoint","value":"db-server.constoso.com:1433"}]'
         }
       ]
       wcfRelays: [
         {
           name: '${namePrefix}${serviceShort}wcf001'
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Reader'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
           relayType: 'NetTcp'
         }
       ]
       diagnosticSettings: [
         {
-          name: 'customSetting'
-          metricCategories: [
-            {
-              category: 'AllMetrics'
-            }
-          ]
           eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
           eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
           storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
