@@ -1,0 +1,103 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "5622068529761827218"
+    },
+    "name": "Eventgrid Namespace Permissions Bindings",
+    "description": "This module deploys an Eventgrid Namespace Permission Binding.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "namespaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent EventGrid namespace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Permission Binding."
+      }
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Description of the Permission Binding."
+      }
+    },
+    "clientGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the client group resource that the permission is bound to. The client group needs to be a resource under the same namespace the permission binding is a part of."
+      }
+    },
+    "topicSpaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Topic Space resource that the permission is bound to. The Topic space needs to be a resource under the same namespace the permission binding is a part of."
+      }
+    },
+    "permission": {
+      "type": "string",
+      "allowedValues": [
+        "Publisher",
+        "Subscriber"
+      ],
+      "metadata": {
+        "description": "Required. The allowed permission."
+      }
+    }
+  },
+  "resources": {
+    "namespace": {
+      "existing": true,
+      "type": "Microsoft.EventGrid/namespaces",
+      "apiVersion": "2023-12-15-preview",
+      "name": "[parameters('namespaceName')]"
+    },
+    "permissionBinding": {
+      "type": "Microsoft.EventGrid/namespaces/permissionBindings",
+      "apiVersion": "2023-12-15-preview",
+      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
+      "properties": {
+        "clientGroupName": "[parameters('clientGroupName')]",
+        "description": "[parameters('description')]",
+        "permission": "[parameters('permission')]",
+        "topicSpaceName": "[parameters('topicSpaceName')]"
+      },
+      "dependsOn": [
+        "namespace"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Permission Binding."
+      },
+      "value": "[resourceId('Microsoft.EventGrid/namespaces/permissionBindings', parameters('namespaceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Permission Binding."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the Permission Binding was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
