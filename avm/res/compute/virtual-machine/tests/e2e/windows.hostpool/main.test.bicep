@@ -86,6 +86,14 @@ module testDeployment '../../../main.bicep' = [
       osType: 'Windows'
       vmSize: 'Standard_DS2_v2'
       adminPassword: password
+      extensionAadJoinConfig: {
+        enabled: true
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
       extensionHostPoolRegistration: {
         enabled: true
         tags: {

@@ -82,6 +82,10 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     scriptContent: '''
       param($HostPoolName, $HostPoolResourceGroupName, $SubscriptionId)
 
+      if ($installedModules.Name -notcontains "Az.DesktopVirtualization") {
+          Install-Module Az.DesktopVirtualization -Force -AllowClobber
+      }
+
       $parameters = @{
           HostPoolName      = $HostPoolName
           ResourceGroupName = $HostPoolResourceGroupName
