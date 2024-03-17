@@ -945,14 +945,15 @@ module vm_azureGuestConfigurationExtension 'extension/main.bicep' =
     ]
   }
 
-resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2020-06-25' = {
-  name: 'AzureWindowsBaseline'
-  scope: vm
-  location: location
-  properties: {
-    guestConfiguration: guestConfiguration
+resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2020-06-25' =
+  if (!empty(guestConfiguration)) {
+    name: 'AzureWindowsBaseline'
+    scope: vm
+    location: location
+    properties: {
+      guestConfiguration: guestConfiguration
+    }
   }
-}
 
 module vm_backup 'modules/protected-item.bicep' =
   if (!empty(backupVaultName)) {
