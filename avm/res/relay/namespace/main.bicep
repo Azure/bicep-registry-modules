@@ -254,16 +254,40 @@ resource namespace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@202
   }
 ]
 
-module namespace_privateEndpoints '../../network/private-endpoint/main.bicep' = [
+module namespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-namespace-PrivateEndpoint-${index}'
     params: {
-      groupIds: [
-        privateEndpoint.?service ?? 'namespace'
-      ]
       name: privateEndpoint.?name ?? 'pep-${last(split(namespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
-      serviceResourceId: namespace.id
+      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(namespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
+              properties: {
+                privateLinkServiceId: namespace.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'namespace'
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(namespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
+              properties: {
+                privateLinkServiceId: namespace.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'namespace'
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
       subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -274,7 +298,6 @@ module namespace_privateEndpoints '../../network/private-endpoint/main.bicep' = 
       privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
       customDnsConfigs: privateEndpoint.?customDnsConfigs
       ipConfigurations: privateEndpoint.?ipConfigurations
       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
