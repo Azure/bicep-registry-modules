@@ -3,7 +3,7 @@ metadata description = 'This module deploys an Azure API Connection.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. Specific values for some API connections.')
-param api object = {}
+param api object?
 
 @description('Required. Connection name for connection. Example: \'azureblob\' when using blobs.  It can change depending on the resource.')
 param name string
@@ -12,7 +12,7 @@ param name string
 param enableTelemetry bool = true
 
 @description('Optional. Customized parameter values for specific connections.')
-param customParameterValues object = {}
+param customParameterValues object?
 
 @description('Required. Display name connection. Example: \'blobconnection\' when using blobs. It can change depending on the resource.')
 param displayName string
@@ -22,17 +22,17 @@ param location string = resourceGroup().location
 
 @description('Optional. Dictionary of nonsecret parameter values.')
 #disable-next-line secure-secrets-in-params // Not a secret
-param nonSecretParameterValues object = {}
+param nonSecretParameterValues object?
 
 @description('Optional. Connection strings or access keys for connection. Example: \'accountName\' and \'accessKey\' when using blobs.  It can change depending on the resource.')
 @secure()
-param parameterValues object = {}
+param parameterValues object?
 
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
 @description('Optional. Status of the connection.')
-param statuses array = []
+param statuses array?
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -41,7 +41,7 @@ param lock lockType
 param tags object?
 
 @description('Optional. Links to test the API connection.')
-param testLinks array = []
+param testLinks array?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -84,10 +84,10 @@ resource connection 'Microsoft.Web/connections@2016-06-01' = {
     displayName: displayName
     customParameterValues: customParameterValues
     api: api
-    parameterValues: !empty(parameterValues) ? parameterValues : null
-    nonSecretParameterValues: !empty(nonSecretParameterValues) ? nonSecretParameterValues : null
-    testLinks: !empty(testLinks) ? testLinks : null
-    statuses: !empty(statuses) ? statuses : null
+    parameterValues: parameterValues
+    nonSecretParameterValues: nonSecretParameterValues
+    testLinks: testLinks
+    statuses: statuses
   }
 }
 

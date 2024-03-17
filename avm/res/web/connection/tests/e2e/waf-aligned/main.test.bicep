@@ -54,7 +54,7 @@ module testDeployment '../../../main.bicep' = [
       name: 'azuremonitor'
       location: resourceLocation
       api: {
-        id: '${subscription().id}/providers/Microsoft.Web/locations/westeurope/managedApis/azuremonitorlogs'
+        id: '${subscription().id}/providers/Microsoft.Web/locations/${resourceLocation}/managedApis/azuremonitorlogs'
       }
       lock: {
         kind: 'CanNotDelete'

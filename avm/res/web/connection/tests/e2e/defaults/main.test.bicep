@@ -44,6 +44,9 @@ module testDeployment '../../../main.bicep' = [
       displayName: 'azuremonitorlogs'
       name: 'azuremonitor'
       location: resourceLocation
+      api: {
+        id: '${subscription().id}/providers/Microsoft.Web/locations/${resourceLocation}/managedApis/azuremonitorlogs'
+      }
     }
   }
 ]
