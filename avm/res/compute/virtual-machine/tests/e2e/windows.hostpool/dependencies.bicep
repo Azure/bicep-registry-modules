@@ -51,14 +51,14 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
 }
 
 resource msiHPReadRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${hostPool.name}-${location}-${managedIdentity.id}-HostPool-Read-RoleAssignment')
+  name: guid('msi-${hostPool.name}-${location}-${managedIdentity.id}-HostPool-DesktopVirtualizationVirtualMachineContributor-RoleAssignment')
   scope: hostPool
   properties: {
     principalId: managedIdentity.properties.principalId
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
-      'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-    ) // Reader
+      'a959dbd1-f747-45e3-8ba6-dd80f235f97c'
+    ) // Desktop Virtualization Virtual Machine Contributor
     principalType: 'ServicePrincipal'
   }
 }
