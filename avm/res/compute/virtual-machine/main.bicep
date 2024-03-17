@@ -888,7 +888,7 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' =
       type: 'DSC'
       typeHandlerVersion: contains(extensionHostPoolRegistration, 'typeHandlerVersion')
         ? extensionHostPoolRegistration.typeHandlerVersion
-        : '2.73'
+        : '2.77'
       autoUpgradeMinorVersion: contains(extensionHostPoolRegistration, 'autoUpgradeMinorVersion')
         ? extensionHostPoolRegistration.autoUpgradeMinorVersion
         : true
