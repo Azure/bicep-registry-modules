@@ -50,7 +50,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
   }
 }
 
-resource msiHPReadRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+resource msiHPDesktopVirtualizationVirtualMachineContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('msi-${hostPool.name}-${location}-${managedIdentity.id}-HostPool-DesktopVirtualizationVirtualMachineContributor-RoleAssignment')
   scope: hostPool
   properties: {
