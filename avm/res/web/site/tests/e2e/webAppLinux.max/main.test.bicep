@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Web App, using large parameter set'
-metadata description = 'This instance deploys the module as Web App with most of its features enabled.'
+metadata description = 'This instance deploys the module asa Linux Web App with most of its features enabled.'
 
 // ========== //
 // Parameters //

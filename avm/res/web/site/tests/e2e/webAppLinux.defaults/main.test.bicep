@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Web App, using only defaults'
-metadata description = 'This instance deploys the module as Web App with the minimum set of required parameters.'
+metadata description = 'This instance deploys the module as a Linux Web App with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
