@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "13529659123294184484"
+      "version": "0.23.1.45101",
+      "templateHash": "2754684920923730452"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App.",
@@ -452,6 +452,7 @@
         "functionapp,linux",
         "functionapp,workflowapp",
         "functionapp,workflowapp,linux",
+        "app,linux",
         "app"
       ],
       "metadata": {
@@ -926,8 +927,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "1933221834367063613"
+              "version": "0.23.1.45101",
+              "templateHash": "4334032171755924527"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting.",
@@ -947,6 +948,7 @@
                 "functionapp,linux",
                 "functionapp,workflowapp",
                 "functionapp,workflowapp,linux",
+                "app,linux",
                 "app"
               ],
               "metadata": {
@@ -1076,8 +1078,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "9745043167341352785"
+              "version": "0.23.1.45101",
+              "templateHash": "5886208477690213782"
             },
             "name": "Site Auth Settings V2 Config",
             "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -1097,6 +1099,7 @@
                 "functionapp,linux",
                 "functionapp,workflowapp",
                 "functionapp,workflowapp,linux",
+                "app,linux",
                 "app"
               ],
               "metadata": {
@@ -1295,8 +1298,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "11139469624723604210"
+              "version": "0.23.1.45101",
+              "templateHash": "6133368152272841115"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -1748,6 +1751,7 @@
                 "functionapp,linux",
                 "functionapp,workflowapp",
                 "functionapp,workflowapp,linux",
+                "app,linux",
                 "app"
               ],
               "metadata": {
@@ -2200,8 +2204,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "10996922119937137063"
+                      "version": "0.23.1.45101",
+                      "templateHash": "11233818036718520916"
                     },
                     "name": "Site Slot App Settings",
                     "description": "This module deploys a Site Slot App Setting.",
@@ -2227,6 +2231,7 @@
                         "functionapp,linux",
                         "functionapp,workflowapp",
                         "functionapp,workflowapp,linux",
+                        "app,linux",
                         "app"
                       ],
                       "metadata": {
@@ -2369,8 +2374,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "17486786144236938726"
+                      "version": "0.23.1.45101",
+                      "templateHash": "16815763353158933409"
                     },
                     "name": "Site Slot Auth Settings V2 Config",
                     "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -2396,6 +2401,7 @@
                         "functionapp,linux",
                         "functionapp,workflowapp",
                         "functionapp,workflowapp,linux",
+                        "app,linux",
                         "app"
                       ],
                       "metadata": {
@@ -2484,8 +2490,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "14855550867941906241"
+                      "version": "0.23.1.45101",
+                      "templateHash": "11138000346009033876"
                     },
                     "name": "Web Site Slot Basic Publishing Credentials Policies",
                     "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy.",
@@ -2610,8 +2616,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "17251933783218724711"
+                      "version": "0.23.1.45101",
+                      "templateHash": "7671423353895459277"
                     },
                     "name": "Web/Function Apps Slot Hybrid Connection Relay",
                     "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay.",
@@ -3430,8 +3436,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "2268330248918966432"
+              "version": "0.23.1.45101",
+              "templateHash": "17957510531718825943"
             },
             "name": "Web Site Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Basic Publishing Credentials Policy.",
@@ -3546,8 +3552,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "15358142338977814861"
+              "version": "0.23.1.45101",
+              "templateHash": "13796829969167449371"
             },
             "name": "Web/Function Apps Hybrid Connection Relay",
             "description": "This module deploys a Site Hybrid Connection Namespace Relay.",

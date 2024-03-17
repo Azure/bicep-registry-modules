@@ -43,6 +43,8 @@ The following section provides usage examples for the module, which were used to
 - [WAF-aligned](#example-3-waf-aligned)
 - [Web App, using only defaults](#example-4-web-app-using-only-defaults)
 - [Web App, using large parameter set](#example-5-web-app-using-large-parameter-set)
+- [Web App, using only defaults](#example-6-web-app-using-only-defaults)
+- [Web App, using large parameter set](#example-7-web-app-using-large-parameter-set)
 
 ### Example 1: _Function App, using only defaults_
 
@@ -1138,6 +1140,508 @@ module site 'br/public:avm/res/web/site:<version>' = {
 </details>
 <p>
 
+### Example 6: _Web App, using only defaults_
+
+This instance deploys the module as Web App with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wswalmin'
+  params: {
+    // Required parameters
+    kind: 'app,linux'
+    name: 'wswalmin001'
+    serverFarmResourceId: '<serverFarmResourceId>'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "app,linux"
+    },
+    "name": {
+      "value": "wswalmin001"
+    },
+    "serverFarmResourceId": {
+      "value": "<serverFarmResourceId>"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Web App, using large parameter set_
+
+This instance deploys the module as Web App with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wswalmax'
+  params: {
+    // Required parameters
+    kind: 'app,linux'
+    name: 'wswalmax001'
+    serverFarmResourceId: '<serverFarmResourceId>'
+    // Non-required parameters
+    basicPublishingCredentialsPolicies: [
+      {
+        allow: false
+        name: 'ftp'
+      }
+      {
+        allow: false
+        name: 'scm'
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    httpsOnly: true
+    hybridConnectionRelays: [
+      {
+        resourceId: '<resourceId>'
+        sendKeyName: 'defaultSender'
+      }
+    ]
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    scmSiteAlsoStopped: true
+    siteConfig: {
+      alwaysOn: true
+      metadata: [
+        {
+          name: 'CURRENT_STACK'
+          value: 'dotnetcore'
+        }
+      ]
+    }
+    slots: [
+      {
+        basicPublishingCredentialsPolicies: [
+          {
+            allow: false
+            name: 'ftp'
+          }
+          {
+            allow: false
+            name: 'scm'
+          }
+        ]
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        hybridConnectionRelays: [
+          {
+            resourceId: '<resourceId>'
+            sendKeyName: 'defaultSender'
+          }
+        ]
+        name: 'slot1'
+        privateEndpoints: [
+          {
+            privateDnsZoneResourceIds: [
+              '<privateDNSZoneResourceId>'
+            ]
+            service: 'sites-slot1'
+            subnetResourceId: '<subnetResourceId>'
+            tags: {
+              Environment: 'Non-Prod'
+              'hidden-title': 'This is visible in the resource name'
+              Role: 'DeploymentValidation'
+            }
+          }
+        ]
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        siteConfig: {
+          alwaysOn: true
+          metadata: [
+            {
+              name: 'CURRENT_STACK'
+              value: 'dotnetcore'
+            }
+          ]
+        }
+        storageAccountResourceId: '<storageAccountResourceId>'
+        storageAccountUseIdentityAuthentication: true
+      }
+      {
+        basicPublishingCredentialsPolicies: [
+          {
+            name: 'ftp'
+          }
+          {
+            name: 'scm'
+          }
+        ]
+        name: 'slot2'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        storageAccountUseIdentityAuthentication: true
+      }
+    ]
+    storageAccountResourceId: '<storageAccountResourceId>'
+    storageAccountUseIdentityAuthentication: true
+    vnetContentShareEnabled: true
+    vnetImagePullEnabled: true
+    vnetRouteAllEnabled: true
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "app,linux"
+    },
+    "name": {
+      "value": "wswalmax001"
+    },
+    "serverFarmResourceId": {
+      "value": "<serverFarmResourceId>"
+    },
+    // Non-required parameters
+    "basicPublishingCredentialsPolicies": {
+      "value": [
+        {
+          "allow": false,
+          "name": "ftp"
+        },
+        {
+          "allow": false,
+          "name": "scm"
+        }
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "httpsOnly": {
+      "value": true
+    },
+    "hybridConnectionRelays": {
+      "value": [
+        {
+          "resourceId": "<resourceId>",
+          "sendKeyName": "defaultSender"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "scmSiteAlsoStopped": {
+      "value": true
+    },
+    "siteConfig": {
+      "value": {
+        "alwaysOn": true,
+        "metadata": [
+          {
+            "name": "CURRENT_STACK",
+            "value": "dotnetcore"
+          }
+        ]
+      }
+    },
+    "slots": {
+      "value": [
+        {
+          "basicPublishingCredentialsPolicies": [
+            {
+              "allow": false,
+              "name": "ftp"
+            },
+            {
+              "allow": false,
+              "name": "scm"
+            }
+          ],
+          "diagnosticSettings": [
+            {
+              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+              "eventHubName": "<eventHubName>",
+              "name": "customSetting",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ],
+          "hybridConnectionRelays": [
+            {
+              "resourceId": "<resourceId>",
+              "sendKeyName": "defaultSender"
+            }
+          ],
+          "name": "slot1",
+          "privateEndpoints": [
+            {
+              "privateDnsZoneResourceIds": [
+                "<privateDNSZoneResourceId>"
+              ],
+              "service": "sites-slot1",
+              "subnetResourceId": "<subnetResourceId>",
+              "tags": {
+                "Environment": "Non-Prod",
+                "hidden-title": "This is visible in the resource name",
+                "Role": "DeploymentValidation"
+              }
+            }
+          ],
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "siteConfig": {
+            "alwaysOn": true,
+            "metadata": [
+              {
+                "name": "CURRENT_STACK",
+                "value": "dotnetcore"
+              }
+            ]
+          },
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "storageAccountUseIdentityAuthentication": true
+        },
+        {
+          "basicPublishingCredentialsPolicies": [
+            {
+              "name": "ftp"
+            },
+            {
+              "name": "scm"
+            }
+          ],
+          "name": "slot2",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "storageAccountUseIdentityAuthentication": true
+        }
+      ]
+    },
+    "storageAccountResourceId": {
+      "value": "<storageAccountResourceId>"
+    },
+    "storageAccountUseIdentityAuthentication": {
+      "value": true
+    },
+    "vnetContentShareEnabled": {
+      "value": true
+    },
+    "vnetImagePullEnabled": {
+      "value": true
+    },
+    "vnetRouteAllEnabled": {
+      "value": true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
 
 ## Parameters
 
@@ -1203,6 +1707,7 @@ Type of site to deploy.
   ```Bicep
   [
     'app'
+    'app,linux'
     'functionapp'
     'functionapp,linux'
     'functionapp,workflowapp'
