@@ -660,6 +660,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
     // Non-required parameters
     location: '<location>'
     siteConfig: {
+      alwaysOn: true
       healthCheckPath: '/healthz'
     }
   }
@@ -695,6 +696,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
     },
     "siteConfig": {
       "value": {
+        "alwaysOn": true,
         "healthCheckPath": "/healthz"
       }
     }
