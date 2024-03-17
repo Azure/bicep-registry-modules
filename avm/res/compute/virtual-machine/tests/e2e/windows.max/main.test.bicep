@@ -49,6 +49,8 @@ module nestedDependencies 'dependencies.bicep' = {
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
     storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
     proximityPlacementGroupName: 'dep-${namePrefix}-ppg-${serviceShort}'
+    hostPoolName: 'dep${namePrefix}-hp-${serviceShort}01'
+    getRegistrationTokenDeploymentScriptName: 'dep-${namePrefix}-rtds-${serviceShort}'
   }
 }
 
@@ -304,6 +306,16 @@ module testDeployment '../../../main.bicep' = [
           Role: 'DeploymentValidation'
         }
       }
+      extensionHostPoolRegistration: {
+        enabled: true
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
+      hostPoolName: nestedDependencies.outputs.hostPoolName
+      registrationInfoToken: nestedDependencies.outputs.registrationInfoToken
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'

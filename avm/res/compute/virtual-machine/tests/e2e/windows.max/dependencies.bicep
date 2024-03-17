@@ -19,11 +19,17 @@ param keyVaultName string
 @description('Required. The name of the Storage Account to create.')
 param storageAccountName string
 
+@description('Required. The name of the Host pool to create.')
+param hostPoolName string
+
 @description('Required. The name of the Deployment Script used to upload data to the Storage Account.')
 param storageUploadDeploymentScriptName string
 
 @description('Required. The name of the Proximity Placement Group to create.')
 param proximityPlacementGroupName string
+
+@description('Required. The name of the Deployment Script used to upload data to the Storage Account.')
+param getRegistrationTokenDeploymentScriptName string
 
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
@@ -284,6 +290,49 @@ resource proximityPlacementGroup 'Microsoft.Compute/proximityPlacementGroups@202
   location: location
 }
 
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
+  name: hostPoolName
+  location: location
+  properties: {
+    hostPoolType: 'Personal'
+    loadBalancerType: 'BreadthFirst'
+    preferredAppGroupType: 'Desktop'
+  }
+}
+
+resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  name: getRegistrationTokenDeploymentScriptName
+  location: location
+  kind: 'AzurePowerShell'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
+  properties: {
+    azPowerShellVersion: '10.0'
+    arguments: '-HostPoolName "${hostPool.name}" -HostPoolResourceGroupName "${resourceGroup().name}" -SubscriptionId "${subscription().subscriptionId}"'
+    scriptContent: '''
+      param($HostPoolName, $HostPoolResourceGroupName, $SubscriptionId)
+
+      $parameters = @{
+          HostPoolName      = $HostPoolName
+          ResourceGroupName = $HostPoolResourceGroupName
+          SubscriptionId    = $SubscriptionId
+          ExpirationTime    = $((Get-Date).ToUniversalTime().AddHours(24).ToString('yyyy-MM-ddTHH:mm:ss.fffffffZ'))
+      }
+
+      $registrationKey = New-AzWvdRegistrationInfo @parameters
+      $registrationInfoToken = $registrationKey.Token
+
+      $DeploymentScriptOutputs = @{}
+      $DeploymentScriptOutputs['registrationInfoToken'] = $registrationInfoToken
+    '''
+    retentionInterval: 'PT1H'
+  }
+}
+
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
@@ -328,3 +377,9 @@ output storageAccountCSEFileUrl string = '${storageAccount.properties.primaryEnd
 
 @description('The resource ID of the created Proximity Placement Group.')
 output proximityPlacementGroupResourceId string = proximityPlacementGroup.id
+
+@description('The name of the created Host pool.')
+output hostPoolName string = hostPool.name
+
+@description('The registration token of the created Host pool.')
+output registrationInfoToken string = deploymentScript.properties.outputs.registrationInfoToken

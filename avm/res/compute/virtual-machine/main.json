@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "7387322211349987792"
+      "templateHash": "8442375074461194977"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -503,7 +503,14 @@
         "enabled": false
       },
       "metadata": {
-        "description": "Optional. The configuration for the [Guest Configuration] extension. Must at least contain the [\"enabled\": true] property to be executed."
+        "description": "Optional. The configuration for the [Guest Configuration] extension. Must at least contain the [\"enabled\": true] property to be executed. Needs a managed identy."
+      }
+    },
+    "guestConfiguration": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The guest configuration for the virtual machine. Needs the Guest Configuration extension to be enabled."
       }
     },
     "extensionCustomScriptProtectedSetting": {
@@ -845,6 +852,19 @@
       "subscriptionId": "[split(if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), parameters('extensionMonitoringAgentConfig').monitoringWorkspaceId, '//'), '/')[2]]",
       "resourceGroup": "[split(if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), parameters('extensionMonitoringAgentConfig').monitoringWorkspaceId, '////'), '/')[4]]",
       "name": "[last(split(if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), parameters('extensionMonitoringAgentConfig').monitoringWorkspaceId, 'law'), '/'))]"
+    },
+    "AzureWindowsBaseline": {
+      "type": "Microsoft.GuestConfiguration/guestConfigurationAssignments",
+      "apiVersion": "2020-06-25",
+      "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
+      "name": "AzureWindowsBaseline",
+      "location": "[parameters('location')]",
+      "properties": {
+        "guestConfiguration": "[parameters('guestConfiguration')]"
+      },
+      "dependsOn": [
+        "vm"
+      ]
     },
     "vm_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -2390,7 +2410,7 @@
             "value": "Microsoft.Azure.ActiveDirectory"
           },
           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'AADLoginForWindows'), createObject('value', 'AADSSHLoginforLinux'))]",
-          "typeHandlerVersion": "[if(contains(parameters('extensionAadJoinConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionAadJoinConfig').typeHandlerVersion), createObject('value', '2.0'))]",
+          "typeHandlerVersion": "[if(contains(parameters('extensionAadJoinConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionAadJoinConfig').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '2.0'), createObject('value', '1.0')))]",
           "autoUpgradeMinorVersion": "[if(contains(parameters('extensionAadJoinConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionAadJoinConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionAadJoinConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionAadJoinConfig').enableAutomaticUpgrade), createObject('value', false()))]",
           "settings": "[if(contains(parameters('extensionAadJoinConfig'), 'settings'), createObject('value', parameters('extensionAadJoinConfig').settings), createObject('value', createObject()))]",
@@ -4615,16 +4635,14 @@
           "virtualMachineName": {
             "value": "[parameters('name')]"
           },
-          "name": {
-            "value": "GuestConfiguration"
-          },
+          "name": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'AzurePolicyforWindows'), createObject('value', 'AzurePolicyforLinux'))]",
           "location": {
             "value": "[parameters('location')]"
           },
           "publisher": {
             "value": "Microsoft.GuestConfiguration"
           },
-          "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'AzurePolicyforWindows'), createObject('value', 'AzurePolicyforLinux'))]",
+          "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'ConfigurationforWindows'), createObject('value', 'ConfigurationForLinux'))]",
           "typeHandlerVersion": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'typeHandlerVersion'), createObject('value', parameters('extensionGuestConfigurationExtension').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '1.0'), createObject('value', '1.0')))]",
           "autoUpgradeMinorVersion": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionGuestConfigurationExtension').autoUpgradeMinorVersion), createObject('value', true()))]",
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionGuestConfigurationExtension').enableAutomaticUpgrade), createObject('value', true()))]",
