@@ -46,8 +46,8 @@ param networkRuleSets object = {}
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 @description('Optional. The hybrid connections to create in the relay namespace.')
 param hybridConnections array = []
@@ -55,30 +55,50 @@ param hybridConnections array = []
 @description('Optional. The wcf relays to create in the relay namespace.')
 param wcfRelays array = []
 
-var enableReferencedModulesTelemetry = false
-
 var builtInRoleNames = {
-  'Azure Relay Listener': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '26e0b698-aa6d-4085-9386-aadae190014d')
-  'Azure Relay Owner': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2787bf04-f1f5-4bfe-8383-c8a24483ee38')
-  'Azure Relay Sender': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '26baccc8-eea7-41f1-98f4-1762cc7f685d')
+  'Azure Relay Listener': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '26e0b698-aa6d-4085-9386-aadae190014d'
+  )
+  'Azure Relay Owner': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '2787bf04-f1f5-4bfe-8383-c8a24483ee38'
+  )
+  'Azure Relay Sender': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '26baccc8-eea7-41f1-98f4-1762cc7f685d'
+  )
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.relay-namespace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
+        }
+      }
     }
   }
-}
 
 resource namespace 'Microsoft.Relay/namespaces@2021-11-01' = {
   name: name
@@ -90,167 +110,198 @@ resource namespace 'Microsoft.Relay/namespaces@2021-11-01' = {
   properties: {}
 }
 
-module namespace_authorizationRules 'authorization-rule/main.bicep' = [for (authorizationRule, index) in authorizationRules: {
-  name: '${uniqueString(deployment().name, location)}-AuthorizationRules-${index}'
-  params: {
-    namespaceName: namespace.name
-    name: authorizationRule.name
-    rights: contains(authorizationRule, 'rights') ? authorizationRule.rights : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+module namespace_authorizationRules 'authorization-rule/main.bicep' = [
+  for (authorizationRule, index) in authorizationRules: {
+    name: '${uniqueString(deployment().name, location)}-AuthorizationRules-${index}'
+    params: {
+      namespaceName: namespace.name
+      name: authorizationRule.name
+      rights: contains(authorizationRule, 'rights') ? authorizationRule.rights : []
+    }
   }
-}]
+]
 
-module namespace_networkRuleSet 'network-rule-set/main.bicep' = if (!empty(networkRuleSets) || !empty(privateEndpoints)) {
-  name: '${uniqueString(deployment().name, location)}-NetworkRuleSet'
-  params: {
-    namespaceName: namespace.name
-    publicNetworkAccess: contains(networkRuleSets, 'publicNetworkAccess') ? networkRuleSets.publicNetworkAccess : (!empty(privateEndpoints) && empty(networkRuleSets) ? 'Disabled' : 'Enabled')
-    defaultAction: contains(networkRuleSets, 'defaultAction') ? networkRuleSets.defaultAction : 'Allow'
-    ipRules: contains(networkRuleSets, 'ipRules') ? networkRuleSets.ipRules : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+module namespace_networkRuleSet 'network-rule-set/main.bicep' =
+  if (!empty(networkRuleSets) || !empty(privateEndpoints)) {
+    name: '${uniqueString(deployment().name, location)}-NetworkRuleSet'
+    params: {
+      namespaceName: namespace.name
+      publicNetworkAccess: contains(networkRuleSets, 'publicNetworkAccess')
+        ? networkRuleSets.publicNetworkAccess
+        : (!empty(privateEndpoints) && empty(networkRuleSets) ? 'Disabled' : 'Enabled')
+      defaultAction: contains(networkRuleSets, 'defaultAction') ? networkRuleSets.defaultAction : 'Allow'
+      ipRules: contains(networkRuleSets, 'ipRules') ? networkRuleSets.ipRules : []
+    }
   }
-}
 
-module namespace_hybridConnections 'hybrid-connection/main.bicep' = [for (hybridConnection, index) in hybridConnections: {
-  name: '${uniqueString(deployment().name, location)}-HybridConnection-${index}'
-  params: {
-    namespaceName: namespace.name
-    name: hybridConnection.name
-    authorizationRules: contains(hybridConnection, 'authorizationRules') ? hybridConnection.authorizationRules : [
-      {
-        name: 'RootManageSharedAccessKey'
-        rights: [
-          'Listen'
-          'Manage'
-          'Send'
-        ]
-      }
-      {
-        name: 'defaultListener'
-        rights: [
-          'Listen'
-        ]
-      }
-      {
-        name: 'defaultSender'
-        rights: [
-          'Send'
-        ]
-      }
-    ]
-    requiresClientAuthorization: contains(hybridConnection, 'requiresClientAuthorization') ? hybridConnection.requiresClientAuthorization : true
-    userMetadata: hybridConnection.userMetadata
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+module namespace_hybridConnections 'hybrid-connection/main.bicep' = [
+  for (hybridConnection, index) in hybridConnections: {
+    name: '${uniqueString(deployment().name, location)}-HybridConnection-${index}'
+    params: {
+      namespaceName: namespace.name
+      name: hybridConnection.name
+      authorizationRules: contains(hybridConnection, 'authorizationRules')
+        ? hybridConnection.authorizationRules
+        : [
+            {
+              name: 'RootManageSharedAccessKey'
+              rights: [
+                'Listen'
+                'Manage'
+                'Send'
+              ]
+            }
+            {
+              name: 'defaultListener'
+              rights: [
+                'Listen'
+              ]
+            }
+            {
+              name: 'defaultSender'
+              rights: [
+                'Send'
+              ]
+            }
+          ]
+      requiresClientAuthorization: contains(hybridConnection, 'requiresClientAuthorization')
+        ? hybridConnection.requiresClientAuthorization
+        : true
+      userMetadata: hybridConnection.userMetadata
+    }
   }
-}]
+]
 
-module namespace_wcfRelays 'wcf-relay/main.bicep' = [for (wcfRelay, index) in wcfRelays: {
-  name: '${uniqueString(deployment().name, location)}-WcfRelay-${index}'
-  params: {
-    namespaceName: namespace.name
-    name: wcfRelay.name
-    authorizationRules: contains(wcfRelay, 'authorizationRules') ? wcfRelay.authorizationRules : [
-      {
-        name: 'RootManageSharedAccessKey'
-        rights: [
-          'Listen'
-          'Manage'
-          'Send'
-        ]
-      }
-      {
-        name: 'defaultListener'
-        rights: [
-          'Listen'
-        ]
-      }
-      {
-        name: 'defaultSender'
-        rights: [
-          'Send'
-        ]
-      }
-    ]
-    relayType: wcfRelay.relayType
-    requiresClientAuthorization: contains(wcfRelay, 'requiresClientAuthorization') ? wcfRelay.requiresClientAuthorization : true
-    requiresTransportSecurity: contains(wcfRelay, 'requiresTransportSecurity') ? wcfRelay.requiresTransportSecurity : true
-    userMetadata: contains(wcfRelay, 'userMetadata') ? wcfRelay.userMetadata : null
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+module namespace_wcfRelays 'wcf-relay/main.bicep' = [
+  for (wcfRelay, index) in wcfRelays: {
+    name: '${uniqueString(deployment().name, location)}-WcfRelay-${index}'
+    params: {
+      namespaceName: namespace.name
+      name: wcfRelay.name
+      authorizationRules: contains(wcfRelay, 'authorizationRules')
+        ? wcfRelay.authorizationRules
+        : [
+            {
+              name: 'RootManageSharedAccessKey'
+              rights: [
+                'Listen'
+                'Manage'
+                'Send'
+              ]
+            }
+            {
+              name: 'defaultListener'
+              rights: [
+                'Listen'
+              ]
+            }
+            {
+              name: 'defaultSender'
+              rights: [
+                'Send'
+              ]
+            }
+          ]
+      relayType: wcfRelay.relayType
+      requiresClientAuthorization: contains(wcfRelay, 'requiresClientAuthorization')
+        ? wcfRelay.requiresClientAuthorization
+        : true
+      requiresTransportSecurity: contains(wcfRelay, 'requiresTransportSecurity')
+        ? wcfRelay.requiresTransportSecurity
+        : true
+      userMetadata: contains(wcfRelay, 'userMetadata') ? wcfRelay.userMetadata : null
+    }
   }
-}]
+]
 
-resource namespace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource namespace_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: namespace
   }
-  scope: namespace
-}
 
-resource namespace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    metrics: diagnosticSetting.?metricCategories ?? [
-      {
-        category: 'AllMetrics'
-        timeGrain: null
-        enabled: true
-      }
-    ]
-    logs: diagnosticSetting.?logCategoriesAndGroups ?? [
-      {
-        categoryGroup: 'AllLogs'
-        enabled: true
-      }
-    ]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+resource namespace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: diagnosticSetting.?metricCategories ?? [
+        {
+          category: 'AllMetrics'
+          timeGrain: null
+          enabled: true
+        }
+      ]
+      logs: diagnosticSetting.?logCategoriesAndGroups ?? [
+        {
+          categoryGroup: 'AllLogs'
+          enabled: true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: namespace
   }
-  scope: namespace
-}]
+]
 
-module namespace_privateEndpoints '../../network/private-endpoint/main.bicep' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-namespace-PrivateEndpoint-${index}'
-  params: {
-    groupIds: [
-      privateEndpoint.?service ?? 'namespace'
-    ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(namespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
-    serviceResourceId: namespace.id
-    subnetResourceId: privateEndpoint.subnetResourceId
-    enableDefaultTelemetry: privateEndpoint.?enableDefaultTelemetry ?? enableReferencedModulesTelemetry
-    location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: privateEndpoint.?lock ?? lock
-    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
-    roleAssignments: privateEndpoint.?roleAssignments
-    tags: privateEndpoint.?tags ?? tags
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
-    customDnsConfigs: privateEndpoint.?customDnsConfigs
-    ipConfigurations: privateEndpoint.?ipConfigurations
-    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
-    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+module namespace_privateEndpoints '../../network/private-endpoint/main.bicep' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    name: '${uniqueString(deployment().name, location)}-namespace-PrivateEndpoint-${index}'
+    params: {
+      groupIds: [
+        privateEndpoint.?service ?? 'namespace'
+      ]
+      name: privateEndpoint.?name ?? 'pep-${last(split(namespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
+      serviceResourceId: namespace.id
+      subnetResourceId: privateEndpoint.subnetResourceId
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
   }
-}]
+]
 
-resource namespace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(namespace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+resource namespace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(namespace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: namespace
   }
-  scope: namespace
-}]
+]
 
 @description('The resource ID of the deployed relay namespace.')
 output resourceId string = namespace.id

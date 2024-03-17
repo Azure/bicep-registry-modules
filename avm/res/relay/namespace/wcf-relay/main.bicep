@@ -58,32 +58,30 @@ param lock lockType
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
-var enableReferencedModulesTelemetry = false
-
 var builtInRoleNames = {
-  'Azure Relay Listener': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '26e0b698-aa6d-4085-9386-aadae190014d')
-  'Azure Relay Owner': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2787bf04-f1f5-4bfe-8383-c8a24483ee38')
-  'Azure Relay Sender': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '26baccc8-eea7-41f1-98f4-1762cc7f685d')
+  'Azure Relay Listener': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '26e0b698-aa6d-4085-9386-aadae190014d'
+  )
+  'Azure Relay Owner': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '2787bf04-f1f5-4bfe-8383-c8a24483ee38'
+  )
+  'Azure Relay Sender': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '26baccc8-eea7-41f1-98f4-1762cc7f685d'
+  )
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
-}
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
 resource namespace 'Microsoft.Relay/namespaces@2021-11-01' existing = {
@@ -101,39 +99,49 @@ resource wcfRelay 'Microsoft.Relay/namespaces/wcfRelays@2021-11-01' = {
   }
 }
 
-module wcfRelay_authorizationRules 'authorization-rule/main.bicep' = [for (authorizationRule, index) in authorizationRules: {
-  name: '${deployment().name}-AuthorizationRule-${index}'
-  params: {
-    namespaceName: namespaceName
-    wcfRelayName: wcfRelay.name
-    name: authorizationRule.name
-    rights: contains(authorizationRule, 'rights') ? authorizationRule.rights : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+module wcfRelay_authorizationRules 'authorization-rule/main.bicep' = [
+  for (authorizationRule, index) in authorizationRules: {
+    name: '${deployment().name}-AuthorizationRule-${index}'
+    params: {
+      namespaceName: namespaceName
+      wcfRelayName: wcfRelay.name
+      name: authorizationRule.name
+      rights: contains(authorizationRule, 'rights') ? authorizationRule.rights : []
+    }
   }
-}]
+]
 
-resource wcfRelay_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource wcfRelay_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: wcfRelay
   }
-  scope: wcfRelay
-}
 
-resource wcfRelay_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(wcfRelay.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+resource wcfRelay_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(wcfRelay.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: wcfRelay
   }
-  scope: wcfRelay
-}]
+]
 
 @description('The name of the deployed wcf relay.')
 output name string = wcfRelay.name
