@@ -50,6 +50,19 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
   }
 }
 
+resource msiHPReadRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${hostPool.name}-${location}-${managedIdentity.id}-HostPool-Read-RoleAssignment')
+  scope: hostPool
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+    ) // Reader
+    principalType: 'ServicePrincipal'
+  }
+}
+
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: getRegistrationTokenDeploymentScriptName
   location: location
@@ -60,6 +73,9 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
       '${managedIdentity.id}': {}
     }
   }
+  dependsOn: [
+    msiHPReadRoleAssignment
+  ]
   properties: {
     azPowerShellVersion: '10.0'
     arguments: '-HostPoolName "${hostPool.name}" -HostPoolResourceGroupName "${resourceGroup().name}" -SubscriptionId "${subscription().subscriptionId}"'
