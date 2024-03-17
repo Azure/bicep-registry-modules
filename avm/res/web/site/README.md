@@ -540,6 +540,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
     scmSiteAlsoStopped: true
     siteConfig: {
       alwaysOn: true
+      healthCheckPath: '/healthz'
       metadata: [
         {
           name: 'CURRENT_STACK'
@@ -614,6 +615,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "siteConfig": {
       "value": {
         "alwaysOn": true,
+        "healthCheckPath": "/healthz",
         "metadata": [
           {
             "name": "CURRENT_STACK",
@@ -657,7 +659,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
     location: '<location>'
+    siteConfig: {
+      healthCheckPath: '/healthz'
+    }
   }
+
 }
 ```
 
@@ -686,6 +692,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "siteConfig": {
+      "value": {
+        "healthCheckPath": "/healthz"
+      }
     }
   }
 }
@@ -1142,7 +1153,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 
 ### Example 6: _Web App, using only defaults_
 
-This instance deploys the module as Web App with the minimum set of required parameters.
+This instance deploys the module as a Linux Web App with the minimum set of required parameters.
 
 
 <details>
@@ -1198,7 +1209,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 
 ### Example 7: _Web App, using large parameter set_
 
-This instance deploys the module as Web App with most of its features enabled.
+This instance deploys the module asa Linux Web App with most of its features enabled.
 
 
 <details>
