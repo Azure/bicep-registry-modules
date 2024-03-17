@@ -20,7 +20,7 @@ on:
         type: string
         description: "RegEx which workflows are excluded"
         required: false
-        default: "^$"
+        default: "avm\\\\res\\\\web\\.(?:site|hostingenvironment|serverfarm)"
 
 jobs:
   toggle-avm-workflows:
