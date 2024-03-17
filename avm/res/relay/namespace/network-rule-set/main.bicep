@@ -22,7 +22,7 @@ param publicNetworkAccess string = 'Enabled'
 param defaultAction string = 'Allow'
 
 @description('Optional. List of IpRules. It will not be set if publicNetworkAccess is "Disabled". Otherwise, when used, defaultAction will be set to "Deny".')
-param ipRules array = []
+param ipRules array?
 
 resource namespace 'Microsoft.Relay/namespaces@2021-11-01' existing = {
   name: namespaceName

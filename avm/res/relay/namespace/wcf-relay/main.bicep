@@ -26,7 +26,7 @@ param requiresClientAuthorization bool = true
 param requiresTransportSecurity bool = true
 
 @description('Optional. User-defined string data for the WCF Relay.')
-param userMetadata string = ''
+param userMetadata string?
 
 @description('Optional. Authorization Rules for the WCF Relay.')
 param authorizationRules array = [
@@ -95,7 +95,7 @@ resource wcfRelay 'Microsoft.Relay/namespaces/wcfRelays@2021-11-01' = {
     relayType: relayType
     requiresClientAuthorization: requiresClientAuthorization
     requiresTransportSecurity: requiresTransportSecurity
-    userMetadata: !empty(userMetadata) ? userMetadata : null
+    userMetadata: userMetadata
   }
 }
 
@@ -106,7 +106,7 @@ module wcfRelay_authorizationRules 'authorization-rule/main.bicep' = [
       namespaceName: namespaceName
       wcfRelayName: wcfRelay.name
       name: authorizationRule.name
-      rights: contains(authorizationRule, 'rights') ? authorizationRule.rights : []
+      rights: authorizationRule.?rights
     }
   }
 ]

@@ -94,7 +94,7 @@ module hybridConnection_authorizationRules 'authorization-rule/main.bicep' = [
       namespaceName: namespaceName
       hybridConnectionName: hybridConnection.name
       name: authorizationRule.name
-      rights: contains(authorizationRule, 'rights') ? authorizationRule.rights : []
+      rights: authorizationRule.?rights
     }
   }
 ]
