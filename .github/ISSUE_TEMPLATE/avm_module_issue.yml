@@ -153,7 +153,7 @@ body:
         - "avm/res/power-bi-dedicated/capacity"
         - "avm/res/purview/account"
         # - "avm/res/recovery-services/vault"
-        # - "avm/res/relay/namespace"
+        - "avm/res/relay/namespace"
         - "avm/res/resource-graph/query"
         - "avm/res/resources/deployment-script"
         - "avm/res/resources/resource-group"
