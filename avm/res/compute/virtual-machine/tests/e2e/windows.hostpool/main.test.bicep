@@ -59,6 +59,9 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       name: '${namePrefix}${serviceShort}'
       adminUsername: 'localAdminUser'
+      managedIdentities: {
+        systemAssigned: true
+      }
       imageReference: {
         publisher: 'MicrosoftWindowsServer'
         offer: 'WindowsServer'

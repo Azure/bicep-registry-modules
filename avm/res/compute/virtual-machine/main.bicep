@@ -179,7 +179,7 @@ param extensionNvidiaGpuDriverWindows object = {
   enabled: false
 }
 
-@description('Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed.')
+@description('Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.')
 param extensionHostPoolRegistration object = {
   enabled: false
 }
