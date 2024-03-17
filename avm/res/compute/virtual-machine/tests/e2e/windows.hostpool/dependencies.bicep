@@ -74,7 +74,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     }
   }
   dependsOn: [
-    msiHPReadRoleAssignment
+    msiHPDesktopVirtualizationVirtualMachineContributorRoleAssignment
   ]
   properties: {
     azPowerShellVersion: '10.0'
