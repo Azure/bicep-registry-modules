@@ -6,7 +6,7 @@ param (
 Describe "Bicep Landing Zone (Sub) Vending Tests" {
 
   BeforeAll {
-    $subscriptionId = $TestInputData.DeploymentOutputs.createdsubscriptionId.Value
+    $subscriptionId = $TestInputData.DeploymentOutputs.createdSubId.Value
     $namePrefix = $TestInputData.DeploymentOutputs.namePrefix.Value
     $serviceShort = $TestInputData.DeploymentOutputs.serviceShort.Value
     $location = $TestInputData.DeploymentOutputs.resourceLocation.Value
