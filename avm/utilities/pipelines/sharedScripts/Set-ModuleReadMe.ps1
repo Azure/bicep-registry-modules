@@ -1688,7 +1688,7 @@ function Set-ModuleReadMe {
     . (Join-Path $PSScriptRoot 'helper' 'Get-SpecsAlignedResourceName.ps1')
     . (Join-Path $PSScriptRoot 'helper' 'ConvertTo-OrderedHashtable.ps1')
     . (Join-Path $PSScriptRoot 'Get-BRMRepositoryName.ps1')
-    . (Join-Path $PSScriptRoot  'helper' 'Get-CrossReferencedModuleList.ps1')
+    . (Join-Path $PSScriptRoot 'helper' 'Get-CrossReferencedModuleList.ps1')
 
     # Check template & make full path
     $TemplateFilePath = Resolve-Path -Path $TemplateFilePath -ErrorAction Stop
