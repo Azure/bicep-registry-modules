@@ -67,3 +67,6 @@ module testDeployment '../../../main.bicep' = {
 
 output createdSubId string = testDeployment.outputs.subscriptionId
 output hubNetworkResourceId string = nestedDependencies.outputs.hubNetworkResourceId
+output namePrefix string = namePrefix
+output serviceShort string = serviceShort
+output resourceLocation string = resourceLocation

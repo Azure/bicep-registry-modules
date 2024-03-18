@@ -23,7 +23,6 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 module testDeployment '../../../main.bicep' = {
-  //name: 'sub-blzv-tests-${namePrefix}-${serviceShort}-add-vwan-spoke'
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     subscriptionAliasEnabled: true
@@ -67,4 +66,7 @@ module testDeployment '../../../main.bicep' = {
 }
 
 output createdSubId string = testDeployment.outputs.subscriptionId
-output hubNetworkResourceId string = nestedDependencies.outputs.hubNetworkResourceId
+output virtualHubResourceId string = nestedDependencies.outputs.virtualHubResourceId
+output namePrefix string = namePrefix
+output serviceShort string = serviceShort
+output resourceLocation string = resourceLocation
