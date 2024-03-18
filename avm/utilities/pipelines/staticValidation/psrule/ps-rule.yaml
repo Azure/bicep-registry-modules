@@ -16,7 +16,7 @@ binding:
 # Require minimum versions of modules.
 requires:
   PSRule: "@pre >=2.9.0"
-  PSRule.Rules.Azure: ">=1.29.0"
+  PSRule.Rules.Azure: "@pre >=1.29.0"
 
 # Use PSRule for Azure.
 include:
@@ -68,7 +68,7 @@ configuration:
       "tokenname",
       "ssoClientSecretKeyVaultPath",
       "ssoSecretType",
-      "tokenValidityLength"
+      "tokenValidityLength",
     ]
 
 rule:
