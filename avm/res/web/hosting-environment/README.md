@@ -43,10 +43,10 @@ This instance deploys the module with a base set of parameters. Note it does inc
 
 ```bicep
 module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-whedef'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-whemin'
   params: {
     // Required parameters
-    name: 'whedef001'
+    name: 'whemin001'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     kind: 'ASEv3'
@@ -69,7 +69,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
   "parameters": {
     // Required parameters
     "name": {
-      "value": "whedef001"
+      "value": "whemin001"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
