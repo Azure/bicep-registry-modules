@@ -77,7 +77,7 @@ module testDeployment '../../../main.bicep' = {
     deploymentScriptVirtualNetworkName: 'vnet-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
     deploymentScriptStorageAccountName: 'stgds${namePrefix}${serviceShort}'
     virtualNetworkAddressSpace: [
-      '10.100.0.0/16'
+      '10.300.0.0/16'
     ]
     virtualNetworkResourceGroupLockEnabled: false
     virtualNetworkPeeringEnabled: true
@@ -92,8 +92,8 @@ module testDeployment '../../../main.bicep' = {
       }
     ]
     resourceProviders: {
-      'Microsoft.HybridCompute': [ 'ArcServerPrivateLinkPreview' ]
-      'Microsoft.AVS': [ 'AzureServicesVm' ]
+      'Microsoft.HybridCompute': ['ArcServerPrivateLinkPreview']
+      'Microsoft.AVS': ['AzureServicesVm']
     }
   }
 }
