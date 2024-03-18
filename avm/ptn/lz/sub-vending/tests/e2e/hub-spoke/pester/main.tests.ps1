@@ -74,24 +74,6 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
   }
 
   Context "Role-Based Access Control Assignment Tests" {
-    It "Should Have a Role Assignment for an known AAD Group with the Reader role directly upon the Subscription" {
-      $iterationCount = 0
-      do {
-        $roleAssignment = Get-AzRoleAssignment -Scope "/subscriptions/$subId" -RoleDefinitionName "Reader" -ObjectId "7eca0dca-6701-46f1-b7b6-8b424dab50b3" -ErrorAction SilentlyContinue
-        if ($null -eq $roleAssignment) {
-          Write-Host "Waiting for Subscription Role Assignments to be eventually consistent... Iteration: $($iterationCount)" -ForegroundColor Yellow
-          Start-Sleep -Seconds 40
-          $iterationCount++
-        }
-      } until (
-        $roleAssignment -ne $null -or $iterationCount -ge 10
-      )
-
-      $roleAssignment.ObjectId | Should -Be "7eca0dca-6701-46f1-b7b6-8b424dab50b3"
-      $roleAssignment.RoleDefinitionName | Should -Be "Reader"
-      $roleAssignment.scope | Should -Be "/subscriptions/$subId"
-    }
-
     It "Should Have a Role Assignment for an known AAD Group with the Network Contributor role directly upon the Resource Group" {
       $iterationCount = 0
       do {

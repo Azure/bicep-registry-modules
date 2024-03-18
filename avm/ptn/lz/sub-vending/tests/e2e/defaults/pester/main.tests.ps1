@@ -63,9 +63,6 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
       $iterationCount = 0
       do {
         $roleAssignment = Get-AzRoleAssignment -Scope "/subscriptions/$subscriptionId" -RoleDefinitionName "Reader" -ObjectId "7eca0dca-6701-46f1-b7b6-8b424dab50b3" -ErrorAction SilentlyContinue
-        $roleAssignment2 = Get-AzRoleAssignment -Scope "/subscriptions/b5667139-d633-4462-b765-c1e81a905f06" | where { $_.roleDefinitionName -eq "Reader" -and $_.objectId -eq "7eca0dca-6701-46f1-b7b6-8b424dab50b3" }
-        Write-Host "First attempt = $roleAssignment" -ForegroundColor Cyan
-        Write-Host "Second attempt = $roleAssignment2" -ForegroundColor Cyan
         if ($null -eq $roleAssignment) {
           Write-Host "Waiting for Subscription Role Assignments to be eventually consistent... Iteration: $($iterationCount)" -ForegroundColor Yellow
           Start-Sleep -Seconds 40
@@ -78,24 +75,6 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
       $roleAssignment.ObjectId | Should -Be "7eca0dca-6701-46f1-b7b6-8b424dab50b3"
       $roleAssignment.RoleDefinitionName | Should -Be "Reader"
       $roleAssignment.scope | Should -Be "/subscriptions/$subscriptionId"
-    }
-
-    It "Should Have a Role Assignment for an known AAD Group with the Network Contributor role directly upon the Resource Group" {
-      $iterationCount = 0
-      do {
-        $roleAssignment = Get-AzRoleAssignment -Scope "/subscriptions/$subscriptionId/resourceGroups/rsg-$location-net-hs-$namePrefix-$serviceShort" -RoleDefinitionName "Network Contributor" -ObjectId "7eca0dca-6701-46f1-b7b6-8b424dab50b3" -ErrorAction SilentlyContinue
-        if ($null -eq $roleAssignment) {
-          Write-Host "Waiting for Resource Group Role Assignments to be eventually consistent... Iteration: $($iterationCount)" -ForegroundColor Yellow
-          Start-Sleep -Seconds 40
-          $iterationCount++
-        }
-      } until (
-        $roleAssignment -ne $null -or $iterationCount -ge 10
-      )
-
-      $roleAssignment.ObjectId | Should -Be "7eca0dca-6701-46f1-b7b6-8b424dab50b3"
-      $roleAssignment.RoleDefinitionName | Should -Be "Network Contributor"
-      $roleAssignment.scope | Should -Be "/subscriptions/$subscriptionId/resourceGroups/rsg-$location-net-hs-$namePrefix-$serviceShort"
     }
   }
 }
