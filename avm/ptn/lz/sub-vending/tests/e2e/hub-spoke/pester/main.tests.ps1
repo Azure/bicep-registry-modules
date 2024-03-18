@@ -10,7 +10,7 @@ param (
 
   [Parameter(Mandatory)]
   [string]
-  $subId,
+  $subscriptionId,
 
   [Parameter(Mandatory)]
   [string]
@@ -24,13 +24,17 @@ param (
 Describe "Bicep Landing Zone (Sub) Vending Tests" {
 
   BeforeAll {
+    $subscriptionId = $TestInputData.DeploymentOutputs.createdsubscriptionId.Value
+    $namePrefix = $TestInputData.DeploymentOutputs.namePrefix.Value
+    $serviceShort = $TestInputData.DeploymentOutputs.serviceShort.Value
+    $location = $TestInputData.DeploymentOutputs.resourceLocation.Value
     Update-AzConfig -DisplayBreakingChangeWarning $false
-    Select-AzSubscription -subscriptionId $subId
+    Select-AzSubscription -subscriptionId $subscriptionId
   }
 
   Context "Subscription Tests" {
     BeforeAll {
-      $sub = Get-AzSubscription -SubscriptionId $subId -ErrorAction SilentlyContinue
+      $sub = Get-AzSubscription -SubscriptionId $subscriptionId -ErrorAction SilentlyContinue
     }
 
     It "Should have a Subscription with the correct name" {
@@ -54,8 +58,8 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
     }
 
     It "Should have a Subscription that is a child of the Management Group with the ID of 'bicep-lz-vending-automation-child'" {
-      $mgAssociation = Get-AzManagementGroupSubscription -SubscriptionId $subId -GroupId "bicep-lz-vending-automation-child" -ErrorAction SilentlyContinue
-      $mgAssociation.Id | Should -Be "/providers/Microsoft.Management/managementGroups/bicep-lz-vending-automation-child/subscriptions/$subId"
+      $mgAssociation = Get-AzManagementGroupSubscription -SubscriptionId $subscriptionId -GroupId "bicep-lz-vending-automation-child" -ErrorAction SilentlyContinue
+      $mgAssociation.Id | Should -Be "/providers/Microsoft.Management/managementGroups/bicep-lz-vending-automation-child/subscriptions/$subscriptionId"
     }
 
     It "Should have the 'Microsoft.HybridCompute', 'Microsoft.AVS' resource providers and the 'AzureServicesVm', 'ArcServerPrivateLinkPreview' resource providers features registered" {
@@ -77,7 +81,7 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
     It "Should Have a Role Assignment for an known AAD Group with the Network Contributor role directly upon the Resource Group" {
       $iterationCount = 0
       do {
-        $roleAssignment = Get-AzRoleAssignment -Scope "/subscriptions/$subId/resourceGroups/rsg-$location-net-hs-$namePrefix-$serviceShort" -RoleDefinitionName "Network Contributor" -ObjectId "7eca0dca-6701-46f1-b7b6-8b424dab50b3" -ErrorAction SilentlyContinue
+        $roleAssignment = Get-AzRoleAssignment -Scope "/subscriptions/$subscriptionId/resourceGroups/rsg-$location-net-hs-$namePrefix-$serviceShort" -RoleDefinitionName "Network Contributor" -ObjectId "7eca0dca-6701-46f1-b7b6-8b424dab50b3" -ErrorAction SilentlyContinue
         if ($null -eq $roleAssignment) {
           Write-Host "Waiting for Resource Group Role Assignments to be eventually consistent... Iteration: $($iterationCount)" -ForegroundColor Yellow
           Start-Sleep -Seconds 40
@@ -89,7 +93,7 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
 
       $roleAssignment.ObjectId | Should -Be "7eca0dca-6701-46f1-b7b6-8b424dab50b3"
       $roleAssignment.RoleDefinitionName | Should -Be "Network Contributor"
-      $roleAssignment.scope | Should -Be "/subscriptions/$subId/resourceGroups/rsg-$location-net-hs-$namePrefix-$serviceShort"
+      $roleAssignment.scope | Should -Be "/subscriptions/$subscriptionId/resourceGroups/rsg-$location-net-hs-$namePrefix-$serviceShort"
     }
   }
 

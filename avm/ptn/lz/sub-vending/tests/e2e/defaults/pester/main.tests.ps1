@@ -6,9 +6,6 @@ param (
 Describe "Bicep Landing Zone (Sub) Vending Tests" {
 
   BeforeAll {
-    Write-Host $TestInputData.DeploymentOutputs -ForegroundColor Yellow
-    Write-Host $TestInputData.DeploymentOutputs.createdSubId -ForegroundColor Yellow
-    Write-Host $TestInputData.DeploymentOutputs.createdSubId.Value -ForegroundColor Yellow
     $subscriptionId = $TestInputData.DeploymentOutputs.createdSubId.Value
     $namePrefix = $TestInputData.DeploymentOutputs.namePrefix.Value
     $serviceShort = $TestInputData.DeploymentOutputs.serviceShort.Value

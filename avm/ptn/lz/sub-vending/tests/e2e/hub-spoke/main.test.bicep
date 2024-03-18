@@ -11,7 +11,6 @@ param subscriptionBillingScope string = 'providers/Microsoft.Billing/billingAcco
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
-//param namePrefix string = 'avmsb'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ssahs'
@@ -23,38 +22,7 @@ module nestedDependencies 'dependencies.bicep' = {
     hubVirtualNetworkName: 'vnet-uksouth-hub-blzv'
   }
 }
-
-/*module createSub '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
-  params: {
-    subscriptionAliasEnabled: true
-    deploymentScriptLocation: location
-    virtualNetworkLocation: location
-    subscriptionBillingScope: subscriptionBillingScope
-    subscriptionAliasName: 'sub-blzv-tests-${namePrefix}-${serviceShort}'
-    subscriptionDisplayName: 'sub-blzv-tests-${namePrefix}-${serviceShort}'
-    subscriptionTags: {
-      namePrefix: namePrefix
-      serviceShort: serviceShort
-    }
-    subscriptionWorkload: 'Production'
-    subscriptionManagementGroupAssociationEnabled: true
-    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
-    deploymentScriptResourceGroupName: 'rsg-${location}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptManagedIdentityName: 'id-${location}-${namePrefix}-${serviceShort}'
-    deploymentScriptName: 'ds-${location}-${namePrefix}-${serviceShort}'
-    deploymentScriptNetworkSecurityGroupName: 'nsg-${location}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptVirtualNetworkName: 'vnet-${location}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptStorageAccountName: 'stgds${location}${namePrefix}${serviceShort}'
-    resourceProviders: {
-      'Microsoft.HybridCompute': [ 'ArcServerPrivateLinkPreview' ]
-      'Microsoft.AVS': [ 'AzureServicesVm' ]
-    }
-  }
-}*/
-
 module testDeployment '../../../main.bicep' = {
-  //name: 'sub-blzv-tests-${namePrefix}-${serviceShort}-add-vnet-spoke'
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     deploymentScriptLocation: resourceLocation
@@ -65,7 +33,6 @@ module testDeployment '../../../main.bicep' = {
     subscriptionWorkload: 'Production'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
-    //existingSubscriptionId: createSub.outputs.subscriptionId
     virtualNetworkEnabled: true
     virtualNetworkLocation: resourceLocation
     virtualNetworkResourceGroupName: 'rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
