@@ -34,7 +34,7 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
     }
 
     It "Should have a Subscription with the correct name" {
-      $sub.Name | Should -Be "sub-blzv-tests-pr-$namePrefix-$serviceShort"
+      $sub.Name | Should -Be "sub-blzv-tests-$namePrefix-$serviceShort"
     }
 
     It "Should have a Subscription that is enabled" {
@@ -95,7 +95,7 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
     It "Should Have a Role Assignment for an known AAD Group with the Network Contributor role directly upon the Resource Group" {
       $iterationCount = 0
       do {
-        $roleAssignment = Get-AzRoleAssignment -Scope "/subscriptions/$subId/resourceGroups/rsg-$location-net-hs-pr-$namePrefix-$serviceShort" -RoleDefinitionName "Network Contributor" -ObjectId "7eca0dca-6701-46f1-b7b6-8b424dab50b3" -ErrorAction SilentlyContinue
+        $roleAssignment = Get-AzRoleAssignment -Scope "/subscriptions/$subId/resourceGroups/rsg-$location-net-hs-$namePrefix-$serviceShort" -RoleDefinitionName "Network Contributor" -ObjectId "7eca0dca-6701-46f1-b7b6-8b424dab50b3" -ErrorAction SilentlyContinue
         if ($null -eq $roleAssignment) {
           Write-Host "Waiting for Resource Group Role Assignments to be eventually consistent... Iteration: $($iterationCount)" -ForegroundColor Yellow
           Start-Sleep -Seconds 40
@@ -107,17 +107,17 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
 
       $roleAssignment.ObjectId | Should -Be "7eca0dca-6701-46f1-b7b6-8b424dab50b3"
       $roleAssignment.RoleDefinitionName | Should -Be "Network Contributor"
-      $roleAssignment.scope | Should -Be "/subscriptions/$subId/resourceGroups/rsg-$location-net-hs-pr-$namePrefix-$serviceShort"
+      $roleAssignment.scope | Should -Be "/subscriptions/$subId/resourceGroups/rsg-$location-net-hs-$namePrefix-$serviceShort"
     }
   }
 
   Context "Virtual WAN - Resource Group Tests" {
     BeforeAll {
-      $rsg = Get-AzResourceGroup -Name "rsg-$location-net-vwan-pr-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
+      $rsg = Get-AzResourceGroup -Name "rsg-$location-net-vwan-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
     }
 
     It "Should have a Resource Group with the correct name" {
-      $rsg.ResourceGroupName | Should -Be "rsg-$location-net-vwan-pr-$namePrefix-$serviceShort"
+      $rsg.ResourceGroupName | Should -Be "rsg-$location-net-vwan-$namePrefix-$serviceShort"
     }
 
     It "Should have a Resource Group with the correct location" {
@@ -127,15 +127,15 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
 
   Context "Networking - Virtual WAN Spoke Tests" {
     BeforeAll {
-      $vnetVwan = Get-AzVirtualNetwork -ResourceGroupName "rsg-$location-net-vwan-pr-$namePrefix-$serviceShort" -Name "vnet-$location-vwan-pr-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
+      $vnetVwan = Get-AzVirtualNetwork -ResourceGroupName "rsg-$location-net-vwan-$namePrefix-$serviceShort" -Name "vnet-$location-vwan-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
     }
 
-    It "Should have a Virtual Network in the correct Resource Group (rsg-$location-net-vwan-pr-$namePrefix-$serviceShort)" {
-      $vnetVwan.ResourceGroupName | Should -Be "rsg-$location-net-vwan-pr-$namePrefix-$serviceShort"
+    It "Should have a Virtual Network in the correct Resource Group (rsg-$location-net-vwan-$namePrefix-$serviceShort)" {
+      $vnetVwan.ResourceGroupName | Should -Be "rsg-$location-net-vwan-$namePrefix-$serviceShort"
     }
 
-    It "Should have a Virtual Network with the correct name (vnet-$location-vwan-pr-$namePrefix-$serviceShort)" {
-      $vnetVwan.Name | Should -Be "vnet-$location-vwan-pr-$namePrefix-$serviceShort"
+    It "Should have a Virtual Network with the correct name (vnet-$location-vwan-$namePrefix-$serviceShort)" {
+      $vnetVwan.Name | Should -Be "vnet-$location-vwan-$namePrefix-$serviceShort"
     }
 
     It "Should have a Virtual Network with the correct location" {
@@ -177,8 +177,8 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
       $vwanHub.ProvisioningState | Should -Be "Succeeded"
     }
 
-    It "Should have a Virtual Hub Connection to the newly created spoke Virtual Network (vnet-$location-vwan-pr-$namePrefix-$serviceShort)" {
-      $vwanHubVhc.RemoteVirtualNetwork.Id | Should -Contain "/subscriptions/$subId/resourceGroups/rsg-$location-net-vwan-pr-$namePrefix-$serviceShort/providers/Microsoft.Network/virtualNetworks/vnet-$location-vwan-pr-$namePrefix-$serviceShort"
+    It "Should have a Virtual Hub Connection to the newly created spoke Virtual Network (vnet-$location-vwan-$namePrefix-$serviceShort)" {
+      $vwanHubVhc.RemoteVirtualNetwork.Id | Should -Contain "/subscriptions/$subId/resourceGroups/rsg-$location-net-vwan-$namePrefix-$serviceShort/providers/Microsoft.Network/virtualNetworks/vnet-$location-vwan-$namePrefix-$serviceShort"
     }
 
     It "All Virtual Hub Connection should have the EnableInternetSecurity property set to $true" -ForEach $vwanHubVhc {

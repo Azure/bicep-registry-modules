@@ -220,7 +220,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     deploymentScriptName: 'ds-ssahs'
     deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
     deploymentScriptResourceGroupName: '<deploymentScriptResourceGroupName>'
-    deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
+    deploymentScriptStorageAccountName: 'stgdsssahs'
     deploymentScriptVirtualNetworkName: '<deploymentScriptVirtualNetworkName>'
     hubNetworkResourceId: '<hubNetworkResourceId>'
     resourceProviders: {
@@ -245,7 +245,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
     subscriptionWorkload: 'Production'
     virtualNetworkAddressSpace: [
-      '10.100.0.0/16'
+      '10.300.0.0/16'
     ]
     virtualNetworkEnabled: true
     virtualNetworkLocation: '<virtualNetworkLocation>'
@@ -286,7 +286,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": "<deploymentScriptResourceGroupName>"
     },
     "deploymentScriptStorageAccountName": {
-      "value": "<deploymentScriptStorageAccountName>"
+      "value": "stgdsssahs"
     },
     "deploymentScriptVirtualNetworkName": {
       "value": "<deploymentScriptVirtualNetworkName>"
@@ -335,7 +335,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     },
     "virtualNetworkAddressSpace": {
       "value": [
-        "10.100.0.0/16"
+        "10.300.0.0/16"
       ]
     },
     "virtualNetworkEnabled": {
@@ -407,7 +407,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     }
     subscriptionWorkload: 'Production'
     virtualNetworkAddressSpace: [
-      '10.200.0.0/16'
+      '10.400.0.0/16'
     ]
     virtualNetworkEnabled: true
     virtualNetworkLocation: '<virtualNetworkLocation>'
@@ -495,7 +495,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     },
     "virtualNetworkAddressSpace": {
       "value": [
-        "10.200.0.0/16"
+        "10.400.0.0/16"
       ]
     },
     "virtualNetworkEnabled": {

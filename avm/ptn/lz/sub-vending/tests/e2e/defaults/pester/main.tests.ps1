@@ -23,7 +23,7 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
     }
 
     It "Should have a Subscription with the correct name" {
-      $sub.Name | Should -Be "sub-blzv-tests-pr-$namePrefix-$serviceShort"
+      $sub.Name | Should -Be "sub-blzv-tests-$namePrefix-$serviceShort"
     }
 
     It "Should have a Subscription that is enabled" {
@@ -80,7 +80,7 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
     It "Should Have a Role Assignment for an known AAD Group with the Network Contributor role directly upon the Resource Group" {
       $iterationCount = 0
       do {
-        $roleAssignment = Get-AzRoleAssignment -Scope "/subscriptions/$subscriptionId/resourceGroups/rsg-$location-net-hs-pr-$namePrefix-$serviceShort" -RoleDefinitionName "Network Contributor" -ObjectId "7eca0dca-6701-46f1-b7b6-8b424dab50b3" -ErrorAction SilentlyContinue
+        $roleAssignment = Get-AzRoleAssignment -Scope "/subscriptions/$subscriptionId/resourceGroups/rsg-$location-net-hs-$namePrefix-$serviceShort" -RoleDefinitionName "Network Contributor" -ObjectId "7eca0dca-6701-46f1-b7b6-8b424dab50b3" -ErrorAction SilentlyContinue
         if ($null -eq $roleAssignment) {
           Write-Host "Waiting for Resource Group Role Assignments to be eventually consistent... Iteration: $($iterationCount)" -ForegroundColor Yellow
           Start-Sleep -Seconds 40
@@ -92,7 +92,7 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
 
       $roleAssignment.ObjectId | Should -Be "7eca0dca-6701-46f1-b7b6-8b424dab50b3"
       $roleAssignment.RoleDefinitionName | Should -Be "Network Contributor"
-      $roleAssignment.scope | Should -Be "/subscriptions/$subscriptionId/resourceGroups/rsg-$location-net-hs-pr-$namePrefix-$serviceShort"
+      $roleAssignment.scope | Should -Be "/subscriptions/$subscriptionId/resourceGroups/rsg-$location-net-hs-$namePrefix-$serviceShort"
     }
   }
 }
