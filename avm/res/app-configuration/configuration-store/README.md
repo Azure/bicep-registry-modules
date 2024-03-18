@@ -1420,7 +1420,7 @@ Tags of the resource.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `endpoint` | string | The URL to use for data plane operations (such as accessing settings). |
+| `endpoint` | string | The endpoint used for data plane operations (such as accessing settings). |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the app configuration. |
 | `resourceGroupName` | string | The resource group the app configuration store was deployed into. |
