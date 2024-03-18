@@ -41,10 +41,10 @@ param clusterSettings array = [
 @description('Optional. Enable the default custom domain suffix to use for all sites deployed on the ASE. If provided, then customDnsSuffixCertificateUrl and customDnsSuffixKeyVaultReferenceIdentity are required.')
 param customDnsSuffix string = ''
 
-@description('Conditional. The URL referencing the Azure Key Vault certificate secret that should be used as the default SSL/TLS certificate for sites with the custom domain suffix. Required if customDnsSuffix is not empty.')
+@description('Optional. The URL referencing the Azure Key Vault certificate secret that should be used as the default SSL/TLS certificate for sites with the custom domain suffix. Required if customDnsSuffix is not empty.')
 param customDnsSuffixCertificateUrl string = ''
 
-@description('Conditional. The user-assigned identity to use for resolving the key vault certificate reference. If not specified, the system-assigned ASE identity will be used if available. Required if customDnsSuffix is not empty.')
+@description('Optional. The user-assigned identity to use for resolving the key vault certificate reference. If not specified, the system-assigned ASE identity will be used if available. Required if customDnsSuffix is not empty.')
 param customDnsSuffixKeyVaultReferenceIdentity string = ''
 
 @description('Optional. The Dedicated Host Count. If `zoneRedundant` is false, and you want physical hardware isolation enabled, set to 2. Otherwise 0.')
@@ -64,25 +64,6 @@ param frontEndScaleFactor int = 15
   'Web, Publishing'
 ])
 param internalLoadBalancingMode string = 'None'
-
-/* @description('Optional. Number of IP SSL addresses reserved for the App Service Environment. Cannot be used when kind is set to ASEv3.')
-param ipsslAddressCount int = 0 */
-
-/* @description('Optional. Frontend VM size. Cannot be used when kind is set to ASEv3.')
-@allowed([
-  ''
-  'Medium'
-  'Large'
-  'ExtraLarge'
-  'Standard_D2'
-  'Standard_D3'
-  'Standard_D4'
-  'Standard_D1_V2'
-  'Standard_D2_V2'
-  'Standard_D3_V2'
-  'Standard_D4_V2'
-])
-param multiSize string = '' */
 
 @description('Optional. Property to enable and disable new private endpoint connection creation on ASE.')
 param allowNewPrivateEndpointConnections bool = false
@@ -107,9 +88,6 @@ param upgradePreference string = 'None'
 
 @description('Required. ResourceId for the subnet.')
 param subnetResourceId string
-
-/* @description('Optional. User added IP ranges to whitelist on ASE DB. Cannot be used with \'kind\' `ASEv3`.')
-param userWhitelistedIpRanges array = [] */
 
 @description('Optional. Switch to make the App Service Environment zone redundant. If enabled, the minimum App Service plan instance count will be three, otherwise 1. If enabled, the `dedicatedHostCount` must be set to `-1`.')
 param zoneRedundant bool = false
@@ -294,7 +272,7 @@ type roleAssignmentType = {
   @description('Optional. The description of the role assignment.')
   description: string?
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
+  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
   @description('Optional. Version of the condition.')
