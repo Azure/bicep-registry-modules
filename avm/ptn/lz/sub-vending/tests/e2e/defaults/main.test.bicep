@@ -48,8 +48,8 @@ module testDeployment '../../../main.bicep' = {
     deploymentScriptLocation: resourceLocation
     virtualNetworkLocation: resourceLocation
     resourceProviders: {
-      'Microsoft.HybridCompute': [ 'ArcServerPrivateLinkPreview' ]
-      'Microsoft.AVS': [ 'AzureServicesVm' ]
+      'Microsoft.HybridCompute': ['ArcServerPrivateLinkPreview']
+      'Microsoft.AVS': ['AzureServicesVm']
     }
   }
 }
