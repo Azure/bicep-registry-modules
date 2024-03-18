@@ -1301,43 +1301,56 @@ function Set-UsageExamplesSection {
         $bicepTestEndIndex = $bicepTestStartIndex
         do {
             $bicepTestEndIndex++
-        } while ($rawContentArray[$bicepTestEndIndex] -notin @('}', '}]'))
+        } while ($rawContentArray[$bicepTestEndIndex] -notin @('}', '}]', ']'))
 
         $rawBicepExample = $rawContentArray[$bicepTestStartIndex..$bicepTestEndIndex]
 
-        if ($rawBicepExample[-1] -eq '}]') {
-            $rawBicepExample[-1] = '}'
-        }
-
-        # [2/6] Replace placeholders
-        $serviceShort = ([regex]::Match($rawContent, "(?m)^param serviceShort string = '(.+)'\s*$")).Captures.Groups[1].Value
-
-        $rawBicepExampleString = ($rawBicepExample | Out-String)
-        $rawBicepExampleString = $rawBicepExampleString -replace '\$\{serviceShort\}', $serviceShort
-        $rawBicepExampleString = $rawBicepExampleString -replace '\$\{namePrefix\}[-|\.|_]?', '' # Replacing with empty to not expose prefix and avoid potential deployment conflicts
-        $rawBicepExampleString = $rawBicepExampleString -replace '(?m):\s*location\s*$', ': ''<location>'''
-        $rawBicepExampleString = $rawBicepExampleString -replace '-\$\{iteration\}', ''
-
-        # [3/6] Format header, remove scope property & any empty line
-        $rawBicepExample = $rawBicepExampleString -split '\n'
-        $rawBicepExample[0] = "module $moduleNameCamelCase 'br/public:$($brLink):$($targetVersion)' = {"
-        $rawBicepExample = $rawBicepExample | Where-Object { $_ -notmatch 'scope: *' } | Where-Object { -not [String]::IsNullOrEmpty($_) }
-        # [4/6] Extract param block
-        $rawBicepExampleArray = $rawBicepExample -split '\n'
-        $moduleDeploymentPropertyIndent = ([regex]::Match($rawBicepExampleArray[1], '^(\s+).*')).Captures.Groups[1].Value.Length
-        $paramsStartIndex = ($rawBicepExampleArray | Select-String ("^[\s]{$moduleDeploymentPropertyIndent}params:[\s]*\{") | ForEach-Object { $_.LineNumber - 1 })[0] + 1
-        if ($rawBicepExampleArray[$paramsStartIndex].Trim() -ne '}') {
-            # Handle case where param block is empty
-            $paramsEndIndex = ($rawBicepExampleArray[($paramsStartIndex + 1)..($rawBicepExampleArray.Count)] | Select-String "^[\s]{$moduleDeploymentPropertyIndent}\}" | ForEach-Object { $_.LineNumber - 1 })[0] + $paramsStartIndex
-            $paramBlock = ($rawBicepExampleArray[$paramsStartIndex..$paramsEndIndex] | Out-String).TrimEnd()
+        if (-not ($rawBicepExample | Select-String ("\s+params:.*"))) {
+            # Handle case where params are not provided
+            $paramsBlockArray = @()
         } else {
-            $paramBlock = ''
-            $paramsEndIndex = $paramsStartIndex
+            # Extract params block out of the Bicep example
+            $paramsStartIndex = ($rawBicepExample | Select-String ("\s+params:.*") | ForEach-Object { $_.LineNumber - 1 })[0]
+            $paramsIndent = ($rawBicepExample[$paramsStartIndex] | Select-String '(\s+).*').Matches.Groups[1].Length
+
+
+            # Handle case where params are empty
+            if ($rawBicepExample[$paramsStartIndex] -match '^.*params:\s*\{\s*\}\s*$') {
+                $paramsBlockArray = @()
+            } else {
+                # Handle case where params are provided
+                $paramsEndIndex = $paramsStartIndex
+                do {
+                    $paramsEndIndex++
+                } while ($rawBicepExample[$paramsEndIndex] -notMatch "^\s{$paramsIndent}\}" -and
+                    $rawBicepExample[$paramsEndIndex] -notMatch "^\s{$paramsIndent}\}\]" -and
+                    $rawBicepExample[$paramsEndIndex] -notMatch "^\s{$paramsIndent}\]" -and
+                    $paramsEndIndex -lt $rawBicepExample.Count)
+
+                if ($paramsEndIndex -eq $rawBicepExample.Count) {
+                    throw "End index of `params` block for test file [$testFilePath] not found."
+                }
+
+                $paramsBlock = $rawBicepExample[($paramsStartIndex + 1) .. ($paramsEndIndex - 1)]
+                $paramsBlockArray = $paramsBlock -replace "^\s{$paramsIndent}" # Remove excess leading spaces
+
+                # [2/6] Replace placeholders
+                $serviceShort = ([regex]::Match($rawContent, "(?m)^param serviceShort string = '(.+)'\s*$")).Captures.Groups[1].Value
+
+                $paramsBlockString = ($paramsBlockArray | Out-String)
+                $paramsBlockString = $paramsBlockString -replace '\$\{serviceShort\}', $serviceShort
+                $paramsBlockString = $paramsBlockString -replace '\$\{namePrefix\}[-|\.|_]?', '' # Replacing with empty to not expose prefix and avoid potential deployment conflicts
+                $paramsBlockString = $paramsBlockString -replace '(?m):\s*location\s*$', ': ''<location>'''
+
+                # [3/6] Format header, remove scope property & any empty line
+                $paramsBlockArray = $paramsBlockString -split '\n' | Where-Object { -not [String]::IsNullOrEmpty($_) }
+                $paramsBlockArray = $paramsBlockArray | ForEach-Object { "  $_" }
+            }
         }
 
         # [5/6] Convert Bicep parameter block to JSON parameter block to enable processing
         $conversionInputObject = @{
-            BicepParamBlock = $paramBlock
+            BicepParamBlock = ($paramsBlockArray | Out-String).TrimEnd()
             CurrentFilePath = $testFilePath
         }
         $paramsInJSONFormat = ConvertTo-FormattedJSONParameterObject @conversionInputObject
@@ -1354,26 +1367,14 @@ function Set-UsageExamplesSection {
         # --------------------- #
         if ($addBicep) {
 
-            if ([String]::IsNullOrEmpty($paramBlock)) {
-                # Handle case where param block is empty
-                $formattedBicepExample = $rawBicepExample[0..($paramsStartIndex - 1)] + $rawBicepExample[($paramsEndIndex)..($rawBicepExample.Count)]
-            } else {
-                $formattedBicepExample = $rawBicepExample[0..($paramsStartIndex - 1)] + ($bicepExample -split '\n') + $rawBicepExample[($paramsEndIndex + 1)..($rawBicepExample.Count)]
-            }
-
-            # Remove any dependsOn as it it test specific
-            if ($detected = ($formattedBicepExample | Select-String "^\s{$moduleDeploymentPropertyIndent}dependsOn:\s*\[\s*$" | ForEach-Object { $_.LineNumber - 1 })) {
-                $dependsOnStartIndex = $detected[0]
-
-                # Find out where the 'dependsOn' ends
-                $dependsOnEndIndex = $dependsOnStartIndex
-                do {
-                    $dependsOnEndIndex++
-                } while ($formattedBicepExample[$dependsOnEndIndex] -notmatch '^\s*\]\s*$')
-
-                # Cut the 'dependsOn' block out
-                $formattedBicepExample = $formattedBicepExample[0..($dependsOnStartIndex - 1)] + $formattedBicepExample[($dependsOnEndIndex + 1)..($formattedBicepExample.Count)]
-            }
+            $formattedBicepExample = @(
+                "module $moduleNameCamelCase 'br/public:$($brLink):$($targetVersion)' = {",
+                # "  name: 'my$($moduleNameCamelCase)Deployment'"
+                "  params: {"
+            ) + $bicepExample +
+            @( '  }',
+                '}'
+            )
 
             # Build result
             $testFilesContent += @(
