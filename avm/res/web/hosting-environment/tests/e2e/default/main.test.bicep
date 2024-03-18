@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using default parameter set'
+metadata description = 'This instance deploys the module with a base set of parameters. Note it does include the use of Availability zones by default.'
+
 // ========== //
 // Parameters //
 // ========== //
@@ -7,7 +10,7 @@ targetScope = 'subscription'
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 // e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
-param resourceGroupName string = 'dep-${namePrefix}-<provider>-<resourceType>-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-hostingenvironment-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -22,6 +25,16 @@ param namePrefix string = '#_namePrefix_#'
 // ============ //
 // Dependencies //
 // ============ //
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    location: resourceLocation
+  }
+}
 
 // General resources
 // =================
@@ -42,5 +55,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     // You parameters go here
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
+    kind: 'ASEv3'
+    subnetResourceId: nestedDependencies.outputs.subnetResourceId
   }
 }]
