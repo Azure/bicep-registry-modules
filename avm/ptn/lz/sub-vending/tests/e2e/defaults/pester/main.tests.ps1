@@ -63,6 +63,9 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
       $iterationCount = 0
       do {
         $roleAssignment = Get-AzRoleAssignment -Scope "/subscriptions/$subscriptionId" -RoleDefinitionName "Reader" -ObjectId "7eca0dca-6701-46f1-b7b6-8b424dab50b3" -ErrorAction SilentlyContinue
+        $roleAssignment2 = Get-AzRoleAssignment -Scope "/subscriptions/b5667139-d633-4462-b765-c1e81a905f06" | where { $_.roleDefinitionName -eq "Reader" -and $_.objectId -eq "7eca0dca-6701-46f1-b7b6-8b424dab50b3" }
+        Write-Host "First attempt = $roleAssignment" -ForegroundColor Cyan
+        Write-Host "Second attempt = $roleAssignment2" -ForegroundColor Cyan
         if ($null -eq $roleAssignment) {
           Write-Host "Waiting for Subscription Role Assignments to be eventually consistent... Iteration: $($iterationCount)" -ForegroundColor Yellow
           Start-Sleep -Seconds 40
