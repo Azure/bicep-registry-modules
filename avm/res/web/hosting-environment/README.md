@@ -296,13 +296,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 | [`name`](#parameter-name) | string | Name of the resource to create. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | ResourceId for the subnet. |
 
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`customDnsSuffixCertificateUrl`](#parameter-customdnssuffixcertificateurl) | string | The URL referencing the Azure Key Vault certificate secret that should be used as the default SSL/TLS certificate for sites with the custom domain suffix. Required if customDnsSuffix is not empty. |
-| [`customDnsSuffixKeyVaultReferenceIdentity`](#parameter-customdnssuffixkeyvaultreferenceidentity) | string | The user-assigned identity to use for resolving the key vault certificate reference. If not specified, the system-assigned ASE identity will be used if available. Required if customDnsSuffix is not empty. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -310,6 +303,8 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 | [`allowNewPrivateEndpointConnections`](#parameter-allownewprivateendpointconnections) | bool | Property to enable and disable new private endpoint connection creation on ASE. |
 | [`clusterSettings`](#parameter-clustersettings) | array | Custom settings for changing the behavior of the App Service Environment. |
 | [`customDnsSuffix`](#parameter-customdnssuffix) | string | Enable the default custom domain suffix to use for all sites deployed on the ASE. If provided, then customDnsSuffixCertificateUrl and customDnsSuffixKeyVaultReferenceIdentity are required. |
+| [`customDnsSuffixCertificateUrl`](#parameter-customdnssuffixcertificateurl) | string | The URL referencing the Azure Key Vault certificate secret that should be used as the default SSL/TLS certificate for sites with the custom domain suffix. Required if customDnsSuffix is not empty. |
+| [`customDnsSuffixKeyVaultReferenceIdentity`](#parameter-customdnssuffixkeyvaultreferenceidentity) | string | The user-assigned identity to use for resolving the key vault certificate reference. If not specified, the system-assigned ASE identity will be used if available. Required if customDnsSuffix is not empty. |
 | [`dedicatedHostCount`](#parameter-dedicatedhostcount) | int | The Dedicated Host Count. If `zoneRedundant` is false, and you want physical hardware isolation enabled, set to 2. Otherwise 0. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`dnsSuffix`](#parameter-dnssuffix) | string | DNS suffix of the App Service Environment. |
@@ -342,22 +337,6 @@ ResourceId for the subnet.
 - Required: Yes
 - Type: string
 
-### Parameter: `customDnsSuffixCertificateUrl`
-
-The URL referencing the Azure Key Vault certificate secret that should be used as the default SSL/TLS certificate for sites with the custom domain suffix. Required if customDnsSuffix is not empty.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `customDnsSuffixKeyVaultReferenceIdentity`
-
-The user-assigned identity to use for resolving the key vault certificate reference. If not specified, the system-assigned ASE identity will be used if available. Required if customDnsSuffix is not empty.
-
-- Required: No
-- Type: string
-- Default: `''`
-
 ### Parameter: `allowNewPrivateEndpointConnections`
 
 Property to enable and disable new private endpoint connection creation on ASE.
@@ -385,6 +364,22 @@ Custom settings for changing the behavior of the App Service Environment.
 ### Parameter: `customDnsSuffix`
 
 Enable the default custom domain suffix to use for all sites deployed on the ASE. If provided, then customDnsSuffixCertificateUrl and customDnsSuffixKeyVaultReferenceIdentity are required.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `customDnsSuffixCertificateUrl`
+
+The URL referencing the Azure Key Vault certificate secret that should be used as the default SSL/TLS certificate for sites with the custom domain suffix. Required if customDnsSuffix is not empty.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `customDnsSuffixKeyVaultReferenceIdentity`
+
+The user-assigned identity to use for resolving the key vault certificate reference. If not specified, the system-assigned ASE identity will be used if available. Required if customDnsSuffix is not empty.
 
 - Required: No
 - Type: string
@@ -671,7 +666,7 @@ Array of role assignments to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
@@ -693,7 +688,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 ### Parameter: `roleAssignments.condition`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
@@ -783,6 +778,7 @@ Switch to make the App Service Environment zone redundant. If enabled, the minim
 | `name` | string | The name of the App Service Environment. |
 | `resourceGroupName` | string | The resource group the App Service Environment was deployed into. |
 | `resourceId` | string | The resource ID of the App Service Environment. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 
