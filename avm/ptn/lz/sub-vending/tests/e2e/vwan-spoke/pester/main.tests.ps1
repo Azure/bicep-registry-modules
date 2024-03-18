@@ -110,8 +110,8 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
       $vnetVwan.Location | Should -Be $location
     }
 
-    It "Should have a Virtual Network with the correct address space (10.400.0.0/16)" {
-      $vnetVwan.AddressSpace.AddressPrefixes | Should -Be "10.400.0.0/16"
+    It "Should have a Virtual Network with the correct address space (10.200.0.0/16)" {
+      $vnetVwan.AddressSpace.AddressPrefixes | Should -Be "10.200.0.0/16"
     }
 
     It "Should have a Virtual Network with DDoS protection disabled" {
