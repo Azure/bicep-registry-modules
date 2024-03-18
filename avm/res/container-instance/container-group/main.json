@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "10529094198012538202"
+      "version": "0.26.54.24096",
+      "templateHash": "14128007739634604706"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group.",
@@ -192,7 +192,7 @@
                         }
                       },
                       "memoryInGB": {
-                        "type": "string",
+                        "type": "int",
                         "nullable": true,
                         "metadata": {
                           "description": "Optional. The memory limit in GB of this container instance. To specify a decimal value, use the json() function."

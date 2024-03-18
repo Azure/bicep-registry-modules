@@ -1114,7 +1114,7 @@ The resource limits of this container instance.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`gpu`](#parameter-containerspropertiesresourceslimitsgpu) | object | The GPU limit of this container instance. |
-| [`memoryInGB`](#parameter-containerspropertiesresourceslimitsmemoryingb) | string | The memory limit in GB of this container instance. To specify a decimal value, use the json() function. |
+| [`memoryInGB`](#parameter-containerspropertiesresourceslimitsmemoryingb) | int | The memory limit in GB of this container instance. To specify a decimal value, use the json() function. |
 
 ### Parameter: `containers.properties.resources.limits.cpu`
 
@@ -1148,7 +1148,7 @@ The count of the GPU resource.
 The memory limit in GB of this container instance. To specify a decimal value, use the json() function.
 
 - Required: No
-- Type: string
+- Type: int
 
 ### Parameter: `containers.properties.command`
 
