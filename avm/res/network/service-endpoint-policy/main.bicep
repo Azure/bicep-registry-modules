@@ -99,18 +99,6 @@ resource serviceEndpointPolicy_roleAssignments 'Microsoft.Authorization/roleAssi
   scope: serviceEndpointPolicy
 }]
 
-@description('The resource group the Service Endpoint Policy was deployed into.')
-output resourceGroupName string = resourceGroup().name
-
-@description('The name of the Service Endpoint Policy.')
-output name string = serviceEndpointPolicy.name
-
-@description('The resource ID of the Service Endpoint Policy.')
-output resourceId string = serviceEndpointPolicy.id
-
-@description('The location the resource was deployed into.')
-output location string = serviceEndpointPolicy.location
-
 // =============== //
 //   Definitions   //
 // =============== //
@@ -122,6 +110,10 @@ type lockType = {
   @description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
+
+// ================ //
+// Definitions      //
+// ================ //
 
 type roleAssignmentType = {
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
@@ -146,28 +138,14 @@ type roleAssignmentType = {
   delegatedManagedIdentityResourceId: string?
 }[]?
 
-//
-// Add your resources here
-//
+@description('The resource group the Service Endpoint Policy was deployed into.')
+output resourceGroupName string = resourceGroup().name
 
-// ============ //
-// Outputs      //
-// ============ //
+@description('The name of the Service Endpoint Policy.')
+output name string = serviceEndpointPolicy.name
 
-// Add your outputs here
+@description('The resource ID of the Service Endpoint Policy.')
+output resourceId string = serviceEndpointPolicy.id
 
-// @description('The resource ID of the resource.')
-// output resourceId string = <Resource>.id
-
-// @description('The name of the resource.')
-// output name string = <Resource>.name
-
-// @description('The location the resource was deployed into.')
-// output location string = <Resource>.location
-
-// ================ //
-// Definitions      //
-// ================ //
-//
-// Add your User-defined-types here, if any
-//
+@description('The location the resource was deployed into.')
+output location string = serviceEndpointPolicy.location
