@@ -1,24 +1,6 @@
-[CmdletBinding()]
 param (
-  [Parameter(Mandatory)]
-  [string]
-  $namePrefix,
-
-  [Parameter(Mandatory)]
-  [string]
-  $serviceShort,
-
-  [Parameter(Mandatory)]
-  [string]
-  $subscriptionId,
-
-  [Parameter(Mandatory)]
-  [string]
-  $location,
-
-  [Parameter(Mandatory)]
-  [hashtable]
-  $TestInputData
+  [Parameter(Mandatory = $false)]
+  [hashtable] $TestInputData = @{}
 )
 
 Describe "Bicep Landing Zone (Sub) Vending Tests" {
