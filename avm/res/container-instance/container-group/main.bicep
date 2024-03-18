@@ -346,6 +346,6 @@ type containerGpuType = {
   @description('Required. The count of the GPU resource.')
   count: int
 
-  @description('Required.	The SKU of the GPU resource.')
+  @description('Required. The SKU of the GPU resource.')
   sku: ('K80' | 'P100' | 'V100')
 }?

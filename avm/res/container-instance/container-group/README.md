@@ -1081,6 +1081,7 @@ The GPU request of this container instance.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`count`](#parameter-containerspropertiesresourcesrequestsgpucount) | int | The count of the GPU resource. |
+| [`sku`](#parameter-containerspropertiesresourcesrequestsgpusku) | string | The SKU of the GPU resource. |
 
 ### Parameter: `containers.properties.resources.requests.gpu.count`
 
@@ -1088,6 +1089,21 @@ The count of the GPU resource.
 
 - Required: Yes
 - Type: int
+
+### Parameter: `containers.properties.resources.requests.gpu.sku`
+
+The SKU of the GPU resource.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'K80'
+    'P100'
+    'V100'
+  ]
+  ```
 
 ### Parameter: `containers.properties.resources.requests.memoryInGB`
 
@@ -1135,6 +1151,7 @@ The GPU limit of this container instance.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`count`](#parameter-containerspropertiesresourceslimitsgpucount) | int | The count of the GPU resource. |
+| [`sku`](#parameter-containerspropertiesresourceslimitsgpusku) | string | The SKU of the GPU resource. |
 
 ### Parameter: `containers.properties.resources.limits.gpu.count`
 
@@ -1142,6 +1159,21 @@ The count of the GPU resource.
 
 - Required: Yes
 - Type: int
+
+### Parameter: `containers.properties.resources.limits.gpu.sku`
+
+The SKU of the GPU resource.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'K80'
+    'P100'
+    'V100'
+  ]
+  ```
 
 ### Parameter: `containers.properties.resources.limits.memoryInGB`
 
