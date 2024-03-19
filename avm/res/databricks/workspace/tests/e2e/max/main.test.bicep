@@ -139,8 +139,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     requiredNsgRules: 'NoAzureDatabricksRules'
     skuName: 'premium'
     amlWorkspaceResourceId: nestedDependencies.outputs.machineLearningWorkspaceResourceId
-    customPrivateSubnetName: nestedDependencies.outputs.customPrivateSubnetResourceId
-    customPublicSubnetName: nestedDependencies.outputs.customPublicSubnetResourceId
+    customPrivateSubnetName: nestedDependencies.outputs.customPrivateSubnetName
+    customPublicSubnetName: nestedDependencies.outputs.customPublicSubnetName
     publicNetworkAccess: 'Disabled'
     disablePublicIp: true
     loadBalancerResourceId: nestedDependencies.outputs.loadBalancerResourceId
