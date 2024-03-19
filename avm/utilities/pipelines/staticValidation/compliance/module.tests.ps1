@@ -801,19 +801,20 @@ Describe 'Module tests' -Tag 'Module' {
       It '[<moduleFolderName>] The Virtual Machine resource module should not have a default value for its AZs and it should be a required input by a consumer' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
 
         param(
-          [string] $moduleFolderName,
           [hashtable] $templateFileContent,
           [hashtable] $templateFileParameters
         )
 
-        if ($moduleFolderName -notcontains 'res/compute/virtual-machine') {
-          Set-ItResult -Skipped -Because 'the module is not avm/res/compute/virtual-machine.'
-          return
+        foreach ($module in $moduleFolderPaths) {
+          if ($module -ne '/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/res/compute/virtual-machine') {
+            Set-ItResult -Skipped -Because 'the module is not avm/res/compute/virtual-machine.'
+            return
+          }
+
+          $isRequired = Get-IsParameterRequired -TemplateFileContent $templateFileContent -Parameter $templateFileParameters.availabilityZones
+
+          $isRequired | Should -Be $true -Because 'the AZs parameter should be a required input by a consumer.'
         }
-
-        $isRequired = Get-IsParameterRequired -TemplateFileContent $templateFileContent -Parameter $templateFileParameters.availabilityZones
-
-        $isRequired | Should -Be $true -Because 'the AZs parameter should be a required input by a consumer.'
       }
     }
 
