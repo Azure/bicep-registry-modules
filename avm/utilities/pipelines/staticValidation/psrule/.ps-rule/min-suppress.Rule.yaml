@@ -17,8 +17,8 @@ spec:
     - Azure.Automation.ManagedIdentity
       # Key Vault specific
     - Azure.KeyVault.Logs
-    - Azure.KeyVault.Firewall
-      # Traffic Manager specific
+    # - Azure.KeyVault.Firewall - Removed for WAF Security
+    # Traffic Manager specific
     - Azure.TrafficManager.Endpoints
     - Azure.TrafficManager.Protocol
       # Azure Load Balancer specific
@@ -27,7 +27,7 @@ spec:
     - Azure.ContainerApp.PublicAccess
     # Azure Virtual Machine
     - Azure.VM.AMA
-    - Azure.VM.Standalone
+    # - Azure.VM.Standalone - Removed for WAF Reliability
   if:
     name: "."
     contains:

@@ -24,8 +24,8 @@ include:
     - PSRule.Rules.Azure
 
 execution:
-  ruleSuppressed: Debug
-  unprocessedObject: Debug
+  ruleSuppressed: Warn
+  unprocessedObject: Warn
 
 output:
   culture:
@@ -76,5 +76,5 @@ rule:
   includeLocal: false
   exclude:
     # Ignore the following rules for all resources
-    - Azure.KeyVault.PurgeProtect
+    # - Azure.KeyVault.PurgeProtect - Removed due to WAF Reliability
     - Azure.VM.UseHybridUseBenefit
