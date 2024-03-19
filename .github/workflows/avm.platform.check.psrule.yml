@@ -13,6 +13,11 @@ on:
         description: "Specify target input path for PSRule analysis (example: avm/res/api-management/service/)"
         required: false
         default: "avm/res/api-management/service/"
+      baeline:
+        type: string
+        description: "Specify the PSRule baseline to perform PSRule analysis against (example: avm/res/api-management/service/)"
+        required: false
+        default: "avm/res/api-management/service/"
   schedule:
     - cron: '0 12 * * 0' # Weekly Sunday Analysis
 
