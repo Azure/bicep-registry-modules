@@ -1301,7 +1301,11 @@ function Set-UsageExamplesSection {
         $bicepTestEndIndex = $bicepTestStartIndex
         do {
             $bicepTestEndIndex++
-        } while ($rawContentArray[$bicepTestEndIndex] -notin @('}', '}]', ']'))
+        } while ($rawContentArray[$bicepTestEndIndex] -notin @('}', '}]', ']') -and $bicepTestEndIndex -lt $rawContentArray.Count)
+
+        if ($bicepTestEndIndex -eq $rawContentArray.Count) {
+            throw "End index of test block for test file [$testFilePath] not found."
+        }
 
         $rawBicepExample = $rawContentArray[$bicepTestStartIndex..$bicepTestEndIndex]
 
@@ -1328,7 +1332,7 @@ function Set-UsageExamplesSection {
                     $paramsEndIndex -lt $rawBicepExample.Count)
 
                 if ($paramsEndIndex -eq $rawBicepExample.Count) {
-                    throw "End index of `params` block for test file [$testFilePath] not found."
+                    throw "End index of 'params' block for test file [$testFilePath] not found."
                 }
 
                 $paramsBlock = $rawBicepExample[($paramsStartIndex + 1) .. ($paramsEndIndex - 1)]
