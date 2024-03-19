@@ -37,7 +37,7 @@ jobs:
             await script({ require, github, context, core })
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: moduleIndex.json
           path: moduleIndex.json
@@ -50,7 +50,7 @@ jobs:
           subscription-id: ${{ secrets.PUBLISH_SUBSCRIPTION_ID }}
 
       - name: Upload to blob storage
-        uses: azure/CLI@v1
+        uses: azure/CLI@v2
         with:
           inlineScript: |
             az storage blob upload --account-name biceplivedatasaprod --container-name bicep-cdn-live-data-container --name module-index --file moduleIndex.json --auth-mode login --overwrite
@@ -66,7 +66,7 @@ jobs:
         run: npm ci
 
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: moduleIndex.json
 
@@ -78,7 +78,7 @@ jobs:
             await script({ require, github, context, core })
 
       - name: Upload Markdown artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: ./docs/jekyll/index.md
           name: index.md

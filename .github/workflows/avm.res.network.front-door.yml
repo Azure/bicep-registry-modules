@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.front-door.yml"
       - "avm/res/network/front-door/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
