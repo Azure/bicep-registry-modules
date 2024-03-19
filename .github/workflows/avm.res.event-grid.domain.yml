@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.event-grid.domain.yml"
       - "avm/res/event-grid/domain/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
