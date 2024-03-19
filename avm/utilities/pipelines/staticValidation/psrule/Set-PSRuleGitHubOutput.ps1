@@ -51,7 +51,6 @@ function Set-PSRuleGitHubOutput {
 
     $passedRules += $results | Where-Object { $_.Outcome -EQ 'Pass' } | Sort-Object -Property 'RuleName' -Unique
     $failedRules += $results | Where-Object { $_.Outcome -EQ 'Fail' } | Sort-Object -Property 'RuleName' -Unique
-    $suppressedRules += $results | Where-Object { $_.Outcome -EQ 'Suppressed' } | Sort-Object -Property 'RuleName' -Unique
 
     ######################
     # Set output content #
@@ -160,48 +159,5 @@ function Set-PSRuleGitHubOutput {
       # Append to output
       Out-File -FilePath $outputFilePath -Append -NoClobber -InputObject $passContent
     }
-
-    if ($suppressedRules.Count -gt 0) {
-      # List of suppressed rules
-      $supContent = [System.Collections.ArrayList]@(
-        '',
-        '<details>',
-        '<summary>List of Suppressed Rules</summary>',
-        '',
-        '## Suppressed Rules',
-        '',
-        '| RuleName | TargetName |  Synopsis |',
-        '| :-- | :-- |  :-- |'
-      )
-      foreach ($content in $suppressedRules ) {
-        # Shorten the target name for deployment resoure type
-        if ($content.TargetType -eq 'Microsoft.Resources/deployments') {
-          $content.TargetName = $content.TargetName.replace('/home/runner/work/ResourceModules/ResourceModules/modules/', '')
-        }
-
-        # Build hyperlinks to PSRule documentation for the rules
-        $TemplatesBaseUrl = 'https://azure.github.io/PSRule.Rules.Azure/en/rules'
-        try {
-          $PSRuleReferenceUrl = '{0}/{1}' -f $TemplatesBaseUrl, $content.RuleName
-          $null = Invoke-WebRequest -Uri $PSRuleReferenceUrl
-          $resourceLink = '[{0}]({1})' -f $content.RuleName, $PSRuleReferenceUrl
-        }
-        catch {
-          Write-Warning ('Unable to build url for rule [{0}]' -f $content.RuleName)
-          $resourceLink = $content.RuleName
-        }
-        $supContent += ('| {0} | `{1}` | {2} |  ' -f $resourceLink, $content.TargetName, $content.Synopsis)
-
-      }
-      $supContent += [System.Collections.ArrayList]@(
-        '',
-        '</details>',
-        ''
-      )
-      # Append to output
-      Out-File -FilePath $outputFilePath -Append -NoClobber -InputObject $supContent
-    }
-
-
   }
 }
