@@ -53,7 +53,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-accmin'
+  name: 'configurationStoreDeployment'
   params: {
     // Required parameters
     name: 'accmin001'
@@ -101,7 +101,7 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-accencr'
+  name: 'configurationStoreDeployment'
   params: {
     // Required parameters
     name: 'accencr001'
@@ -219,7 +219,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-accmax'
+  name: 'configurationStoreDeployment'
   params: {
     // Required parameters
     name: 'accmax001'
@@ -423,7 +423,7 @@ This instance deploys the module with private endpoints.
 
 ```bicep
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-accpe'
+  name: 'configurationStoreDeployment'
   params: {
     // Required parameters
     name: 'accpe001'
@@ -527,7 +527,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-accwaf'
+  name: 'configurationStoreDeployment'
   params: {
     // Required parameters
     name: 'accwaf001'

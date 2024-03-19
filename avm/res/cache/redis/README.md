@@ -46,7 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-crmin'
+  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'crmin001'
@@ -94,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-crmax'
+  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'crmax001'
@@ -354,7 +354,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-crwaf'
+  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'crwaf001'

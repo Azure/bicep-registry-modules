@@ -58,7 +58,7 @@ This instance deploys the module as Azure Front Door.
 
 ```bicep
 module profile 'br/public:avm/res/cdn/profile:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdnpafd'
+  name: 'profileDeployment'
   params: {
     // Required parameters
     name: 'dep-test-cdnpafd'
@@ -248,7 +248,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module profile 'br/public:avm/res/cdn/profile:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdnpmin'
+  name: 'profileDeployment'
   params: {
     // Required parameters
     name: 'dep-test-cdnpmin'
@@ -300,7 +300,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module profile 'br/public:avm/res/cdn/profile:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdnpmax'
+  name: 'profileDeployment'
   params: {
     // Required parameters
     name: 'dep-test-cdnpmax'
@@ -464,7 +464,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module profile 'br/public:avm/res/cdn/profile:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdnpwaf'
+  name: 'profileDeployment'
   params: {
     // Required parameters
     name: 'dep-test-cdnpwaf'

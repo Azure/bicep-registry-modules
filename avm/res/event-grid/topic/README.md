@@ -46,7 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module topic 'br/public:avm/res/event-grid/topic:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-egtmin'
+  name: 'topicDeployment'
   params: {
     // Required parameters
     name: 'egtmin001'
@@ -94,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module topic 'br/public:avm/res/event-grid/topic:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-egtmax'
+  name: 'topicDeployment'
   params: {
     // Required parameters
     name: 'egtmax001'
@@ -356,7 +356,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module topic 'br/public:avm/res/event-grid/topic:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-egtwaf'
+  name: 'topicDeployment'
   params: {
     // Required parameters
     name: 'egtwaf001'
