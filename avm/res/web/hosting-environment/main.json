@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "3478638370502852404"
+      "templateHash": "4636590846058781810"
     },
     "name": "App Service Environments",
     "description": "This module deploys an App Service Environment.",
@@ -514,7 +514,6 @@
       ]
     },
     "appServiceEnvironment_configurations_networking": {
-      "condition": "[equals(parameters('kind'), 'ASEv3')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-AppServiceEnv-Configurations-Networking', uniqueString(deployment().name, parameters('location')))]",
@@ -656,7 +655,7 @@
       ]
     },
     "appServiceEnvironment_configurations_customDnsSuffix": {
-      "condition": "[and(equals(parameters('kind'), 'ASEv3'), not(empty(parameters('customDnsSuffix'))))]",
+      "condition": "[not(empty(parameters('customDnsSuffix')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-AppServiceEnv-Configurations-CustomDnsSuffix', uniqueString(deployment().name, parameters('location')))]",
