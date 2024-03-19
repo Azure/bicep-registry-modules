@@ -9,7 +9,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object.')
-param federatedIdentityCredentials array = []
+param federatedIdentityCredentials federatedIdentityCredentialsType
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -66,7 +66,7 @@ resource userAssignedIdentity_lock 'Microsoft.Authorization/locks@2020-05-01' = 
   scope: userAssignedIdentity
 }
 
-module userAssignedIdentity_federatedIdentityCredentials 'federated-identity-credential/main.bicep' = [for (federatedIdentityCredential, index) in federatedIdentityCredentials: {
+module userAssignedIdentity_federatedIdentityCredentials 'federated-identity-credential/main.bicep' = [for (federatedIdentityCredential, index) in (federatedIdentityCredentials ?? []): {
   name: '${uniqueString(deployment().name, location)}-UserMSI-FederatedIdentityCredential-${index}'
   params: {
     name: federatedIdentityCredential.name
@@ -142,4 +142,18 @@ type roleAssignmentType = {
 
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
+}[]?
+
+type federatedIdentityCredentialsType = {
+  @description('Required. The name of the federated identity credential.')
+  name: string
+
+  @description('Required. The list of audiences that can appear in the issued token.')
+  audiences: string[]
+
+  @description('Required. The URL of the issuer to be trusted.')
+  issuer: string
+
+  @description('Required. The identifier of the external identity.')
+  subject: string
 }[]?
