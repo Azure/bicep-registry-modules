@@ -31,6 +31,10 @@ module testDeployment '../../../main.bicep' = {
     subscriptionAliasName: 'sub-blzv-tests-${namePrefix}-${serviceShort}'
     subscriptionDisplayName: 'sub-blzv-tests-${namePrefix}-${serviceShort}'
     subscriptionWorkload: 'Production'
+    subscriptionTags: {
+      namePrefix: namePrefix
+      serviceShort: serviceShort
+    }
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
     virtualNetworkEnabled: true
