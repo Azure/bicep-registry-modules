@@ -1,7 +1,7 @@
 . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-IsParameterRequired.ps1')
 
 BeforeAll {
-  $moduleJsonContentHashtable = Get-Content -Path (Join-Path '..' '..' 'main.json') | ConvertFrom-Json
+  $moduleJsonContentHashtable = Get-Content -Path (Join-Path 'avm' 'res' 'compute' 'virtual-machine' 'main.json') | ConvertFrom-Json -AsHashtable
 }
 
 Describe 'Availability Zone Tests' {
