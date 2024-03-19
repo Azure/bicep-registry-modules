@@ -953,6 +953,8 @@ function ConvertTo-FormattedJSONParameterObject {
 
     for ($index = 0; $index -lt $paramInJSONFormatArray.Count; $index++) {
 
+        # TODO: Detect multiline functions, handle it accordingly and move the index up to the index after the mutliline
+
         $line = $paramInJSONFormatArray[$index]
 
         # [2.4] Syntax:
@@ -973,23 +975,50 @@ function ConvertTo-FormattedJSONParameterObject {
             $isLineWithReferenceInLineKey = ($line -split ':')[0].Trim() -like '*.*'
 
             $isLineWithStringValue = $lineValue -match '".+"' # e.g. "value"
-            $isLineWithFunction = $lineValue -match "^['|`"]{1}.*\$\{.+['|`"]{1}$|^['|`"]{0}[a-zA-Z\(]+\(.+" # e.g. (split(resourceGroupResources.outputs.recoveryServicesVaultResourceId, "/"))[4] or '${last(...)}' or last() or "test${environment()}"
+            $isLineWithStringNestedFunction = $lineValue -match "^['|`"]{1}.*\$\{.+['|`"]{1}$|^['|`"]{0}[a-zA-Z\(]+\(.+" # e.g. (split(resourceGroupResources.outputs.recoveryServicesVaultResourceId, "/"))[4] or '${last(...)}' or last() or "test${environment()}"
             $isLineWithPlainValue = $lineValue -match '^\w+$' # e.g. adminPassword: password
             $isLineWithPrimitiveValue = $lineValue -match '^\s*true|false|[0-9]+$' # e.g. isSecure: true
 
-            # Combined checks
-            # In case of an output reference like '"virtualWanId": resourceGroupResources.outputs.virtualWWANResourceId' we'll only show "<virtualWanId>" (but NOT e.g. 'reference': {})
-            $isLineWithObjectPropertyReference = -not $isLineWithEmptyObjectValue -and -not $isLineWithStringValue -and $isLineWithObjectPropertyReferenceValue
-            # In case of a parameter/variable reference like 'adminPassword: password' we'll only show "<adminPassword>" (but NOT e.g. enableMe: true)
-            $isLineWithParameterOrVariableReferenceValue = $isLineWithPlainValue -and -not $isLineWithPrimitiveValue
-            # In case of any contained line like ''${resourceGroupResources.outputs.managedIdentityResourceId}': {}' we'll only show "managedIdentityResourceId: {}"
-            $isLineWithObjectReferenceKeyAndEmptyObjectValue = $isLineWithEmptyObjectValue -and $isLineWithReferenceInLineKey
-            # In case of any contained function like '"backupVaultResourceGroup": (split(resourceGroupResources.outputs.recoveryServicesVaultResourceId, "/"))[4]' we'll only show "<backupVaultResourceGroup>"
+            # Special case: Multi-line function
+            $isLineWithMultilineFunction = $lineValue -match '[a-zA-Z]+\([^\)]*\){0}\s*$' # e.g. roleDefinitionIdOrName: subscriptionResourceId( \n 'Microsoft.Authorization/roleDefinitions', \n 'acdd72a7-3385-48ef-bd42-f606fba81ae7' \n )
+            if ($isLineWithMultilineFunction) {
+                # Search leading indent so that we can use it to identify at which line the function ends
+                $indent = ([regex]::Match($paramInJSONFormatArray[$index], '^(\s+)')).Captures.Groups[1].Value.Length
 
-            if ($isLineWithObjectPropertyReference -or $isLineWithFunction -or $isLineWithParameterOrVariableReferenceValue) {
+                $functionStartIndex = $index
+                $functionEndIndex = $functionStartIndex
+                do {
+                    $functionEndIndex++
+                } while ($paramInJSONFormatArray[$functionEndIndex] -match "^\s{$($indent+1),}" -and $functionEndIndex -lt $paramInJSONFormatArray.Count)
+
+                # Overwrite the first line with a default value (i.e., "property": "<property>")
                 $line = '{0}: "<{1}>"' -f ($line -split ':')[0], ([regex]::Match(($line -split ':')[0], '"(.+)"')).Captures.Groups[1].Value
-            } elseif ($isLineWithObjectReferenceKeyAndEmptyObjectValue) {
-                $line = '"<{0}>": {1}' -f (($line -split ':')[0] -split '\.')[-1].TrimEnd('}"'), $lineValue
+
+                $linesOfFunction = $functionEndIndex - $functionStartIndex
+
+                # Nullify all but first line
+                for ($functionIndex = 1; $functionIndex -le $linesOfFunction; $functionIndex++) {
+                    $functionLineIndex = $index + $functionIndex
+                    $paramInJSONFormatArray[$functionLineIndex] = $null
+                }
+
+                # Increase index to skip the function lines
+                $index += $indexToIncrease
+            } else {
+                # Combined checks
+                # In case of an output reference like '"virtualWanId": resourceGroupResources.outputs.virtualWWANResourceId' we'll only show "<virtualWanId>" (but NOT e.g. 'reference': {})
+                $isLineWithObjectPropertyReference = -not $isLineWithEmptyObjectValue -and -not $isLineWithStringValue -and $isLineWithObjectPropertyReferenceValue
+                # In case of a parameter/variable reference like 'adminPassword: password' we'll only show "<adminPassword>" (but NOT e.g. enableMe: true)
+                $isLineWithParameterOrVariableReferenceValue = $isLineWithPlainValue -and -not $isLineWithPrimitiveValue
+                # In case of any contained line like ''${resourceGroupResources.outputs.managedIdentityResourceId}': {}' we'll only show "managedIdentityResourceId: {}"
+                $isLineWithObjectReferenceKeyAndEmptyObjectValue = $isLineWithEmptyObjectValue -and $isLineWithReferenceInLineKey
+                # In case of any contained function like '"backupVaultResourceGroup": (split(resourceGroupResources.outputs.recoveryServicesVaultResourceId, "/"))[4]' we'll only show "<backupVaultResourceGroup>"
+
+                if ($isLineWithObjectPropertyReference -or $isLineWithStringNestedFunction -or $isLineWithParameterOrVariableReferenceValue) {
+                    $line = '{0}: "<{1}>"' -f ($line -split ':')[0], ([regex]::Match(($line -split ':')[0], '"(.+)"')).Captures.Groups[1].Value
+                } elseif ($isLineWithObjectReferenceKeyAndEmptyObjectValue) {
+                    $line = '"<{0}>": {1}' -f (($line -split ':')[0] -split '\.')[-1].TrimEnd('}"'), $lineValue
+                }
             }
         } else {
             if ($line -notlike '*"*"*' -and $line -like '*.*') {
@@ -1001,11 +1030,13 @@ function ConvertTo-FormattedJSONParameterObject {
             }
         }
 
-
         $paramInJSONFormatArray[$index] = $line
     }
 
-    # [2.6] Syntax: Add comma everywhere unless:
+    # [2.6] Remove empty lines
+    $paramInJSONFormatArray = $paramInJSONFormatArray | Where-Object { $_ }
+
+    # [2.7] Syntax: Add comma everywhere unless:
     # - the current line has an opening 'object: {' or 'array: [' character
     # - the line after the current line has a closing 'object: {' or 'array: [' character
     # - it's the last closing bracket
@@ -1016,7 +1047,7 @@ function ConvertTo-FormattedJSONParameterObject {
         $paramInJSONFormatArray[$index] = '{0},' -f $paramInJSONFormatArray[$index].Trim()
     }
 
-    # [2.7] Format the final JSON string to an object to enable processing
+    # [2.8] Format the final JSON string to an object to enable processing
     try {
         $paramInJsonFormatObject = $paramInJSONFormatArray | Out-String | ConvertFrom-Json -AsHashtable -Depth 99 -ErrorAction 'Stop'
     } catch {
@@ -1373,7 +1404,7 @@ function Set-UsageExamplesSection {
 
             $formattedBicepExample = @(
                 "module $moduleNameCamelCase 'br/public:$($brLink):$($targetVersion)' = {",
-                # "  name: 'my$($moduleNameCamelCase)Deployment'"
+                "  name: '$($moduleNameCamelCase)Deployment'"
                 "  params: {"
             ) + $bicepExample +
             @( '  }',
