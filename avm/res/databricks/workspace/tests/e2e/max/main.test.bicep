@@ -162,17 +162,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        service: 'databricks_ui_api'
-        subnetResourceId: nestedDependencies.outputs.customPrivateSubnetResourceId
-        tags: {
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
-      }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
         subnetResourceId: nestedDependencies.outputs.customPrivateSubnetResourceId
         service: 'browser_authentication'
       }
