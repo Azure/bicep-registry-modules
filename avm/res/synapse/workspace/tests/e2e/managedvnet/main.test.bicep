@@ -3,7 +3,6 @@ targetScope = 'subscription'
 metadata name = 'Using managed Vnet'
 metadata description = 'This instance deploys the module using a managed Vnet.'
 
-
 // ========== //
 // Parameters //
 // ========== //
@@ -61,4 +60,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       tenant().tenantId
     ]
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }]
