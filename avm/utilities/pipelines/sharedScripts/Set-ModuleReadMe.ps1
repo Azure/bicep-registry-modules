@@ -991,6 +991,10 @@ function ConvertTo-FormattedJSONParameterObject {
                     $functionEndIndex++
                 } while ($paramInJSONFormatArray[$functionEndIndex] -match "^\s{$($indent+1),}" -and $functionEndIndex -lt $paramInJSONFormatArray.Count)
 
+                if ($functionEndIndex -eq $paramInJSONFormatArray.Count) {
+                    throw "End index of a multi-line function block for test file [$CurrentFilePath] not found."
+                }
+
                 # Overwrite the first line with a default value (i.e., "property": "<property>")
                 $line = '{0}: "<{1}>"' -f ($line -split ':')[0], ([regex]::Match(($line -split ':')[0], '"(.+)"')).Captures.Groups[1].Value
 
