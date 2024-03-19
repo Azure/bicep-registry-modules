@@ -639,7 +639,7 @@ Describe 'Module tests' -Tag 'Module' {
             @{
               parameterName  = 'roleAssignments'
               udtName        = 'roleAssignmentType'
-              udtExpectedUrl = "$interfaceBase/diagnostic-settings/udt-schema"
+              udtExpectedUrl = "$interfaceBase/role-assignments/udt-schema"
               link           = "$interfaceBase/role-assignments"
             }
             @{
