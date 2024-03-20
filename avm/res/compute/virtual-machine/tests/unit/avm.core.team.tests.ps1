@@ -6,20 +6,19 @@ param (
   [string] $repoRootPath
 )
 
-. (Join-Path $RepoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-IsParameterRequired.ps1')
-
-Write-Verbose ($moduleFolderPaths | ConvertTo-Json) -Verbose
-
-if ($moduleFolderPaths.Count -gt 1) {
-  $topLevelModuleTemplatePath = $moduleFolderPaths | Sort-Object | Select-Object -First 1
-}
-else {
-  $topLevelModuleTemplatePath = $moduleFolderPaths
-}
-
-Write-Verbose ($topLevelModuleTemplatePath | ConvertTo-Json) -Verbose
-
 BeforeAll {
+  . (Join-Path $RepoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-IsParameterRequired.ps1')
+
+  Write-Verbose ($moduleFolderPaths | ConvertTo-Json) -Verbose
+
+  if ($moduleFolderPaths.Count -gt 1) {
+    $topLevelModuleTemplatePath = $moduleFolderPaths | Sort-Object | Select-Object -First 1
+  }
+  else {
+    $topLevelModuleTemplatePath = $moduleFolderPaths
+  }
+
+  Write-Verbose ($topLevelModuleTemplatePath | ConvertTo-Json) -Verbose
   $modulePathToTest = Join-Path $topLevelModuleTemplatePath 'main.json'
   Write-Verbose ($topLevelModuleTemplatePath | ConvertTo-Json) -Verbose
   $moduleJsonContentHashtable = Get-Content -Path $modulePathToTest | ConvertFrom-Json -AsHashtable
