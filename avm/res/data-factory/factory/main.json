@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "17591619092727607098"
+      "templateHash": "18305717161046402755"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory.",
@@ -1025,6 +1025,9 @@
           },
           "type": {
             "value": "[parameters('integrationRuntimes')[copyIndex()].type]"
+          },
+          "interagrationRuntimeCustomDescription": {
+            "value": "[coalesce(tryGet(parameters('integrationRuntimes')[copyIndex()], 'interagrationRuntimeCustomDescription'), 'Managed Integration Runtime created by avm-res-datafactory-factories')]"
           },
           "managedVirtualNetworkName": "[if(contains(parameters('integrationRuntimes')[copyIndex()], 'managedVirtualNetworkName'), createObject('value', parameters('integrationRuntimes')[copyIndex()].managedVirtualNetworkName), createObject('value', ''))]",
           "typeProperties": "[if(contains(parameters('integrationRuntimes')[copyIndex()], 'typeProperties'), createObject('value', parameters('integrationRuntimes')[copyIndex()].typeProperties), createObject('value', createObject()))]"
