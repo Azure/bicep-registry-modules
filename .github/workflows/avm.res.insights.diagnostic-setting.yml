@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.insights.diagnostic-setting.yml"
       - "avm/res/insights/diagnostic-setting/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
