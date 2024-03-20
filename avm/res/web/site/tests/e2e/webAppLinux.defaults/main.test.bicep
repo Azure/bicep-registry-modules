@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Web App, using only defaults'
-metadata description = 'This instance deploys the module as Web App with the minimum set of required parameters.'
+metadata description = 'This instance deploys the module as a Linux Web App with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-web.sites-${serviceShort}-rg
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'wswamin'
+param serviceShort string = 'wswalmin'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -51,14 +51,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    kind: 'app'
+    kind: 'app,linux'
     serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
-    siteConfig: {
-      healthCheckPath: '/healthz'
-      alwaysOn: true
-    }
   }
-  
   dependsOn: [
     nestedDependencies
   ]
