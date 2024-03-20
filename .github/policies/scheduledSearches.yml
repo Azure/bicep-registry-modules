@@ -30,12 +30,12 @@ configuration:
         actions:
           - mentionUsers:
               mentionees:
-                - Azure/avm-core-team
+                - Azure/avm-core-team-technical-bicep
               replyTemplate: "Tagging the AVM Core Team (${mentionees}) due to a module owner or contributor having not responded to this issue within 3 business days. The AVM Core Team will attempt to contact the module owners/contributors directly."
           - addLabel:
               label: "Status: Response Overdue :triangular_flag_on_post:"
           - assignTo:
-              user: Azure/avm-core-team
+              user: Azure/avm-core-team-technical-bicep
 
       - description: ITA01BCP.2 - Label and assign AVM issues that have been marked as requiring triage and have not had any activity for 3 business days.
         frequencies:
@@ -57,12 +57,12 @@ configuration:
         actions:
           - mentionUsers:
               mentionees:
-                - Azure/avm-core-team
+                - Azure/avm-core-team-technical-bicep
               replyTemplate: "Tagging the AVM Core Team (${mentionees}) due to a module owner or contributor having not responded to this issue within 3 business days. The AVM Core Team will attempt to contact the module owners/contributors directly."
           - addLabel:
               label: "Status: Response Overdue :triangular_flag_on_post:"
           - assignTo:
-              user: Azure/avm-core-team
+              user: Azure/avm-core-team-technical-bicep
 
       - description: ITA02BCP.1 - Label issues as Needs Immediate Attention and leave comment if after an additional 3 business days there's still no update to the issue.
         frequencies:
@@ -87,7 +87,7 @@ configuration:
         actions:
           - mentionUsers:
               mentionees:
-                - Azure/avm-core-team
+                - Azure/avm-core-team-technical-bicep
               replyTemplate: "This issue requires the AVM Core Team's (${mentionees}) immediate attention as  it hasn't been responded to within 6 business days."
           - addLabel:
               label: "Needs: Immediate Attention :bangbang:"
@@ -112,7 +112,7 @@ configuration:
         actions:
           - mentionUsers:
               mentionees:
-                - Azure/avm-core-team
+                - Azure/avm-core-team-technical-bicep
               replyTemplate: "This issue requires the AVM Core Team's (${mentionees}) immediate attention as  it hasn't been responded to within 6 business days."
           - addLabel:
               label: "Needs: Immediate Attention :bangbang:"

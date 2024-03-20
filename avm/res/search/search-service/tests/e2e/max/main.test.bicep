@@ -75,6 +75,7 @@ module testDeployment '../../../main.bicep' = {
     hostingMode: 'highDensity'
     partitionCount: 2
     replicaCount: 3
+    semanticSearch: 'standard'
     managedIdentities: {
       systemAssigned: true
     }

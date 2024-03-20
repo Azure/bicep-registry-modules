@@ -214,8 +214,9 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
       $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e')
       foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
-        $pathExisting = Test-Path (Join-Path -Path $e2eTestFolderPath 'main.test.bicep')
-        $pathExisting | Should -Be $true
+        $filePath = Join-Path -Path $e2eTestFolderPath 'main.test.bicep'
+        $pathExisting = Test-Path $filePath
+        $pathExisting | Should -Be $true -Because "path [$filePath] is expected to exist."
       }
     }
   }
@@ -348,7 +349,7 @@ Describe 'Module tests' -Tag 'Module' {
       }
     }
 
-    It '[<moduleFolderName>] Compiled ARM template should be latest.' -TestCases $armTemplateTestCases {
+    It '[<moduleFolderName>] The [main.json] ARM template should be based on the current [main.bicep] Bicep template.' -TestCases $armTemplateTestCases {
 
       param(
         [string] $moduleFolderName,
@@ -638,7 +639,7 @@ Describe 'Module tests' -Tag 'Module' {
             @{
               parameterName  = 'roleAssignments'
               udtName        = 'roleAssignmentType'
-              udtExpectedUrl = "$interfaceBase/diagnostic-settings/udt-schema"
+              udtExpectedUrl = "$interfaceBase/role-assignments/udt-schema"
               link           = "$interfaceBase/role-assignments"
             }
             @{

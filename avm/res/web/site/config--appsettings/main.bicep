@@ -18,23 +18,23 @@ param kind string
 @description('Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.')
 param storageAccountResourceId string?
 
+@description('Optional. If the provided storage account requires Identity based authentication (\'allowSharedKeyAccess\' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is \'Storage Blob Data Owner\'.')
+param storageAccountUseIdentityAuthentication bool = false
+
 @description('Optional. Resource ID of the app insight to leverage for this resource.')
 param appInsightResourceId string?
-
-@description('Optional. For function apps. If true the app settings "AzureWebJobsDashboard" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons.')
-param setAzureWebJobsDashboard bool = contains(kind, 'functionapp') ? true : false
 
 @description('Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING.')
 param appSettingsKeyValuePairs object?
 
-var azureWebJobsValues = !empty(storageAccountResourceId) ? union({
-    AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};'
-  }, ((setAzureWebJobsDashboard == true) ? {
-    AzureWebJobsDashboard: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};'
-  } : {})) : {}
+var azureWebJobsValues = !empty(storageAccountResourceId) && !(storageAccountUseIdentityAuthentication) ? {
+  AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};'
+} : !empty(storageAccountResourceId) && storageAccountUseIdentityAuthentication ? union(
+  { AzureWebJobsStorage__accountName: storageAccount.name },
+  { AzureWebJobsStorage__blobServiceUri: storageAccount.properties.primaryEndpoints.blob }
+) : {}
 
 var appInsightsValues = !empty(appInsightResourceId) ? {
-  APPINSIGHTS_INSTRUMENTATIONKEY: appInsight.properties.InstrumentationKey
   APPLICATIONINSIGHTS_CONNECTION_STRING: appInsight.properties.ConnectionString
 } : {}
 

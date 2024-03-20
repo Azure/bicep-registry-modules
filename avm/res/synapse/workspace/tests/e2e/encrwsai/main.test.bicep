@@ -3,7 +3,6 @@ targetScope = 'subscription'
 metadata name = 'Using encryption with Customer-Managed-Key'
 metadata description = 'This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity to access the Customer-Managed-Key secret.'
 
-
 // ========== //
 // Parameters //
 // ========== //
@@ -66,4 +65,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     encryptionActivateWorkspace: true
     location: resourceLocation
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }]
