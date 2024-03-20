@@ -694,7 +694,7 @@ Whether or not this Managed Environment is zone-redundant.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 
 ## Outputs
