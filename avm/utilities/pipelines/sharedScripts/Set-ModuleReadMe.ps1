@@ -953,8 +953,6 @@ function ConvertTo-FormattedJSONParameterObject {
 
     for ($index = 0; $index -lt $paramInJSONFormatArray.Count; $index++) {
 
-        # TODO: Detect multiline functions, handle it accordingly and move the index up to the index after the mutliline
-
         $line = $paramInJSONFormatArray[$index]
 
         # [2.4] Syntax:
