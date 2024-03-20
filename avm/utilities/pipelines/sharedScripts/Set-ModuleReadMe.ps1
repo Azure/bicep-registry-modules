@@ -625,7 +625,7 @@ function Set-CrossReferencesSection {
 
     # Process content
     $SectionContent = [System.Collections.ArrayList]@(
-        'This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).',
+        'This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).',
         '',
         '| Reference | Type |',
         '| :-- | :-- |'
@@ -677,13 +677,13 @@ Mandatory. A list of all top-level (i.e. non-nested) parameter names
 Mandatory. A list of all required top-level (i.e. non-nested) parameter names
 
 .EXAMPLE
-Add-BicepParameterTypeComment -AllParametersList @('name', 'lock') -RequiredParametersList @('name') -BicepParams "name: 'carml'\nlock: 'CanNotDelete'"
+Add-BicepParameterTypeComment -AllParametersList @('name', 'lock') -RequiredParametersList @('name') -BicepParams "name: 'module'\nlock: 'CanNotDelete'"
 
 Add type comments to given bicep params string, using one required parameter 'name'. Would return:
 
 '
     // Required parameters
-    name: 'carml'
+    name: 'module'
     // Non-required parameters
     lock: {
         kind: 'CanNotDelete'
@@ -757,12 +757,12 @@ Mandatory. The JSON parameters block to process (ideally already without 'value'
 Mandatory. A list of all required top-level (i.e. non-nested) parameter names
 
 .EXAMPLE
-Get-OrderedParametersJSON -RequiredParametersList @('name') -ParametersJSON '{ "lock": "CanNotDelete","name": "carml" }'
+Get-OrderedParametersJSON -RequiredParametersList @('name') -ParametersJSON '{ "lock": "CanNotDelete","name": "module" }'
 
 Order the given JSON object alphabetically. Would result into:
 
 @{
-    name: 'carml'
+    name: 'module'
     lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -815,7 +815,7 @@ Mandatory. The parameter JSON object to process
 Mandatory. A list of all required top-level (i.e. non-nested) parameter names
 
 .EXAMPLE
-Build-OrderedJSONObject -RequiredParametersList @('name') -ParametersJSON '{ "lock": { "value": "CanNotDelete" }, "name": { "value": "carml" } }'
+Build-OrderedJSONObject -RequiredParametersList @('name') -ParametersJSON '{ "lock": { "value": "CanNotDelete" }, "name": { "value": "module" } }'
 
 Build a formatted Parameter-JSON object with one required parameter. Would result into:
 
@@ -825,7 +825,7 @@ Build a formatted Parameter-JSON object with one required parameter. Would resul
     "parameters": {
         // Required parameters
         "name": {
-            "value": "carml"
+            "value": "module"
         },
         // Non-required parameters
         "lock": {
@@ -902,13 +902,13 @@ Mandatory. The Bicep parameter block to process
 Mandatory. The Path of the file containing the param block
 
 .EXAMPLE
-ConvertTo-FormattedJSONParameterObject -BicepParamBlock "name: 'carml'\nlock: 'CanNotDelete'" -CurrentFilePath 'c:/main.test.bicep'
+ConvertTo-FormattedJSONParameterObject -BicepParamBlock "name: 'module'\nlock: 'CanNotDelete'" -CurrentFilePath 'c:/main.test.bicep'
 
-Convert the Bicep string "name: 'carml'\nlock: 'CanNotDelete'" into a parameter JSON object. Would result into:
+Convert the Bicep string "name: 'module'\nlock: 'CanNotDelete'" into a parameter JSON object. Would result into:
 
 @{
     lock = @{
-        value = 'carml'
+        value = 'module'
     }
     lock = @{
         value = 'CanNotDelete'
@@ -1081,13 +1081,13 @@ Mandatory. The parameter JSON object to process.
 Mandatory. A list of all required top-level (i.e. non-nested) parameter names
 
 .EXAMPLE
-ConvertTo-FormattedBicep -RequiredParametersList @('name') -JSONParameters @{ lock = @{ value = 'carml' }; lock = @{ value = 'CanNotDelete' } }
+ConvertTo-FormattedBicep -RequiredParametersList @('name') -JSONParameters @{ lock = @{ value = 'module' }; lock = @{ value = 'CanNotDelete' } }
 
 Convert the given JSONParameters object with one required parameter to a formatted Bicep object. Would result into:
 
 '
     // Required parameters
-    name: 'carml'
+    name: 'module'
     // Non-required parameters
     lock: {
         kind: 'CanNotDelete'
