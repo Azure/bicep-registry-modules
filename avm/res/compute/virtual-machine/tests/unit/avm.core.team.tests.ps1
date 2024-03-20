@@ -1,14 +1,14 @@
 param (
   [Parameter(Mandatory = $false)]
-  [array] $moduleFolderPaths = ((Get-ChildItem $repoRootPath -Recurse -Directory -Force).FullName | Where-Object {
-          (Get-ChildItem $_ -File -Depth 0 -Include @('main.bicep') -Force).Count -gt 0
-    }),
+  [array] $moduleFolderPaths,
 
   [Parameter(Mandatory = $false)]
-  [string] $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.Parent.FullName
+  [string] $repoRootPath
 )
 
 . (Join-Path $RepoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-IsParameterRequired.ps1')
+
+Write-Verbose ($moduleFolderPaths | ConvertTo-Json) -Verbose
 
 if ($moduleFolderPaths.Count -gt 1) {
   $topLevelModuleTemplatePath = $moduleFolderPaths | Sort-Object | Select-Object -First 1
@@ -17,7 +17,7 @@ else {
   $topLevelModuleTemplatePath = $moduleFolderPaths
 }
 
-Write-Verbose $topLevelModuleTemplatePath -Verbose
+Write-Verbose ($topLevelModuleTemplatePath | ConvertTo-Json) -Verbose
 
 BeforeAll {
   $moduleJsonContentHashtable = Get-Content -Path (Join-Path $topLevelModuleTemplatePath 'main.json') | ConvertFrom-Json -AsHashtable
