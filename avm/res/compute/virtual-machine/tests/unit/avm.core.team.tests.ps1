@@ -8,12 +8,16 @@ param (
 
 . (Join-Path $RepoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-IsParameterRequired.ps1')
 
+Write-Verbose $ModuleFolderPaths -Verbose
+
 if ($moduleFolderPaths.Count -gt 1) {
   $topLevelModuleTemplatePath = $moduleFolderPaths | Sort-Object | Select-Object -First 1
 }
 else {
   $topLevelModuleTemplatePath = $moduleFolderPaths
 }
+
+Write-Verbose $topLevelModuleTemplatePath -Verbose
 
 BeforeAll {
   $moduleJsonContentHashtable = Get-Content -Path (Join-Path $topLevelModuleTemplatePath 'main.json') | ConvertFrom-Json -AsHashtable
