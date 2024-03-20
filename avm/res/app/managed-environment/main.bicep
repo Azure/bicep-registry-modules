@@ -47,7 +47,7 @@ param platformReservedCidr string = ''
 param platformReservedDnsIP string = ''
 
 @description('Optional. Whether or not this Managed Environment is zone-redundant.')
-param zoneRedundant bool = false
+param zoneRedundant bool = true
 
 @description('Optional. Password of the certificate used by the custom domain.')
 @secure()
