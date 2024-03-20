@@ -1,14 +1,14 @@
 param (
-  [Parameter(Mandatory)]
-  [array] $ModuleFolderPaths,
+  [Parameter(Mandatory = $false)]
+  [array] $moduleFolderPaths = ((Get-ChildItem $repoRootPath -Recurse -Directory -Force).FullName | Where-Object {
+          (Get-ChildItem $_ -File -Depth 0 -Include @('main.bicep') -Force).Count -gt 0
+    }),
 
-  [Parameter(Mandatory)]
-  [string] $RepoRootPath
+  [Parameter(Mandatory = $false)]
+  [string] $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.Parent.FullName
 )
 
 . (Join-Path $RepoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-IsParameterRequired.ps1')
-
-Write-Verbose $ModuleFolderPaths -Verbose
 
 if ($moduleFolderPaths.Count -gt 1) {
   $topLevelModuleTemplatePath = $moduleFolderPaths | Sort-Object | Select-Object -First 1
