@@ -20,7 +20,9 @@ else {
 Write-Verbose ($topLevelModuleTemplatePath | ConvertTo-Json) -Verbose
 
 BeforeAll {
-  $moduleJsonContentHashtable = Get-Content -Path (Join-Path $topLevelModuleTemplatePath 'main.json') | ConvertFrom-Json -AsHashtable
+  $modulePathToTest = Join-Path $topLevelModuleTemplatePath 'main.json'
+  Write-Verbose ($topLevelModuleTemplatePath | ConvertTo-Json) -Verbose
+  $moduleJsonContentHashtable = Get-Content -Path $modulePathToTest | ConvertFrom-Json -AsHashtable
 }
 
 Describe 'AVM Core Team Module Specific Tests' {
