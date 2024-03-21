@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "8442375074461194977"
+      "templateHash": "13030276953847012005"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -480,7 +480,7 @@
         "enabled": false
       },
       "metadata": {
-        "description": "Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the [\"enabled\": true] property to be executed."
+        "description": "Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the [\"enabled\": true] property to be executed. Needs a managed identy."
       }
     },
     "hostPoolName": {
@@ -854,6 +854,7 @@
       "name": "[last(split(if(not(empty(coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'monitoringWorkspaceId'), ''))), parameters('extensionMonitoringAgentConfig').monitoringWorkspaceId, 'law'), '/'))]"
     },
     "AzureWindowsBaseline": {
+      "condition": "[not(empty(parameters('guestConfiguration')))]",
       "type": "Microsoft.GuestConfiguration/guestConfigurationAssignments",
       "apiVersion": "2020-06-25",
       "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
@@ -4437,7 +4438,7 @@
           "type": {
             "value": "DSC"
           },
-          "typeHandlerVersion": "[if(contains(parameters('extensionHostPoolRegistration'), 'typeHandlerVersion'), createObject('value', parameters('extensionHostPoolRegistration').typeHandlerVersion), createObject('value', '2.73'))]",
+          "typeHandlerVersion": "[if(contains(parameters('extensionHostPoolRegistration'), 'typeHandlerVersion'), createObject('value', parameters('extensionHostPoolRegistration').typeHandlerVersion), createObject('value', '2.77'))]",
           "autoUpgradeMinorVersion": "[if(contains(parameters('extensionHostPoolRegistration'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionHostPoolRegistration').autoUpgradeMinorVersion), createObject('value', true()))]",
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionHostPoolRegistration'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionHostPoolRegistration').enableAutomaticUpgrade), createObject('value', false()))]",
           "settings": {

@@ -48,70 +48,69 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-    params: {
-      managedIdentities: {
-        systemAssigned: true
-      }
-      location: resourceLocation
-      name: '${namePrefix}${serviceShort}'
-      adminUsername: 'localAdminUser'
-      imageReference: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2022-datacenter-azure-edition'
-        version: 'latest'
-      }
-      nicConfigurations: [
-        {
-          ipConfigurations: [
-            {
-              name: 'ipconfig01'
-              subnetResourceId: nestedDependencies.outputs.subnetResourceId
-            }
-          ]
-          nicSuffix: '-nic-01'
-        }
-      ]
-      osDisk: {
-        diskSizeGB: '128'
-        caching: 'ReadWrite'
-        managedDisk: {
-          storageAccountType: 'Premium_LRS'
-        }
-      }
-      osType: 'Windows'
-      vmSize: 'Standard_DS2_v2'
-      adminPassword: password
-      extensionGuestConfigurationExtension: {
-        enabled: true
-      }
-      guestConfiguration: {
-        name: 'AzureWindowsBaseline'
-        version: '1.*'
-        assignmentType: 'ApplyAndMonitor'
-        configurationParameter: [
+module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+  params: {
+    managedIdentities: {
+      systemAssigned: true
+    }
+    location: resourceLocation
+    name: '${namePrefix}${serviceShort}'
+    adminUsername: 'localAdminUser'
+    imageReference: {
+      publisher: 'MicrosoftWindowsServer'
+      offer: 'WindowsServer'
+      sku: '2022-datacenter-azure-edition'
+      version: 'latest'
+    }
+    nicConfigurations: [
+      {
+        ipConfigurations: [
           {
-            name: 'Minimum Password Length;ExpectedValue'
-            value: '16'
-          }
-          {
-            name: 'Minimum Password Length;RemediateValue'
-            value: '16'
-          }
-          {
-            name: 'Maximum Password Age;ExpectedValue'
-            value: '75'
-          }
-          {
-            name: 'Maximum Password Age;RemediateValue'
-            value: '75'
+            name: 'ipconfig01'
+            subnetResourceId: nestedDependencies.outputs.subnetResourceId
           }
         ]
+        nicSuffix: '-nic-01'
+      }
+    ]
+    osDisk: {
+      diskSizeGB: '128'
+      caching: 'ReadWrite'
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
       }
     }
+    osType: 'Windows'
+    vmSize: 'Standard_DS2_v2'
+    adminPassword: password
+    extensionGuestConfigurationExtension: {
+      enabled: true
+    }
+    guestConfiguration: {
+      name: 'AzureWindowsBaseline'
+      version: '1.*'
+      assignmentType: 'ApplyAndMonitor'
+      configurationParameter: [
+        {
+          name: 'Minimum Password Length;ExpectedValue'
+          value: '16'
+        }
+        {
+          name: 'Minimum Password Length;RemediateValue'
+          value: '16'
+        }
+        {
+          name: 'Maximum Password Age;ExpectedValue'
+          value: '75'
+        }
+        {
+          name: 'Maximum Password Age;RemediateValue'
+          value: '75'
+        }
+      ]
+    }
   }
+}
 ]

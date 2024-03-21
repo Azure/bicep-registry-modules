@@ -51,62 +51,61 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-    params: {
-      location: resourceLocation
-      name: '${namePrefix}${serviceShort}'
-      adminUsername: 'localAdminUser'
-      managedIdentities: {
-        systemAssigned: true
-      }
-      imageReference: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2022-datacenter-azure-edition'
-        version: 'latest'
-      }
-      nicConfigurations: [
-        {
-          ipConfigurations: [
-            {
-              name: 'ipconfig01'
-              subnetResourceId: nestedDependencies.outputs.subnetResourceId
-            }
-          ]
-          nicSuffix: '-nic-01'
-        }
-      ]
-      osDisk: {
-        diskSizeGB: '128'
-        caching: 'ReadWrite'
-        managedDisk: {
-          storageAccountType: 'Premium_LRS'
-        }
-      }
-      osType: 'Windows'
-      vmSize: 'Standard_DS2_v2'
-      adminPassword: password
-      extensionAadJoinConfig: {
-        enabled: true
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
-      }
-      extensionHostPoolRegistration: {
-        enabled: true
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
-      }
-      hostPoolName: nestedDependencies.outputs.hostPoolName
-      registrationInfoToken: nestedDependencies.outputs.registrationInfoToken
+module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+  params: {
+    location: resourceLocation
+    name: '${namePrefix}${serviceShort}'
+    adminUsername: 'localAdminUser'
+    managedIdentities: {
+      systemAssigned: true
     }
+    imageReference: {
+      publisher: 'MicrosoftWindowsServer'
+      offer: 'WindowsServer'
+      sku: '2022-datacenter-azure-edition'
+      version: 'latest'
+    }
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig01'
+            subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          }
+        ]
+        nicSuffix: '-nic-01'
+      }
+    ]
+    osDisk: {
+      diskSizeGB: '128'
+      caching: 'ReadWrite'
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    osType: 'Windows'
+    vmSize: 'Standard_DS2_v2'
+    adminPassword: password
+    extensionAadJoinConfig: {
+      enabled: true
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionHostPoolRegistration: {
+      enabled: true
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
+    }
+    hostPoolName: nestedDependencies.outputs.hostPoolName
+    registrationInfoToken: nestedDependencies.outputs.registrationInfoToken
   }
+}
 ]
