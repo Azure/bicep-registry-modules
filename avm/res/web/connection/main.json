@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "12952997110880403069"
+      "version": "0.26.54.24096",
+      "templateHash": "15994759348832477452"
     },
     "name": "API Connections",
     "description": "This module deploys an Azure API Connection.",
@@ -108,7 +108,7 @@
   "parameters": {
     "api": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Specific values for some API connections."
       }
@@ -119,16 +119,16 @@
         "description": "Required. Connection name for connection. Example: 'azureblob' when using blobs.  It can change depending on the resource."
       }
     },
-    "enableDefaultTelemetry": {
+    "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "customParameterValues": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Customized parameter values for specific connections."
       }
@@ -148,14 +148,14 @@
     },
     "nonSecretParameterValues": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Dictionary of nonsecret parameter values."
       }
     },
     "parameterValues": {
       "type": "secureObject",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Connection strings or access keys for connection. Example: 'accountName' and 'accessKey' when using blobs.  It can change depending on the resource."
       }
@@ -168,7 +168,7 @@
     },
     "statuses": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Status of the connection."
       }
@@ -188,7 +188,7 @@
     },
     "testLinks": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Links to test the API connection."
       }
@@ -204,17 +204,23 @@
     }
   },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.web-connection.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
-          "resources": []
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
         }
       }
     },
@@ -228,10 +234,10 @@
         "displayName": "[parameters('displayName')]",
         "customParameterValues": "[parameters('customParameterValues')]",
         "api": "[parameters('api')]",
-        "parameterValues": "[if(not(empty(parameters('parameterValues'))), parameters('parameterValues'), null())]",
-        "nonSecretParameterValues": "[if(not(empty(parameters('nonSecretParameterValues'))), parameters('nonSecretParameterValues'), null())]",
-        "testLinks": "[if(not(empty(parameters('testLinks'))), parameters('testLinks'), null())]",
-        "statuses": "[if(not(empty(parameters('statuses'))), parameters('statuses'), null())]"
+        "parameterValues": "[parameters('parameterValues')]",
+        "nonSecretParameterValues": "[parameters('nonSecretParameterValues')]",
+        "testLinks": "[parameters('testLinks')]",
+        "statuses": "[parameters('statuses')]"
       }
     },
     "connection_lock": {

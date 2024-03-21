@@ -1,5 +1,10 @@
 # API Connections `[Microsoft.Web/connections]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an Azure API Connection.
 
 ## Navigation
@@ -9,6 +14,7 @@ This module deploys an Azure API Connection.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -24,12 +30,73 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/web.connection:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/web/connection:<version>`.
 
-- [Using large parameter set](#example-1-using-large-parameter-set)
-- [WAF-aligned](#example-2-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Using large parameter set_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module connection 'br/public:avm/res/web/connection:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wcmin'
+  params: {
+    // Required parameters
+    displayName: 'azuremonitorlogs'
+    name: 'azuremonitor'
+    // Non-required parameters
+    api: {
+      id: '<id>'
+    }
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "displayName": {
+      "value": "azuremonitorlogs"
+    },
+    "name": {
+      "value": "azuremonitor"
+    },
+    // Non-required parameters
+    "api": {
+      "value": {
+        "id": "<id>"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -39,8 +106,8 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module connection 'br:bicep/modules/web.connection:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-wcmax'
+module connection 'br/public:avm/res/web/connection:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wcmax'
   params: {
     // Required parameters
     displayName: 'azuremonitorlogs'
@@ -49,7 +116,7 @@ module connection 'br:bicep/modules/web.connection:1.0.0' = {
     api: {
       id: '<id>'
     }
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -105,8 +172,8 @@ module connection 'br:bicep/modules/web.connection:1.0.0' = {
         "id": "<id>"
       }
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -147,7 +214,7 @@ module connection 'br:bicep/modules/web.connection:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -157,8 +224,8 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module connection 'br:bicep/modules/web.connection:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-wcwaf'
+module connection 'br/public:avm/res/web/connection:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-wcwaf'
   params: {
     // Required parameters
     displayName: 'azuremonitorlogs'
@@ -167,7 +234,7 @@ module connection 'br:bicep/modules/web.connection:1.0.0' = {
     api: {
       id: '<id>'
     }
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -206,8 +273,8 @@ module connection 'br:bicep/modules/web.connection:1.0.0' = {
         "id": "<id>"
       }
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -245,7 +312,7 @@ module connection 'br:bicep/modules/web.connection:1.0.0' = {
 | :-- | :-- | :-- |
 | [`api`](#parameter-api) | object | Specific values for some API connections. |
 | [`customParameterValues`](#parameter-customparametervalues) | object | Customized parameter values for specific connections. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location of the deployment. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`nonSecretParameterValues`](#parameter-nonsecretparametervalues) | object | Dictionary of nonsecret parameter values. |
@@ -275,7 +342,6 @@ Specific values for some API connections.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `customParameterValues`
 
@@ -283,11 +349,10 @@ Customized parameter values for specific connections.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -343,7 +408,6 @@ Dictionary of nonsecret parameter values.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `parameterValues`
 
@@ -351,7 +415,6 @@ Connection strings or access keys for connection. Example: 'accountName' and 'ac
 
 - Required: No
 - Type: secureObject
-- Default: `{}`
 
 ### Parameter: `roleAssignments`
 
@@ -448,7 +511,6 @@ Status of the connection.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `tags`
 
@@ -463,7 +525,6 @@ Links to test the API connection.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 
 ## Outputs
@@ -478,3 +539,7 @@ Links to test the API connection.
 ## Cross-referenced modules
 
 _None_
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
