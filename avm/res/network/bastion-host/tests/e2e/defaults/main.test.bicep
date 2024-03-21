@@ -52,6 +52,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
     virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
+    skuName: 'Standard'
   }
   dependsOn: [
     nestedDependencies
