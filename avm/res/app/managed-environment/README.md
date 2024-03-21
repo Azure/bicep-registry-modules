@@ -48,6 +48,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amemin001'
     // Non-required parameters
+    infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     location: '<location>'
   }
@@ -74,6 +75,9 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "amemin001"
     },
     // Non-required parameters
+    "infrastructureResourceGroupName": {
+      "value": "<infrastructureResourceGroupName>"
+    },
     "infrastructureSubnetId": {
       "value": "<infrastructureSubnetId>"
     },

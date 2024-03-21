@@ -52,6 +52,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
     infrastructureSubnetId: nestedDependencies.outputs.subnetResourceId
+    infrastructureResourceGroupName: 'me-${resourceGroupName}'
     logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
   }
   dependsOn: [
