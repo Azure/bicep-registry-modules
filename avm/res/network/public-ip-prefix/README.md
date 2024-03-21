@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-npipmin'
+  name: 'publicIpPrefixDeployment'
   params: {
     // Required parameters
     name: 'npipmin001'
@@ -94,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-npipmax'
+  name: 'publicIpPrefixDeployment'
   params: {
     // Required parameters
     name: 'npipmax001'
@@ -204,7 +204,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-npipwaf'
+  name: 'publicIpPrefixDeployment'
   params: {
     // Required parameters
     name: 'npipwaf001'

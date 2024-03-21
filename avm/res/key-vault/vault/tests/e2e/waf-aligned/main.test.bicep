@@ -60,91 +60,93 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}002'
-    location: resourceLocation
-    diagnosticSettings: [
-      {
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    // Only for testing purposes
-    enablePurgeProtection: false
-    enableRbacAuthorization: true
-    keys: [
-      {
-        attributesExp: 1725109032
-        attributesNbf: 10000
-        name: 'keyName'
-        rotationPolicy: {
-          attributes: {
-            expiryTime: 'P2Y'
-          }
-          lifetimeActions: [
-            {
-              trigger: {
-                timeBeforeExpiry: 'P2M'
-              }
-              action: {
-                type: 'Rotate'
-              }
-            }
-            {
-              trigger: {
-                timeBeforeExpiry: 'P30D'
-              }
-              action: {
-                type: 'Notify'
-              }
-            }
-          ]
-        }
-        keySize: 4096
-      }
-    ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-    }
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSResourceId
-        ]
-        service: 'vault'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-      }
-    ]
-    secrets: {
-      secureList: [
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}002'
+      location: resourceLocation
+      diagnosticSettings: [
         {
-          attributesExp: 1702648632
-          attributesNbf: 10000
-          contentType: 'Something'
-          name: 'secretName'
-          value: 'secretValue'
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
+      // Only for testing purposes
+      enablePurgeProtection: false
+      enableRbacAuthorization: true
+      keys: [
+        {
+          attributesExp: 1725109032
+          attributesNbf: 10000
+          name: 'keyName'
+          rotationPolicy: {
+            attributes: {
+              expiryTime: 'P2Y'
+            }
+            lifetimeActions: [
+              {
+                trigger: {
+                  timeBeforeExpiry: 'P2M'
+                }
+                action: {
+                  type: 'Rotate'
+                }
+              }
+              {
+                trigger: {
+                  timeBeforeExpiry: 'P30D'
+                }
+                action: {
+                  type: 'Notify'
+                }
+              }
+            ]
+          }
+          keySize: 4096
+        }
+      ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      networkAcls: {
+        bypass: 'AzureServices'
+        defaultAction: 'Deny'
+      }
+      privateEndpoints: [
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSResourceId
+          ]
+          service: 'vault'
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        }
+      ]
+      secrets: {
+        secureList: [
+          {
+            attributesExp: 1702648632
+            attributesNbf: 10000
+            contentType: 'Something'
+            name: 'secretName'
+            value: 'secretValue'
+          }
+        ]
+      }
+      softDeleteRetentionInDays: 7
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
-    softDeleteRetentionInDays: 7
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
+    ]
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
-}]
+]
