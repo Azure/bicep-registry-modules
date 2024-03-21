@@ -43,7 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvsmin'
+  name: 'vpnSiteDeployment'
   params: {
     // Required parameters
     name: 'nvsmin'
@@ -107,7 +107,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvsmax'
+  name: 'vpnSiteDeployment'
   params: {
     // Required parameters
     name: 'nvsmax'
@@ -303,7 +303,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvswaf'
+  name: 'vpnSiteDeployment'
   params: {
     // Required parameters
     name: 'nvswaf'
