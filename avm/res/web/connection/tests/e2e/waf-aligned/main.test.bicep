@@ -46,10 +46,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     api: {
       id: '${subscription().id}/providers/Microsoft.Web/locations/${resourceLocation}/managedApis/azuremonitorlogs'
     }
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
