@@ -14,6 +14,7 @@ param location string = resourceGroup().location
   'functionapp,linux' // function app linux os
   'functionapp,workflowapp' // logic app workflow
   'functionapp,workflowapp,linux' // logic app docker container
+  'app,linux' // linux web app
   'app' // normal web app
 ])
 param kind string
@@ -420,7 +421,7 @@ output slotResourceIds array = [for (slot, index) in (slots ?? []): app_slots[in
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(app.identity, 'principalId') ? app.identity.principalId : ''
+output systemAssignedMIPrincipalId string = app.?identity.?principalId ?? ''
 
 @description('The principal ID of the system assigned identity of slots.')
 output slotSystemAssignedMIPrincipalIds array = [for (slot, index) in (slots ?? []): app_slots[index].outputs.systemAssignedMIPrincipalId]

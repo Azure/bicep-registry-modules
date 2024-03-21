@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "15512301092613886840"
+      "version": "0.26.54.24096",
+      "templateHash": "18305717161046402755"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory.",
@@ -816,8 +816,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "13192908070354977743"
+              "version": "0.26.54.24096",
+              "templateHash": "11423521716306055194"
             },
             "name": "Data Factory Managed Virtual Networks",
             "description": "This module deploys a Data Factory Managed Virtual Network.",
@@ -890,8 +890,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "727544206896372572"
+                      "version": "0.26.54.24096",
+                      "templateHash": "15559328970285278624"
                     },
                     "name": "Data Factory Managed Virtual Network Managed PrivateEndpoints",
                     "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint.",
@@ -1026,6 +1026,9 @@
           "type": {
             "value": "[parameters('integrationRuntimes')[copyIndex()].type]"
           },
+          "interagrationRuntimeCustomDescription": {
+            "value": "[coalesce(tryGet(parameters('integrationRuntimes')[copyIndex()], 'interagrationRuntimeCustomDescription'), 'Managed Integration Runtime created by avm-res-datafactory-factories')]"
+          },
           "managedVirtualNetworkName": "[if(contains(parameters('integrationRuntimes')[copyIndex()], 'managedVirtualNetworkName'), createObject('value', parameters('integrationRuntimes')[copyIndex()].managedVirtualNetworkName), createObject('value', ''))]",
           "typeProperties": "[if(contains(parameters('integrationRuntimes')[copyIndex()], 'typeProperties'), createObject('value', parameters('integrationRuntimes')[copyIndex()].typeProperties), createObject('value', createObject()))]"
         },
@@ -1035,8 +1038,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "7384162383092533956"
+              "version": "0.26.54.24096",
+              "templateHash": "5995255380692588407"
             },
             "name": "Data Factory Integration RunTimes",
             "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime.",
@@ -1078,6 +1081,13 @@
               "metadata": {
                 "description": "Optional. Integration Runtime type properties. Required if type is \"Managed\"."
               }
+            },
+            "interagrationRuntimeCustomDescription": {
+              "type": "string",
+              "defaultValue": "Managed Integration Runtime created by avm-res-datafactory-factories",
+              "metadata": {
+                "description": "Optional. The description of the Integration Runtime."
+              }
             }
           },
           "variables": {
@@ -1091,7 +1101,7 @@
               "type": "Microsoft.DataFactory/factories/integrationRuntimes",
               "apiVersion": "2018-06-01",
               "name": "[format('{0}/{1}', parameters('dataFactoryName'), parameters('name'))]",
-              "properties": "[if(equals(parameters('type'), 'Managed'), createObject('type', parameters('type'), 'managedVirtualNetwork', variables('managedVirtualNetworkVar'), 'typeProperties', parameters('typeProperties')), createObject('type', parameters('type')))]"
+              "properties": "[if(equals(parameters('type'), 'Managed'), createObject('description', parameters('interagrationRuntimeCustomDescription'), 'type', parameters('type'), 'managedVirtualNetwork', variables('managedVirtualNetworkVar'), 'typeProperties', parameters('typeProperties')), createObject('type', parameters('type')))]"
             }
           ],
           "outputs": {

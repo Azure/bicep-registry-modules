@@ -437,7 +437,7 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the static site. |
+| [`name`](#parameter-name) | string | The name of the static site. |
 
 **Optional parameters**
 
@@ -460,14 +460,14 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
 | [`repositoryToken`](#parameter-repositorytoken) | securestring | The Personal Access Token for accessing the GitHub repository. |
 | [`repositoryUrl`](#parameter-repositoryurl) | string | The name of the GitHub repository. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`sku`](#parameter-sku) | string | Type of static site to deploy. |
+| [`sku`](#parameter-sku) | string | The service tier and name of the resource SKU. |
 | [`stagingEnvironmentPolicy`](#parameter-stagingenvironmentpolicy) | string | State indicating whether staging environments are allowed or not allowed for a static web app. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`templateProperties`](#parameter-templateproperties) | object | Template Options for the static site. |
 
 ### Parameter: `name`
 
-Name of the static site.
+The name of the static site.
 
 - Required: Yes
 - Type: string
@@ -1063,7 +1063,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `sku`
 
-Type of static site to deploy.
+The service tier and name of the resource SKU.
 
 - Required: No
 - Type: string
@@ -1119,7 +1119,7 @@ Template Options for the static site.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |
