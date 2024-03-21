@@ -219,9 +219,10 @@ resource namespace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@202
 
 module namespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-namespace-PrivateEndpoint-${index}'
+  scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
   params: {
     name: privateEndpoint.?name ?? 'pep-${last(split(namespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
-    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
+    privateLinkServiceConnections: privateEndpoint.?isManualConnection != true ? [
       {
         name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(namespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
         properties: {
@@ -232,7 +233,7 @@ module namespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
         }
       }
     ] : null
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
+    isManualConnection: privateEndpoint.?isManualConnection == true ? [
       {
         name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(namespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
         properties: {
