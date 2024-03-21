@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.connection.yml"
       - "avm/res/network/connection/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
