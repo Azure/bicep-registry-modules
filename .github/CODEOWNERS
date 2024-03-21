@@ -29,7 +29,7 @@
 /avm/res/compute/proximity-placement-group/ @Azure/avm-res-compute-proximityplacementgroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/compute/ssh-public-key/ @Azure/avm-res-compute-sshpublickey-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/compute/virtual-machine/ @Azure/avm-res-compute-virtualmachine-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/compute/virtual-machine-scale-set/ @Azure/avm-res-compute-virtualmachinescaleset-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/compute/virtual-machine-scale-set/ @Azure/avm-res-compute-virtualmachinescaleset-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/consumption/budget/ @Azure/avm-res-consumption-budget-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/container-instance/container-group/ @Azure/avm-res-containerinstance-containergroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/container-registry/registry/ @Azure/avm-res-containerregistry-registry-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -49,6 +49,7 @@
 #/avm/res/digital-twins/digital-twins-instance/ @Azure/avm-res-digitaltwins-digitaltwinsinstance-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/document-db/database-account/ @Azure/avm-res-documentdb-databaseaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/event-grid/domain/ @Azure/avm-res-eventgrid-domain-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/event-grid/namespace/ @Azure/avm-res-eventgrid-namespace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/event-grid/system-topic/ @Azure/avm-res-eventgrid-systemtopic-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/event-grid/topic/ @Azure/avm-res-eventgrid-topic-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/event-hub/namespace/ @Azure/avm-res-eventhub-namespace-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -117,7 +118,7 @@
 #/avm/res/policy-insights/remediation/ @Azure/avm-res-policyinsights-remediation-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/power-bi-dedicated/capacity/ @Azure/avm-res-powerbidedicated-capacity-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/purview/account/ @Azure/avm-res-purview-account-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/recovery-services/vault/ @Azure/avm-res-recoveryservices-vault-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/recovery-services/vault/ @Azure/avm-res-recoveryservices-vault-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/relay/namespace/ @Azure/avm-res-relay-namespace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/resource-graph/query/ @Azure/avm-res-resourcegraph-query-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/resources/deployment-script/ @Azure/avm-res-resources-deploymentscript-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -144,3 +145,5 @@
 #/avm/ptn/avd-lza/networking/ @Azure/avm-ptn-avd-lza-networking-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/ptn/avd-lza/session-hosts/ @Azure/avm-ptn-avd-lza-sessionhosts-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/ptn/security/security-center/ @Azure/avm-ptn-securitycenter-module-owners-bicep @Azure/avm-core-team-technical-bicep
+
+*avm.core.team.tests.ps1 @Azure/avm-core-team-technical-bicep

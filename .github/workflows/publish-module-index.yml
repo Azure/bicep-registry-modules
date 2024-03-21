@@ -37,20 +37,20 @@ jobs:
             await script({ require, github, context, core })
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: moduleIndex.json
           path: moduleIndex.json
 
       - name: Log in to Azure
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           client-id: ${{ secrets.PUBLISH_CLIENT_ID }}
           tenant-id: ${{ secrets.PUBLISH_TENANT_ID }}
           subscription-id: ${{ secrets.PUBLISH_SUBSCRIPTION_ID }}
 
       - name: Upload to blob storage
-        uses: azure/CLI@v1
+        uses: azure/CLI@v2
         with:
           inlineScript: |
             az storage blob upload --account-name biceplivedatasaprod --container-name bicep-cdn-live-data-container --name module-index --file moduleIndex.json --auth-mode login --overwrite
@@ -66,7 +66,7 @@ jobs:
         run: npm ci
 
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: moduleIndex.json
 
@@ -78,7 +78,7 @@ jobs:
             await script({ require, github, context, core })
 
       - name: Upload Markdown artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: ./docs/jekyll/index.md
           name: index.md
@@ -93,7 +93,7 @@ jobs:
 
       - name: Setup Pages
         id: pages
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@v4
 
       - name: Build with Jekyll
         working-directory: ./docs/jekyll
@@ -102,7 +102,7 @@ jobs:
           JEKYLL_ENV: production
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./docs/jekyll/_site
 
@@ -115,4 +115,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4

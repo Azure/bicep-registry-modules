@@ -46,7 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-isqrmin'
+  name: 'scheduledQueryRuleDeployment'
   params: {
     // Required parameters
     criterias: {
@@ -166,7 +166,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-isqrmax'
+  name: 'scheduledQueryRuleDeployment'
   params: {
     // Required parameters
     criterias: {
@@ -350,7 +350,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-isqrwaf'
+  name: 'scheduledQueryRuleDeployment'
   params: {
     // Required parameters
     criterias: {
