@@ -65,7 +65,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    skuName: 'Standard'
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
