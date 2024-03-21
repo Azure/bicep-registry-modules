@@ -1,7 +1,7 @@
 # Azure Synapse Analytics `[Microsoft.Synapse/privateLinkHubs]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
+>
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
@@ -49,7 +49,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-splhmin'
+  name: 'privateLinkHubDeployment'
   params: {
     // Required parameters
     name: 'splhmin001'
@@ -97,7 +97,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-splhmax'
+  name: 'privateLinkHubDeployment'
   params: {
     // Required parameters
     name: 'splhmax001'
@@ -233,7 +233,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-splhwaf'
+  name: 'privateLinkHubDeployment'
   params: {
     // Required parameters
     name: 'splhwaf001'
@@ -826,7 +826,7 @@ Tags of the resource.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |

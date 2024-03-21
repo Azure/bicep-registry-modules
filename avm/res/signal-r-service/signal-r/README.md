@@ -1,7 +1,7 @@
 # SignalR Service SignalR `[Microsoft.SignalRService/signalR]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
+>
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
@@ -49,7 +49,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-srsdrmin'
+  name: 'signalRDeployment'
   params: {
     // Required parameters
     name: 'srsdrmin-001'
@@ -97,7 +97,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-srssrmax'
+  name: 'signalRDeployment'
   params: {
     // Required parameters
     name: 'srssrmax-001'
@@ -317,7 +317,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-srssrwaf'
+  name: 'signalRDeployment'
   params: {
     // Required parameters
     name: 'srssrwaf-001'
@@ -1179,7 +1179,7 @@ Upstream templates to enable. For more information, see https://learn.microsoft.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |

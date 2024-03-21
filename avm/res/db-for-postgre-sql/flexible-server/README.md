@@ -49,7 +49,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dfpsfsmin'
+  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     name: 'dfpsfsmin001'
@@ -113,7 +113,7 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dfpsfse'
+  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     name: 'dfpsfse001'
@@ -201,7 +201,7 @@ This instance deploys the module with private access only.
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dfpsfspvt'
+  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     name: 'dfpsfspvt001'
@@ -403,7 +403,7 @@ This instance deploys the module with public access.
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dfpsfsp'
+  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     name: 'dfpsfsp001'
@@ -647,7 +647,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dfpsfswaf'
+  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     name: 'dfpsfswaf001'
