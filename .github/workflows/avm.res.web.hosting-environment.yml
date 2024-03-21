@@ -73,6 +73,9 @@ jobs:
   ##############################
   call-workflow-passing-data:
     name: "Run"
+    permissions:
+      id-token: write # For OIDC
+      contents: write # For release tags
     needs:
       - job_initialize_pipeline
     uses: ./.github/workflows/avm.template.module.yml
