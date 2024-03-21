@@ -115,8 +115,12 @@ var eventHubProperties = {
   status: status
   retentionDescription: {
     cleanupPolicy: retentionDescriptionCleanupPolicy
-    retentionTimeInHours: retentionDescriptionCleanupPolicy == 'Delete' ? retentionDescriptionRetentionTimeInHours : null
-    tombstoneRetentionTimeInHours: retentionDescriptionCleanupPolicy == 'Compact' ? retentionDescriptionTombstoneRetentionTimeInHours : null
+    retentionTimeInHours: retentionDescriptionCleanupPolicy == 'Delete'
+      ? retentionDescriptionRetentionTimeInHours
+      : null
+    tombstoneRetentionTimeInHours: retentionDescriptionCleanupPolicy == 'Compact'
+      ? retentionDescriptionTombstoneRetentionTimeInHours
+      : null
   }
 }
 
@@ -139,14 +143,29 @@ var eventHubPropertiesCapture = {
 }
 
 var builtInRoleNames = {
-  'Azure Event Hubs Data Owner': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f526a384-b230-433a-b45c-95f59c4a2dec')
-  'Azure Event Hubs Data Receiver': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a638d3c7-ab3a-418d-83e6-5f17a39d4fde')
-  'Azure Event Hubs Data Sender': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2b629674-e913-4c01-ae53-ef4638d8f975')
+  'Azure Event Hubs Data Owner': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f526a384-b230-433a-b45c-95f59c4a2dec'
+  )
+  'Azure Event Hubs Data Receiver': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'a638d3c7-ab3a-418d-83e6-5f17a39d4fde'
+  )
+  'Azure Event Hubs Data Sender': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '2b629674-e913-4c01-ae53-ef4638d8f975'
+  )
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
 resource namespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' existing = {
@@ -159,48 +178,61 @@ resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2022-10-01-preview' =
   properties: captureDescriptionEnabled ? union(eventHubProperties, eventHubPropertiesCapture) : eventHubProperties
 }
 
-resource eventHub_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource eventHub_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: eventHub
   }
-  scope: eventHub
-}
 
-module eventHub_consumergroups 'consumergroup/main.bicep' = [for (consumerGroup, index) in consumergroups: {
-  name: '${deployment().name}-ConsumerGroup-${index}'
-  params: {
-    namespaceName: namespaceName
-    eventHubName: eventHub.name
-    name: consumerGroup.name
-    userMetadata: contains(consumerGroup, 'userMetadata') ? consumerGroup.userMetadata : ''
+module eventHub_consumergroups 'consumergroup/main.bicep' = [
+  for (consumerGroup, index) in consumergroups: {
+    name: '${deployment().name}-ConsumerGroup-${index}'
+    params: {
+      namespaceName: namespaceName
+      eventHubName: eventHub.name
+      name: consumerGroup.name
+      userMetadata: contains(consumerGroup, 'userMetadata') ? consumerGroup.userMetadata : ''
+    }
   }
-}]
+]
 
-module eventHub_authorizationRules 'authorization-rule/main.bicep' = [for (authorizationRule, index) in authorizationRules: {
-  name: '${deployment().name}-AuthRule-${index}'
-  params: {
-    namespaceName: namespaceName
-    eventHubName: eventHub.name
-    name: authorizationRule.name
-    rights: contains(authorizationRule, 'rights') ? authorizationRule.rights : []
+module eventHub_authorizationRules 'authorization-rule/main.bicep' = [
+  for (authorizationRule, index) in authorizationRules: {
+    name: '${deployment().name}-AuthRule-${index}'
+    params: {
+      namespaceName: namespaceName
+      eventHubName: eventHub.name
+      name: authorizationRule.name
+      rights: contains(authorizationRule, 'rights') ? authorizationRule.rights : []
+    }
   }
-}]
+]
 
-resource eventHub_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(eventHub.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+resource eventHub_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(eventHub.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: eventHub
   }
-  scope: eventHub
-}]
+]
 
 @description('The name of the event hub.')
 output name string = eventHub.name

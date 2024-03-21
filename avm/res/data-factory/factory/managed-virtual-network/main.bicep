@@ -21,17 +21,19 @@ resource managedVirtualNetwork 'Microsoft.DataFactory/factories/managedVirtualNe
   properties: {}
 }
 
-module managedVirtualNetwork_managedPrivateEndpoint 'managed-private-endpoint/main.bicep' = [for (managedPrivateEndpoint, index) in managedPrivateEndpoints: {
-  name: '${deployment().name}-managedPrivateEndpoint-${index}'
-  params: {
-    dataFactoryName: dataFactoryName
-    managedVirtualNetworkName: name
-    name: managedPrivateEndpoint.name
-    fqdns: managedPrivateEndpoint.fqdns
-    groupId: managedPrivateEndpoint.groupId
-    privateLinkResourceId: managedPrivateEndpoint.privateLinkResourceId
+module managedVirtualNetwork_managedPrivateEndpoint 'managed-private-endpoint/main.bicep' = [
+  for (managedPrivateEndpoint, index) in managedPrivateEndpoints: {
+    name: '${deployment().name}-managedPrivateEndpoint-${index}'
+    params: {
+      dataFactoryName: dataFactoryName
+      managedVirtualNetworkName: name
+      name: managedPrivateEndpoint.name
+      fqdns: managedPrivateEndpoint.fqdns
+      groupId: managedPrivateEndpoint.groupId
+      privateLinkResourceId: managedPrivateEndpoint.privateLinkResourceId
+    }
   }
-}]
+]
 
 @description('The name of the Resource Group the Managed Virtual Network was created in.')
 output resourceGroupName string = resourceGroup().name

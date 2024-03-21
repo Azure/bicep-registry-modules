@@ -75,16 +75,22 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
         kind: kind
         version: kind == 'MultiHash' ? 2 : 1
       }
-      uniqueKeyPolicy: !empty(uniqueKeyPolicyKeys) ? {
-        uniqueKeys: uniqueKeyPolicyKeys
-      } : null
+      uniqueKeyPolicy: !empty(uniqueKeyPolicyKeys)
+        ? {
+            uniqueKeys: uniqueKeyPolicyKeys
+          }
+        : null
     }
-    options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' }) ? null : {
-      throughput: autoscaleSettingsMaxThroughput == null && throughput != -1 ? throughput : null
-      autoscaleSettings: autoscaleSettingsMaxThroughput != null ? {
-        maxThroughput: autoscaleSettingsMaxThroughput
-      } : null
-    }
+    options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
+      ? null
+      : {
+          throughput: autoscaleSettingsMaxThroughput == null && throughput != -1 ? throughput : null
+          autoscaleSettings: autoscaleSettingsMaxThroughput != null
+            ? {
+                maxThroughput: autoscaleSettingsMaxThroughput
+              }
+            : null
+        }
   }
 }
 
