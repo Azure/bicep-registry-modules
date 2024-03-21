@@ -124,15 +124,10 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableTelemetry: true
     ftpEnabled: true
     inboundIpAddressOverride: '10.0.0.10'
     internalLoadBalancingMode: 'Web, Publishing'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -140,23 +135,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
       ]
     }
     remoteDebugEnabled: true
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
       hostingEnvironmentName: 'whewaf001'
@@ -218,9 +196,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
         }
       ]
     },
-    "enableTelemetry": {
-      "value": true
-    },
     "ftpEnabled": {
       "value": true
     },
@@ -233,12 +208,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true,
@@ -249,25 +218,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     },
     "remoteDebugEnabled": {
       "value": true
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
     },
     "tags": {
       "value": {
