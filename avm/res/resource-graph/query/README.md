@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module query 'br/public:avm/res/resource-graph/query:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdsmin'
+  name: 'queryDeployment'
   params: {
     // Required parameters
     name: 'rdsmin001'
@@ -94,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module query 'br/public:avm/res/resource-graph/query:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdsmax'
+  name: 'queryDeployment'
   params: {
     // Required parameters
     name: 'rdsmax001'
@@ -206,7 +206,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module query 'br/public:avm/res/resource-graph/query:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdswaf'
+  name: 'queryDeployment'
   params: {
     // Required parameters
     name: 'rdswaf001'

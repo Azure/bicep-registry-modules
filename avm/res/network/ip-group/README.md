@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nigmin'
+  name: 'ipGroupDeployment'
   params: {
     // Required parameters
     name: 'nigmin001'
@@ -90,7 +90,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nigmax'
+  name: 'ipGroupDeployment'
   params: {
     // Required parameters
     name: 'nigmax001'
@@ -206,7 +206,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nigwaf'
+  name: 'ipGroupDeployment'
   params: {
     // Required parameters
     name: 'nigwaf001'
