@@ -63,7 +63,7 @@ This instance deploys the module with analytical storage enabled.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddaanl'
+  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     locations: [
@@ -143,7 +143,7 @@ This instance deploys the module disabling automatic failover.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddaauo'
+  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     locations: [
@@ -233,7 +233,7 @@ This instance deploys the module specifying a default consistency level.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddabco'
+  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     locations: [
@@ -321,7 +321,7 @@ This instance deploys the module enabling continous backups.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddacbc'
+  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     locations: [
@@ -405,7 +405,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddamin'
+  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     locations: [
@@ -469,7 +469,7 @@ This instance deploys the module disabling local authentication.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddadlo'
+  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     locations: [
@@ -549,7 +549,7 @@ This instance deploys the module with a Gremlin Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddagrm'
+  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     locations: [
@@ -817,7 +817,7 @@ This instance deploys the module with a Mongo Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddamng'
+  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     locations: [
@@ -1351,7 +1351,7 @@ This instance deploys the module enabling periodic backups.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddapbc'
+  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     locations: [
@@ -1443,7 +1443,7 @@ This instance deploys the module without a Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddapln'
+  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     locations: [
@@ -1595,7 +1595,7 @@ This instance deploys the module with a SQL Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddasql'
+  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     locations: [
@@ -2149,7 +2149,7 @@ This instance deploys the module with an assigned system assigned managed identi
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddasmi'
+  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     locations: [
@@ -2221,7 +2221,7 @@ This instance deploys the module with an assigned user assigned managed identity
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddaumi'
+  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     locations: [
@@ -2297,7 +2297,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddawaf'
+  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     locations: [
@@ -2507,7 +2507,7 @@ This instance deploys the module enabling multiple zone redundant in multiple re
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-dddazr'
+  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     locations: [
@@ -3479,7 +3479,7 @@ Tags of the Database Account resource.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |
