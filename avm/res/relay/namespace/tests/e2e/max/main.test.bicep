@@ -60,143 +60,137 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-    params: {
-      #disable-next-line BCP334 // Minimum length is ensured by the `namePrefix` and `serviceShort` parameters
-      name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
+module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+  params: {
+    name: '${namePrefix}${serviceShort}001'
+    location: resourceLocation
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    skuName: 'Standard'
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Owner'
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
       }
-      skuName: 'Standard'
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
+      {
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
       }
-      roleAssignments: [
-        {
-          roleDefinitionIdOrName: 'Owner'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: subscriptionResourceId(
-            'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-          )
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-      ]
-      networkRuleSets: {
-        defaultAction: 'Deny'
-        trustedServiceAccessEnabled: true
-        virtualNetworkRules: [
-          {
-            subnet: {
-              ignoreMissingVnetServiceEndpoint: true
-              id: nestedDependencies.outputs.subnetResourceId
-            }
-          }
-        ]
-        ipRules: [
-          {
-            ipMask: '10.0.1.0/32'
-            action: 'Allow'
-          }
-          {
-            ipMask: '10.0.2.0/32'
-            action: 'Allow'
-          }
-        ]
+      {
+        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
       }
-      authorizationRules: [
+    ]
+    networkRuleSets: {
+      defaultAction: 'Deny'
+      trustedServiceAccessEnabled: true
+      virtualNetworkRules: [
         {
-          name: 'RootManageSharedAccessKey'
-          rights: [
-            'Listen'
-            'Manage'
-            'Send'
-          ]
-        }
-        {
-          name: 'AnotherKey'
-          rights: [
-            'Listen'
-            'Send'
-          ]
-        }
-      ]
-      hybridConnections: [
-        {
-          name: '${namePrefix}${serviceShort}hc001'
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Reader'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
-          userMetadata: '[{"key":"endpoint","value":"db-server.constoso.com:1433"}]'
-        }
-      ]
-      wcfRelays: [
-        {
-          name: '${namePrefix}${serviceShort}wcf001'
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Reader'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
-          relayType: 'NetTcp'
-        }
-      ]
-      diagnosticSettings: [
-        {
-          name: 'customSetting'
-          metricCategories: [
-            {
-              category: 'AllMetrics'
-            }
-          ]
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-        }
-      ]
-      privateEndpoints: [
-        {
-          service: 'namespace'
-          subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
-          tags: {
-            'hidden-title': 'This is visible in the resource name'
-            Environment: 'Non-Prod'
-            Role: 'DeploymentValidation'
+          subnet: {
+            ignoreMissingVnetServiceEndpoint: true
+            id: nestedDependencies.outputs.subnetResourceId
           }
         }
+      ]
+      ipRules: [
         {
-          subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          ipMask: '10.0.1.0/32'
+          action: 'Allow'
+        }
+        {
+          ipMask: '10.0.2.0/32'
+          action: 'Allow'
         }
       ]
     }
+    authorizationRules: [
+      {
+        name: 'RootManageSharedAccessKey'
+        rights: [
+          'Listen'
+          'Manage'
+          'Send'
+        ]
+      }
+      {
+        name: 'AnotherKey'
+        rights: [
+          'Listen'
+          'Send'
+        ]
+      }
+    ]
+    hybridConnections: [
+      {
+        name: '${namePrefix}${serviceShort}hc001'
+        roleAssignments: [
+          {
+            roleDefinitionIdOrName: 'Reader'
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+        ]
+        userMetadata: '[{"key":"endpoint","value":"db-server.constoso.com:1433"}]'
+      }
+    ]
+    wcfRelays: [
+      {
+        name: '${namePrefix}${serviceShort}wcf001'
+        roleAssignments: [
+          {
+            roleDefinitionIdOrName: 'Reader'
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+        ]
+        relayType: 'NetTcp'
+      }
+    ]
+    diagnosticSettings: [
+      {
+        name: 'customSetting'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+      }
+    ]
+    privateEndpoints: [
+      {
+        service: 'namespace'
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+      }
+    ]
   }
-]
+}]
