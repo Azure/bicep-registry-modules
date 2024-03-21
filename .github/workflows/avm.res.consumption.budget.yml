@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.consumption.budget.yml"
       - "avm/res/consumption/budget/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
