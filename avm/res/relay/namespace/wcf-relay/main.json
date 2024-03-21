@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "15802304453622016892"
+      "version": "0.26.54.24096",
+      "templateHash": "16812789154290703124"
     },
     "name": "Relay Namespace WCF Relays",
     "description": "This module deploys a Relay Namespace WCF Relay.",
@@ -148,7 +148,7 @@
     },
     "userMetadata": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. User-defined string data for the WCF Relay."
       }
@@ -192,17 +192,9 @@
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
-    },
-    "enableDefaultTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-      }
     }
   },
   "variables": {
-    "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Azure Relay Listener": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '26e0b698-aa6d-4085-9386-aadae190014d')]",
       "Azure Relay Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2787bf04-f1f5-4bfe-8383-c8a24483ee38')]",
@@ -215,20 +207,6 @@
     }
   },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
-    },
     "namespace": {
       "existing": true,
       "type": "Microsoft.Relay/namespaces",
@@ -243,7 +221,7 @@
         "relayType": "[parameters('relayType')]",
         "requiresClientAuthorization": "[parameters('requiresClientAuthorization')]",
         "requiresTransportSecurity": "[parameters('requiresTransportSecurity')]",
-        "userMetadata": "[if(not(empty(parameters('userMetadata'))), parameters('userMetadata'), null())]"
+        "userMetadata": "[parameters('userMetadata')]"
       },
       "dependsOn": [
         "namespace"
@@ -308,9 +286,8 @@
           "name": {
             "value": "[parameters('authorizationRules')[copyIndex()].name]"
           },
-          "rights": "[if(contains(parameters('authorizationRules')[copyIndex()], 'rights'), createObject('value', parameters('authorizationRules')[copyIndex()].rights), createObject('value', createArray()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+          "rights": {
+            "value": "[tryGet(parameters('authorizationRules')[copyIndex()], 'rights')]"
           }
         },
         "template": {
@@ -319,8 +296,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "5333168181360876794"
+              "version": "0.26.54.24096",
+              "templateHash": "8736725131114489503"
             },
             "name": "WCF Relay Authorization Rules",
             "description": "This module deploys a WCF Relay Authorization Rule.",
@@ -356,30 +333,9 @@
               "metadata": {
                 "description": "Optional. The rights associated with the rule."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.Relay/namespaces/wcfRelays/authorizationRules",
               "apiVersion": "2021-11-01",

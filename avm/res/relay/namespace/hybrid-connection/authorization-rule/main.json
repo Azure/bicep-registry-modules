@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "8614944991526016585"
+      "version": "0.26.54.24096",
+      "templateHash": "5255934595416171239"
     },
     "name": "Hybrid Connection Authorization Rules",
     "description": "This module deploys a Hybrid Connection Authorization Rule.",
@@ -41,30 +41,9 @@
       "metadata": {
         "description": "Optional. The rights associated with the rule."
       }
-    },
-    "enableDefaultTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-      }
     }
   },
   "resources": [
-    {
-      "condition": "[parameters('enableDefaultTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
-    },
     {
       "type": "Microsoft.Relay/namespaces/hybridConnections/authorizationRules",
       "apiVersion": "2021-11-01",

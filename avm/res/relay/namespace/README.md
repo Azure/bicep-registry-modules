@@ -1,5 +1,10 @@
 # Relay Namespaces `[Microsoft.Relay/namespaces]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys a Relay Namespace
 
 ## Navigation
@@ -9,6 +14,7 @@ This module deploys a Relay Namespace
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -33,12 +39,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/relay.namespace:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/relay/namespace:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Pe](#example-3-pe)
-- [WAF-aligned](#example-4-waf-aligned)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -50,13 +55,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module namespace 'br:bicep/modules/relay.namespace:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-rnmin'
+module namespace 'br/public:avm/res/relay/namespace:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-rnmin'
   params: {
     // Required parameters
     name: 'rnmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -78,8 +83,8 @@ module namespace 'br:bicep/modules/relay.namespace:1.0.0' = {
       "value": "rnmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -98,8 +103,8 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module namespace 'br:bicep/modules/relay.namespace:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-rnmax'
+module namespace 'br/public:avm/res/relay/namespace:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-rnmax'
   params: {
     // Required parameters
     name: 'rnmax001'
@@ -135,7 +140,6 @@ module namespace 'br:bicep/modules/relay.namespace:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     hybridConnections: [
       {
         name: 'rnmaxhc001'
@@ -149,6 +153,7 @@ module namespace 'br:bicep/modules/relay.namespace:1.0.0' = {
         userMetadata: '[{\'key\':\'endpoint\',\'value\':\'db-server.constoso.com:1433\'}]'
       }
     ]
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -187,6 +192,12 @@ module namespace 'br:bicep/modules/relay.namespace:1.0.0' = {
           'hidden-title': 'This is visible in the resource name'
           Role: 'DeploymentValidation'
         }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
       }
     ]
     roleAssignments: [
@@ -281,9 +292,6 @@ module namespace 'br:bicep/modules/relay.namespace:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "hybridConnections": {
       "value": [
         {
@@ -298,6 +306,9 @@ module namespace 'br:bicep/modules/relay.namespace:1.0.0' = {
           "userMetadata": "[{\"key\":\"endpoint\",\"value\":\"db-server.constoso.com:1433\"}]"
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -342,6 +353,12 @@ module namespace 'br:bicep/modules/relay.namespace:1.0.0' = {
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           }
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -396,96 +413,7 @@ module namespace 'br:bicep/modules/relay.namespace:1.0.0' = {
 </details>
 <p>
 
-### Example 3: _Pe_
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module namespace 'br:bicep/modules/relay.namespace:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-rnpe'
-  params: {
-    // Required parameters
-    name: 'rnpe001'
-    // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
-      }
-    ]
-    skuName: 'Standard'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "rnpe001"
-    },
-    // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
-        }
-      ]
-    },
-    "skuName": {
-      "value": "Standard"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 4: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -495,8 +423,8 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module namespace 'br:bicep/modules/relay.namespace:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-rnwaf'
+module namespace 'br/public:avm/res/relay/namespace:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-rnwaf'
   params: {
     // Required parameters
     name: 'rnwaf001'
@@ -522,34 +450,17 @@ module namespace 'br:bicep/modules/relay.namespace:1.0.0' = {
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     hybridConnections: [
       {
         name: 'rnwafhc001'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
         userMetadata: '[{\'key\':\'endpoint\',\'value\':\'db-server.constoso.com:1433\'}]'
       }
     ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
+    location: '<location>'
     networkRuleSets: {
       defaultAction: 'Deny'
       ipRules: [
@@ -596,13 +507,6 @@ module namespace 'br:bicep/modules/relay.namespace:1.0.0' = {
       {
         name: 'rnwafwcf001'
         relayType: 'NetTcp'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
       }
     ]
   }
@@ -650,40 +554,21 @@ module namespace 'br:bicep/modules/relay.namespace:1.0.0' = {
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "hybridConnections": {
       "value": [
         {
           "name": "rnwafhc001",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
           "userMetadata": "[{\"key\":\"endpoint\",\"value\":\"db-server.constoso.com:1433\"}]"
         }
       ]
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
+    "location": {
+      "value": "<location>"
     },
     "networkRuleSets": {
       "value": {
@@ -739,14 +624,7 @@ module namespace 'br:bicep/modules/relay.namespace:1.0.0' = {
       "value": [
         {
           "name": "rnwafwcf001",
-          "relayType": "NetTcp",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ]
+          "relayType": "NetTcp"
         }
       ]
     }
@@ -772,7 +650,7 @@ module namespace 'br:bicep/modules/relay.namespace:1.0.0' = {
 | :-- | :-- | :-- |
 | [`authorizationRules`](#parameter-authorizationrules) | array | Authorization Rules for the Relay namespace. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`hybridConnections`](#parameter-hybridconnections) | array | The hybrid connections to create in the relay namespace. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -866,6 +744,27 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 - Required: No
 - Type: array
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs. |
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs.
+
+- Required: No
+- Type: string
+
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
@@ -879,6 +778,19 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics. |
+
+### Parameter: `diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -901,9 +813,9 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -1022,6 +934,27 @@ Custom DNS configurations.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint ip address. |
+| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private ip addresses of the private endpoint. |
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+Fqdn that resolves to private endpoint ip address.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
+
+A list of private ip addresses of the private endpoint.
+
+- Required: Yes
+- Type: array
+
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
 The custom name of the network interface attached to the private endpoint.
@@ -1042,6 +975,56 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsipconfigurationsname) | string | The name of the resource that is unique within a resource group. |
+| [`properties`](#parameter-privateendpointsipconfigurationsproperties) | object | Properties of private endpoint IP configurations. |
+
+### Parameter: `privateEndpoints.ipConfigurations.name`
+
+The name of the resource that is unique within a resource group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties`
+
+Properties of private endpoint IP configurations.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private ip address obtained from the private endpoint's subnet. |
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
+
+The member name of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
+
+A private ip address obtained from the private endpoint's subnet.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `privateEndpoints.location`
 
@@ -1347,8 +1330,12 @@ The wcf relays to create in the relay namespace.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |
-| `modules/network/private-endpoint` | Local reference |
+| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
