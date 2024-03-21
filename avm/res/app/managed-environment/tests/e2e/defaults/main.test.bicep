@@ -51,11 +51,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    dockerBridgeCidr: '172.16.0.1/28'
-    platformReservedCidr: '172.17.17.0/24'
-    platformReservedDnsIP: '172.17.17.17'
     infrastructureSubnetId: nestedDependencies.outputs.subnetResourceId
-    infrastructureResourceGroupName: 'me-${resourceGroupName}'
     logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
   }
   dependsOn: [
