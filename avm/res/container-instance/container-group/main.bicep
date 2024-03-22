@@ -342,6 +342,7 @@ type ipAddressPortsType = {
   protocol: string
 }[]
 
+// will be removed in future. For more information see https://learn.microsoft.com/en-us/azure/container-instances/container-instances-gpu
 type containerGpuType = {
   @description('Required. The count of the GPU resource.')
   count: int
