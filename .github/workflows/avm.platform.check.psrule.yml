@@ -17,7 +17,7 @@ on:
         type: choice
         description: "Select the PSRule baseline to perform PSRule analysis (example: avm/res/api-management/service/)"
         required: true
-        default: 'Azure.Default'
+        default: 'Azure.Pillar.Reliability'
         options:
           - Azure.Default
           - Azure.Pillar.Reliability
