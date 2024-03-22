@@ -47,7 +47,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module connection 'br/public:avm/res/web/connection:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wcmin'
+  name: 'connectionDeployment'
   params: {
     // Required parameters
     displayName: 'azuremonitorlogs'
@@ -107,7 +107,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module connection 'br/public:avm/res/web/connection:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wcmax'
+  name: 'connectionDeployment'
   params: {
     // Required parameters
     displayName: 'azuremonitorlogs'
@@ -225,7 +225,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module connection 'br/public:avm/res/web/connection:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wcwaf'
+  name: 'connectionDeployment'
   params: {
     // Required parameters
     displayName: 'azuremonitorlogs'
@@ -294,14 +294,14 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`displayName`](#parameter-displayname) | string | Display name connection. Example: 'blobconnection' when using blobs. It can change depending on the resource. |
-| [`name`](#parameter-name) | string | Connection name for connection. Example: 'azureblob' when using blobs.  It can change depending on the resource. |
+| [`name`](#parameter-name) | string | Connection name for connection. Example: 'azureblob' when using blobs. It can change depending on the resource. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`api`](#parameter-api) | object | Specific values for some API connections. |
-| [`customParameterValues`](#parameter-customparametervalues) | object | Customized parameter values for specific connections. |
+| [`customParameterValues`](#parameter-customparametervalues) | object | Dictionary of custom parameter values for specific connections. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location of the deployment. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -321,7 +321,7 @@ Display name connection. Example: 'blobconnection' when using blobs. It can chan
 
 ### Parameter: `name`
 
-Connection name for connection. Example: 'azureblob' when using blobs.  It can change depending on the resource.
+Connection name for connection. Example: 'azureblob' when using blobs. It can change depending on the resource.
 
 - Required: Yes
 - Type: string
@@ -335,7 +335,7 @@ Specific values for some API connections.
 
 ### Parameter: `customParameterValues`
 
-Customized parameter values for specific connections.
+Dictionary of custom parameter values for specific connections.
 
 - Required: No
 - Type: object
