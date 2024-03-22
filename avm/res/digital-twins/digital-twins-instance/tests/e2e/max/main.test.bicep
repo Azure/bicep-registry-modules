@@ -74,7 +74,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       endpointUri: 'sb://${nestedDependencies.outputs.eventhubNamespaceName}.servicebus.windows.net/'
       entityPath: nestedDependencies.outputs.eventhubName
       managedIdentities: {
-        userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+        userAssignedResourceIds: nestedDependencies.outputs.managedIdentityResourceId
       }
     }
     serviceBusEndpoint: {
@@ -82,7 +82,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       endpointUri: 'sb://${nestedDependencies.outputs.serviceBusName}.servicebus.windows.net/'
       entityPath: nestedDependencies.outputs.serviceBusTopicName
       managedIdentities: {
-        userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+        userAssignedResourceIds: nestedDependencies.outputs.managedIdentityResourceId
       }
     }
     eventGridEndpoint: {
