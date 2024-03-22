@@ -353,12 +353,13 @@ resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments
   scope: storageAccount
 }]
 
-module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-StorageAccount-PrivateEndpoint-${index}'
   params: {
-    privateLinkServiceConnections: [
+    name: privateEndpoint.?name ?? 'pep-${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
+    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
         properties: {
           privateLinkServiceId: storageAccount.id
           groupIds: [
@@ -366,8 +367,19 @@ module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoi
           ]
         }
       }
-    ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
+    ] : null
+    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
+      {
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
+        properties: {
+          privateLinkServiceId: storageAccount.id
+          groupIds: [
+            privateEndpoint.service
+          ]
+          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+        }
+      }
+    ] : null
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
@@ -376,7 +388,6 @@ module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoi
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
     roleAssignments: privateEndpoint.?roleAssignments
     tags: privateEndpoint.?tags ?? tags
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
     customDnsConfigs: privateEndpoint.?customDnsConfigs
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
@@ -481,7 +492,7 @@ output resourceGroupName string = resourceGroup().name
 output primaryBlobEndpoint string = !empty(blobServices) && contains(blobServices, 'containers') ? reference('Microsoft.Storage/storageAccounts/${storageAccount.name}', '2019-04-01').primaryEndpoints.blob : ''
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) ? storageAccount.identity.?principalId : ''
+output systemAssignedMIPrincipalId string = storageAccount.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = storageAccount.location
@@ -571,6 +582,13 @@ type privateEndpointType = {
   @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
   privateDnsZoneResourceIds: string[]?
 
+  @description('Optional. Manual PrivateLink Service Connections.')
+  isManualConnection: bool?
+
+  @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
+  @maxLength(140)
+  manualConnectionRequestMessage: string?
+
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
     @description('Required. Fqdn that resolves to private endpoint ip address.')
@@ -612,9 +630,6 @@ type privateEndpointType = {
 
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
   tags: object?
-
-  @description('Optional. Manual PrivateLink Service Connections.')
-  manualPrivateLinkServiceConnections: array?
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?

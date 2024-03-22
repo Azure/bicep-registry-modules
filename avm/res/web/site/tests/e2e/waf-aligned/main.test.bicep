@@ -76,6 +76,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     httpsOnly: true
     siteConfig: {
+      healthCheckPath: '/healthz'
       alwaysOn: true
       metadata: [
         {
@@ -100,4 +101,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     vnetRouteAllEnabled: true
     publicNetworkAccess: 'Disabled'
   }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
 }]

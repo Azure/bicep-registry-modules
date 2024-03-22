@@ -115,7 +115,6 @@ The version number of the query language.
 
 - Required: No
 - Type: int
-- Default: `2`
 
 
 ## Outputs

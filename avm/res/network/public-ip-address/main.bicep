@@ -16,7 +16,11 @@ param publicIpPrefixResourceId string?
 param publicIPAllocationMethod string = 'Static'
 
 @description('Optional. A list of availability zones denoting the IP allocated for the resource needs to come from.')
-param zones array?
+param zones array = [
+  '1'
+  '2'
+  '3'
+]
 
 @description('Optional. IP address version.')
 @allowed([

@@ -66,7 +66,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    vNetId: nestedDependencies.outputs.virtualNetworkResourceId
+    virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
     publicIPAddressObject: {
       name: '${namePrefix}${serviceShort}001-pip'
       allocationMethod: 'Static'
@@ -106,4 +106,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       }
     }
   }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
 }]

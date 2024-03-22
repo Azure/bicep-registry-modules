@@ -51,4 +51,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     applicationGroupType: 'Desktop'
     hostpoolName: nestedDependencies.outputs.hostPoolName
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }]

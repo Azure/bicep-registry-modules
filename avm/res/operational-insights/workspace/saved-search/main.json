@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "16347089515886811904"
+      "templateHash": "17950009471823327560"
     },
     "name": "Log Analytics Workspace Saved Searches",
     "description": "This module deploys a Log Analytics Workspace Saved Search.",
@@ -66,7 +66,7 @@
     },
     "version": {
       "type": "int",
-      "defaultValue": 2,
+      "nullable": true,
       "metadata": {
         "description": "Optional. The version number of the query language."
       }

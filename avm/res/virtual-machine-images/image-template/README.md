@@ -43,7 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-vmiitmin'
+  name: 'imageTemplateDeployment'
   params: {
     // Required parameters
     customizationSteps: [
@@ -147,7 +147,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-vmiitmax'
+  name: 'imageTemplateDeployment'
   params: {
     // Required parameters
     customizationSteps: [
@@ -389,7 +389,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-vmiitwaf'
+  name: 'imageTemplateDeployment'
   params: {
     // Required parameters
     customizationSteps: [
@@ -509,13 +509,13 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
 | [`distributions`](#parameter-distributions) | array | The distribution targets where the image output needs to go to. |
 | [`imageSource`](#parameter-imagesource) | object | Image source definition in object format. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`name`](#parameter-name) | string | Name prefix of the Image Template to be built by the Azure Image Builder service. |
+| [`name`](#parameter-name) | string | The name prefix of the Image Template to be built by the Azure Image Builder service. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`buildTimeoutInMinutes`](#parameter-buildtimeoutinminutes) | int | Image build timeout in minutes. 0 means the default 240 minutes. |
+| [`buildTimeoutInMinutes`](#parameter-buildtimeoutinminutes) | int | The image build timeout in minutes. 0 means the default 240 minutes. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -576,14 +576,14 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 ### Parameter: `name`
 
-Name prefix of the Image Template to be built by the Azure Image Builder service.
+The name prefix of the Image Template to be built by the Azure Image Builder service.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `buildTimeoutInMinutes`
 
-Image build timeout in minutes. 0 means the default 240 minutes.
+The image build timeout in minutes. 0 means the default 240 minutes.
 
 - Required: No
 - Type: int

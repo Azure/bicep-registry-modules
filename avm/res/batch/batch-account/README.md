@@ -46,7 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-bbamin'
+  name: 'batchAccountDeployment'
   params: {
     // Required parameters
     name: 'bbamin001'
@@ -98,7 +98,7 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-bbaencr'
+  name: 'batchAccountDeployment'
   params: {
     // Required parameters
     name: 'bbaencr001'
@@ -188,7 +188,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-bbamax'
+  name: 'batchAccountDeployment'
   params: {
     // Required parameters
     name: 'bbamax001'
@@ -231,7 +231,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
           {
             fqdn: 'abc.batch.com'
             ipAddresses: [
-              '10.0.0.10'
+              '10.0.16.10'
             ]
           }
         ]
@@ -241,7 +241,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
             properties: {
               groupId: 'batchAccount'
               memberName: 'batchAccount'
-              privateIPAddress: '10.0.0.10'
+              privateIPAddress: '10.0.16.10'
             }
           }
         ]
@@ -260,6 +260,31 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
             roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
+        service: 'batchAccount'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'batchAccount'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'nodeManagement'
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -366,7 +391,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
             {
               "fqdn": "abc.batch.com",
               "ipAddresses": [
-                "10.0.0.10"
+                "10.0.16.10"
               ]
             }
           ],
@@ -376,7 +401,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
               "properties": {
                 "groupId": "batchAccount",
                 "memberName": "batchAccount",
-                "privateIPAddress": "10.0.0.10"
+                "privateIPAddress": "10.0.16.10"
               }
             }
           ],
@@ -395,6 +420,31 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
               "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
+          "service": "batchAccount",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "batchAccount",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "nodeManagement",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -454,7 +504,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-bbawaf'
+  name: 'batchAccountDeployment'
   params: {
     // Required parameters
     name: 'bbawaf001'
@@ -482,6 +532,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
+        service: 'batchAccount'
         subnetResourceId: '<subnetResourceId>'
       }
     ]
@@ -549,6 +600,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
+          "service": "batchAccount",
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
@@ -1022,6 +1074,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file". |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -1033,15 +1086,22 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the private endpoint. |
 | [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
+| [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
 | [`location`](#parameter-privateendpointslocation) | string | The location to deploy the private endpoint to. |
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
-| [`manualPrivateLinkServiceConnections`](#parameter-privateendpointsmanualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
+| [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
-| [`service`](#parameter-privateendpointsservice) | string | The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
+
+### Parameter: `privateEndpoints.service`
+
+The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
@@ -1156,6 +1216,13 @@ A private IP address obtained from the private endpoint's subnet.
 - Required: Yes
 - Type: string
 
+### Parameter: `privateEndpoints.isManualConnection`
+
+If Manual Private Link Connection is required.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `privateEndpoints.location`
 
 The location to deploy the private endpoint to.
@@ -1199,12 +1266,12 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.manualPrivateLinkServiceConnections`
+### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
-Manual PrivateLink Service Connections.
+A message passed to the owner of the remote resource with the manual connection request.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.name`
 
@@ -1315,13 +1382,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-
-### Parameter: `privateEndpoints.service`
-
-The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".
-
-- Required: No
-- Type: string
 
 ### Parameter: `privateEndpoints.tags`
 
@@ -1477,11 +1537,11 @@ Tags of the resource.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.3.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.4.0` | Remote reference |
 
 ## Data Collection
 

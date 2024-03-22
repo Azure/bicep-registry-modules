@@ -1,0 +1,85 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "10781129401411225399"
+    },
+    "name": "Eventgrid Namespace Client Groups",
+    "description": "This module deploys an Eventgrid Namespace Client Group.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "namespaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent EventGrid namespace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Client Group."
+      }
+    },
+    "query": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The grouping query for the clients."
+      }
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Description of the Client Group."
+      }
+    }
+  },
+  "resources": {
+    "namespace": {
+      "existing": true,
+      "type": "Microsoft.EventGrid/namespaces",
+      "apiVersion": "2023-12-15-preview",
+      "name": "[parameters('namespaceName')]"
+    },
+    "clientGroup": {
+      "type": "Microsoft.EventGrid/namespaces/clientGroups",
+      "apiVersion": "2023-12-15-preview",
+      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
+      "properties": {
+        "description": "[parameters('description')]",
+        "query": "[parameters('query')]"
+      },
+      "dependsOn": [
+        "namespace"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Client Group."
+      },
+      "value": "[resourceId('Microsoft.EventGrid/namespaces/clientGroups', parameters('namespaceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Client Group."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the Client Group was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

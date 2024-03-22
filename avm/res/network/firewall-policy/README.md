@@ -41,7 +41,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nfpmin'
+  name: 'firewallPolicyDeployment'
   params: {
     // Required parameters
     name: 'nfpmin001'
@@ -89,7 +89,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nfpmax'
+  name: 'firewallPolicyDeployment'
   params: {
     // Required parameters
     name: 'nfpmax001'
@@ -255,7 +255,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nfpwaf'
+  name: 'firewallPolicyDeployment'
   params: {
     // Required parameters
     name: 'nfpwaf001'
