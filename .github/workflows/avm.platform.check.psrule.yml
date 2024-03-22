@@ -155,8 +155,8 @@ jobs:
         with:
           modules: "PSRule.Rules.Azure"
           # workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
-          baseline: "${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).baseline }}"
-          inputPath: "${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).inputPath }}"
+          baseline: "${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).psruleBaseline }}"
+          inputPath: "${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).targetPath }}"
           # baseline: "${{ env.psruleBaseline }}"
           # inputPath: "${{ env.targetPath }}"
           outputFormat: Csv
