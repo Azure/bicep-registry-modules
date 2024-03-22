@@ -12,7 +12,7 @@ on:
         type: choice
         description: "PSRule baseline"
         required: true
-        default: 'Azure.Pillar.Reliability'
+        default: 'Azure.Pillar.Security'
         options:
           - Azure.Default
           - Azure.Pillar.CostOptimization
