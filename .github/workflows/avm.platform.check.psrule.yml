@@ -12,8 +12,8 @@ on:
         type: string
         description: "Specify target input path for PSRule analysis (example: avm/res/api-management/service/)"
         required: false
-        # default: "avm/res/api-management/service/"
-        default: "avm/res/"
+        default: "avm/res/api-management/service/"
+        # default: "avm/res/"
       psruleBaseline:
         type: choice
         description: "Select the PSRule baseline to perform PSRule analysis"
