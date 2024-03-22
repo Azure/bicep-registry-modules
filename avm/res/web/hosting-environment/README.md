@@ -30,7 +30,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/web/hosting-environment:<version>`.
 
 - [Using default parameter set](#example-1-using-default-parameter-set)
-- [WAF-aligned](#example-2-waf-aligned)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using default parameter set_
 
@@ -88,7 +89,201 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 </details>
 <p>
 
-### Example 2: _WAF-aligned_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-whemax'
+  params: {
+    // Required parameters
+    name: 'whemax001'
+    subnetResourceId: '<subnetResourceId>'
+    // Non-required parameters
+    allowNewPrivateEndpointConnections: true
+    clusterSettings: [
+      {
+        name: 'DisableTls1.0'
+        value: '1'
+      }
+    ]
+    customDnsSuffix: 'internal.contoso.com'
+    customDnsSuffixCertificateUrl: '<customDnsSuffixCertificateUrl>'
+    customDnsSuffixKeyVaultReferenceIdentity: '<customDnsSuffixKeyVaultReferenceIdentity>'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    ftpEnabled: true
+    inboundIpAddressOverride: '10.0.0.10'
+    internalLoadBalancingMode: 'Web, Publishing'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    remoteDebugEnabled: true
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      hostingEnvironmentName: 'whemax001'
+      resourceType: 'App Service Environment'
+    }
+    upgradePreference: 'Late'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "whemax001"
+    },
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
+    },
+    // Non-required parameters
+    "allowNewPrivateEndpointConnections": {
+      "value": true
+    },
+    "clusterSettings": {
+      "value": [
+        {
+          "name": "DisableTls1.0",
+          "value": "1"
+        }
+      ]
+    },
+    "customDnsSuffix": {
+      "value": "internal.contoso.com"
+    },
+    "customDnsSuffixCertificateUrl": {
+      "value": "<customDnsSuffixCertificateUrl>"
+    },
+    "customDnsSuffixKeyVaultReferenceIdentity": {
+      "value": "<customDnsSuffixKeyVaultReferenceIdentity>"
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "ftpEnabled": {
+      "value": true
+    },
+    "inboundIpAddressOverride": {
+      "value": "10.0.0.10"
+    },
+    "internalLoadBalancingMode": {
+      "value": "Web, Publishing"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "remoteDebugEnabled": {
+      "value": true
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "hidden-title": "This is visible in the resource name",
+        "hostingEnvironmentName": "whemax001",
+        "resourceType": "App Service Environment"
+      }
+    },
+    "upgradePreference": {
+      "value": "Late"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
