@@ -68,6 +68,9 @@ param isCrossTenant bool = false
 @description('The default policy might cause errors about CSR being used before, so set this to false if that happens')
 param reuseKey bool = true
 
+@description('Extra logging during Deployment Script.')
+param verbose bool = true
+
 @minValue(1)
 @maxValue(1200)
 @description('Optional. Override default validityInMonths 12 value')
@@ -168,3 +171,6 @@ output certificateThumbpints array = [for (certificateName, index) in certificat
 output certificateThumbprintHexs array = [for (certificateName, index) in certificateNames: [
   createImportCerts[index].properties.outputs.thumbprintHex
 ]]
+
+@description('Verbose output')
+output verbose bool = verbose

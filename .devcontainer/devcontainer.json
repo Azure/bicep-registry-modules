@@ -13,7 +13,8 @@
         "ms-vsliveshare.vsliveshare",
         "ms-vscode-remote.remote-containers",
         "zokugun.explicit-folding",
-        "GitHub.copilot-labs"
+        "GitHub.copilot-labs",
+        "ms-vscode.azure-account"
       ]
     }
   },
