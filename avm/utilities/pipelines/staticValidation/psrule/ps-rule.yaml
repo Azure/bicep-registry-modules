@@ -35,7 +35,7 @@ input:
   pathIgnore:
     # Exclude all files.
     - "*"
-    # Only process default and waf-aligned test files.
+    # Only process defaults and waf-aligned test files.
     - "!avm/**/defaults/*.test.bicep"
     - "!avm/**/waf-aligned/*.test.bicep"
 
