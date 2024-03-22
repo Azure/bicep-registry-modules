@@ -155,6 +155,7 @@ jobs:
         uses: microsoft/ps-rule@v2.9.0
         with:
           modules: "PSRule.Rules.Azure"
+          prerelease: true
           # workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
           baseline: "${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).psruleBaseline }}"
           inputPath: "${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).targetPath }}"
