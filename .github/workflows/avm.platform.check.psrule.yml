@@ -12,9 +12,12 @@ on:
         type: choice
         description: "Select the PSRule baseline to perform PSRule analysis"
         required: true
-        default: 'Azure.Pillar.Reliability'
+        default: 'Azure.Pillar.CostOptimization'
         options:
           - Azure.Default
+          - Azure.Pillar.CostOptimization
+          - Azure.Pillar.OperationalExcellence
+          - Azure.Pillar.PerformanceEfficiency
           - Azure.Pillar.Reliability
           - Azure.Pillar.Security
       skipPassedRulesReport:
