@@ -48,7 +48,7 @@ This instance deploys the module and attaches an existing public IP address.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nafaddpip'
+  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafaddpip001'
@@ -140,7 +140,7 @@ This instance deploys the module and will create a public IP address.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nafcstpip'
+  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafcstpip001'
@@ -250,7 +250,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nafmin'
+  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafmin001'
@@ -302,7 +302,7 @@ This instance deploys the module a vWAN in a typical hub setting.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nafhubcom'
+  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafhubcom001'
@@ -370,7 +370,7 @@ This instance deploys the module a vWAN minimum hub setting.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nafhubmin'
+  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafhubmin001'
@@ -434,7 +434,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nafmax'
+  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafmax001'
@@ -756,7 +756,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nafwaf'
+  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafwaf001'
