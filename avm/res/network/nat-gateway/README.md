@@ -46,7 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nngmin'
+  name: 'natGatewayDeployment'
   params: {
     // Required parameters
     name: 'nngmin001'
@@ -94,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nngmax'
+  name: 'natGatewayDeployment'
   params: {
     // Required parameters
     name: 'nngmax001'
@@ -286,7 +286,7 @@ This example shows how you can provide a Public IP Prefix to the module, while a
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nngcprx'
+  name: 'natGatewayDeployment'
   params: {
     // Required parameters
     name: 'nngcprx001'
@@ -354,7 +354,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nngwaf'
+  name: 'natGatewayDeployment'
   params: {
     // Required parameters
     name: 'nngwaf001'
@@ -703,7 +703,7 @@ A list of availability zones denoting the zone in which Nat Gateway should be de
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |

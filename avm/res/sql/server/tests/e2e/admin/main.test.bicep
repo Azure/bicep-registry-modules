@@ -57,4 +57,7 @@ module testDeployment '../../../main.bicep' = {
       principalType: 'Application'
     }
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }

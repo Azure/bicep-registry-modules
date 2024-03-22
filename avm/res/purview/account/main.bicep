@@ -384,7 +384,7 @@ output managedStorageAccountId string = account.properties.managedResources.stor
 output managedEventHubId string = account.properties.managedResources.eventHubNamespace
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = contains(account.identity, 'principalId') ? account.identity.principalId : ''
+output systemAssignedMIPrincipalId string = account.?identity.?principalId ?? ''
 
 // =============== //
 //   Definitions   //

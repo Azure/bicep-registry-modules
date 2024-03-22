@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "14161959215427804200"
+      "templateHash": "11532993654681133775"
     },
     "name": "User Assigned Identities",
     "description": "This module deploys a User Assigned Identity.",
@@ -103,6 +103,42 @@
         }
       },
       "nullable": true
+    },
+    "federatedIdentityCredentialsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the federated identity credential."
+            }
+          },
+          "audiences": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "metadata": {
+              "description": "Required. The list of audiences that can appear in the issued token."
+            }
+          },
+          "issuer": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The URL of the issuer to be trusted."
+            }
+          },
+          "subject": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The identifier of the external identity."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -120,8 +156,7 @@
       }
     },
     "federatedIdentityCredentials": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/federatedIdentityCredentialsType",
       "metadata": {
         "description": "Optional. The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object."
       }
@@ -231,7 +266,7 @@
     "userAssignedIdentity_federatedIdentityCredentials": {
       "copy": {
         "name": "userAssignedIdentity_federatedIdentityCredentials",
-        "count": "[length(parameters('federatedIdentityCredentials'))]"
+        "count": "[length(coalesce(parameters('federatedIdentityCredentials'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -243,19 +278,19 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('federatedIdentityCredentials')[copyIndex()].name]"
+            "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].name]"
           },
           "userAssignedIdentityName": {
             "value": "[parameters('name')]"
           },
           "audiences": {
-            "value": "[parameters('federatedIdentityCredentials')[copyIndex()].audiences]"
+            "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].audiences]"
           },
           "issuer": {
-            "value": "[parameters('federatedIdentityCredentials')[copyIndex()].issuer]"
+            "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].issuer]"
           },
           "subject": {
-            "value": "[parameters('federatedIdentityCredentials')[copyIndex()].subject]"
+            "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].subject]"
           }
         },
         "template": {
