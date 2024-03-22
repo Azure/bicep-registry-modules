@@ -16,7 +16,7 @@ param location string = resourceGroup().location
 ])
 param skuName string = 'Standard'
 
-@description('Optional. Authorization Rules for the Relay namespace.')
+@description('Optional. Authorization Rules for the Relay Namespace.')
 param authorizationRules array = [
   {
     name: 'RootManageSharedAccessKey'

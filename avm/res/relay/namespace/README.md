@@ -56,7 +56,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module namespace 'br/public:avm/res/relay/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rnmin'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'rnmin001'
@@ -104,7 +104,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module namespace 'br/public:avm/res/relay/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rnmax'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'rnmax001'
@@ -424,7 +424,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module namespace 'br/public:avm/res/relay/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rnwaf'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'rnwaf001'
@@ -644,7 +644,7 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`authorizationRules`](#parameter-authorizationrules) | array | Authorization Rules for the Relay namespace. |
+| [`authorizationRules`](#parameter-authorizationrules) | array | Authorization Rules for the Relay Namespace. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`hybridConnections`](#parameter-hybridconnections) | array | The hybrid connections to create in the relay namespace. |
@@ -666,7 +666,7 @@ Name of the Relay Namespace.
 
 ### Parameter: `authorizationRules`
 
-Authorization Rules for the Relay namespace.
+Authorization Rules for the Relay Namespace.
 
 - Required: No
 - Type: array
