@@ -447,7 +447,7 @@
         }
       ],
       "metadata": {
-        "description": "Optional. Authorization Rules for the Relay namespace."
+        "description": "Optional. Authorization Rules for the Relay Namespace."
       }
     },
     "diagnosticSettings": {
