@@ -170,7 +170,7 @@ jobs:
             $ParameterInput = @{
               inputFilePath         = '${{ env.PSRuleOutputFilePath }}'
               outputFilePath        = '${{ env.PSRuleInputFilePath }}'
-              skipPassedRulesReport = ${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).skipPassedRulesReport }}'
+              skipPassedRulesReport = ${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).skipPassedRulesReport }}
             }
 
             Write-Verbose ('Set PS Rule Output with following parameters:`n{0}' -f (ConvertTo-Json $ParameterInput -Depth 10)) -Verbose
