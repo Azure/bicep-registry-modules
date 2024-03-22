@@ -27,6 +27,7 @@ on:
 
 env:
     # targetPath: "avm/res/api-management/service/tests/e2e/waf-aligned/main.test.bicep"
+    workflowPath: ".github/workflows/avm.platform.check.psrule.yml"
     targetPath: "${{ github.event.inputs.targetPath }}"
     psruleBaseline: "${{ github.event.inputs.psruleBaseline }}"
     PSRuleOutputFilePath: "${{ github.event.inputs.targetPath }}PSRule-output.csv"
@@ -40,10 +41,33 @@ env:
     TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
 
 jobs:
-  psrule:
+  ###########################
+  #   Initialize pipeline   #
+  ###########################
+  job_init_psrule_pipeline:
+    runs-on: ubuntu-latest
+    name: "Initialize pipeline"
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: "Set input parameters to output variables"
+        id: get-workflow-param
+        uses: ./.github/actions/templates/avm-getWorkflowInput
+        with:
+          workflowPath: "${{ env.workflowPath}}"
+    outputs:
+      workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
+  ##############
+  #   PSRule   #
+  ##############
+  job_psrule:
     # Analyze module library with PSRule
     name: 'PSRule validation'
     runs-on: ubuntu-latest
+    needs:
+      - job_init_psrule_pipeline
     steps:
       # [Init] task(s)
       # ---------------------------
@@ -130,8 +154,11 @@ jobs:
         uses: microsoft/ps-rule@v2.9.0
         with:
           modules: "PSRule.Rules.Azure"
-          baseline: "${{ env.psruleBaseline }}"
-          inputPath: "${{ env.targetPath }}"
+          # workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
+          baseline: "${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).baseline }}"
+          inputPath: "${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).inputPath }}"
+          # baseline: "${{ env.psruleBaseline }}"
+          # inputPath: "${{ env.targetPath }}"
           outputFormat: Csv
           outputPath: "${{ env.PSRuleOutputFilePath }}"
           option: "${{ github.workspace }}/${{ env.psrulePath}}/ps-rule.yaml" # Path to PSRule configuration options file
