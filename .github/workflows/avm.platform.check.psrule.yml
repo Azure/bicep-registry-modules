@@ -12,7 +12,7 @@ on:
         type: choice
         description: "PSRule baseline"
         required: true
-        default: 'Azure.Pillar.OperationalExcellence'
+        default: 'Azure.Pillar.PerformanceEfficiency'
         options:
           - Azure.Default
           - Azure.Pillar.CostOptimization
