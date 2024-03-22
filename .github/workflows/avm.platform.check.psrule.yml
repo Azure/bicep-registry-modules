@@ -1,11 +1,11 @@
 name: '.Platform: PSRule validation for all defaults and waf-aligned tests'
 
 on:
-  # push:
-  #   branches:
-  #     - feat/psrule-them-all
-  #   paths:
-  #     - ".github/workflows/avm.platform.check.psrule.yml"
+  push:
+    branches:
+      - feat/psrule-them-all
+    paths:
+      - ".github/workflows/avm.platform.check.psrule.yml"
   workflow_dispatch:
     inputs:
       targetPath:
@@ -13,17 +13,22 @@ on:
         description: "Specify target input path for PSRule analysis (example: avm/res/api-management/service/)"
         required: false
         default: "avm/res/api-management/service/"
-      baeline:
-        type: string
-        description: "Specify the PSRule baseline to perform PSRule analysis against (example: avm/res/api-management/service/)"
-        required: false
-        default: "avm/res/api-management/service/"
+      psruleBaseline:
+        type: choice
+        description: "Select the PSRule baseline to perform PSRule analysis (example: avm/res/api-management/service/)"
+        required: true
+        default: 'Azure.Default'
+        options:
+          - Azure.Default
+          - Azure.Pillar.Reliability
+          - Azure.Pillar.Security
   schedule:
     - cron: '0 12 * * 0' # Weekly Sunday Analysis
 
 env:
     # targetPath: "avm/res/api-management/service/tests/e2e/waf-aligned/main.test.bicep"
     targetPath: "${{ github.event.inputs.targetPath }}"
+    psruleBaseline: "${{ github.event.inputs.psruleBaseline }}"
     PSRuleOutputFilePath: "${{ github.event.inputs.targetPath }}PSRule-output.csv"
     PSRuleInputFilePath: "${{ github.event.inputs.targetPath }}PSRule-output.md"
     psRuleFilterRegex: "(defaults|waf-aligned)" # The regex used to filter PSRule compliant files
@@ -119,35 +124,13 @@ jobs:
             $null = Convert-TokensInFileList @ConvertTokensInputs
 
             Write-Output '::endgroup::'
-
-      # # [Get output] task(s)
-      # # ---------------------------
-      # - name: "Get output path"
-      #   uses: azure/powershell@v1
-      #   id: get-psrule-output-path
-      #   with:
-      #     azPSVersion: "latest"
-      #     inlineScript: |
-      #       Grouping task logs
-      #       Write-Output '::group::Get output path'
-
-      #       $targetPath = Join-Path $env:GITHUB_WORKSPACE '${{ env.targetPath }}'
-      #       Write-Verbose ('targetPath [{0}]' -f $targetPath) -Verbose
-
-      #       Get target files
-      #       if (Test-Path -Path $targetPath -PathType Leaf){
-      #         Add the template file
-
-      #       } else {
-      #       }
-      #       Write-Output '::endgroup::'
-
       # [PSRule validation] task(s)
       #-----------------------------
       - name: Run PSRule analysis
         uses: microsoft/ps-rule@v2.9.0
         with:
           modules: "PSRule.Rules.Azure"
+          baseline: "${{ env.psruleBaseline }}"
           inputPath: "${{ env.targetPath }}"
           outputFormat: Csv
           outputPath: "${{ env.PSRuleOutputFilePath }}"
