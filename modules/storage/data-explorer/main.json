@@ -1,13 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "1.10-experimental",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.20.4.51522",
-      "templateHash": "4738160747042515196"
+      "version": "0.25.53.49325",
+      "templateHash": "7592042983155610898"
     },
     "name": "Azure Data Explorer",
     "description": "This Bicep module creates a Kusto Cluster with the specified number of nodes and version.",
@@ -100,8 +99,7 @@
           "allowedValues": [
             "App",
             "Group",
-            "User",
-            null
+            "User"
           ],
           "nullable": true
         },
@@ -112,8 +110,7 @@
             "Ingestor",
             "Monitor",
             "User",
-            "Viewer",
-            null
+            "Viewer"
           ],
           "nullable": true
         },
@@ -557,14 +554,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "13783205425210393189"
+              "version": "0.25.53.49325",
+              "templateHash": "3622504043501225521"
             }
           },
           "parameters": {
@@ -597,8 +592,8 @@
               }
             ]
           },
-          "resources": {
-            "privateEndpoint": {
+          "resources": [
+            {
               "copy": {
                 "name": "privateEndpoint",
                 "count": "[length(variables('varPrivateEndpoints'))]",
@@ -619,7 +614,7 @@
                 "customNetworkInterfaceName": "[variables('varPrivateEndpoints')[copyIndex()].customNetworkInterfaceName]"
               }
             },
-            "privateDnsZoneGroup": {
+            {
               "copy": {
                 "name": "privateDnsZoneGroup",
                 "count": "[length(variables('varPrivateEndpoints'))]",
@@ -644,10 +639,10 @@
                 ]
               },
               "dependsOn": [
-                "[format('privateEndpoint[{0}]', copyIndex())]"
+                "[resourceId('Microsoft.Network/privateEndpoints', format('{0}-{1}', variables('varPrivateEndpoints')[copyIndex()].name, uniqueString(variables('varPrivateEndpoints')[copyIndex()].name, variables('varPrivateEndpoints')[copyIndex()].subnetId, variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId)))]"
               ]
             }
-          }
+          ]
         }
       },
       "dependsOn": [
@@ -682,14 +677,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "15139303132398874695"
+              "version": "0.25.53.49325",
+              "templateHash": "11866065820418974120"
             }
           },
           "parameters": {
@@ -773,14 +766,8 @@
               "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]"
             }
           },
-          "resources": {
-            "kustoClusters": {
-              "existing": true,
-              "type": "Microsoft.Kusto/clusters",
-              "apiVersion": "2022-12-29",
-              "name": "[last(split(parameters('resourceId'), '/'))]"
-            },
-            "roleAssignment": {
+          "resources": [
+            {
               "copy": {
                 "name": "roleAssignment",
                 "count": "[length(parameters('principalIds'))]",
@@ -801,7 +788,7 @@
                 "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), null())]"
               }
             }
-          }
+          ]
         }
       },
       "dependsOn": [

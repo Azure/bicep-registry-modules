@@ -60,7 +60,7 @@ This Bicep module allows users to create or use existing Kusto Clusters with opt
 This example creates a new Kusto Cluster with dataconnection with existing cosmosdb and eventhub.
 
 ```bicep
-module kustoCluster 'br/public:data-analytics/kusto-clusters:0.0.1' = {
+module kustoCluster 'br/public:data-analytics/kusto-clusters:0.0.2' = {
   name: 'test0${uniqueString(resourceGroup().id, subscription().id)}'
   params: {
     name: 'ktest0${uniqueString(resourceGroup().id, subscription().id)}'
@@ -125,7 +125,7 @@ Create a Kusto cluster with a database, private endpoint and managedEndpoints
 
 ```bicep
 //Test 1: Create a Kusto cluster with a database, private endpoint
-module kustoCluster 'br/public:data-analytics/kusto-clusters:0.0.1' = {
+module kustoCluster 'br/public:data-analytics/kusto-clusters:0.0.2' = {
   dependsOn: [
     prereq
   ]
