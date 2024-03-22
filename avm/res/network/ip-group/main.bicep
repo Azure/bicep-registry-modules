@@ -2,14 +2,14 @@ metadata name = 'IP Groups'
 metadata description = 'This module deploys an IP Group.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. The name of the ipGroups.')
+@description('Required. The name of the IP Group.')
 @minLength(1)
 param name string
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. IpAddresses/IpAddressPrefixes in the IpGroups resource.')
+@description('Optional. IpAddresses/IpAddressPrefixes in the IP Group resource.')
 param ipAddresses array = []
 
 @description('Optional. The lock settings of the service.')

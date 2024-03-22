@@ -27,8 +27,9 @@ on:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.res.web.static-site.yml"
-      - "avm/res/web/serverfarm/**"
+      - "avm/res/web/static-site/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
