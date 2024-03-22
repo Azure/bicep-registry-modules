@@ -53,16 +53,8 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     infrastructureSubnetId: '<infrastructureSubnetId>'
     internal: true
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
-    tags: {
-      Env: 'test'
-      'hidden-title': 'This is visible in the resource name'
-    }
     workloadProfiles: [
       {
         maximumCount: 3
@@ -110,23 +102,11 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
     },
     "platformReservedDnsIP": {
       "value": "172.17.17.17"
-    },
-    "tags": {
-      "value": {
-        "Env": "test",
-        "hidden-title": "This is visible in the resource name"
-      }
     },
     "workloadProfiles": {
       "value": [

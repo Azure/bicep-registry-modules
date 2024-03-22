@@ -66,14 +66,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     platformReservedDnsIP: '172.17.17.17'
     infrastructureSubnetId: nestedDependencies.outputs.subnetResourceId
     infrastructureResourceGroupName: 'me-${resourceGroupName}'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Env: 'test'
-    }
   }
   dependsOn: [
     nestedDependencies
