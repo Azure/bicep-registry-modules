@@ -5,13 +5,13 @@ metadata owner = 'Azure/module-maintainers'
 @description('Optional. Specific values for some API connections.')
 param api object?
 
-@description('Required. Connection name for connection. Example: \'azureblob\' when using blobs.  It can change depending on the resource.')
+@description('Required. Connection name for connection. Example: \'azureblob\' when using blobs. It can change depending on the resource.')
 param name string
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Customized parameter values for specific connections.')
+@description('Optional. Dictionary of custom parameter values for specific connections.')
 param customParameterValues object?
 
 @description('Required. Display name connection. Example: \'blobconnection\' when using blobs. It can change depending on the resource.')
