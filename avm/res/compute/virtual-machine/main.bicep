@@ -100,12 +100,12 @@ param availabilitySetResourceId string = ''
 
 @description('Optional. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.')
 @allowed([
-  0
-  1
-  2
-  3
+  '0'
+  '1'
+  '2'
+  '3'
 ])
-param availabilityZone int = 1
+param availabilityZone string = '1'
 
 // External resources
 @description('Required. Configures NICs and PIPs.')

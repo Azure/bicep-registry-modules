@@ -440,7 +440,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     osType: 'Linux'
     vmSize: 'Standard_DS2_v2'
     // Non-required parameters
-    availabilityZone: 1
+    availabilityZone: '1'
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
     backupVaultResourceGroup: '<backupVaultResourceGroup>'
@@ -708,7 +708,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     // Non-required parameters
     "availabilityZone": {
-      "value": 1
+      "value": "1"
     },
     "backupPolicyName": {
       "value": "<backupPolicyName>"
@@ -1013,7 +1013,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     vmSize: 'Standard_DS2_v2'
     // Non-required parameters
     adminPassword: '<adminPassword>'
-    availabilityZone: 2
+    availabilityZone: '2'
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
     backupVaultResourceGroup: '<backupVaultResourceGroup>'
@@ -1300,7 +1300,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "<adminPassword>"
     },
     "availabilityZone": {
-      "value": 2
+      "value": "2"
     },
     "backupPolicyName": {
       "value": "<backupPolicyName>"
@@ -2091,7 +2091,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     vmSize: 'Standard_DS2_v2'
     // Non-required parameters
     adminPassword: '<adminPassword>'
-    availabilityZone: 2
+    availabilityZone: '2'
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
     backupVaultResourceGroup: '<backupVaultResourceGroup>'
@@ -2379,7 +2379,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "<adminPassword>"
     },
     "availabilityZone": {
-      "value": 2
+      "value": "2"
     },
     "backupPolicyName": {
       "value": "<backupPolicyName>"
@@ -2890,7 +2890,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`adminPassword`](#parameter-adminpassword) | securestring | When specifying a Windows Virtual Machine, this value should be passed. |
 | [`allowExtensionOperations`](#parameter-allowextensionoperations) | bool | Specifies whether extension operations should be allowed on the virtual machine. This may only be set to False when no extensions are present on the virtual machine. |
 | [`availabilitySetResourceId`](#parameter-availabilitysetresourceid) | string | Resource ID of an availability set. Cannot be used in combination with availability zone nor scale set. |
-| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set. |
+| [`availabilityZone`](#parameter-availabilityzone) | string | If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set. |
 | [`backupPolicyName`](#parameter-backuppolicyname) | string | Backup policy the VMs should be using for backup. If not provided, it will use the DefaultPolicy from the backup recovery service vault. |
 | [`backupVaultName`](#parameter-backupvaultname) | string | Recovery service vault name to add VMs to backup. |
 | [`backupVaultResourceGroup`](#parameter-backupvaultresourcegroup) | string | Resource group of the backup recovery service vault. If not provided the current resource group name is considered by default. |
@@ -3061,15 +3061,15 @@ Resource ID of an availability set. Cannot be used in combination with availabil
 If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.
 
 - Required: No
-- Type: int
-- Default: `1`
+- Type: string
+- Default: `'1'`
 - Allowed:
   ```Bicep
   [
-    0
-    1
-    2
-    3
+    '0'
+    '1'
+    '2'
+    '3'
   ]
   ```
 
