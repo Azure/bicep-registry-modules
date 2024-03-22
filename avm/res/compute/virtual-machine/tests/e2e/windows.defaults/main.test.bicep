@@ -61,6 +61,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
+    availabilityZone: '0'
     nicConfigurations: [
       {
         ipConfigurations: [

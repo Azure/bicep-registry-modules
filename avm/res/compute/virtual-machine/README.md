@@ -61,6 +61,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
+    availabilityZone: '0'
     imageReference: {
       offer: '0001-com-ubuntu-server-jammy'
       publisher: 'Canonical'
@@ -124,6 +125,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "localAdminUser"
+    },
+    "availabilityZone": {
+      "value": "0"
     },
     "imageReference": {
       "value": {
@@ -211,6 +215,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
+    availabilityZone: '0'
     imageReference: {
       offer: '0001-com-ubuntu-server-jammy'
       publisher: 'Canonical'
@@ -269,6 +274,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "localAdminUser"
+    },
+    "availabilityZone": {
+      "value": "0"
     },
     "imageReference": {
       "value": {
@@ -349,6 +357,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdministrator'
+    availabilityZone: '1'
     imageReference: {
       offer: '0001-com-ubuntu-server-focal'
       publisher: 'Canonical'
@@ -440,7 +449,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     osType: 'Linux'
     vmSize: 'Standard_DS2_v2'
     // Non-required parameters
-    availabilityZone: '1'
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
     backupVaultResourceGroup: '<backupVaultResourceGroup>'
@@ -604,6 +612,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdministrator"
     },
+    "availabilityZone": {
+      "value": "1"
+    },
     "imageReference": {
       "value": {
         "offer": "0001-com-ubuntu-server-focal",
@@ -707,9 +718,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Standard_DS2_v2"
     },
     // Non-required parameters
-    "availabilityZone": {
-      "value": "1"
-    },
     "backupPolicyName": {
       "value": "<backupPolicyName>"
     },
@@ -921,6 +929,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'VMAdmin'
+    availabilityZone: '2'
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -1013,7 +1022,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     vmSize: 'Standard_DS2_v2'
     // Non-required parameters
     adminPassword: '<adminPassword>'
-    availabilityZone: '2'
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
     backupVaultResourceGroup: '<backupVaultResourceGroup>'
@@ -1193,6 +1201,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "VMAdmin"
     },
+    "availabilityZone": {
+      "value": "2"
+    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -1298,9 +1309,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
-    },
-    "availabilityZone": {
-      "value": "2"
     },
     "backupPolicyName": {
       "value": "<backupPolicyName>"
@@ -1529,6 +1537,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
+    availabilityZone: '0'
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -1578,6 +1587,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "localAdminUser"
+    },
+    "availabilityZone": {
+      "value": "0"
     },
     "imageReference": {
       "value": {
@@ -1647,6 +1659,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
+    availabilityZone: '0'
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -1725,6 +1738,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "localAdminUser"
+    },
+    "availabilityZone": {
+      "value": "0"
     },
     "imageReference": {
       "value": {
@@ -1829,6 +1845,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
+    availabilityZone: '0'
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -1899,6 +1916,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "localAdminUser"
+    },
+    "availabilityZone": {
+      "value": "0"
     },
     "imageReference": {
       "value": {
@@ -1999,6 +2019,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'VMAdmin'
+    availabilityZone: '2'
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -2091,7 +2112,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     vmSize: 'Standard_DS2_v2'
     // Non-required parameters
     adminPassword: '<adminPassword>'
-    availabilityZone: '2'
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
     backupVaultResourceGroup: '<backupVaultResourceGroup>'
@@ -2272,6 +2292,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "VMAdmin"
     },
+    "availabilityZone": {
+      "value": "2"
+    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -2377,9 +2400,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
-    },
-    "availabilityZone": {
-      "value": "2"
     },
     "backupPolicyName": {
       "value": "<backupPolicyName>"
@@ -2609,6 +2629,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
+    availabilityZone: '0'
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -2661,6 +2682,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "localAdminUser"
+    },
+    "availabilityZone": {
+      "value": "0"
     },
     "imageReference": {
       "value": {
@@ -2735,6 +2759,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     adminUsername: 'VMAdministrator'
+    availabilityZone: '0'
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -2797,6 +2822,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "VMAdministrator"
+    },
+    "availabilityZone": {
+      "value": "0"
     },
     "imageReference": {
       "value": {
@@ -2874,6 +2902,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`adminUsername`](#parameter-adminusername) | securestring | Administrator username. |
+| [`availabilityZone`](#parameter-availabilityzone) | string | If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set. |
 | [`configurationProfile`](#parameter-configurationprofile) | string | The configuration profile of automanage. |
 | [`imageReference`](#parameter-imagereference) | object | OS image reference. In case of marketplace images, it's the combination of the publisher, offer, sku, version attributes. In case of custom images it's the resource ID of the custom image. |
 | [`name`](#parameter-name) | string | The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory. |
@@ -2890,7 +2919,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`adminPassword`](#parameter-adminpassword) | securestring | When specifying a Windows Virtual Machine, this value should be passed. |
 | [`allowExtensionOperations`](#parameter-allowextensionoperations) | bool | Specifies whether extension operations should be allowed on the virtual machine. This may only be set to False when no extensions are present on the virtual machine. |
 | [`availabilitySetResourceId`](#parameter-availabilitysetresourceid) | string | Resource ID of an availability set. Cannot be used in combination with availability zone nor scale set. |
-| [`availabilityZone`](#parameter-availabilityzone) | string | If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set. |
 | [`backupPolicyName`](#parameter-backuppolicyname) | string | Backup policy the VMs should be using for backup. If not provided, it will use the DefaultPolicy from the backup recovery service vault. |
 | [`backupVaultName`](#parameter-backupvaultname) | string | Recovery service vault name to add VMs to backup. |
 | [`backupVaultResourceGroup`](#parameter-backupvaultresourcegroup) | string | Resource group of the backup recovery service vault. If not provided the current resource group name is considered by default. |
@@ -2958,6 +2986,22 @@ Administrator username.
 
 - Required: Yes
 - Type: securestring
+
+### Parameter: `availabilityZone`
+
+If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '0'
+    '1'
+    '2'
+    '3'
+  ]
+  ```
 
 ### Parameter: `configurationProfile`
 
@@ -3055,23 +3099,6 @@ Resource ID of an availability set. Cannot be used in combination with availabil
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `availabilityZone`
-
-If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.
-
-- Required: No
-- Type: string
-- Default: `'1'`
-- Allowed:
-  ```Bicep
-  [
-    '0'
-    '1'
-    '2'
-    '3'
-  ]
-  ```
 
 ### Parameter: `backupPolicyName`
 

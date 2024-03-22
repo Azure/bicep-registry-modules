@@ -61,6 +61,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     managedIdentities: {
       systemAssigned: true
     }
+    availabilityZone: '0'
     imageReference: {
       publisher: 'MicrosoftWindowsServer'
       offer: 'WindowsServer'

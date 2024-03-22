@@ -67,6 +67,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       sku: '2019-datacenter'
       version: 'latest'
     }
+    availabilityZone: '0'
     nicConfigurations: [
       {
         ipConfigurations: [

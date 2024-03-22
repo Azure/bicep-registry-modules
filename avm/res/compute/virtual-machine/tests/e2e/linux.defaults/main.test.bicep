@@ -66,6 +66,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       sku: '22_04-lts-gen2'
       version: 'latest'
     }
+    availabilityZone: '0'
     nicConfigurations: [
       {
         ipConfigurations: [
