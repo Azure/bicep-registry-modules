@@ -44,7 +44,7 @@ This instance deploys the module with a base set of parameters. Note it does inc
 
 ```bicep
 module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-whemin'
+  name: 'hostingEnvironmentDeployment'
   params: {
     // Required parameters
     name: 'whemin001'
@@ -100,7 +100,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-whemax'
+  name: 'hostingEnvironmentDeployment'
   params: {
     // Required parameters
     name: 'whemax001'
@@ -294,7 +294,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-whewaf'
+  name: 'hostingEnvironmentDeployment'
   params: {
     // Required parameters
     name: 'whewaf001'
