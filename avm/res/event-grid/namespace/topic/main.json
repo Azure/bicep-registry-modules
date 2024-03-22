@@ -1,0 +1,525 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "2836208779363789051"
+    },
+    "name": "Eventgrid Namespace Topics",
+    "description": "This module deploys an Eventgrid Namespace Topic.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "roleAssignmentType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "roleDefinitionIdOrName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+            }
+          },
+          "principalId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+            }
+          },
+          "principalType": {
+            "type": "string",
+            "allowedValues": [
+              "Device",
+              "ForeignGroup",
+              "Group",
+              "ServicePrincipal",
+              "User"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The principal type of the assigned principal ID."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The description of the role assignment."
+            }
+          },
+          "condition": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+            }
+          },
+          "conditionVersion": {
+            "type": "string",
+            "allowedValues": [
+              "2.0"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Version of the condition."
+            }
+          },
+          "delegatedManagedIdentityResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The Resource Id of the delegated managed identity resource."
+            }
+          }
+        }
+      },
+      "nullable": true
+    }
+  },
+  "parameters": {
+    "namespaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent EventGrid namespace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the topic."
+      }
+    },
+    "roleAssignments": {
+      "$ref": "#/definitions/roleAssignmentType",
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "eventRetentionInDays": {
+      "type": "int",
+      "defaultValue": 1,
+      "minValue": 1,
+      "maxValue": 7,
+      "metadata": {
+        "description": "Optional. Event retention for the namespace topic expressed in days."
+      }
+    },
+    "inputSchema": {
+      "type": "string",
+      "defaultValue": "CloudEventSchemaV1_0",
+      "metadata": {
+        "description": "Optional. This determines the format that is expected for incoming events published to the topic."
+      }
+    },
+    "publisherType": {
+      "type": "string",
+      "defaultValue": "Custom",
+      "metadata": {
+        "description": "Optional. Publisher type of the namespace topic."
+      }
+    },
+    "eventSubscriptions": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. All event subscriptions to create."
+      }
+    }
+  },
+  "variables": {
+    "builtInRoleNames": {
+      "Azure Resource Notifications System Topics Subscriber": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0b962ed2-6d56-471c-bd5f-3477d83a7ba4')]",
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "EventGrid Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1e241071-0855-49ea-94dc-649edcd759de')]",
+      "EventGrid Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1d8c3fe3-8864-474b-8749-01e3783e8157')]",
+      "EventGrid Data Receiver": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '78cbd9e7-9798-4e2e-9b5a-547d9ebb31fb')]",
+      "EventGrid Data Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'd5a91429-5739-47e2-a06b-3470a27159e7')]",
+      "EventGrid EventSubscription Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '428e0ff0-5e57-4d9c-a221-2c70d0e0a443')]",
+      "EventGrid EventSubscription Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2414bbcf-6497-4faf-8c65-045460748405')]",
+      "EventGrid TopicSpaces Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a12b0b94-b317-4dcd-84a8-502ce99884c6')]",
+      "EventGrid TopicSpaces Subscriber": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4b0f2fd7-60b4-4eca-896f-4435034f8bf5')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+    }
+  },
+  "resources": {
+    "namespace": {
+      "existing": true,
+      "type": "Microsoft.EventGrid/namespaces",
+      "apiVersion": "2023-12-15-preview",
+      "name": "[parameters('namespaceName')]"
+    },
+    "topic": {
+      "type": "Microsoft.EventGrid/namespaces/topics",
+      "apiVersion": "2023-12-15-preview",
+      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
+      "properties": {
+        "eventRetentionInDays": "[parameters('eventRetentionInDays')]",
+        "inputSchema": "[parameters('inputSchema')]",
+        "publisherType": "[parameters('publisherType')]"
+      },
+      "dependsOn": [
+        "namespace"
+      ]
+    },
+    "topic_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.EventGrid/namespaces/{0}/topics/{1}', parameters('namespaceName'), parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "topic"
+      ]
+    },
+    "topic_roleAssignments": {
+      "copy": {
+        "name": "topic_roleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.EventGrid/namespaces/{0}/topics/{1}', parameters('namespaceName'), parameters('name'))]",
+      "name": "[guid(resourceId('Microsoft.EventGrid/namespaces/topics', parameters('namespaceName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "properties": {
+        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "topic"
+      ]
+    },
+    "topic_eventSubscriptions": {
+      "copy": {
+        "name": "topic_eventSubscriptions",
+        "count": "[length(coalesce(parameters('eventSubscriptions'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Topic-EventSubscription-{1}', uniqueString(deployment().name, parameters('name')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()].name]"
+          },
+          "namespaceName": {
+            "value": "[parameters('namespaceName')]"
+          },
+          "topicName": {
+            "value": "[parameters('name')]"
+          },
+          "deliveryConfiguration": {
+            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'deliveryConfiguration')]"
+          },
+          "eventDeliverySchema": {
+            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'eventDeliverySchema')]"
+          },
+          "filtersConfiguration": {
+            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'filtersConfiguration')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'roleAssignments')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.25.53.49325",
+              "templateHash": "13130499975324434363"
+            },
+            "name": "Event Subscriptions",
+            "description": "This module deploys an Event Subscription.",
+            "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "roleAssignmentType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "roleDefinitionIdOrName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                    }
+                  },
+                  "principalId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                    }
+                  },
+                  "principalType": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Device",
+                      "ForeignGroup",
+                      "Group",
+                      "ServicePrincipal",
+                      "User"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The principal type of the assigned principal ID."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The description of the role assignment."
+                    }
+                  },
+                  "condition": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                    }
+                  },
+                  "conditionVersion": {
+                    "type": "string",
+                    "allowedValues": [
+                      "2.0"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Version of the condition."
+                    }
+                  },
+                  "delegatedManagedIdentityResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The Resource Id of the delegated managed identity resource."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            }
+          },
+          "parameters": {
+            "namespaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent EventGrid namespace. Required if the template is used in a standalone deployment."
+              }
+            },
+            "topicName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent EventGrid namespace topic. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Event Subscription to create."
+              }
+            },
+            "deliveryConfiguration": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Information about the delivery configuration of the Event Subscription."
+              }
+            },
+            "eventDeliverySchema": {
+              "type": "string",
+              "defaultValue": "CloudEventSchemaV1_0",
+              "metadata": {
+                "description": "Optional. The event delivery schema for the Event Subscription."
+              }
+            },
+            "filtersConfiguration": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Information about the filter for the Event Subscription."
+              }
+            },
+            "roleAssignments": {
+              "$ref": "#/definitions/roleAssignmentType",
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            }
+          },
+          "variables": {
+            "builtInRoleNames": {
+              "Azure Resource Notifications System Topics Subscriber": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0b962ed2-6d56-471c-bd5f-3477d83a7ba4')]",
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "EventGrid Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1e241071-0855-49ea-94dc-649edcd759de')]",
+              "EventGrid Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1d8c3fe3-8864-474b-8749-01e3783e8157')]",
+              "EventGrid Data Receiver": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '78cbd9e7-9798-4e2e-9b5a-547d9ebb31fb')]",
+              "EventGrid Data Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'd5a91429-5739-47e2-a06b-3470a27159e7')]",
+              "EventGrid EventSubscription Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '428e0ff0-5e57-4d9c-a221-2c70d0e0a443')]",
+              "EventGrid EventSubscription Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2414bbcf-6497-4faf-8c65-045460748405')]",
+              "EventGrid TopicSpaces Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a12b0b94-b317-4dcd-84a8-502ce99884c6')]",
+              "EventGrid TopicSpaces Subscriber": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4b0f2fd7-60b4-4eca-896f-4435034f8bf5')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": {
+            "namespace::topic": {
+              "existing": true,
+              "type": "Microsoft.EventGrid/namespaces/topics",
+              "apiVersion": "2023-12-15-preview",
+              "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]",
+              "dependsOn": [
+                "namespace"
+              ]
+            },
+            "namespace": {
+              "existing": true,
+              "type": "Microsoft.EventGrid/namespaces",
+              "apiVersion": "2023-12-15-preview",
+              "name": "[parameters('namespaceName')]"
+            },
+            "eventSubscription": {
+              "type": "Microsoft.EventGrid/namespaces/topics/eventSubscriptions",
+              "apiVersion": "2023-12-15-preview",
+              "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('name'))]",
+              "properties": {
+                "deliveryConfiguration": "[parameters('deliveryConfiguration')]",
+                "eventDeliverySchema": "[parameters('eventDeliverySchema')]",
+                "filtersConfiguration": "[parameters('filtersConfiguration')]"
+              },
+              "dependsOn": [
+                "namespace::topic"
+              ]
+            },
+            "eventSubscription_roleAssignments": {
+              "copy": {
+                "name": "eventSubscription_roleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.EventGrid/namespaces/{0}/topics/{1}/eventSubscriptions/{2}', parameters('namespaceName'), parameters('topicName'), parameters('name'))]",
+              "name": "[guid(resourceId('Microsoft.EventGrid/namespaces/topics/eventSubscriptions', parameters('namespaceName'), parameters('topicName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+              "properties": {
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "eventSubscription"
+              ]
+            }
+          },
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Event Subscription."
+              },
+              "value": "[resourceId('Microsoft.EventGrid/namespaces/topics/eventSubscriptions', parameters('namespaceName'), parameters('topicName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Event Subscription."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the Event Subscription was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "namespace",
+        "topic"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Namespace Topic."
+      },
+      "value": "[resourceId('Microsoft.EventGrid/namespaces/topics', parameters('namespaceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Namespace Topic."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the Namespace Topic was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

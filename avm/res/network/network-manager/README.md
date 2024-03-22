@@ -50,7 +50,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nnmmin'
+  name: 'networkManagerDeployment'
   params: {
     // Required parameters
     name: 'nnmmin001'
@@ -118,7 +118,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nnmmax'
+  name: 'networkManagerDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -588,7 +588,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nnmwaf'
+  name: 'networkManagerDeployment'
   params: {
     // Required parameters
     name: 'nnmwaf001'

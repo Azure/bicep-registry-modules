@@ -1,3 +1,9 @@
+<h1 style="color: steelblue;">⚠️ Upcoming changes ⚠️</h1>
+
+This module has been replaced by the following equivalent module in Azure Verified Modules (AVM): [avm/res/container-registry/registry](https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/container-registry/registry).
+
+For more information, see the informational notice [here](https://github.com/Azure/bicep-registry-modules?tab=readme-ov-file#%EF%B8%8F-upcoming-changes-%EF%B8%8F).
+
 # Container Registry
 
 This module deploys Container Registry (Microsoft.ContainerRegistry/registries) and optionally available integrations.

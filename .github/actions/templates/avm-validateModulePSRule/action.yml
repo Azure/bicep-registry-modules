@@ -5,20 +5,6 @@
 ## This composite action contains the logic to validate a module using a set of PSRule tests
 ##
 #########################################################
-##
-##-------------------------------------------##
-## ACTION PARAMETERS                         ##
-##-------------------------------------------##
-##
-##   |=================================================================================================================================================================|
-##   | Parameter                | Required | Default | Description                          | Example                                                                  |
-##   |--------------------------|----------|---------|--------------------------------------|--------------------------------------------------------------------------|
-##   | templateFilePath         | true     | ''      | The path to the module PSRule tests. | 'modules/api-management/service/.test/common/main.test.bicep'            |
-##   | subscriptionId           | false    | ''      | The subscriptionId to deploy to      | '1a97b80a-4dda-4f50-ab53-349e29344654'                                   |
-##   | managementGroupId        | false    | ''      | The managementGroupId to deploy to   | '1a97b80a-4dda-4f50-ab53-349e29344654'                                   |
-##   |=================================================================================================================================================================|
-##
-##---------------------------------------------##
 
 name: "Execute PSRule module tests"
 description: "Execute PSRule module tests (if any)"
@@ -41,6 +27,10 @@ inputs:
     description: "Whether to add the detail of passed PSRule to the output markdown file or to limit the list to the failed ones"
     required: false
     default: $false
+  psruleBaseline:
+    description: "The PSRule baseline to be used"
+    required: true
+    default: "Azure.Default"
 
 runs:
   using: "composite"
@@ -113,10 +103,27 @@ runs:
 
     # [PSRule validation] task(s)
     #-----------------------------
-    - name: Run PSRule analysis
+    - name: Run PSRule analysis - All Pillars (Azure.Default)
       uses: microsoft/ps-rule@v2.9.0
+      if: ${{ inputs.psruleBaseline == 'Azure.Default' }}
+      continue-on-error: true
       with:
         modules: "PSRule.Rules.Azure"
+        baseline: "${{ inputs.psruleBaseline }}"
+        inputPath: "${{ inputs.templateFilePath}}"
+        outputFormat: Csv
+        outputPath: "${{ inputs.templateFilePath}}-PSRule-output.csv"
+        option: "${{ github.workspace }}/${{ inputs.psrulePath}}/ps-rule.yaml" # Path to PSRule configuration options file
+        source: "${{ inputs.psrulePath}}/.ps-rule/" # Path to folder containing suppression rules to use for analysis.
+        summary: false # Disabling as taken care in customized task
+
+    - name: Run PSRule analysis - Reliability Pillar Only (Azure.Pillar.Reliability)
+      uses: microsoft/ps-rule@v2.9.0
+      if: ${{ inputs.psruleBaseline == 'Azure.Pillar.Reliability' }}
+      with:
+        modules: "PSRule.Rules.Azure"
+        prerelease: true
+        baseline: "${{ inputs.psruleBaseline }}"
         inputPath: "${{ inputs.templateFilePath}}"
         outputFormat: Csv
         outputPath: "${{ inputs.templateFilePath}}-PSRule-output.csv"
