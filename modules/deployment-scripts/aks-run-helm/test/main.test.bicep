@@ -6,7 +6,11 @@ If you are using ...Azure CLI, you can force a refresh of your role assignment c
 */
 
 param location string = resourceGroup().location
-param aksName string =  'crtest${uniqueString(newGuid())}'
+param aksName string = 'crtest${uniqueString(newGuid())}'
+
+var contributor = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+var rbacWriter = 'a7ffa36f-339b-4b5c-8bdf-e2c188b2c0eb'
+var rbacClusterAdmin = 'b1ff04bb-8a4e-4dc4-8eb5-8693973ce19b'
 
 // Prerequisites
 module prereq 'prereq.test.bicep' = {
@@ -24,10 +28,10 @@ module sampleHelmChart '../main.bicep' = {
     managedIdentityName: 'kubectlHelmChart'
     aksName: prereq.outputs.aksName
     location: location
-    helmApps: [{helmApp: 'azure-marketplace/wordpress', helmAppName: 'my-wordpress'}]
+    rbacRolesNeeded: [ contributor, rbacWriter ]
+    helmApps: [ { helmApp: 'azure-marketplace/wordpress', helmAppName: 'my-wordpress' } ]
   }
 }
-
 
 // Test 2. Helm
 module helmContour '../main.bicep' = {
@@ -36,13 +40,14 @@ module helmContour '../main.bicep' = {
     managedIdentityName: 'helmContourIngress'
     aksName: prereq.outputs.aksName
     location: location
+    rbacRolesNeeded: [ contributor, rbacClusterAdmin ]
     helmRepo: 'bitnami'
     helmRepoURL: 'https://charts.bitnami.com/bitnami'
     helmApps: [
       {
         helmApp: 'bitnami/contour'
         helmAppName: 'contour-ingress'
-        helmAppParams: '--version 7.7.1 --namespace ingress-basic --create_namespace --set envoy.kind=deployment --set contour.service.externalTrafficPolicy=cluster'
+        helmAppParams: '--version 15.0.0 --namespace ingress-basic --create-namespace --set envoy.kind=deployment --set contour.service.externalTrafficPolicy=cluster'
       }
     ]
   }
@@ -55,6 +60,7 @@ module milvus '../main.bicep' = {
     managedIdentityName: 'helmMilvus'
     aksName: prereq.outputs.aksName
     location: location
+    rbacRolesNeeded: [ contributor, rbacClusterAdmin ]
     helmRepo: 'milvus'
     helmRepoURL: 'https://milvus-io.github.io/milvus-helm/'
     helmApps: [

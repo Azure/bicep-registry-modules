@@ -17,6 +17,7 @@ More information about using Helm on Azure can be found [here](https://docs.micr
 | `aksName`                                  | `string` | Yes      | The name of the Azure Kubernetes Service                                        |
 | `location`                                 | `string` | No       | The location to deploy the resources to                                         |
 | `forceUpdateTag`                           | `string` | No       | How the deployment script should be forced to execute                           |
+| `rbacRolesNeeded`                          | `array`  | No       | An array of Azure RoleIds that are required for the DeploymentScript resource   |
 | `useExistingManagedIdentity`               | `bool`   | No       | Does the Managed Identity already exists, or should be created                  |
 | `managedIdentityName`                      | `string` | No       | Name of the Managed Identity resource                                           |
 | `existingManagedIdentitySubId`             | `string` | No       | For an existing Managed Identity, the Subscription Id it is located in          |
