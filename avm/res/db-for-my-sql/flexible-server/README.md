@@ -47,7 +47,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dfmsfsmin'
+  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     name: 'dfmsfsmin001'
@@ -111,7 +111,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dfmsmax'
+  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     name: 'dfmsmax001'
@@ -395,7 +395,7 @@ This instance deploys the module with connectivity mode "Private Access".
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dfmspvt'
+  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     name: 'dfmspvt001'
@@ -531,7 +531,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dfmswaf'
+  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     name: 'dfmswaf001'

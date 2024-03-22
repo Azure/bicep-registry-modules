@@ -48,7 +48,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module server 'br/public:avm/res/analysis-services/server:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-assmin'
+  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'assmin'
@@ -96,7 +96,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module server 'br/public:avm/res/analysis-services/server:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-assmax'
+  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'assmax'
@@ -278,7 +278,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module server 'br/public:avm/res/analysis-services/server:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-asswaf'
+  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'asswaf'
