@@ -19,9 +19,11 @@ configuration:
               label: "Needs: Triage :mag:"
           - addReply:
               reply: |
-                The "Needs: Triage :mag:" label must be removed once the issue/PR has been triaged (and the issue/PR has been first responded)!
+                > [!IMPORTANT]
+                > **The "Needs: Triage :mag:" label must be removed as part of the triage process (when the issue/PR is first responded to) !**
 
-                > **NOTE**: The "Needs: Triage :mag:" label was added as per [ITA06](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita06).
+                > [!NOTE]
+                > This label was added as per [ITA06](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita06).
 
       - description: 'ITA08BCP - If "AVM" or "Azure Verified Modules" is mentioned in a new issue, add label of "Type: AVM :a: :v: :m:" on the issue'
         if:
@@ -58,6 +60,10 @@ configuration:
         then:
           - addLabel:
               label: "Type: AVM :a: :v: :m:"
+          - addReply:
+              reply: |
+                > [!NOTE]
+                > The "Type: AVM :a: :v: :m:" label was added as per [ITA08BCP](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita08bcp).
 
       - description: 'ITA09 - When #RR is used in an issue, add the "Needs: Author Feedback :ear:" label'
         if:
@@ -71,7 +77,8 @@ configuration:
               label: "Needs: Author Feedback :ear:"
           - addReply:
               reply: |
-                > **NOTE**: The "Needs: Author Feedback :ear:" label was added as per [ITA09](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita09).
+                > [!NOTE]
+                > The "Needs: Author Feedback :ear:" label was added as per [ITA09](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita09).
 
       - description: 'ITA10 - When #wontfix is used in an issue, mark it by using the label of "Status: Won''t Fix :broken_heart:"'
         if:
@@ -86,7 +93,8 @@ configuration:
           - closeIssue
           - addReply:
               reply: |
-                > **NOTE**: The "Status: Won't Fix :broken_heart:" label was added and the issue was closed as per [ITA10](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita10).
+                > [!NOTE]
+                > The "Status: Won't Fix :broken_heart:" label was added and the issue was closed as per [ITA10](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita10).
 
       - description: 'ITA11 - When a reply from anyone to an issue occurs, remove the "Needs: Author Feedback :ear:" label and label with "Needs: Attention :wave:"'
         if:
@@ -105,7 +113,8 @@ configuration:
               label: "Needs: Attention :wave:"
           - addReply:
               reply: |
-                > **NOTE**: The "Needs: Author Feedback :ear:" label was removed and the "Needs: Attention :wave:" label was added as per [ITA11](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita11).
+                > [!NOTE]
+                > The "Needs: Author Feedback :ear:" label was removed and the "Needs: Attention :wave:" label was added as per [ITA11](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita11).
 
       - description: "ITA12 - Clean email replies on every comment"
         if:
@@ -142,7 +151,8 @@ configuration:
               label: "Needs: Triage :mag:"
           - addReply:
               reply: |
-                > **NOTE**: The "Needs: Triage :mag:" label was removed as per [ITA15](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita15).
+                > [!NOTE]
+                > The "Needs: Triage :mag:" label was removed as per [ITA15](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita15).
 
       - description: 'ITA16 - Add the "Status: Owners Identified :metal:" label when someone is assigned to a Module Proposal'
         if:
@@ -158,7 +168,8 @@ configuration:
               label: "Status: Owners Identified :metal:"
           - addReply:
               reply: |
-                > **NOTE**: The "Status: Owners Identified :metal:" label was added as per [ITA15](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita15).
+                > [!NOTE]
+                > The "Status: Owners Identified :metal:" label was added as per [ITA15](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita15).
         triggerOnOwnActions: true
 
       - description: 'ITA20 - If the type is feature request, assign the "Type: Feature Request :heavy_plus_sign:" label on the issue'
@@ -176,7 +187,8 @@ configuration:
               label: "Type: Feature Request :heavy_plus_sign:"
           - addReply:
               reply: |
-                > **NOTE**: The "Type: Feature Request :heavy_plus_sign:" label was added as per [ITA20](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita20).
+                > [!NOTE]
+                > The "Type: Feature Request :heavy_plus_sign:" label was added as per [ITA20](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita20).
 
       - description: 'ITA21 - If the type is bug, assign the "Type: Bug :bug:" label on the issue'
         if:
@@ -193,7 +205,8 @@ configuration:
               label: "Type: Bug :bug:"
           - addReply:
               reply: |
-                > **NOTE**: The "Type: Bug :bug:" label was added as per [ITA21](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita21).
+                > [!NOTE]
+                > The "Type: Bug :bug:" label was added as per [ITA21](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita21).
 
       - description: 'ITA22 - If the type is security bug, assign the "Type: Security Bug :lock:" label on the issue'
         if:
@@ -210,4 +223,5 @@ configuration:
               label: "Type: Security Bug :lock:"
           - addReply:
               reply: |
-                > **NOTE**: The "Type: Security Bug :lock:" label was added as per [ITA22](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita22).
+                > [!NOTE]
+                > The "Type: Security Bug :lock:" label was added as per [ITA22](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita22).
