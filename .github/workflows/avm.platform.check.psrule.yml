@@ -1,11 +1,6 @@
 name: 'avm.platform.check.psrule'
 
 on:
-  push:
-    branches:
-      - feat/psrule-them-all
-    paths:
-      - ".github/workflows/avm.platform.check.psrule.yml"
   workflow_dispatch:
     inputs:
       psruleBaseline:
