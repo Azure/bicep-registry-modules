@@ -134,7 +134,7 @@ function Set-ModuleFileAndFolderSetup {
         # WAF-aligned test file
         # ---------------------
         if (($currentTestFolders -match '.*waf-aligned').count -eq 0) {
-            $wafTestFilePath = = Join-Path $testCasesPath 'waf-aligned' 'main.test.bicep'
+            $wafTestFilePath = Join-Path $testCasesPath 'waf-aligned' 'main.test.bicep'
             if ($PSCmdlet.ShouldProcess("file [$wafTestFilePath]", "Add")) {
                 $null = New-Item -Path $wafTestFilePath -ItemType 'File' -Force
             }

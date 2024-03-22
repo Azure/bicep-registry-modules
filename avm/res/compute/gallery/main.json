@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "17536269376876527435"
+      "version": "0.25.53.49325",
+      "templateHash": "7407411978239812730"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -319,8 +319,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "9951919331605340265"
+              "version": "0.25.53.49325",
+              "templateHash": "1766982665283226409"
             },
             "name": "Compute Galleries Applications",
             "description": "This module deploys an Azure Compute Gallery Application.",
@@ -632,6 +632,9 @@
           "securityType": {
             "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'securityType')]"
           },
+          "isAcceleratedNetworkSupported": {
+            "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'isAcceleratedNetworkSupported')]"
+          },
           "description": {
             "value": "[tryGet(coalesce(parameters('images'), createArray())[copyIndex()], 'description')]"
           },
@@ -673,8 +676,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "11732013039305076688"
+              "version": "0.25.53.49325",
+              "templateHash": "3529471060432554863"
             },
             "name": "Compute Galleries Image Definitions",
             "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -877,7 +880,7 @@
             },
             "isAcceleratedNetworkSupported": {
               "type": "bool",
-              "defaultValue": false,
+              "defaultValue": true,
               "metadata": {
                 "description": "Optional. Specify if the image supports accelerated networking.\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.\n"
               }

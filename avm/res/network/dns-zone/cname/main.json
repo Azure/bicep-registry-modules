@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "3103347158305617686"
+      "version": "0.25.53.49325",
+      "templateHash": "11680687850109857660"
     },
     "name": "Public DNS Zone CNAME record",
     "description": "This module deploys a Public DNS Zone CNAME record.",

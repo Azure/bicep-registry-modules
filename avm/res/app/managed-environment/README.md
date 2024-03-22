@@ -1,10 +1,5 @@
 # App ManagedEnvironments `[Microsoft.App/managedEnvironments]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys an App Managed Environment (also known as a Container App Environment).
 
 ## Navigation
@@ -47,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-amemin'
+  name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
@@ -99,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-amemax'
+  name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
@@ -249,7 +244,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-amewaf'
+  name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'

@@ -3,7 +3,7 @@ metadata description = 'This module deploys a Storage Account.'
 metadata owner = 'Azure/module-maintainers'
 
 @maxLength(24)
-@description('Required. Name of the Storage Account.')
+@description('Required. Name of the Storage Account. Must be lower-case.')
 param name string
 
 @description('Optional. Location for all resources.')
@@ -68,12 +68,9 @@ param privateEndpoints privateEndpointType
 @description('Optional. The Storage Account ManagementPolicies Rules.')
 param managementPolicyRules array?
 
-@description('Optional. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. For security reasons, it is recommended to set the DefaultAction Deny.')
-param networkAcls object = {
-  resourceAccessRules: []
+@description('Required. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
+param networkAcls networkAclsType = {
   bypass: 'AzureServices'
-  virtualNetworkRules: []
-  ipRules: []
   defaultAction: 'Deny'
 }
 
@@ -264,33 +261,34 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     }
     dnsEndpointType: !empty(dnsEndpointType) ? dnsEndpointType : null
     isLocalUserEnabled: isLocalUserEnabled
-    encryption: {
-      keySource: !empty(customerManagedKey) ? 'Microsoft.Keyvault' : 'Microsoft.Storage'
-      services: {
-        blob: supportsBlobService ? {
-          enabled: true
-        } : null
-        file: supportsFileService ? {
-          enabled: true
-        } : null
-        table: {
-          enabled: true
+    encryption: union({
+        keySource: !empty(customerManagedKey) ? 'Microsoft.Keyvault' : 'Microsoft.Storage'
+        services: {
+          blob: supportsBlobService ? {
+            enabled: true
+          } : null
+          file: supportsFileService ? {
+            enabled: true
+          } : null
+          table: {
+            enabled: true
+          }
+          queue: {
+            enabled: true
+          }
         }
-        queue: {
-          enabled: true
+        keyvaultproperties: !empty(customerManagedKey) ? {
+          keyname: customerManagedKey!.keyName
+          keyvaulturi: cMKKeyVault.properties.vaultUri
+          keyversion: !empty(customerManagedKey.?keyVersion ?? '') ? customerManagedKey!.keyVersion : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+        } : null
+        identity: {
+          userAssignedIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? cMKUserAssignedIdentity.id : null
         }
-      }
-      requireInfrastructureEncryption: kind != 'Storage' ? requireInfrastructureEncryption : null
-      keyvaultproperties: !empty(customerManagedKey) ? {
-        keyname: customerManagedKey!.keyName
-        keyvaulturi: cMKKeyVault.properties.vaultUri
-        keyversion: !empty(customerManagedKey.?keyVersion ?? '') ? customerManagedKey!.keyVersion : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
-      } : null
-      identity: {
-        userAssignedIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? cMKUserAssignedIdentity.id : null
-      }
-    }
-    accessTier: kind != 'Storage' ? accessTier : null
+      }, (requireInfrastructureEncryption ? {
+        requireInfrastructureEncryption: kind != 'Storage' ? requireInfrastructureEncryption : null
+      } : {}))
+    accessTier: (kind != 'Storage' && kind != 'BlockBlobStorage') ? accessTier : null
     sasPolicy: !empty(sasExpirationPeriod) ? {
       expirationAction: 'Log'
       sasExpirationPeriod: sasExpirationPeriod
@@ -302,6 +300,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     largeFileSharesState: (skuName == 'Standard_LRS') || (skuName == 'Standard_ZRS') ? largeFileSharesState : null
     minimumTlsVersion: minimumTlsVersion
     networkAcls: !empty(networkAcls) ? {
+      resourceAccessRules: networkAcls.?resourceAccessRules
       bypass: networkAcls.?bypass
       defaultAction: networkAcls.?defaultAction
       virtualNetworkRules: networkAcls.?virtualNetworkRules
@@ -320,13 +319,11 @@ resource storageAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
     workspaceId: diagnosticSetting.?workspaceResourceId
     eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
     eventHubName: diagnosticSetting.?eventHubName
-    metrics: diagnosticSetting.?metricCategories ?? [
-      {
-        category: 'AllMetrics'
-        timeGrain: null
-        enabled: true
-      }
-    ]
+    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
+      category: group.category
+      enabled: group.?enabled ?? true
+      timeGrain: null
+    }]
     marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
     logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
   }
@@ -356,12 +353,13 @@ resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments
   scope: storageAccount
 }]
 
-module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-StorageAccount-PrivateEndpoint-${index}'
   params: {
-    privateLinkServiceConnections: [
+    name: privateEndpoint.?name ?? 'pep-${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
+    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
       {
-        name: name
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
         properties: {
           privateLinkServiceId: storageAccount.id
           groupIds: [
@@ -369,17 +367,27 @@ module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoi
           ]
         }
       }
-    ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(storageAccount.id, '/'))}-${privateEndpoint.?service ?? 'vault'}-${index}'
+    ] : null
+    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
+      {
+        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
+        properties: {
+          privateLinkServiceId: storageAccount.id
+          groupIds: [
+            privateEndpoint.service
+          ]
+          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+        }
+      }
+    ] : null
     subnetResourceId: privateEndpoint.subnetResourceId
-    enableTelemetry: enableTelemetry
+    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
     roleAssignments: privateEndpoint.?roleAssignments
     tags: privateEndpoint.?tags ?? tags
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
     customDnsConfigs: privateEndpoint.?customDnsConfigs
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
@@ -484,7 +492,7 @@ output resourceGroupName string = resourceGroup().name
 output primaryBlobEndpoint string = !empty(blobServices) && contains(blobServices, 'containers') ? reference('Microsoft.Storage/storageAccounts/${storageAccount.name}', '2019-04-01').primaryEndpoints.blob : ''
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) ? storageAccount.identity.?principalId : ''
+output systemAssignedMIPrincipalId string = storageAccount.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = storageAccount.location
@@ -532,6 +540,29 @@ type roleAssignmentType = {
   delegatedManagedIdentityResourceId: string?
 }[]?
 
+type networkAclsType = {
+  @description('Optional. Sets the resource access rules. Array entries must consist of "tenantId" and "resourceId" fields only.')
+  resourceAccessRules: {
+    @description('Required. The ID of the tenant in which the resource resides in.')
+    tenantId: string
+
+    @description('Required. The resource ID of the target service. Can also contain a wildcard, if multiple services e.g. in a resource group should be included.')
+    resourceId: string
+  }[]?
+
+  @description('Required. Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging,Metrics,AzureServices (For example, "Logging, Metrics"), or None to bypass none of those traffics.')
+  bypass: ('None' | 'AzureServices' | 'Logging' | 'Metrics' | 'AzureServices, Logging' | 'AzureServices, Metrics' | 'AzureServices, Logging, Metrics' | 'Logging, Metrics')
+
+  @description('Optional. Sets the virtual network rules.')
+  virtualNetworkRules: array?
+
+  @description('Optional. Sets the IP ACL rules.')
+  ipRules: array?
+
+  @description('Required. Specifies the default action of allow or deny when no other rules match.')
+  defaultAction: ('Allow' | 'Deny')
+}
+
 type privateEndpointType = {
   @description('Optional. The name of the private endpoint.')
   name: string?
@@ -550,6 +581,13 @@ type privateEndpointType = {
 
   @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
   privateDnsZoneResourceIds: string[]?
+
+  @description('Optional. Manual PrivateLink Service Connections.')
+  isManualConnection: bool?
+
+  @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
+  @maxLength(140)
+  manualConnectionRequestMessage: string?
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
@@ -593,9 +631,6 @@ type privateEndpointType = {
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
   tags: object?
 
-  @description('Optional. Manual PrivateLink Service Connections.')
-  manualPrivateLinkServiceConnections: array?
-
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
 }[]?
@@ -604,10 +639,13 @@ type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
 
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
+  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
   metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to \'AllMetrics\' to collect all metrics.')
+    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
     category: string
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
   }[]?
 
   @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')

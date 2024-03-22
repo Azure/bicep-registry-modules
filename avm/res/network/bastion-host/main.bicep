@@ -8,8 +8,8 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Required. Shared services Virtual Network resource identifier.')
-param vNetId string
+@description('Required. Shared services Virtual Network resource Id.')
+param virtualNetworkResourceId string
 
 @description('Optional. The Public IP resource ID to associate to the azureBastionSubnet. If empty, then the Public IP that is created as part of this module will be applied to the azureBastionSubnet.')
 param bastionSubnetPublicIpResourceId string = ''
@@ -68,7 +68,7 @@ var ipConfigurations = [
     name: 'IpConfAzureBastionSubnet'
     properties: union({
         subnet: {
-          id: '${vNetId}/subnets/AzureBastionSubnet' // The subnet name must be AzureBastionSubnet
+          id: '${virtualNetworkResourceId}/subnets/AzureBastionSubnet' // The subnet name must be AzureBastionSubnet
         }
       }, {
         //Use existing Public IP, new Public IP created in this module
@@ -165,12 +165,11 @@ resource azureBastion_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
     workspaceId: diagnosticSetting.?workspaceResourceId
     eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
     eventHubName: diagnosticSetting.?eventHubName
-    logs: diagnosticSetting.?logCategoriesAndGroups ?? [
-      {
-        categoryGroup: 'AllLogs'
-        enabled: true
-      }
-    ]
+    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
+      categoryGroup: group.?categoryGroup
+      category: group.?category
+      enabled: group.?enabled ?? true
+    }]
     marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
     logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
   }
@@ -245,13 +244,16 @@ type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
 
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
+  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
   logCategoriesAndGroups: {
     @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
     category: string?
 
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to \'AllLogs\' to collect all logs.')
+    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
     categoryGroup: string?
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
   }[]?
 
   @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')

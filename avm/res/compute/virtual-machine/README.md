@@ -53,7 +53,7 @@ This instance deploys the module with registering to an automation account.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmlinatmg'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
@@ -203,7 +203,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmlinmin'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
@@ -341,7 +341,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmlinmax'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'localAdministrator'
@@ -913,7 +913,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmwinwaf'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'VMAdmin'
@@ -1521,7 +1521,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmwinmin'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
@@ -1639,7 +1639,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmwinmax'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'VMAdmin'
@@ -2249,7 +2249,7 @@ This instance deploys the module with disk enryption set.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmwincmk'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'VMAdministrator'
@@ -3197,7 +3197,7 @@ Do not provide a value! This date value is used to generate a registration token
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |
@@ -3646,7 +3646,7 @@ extensionDomainJoinConfig: {
     }
 }
 resource kv1 'Microsoft.KeyVault/vaults@2019-09-01' existing = {
-  name: 'adp-[[namePrefix]]-az-kv-x-001'
+  name: 'adp-#_namePrefix_#-az-kv-x-001'
   scope: resourceGroup('[[subscriptionId]]','validation-rg')
 }
 extensionDomainJoinPassword: kv1.getSecret('domainJoinUser02-Password')
