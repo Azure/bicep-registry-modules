@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "1322777943943789546"
+      "version": "0.26.54.24096",
+      "templateHash": "11299369930230398843"
     },
     "name": "Public IP Addresses",
     "description": "This module deploys a Public IP Address.",
@@ -318,7 +318,11 @@
     },
     "zones": {
       "type": "array",
-      "nullable": true,
+      "defaultValue": [
+        "1",
+        "2",
+        "3"
+      ],
       "metadata": {
         "description": "Optional. A list of availability zones denoting the IP allocated for the resource needs to come from."
       }

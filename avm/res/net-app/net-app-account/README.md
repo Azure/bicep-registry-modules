@@ -17,9 +17,9 @@ This module deploys an Azure NetApp File.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/netAppAccounts) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/netAppAccounts/capacityPools) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2022-11-01/netAppAccounts) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2022-11-01/netAppAccounts/capacityPools) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2022-11-01/netAppAccounts/capacityPools/volumes) |
 
 ## Usage examples
 
@@ -45,7 +45,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nanaamin'
+  name: 'netAppAccountDeployment'
   params: {
     // Required parameters
     name: 'nanaamin001'
@@ -93,7 +93,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nanaamax'
+  name: 'netAppAccountDeployment'
   params: {
     // Required parameters
     name: 'nanaamax001'
@@ -355,7 +355,7 @@ This instance deploys the module with nfs31.
 
 ```bicep
 module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nanaanfs3'
+  name: 'netAppAccountDeployment'
   params: {
     // Required parameters
     name: 'nanaanfs3001'
@@ -595,7 +595,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nanaawaf'
+  name: 'netAppAccountDeployment'
   params: {
     // Required parameters
     name: 'nanaawaf001'

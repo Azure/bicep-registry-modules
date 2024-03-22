@@ -52,7 +52,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ehnmin'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'ehnmin001'
@@ -100,7 +100,7 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ehnenc'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'ehnenc001'
@@ -186,7 +186,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ehnmax'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'ehnmax001'
@@ -604,7 +604,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ehnwaf'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'ehnwaf001'
