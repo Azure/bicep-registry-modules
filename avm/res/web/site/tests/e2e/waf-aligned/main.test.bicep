@@ -76,6 +76,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     httpsOnly: true
     siteConfig: {
+      healthCheckPath: '/healthz'
       alwaysOn: true
       metadata: [
         {
