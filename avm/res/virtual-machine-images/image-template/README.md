@@ -43,7 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-vmiitmin'
+  name: 'imageTemplateDeployment'
   params: {
     // Required parameters
     customizationSteps: [
@@ -147,7 +147,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-vmiitmax'
+  name: 'imageTemplateDeployment'
   params: {
     // Required parameters
     customizationSteps: [
@@ -389,7 +389,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-vmiitwaf'
+  name: 'imageTemplateDeployment'
   params: {
     // Required parameters
     customizationSteps: [

@@ -57,7 +57,7 @@ This instance deploys the module as Function App with the minimum set of require
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsfamin'
+  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'functionapp'
@@ -121,7 +121,7 @@ This instance deploys the module as Function App with most of its features enabl
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsfamax'
+  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'functionapp'
@@ -509,7 +509,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wswaf'
+  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app'
@@ -651,7 +651,7 @@ This instance deploys the module as Web App with the minimum set of required par
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wswamin'
+  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app'
@@ -718,7 +718,7 @@ This instance deploys the module as Web App with most of its features enabled.
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wswamax'
+  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app'

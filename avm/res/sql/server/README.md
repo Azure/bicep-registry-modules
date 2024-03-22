@@ -59,7 +59,7 @@ This instance deploys the module with a Microsoft Entra ID identity as SQL admin
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-sqlsadmin'
+  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'sqlsadmin'
@@ -121,7 +121,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssmin'
+  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'ssmin001'
@@ -177,7 +177,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-sqlsmax'
+  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'sqlsmax'
@@ -521,7 +521,7 @@ This instance deploys the module with a secondary database.
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-sqlsec'
+  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'sqlsec-sec'
@@ -611,7 +611,7 @@ This instance deploys the module with a vulnerability assessment.
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-sqlsvln'
+  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'sqlsvln'
@@ -739,7 +739,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-sqlswaf'
+  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'sqlswaf'
