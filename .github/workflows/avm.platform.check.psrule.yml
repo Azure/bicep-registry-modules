@@ -40,7 +40,7 @@ jobs:
   ###########################
   job_init_psrule_pipeline:
     runs-on: ubuntu-latest
-    name: Initialize pipeline
+    name: "Initialize pipeline"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -58,9 +58,8 @@ jobs:
   #   PSRule   #
   ##############
   job_psrule:
-    # Analyze module library with PSRule
-    name: PSRule validation
     runs-on: ubuntu-latest
+    name: "PSRule validation"
     needs:
       - job_init_psrule_pipeline
     steps:
