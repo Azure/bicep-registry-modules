@@ -105,7 +105,7 @@ param availabilitySetResourceId string = ''
   2
   3
 ])
-param availabilityZone int = 0
+param availabilityZone int = 1
 
 // External resources
 @description('Required. Configures NICs and PIPs.')

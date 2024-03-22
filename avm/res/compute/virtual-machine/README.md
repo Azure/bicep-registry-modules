@@ -3062,7 +3062,7 @@ If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that valu
 
 - Required: No
 - Type: int
-- Default: `0`
+- Default: `1`
 - Allowed:
   ```Bicep
   [

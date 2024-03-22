@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "13030276953847012005"
+      "templateHash": "18281595612512316617"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -331,7 +331,7 @@
     },
     "availabilityZone": {
       "type": "int",
-      "defaultValue": 0,
+      "defaultValue": 1,
       "allowedValues": [
         0,
         1,
