@@ -8,11 +8,6 @@ on:
       - ".github/workflows/avm.platform.check.psrule.yml"
   workflow_dispatch:
     inputs:
-      targetPath:
-        type: string
-        description: "Specify target input path for PSRule analysis (example: avm/res/api-management/service/)"
-        required: false
-        default: "avm/res//ccc"
       psruleBaseline:
         type: choice
         description: "Select the PSRule baseline to perform PSRule analysis"
@@ -22,16 +17,21 @@ on:
           - Azure.Default
           - Azure.Pillar.Reliability
           - Azure.Pillar.Security
+      skipPassedRulesReport:
+        type: boolean
+        description: "Whether to skip listing passed rules in the GitHub job summary"
+        required: true
+        default: true
   schedule:
     - cron: '0 12 * * 0' # Weekly Sunday Analysis
 
 env:
     workflowPath: ".github/workflows/avm.platform.check.psrule.yml"
-    PSRuleOutputFilePath: "${{ github.event.inputs.targetPath }}PSRule-output.csv"
-    PSRuleInputFilePath: "${{ github.event.inputs.targetPath }}PSRule-output.md"
+    targetPath: "avm/res/"
+    PSRuleOutputFilePath: "avm/res/PSRule-output.csv"
+    PSRuleInputFilePath: "avm/res/PSRule-output.md"
     psRuleFilterRegex: "(defaults|waf-aligned)" # The regex used to filter PSRule compliant files
     psrulePath: "avm/utilities/pipelines/staticValidation/psrule"
-    skipPassedRulesReport: $true
     ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
     ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
     TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
@@ -85,29 +85,20 @@ jobs:
             . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
             . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-LocallyReferencedFileList.ps1')
 
-            $targetPath = Join-Path $env:GITHUB_WORKSPACE '${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).targetPath }}'
+            $targetPath = Join-Path $env:GITHUB_WORKSPACE '${{ env.targetPath }}'
             $psRuleFilterRegex = '${{ env.psRuleFilterRegex }}'
 
             Write-Verbose ('targetPath [{0}]' -f $targetPath) -Verbose
 
-            # Get target files
-            if (Test-Path -Path $targetPath -PathType Leaf){
-              # Add the template file
-              $targetFileList = @(
-                $targetPath
-              )
-              # Add all module template files as they may contain tokens
-              $targetFileList += (Get-LocallyReferencedFileList -FilePath $targetPath)
-            } else {
-              $targetFileList = @()
-              # Retrieve all relevant test files in targetPath
-              $allTestFiles = (Get-ChildItem -Path $targetPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object
-              $relevantTestFiles = $allTestFiles | Where-Object { $_ -match $psRuleFilterRegex }
-              # Add all relevant test files and related module template files as they may contain tokens
-              foreach ($relevantTestFile in $relevantTestFiles) {
-                $targetFileList += $relevantTestFile
-                $targetFileList += (Get-LocallyReferencedFileList -FilePath $relevantTestFile)
-              }
+            # Get target files in target path
+            $targetFileList = @()
+            # Retrieve all relevant test files in targetPath
+            $allTestFiles = (Get-ChildItem -Path $targetPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object
+            $relevantTestFiles = $allTestFiles | Where-Object { $_ -match $psRuleFilterRegex }
+            # Add all relevant test files and related module template files as they may contain tokens
+            foreach ($relevantTestFile in $relevantTestFiles) {
+              $targetFileList += $relevantTestFile
+              $targetFileList += (Get-LocallyReferencedFileList -FilePath $relevantTestFile)
             }
 
             $targetFileList = $targetFileList | Sort-Object -Unique
@@ -176,7 +167,7 @@ jobs:
             $ParameterInput = @{
               inputFilePath         = '${{ env.PSRuleOutputFilePath }}'
               outputFilePath        = '${{ env.PSRuleInputFilePath }}'
-              skipPassedRulesReport = ${{ env.skipPassedRulesReport }}
+              skipPassedRulesReport = ${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).skipPassedRulesReport }}'
             }
 
             Write-Verbose ('Set PS Rule Output with following parameters:`n{0}' -f (ConvertTo-Json $ParameterInput -Depth 10)) -Verbose

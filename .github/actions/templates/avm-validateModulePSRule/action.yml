@@ -24,7 +24,7 @@ inputs:
     description: "The path to PSRule configurations"
     required: false
   skipPassedRulesReport:
-    description: "Whether to add the detail of passed PSRule to the output markdown file or to limit the list to the failed ones"
+    description: "Whether to skip listing passed rules in the GitHub job summary"
     required: false
     default: $false
   psruleBaseline:
