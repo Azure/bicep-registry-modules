@@ -10,9 +10,9 @@ on:
     inputs:
       psruleBaseline:
         type: choice
-        description: "Select the PSRule baseline to perform PSRule analysis"
+        description: "PSRule baseline"
         required: true
-        default: 'Azure.Default'
+        default: 'Azure.Pillar.Reliability'
         options:
           - Azure.Default
           - Azure.Pillar.CostOptimization
@@ -22,7 +22,7 @@ on:
           - Azure.Pillar.Security
       skipPassedRulesReport:
         type: boolean
-        description: "Whether to skip listing passed rules in the GitHub job summary"
+        description: "Show only failed rules in job summary"
         required: true
         default: true
   schedule:
@@ -175,7 +175,7 @@ jobs:
             $ParameterInput = @{
               inputFilePath         = '${{ env.PSRuleOutputFilePath }}'
               outputFilePath        = '${{ env.PSRuleInputFilePath }}'
-              skipPassedRulesReport = ${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).skipPassedRulesReport }}'
+              skipPassedRulesReport = ${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).skipPassedRulesReport }}
             }
 
             Write-Verbose ('Set PS Rule Output with following parameters:`n{0}' -f (ConvertTo-Json $ParameterInput -Depth 10)) -Verbose
@@ -203,4 +203,3 @@ jobs:
           }
 
           Write-Output '::endgroup::'
-
