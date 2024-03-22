@@ -12,7 +12,7 @@ on:
         type: choice
         description: "PSRule baseline"
         required: true
-        default: 'Azure.Pillar.Security'
+        default: 'Azure.Pillar.CostOptimization'
         options:
           - Azure.Default
           - Azure.Pillar.CostOptimization
@@ -24,7 +24,7 @@ on:
         type: boolean
         description: "Show only failed rules in job summary"
         required: true
-        default: true
+        default: false
   schedule:
     - cron: '0 12 * * 0' # Weekly Sunday Analysis
 
