@@ -45,7 +45,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module applicationGateway 'br/public:avm/res/network/application-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nagmin'
+  name: 'applicationGatewayDeployment'
   params: {
     // Required parameters
     name: 'nagmin001'
@@ -101,7 +101,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module applicationGateway 'br/public:avm/res/network/application-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nagmax'
+  name: 'applicationGatewayDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -1067,7 +1067,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module applicationGateway 'br/public:avm/res/network/application-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nagwaf'
+  name: 'applicationGatewayDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -2136,6 +2136,27 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 - Required: No
 - Type: array
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs. |
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs.
+
+- Required: No
+- Type: string
+
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
@@ -2149,6 +2170,19 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics. |
+
+### Parameter: `diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -2391,6 +2425,27 @@ Custom DNS configurations.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint ip address. |
+| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private ip addresses of the private endpoint. |
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+Fqdn that resolves to private endpoint ip address.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
+
+A list of private ip addresses of the private endpoint.
+
+- Required: Yes
+- Type: array
+
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
 The custom name of the network interface attached to the private endpoint.
@@ -2411,6 +2466,56 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsipconfigurationsname) | string | The name of the resource that is unique within a resource group. |
+| [`properties`](#parameter-privateendpointsipconfigurationsproperties) | object | Properties of private endpoint IP configurations. |
+
+### Parameter: `privateEndpoints.ipConfigurations.name`
+
+The name of the resource that is unique within a resource group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties`
+
+Properties of private endpoint IP configurations.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private ip address obtained from the private endpoint's subnet. |
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
+
+The member name of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
+
+A private ip address obtained from the private endpoint's subnet.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `privateEndpoints.location`
 
@@ -2910,7 +3015,7 @@ A list of availability zones denoting where the resource needs to come from.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |
