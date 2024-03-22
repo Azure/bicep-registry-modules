@@ -55,6 +55,14 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     location: '<location>'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
+    workloadProfiles: [
+      {
+        maximumCount: 3
+        minimumCount: 0
+        name: 'CAW01'
+        workloadProfileType: 'D4'
+      }
+    ]
   }
 }
 ```
@@ -99,6 +107,16 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     },
     "platformReservedDnsIP": {
       "value": "172.17.17.17"
+    },
+    "workloadProfiles": {
+      "value": [
+        {
+          "maximumCount": 3,
+          "minimumCount": 0,
+          "name": "CAW01",
+          "workloadProfileType": "D4"
+        }
+      ]
     }
   }
 }

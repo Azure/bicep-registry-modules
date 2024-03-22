@@ -52,6 +52,14 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     name: '${namePrefix}${serviceShort}001'
     logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
     location: resourceLocation
+    workloadProfiles: [
+      {
+        workloadProfileType: 'D4'
+        name: 'CAW01'
+        minimumCount: 0
+        maximumCount: 3
+      }
+    ]
     internal: true
     dockerBridgeCidr: '172.16.0.1/28'
     platformReservedCidr: '172.17.17.0/24'
