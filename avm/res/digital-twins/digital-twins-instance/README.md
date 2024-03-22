@@ -33,7 +33,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Using private endpoint parameter set](#example-3-using-private-endpoint-parameter-set)
 - [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -290,9 +290,9 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 3: _Using private endpoint parameter set_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module with idempotancy tests for private endpoints.
 
 
 <details>

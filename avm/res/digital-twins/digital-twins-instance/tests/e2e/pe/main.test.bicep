@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using large parameter set'
-metadata description = 'This instance deploys the module with most of its features enabled.'
+metadata name = 'Using private endpoint parameter set'
+metadata description = 'This instance deploys the module with idempotancy tests for private endpoints.'
 
 // ========== //
 // Parameters //
@@ -40,20 +40,6 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
-// Diagnostics
-// ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
-  params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${uniqueString(serviceShort)}-evh-01'
-    eventHubNamespaceName: 'dep-${uniqueString(serviceShort)}-evh-01'
-    location: resourceLocation
-  }
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -82,6 +68,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   }
   dependsOn: [
     nestedDependencies
-    diagnosticDependencies
   ]
 }]
