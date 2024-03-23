@@ -9,7 +9,7 @@
       "templateHash": "7932330953480052072"
     },
     "name": "Key Vaults",
-    "description": "This module deploys a Key Vault..asdads",
+    "description": "This module deploys a Key Vault.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
