@@ -118,7 +118,6 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
         endpointUri: '<endpointUri>'
         entityPath: '<entityPath>'
         managedIdentities: {
-          systemAssigned: true
           userAssignedResourceId: '<userAssignedResourceId>'
         }
       }
@@ -165,7 +164,6 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
         endpointUri: '<endpointUri>'
         entityPath: '<entityPath>'
         managedIdentities: {
-          systemAssigned: true
           userAssignedResourceId: '<userAssignedResourceId>'
         }
         name: 'ServiceBusPrimary'
@@ -237,7 +235,6 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
           "endpointUri": "<endpointUri>",
           "entityPath": "<entityPath>",
           "managedIdentities": {
-            "systemAssigned": true,
             "userAssignedResourceId": "<userAssignedResourceId>"
           }
         }
@@ -296,7 +293,6 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
           "endpointUri": "<endpointUri>",
           "entityPath": "<entityPath>",
           "managedIdentities": {
-            "systemAssigned": true,
             "userAssignedResourceId": "<userAssignedResourceId>"
           },
           "name": "ServiceBusPrimary"

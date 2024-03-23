@@ -68,14 +68,20 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
+    name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
+    }
     eventHubEndpoints: [
       {
         authenticationType: 'IdentityBased'
         endpointUri: 'sb://${nestedDependencies.outputs.eventhubNamespaceName}.servicebus.windows.net/'
         entityPath: nestedDependencies.outputs.eventhubName
         managedIdentities: {
-          systemAssigned: true
           userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
         }
       }
@@ -87,7 +93,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         endpointUri: 'sb://${nestedDependencies.outputs.serviceBusName}.servicebus.windows.net/'
         entityPath: nestedDependencies.outputs.serviceBusTopicName
         managedIdentities: {
-          systemAssigned: true
           userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
         }
       }
@@ -106,13 +111,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         topicEndpoint: nestedDependencies.outputs.eventGridEndpoint
       }
     ]
-    name: '${namePrefix}${serviceShort}001'
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
     diagnosticSettings: [
       {
         name: 'customSetting'
