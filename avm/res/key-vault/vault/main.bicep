@@ -9,7 +9,7 @@ metadata owner = 'Azure/module-maintainers'
 @maxLength(24)
 param name string
 
-@description('Optional. Location for all resources.')
+@description('Optional. Location for all resources.,,,,,sdfd')
 param location string = resourceGroup().location
 
 @description('Optional. All access policies to create.')

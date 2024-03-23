@@ -38,15 +38,15 @@ function New-ModuleReleaseTag {
   $wellFormattedTag = git check-ref-format --normalize $tagName
   if (-not $wellFormattedTag) {
     throw "Tag [$tagName] is not well formatted."
-    # TODO: Handle exception if tag not formatted correctly
   }
 
   # 3 Check tag not already existing
   $existingTag = git ls-remote --tags origin $tagName
   if ($existingTag) {
-    throw "Tag [$tagName] already exists"
-    # TODO: Handle exception if tag already existing
+    Write-Verbose "Tag [$tagName] already exists" -Verbose
+    return $tagName
   }
+
 
   # 3 Create local tag
   Write-Verbose "Creating release tag: [$tagName]" -Verbose
