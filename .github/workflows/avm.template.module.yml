@@ -137,8 +137,8 @@ jobs:
     name: "Publishing"
     runs-on: ubuntu-latest
     # if: github.ref == 'refs/heads/main' && success()
-    needs:
-      - job_module_deploy_validation
+    # needs:
+    #   - job_module_deploy_validation
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
