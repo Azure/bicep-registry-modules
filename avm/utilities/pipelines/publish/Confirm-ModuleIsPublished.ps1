@@ -47,7 +47,9 @@ function Confirm-ModuleIsPublished {
     #######################################
     $existingTag = git ls-remote --tags origin $GitTagName
     if (-not $existingTag) {
-        throw "Tag [$tagName] was not successfully created. Please review."
+        throw "Tag [$GitTagName] was not successfully created. Please review."
+    } else {
+        Write-Verbose "Passed: Found Git tag [$GitTagName]" -Verbose
     }
 
     #####################################
