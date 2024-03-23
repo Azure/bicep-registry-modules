@@ -1,0 +1,75 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "8277084259418137925"
+    },
+    "name": "Relay Namespace Authorization Rules",
+    "description": "This module deploys a Relay Namespace Authorization Rule.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "namespaceName": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 50,
+      "metadata": {
+        "description": "Conditional. The name of the parent Relay Namespace for the Relay Hybrid Connection. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the authorization rule."
+      }
+    },
+    "rights": {
+      "type": "array",
+      "defaultValue": [],
+      "allowedValues": [
+        "Listen",
+        "Manage",
+        "Send"
+      ],
+      "metadata": {
+        "description": "Optional. The rights associated with the rule."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Relay/namespaces/authorizationRules",
+      "apiVersion": "2021-11-01",
+      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
+      "properties": {
+        "rights": "[parameters('rights')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the authorization rule."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the authorization rule."
+      },
+      "value": "[resourceId('Microsoft.Relay/namespaces/authorizationRules', parameters('namespaceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the authorization rule was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
