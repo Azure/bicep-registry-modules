@@ -115,7 +115,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
       endpointUri: '<endpointUri>'
       entityPath: '<entityPath>'
       managedIdentities: {
-        userAssignedResourceId: '<userAssignedResourceId>'
+        userAssignedResourceIds: '<userAssignedResourceIds>'
       }
     }
     location: '<location>'
@@ -159,7 +159,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
       endpointUri: '<endpointUri>'
       entityPath: '<entityPath>'
       managedIdentities: {
-        userAssignedResourceId: '<userAssignedResourceId>'
+        userAssignedResourceIds: '<userAssignedResourceIds>'
       }
     }
     tags: {
@@ -216,7 +216,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
         "endpointUri": "<endpointUri>",
         "entityPath": "<entityPath>",
         "managedIdentities": {
-          "userAssignedResourceId": "<userAssignedResourceId>"
+          "userAssignedResourceIds": "<userAssignedResourceIds>"
         }
       }
     },
@@ -272,7 +272,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
         "endpointUri": "<endpointUri>",
         "entityPath": "<entityPath>",
         "managedIdentities": {
-          "userAssignedResourceId": "<userAssignedResourceId>"
+          "userAssignedResourceIds": "<userAssignedResourceIds>"
         }
       }
     },

@@ -36,14 +36,19 @@ param primaryConnectionString string = ''
 @secure()
 param secondaryConnectionString string = ''
 
-var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+// var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
+// var identity = !empty(managedIdentities) ? {
+//   type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+//   userAssignedIdentity: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+// } : null
+
 var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
-  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceId ?? '') ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceId ?? '') ? 'UserAssigned' : 'None')
+  userAssignedIdentity: !empty(managedIdentities.?userAssignedResourceId) ? managedIdentities.?userAssignedResourceId : null
 } : null
 
 resource digitalTwinsInstance 'Microsoft.DigitalTwins/digitalTwinsInstances@2023-01-31' existing = {
@@ -88,5 +93,5 @@ type managedIdentitiesType = {
   systemAssigned: bool?
 
   @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]?
+  userAssignedResourceIds: string?
 }?

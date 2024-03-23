@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "18420338400061008774"
+      "templateHash": "8021559256593792899"
     },
     "name": "Digital Twins Instance ServiceBus Endpoint",
     "description": "This module deploys a Digital Twins Instance ServiceBus Endpoint.",
@@ -24,10 +24,7 @@
           }
         },
         "userAssignedResourceIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
+          "type": "string",
           "nullable": true,
           "metadata": {
             "description": "Optional. The resource ID(s) to assign to the resource."
@@ -112,8 +109,7 @@
     }
   },
   "variables": {
-    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), ''))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), ''))), 'UserAssigned', 'None')), 'userAssignedIdentity', if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), null())), null())]"
   },
   "resources": {
     "digitalTwinsInstance": {
