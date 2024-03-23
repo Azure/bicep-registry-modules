@@ -108,6 +108,6 @@ function Publish-ModuleFromPathToPBR {
   return @{
     version             = $targetVersion
     publishedModuleName = $publishedModuleName
-    gitTagName          = $tagName
+    gitTagName          = $gitTagName
   }
 }
