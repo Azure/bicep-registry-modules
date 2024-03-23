@@ -106,18 +106,23 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    eventGridEndpoint: {
-      eventGridDomainId: '<eventGridDomainId>'
-      topicEndpoint: '<topicEndpoint>'
-    }
-    eventHubEndpoint: {
-      authenticationType: 'IdentityBased'
-      endpointUri: '<endpointUri>'
-      entityPath: '<entityPath>'
-      managedIdentities: {
-        userAssignedResourceId: '<userAssignedResourceId>'
+    eventGridEndpoints: [
+      {
+        eventGridDomainId: '<eventGridDomainId>'
+        topicEndpoint: '<topicEndpoint>'
       }
-    }
+    ]
+    eventHubEndpoints: [
+      {
+        authenticationType: 'IdentityBased'
+        endpointUri: '<endpointUri>'
+        entityPath: '<entityPath>'
+        managedIdentities: {
+          systemAssigned: true
+          userAssignedResourceId: '<userAssignedResourceId>'
+        }
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -154,14 +159,27 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    serviceBusEndpoint: {
-      authenticationType: 'IdentityBased'
-      endpointUri: '<endpointUri>'
-      entityPath: '<entityPath>'
-      managedIdentities: {
-        userAssignedResourceId: '<userAssignedResourceId>'
+    serviceBusEndpoints: [
+      {
+        authenticationType: 'IdentityBased'
+        endpointUri: '<endpointUri>'
+        entityPath: '<entityPath>'
+        managedIdentities: {
+          systemAssigned: true
+          userAssignedResourceId: '<userAssignedResourceId>'
+        }
+        name: 'ServiceBusPrimary'
       }
-    }
+      {
+        authenticationType: 'IdentityBased'
+        endpointUri: '<endpointUri>'
+        entityPath: '<entityPath>'
+        managedIdentities: {
+          systemAssigned: true
+        }
+        name: 'ServiceBusSeconday'
+      }
+    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -204,21 +222,26 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
         }
       ]
     },
-    "eventGridEndpoint": {
-      "value": {
-        "eventGridDomainId": "<eventGridDomainId>",
-        "topicEndpoint": "<topicEndpoint>"
-      }
-    },
-    "eventHubEndpoint": {
-      "value": {
-        "authenticationType": "IdentityBased",
-        "endpointUri": "<endpointUri>",
-        "entityPath": "<entityPath>",
-        "managedIdentities": {
-          "userAssignedResourceId": "<userAssignedResourceId>"
+    "eventGridEndpoints": {
+      "value": [
+        {
+          "eventGridDomainId": "<eventGridDomainId>",
+          "topicEndpoint": "<topicEndpoint>"
         }
-      }
+      ]
+    },
+    "eventHubEndpoints": {
+      "value": [
+        {
+          "authenticationType": "IdentityBased",
+          "endpointUri": "<endpointUri>",
+          "entityPath": "<entityPath>",
+          "managedIdentities": {
+            "systemAssigned": true,
+            "userAssignedResourceId": "<userAssignedResourceId>"
+          }
+        }
+      ]
     },
     "location": {
       "value": "<location>"
@@ -266,15 +289,28 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
         }
       ]
     },
-    "serviceBusEndpoint": {
-      "value": {
-        "authenticationType": "IdentityBased",
-        "endpointUri": "<endpointUri>",
-        "entityPath": "<entityPath>",
-        "managedIdentities": {
-          "userAssignedResourceId": "<userAssignedResourceId>"
+    "serviceBusEndpoints": {
+      "value": [
+        {
+          "authenticationType": "IdentityBased",
+          "endpointUri": "<endpointUri>",
+          "entityPath": "<entityPath>",
+          "managedIdentities": {
+            "systemAssigned": true,
+            "userAssignedResourceId": "<userAssignedResourceId>"
+          },
+          "name": "ServiceBusPrimary"
+        },
+        {
+          "authenticationType": "IdentityBased",
+          "endpointUri": "<endpointUri>",
+          "entityPath": "<entityPath>",
+          "managedIdentities": {
+            "systemAssigned": true
+          },
+          "name": "ServiceBusSeconday"
         }
-      }
+      ]
     },
     "tags": {
       "value": {
@@ -461,15 +497,15 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
 | :-- | :-- | :-- |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`eventGridEndpoint`](#parameter-eventgridendpoint) | object | Event Grid Endpoint. |
-| [`eventHubEndpoint`](#parameter-eventhubendpoint) | object | Event Hub Endpoint. |
+| [`eventGridEndpoints`](#parameter-eventgridendpoints) | array | Event Grid Endpoint. |
+| [`eventHubEndpoints`](#parameter-eventhubendpoints) | array | Event Hub Endpoint. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalIds' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`serviceBusEndpoint`](#parameter-servicebusendpoint) | object | Service Bus Endpoint. |
+| [`serviceBusEndpoints`](#parameter-servicebusendpoints) | array | Service Bus Endpoint. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 
 ### Parameter: `name`
@@ -633,21 +669,19 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `eventGridEndpoint`
+### Parameter: `eventGridEndpoints`
 
 Event Grid Endpoint.
 
 - Required: No
-- Type: object
-- Default: `{}`
+- Type: array
 
-### Parameter: `eventHubEndpoint`
+### Parameter: `eventHubEndpoints`
 
 Event Hub Endpoint.
 
 - Required: No
-- Type: object
-- Default: `{}`
+- Type: array
 
 ### Parameter: `location`
 
@@ -1161,13 +1195,12 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `serviceBusEndpoint`
+### Parameter: `serviceBusEndpoints`
 
 Service Bus Endpoint.
 
 - Required: No
-- Type: object
-- Default: `{}`
+- Type: array
 
 ### Parameter: `tags`
 

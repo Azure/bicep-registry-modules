@@ -36,11 +36,11 @@ param entityPath string = ''
 @description('Optional. The URL of the EventHub namespace for identity-based authentication. It must include the protocol \'sb://\' (i.e. sb://xyz.servicebus.windows.net).')
 param endpointUri string = ''
 
-@description('Optional. The managed identity definition for this resource.')
+@description('Optional. The managed identity definition for this resource.  Only one type of identity is supported: system-assigned or user-assigned, but not both.')
 param managedIdentities managedIdentitiesType
 
 var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceId ?? '') ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceId ?? '') ? 'UserAssigned' : null)
+  type: (managedIdentities.?systemAssigned ?? false) ? 'SystemAssigned' : (!empty(managedIdentities.?userAssignedResourceId ?? '') ? 'UserAssigned' : null)
   userAssignedIdentity: managedIdentities.?userAssignedResourceId
 } : null
 
@@ -73,7 +73,8 @@ output resourceGroupName string = resourceGroup().name
 @description('The name of the Endpoint.')
 output name string = endpoint.name
 
-@description('The principal ID of the system assigned identity.')
+@description('The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API')
+#disable-next-line BCP187
 output systemAssignedMIPrincipalId string = endpoint.?identity.?principalId ?? ''
 
 // =============== //

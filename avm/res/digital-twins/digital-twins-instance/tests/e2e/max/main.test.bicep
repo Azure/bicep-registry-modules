@@ -69,26 +69,43 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
     location: resourceLocation
-    eventHubEndpoint: {
-      authenticationType: 'IdentityBased'
-      endpointUri: 'sb://${nestedDependencies.outputs.eventhubNamespaceName}.servicebus.windows.net/'
-      entityPath: nestedDependencies.outputs.eventhubName
-      managedIdentities: {
-        userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+    eventHubEndpoints: [
+      {
+        authenticationType: 'IdentityBased'
+        endpointUri: 'sb://${nestedDependencies.outputs.eventhubNamespaceName}.servicebus.windows.net/'
+        entityPath: nestedDependencies.outputs.eventhubName
+        managedIdentities: {
+          systemAssigned: true
+          userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+        }
       }
-    }
-    serviceBusEndpoint: {
-      authenticationType: 'IdentityBased'
-      endpointUri: 'sb://${nestedDependencies.outputs.serviceBusName}.servicebus.windows.net/'
-      entityPath: nestedDependencies.outputs.serviceBusTopicName
-      managedIdentities: {
-        userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+    ]
+    serviceBusEndpoints: [
+      {
+        name: 'ServiceBusPrimary'
+        authenticationType: 'IdentityBased'
+        endpointUri: 'sb://${nestedDependencies.outputs.serviceBusName}.servicebus.windows.net/'
+        entityPath: nestedDependencies.outputs.serviceBusTopicName
+        managedIdentities: {
+          systemAssigned: true
+          userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+        }
       }
-    }
-    eventGridEndpoint: {
-      eventGridDomainId: nestedDependencies.outputs.eventGridDomainResourceId
-      topicEndpoint: nestedDependencies.outputs.eventGridEndpoint
-    }
+      {
+        name: 'ServiceBusSeconday'
+        authenticationType: 'IdentityBased'
+        endpointUri: 'sb://${nestedDependencies.outputs.serviceBusName}.servicebus.windows.net/'
+        entityPath: nestedDependencies.outputs.serviceBusTopicName
+        managedIdentities: {
+          systemAssigned: true
+        }
+      }
+    ]
+    eventGridEndpoints: [ {
+        eventGridDomainId: nestedDependencies.outputs.eventGridDomainResourceId
+        topicEndpoint: nestedDependencies.outputs.eventGridEndpoint
+      }
+    ]
     name: '${namePrefix}${serviceShort}001'
     managedIdentities: {
       systemAssigned: true
