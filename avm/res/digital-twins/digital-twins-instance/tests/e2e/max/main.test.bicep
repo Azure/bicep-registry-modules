@@ -38,10 +38,10 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    eventHubName: 'dt-${uniqueString(serviceShort)}-evh-01'
-    eventHubNamespaceName: 'dt-${uniqueString(serviceShort)}-evhns-01'
-    serviceBusName: 'dt-${uniqueString(serviceShort)}-sb-01'
-    eventGridDomainName: 'dt-${uniqueString(serviceShort)}-evg-01'
+    eventHubName: 'dt-${serviceShort}-evh-01'
+    eventHubNamespaceName: 'dt-${serviceShort}-evhns-01'
+    serviceBusName: 'dt-${serviceShort}-sb-01'
+    eventGridDomainName: 'dt-${serviceShort}-evg-01'
   }
 }
 
@@ -53,8 +53,8 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${uniqueString(serviceShort)}-evh-01'
-    eventHubNamespaceName: 'dep-${uniqueString(serviceShort)}-evh-01'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
     location: resourceLocation
   }
 }
