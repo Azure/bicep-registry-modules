@@ -56,6 +56,10 @@ function New-ModuleReleaseTag {
   Write-Verbose "Publishing release tag: [$tagName]" -Verbose
   git push origin $tagName
 
+  if ($LASTEXITCODE -ne 0) {
+    throw 'Git Tag creation failed. Please review error log.'
+  }
+
   # 5 Return tag
   return $tagName
 }
