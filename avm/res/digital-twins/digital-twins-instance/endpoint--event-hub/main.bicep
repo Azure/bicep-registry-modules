@@ -73,7 +73,7 @@ output resourceGroupName string = resourceGroup().name
 @description('The name of the Endpoint.')
 output name string = endpoint.name
 
-@description('The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API')
+@description('The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API.')
 #disable-next-line BCP187
 output systemAssignedMIPrincipalId string = endpoint.?identity.?principalId ?? ''
 

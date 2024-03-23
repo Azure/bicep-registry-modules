@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "2884300299461430913"
+      "templateHash": "1024174644495719338"
     },
     "name": "Digital Twins Instances",
     "description": "This module deploys an Azure Digital Twins Instance.",
@@ -689,7 +689,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "1414884725587472683"
+              "templateHash": "1964184668152537300"
             },
             "name": "Digital Twins Instance EventHub Endpoint",
             "description": "This module deploys a Digital Twins Instance EventHub Endpoint.",
@@ -846,7 +846,7 @@
             "systemAssignedMIPrincipalId": {
               "type": "string",
               "metadata": {
-                "description": "The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API"
+                "description": "The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API."
               },
               "value": "[coalesce(tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId'), '')]"
             }
@@ -1014,7 +1014,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "1065914473295697136"
+              "templateHash": "16761257324786961037"
             },
             "name": "Digital Twins Instance ServiceBus Endpoint",
             "description": "This module deploys a Digital Twins Instance ServiceBus Endpoint.",
@@ -1171,7 +1171,7 @@
             "systemAssignedMIPrincipalId": {
               "type": "string",
               "metadata": {
-                "description": "The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API"
+                "description": "The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API."
               },
               "value": "[coalesce(tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId'), '')]"
             }
