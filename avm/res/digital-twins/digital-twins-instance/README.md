@@ -49,7 +49,7 @@ This instance deploys the module with the minimum set of required parameters.
 module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-instance:<version>' = {
   name: 'digitalTwinsInstanceDeployment'
   params: {
-    name: 'dtdtimin001'
+    name: 'dtdimin001'
   }
 }
 ```
@@ -67,7 +67,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
   "contentVersion": "1.0.0.0",
   "parameters": {
     "name": {
-      "value": "dtdtimin001"
+      "value": "dtdimin001"
     }
   }
 }
@@ -90,7 +90,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
   name: 'digitalTwinsInstanceDeployment'
   params: {
     // Required parameters
-    name: 'dtdtimax001'
+    name: 'dtdmax001'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -185,7 +185,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dtdtimax001"
+      "value": "dtdmax001"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -304,7 +304,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
   name: 'digitalTwinsInstanceDeployment'
   params: {
     // Required parameters
-    name: 'dtdtipep001'
+    name: 'dtdpep001'
     // Non-required parameters
     location: '<location>'
     privateEndpoints: [
@@ -339,7 +339,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dtdtipep001"
+      "value": "dtdpep001"
     },
     // Non-required parameters
     "location": {
@@ -382,7 +382,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
   name: 'digitalTwinsInstanceDeployment'
   params: {
     // Required parameters
-    name: 'dtdtiwaf001'
+    name: 'dtdiwaf001'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -416,7 +416,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dtdtiwaf001"
+      "value": "dtdiwaf001"
     },
     // Non-required parameters
     "diagnosticSettings": {
