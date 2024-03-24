@@ -659,5 +659,5 @@ module registerResourceProviders 'br/public:avm/res/resources/deployment-script:
 }
 
 // OUTPUTS
-output failedProviders string = !empty(resourceProviders) ? registerResourceProviders.outputs.outputs.failedProvidersRegistrations : ''
-output failedFeatures string = !empty(resourceProviders) ? registerResourceProviders.outputs.outputs.failedFeaturesRegistrations : ''
+output failedProviders string = !empty(resourceProviders) ? registerResourceProviders.outputs.outputs['failedProvidersRegistrations'] : ''
+output failedFeatures string = !empty(resourceProviders) ? registerResourceProviders.outputs.outputs['failedFeaturesRegistrations'] : ''
