@@ -73,7 +73,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         name: 'allow-app-rules'
         properties: {
           action: {
-            type: 'allow'
+            type: 'Allow'
           }
           priority: 100
           rules: [
@@ -85,12 +85,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
               name: 'allow-ase-tags'
               protocols: [
                 {
-                  port: '80'
-                  protocolType: 'HTTP'
+                  port: 80
+                  protocolType: 'Http'
                 }
                 {
-                  port: '443'
-                  protocolType: 'HTTPS'
+                  port: 443
+                  protocolType: 'Https'
                 }
               ]
               sourceAddresses: [
@@ -101,12 +101,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
               name: 'allow-ase-management'
               protocols: [
                 {
-                  port: '80'
-                  protocolType: 'HTTP'
+                  port: 80
+                  protocolType: 'Http'
                 }
                 {
-                  port: '443'
-                  protocolType: 'HTTPS'
+                  port: 443
+                  protocolType: 'Https'
                 }
               ]
               sourceAddresses: [
@@ -144,7 +144,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         name: 'allow-network-rules'
         properties: {
           action: {
-            type: 'allow'
+            type: 'Allow'
           }
           priority: 100
           rules: [
@@ -163,6 +163,37 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
               sourceAddresses: [
                 '*'
               ]
+            }
+          ]
+        }
+      }
+    ]
+    natRuleCollections: [
+      {
+        name: 'allow-nat-rules'
+        properties: {
+          action: {
+            type: 'Dnat'
+          }
+          priority: 100
+          rules: [
+            {
+              name: 'allow'
+              protocols: [
+                'TCP'
+              ]
+              sourceAddresses: [
+                '*'
+              ]
+              destinationAddresses: [
+                '192.168.1.0'
+              ]
+              destinationPorts: [
+                '8080'
+              ]
+              translatedAddress: nestedDependencies.outputs.publicIPAddress
+
+              translatedPort: '8080'
             }
           ]
         }
