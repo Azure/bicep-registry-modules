@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-door-web-application-firewall-policy:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nagwafpmin'
+  name: 'frontDoorWebApplicationFirewallPolicyDeployment'
   params: {
     // Required parameters
     name: 'nagwafpmin001'
@@ -90,7 +90,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-door-web-application-firewall-policy:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nagwafpmax'
+  name: 'frontDoorWebApplicationFirewallPolicyDeployment'
   params: {
     // Required parameters
     name: 'nagwafpmax001'
@@ -330,7 +330,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-door-web-application-firewall-policy:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nagwafpwaf'
+  name: 'frontDoorWebApplicationFirewallPolicyDeployment'
   params: {
     // Required parameters
     name: 'nagwafpwaf001'

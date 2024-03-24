@@ -40,7 +40,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module budget 'br/public:avm/res/consumption/budget:<version>' = {
-  name: '${uniqueString(deployment().name)}-test-cbmin'
+  name: 'budgetDeployment'
   params: {
     // Required parameters
     amount: 500
@@ -100,7 +100,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module budget 'br/public:avm/res/consumption/budget:<version>' = {
-  name: '${uniqueString(deployment().name)}-test-cbmax'
+  name: 'budgetDeployment'
   params: {
     // Required parameters
     amount: 500
@@ -186,7 +186,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module budget 'br/public:avm/res/consumption/budget:<version>' = {
-  name: '${uniqueString(deployment().name)}-test-cbwaf'
+  name: 'budgetDeployment'
   params: {
     // Required parameters
     amount: 500
