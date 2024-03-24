@@ -99,14 +99,14 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     }
     extensionHostPoolRegistration: {
       enabled: true
+      hostPoolName: nestedDependencies.outputs.hostPoolName
+      registrationInfoToken: nestedDependencies.outputs.registrationInfoToken
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
     }
-    hostPoolName: nestedDependencies.outputs.hostPoolName
-    registrationInfoToken: nestedDependencies.outputs.registrationInfoToken
   }
 }
 ]
