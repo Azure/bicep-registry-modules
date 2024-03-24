@@ -83,6 +83,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
                 'WindowsUpdate'
               ]
               name: 'allow-ase-tags'
+              description: 'allow ase tags'
               protocols: [
                 {
                   port: 80
@@ -99,6 +100,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             }
             {
               name: 'allow-ase-management'
+              description: 'allow ase management'
               protocols: [
                 {
                   port: 80
@@ -157,11 +159,28 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
                 '123'
               ]
               name: 'allow-ntp'
+              description: 'allow network rules'
               protocols: [
                 'Any'
               ]
               sourceAddresses: [
                 '*'
+              ]
+            }
+            {
+              name: 'allow-azure-devops'
+              protocols: [
+                'Any'
+              ]
+              description: 'allow azure devops'
+              sourceAddresses: [
+                '*'
+              ]
+              destinationAddresses: [
+                'AzureDevOps'
+              ]
+              destinationPorts: [
+                '443'
               ]
             }
           ]
@@ -179,6 +198,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           rules: [
             {
               name: 'allow'
+              description: 'Allow nat rules'
               protocols: [
                 'TCP'
               ]
@@ -191,8 +211,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
               destinationPorts: [
                 '8080'
               ]
-              translatedAddress: nestedDependencies.outputs.publicIPAddress
-
+              translatedAddress: '10.0.0.4'
               translatedPort: '8080'
             }
           ]

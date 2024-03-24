@@ -187,8 +187,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
               destinationPorts: [
                 '8080'
               ]
-              translatedAddress: nestedDependencies.outputs.publicIPAddress
-
+              translatedAddress: '10.0.0.4'
               translatedPort: '8080'
             }
           ]
