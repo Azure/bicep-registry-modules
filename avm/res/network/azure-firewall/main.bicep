@@ -398,7 +398,7 @@ type natRuleCollectionType = {
       type: 'Dnat' | 'Snat'
     }
 
-    @description('Priority of the NAT rule collection.')
+    @description('Required. Priority of the NAT rule collection.')
     @minValue(100)
     @maxValue(65000)
     priority: int
@@ -450,7 +450,7 @@ type applicationRuleCollectionType = {
       type: 'Allow' | 'Deny'
     }
 
-    @description('Priority of the application rule collection.')
+    @description('Required. Priority of the application rule collection.')
     @minValue(100)
     @maxValue(65000)
     priority: int
@@ -499,7 +499,7 @@ type networkRuleCollectionType = {
       type: 'Allow' | 'Deny'
     }
 
-    @description('Priority of the network rule collection.')
+    @description('Required. Priority of the network rule collection.')
     @minValue(100)
     @maxValue(65000)
     priority: int
