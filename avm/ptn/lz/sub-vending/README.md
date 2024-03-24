@@ -70,7 +70,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssamin'
+  name: 'subVendingDeployment'
   params: {
     deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
@@ -92,10 +92,12 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       {
         definition: 'Reader'
         principalId: '7eca0dca-6701-46f1-b7b6-8b424dab50b3'
+        relativeScope: ''
       }
     ]
     subscriptionAliasEnabled: true
     subscriptionAliasName: 'sub-blzv-tests-ssamin'
+    subscriptionBillingScope: '<subscriptionBillingScope>'
     subscriptionDisplayName: 'sub-blzv-tests-ssamin'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
@@ -160,7 +162,8 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": [
         {
           "definition": "Reader",
-          "principalId": "7eca0dca-6701-46f1-b7b6-8b424dab50b3"
+          "principalId": "7eca0dca-6701-46f1-b7b6-8b424dab50b3",
+          "relativeScope": ""
         }
       ]
     },
@@ -169,6 +172,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     },
     "subscriptionAliasName": {
       "value": "sub-blzv-tests-ssamin"
+    },
+    "subscriptionBillingScope": {
+      "value": "<subscriptionBillingScope>"
     },
     "subscriptionDisplayName": {
       "value": "sub-blzv-tests-ssamin"
@@ -212,8 +218,7 @@ This instance deploys a subscription with a hub-spoke network topology.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  //name: 'sub-blzv-tests-ssahs-add-vnet-spoke'
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssahs'
+  name: 'subVendingDeployment'
   params: {
     deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
@@ -236,13 +241,19 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       {
         definition: 'Network Contributor'
         principalId: '7eca0dca-6701-46f1-b7b6-8b424dab50b3'
+        relativeScope: '<relativeScope>'
       }
     ]
     subscriptionAliasEnabled: true
     subscriptionAliasName: 'sub-blzv-tests-ssahs'
+    subscriptionBillingScope: '<subscriptionBillingScope>'
     subscriptionDisplayName: 'sub-blzv-tests-ssahs'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionTags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
     subscriptionWorkload: 'Production'
     virtualNetworkAddressSpace: [
       '10.100.0.0/16'
@@ -311,7 +322,8 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": [
         {
           "definition": "Network Contributor",
-          "principalId": "7eca0dca-6701-46f1-b7b6-8b424dab50b3"
+          "principalId": "7eca0dca-6701-46f1-b7b6-8b424dab50b3",
+          "relativeScope": "<relativeScope>"
         }
       ]
     },
@@ -321,6 +333,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     "subscriptionAliasName": {
       "value": "sub-blzv-tests-ssahs"
     },
+    "subscriptionBillingScope": {
+      "value": "<subscriptionBillingScope>"
+    },
     "subscriptionDisplayName": {
       "value": "sub-blzv-tests-ssahs"
     },
@@ -329,6 +344,12 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     },
     "subscriptionManagementGroupId": {
       "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionTags": {
+      "value": {
+        "namePrefix": "<namePrefix>",
+        "serviceShort": "<serviceShort>"
+      }
     },
     "subscriptionWorkload": {
       "value": "Production"
@@ -377,8 +398,7 @@ This instance deploys a subscription with a vwan network topology.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  //name: 'sub-blzv-tests-ssawan-add-vwan-spoke'
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssawan'
+  name: 'subVendingDeployment'
   params: {
     deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
@@ -394,10 +414,12 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       {
         definition: 'Network Contributor'
         principalId: '7eca0dca-6701-46f1-b7b6-8b424dab50b3'
+        relativeScope: '<relativeScope>'
       }
     ]
     subscriptionAliasEnabled: true
     subscriptionAliasName: 'sub-blzv-tests-ssawan'
+    subscriptionBillingScope: '<subscriptionBillingScope>'
     subscriptionDisplayName: 'sub-blzv-tests-ssawan'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
@@ -465,7 +487,8 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": [
         {
           "definition": "Network Contributor",
-          "principalId": "7eca0dca-6701-46f1-b7b6-8b424dab50b3"
+          "principalId": "7eca0dca-6701-46f1-b7b6-8b424dab50b3",
+          "relativeScope": "<relativeScope>"
         }
       ]
     },
@@ -474,6 +497,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     },
     "subscriptionAliasName": {
       "value": "sub-blzv-tests-ssawan"
+    },
+    "subscriptionBillingScope": {
+      "value": "<subscriptionBillingScope>"
     },
     "subscriptionDisplayName": {
       "value": "sub-blzv-tests-ssawan"
@@ -990,7 +1016,7 @@ An array of of objects of virtual hub route table resource IDs to propagate rout
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |
