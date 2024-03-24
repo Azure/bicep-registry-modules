@@ -24,6 +24,7 @@ jobs:
 
           $functionInput = @{
             Repo              = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
+            RepoRoot          = $env:GITHUB_WORKSPACE
             LimitNumberOfRuns = 500
             LimitInDays       = 2
             IgnoreWorkflows   = @()
