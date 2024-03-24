@@ -414,7 +414,7 @@ type natRuleCollectionType = {
       @description('Required. Array of AzureFirewallNetworkRuleProtocols applicable to this NAT rule.')
       protocols: ('TCP' | 'UDP' | 'Any' | 'ICMP')[]
 
-      @description('Optional, List of destination IP addresses for this rule. Supports IP ranges, prefixes, and service tags.')
+      @description('Optional. List of destination IP addresses for this rule. Supports IP ranges, prefixes, and service tags.')
       destinationAddresses: string[]?
 
       @description('Optional. List of destination ports.')
