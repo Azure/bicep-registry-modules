@@ -444,11 +444,12 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         name: 'allow-app-rules'
         properties: {
           action: {
-            type: 'allow'
+            type: 'Allow'
           }
           priority: 100
           rules: [
             {
+              description: 'allow ase tags'
               fqdnTags: [
                 'AppServiceEnvironment'
                 'WindowsUpdate'
@@ -456,12 +457,12 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
               name: 'allow-ase-tags'
               protocols: [
                 {
-                  port: '80'
-                  protocolType: 'HTTP'
+                  port: 80
+                  protocolType: 'Http'
                 }
                 {
-                  port: '443'
-                  protocolType: 'HTTPS'
+                  port: 443
+                  protocolType: 'Https'
                 }
               ]
               sourceAddresses: [
@@ -469,15 +470,16 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
               ]
             }
             {
+              description: 'allow ase management'
               name: 'allow-ase-management'
               protocols: [
                 {
-                  port: '80'
-                  protocolType: 'HTTP'
+                  port: 80
+                  protocolType: 'Http'
                 }
                 {
-                  port: '443'
-                  protocolType: 'HTTPS'
+                  port: 443
+                  protocolType: 'Https'
                 }
               ]
               sourceAddresses: [
@@ -510,16 +512,48 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    natRuleCollections: [
+      {
+        name: 'allow-nat-rules'
+        properties: {
+          action: {
+            type: 'Dnat'
+          }
+          priority: 100
+          rules: [
+            {
+              description: 'Allow nat rules'
+              destinationAddresses: [
+                '192.168.1.0'
+              ]
+              destinationPorts: [
+                '8080'
+              ]
+              name: 'allow'
+              protocols: [
+                'TCP'
+              ]
+              sourceAddresses: [
+                '*'
+              ]
+              translatedAddress: '10.0.0.4'
+              translatedPort: '8080'
+            }
+          ]
+        }
+      }
+    ]
     networkRuleCollections: [
       {
         name: 'allow-network-rules'
         properties: {
           action: {
-            type: 'allow'
+            type: 'Allow'
           }
           priority: 100
           rules: [
             {
+              description: 'allow network rules'
               destinationAddresses: [
                 '*'
               ]
@@ -528,6 +562,22 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
                 '123'
               ]
               name: 'allow-ntp'
+              protocols: [
+                'Any'
+              ]
+              sourceAddresses: [
+                '*'
+              ]
+            }
+            {
+              description: 'allow azure devops'
+              destinationAddresses: [
+                'AzureDevOps'
+              ]
+              destinationPorts: [
+                '443'
+              ]
+              name: 'allow-azure-devops'
               protocols: [
                 'Any'
               ]
@@ -595,11 +645,12 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
           "name": "allow-app-rules",
           "properties": {
             "action": {
-              "type": "allow"
+              "type": "Allow"
             },
             "priority": 100,
             "rules": [
               {
+                "description": "allow ase tags",
                 "fqdnTags": [
                   "AppServiceEnvironment",
                   "WindowsUpdate"
@@ -607,12 +658,12 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
                 "name": "allow-ase-tags",
                 "protocols": [
                   {
-                    "port": "80",
-                    "protocolType": "HTTP"
+                    "port": 80,
+                    "protocolType": "Http"
                   },
                   {
-                    "port": "443",
-                    "protocolType": "HTTPS"
+                    "port": 443,
+                    "protocolType": "Https"
                   }
                 ],
                 "sourceAddresses": [
@@ -620,15 +671,16 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
                 ]
               },
               {
+                "description": "allow ase management",
                 "name": "allow-ase-management",
                 "protocols": [
                   {
-                    "port": "80",
-                    "protocolType": "HTTP"
+                    "port": 80,
+                    "protocolType": "Http"
                   },
                   {
-                    "port": "443",
-                    "protocolType": "HTTPS"
+                    "port": 443,
+                    "protocolType": "Https"
                   }
                 ],
                 "sourceAddresses": [
@@ -668,17 +720,51 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         "name": "myCustomLockName"
       }
     },
+    "natRuleCollections": {
+      "value": [
+        {
+          "name": "allow-nat-rules",
+          "properties": {
+            "action": {
+              "type": "Dnat"
+            },
+            "priority": 100,
+            "rules": [
+              {
+                "description": "Allow nat rules",
+                "destinationAddresses": [
+                  "192.168.1.0"
+                ],
+                "destinationPorts": [
+                  "8080"
+                ],
+                "name": "allow",
+                "protocols": [
+                  "TCP"
+                ],
+                "sourceAddresses": [
+                  "*"
+                ],
+                "translatedAddress": "10.0.0.4",
+                "translatedPort": "8080"
+              }
+            ]
+          }
+        }
+      ]
+    },
     "networkRuleCollections": {
       "value": [
         {
           "name": "allow-network-rules",
           "properties": {
             "action": {
-              "type": "allow"
+              "type": "Allow"
             },
             "priority": 100,
             "rules": [
               {
+                "description": "allow network rules",
                 "destinationAddresses": [
                   "*"
                 ],
@@ -687,6 +773,22 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
                   "123"
                 ],
                 "name": "allow-ntp",
+                "protocols": [
+                  "Any"
+                ],
+                "sourceAddresses": [
+                  "*"
+                ]
+              },
+              {
+                "description": "allow azure devops",
+                "destinationAddresses": [
+                  "AzureDevOps"
+                ],
+                "destinationPorts": [
+                  "443"
+                ],
+                "name": "allow-azure-devops",
                 "protocols": [
                   "Any"
                 ],
@@ -766,7 +868,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         name: 'allow-app-rules'
         properties: {
           action: {
-            type: 'allow'
+            type: 'Allow'
           }
           priority: 100
           rules: [
@@ -778,12 +880,12 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
               name: 'allow-ase-tags'
               protocols: [
                 {
-                  port: '80'
-                  protocolType: 'HTTP'
+                  port: 80
+                  protocolType: 'Http'
                 }
                 {
-                  port: '443'
-                  protocolType: 'HTTPS'
+                  port: 443
+                  protocolType: 'Https'
                 }
               ]
               sourceAddresses: [
@@ -794,12 +896,12 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
               name: 'allow-ase-management'
               protocols: [
                 {
-                  port: '80'
-                  protocolType: 'HTTP'
+                  port: 80
+                  protocolType: 'Http'
                 }
                 {
-                  port: '443'
-                  protocolType: 'HTTPS'
+                  port: 443
+                  protocolType: 'Https'
                 }
               ]
               sourceAddresses: [
@@ -828,12 +930,42 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       }
     ]
     location: '<location>'
+    natRuleCollections: [
+      {
+        name: 'allow-nat-rules'
+        properties: {
+          action: {
+            type: 'Dnat'
+          }
+          priority: 100
+          rules: [
+            {
+              destinationAddresses: [
+                '192.168.1.0'
+              ]
+              destinationPorts: [
+                '8080'
+              ]
+              name: 'allow'
+              protocols: [
+                'TCP'
+              ]
+              sourceAddresses: [
+                '*'
+              ]
+              translatedAddress: '10.0.0.4'
+              translatedPort: '8080'
+            }
+          ]
+        }
+      }
+    ]
     networkRuleCollections: [
       {
         name: 'allow-network-rules'
         properties: {
           action: {
-            type: 'allow'
+            type: 'Allow'
           }
           priority: 100
           rules: [
@@ -896,7 +1028,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
           "name": "allow-app-rules",
           "properties": {
             "action": {
-              "type": "allow"
+              "type": "Allow"
             },
             "priority": 100,
             "rules": [
@@ -908,12 +1040,12 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
                 "name": "allow-ase-tags",
                 "protocols": [
                   {
-                    "port": "80",
-                    "protocolType": "HTTP"
+                    "port": 80,
+                    "protocolType": "Http"
                   },
                   {
-                    "port": "443",
-                    "protocolType": "HTTPS"
+                    "port": 443,
+                    "protocolType": "Https"
                   }
                 ],
                 "sourceAddresses": [
@@ -924,12 +1056,12 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
                 "name": "allow-ase-management",
                 "protocols": [
                   {
-                    "port": "80",
-                    "protocolType": "HTTP"
+                    "port": 80,
+                    "protocolType": "Http"
                   },
                   {
-                    "port": "443",
-                    "protocolType": "HTTPS"
+                    "port": 443,
+                    "protocolType": "Https"
                   }
                 ],
                 "sourceAddresses": [
@@ -963,13 +1095,45 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     "location": {
       "value": "<location>"
     },
+    "natRuleCollections": {
+      "value": [
+        {
+          "name": "allow-nat-rules",
+          "properties": {
+            "action": {
+              "type": "Dnat"
+            },
+            "priority": 100,
+            "rules": [
+              {
+                "destinationAddresses": [
+                  "192.168.1.0"
+                ],
+                "destinationPorts": [
+                  "8080"
+                ],
+                "name": "allow",
+                "protocols": [
+                  "TCP"
+                ],
+                "sourceAddresses": [
+                  "*"
+                ],
+                "translatedAddress": "10.0.0.4",
+                "translatedPort": "8080"
+              }
+            ]
+          }
+        }
+      ]
+    },
     "networkRuleCollections": {
       "value": [
         {
           "name": "allow-network-rules",
           "properties": {
             "action": {
-              "type": "allow"
+              "type": "Allow"
             },
             "priority": 100,
             "rules": [
@@ -1106,7 +1270,32 @@ Collection of application rule collections used by Azure Firewall.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-applicationrulecollectionsname) | string | Name of the application rule collection. |
+| [`properties`](#parameter-applicationrulecollectionsproperties) | object | Properties of the azure firewall application rule collection. |
+
+### Parameter: `applicationRuleCollections.name`
+
+Name of the application rule collection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `applicationRuleCollections.properties`
+
+Properties of the azure firewall application rule collection.
+
+- Required: Yes
+- Type: object
+
+**RequiredPriority of the application rule collection parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 
 ### Parameter: `azureSkuTier`
 
@@ -1352,7 +1541,32 @@ Collection of NAT rule collections used by Azure Firewall.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-natrulecollectionsname) | string | Name of the NAT rule collection. |
+| [`properties`](#parameter-natrulecollectionsproperties) | object | Properties of the azure firewall NAT rule collection. |
+
+### Parameter: `natRuleCollections.name`
+
+Name of the NAT rule collection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `natRuleCollections.properties`
+
+Properties of the azure firewall NAT rule collection.
+
+- Required: Yes
+- Type: object
+
+**RequiredPriority of the NAT rule collection parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 
 ### Parameter: `networkRuleCollections`
 
@@ -1360,7 +1574,32 @@ Collection of network rule collections used by Azure Firewall.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-networkrulecollectionsname) | string | Name of the network rule collection. |
+| [`properties`](#parameter-networkrulecollectionsproperties) | object | Properties of the azure firewall network rule collection. |
+
+### Parameter: `networkRuleCollections.name`
+
+Name of the network rule collection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkRuleCollections.properties`
+
+Properties of the azure firewall network rule collection.
+
+- Required: Yes
+- Type: object
+
+**RequiredPriority of the network rule collection parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 
 ### Parameter: `publicIPAddressObject`
 
