@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "7075078902361398628"
+      "templateHash": "13348390802684210658"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall.",
@@ -301,7 +301,7 @@
                       },
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional, List of destination IP addresses for this rule. Supports IP ranges, prefixes, and service tags."
+                        "description": "Optional. List of destination IP addresses for this rule. Supports IP ranges, prefixes, and service tags."
                       }
                     },
                     "destinationPorts": {
