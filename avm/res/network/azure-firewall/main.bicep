@@ -432,7 +432,7 @@ type natRuleCollectionType = {
       @description('Optional. The translated FQDN for this NAT rule.')
       translatedFqdn: string?
 
-      @description('Optional. The translated port for this NAT rule')
+      @description('Optional. The translated port for this NAT rule.')
       translatedPort: string?
     }[]
   }
@@ -455,6 +455,7 @@ type applicationRuleCollectionType = {
     @maxValue(65000)
     priority: int
 
+    @description('Required. Collection of rules used by a application rule collection.')
     rules: {
       @description('Required. Name of the application rule.')
       name: string
@@ -504,6 +505,7 @@ type networkRuleCollectionType = {
     @maxValue(65000)
     priority: int
 
+    @description('Required. Collection of rules used by a network rule collection.')
     rules: {
       @description('Required. Name of the network rule.')
       name: string

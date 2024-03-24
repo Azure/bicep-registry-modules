@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "13348390802684210658"
+      "templateHash": "3831870271484638637"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall.",
@@ -352,7 +352,7 @@
                       "type": "string",
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. The translated port for this NAT rule"
+                        "description": "Optional. The translated port for this NAT rule."
                       }
                     }
                   }
@@ -499,6 +499,9 @@
                       }
                     }
                   }
+                },
+                "metadata": {
+                  "description": "Required. Collection of rules used by a application rule collection."
                 }
               }
             },
@@ -641,6 +644,9 @@
                       }
                     }
                   }
+                },
+                "metadata": {
+                  "description": "Required. Collection of rules used by a network rule collection."
                 }
               }
             },
