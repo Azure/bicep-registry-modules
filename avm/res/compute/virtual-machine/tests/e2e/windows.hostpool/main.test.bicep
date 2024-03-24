@@ -101,6 +101,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       enabled: true
       hostPoolName: nestedDependencies.outputs.hostPoolName
       registrationInfoToken: nestedDependencies.outputs.registrationInfoToken
+      modulesUrl: 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

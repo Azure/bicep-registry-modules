@@ -875,7 +875,7 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHo
      ? extensionHostPoolRegistration.enableAutomaticUpgrade 
      : false
     settings: {
-      modulesUrl: 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
+      modulesUrl: extensionHostPoolRegistration.hostPoolModulesUrl
       configurationFunction: 'Configuration.ps1\\AddSessionHost'
       properties: {
         hostPoolName: extensionHostPoolRegistration.hostPoolName
