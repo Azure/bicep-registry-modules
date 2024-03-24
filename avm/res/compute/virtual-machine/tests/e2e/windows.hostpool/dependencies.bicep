@@ -63,7 +63,7 @@ resource msiHPDesktopVirtualizationVirtualMachineContributorRoleAssignment 'Micr
   }
 }
 
-resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+resource getRegistrationTokenDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: getRegistrationTokenDeploymentScriptName
   location: location
   kind: 'AzurePowerShell'
@@ -79,26 +79,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   properties: {
     azPowerShellVersion: '10.0'
     arguments: '-HostPoolName "${hostPool.name}" -HostPoolResourceGroupName "${resourceGroup().name}" -SubscriptionId "${subscription().subscriptionId}"'
-    scriptContent: '''
-      param($HostPoolName, $HostPoolResourceGroupName, $SubscriptionId)
-
-      if ($installedModules.Name -notcontains "Az.DesktopVirtualization") {
-          Install-Module Az.DesktopVirtualization -Force -AllowClobber
-      }
-
-      $parameters = @{
-          HostPoolName      = $HostPoolName
-          ResourceGroupName = $HostPoolResourceGroupName
-          SubscriptionId    = $SubscriptionId
-          ExpirationTime    = $((Get-Date).ToUniversalTime().AddHours(24).ToString('yyyy-MM-ddTHH:mm:ss.fffffffZ'))
-      }
-
-      $registrationKey = New-AzWvdRegistrationInfo @parameters
-      $registrationInfoToken = $registrationKey.Token
-
-      $DeploymentScriptOutputs = @{}
-      $DeploymentScriptOutputs['registrationInfoToken'] = $registrationInfoToken
-    '''
+    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Get-HostPoolRegistrationKey.ps1')
     retentionInterval: 'PT1H'
   }
 }
@@ -110,4 +91,4 @@ output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 output hostPoolName string = hostPool.name
 
 @description('The registration token of the created Host pool.')
-output registrationInfoToken string = deploymentScript.properties.outputs.registrationInfoToken
+output registrationInfoToken string = getRegistrationTokenDeploymentScript.properties.outputs.registrationInfoToken
