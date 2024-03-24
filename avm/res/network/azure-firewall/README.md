@@ -1660,18 +1660,13 @@ Collection of rules used by a NAT rule collection.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`description`](#parameter-natrulecollectionspropertiesrulesdescription) | string | Description of the rule. |
+| [`destinationAddresses`](#parameter-natrulecollectionspropertiesrulesdestinationaddresses) | array | List of destination IP addresses for this rule. Supports IP ranges, prefixes, and service tags. |
 | [`destinationPorts`](#parameter-natrulecollectionspropertiesrulesdestinationports) | array | List of destination ports. |
 | [`sourceAddresses`](#parameter-natrulecollectionspropertiesrulessourceaddresses) | array | List of source IP addresses for this rule. |
 | [`sourceIpGroups`](#parameter-natrulecollectionspropertiesrulessourceipgroups) | array | List of source IpGroups for this rule. |
 | [`translatedAddress`](#parameter-natrulecollectionspropertiesrulestranslatedaddress) | string | The translated address for this NAT rule. |
 | [`translatedFqdn`](#parameter-natrulecollectionspropertiesrulestranslatedfqdn) | string | The translated FQDN for this NAT rule. |
 | [`translatedPort`](#parameter-natrulecollectionspropertiesrulestranslatedport) | string | The translated port for this NAT rule |
-
-**Optional, List of destination IP addresses for this rule parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`destinationAddresses`](#parameter-natrulecollectionspropertiesrulesdestinationaddresses) | array | Supports IP ranges, prefixes, and service tags. |
 
 ### Parameter: `natRuleCollections.properties.rules.name`
 
@@ -1702,6 +1697,13 @@ Description of the rule.
 
 - Required: No
 - Type: string
+
+### Parameter: `natRuleCollections.properties.rules.destinationAddresses`
+
+List of destination IP addresses for this rule. Supports IP ranges, prefixes, and service tags.
+
+- Required: No
+- Type: array
 
 ### Parameter: `natRuleCollections.properties.rules.destinationPorts`
 
@@ -1744,13 +1746,6 @@ The translated port for this NAT rule
 
 - Required: No
 - Type: string
-
-### Parameter: `natRuleCollections.properties.rules.destinationAddresses`
-
-Supports IP ranges, prefixes, and service tags.
-
-- Required: No
-- Type: array
 
 ### Parameter: `networkRuleCollections`
 
