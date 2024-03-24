@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "15637286820115860051"
+      "templateHash": "7075078902361398628"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall.",
@@ -261,7 +261,7 @@
                 "minValue": 100,
                 "maxValue": 65000,
                 "metadata": {
-                  "description": "Priority of the NAT rule collection."
+                  "description": "Required. Priority of the NAT rule collection."
                 }
               },
               "rules": {
@@ -407,7 +407,7 @@
                 "minValue": 100,
                 "maxValue": 65000,
                 "metadata": {
-                  "description": "Priority of the application rule collection."
+                  "description": "Required. Priority of the application rule collection."
                 }
               },
               "rules": {
@@ -547,7 +547,7 @@
                 "minValue": 100,
                 "maxValue": 65000,
                 "metadata": {
-                  "description": "Priority of the network rule collection."
+                  "description": "Required. Priority of the network rule collection."
                 }
               },
               "rules": {

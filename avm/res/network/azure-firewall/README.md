@@ -1292,10 +1292,46 @@ Properties of the azure firewall application rule collection.
 - Required: Yes
 - Type: object
 
-**RequiredPriority of the application rule collection parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`action`](#parameter-applicationrulecollectionspropertiesaction) | object | The action type of a rule collection. |
+| [`priority`](#parameter-applicationrulecollectionspropertiespriority) | int | Priority of the application rule collection. |
+
+### Parameter: `applicationRuleCollections.properties.action`
+
+The action type of a rule collection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-applicationrulecollectionspropertiesactiontype) | string | The type of action. |
+
+### Parameter: `applicationRuleCollections.properties.action.type`
+
+The type of action.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Deny'
+  ]
+  ```
+
+### Parameter: `applicationRuleCollections.properties.priority`
+
+Priority of the application rule collection.
+
+- Required: Yes
+- Type: int
 
 ### Parameter: `azureSkuTier`
 
@@ -1563,10 +1599,158 @@ Properties of the azure firewall NAT rule collection.
 - Required: Yes
 - Type: object
 
-**RequiredPriority of the NAT rule collection parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`action`](#parameter-natrulecollectionspropertiesaction) | object | The action type of a NAT rule collection. |
+| [`priority`](#parameter-natrulecollectionspropertiespriority) | int | Priority of the NAT rule collection. |
+| [`rules`](#parameter-natrulecollectionspropertiesrules) | array | Collection of rules used by a NAT rule collection. |
+
+### Parameter: `natRuleCollections.properties.action`
+
+The action type of a NAT rule collection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-natrulecollectionspropertiesactiontype) | string | The type of action. |
+
+### Parameter: `natRuleCollections.properties.action.type`
+
+The type of action.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dnat'
+    'Snat'
+  ]
+  ```
+
+### Parameter: `natRuleCollections.properties.priority`
+
+Priority of the NAT rule collection.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `natRuleCollections.properties.rules`
+
+Collection of rules used by a NAT rule collection.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-natrulecollectionspropertiesrulesname) | string | Name of the NAT rule. |
+| [`protocols`](#parameter-natrulecollectionspropertiesrulesprotocols) | array | Array of AzureFirewallNetworkRuleProtocols applicable to this NAT rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-natrulecollectionspropertiesrulesdescription) | string | Description of the rule. |
+| [`destinationPorts`](#parameter-natrulecollectionspropertiesrulesdestinationports) | array | List of destination ports. |
+| [`sourceAddresses`](#parameter-natrulecollectionspropertiesrulessourceaddresses) | array | List of source IP addresses for this rule. |
+| [`sourceIpGroups`](#parameter-natrulecollectionspropertiesrulessourceipgroups) | array | List of source IpGroups for this rule. |
+| [`translatedAddress`](#parameter-natrulecollectionspropertiesrulestranslatedaddress) | string | The translated address for this NAT rule. |
+| [`translatedFqdn`](#parameter-natrulecollectionspropertiesrulestranslatedfqdn) | string | The translated FQDN for this NAT rule. |
+| [`translatedPort`](#parameter-natrulecollectionspropertiesrulestranslatedport) | string | The translated port for this NAT rule |
+
+**Optional, List of destination IP addresses for this rule parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destinationAddresses`](#parameter-natrulecollectionspropertiesrulesdestinationaddresses) | array | Supports IP ranges, prefixes, and service tags. |
+
+### Parameter: `natRuleCollections.properties.rules.name`
+
+Name of the NAT rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `natRuleCollections.properties.rules.protocols`
+
+Array of AzureFirewallNetworkRuleProtocols applicable to this NAT rule.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'Any'
+    'ICMP'
+    'TCP'
+    'UDP'
+  ]
+  ```
+
+### Parameter: `natRuleCollections.properties.rules.description`
+
+Description of the rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `natRuleCollections.properties.rules.destinationPorts`
+
+List of destination ports.
+
+- Required: No
+- Type: array
+
+### Parameter: `natRuleCollections.properties.rules.sourceAddresses`
+
+List of source IP addresses for this rule.
+
+- Required: No
+- Type: array
+
+### Parameter: `natRuleCollections.properties.rules.sourceIpGroups`
+
+List of source IpGroups for this rule.
+
+- Required: No
+- Type: array
+
+### Parameter: `natRuleCollections.properties.rules.translatedAddress`
+
+The translated address for this NAT rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `natRuleCollections.properties.rules.translatedFqdn`
+
+The translated FQDN for this NAT rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `natRuleCollections.properties.rules.translatedPort`
+
+The translated port for this NAT rule
+
+- Required: No
+- Type: string
+
+### Parameter: `natRuleCollections.properties.rules.destinationAddresses`
+
+Supports IP ranges, prefixes, and service tags.
+
+- Required: No
+- Type: array
 
 ### Parameter: `networkRuleCollections`
 
@@ -1596,10 +1780,46 @@ Properties of the azure firewall network rule collection.
 - Required: Yes
 - Type: object
 
-**RequiredPriority of the network rule collection parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`action`](#parameter-networkrulecollectionspropertiesaction) | object | The action type of a rule collection. |
+| [`priority`](#parameter-networkrulecollectionspropertiespriority) | int | Priority of the network rule collection. |
+
+### Parameter: `networkRuleCollections.properties.action`
+
+The action type of a rule collection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-networkrulecollectionspropertiesactiontype) | string | The type of action. |
+
+### Parameter: `networkRuleCollections.properties.action.type`
+
+The type of action.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Deny'
+  ]
+  ```
+
+### Parameter: `networkRuleCollections.properties.priority`
+
+Priority of the network rule collection.
+
+- Required: Yes
+- Type: int
 
 ### Parameter: `publicIPAddressObject`
 
