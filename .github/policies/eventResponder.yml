@@ -20,7 +20,7 @@ configuration:
           - addReply:
               reply: |
                 > [!IMPORTANT]
-                > **The "Needs: Triage :mag:" label must be removed as part of the triage process (when the issue/PR is first responded to) !**
+                > **The "Needs: Triage :mag:" label must be removed once the triage process is complete !**
 
                 > [!TIP]
                 > For additional guidance on how to triage this issue/PR, see the [BRM Issue Triage](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/brm-issue-triage/) documentation.
