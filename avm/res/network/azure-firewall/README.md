@@ -524,7 +524,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
             {
               description: 'Allow nat rules'
               destinationAddresses: [
-                '192.168.1.0'
+                '10.0.0.4'
               ]
               destinationPorts: [
                 '8080'
@@ -536,7 +536,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
               sourceAddresses: [
                 '*'
               ]
-              translatedAddress: '10.0.0.4'
+              translatedAddress: '192.168.1.0'
               translatedPort: '8080'
             }
           ]
@@ -733,7 +733,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
               {
                 "description": "Allow nat rules",
                 "destinationAddresses": [
-                  "192.168.1.0"
+                  "10.0.0.4"
                 ],
                 "destinationPorts": [
                   "8080"
@@ -745,7 +745,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
                 "sourceAddresses": [
                   "*"
                 ],
-                "translatedAddress": "10.0.0.4",
+                "translatedAddress": "192.168.1.0",
                 "translatedPort": "8080"
               }
             ]
@@ -941,7 +941,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
           rules: [
             {
               destinationAddresses: [
-                '192.168.1.0'
+                '10.0.0.4'
               ]
               destinationPorts: [
                 '8080'
@@ -953,7 +953,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
               sourceAddresses: [
                 '*'
               ]
-              translatedAddress: '10.0.0.4'
+              translatedAddress: '192.168.1.0'
               translatedPort: '8080'
             }
           ]
@@ -1107,7 +1107,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
             "rules": [
               {
                 "destinationAddresses": [
-                  "192.168.1.0"
+                  "10.0.0.4"
                 ],
                 "destinationPorts": [
                   "8080"
@@ -1119,7 +1119,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
                 "sourceAddresses": [
                   "*"
                 ],
-                "translatedAddress": "10.0.0.4",
+                "translatedAddress": "192.168.1.0",
                 "translatedPort": "8080"
               }
             ]
