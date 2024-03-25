@@ -403,7 +403,7 @@ module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpo
   }
 }]
 
-module keyVault 'secrets-key-vault/main.bicep' = if (secretsKeyVaultReference != null) {
+module keyVault 'modules/secrets-key-vault.bicep' = if (secretsKeyVaultReference != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(secretsKeyVaultReference.?resourceGroupName ?? resourceGroup().name)
   params: {
