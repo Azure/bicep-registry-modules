@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "466796598086867928"
+      "templateHash": "14881677570232695867"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -480,20 +480,6 @@
       },
       "metadata": {
         "description": "Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the [\"enabled\": true] property to be executed. Needs a managed identy."
-      }
-    },
-    "hostPoolName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Required if host pool registiration extension is used. Name of the host pool."
-      }
-    },
-    "registrationInfoToken": {
-      "type": "securestring",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Required if host pool registiration extension is used. Valid registration token of the host pool."
       }
     },
     "extensionGuestConfigurationExtension": {
@@ -4442,11 +4428,11 @@
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionHostPoolRegistration'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionHostPoolRegistration').enableAutomaticUpgrade), createObject('value', false()))]",
           "settings": {
             "value": {
-              "modulesUrl": "[format('https://wvdportalstorageblob.blob.{0}/galleryartifacts/Configuration_09-08-2022.zip', environment().suffixes.storage)]",
+              "modulesUrl": "[parameters('extensionHostPoolRegistration').hostPoolModulesUrl]",
               "configurationFunction": "Configuration.ps1\\AddSessionHost",
               "properties": {
-                "hostPoolName": "[parameters('hostPoolName')]",
-                "registrationInfoToken": "[parameters('registrationInfoToken')]",
+                "hostPoolName": "[parameters('extensionHostPoolRegistration').hostPoolName]",
+                "registrationInfoToken": "[parameters('extensionHostPoolRegistration').registrationInfoToken]",
                 "aadJoin": true
               }
             }

@@ -1655,7 +1655,7 @@ This instance deploys the module with the a guest configuration.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmwinguest'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
@@ -1841,7 +1841,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmwinhp'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
@@ -1885,18 +1885,19 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     extensionHostPoolRegistration: {
       enabled: true
+      hostPoolName: '<hostPoolName>'
+      modulesUrl: '<modulesUrl>'
+      registrationInfoToken: '<registrationInfoToken>'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
         Role: 'DeploymentValidation'
       }
     }
-    hostPoolName: '<hostPoolName>'
     location: '<location>'
     managedIdentities: {
       systemAssigned: true
     }
-    registrationInfoToken: '<registrationInfoToken>'
   }
 }
 ```
@@ -1976,15 +1977,15 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionHostPoolRegistration": {
       "value": {
         "enabled": true,
+        "hostPoolName": "<hostPoolName>",
+        "modulesUrl": "<modulesUrl>",
+        "registrationInfoToken": "<registrationInfoToken>",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
           "Role": "DeploymentValidation"
         }
       }
-    },
-    "hostPoolName": {
-      "value": "<hostPoolName>"
     },
     "location": {
       "value": "<location>"
@@ -1993,9 +1994,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "systemAssigned": true
       }
-    },
-    "registrationInfoToken": {
-      "value": "<registrationInfoToken>"
     }
   }
 }
@@ -2625,7 +2623,7 @@ This instance deploys the module for a VM with dedicated nVidia graphic card.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, tempLocation)}-test-cvmwinnvidia'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
@@ -2950,7 +2948,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`extensionNetworkWatcherAgentConfig`](#parameter-extensionnetworkwatcheragentconfig) | object | The configuration for the [Network Watcher Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionNvidiaGpuDriverWindows`](#parameter-extensionnvidiagpudriverwindows) | object | The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`guestConfiguration`](#parameter-guestconfiguration) | object | The guest configuration for the virtual machine. Needs the Guest Configuration extension to be enabled. |
-| [`hostPoolName`](#parameter-hostpoolname) | string | Required if host pool registiration extension is used. Name of the host pool. |
 | [`licenseType`](#parameter-licensetype) | string | Specifies that the image or disk that is being used was licensed on-premises. This element is only used for images that contain the Windows Server operating system. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -2963,7 +2960,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`provisionVMAgent`](#parameter-provisionvmagent) | bool | Indicates whether virtual machine agent should be provisioned on the virtual machine. When this property is not specified in the request body, default behavior is to set it to true. This will ensure that VM Agent is installed on the VM so that extensions can be added to the VM later. |
 | [`proximityPlacementGroupResourceId`](#parameter-proximityplacementgroupresourceid) | string | Resource ID of a proximity placement group. |
 | [`publicKeys`](#parameter-publickeys) | array | The list of SSH public keys used to authenticate with linux based VMs. |
-| [`registrationInfoToken`](#parameter-registrationinfotoken) | securestring | Required if host pool registiration extension is used. Valid registration token of the host pool. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sasTokenValidityLength`](#parameter-sastokenvaliditylength) | string | SAS token validity length to use to download files from storage accounts. Usage: 'PT8H' - valid for 8 hours; 'P5D' - valid for 5 days; 'P1Y' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours. |
 | [`secureBootEnabled`](#parameter-securebootenabled) | bool | Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings. |
@@ -3409,14 +3405,6 @@ The guest configuration for the virtual machine. Needs the Guest Configuration e
 - Type: object
 - Default: `{}`
 
-### Parameter: `hostPoolName`
-
-Required if host pool registiration extension is used. Name of the host pool.
-
-- Required: No
-- Type: string
-- Default: `''`
-
 ### Parameter: `licenseType`
 
 Specifies that the image or disk that is being used was licensed on-premises. This element is only used for images that contain the Windows Server operating system.
@@ -3593,14 +3581,6 @@ The list of SSH public keys used to authenticate with linux based VMs.
 - Required: No
 - Type: array
 - Default: `[]`
-
-### Parameter: `registrationInfoToken`
-
-Required if host pool registiration extension is used. Valid registration token of the host pool.
-
-- Required: No
-- Type: securestring
-- Default: `''`
 
 ### Parameter: `roleAssignments`
 
