@@ -43,7 +43,7 @@ This instance deploys the module with default features enabled.
 
 ```bicep
 module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-aaddsmin'
+  name: 'domainServiceDeployment'
   params: {
     // Required parameters
     domainName: 'onmicrosoft.com'
@@ -179,15 +179,45 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-aaddswaf'
+  name: 'domainServiceDeployment'
   params: {
     // Required parameters
     domainName: 'onmicrosoft.com'
     // Non-required parameters
+    additionalRecipients: [
+      '@noreply.github.com'
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     externalAccess: 'Disabled'
     ldaps: 'Enabled'
     location: '<location>'
-    name: 'aaddswaf001-dontdeploy'
+    lock: {
+      kind: 'None'
+      name: 'myCustomLockName'
+    }
+    name: 'aaddswaf001'
+    pfxCertificate: '<pfxCertificate>'
+    pfxCertificatePassword: '<pfxCertificatePassword>'
+    replicaSets: [
+      {
+        location: 'WestEurope'
+        subnetId: '<subnetId>'
+      }
+    ]
+    sku: 'Standard'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -209,6 +239,22 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
       "value": "onmicrosoft.com"
     },
     // Non-required parameters
+    "additionalRecipients": {
+      "value": [
+        "@noreply.github.com"
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
     "externalAccess": {
       "value": "Disabled"
     },
@@ -218,8 +264,38 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
     "location": {
       "value": "<location>"
     },
+    "lock": {
+      "value": {
+        "kind": "None",
+        "name": "myCustomLockName"
+      }
+    },
     "name": {
-      "value": "aaddswaf001-dontdeploy"
+      "value": "aaddswaf001"
+    },
+    "pfxCertificate": {
+      "value": "<pfxCertificate>"
+    },
+    "pfxCertificatePassword": {
+      "value": "<pfxCertificatePassword>"
+    },
+    "replicaSets": {
+      "value": [
+        {
+          "location": "WestEurope",
+          "subnetId": "<subnetId>"
+        }
+      ]
+    },
+    "sku": {
+      "value": "Standard"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
@@ -451,6 +527,13 @@ The value is to synchronize scoped users and groups.
 - Required: No
 - Type: string
 - Default: `'Enabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `kerberosArmoring`
 

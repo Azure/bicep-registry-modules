@@ -62,6 +62,10 @@ param additionalRecipients array = []
 param domainConfigurationType string = 'FullySynced'
 
 @description('Optional. The value is to synchronize scoped users and groups.')
+@allowed([
+  'Disabled'
+  'Enabled'
+])
 param filteredSync string = 'Enabled'
 
 @description('Optional. The value is to enable clients making request using TLSv1.')
@@ -156,11 +160,12 @@ param lock lockType
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
+@description('Generated. Built-in roles "General": https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#general.')
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
+  'Role Based Access Control Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
@@ -186,8 +191,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-// skipping deployments with '-dontdeploy' is necessary for test compliance.
-resource domainservice 'Microsoft.AAD/domainServices@2022-12-01' = if (!(endsWith(name, '-dontdeploy'))) {
+resource domainservice 'Microsoft.AAD/domainServices@2022-12-01' = {
   name: name
   location: location
   tags: tags

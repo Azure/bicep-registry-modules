@@ -34,21 +34,83 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    location: resourceLocation
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    namePrefix: namePrefix
+    certDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+  }
+}
+
 // Diagnostics
 // ===========
+module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  params: {
+    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
+    location: resourceLocation
+  }
+}
 
 // ============== //
 // Test Execution //
 // ============== //
 
-module testDeployment '../../../main.bicep' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+  name: last(split(nestedDependencies.outputs.keyVaultResourceId, '/'))
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
+}
+
+// 'idem' as second iteration will fail, as AAD DS is not ready for a second deployment during its provisioning state even when reported as 'succeeded' by the init iteration
+// as of https://azure.github.io/Azure-Verified-Modules/specs/shared/#id-snfr7---category-testing---idempotency-tests the idem test it is not required
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
-    name: '${namePrefix}${serviceShort}001-dontdeploy'
+    name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
     domainName: '${namePrefix}.onmicrosoft.com'
     externalAccess: 'Disabled'
+    additionalRecipients: [
+      '${namePrefix}@noreply.github.com'
+    ]
+    diagnosticSettings: [
+      {
+        name: 'customSetting'
+        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+      }
+    ]
+    lock: {
+      kind: 'None'
+      name: 'myCustomLockName'
+    }
     ldaps: 'Enabled'
+    pfxCertificate: keyVault.getSecret(nestedDependencies.outputs.certSecretName)
+    pfxCertificatePassword: keyVault.getSecret(nestedDependencies.outputs.certPWSecretName)
+    replicaSets: [
+      {
+        location: 'WestEurope'
+        subnetId: nestedDependencies.outputs.subnetResourceId
+      }
+    ]
+    sku: 'Standard'
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
   }
-}
+}]
