@@ -45,6 +45,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     location: enforcedLocation
     name: '${namePrefix}${serviceShort}001'
-    disableKeyBasedMetadataWriteAccess: true
   }
 }]

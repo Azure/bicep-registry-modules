@@ -45,10 +45,10 @@ param automaticFailover bool = true
 @description('Optional. Default to false. Flag to indicate whether Free Tier is enabled.')
 param enableFreeTier bool = false
 
-@description('Optional. Default to false. Enables the account to write in multiple locations')
+@description('Optional. Default to false. Enables the account to write in multiple locations.')
 param enableMultipleWriteLocations bool = false
 
-@description('Optional. Default to false. Disable write operations on metadata resources (databases, containers, throughput) via account keys')
+@description('Optional. Default to false. Disable write operations on metadata resources (databases, containers, throughput) via account keys.')
 param disableKeyBasedMetadataWriteAccess bool = false
 
 @minValue(1)
@@ -213,7 +213,6 @@ var virtualNetworkRules = [for vnet in (networkRestrictions.?virtualNetworkRules
 
 var databaseAccount_properties = union({
     databaseAccountOfferType: databaseAccountOfferType
-    disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
   }, ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases)) ? {
     // Common properties
     consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
@@ -234,6 +233,7 @@ var databaseAccount_properties = union({
   } : {}), (!empty(sqlDatabases) ? {
     // SQLDB properties
     disableLocalAuth: disableLocalAuth
+    disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
   } : {}), (!empty(mongodbDatabases) ? {
     // MongoDb properties
     apiProperties: {
