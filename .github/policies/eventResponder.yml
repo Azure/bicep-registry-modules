@@ -157,27 +157,6 @@ configuration:
                 > [!NOTE]
                 > The "Needs: Triage :mag:" label was removed as per [ITA15](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita15).
 
-      - description: 'ITA16 - Add the "Status: Owners Identified :metal:" label when someone is assigned to a Module Proposal'
-        if:
-          - payloadType: Issues
-          - not:
-              isAction:
-                action: Closed
-          - not:
-              hasLabel:
-                label: "Status: Owners Identified :metal:"
-          - hasLabel:
-              label: "Type: New Module Proposal :bulb:"
-          - isAssignedToSomeone
-        then:
-          - addLabel:
-              label: "Status: Owners Identified :metal:"
-          - addReply:
-              reply: |
-                > [!NOTE]
-                > The "Status: Owners Identified :metal:" label was added as per [ITA16](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita16).
-        triggerOnOwnActions: true
-
       - description: 'ITA20 - If the type is feature request, assign the "Type: Feature Request :heavy_plus_sign:" label on the issue'
         if:
           - payloadType: Issues
