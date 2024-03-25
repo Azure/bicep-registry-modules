@@ -99,7 +99,16 @@ module testDeployment '../../../main.bicep' = {
     ]
     sqlDatabases: [
       {
-        name: 'no-containers-specified'
+        containers: [
+          {
+            name: 'container-001'
+            kind: 'Hash'
+            paths: [
+              '/myPartitionKey1'
+            ]
+          }
+        ]
+        name: 'sqldatabase'
       }
     ]
     tags: {

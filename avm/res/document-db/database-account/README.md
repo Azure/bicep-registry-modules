@@ -2146,7 +2146,16 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     ]
     sqlDatabases: [
       {
-        name: 'no-containers-specified'
+        containers: [
+          {
+            kind: 'Hash'
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey1'
+            ]
+          }
+        ]
+        name: 'sqldatabase'
       }
     ]
     tags: {
@@ -2213,7 +2222,16 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     "sqlDatabases": {
       "value": [
         {
-          "name": "no-containers-specified"
+          "containers": [
+            {
+              "kind": "Hash",
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey1"
+              ]
+            }
+          ],
+          "name": "sqldatabase"
         }
       ]
     },
