@@ -55,6 +55,10 @@ module testDeployment '../../../main.bicep' = {
   params: {
     automaticFailover: false
     location: enforcedLocation
+    backupPolicyType: 'Periodic'
+    backupIntervalInMinutes: 300
+    backupStorageRedundancy: 'Zone'
+    backupRetentionIntervalInHours: 16
     enableMultipleWriteLocations: true
     name: '${namePrefix}-multi-region'
     locations: [

@@ -45,7 +45,7 @@ param automaticFailover bool = true
 @description('Optional. Default to false. Flag to indicate whether Free Tier is enabled.')
 param enableFreeTier bool = false
 
-@description('Optional. Default to false. Enables the account to write in multiple locations.')
+@description('Optional. Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled.')
 param enableMultipleWriteLocations bool = false
 
 @description('Optional. Default to false. Disable write operations on metadata resources (databases, containers, throughput) via account keys.')
@@ -106,7 +106,7 @@ param capabilitiesToAdd string[] = []
   'Periodic'
   'Continuous'
 ])
-@description('Optional. Default to Continuous. Describes the mode of backups.')
+@description('Optional. Default to Continuous. Describes the mode of backups. Periodic backup must be used if multiple write locations are used.')
 param backupPolicyType string = 'Continuous'
 
 @allowed([

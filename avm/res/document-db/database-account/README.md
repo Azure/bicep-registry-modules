@@ -45,11 +45,10 @@ The following section provides usage examples for the module, which were used to
 - [Deploying with Managed identities](#example-6-deploying-with-managed-identities)
 - [Mongo Database](#example-7-mongo-database)
 - [Deploying multiple regions](#example-8-deploying-multiple-regions)
-- [Using periodic backups](#example-9-using-periodic-backups)
-- [Plain](#example-10-plain)
-- [Public network restricted access with ACL](#example-11-public-network-restricted-access-with-acl)
-- [SQL Database](#example-12-sql-database)
-- [WAF-aligned](#example-13-waf-aligned)
+- [Plain](#example-9-plain)
+- [Public network restricted access with ACL](#example-10-public-network-restricted-access-with-acl)
+- [SQL Database](#example-11-sql-database)
+- [WAF-aligned](#example-12-waf-aligned)
 
 ### Example 1: _Using analytical storage_
 
@@ -1210,6 +1209,10 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     name: 'multi-region'
     // Non-required parameters
     automaticFailover: false
+    backupIntervalInMinutes: 300
+    backupPolicyType: 'Periodic'
+    backupRetentionIntervalInHours: 16
+    backupStorageRedundancy: 'Zone'
     enableMultipleWriteLocations: true
     location: '<location>'
     locations: [
@@ -1253,6 +1256,18 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     "automaticFailover": {
       "value": false
     },
+    "backupIntervalInMinutes": {
+      "value": 300
+    },
+    "backupPolicyType": {
+      "value": "Periodic"
+    },
+    "backupRetentionIntervalInHours": {
+      "value": 16
+    },
+    "backupStorageRedundancy": {
+      "value": "Zone"
+    },
     "enableMultipleWriteLocations": {
       "value": true
     },
@@ -1287,83 +1302,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 9: _Using periodic backups_
-
-This instance deploys the module enabling periodic backups.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
-  params: {
-    // Required parameters
-    name: 'periodic-bckup'
-    // Non-required parameters
-    backupIntervalInMinutes: 300
-    backupPolicyType: 'Periodic'
-    backupRetentionIntervalInHours: 16
-    backupStorageRedundancy: 'Zone'
-    location: '<location>'
-    sqlDatabases: [
-      {
-        name: 'no-containers-specified'
-      }
-    ]
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "periodic-bckup"
-    },
-    // Non-required parameters
-    "backupIntervalInMinutes": {
-      "value": 300
-    },
-    "backupPolicyType": {
-      "value": "Periodic"
-    },
-    "backupRetentionIntervalInHours": {
-      "value": 16
-    },
-    "backupStorageRedundancy": {
-      "value": "Zone"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "sqlDatabases": {
-      "value": [
-        {
-          "name": "no-containers-specified"
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 10: _Plain_
+### Example 9: _Plain_
 
 This instance deploys the module without a Database.
 
@@ -1459,7 +1398,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 11: _Public network restricted access with ACL_
+### Example 10: _Public network restricted access with ACL_
 
 This instance deploys the module with public network access enabled but restricted to IPs, CIDRS or subnets.
 
@@ -1547,7 +1486,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 12: _SQL Database_
+### Example 11: _SQL Database_
 
 This instance deploys the module with a SQL Database.
 
@@ -2101,7 +2040,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 </details>
 <p>
 
-### Example 13: _WAF-aligned_
+### Example 12: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -2269,7 +2208,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 | [`automaticFailover`](#parameter-automaticfailover) | bool | Default to true. Enable automatic failover for regions. |
 | [`backupIntervalInMinutes`](#parameter-backupintervalinminutes) | int | Default to 240. An integer representing the interval in minutes between two backups. Only applies to periodic backup type. |
 | [`backupPolicyContinuousTier`](#parameter-backuppolicycontinuoustier) | string | Default to Continuous30Days. Configuration values for continuous mode backup. |
-| [`backupPolicyType`](#parameter-backuppolicytype) | string | Default to Continuous. Describes the mode of backups. |
+| [`backupPolicyType`](#parameter-backuppolicytype) | string | Default to Continuous. Describes the mode of backups. Periodic backup must be used if multiple write locations are used. |
 | [`backupRetentionIntervalInHours`](#parameter-backupretentionintervalinhours) | int | Default to 8. An integer representing the time (in hours) that each backup is retained. Only applies to periodic backup type. |
 | [`backupStorageRedundancy`](#parameter-backupstorageredundancy) | string | Default to Local. Enum to indicate type of backup residency. Only applies to periodic backup type. |
 | [`capabilitiesToAdd`](#parameter-capabilitiestoadd) | array | List of Cosmos DB capabilities for the account. |
@@ -2280,7 +2219,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Default to false. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication. |
 | [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Default to false. Flag to indicate whether to enable storage analytics. |
 | [`enableFreeTier`](#parameter-enablefreetier) | bool | Default to false. Flag to indicate whether Free Tier is enabled. |
-| [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Default to false. Enables the account to write in multiple locations. |
+| [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`gremlinDatabases`](#parameter-gremlindatabases) | array | Gremlin Databases configurations. |
 | [`location`](#parameter-location) | string | Default to current resource group scope location. Location for all resources. |
@@ -2338,7 +2277,7 @@ Default to Continuous30Days. Configuration values for continuous mode backup.
 
 ### Parameter: `backupPolicyType`
 
-Default to Continuous. Describes the mode of backups.
+Default to Continuous. Describes the mode of backups. Periodic backup must be used if multiple write locations are used.
 
 - Required: No
 - Type: string
@@ -2606,7 +2545,7 @@ Default to false. Flag to indicate whether Free Tier is enabled.
 
 ### Parameter: `enableMultipleWriteLocations`
 
-Default to false. Enables the account to write in multiple locations.
+Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled.
 
 - Required: No
 - Type: bool

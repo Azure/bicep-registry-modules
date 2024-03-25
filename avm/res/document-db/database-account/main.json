@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "7529161098710556759"
+      "templateHash": "2892030707117202243"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -838,7 +838,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Default to false. Enables the account to write in multiple locations."
+        "description": "Optional. Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled."
       }
     },
     "disableKeyBasedMetadataWriteAccess": {
@@ -954,7 +954,7 @@
         "Continuous"
       ],
       "metadata": {
-        "description": "Optional. Default to Continuous. Describes the mode of backups."
+        "description": "Optional. Default to Continuous. Describes the mode of backups. Periodic backup must be used if multiple write locations are used."
       }
     },
     "backupPolicyContinuousTier": {
