@@ -20,7 +20,7 @@ configuration:
           - addReply:
               reply: |
                 > [!IMPORTANT]
-                > **The "Needs: Triage :mag:" label must be removed once the triage process is complete !**
+                > **The "Needs: Triage :mag:" label must be removed once the triage process is complete!**
 
                 > [!TIP]
                 > For additional guidance on how to triage this issue/PR, see the [BRM Issue Triage](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/brm-issue-triage/) documentation.
@@ -163,6 +163,9 @@ configuration:
           - not:
               isAction:
                 action: Closed
+          - not:
+              hasLabel:
+                label: "Status: Owners Identified :metal:"
           - hasLabel:
               label: "Type: New Module Proposal :bulb:"
           - isAssignedToSomeone
@@ -172,7 +175,7 @@ configuration:
           - addReply:
               reply: |
                 > [!NOTE]
-                > The "Status: Owners Identified :metal:" label was added as per [ITA15](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita15).
+                > The "Status: Owners Identified :metal:" label was added as per [ITA16](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita16).
         triggerOnOwnActions: true
 
       - description: 'ITA20 - If the type is feature request, assign the "Type: Feature Request :heavy_plus_sign:" label on the issue'
