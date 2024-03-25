@@ -734,7 +734,7 @@ type networkRestrictionsConfig = {
   networkAclBypass: ('AzureServices' | 'None')?
 
   @description('Optional. Default to Enabled. Whether requests from Public Network are allowed.')
-  publicNetworkAccess: ('Enabled' | 'Disabled' | 'SecuredByPerimeter')?
+  publicNetworkAccess: ('Enabled' | 'Disabled')?
 
   @description('Optional. Default to []. List of Virtual Network ACL rules configured for the Cosmos DB account..')
   virtualNetworkRules: networkVnetRestrictionsConfig[]

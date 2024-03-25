@@ -2719,7 +2719,6 @@ Default to Enabled. Whether requests from Public Network are allowed.
   [
     'Disabled'
     'Enabled'
-    'SecuredByPerimeter'
   ]
   ```
 
