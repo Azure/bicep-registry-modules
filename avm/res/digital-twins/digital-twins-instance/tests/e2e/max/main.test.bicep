@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-digitaltwins.digitaltwinsins
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dtdtimax'
+param serviceShort string = 'dtdmax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -38,10 +38,10 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    eventHubName: 'dt-${uniqueString(serviceShort)}-evh-01'
-    eventHubNamespaceName: 'dt-${uniqueString(serviceShort)}-evhns-01'
-    serviceBusName: 'dt-${uniqueString(serviceShort)}-sb-01'
-    eventGridDomainName: 'dt-${uniqueString(serviceShort)}-evg-01'
+    eventHubName: 'dt-${serviceShort}-evh-01'
+    eventHubNamespaceName: 'dt-${serviceShort}-evhns-01'
+    serviceBusName: 'dt-${serviceShort}-sb-01'
+    eventGridDomainName: 'dt-${serviceShort}-evg-01'
   }
 }
 
@@ -53,8 +53,8 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${uniqueString(serviceShort)}-evh-01'
-    eventHubNamespaceName: 'dep-${uniqueString(serviceShort)}-evh-01'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
     location: resourceLocation
   }
 }
@@ -68,34 +68,49 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
-    location: resourceLocation
-    eventHubEndpoint: {
-      authenticationType: 'IdentityBased'
-      endpointUri: 'sb://${nestedDependencies.outputs.eventhubNamespaceName}.servicebus.windows.net/'
-      entityPath: nestedDependencies.outputs.eventhubName
-      managedIdentities: {
-        userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
-      }
-    }
-    serviceBusEndpoint: {
-      authenticationType: 'IdentityBased'
-      endpointUri: 'sb://${nestedDependencies.outputs.serviceBusName}.servicebus.windows.net/'
-      entityPath: nestedDependencies.outputs.serviceBusTopicName
-      managedIdentities: {
-        userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
-      }
-    }
-    eventGridEndpoint: {
-      eventGridDomainId: nestedDependencies.outputs.eventGridDomainResourceId
-      topicEndpoint: nestedDependencies.outputs.eventGridEndpoint
-    }
     name: '${namePrefix}${serviceShort}001'
+    location: resourceLocation
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
         nestedDependencies.outputs.managedIdentityResourceId
       ]
     }
+    eventHubEndpoints: [
+      {
+        authenticationType: 'IdentityBased'
+        endpointUri: 'sb://${nestedDependencies.outputs.eventhubNamespaceName}.servicebus.windows.net/'
+        entityPath: nestedDependencies.outputs.eventhubName
+        managedIdentities: {
+          userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+        }
+      }
+    ]
+    serviceBusEndpoints: [
+      {
+        name: 'ServiceBusPrimary'
+        authenticationType: 'IdentityBased'
+        endpointUri: 'sb://${nestedDependencies.outputs.serviceBusName}.servicebus.windows.net/'
+        entityPath: nestedDependencies.outputs.serviceBusTopicName
+        managedIdentities: {
+          userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+        }
+      }
+      {
+        name: 'ServiceBusSeconday'
+        authenticationType: 'IdentityBased'
+        endpointUri: 'sb://${nestedDependencies.outputs.serviceBusName}.servicebus.windows.net/'
+        entityPath: nestedDependencies.outputs.serviceBusTopicName
+        managedIdentities: {
+          systemAssigned: true
+        }
+      }
+    ]
+    eventGridEndpoints: [ {
+        eventGridDomainId: nestedDependencies.outputs.eventGridDomainResourceId
+        topicEndpoint: nestedDependencies.outputs.eventGridEndpoint
+      }
+    ]
     diagnosticSettings: [
       {
         name: 'customSetting'
