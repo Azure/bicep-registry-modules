@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.maintenance.maintenance-configuration.yml"
       - "avm/res/maintenance/maintenance-configuration/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:

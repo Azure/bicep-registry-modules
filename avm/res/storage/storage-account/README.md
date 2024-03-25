@@ -63,7 +63,7 @@ This instance deploys the module as a Blob Storage account.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssablob'
+  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssablob001'
@@ -119,7 +119,7 @@ This instance deploys the module as a Premium Block Blob Storage account.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssablock'
+  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssablock001'
@@ -175,7 +175,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssamin'
+  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssamin001'
@@ -223,7 +223,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssamax'
+  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssamax001'
@@ -1089,7 +1089,7 @@ This instance deploys the module with a NFS File Share.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssanfs'
+  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssanfs001'
@@ -1163,7 +1163,7 @@ This instance deploys the module using Customer-Managed-Keys using a System-Assi
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssasacr'
+  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -1267,7 +1267,7 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssauacr'
+  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssauacr001'
@@ -1387,7 +1387,7 @@ This instance deploys the module as Storage Account version 1.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssav1'
+  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssav1001'
@@ -1439,7 +1439,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssawaf'
+  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssawaf001'
@@ -3119,7 +3119,7 @@ Tags of the resource.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |

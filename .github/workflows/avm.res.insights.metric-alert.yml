@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.insights.metric-alert.yml"
       - "avm/res/insights/metric-alert/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:

@@ -51,6 +51,7 @@ Type of slot to deploy.
   ```Bicep
   [
     'app'
+    'app,linux'
     'functionapp'
     'functionapp,linux'
     'functionapp,workflowapp'

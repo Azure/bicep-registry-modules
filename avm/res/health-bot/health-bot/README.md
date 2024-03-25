@@ -47,7 +47,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-hbhbmin'
+  name: 'healthBotDeployment'
   params: {
     // Required parameters
     name: 'hbhbmin002'
@@ -99,7 +99,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-hbhbmax'
+  name: 'healthBotDeployment'
   params: {
     // Required parameters
     name: 'hbhbmax002'
@@ -221,7 +221,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-hbhbwaf'
+  name: 'healthBotDeployment'
   params: {
     // Required parameters
     name: 'hbhbwaf002'

@@ -47,7 +47,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-sssmin'
+  name: 'searchServiceDeployment'
   params: {
     // Required parameters
     name: 'sssmin001'
@@ -95,7 +95,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-sssmax'
+  name: 'searchServiceDeployment'
   params: {
     // Required parameters
     name: 'sssmax001'
@@ -301,7 +301,7 @@ This instance deploys the module with private endpoints.
 
 ```bicep
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssspe'
+  name: 'searchServiceDeployment'
   params: {
     // Required parameters
     name: 'ssspe001'
@@ -437,7 +437,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ssswaf'
+  name: 'searchServiceDeployment'
   params: {
     // Required parameters
     name: 'ssswaf001'
@@ -1415,7 +1415,7 @@ Tags to help categorize the resource in the Azure portal.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |
