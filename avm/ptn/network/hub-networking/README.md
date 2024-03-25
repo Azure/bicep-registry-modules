@@ -544,6 +544,14 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           virtualHub: ''
           zones: []
         }
+        bastionHost: {
+          disableCopyPaste: true
+          enableFileCopy: false
+          enableIpConnect: false
+          enableShareableLink: false
+          scaleUnits: 2
+          skuName: 'Standard'
+        }
         ddosProtectionPlanResourceId: ''
         diagnosticSettings: [
           {
@@ -648,6 +656,14 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "threatIntelMode": "Alert",
             "virtualHub": "",
             "zones": []
+          },
+          "bastionHost": {
+            "disableCopyPaste": true,
+            "enableFileCopy": false,
+            "enableIpConnect": false,
+            "enableShareableLink": false,
+            "scaleUnits": 2,
+            "skuName": "Standard"
           },
           "ddosProtectionPlanResourceId": "",
           "diagnosticSettings": [
