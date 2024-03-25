@@ -200,7 +200,7 @@ var ipRules = [for i in (networkRestrictions.?ipRules ?? []): {
   ipAddressOrRange: i
 }]
 
-var virtualNetworkRules = [for (vnet, index) in (networkRestrictions.?virtualNetworkRules ?? []): {
+var virtualNetworkRules = [for vnet in (networkRestrictions.?virtualNetworkRules ?? []): {
   id: vnet.subnetId
   ignoreMissingVnetServiceEndpoint: false
 }]
@@ -675,7 +675,7 @@ type sqlDatabaseContainer = {
   indexingPolicy: object?
 
   @description('Optional. Default to Hash. Indicates the kind of algorithm used for partitioning.')
-  kind: ('Hash' | 'MultiHash' | 'Range')?
+  kind: ('Hash' | 'MultiHash')?
 
   @description('Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.')
   throughput: int?
@@ -724,10 +724,10 @@ type networkRestrictionsConfig = {
   ipRules: string[]
 
   @description('Optional. Default to AzureServices. Specifies the network ACL bypass for Azure services.')
-  networkAclBypass: | 'AzureServices' | 'None'
+  networkAclBypass: ('AzureServices' | 'None')?
 
   @description('Optional. Default to Enabled. Whether requests from Public Network are allowed.')
-  publicNetworkAccess: | 'Enabled' | 'Disabled' | 'SecuredByPerimeter'
+  publicNetworkAccess: ('Enabled' | 'Disabled' | 'SecuredByPerimeter')?
 
   @description('Optional. Default to []. List of Virtual Network ACL rules configured for the Cosmos DB account..')
   virtualNetworkRules: networkVnetRestrictionsConfig[]
