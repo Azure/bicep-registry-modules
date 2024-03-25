@@ -83,6 +83,7 @@ for iteration in [ 'init', 'idem' ]: {
           }
           publicIPResourceID: ''
           roleAssignments: []
+          routes: []
           tags: {}
           threatIntelMode: 'Alert'
           zones: []

@@ -167,6 +167,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           }
         ]
         roleAssignments: []
+        routes: []
         subnets: [
           {
             addressPrefix: '<addressPrefix>'
@@ -367,6 +368,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             }
           ],
           "roleAssignments": [],
+          "routes": [],
           "subnets": [
             {
               "addressPrefix": "<addressPrefix>",
@@ -520,6 +522,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           }
           publicIPResourceID: ''
           roleAssignments: []
+          routes: []
           tags: {}
           threatIntelMode: 'Alert'
           virtualHub: ''
@@ -628,6 +631,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             },
             "publicIPResourceID": "",
             "roleAssignments": [],
+            "routes": [],
             "tags": {},
             "threatIntelMode": "Alert",
             "virtualHub": "",

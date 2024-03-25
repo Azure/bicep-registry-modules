@@ -104,7 +104,7 @@ for (hub, index) in items(hubVirtualNetworks ?? {}): {
     disableBgpRoutePropagation: true
     enableTelemetry: hub.value.enableTelemetry ?? true
     roleAssignments: hub.value.roleAssignments ?? []
-    routes: []
+    routes: hub.value.routes ?? []
     tags: hub.value.tags ?? {}
   }
 }
@@ -353,6 +353,9 @@ type hubVirtualNetworkType = {
 
   @description('Optional. The role assignments to create.')
   roleAssignments: roleAssignmentType?
+
+  @description('Optional. Routes to add to the virtual network route table.')
+  routes: array?
 
   @description('Optional. The subnets of the virtual network.')
   subnets: array?

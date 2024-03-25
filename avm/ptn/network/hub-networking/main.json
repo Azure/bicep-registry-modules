@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "9956019233394656429"
+      "templateHash": "15424340638554697033"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.",
@@ -366,6 +366,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The role assignments to create."
+          }
+        },
+        "routes": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Routes to add to the virtual network route table."
           }
         },
         "subnets": {
@@ -1910,7 +1917,7 @@
             "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.roleAssignments, createArray())]"
           },
           "routes": {
-            "value": []
+            "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.routes, createArray())]"
           },
           "tags": {
             "value": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.tags, createObject())]"

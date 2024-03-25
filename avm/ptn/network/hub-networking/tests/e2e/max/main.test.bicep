@@ -134,6 +134,7 @@ for iteration in [ 'init', 'idem' ]: {
           }
         ]
         roleAssignments: []
+        routes: []
         subnets: [
           {
             name: 'GatewaySubnet'
