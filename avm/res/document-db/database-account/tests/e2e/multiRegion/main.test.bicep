@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Deploying with a User-Assigned Identity'
-metadata description = 'This instance deploys the module with an assigned user assigned managed identity.'
+metadata name = 'Deploying multiple regions'
+metadata description = 'This instance deploys the module in multiple regions with configs specific of multi region scenarios.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-documentdb.databaseaccounts-
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dddaumi'
+param serviceShort string = 'dddaumr'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -33,6 +33,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: enforcedLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
   }
 }
 
@@ -50,24 +51,28 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-multi-${serviceShort}'
   params: {
+    automaticFailover: false
     location: enforcedLocation
-    name: '${namePrefix}-user-mi'
+    enableMultipleWriteLocations: true
+    name: '${namePrefix}-multi-region'
     locations: [
       {
         failoverPriority: 0
         isZoneRedundant: false
         locationName: enforcedLocation
       }
+      {
+        failoverPriority: 1
+        isZoneRedundant: false
+        locationName: nestedDependencies.outputs.pairedRegionName
+      }
     ]
-    managedIdentities: {
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
+    sqlDatabases: [
+      {
+        name: 'empty-database'
+      }
+    ]
   }
-  dependsOn: [
-    nestedDependencies
-  ]
 }

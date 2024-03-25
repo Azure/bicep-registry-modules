@@ -39,6 +39,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     disableLocalAuth: true
+    disableKeyBasedMetadataWriteAccess: true
     location: enforcedLocation
     name: '${namePrefix}-local-auth-off'
     locations: [

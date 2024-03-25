@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Without automatic failover'
-metadata description = 'This instance deploys the module disabling automatic failover.'
+metadata name = 'Deploying with Managed identities'
+metadata description = 'This instance deploys the module with an system and user assigned managed identity.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-documentdb.databaseaccounts-
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dddaauo'
+param serviceShort string = 'dddaumi'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -33,7 +33,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: enforcedLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
   }
 }
 
@@ -53,25 +52,23 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
-    automaticFailover: false
     location: enforcedLocation
-    name: '${namePrefix}-auto-failover-off'
+    name: '${namePrefix}-user-mi'
     locations: [
       {
         failoverPriority: 0
         isZoneRedundant: false
         locationName: enforcedLocation
       }
-      {
-        failoverPriority: 1
-        isZoneRedundant: false
-        locationName: nestedDependencies.outputs.pairedRegionName
-      }
     ]
-    sqlDatabases: [
-      {
-        name: 'empty-database'
-      }
-    ]
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
+    }
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }

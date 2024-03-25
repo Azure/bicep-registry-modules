@@ -45,6 +45,12 @@ param automaticFailover bool = true
 @description('Optional. Default to false. Flag to indicate whether Free Tier is enabled.')
 param enableFreeTier bool = false
 
+@description('Optional. Default to false. Enables the account to write in multiple locations')
+param enableMultipleWriteLocations bool = false
+
+@description('Optional. Default to false. Disable write operations on metadata resources (databases, containers, throughput) via account keys')
+param disableKeyBasedMetadataWriteAccess bool = false
+
 @minValue(1)
 @maxValue(2147483647)
 @description('Optional. Default to 100000. Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000.')
@@ -134,6 +140,9 @@ param privateEndpoints privateEndpointType
 @description('Optional. The name of the deployment.')
 param secretsKeyVaultReference secretsKeyVault?
 
+@description('Optional. The network configuration of this module.')
+param networkRestrictions networkRestrictionsConfig?
+
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
 var identity = !empty(managedIdentities) ? {
@@ -187,12 +196,29 @@ var backupPolicy = backupPolicyType == 'Continuous' ? {
   }
 }
 
+var ipRules = [for i in (networkRestrictions.?ipRules ?? []): {
+  ipAddressOrRange: i
+}]
+
+var virtualNetworkRules = [for (vnet, index) in (networkRestrictions.?virtualNetworkRules ?? []): {
+  id: vnet.subnetId
+  ignoreMissingVnetServiceEndpoint: false
+}]
+
 var databaseAccount_properties = union({
     databaseAccountOfferType: databaseAccountOfferType
   }, ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases)) ? {
     // Common properties
     consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
     locations: databaseAccount_locations
+    enableMultipleWriteLocations: enableMultipleWriteLocations
+    disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
+
+    ipRules: ipRules
+    virtualNetworkRules: virtualNetworkRules
+    networkAclBypass: networkRestrictions.?networkAclBypass ?? 'AzureServices'
+    publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Enabled'
+
     capabilities: capabilities
     enableFreeTier: enableFreeTier
     backupPolicy: backupPolicy
@@ -691,4 +717,23 @@ type secretsKeyVault = {
 
   @description('Optional. Default to Secondary-Readonly-ConnectionString. The primary readonly connection string secret name to create.')
   secondaryReadonlyConnectionStringSecretName: string?
+}
+
+type networkRestrictionsConfig = {
+  @description('Optional. Default to []. List of Ip or CIDR ranges.')
+  ipRules: string[]
+
+  @description('Optional. Default to AzureServices. Specifies the network ACL bypass for Azure services.')
+  networkAclBypass: | 'AzureServices' | 'None'
+
+  @description('Optional. Default to Enabled. Whether requests from Public Network are allowed.')
+  publicNetworkAccess: | 'Enabled' | 'Disabled' | 'SecuredByPerimeter'
+
+  @description('Optional. Default to []. List of Virtual Network ACL rules configured for the Cosmos DB account..')
+  virtualNetworkRules: networkVnetRestrictionsConfig[]
+}
+
+type networkVnetRestrictionsConfig = {
+  @description('Required. A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: “23.40.210.245” or “23.40.210.0/8”.')
+  subnetId: string
 }
