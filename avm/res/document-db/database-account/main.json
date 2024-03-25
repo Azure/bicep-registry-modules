@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "181822819167463675"
+      "templateHash": "2662693605232156980"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -2849,7 +2849,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "16762537178702368021"
+              "templateHash": "4569214280420285740"
             },
             "name": "DocumentDB Database Account Key vault secrets",
             "description": "This module deploys a the connection strings and keys into a key vault specified by the consumer",
@@ -2920,6 +2920,13 @@
                   "id": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('keySecrets')[copyIndex()].secretName)]"
                 }
               }
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the keyvault where the secrets were created was in."
+              },
+              "value": "[resourceGroup().name]"
             }
           }
         }

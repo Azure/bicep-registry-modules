@@ -29,3 +29,6 @@ type keySecret = {
 output resourceId array = [for (secret, index) in keySecrets: {
   id: keySecretsSecrets[index].id
 }]
+
+@description('The name of the resource group the keyvault where the secrets were created was in.')
+output resourceGroupName string = resourceGroup().name
