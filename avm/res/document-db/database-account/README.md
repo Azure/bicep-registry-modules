@@ -2095,7 +2095,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             ]
           }
         ]
-        name: 'sqldatabase'
+        name: 'sql-dddawaf-001'
       }
     ]
     tags: {
@@ -2174,7 +2174,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               ]
             }
           ],
-          "name": "sqldatabase"
+          "name": "sql-dddawaf-001"
         }
       ]
     },

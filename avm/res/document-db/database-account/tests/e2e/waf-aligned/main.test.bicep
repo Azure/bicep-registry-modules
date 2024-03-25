@@ -109,7 +109,7 @@ module testDeployment '../../../main.bicep' = {
             ]
           }
         ]
-        name: 'sqldatabase'
+        name: '${namePrefix}-sql-${serviceShort}-001'
       }
     ]
     tags: {
