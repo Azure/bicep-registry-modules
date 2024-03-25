@@ -5,7 +5,7 @@ resource kv 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
 }
 
-resource keySecretsSecrets 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = [for (secret, index) in keySecrets: {
+resource keySecretsSecrets 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = [for secret in keySecrets: {
   name: secret.secretName
   parent: kv
   properties: {
