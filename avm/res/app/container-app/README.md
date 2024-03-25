@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module containerApp 'br/public:avm/res/app/container-app:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-acamin'
+  name: 'containerAppDeployment'
   params: {
     // Required parameters
     containers: [
@@ -116,7 +116,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module containerApp 'br/public:avm/res/app/container-app:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-acamax'
+  name: 'containerAppDeployment'
   params: {
     // Required parameters
     containers: [
@@ -310,7 +310,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module containerApp 'br/public:avm/res/app/container-app:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-acawaf'
+  name: 'containerAppDeployment'
   params: {
     // Required parameters
     containers: [

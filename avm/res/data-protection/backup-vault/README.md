@@ -44,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dpbvmin'
+  name: 'backupVaultDeployment'
   params: {
     // Required parameters
     name: 'dpbvmin001'
@@ -92,7 +92,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dpbvmax'
+  name: 'backupVaultDeployment'
   params: {
     // Required parameters
     name: 'dpbvmax001'
@@ -336,7 +336,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dpbvwaf'
+  name: 'backupVaultDeployment'
   params: {
     // Required parameters
     name: 'dpbvwaf001'

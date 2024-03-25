@@ -492,7 +492,7 @@ output resourceGroupName string = resourceGroup().name
 output primaryBlobEndpoint string = !empty(blobServices) && contains(blobServices, 'containers') ? reference('Microsoft.Storage/storageAccounts/${storageAccount.name}', '2019-04-01').primaryEndpoints.blob : ''
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) ? storageAccount.identity.?principalId : ''
+output systemAssignedMIPrincipalId string = storageAccount.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = storageAccount.location
