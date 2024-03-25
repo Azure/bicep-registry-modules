@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "15774116094352132148"
+      "templateHash": "2290724335353590920"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -2849,8 +2849,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "5320517424215194992"
-            }
+              "templateHash": "17518982266619441782"
+            },
+            "name": "DocumentDB Database Account Key vault secrets",
+            "description": "This module deploys a the connection strings and keys into a key vault specified by the consumer",
+            "owner": "Azure/module-maintainers"
           },
           "definitions": {
             "keySecret": {

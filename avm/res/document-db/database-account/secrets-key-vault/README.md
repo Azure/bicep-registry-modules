@@ -1,5 +1,6 @@
-#  `[Microsoft.DocumentDB/databaseAccounts]`
+# DocumentDB Database Account Key vault secrets `[Microsoft.DocumentDB/databaseAccounts]`
 
+This module deploys a the connection strings and keys into a key vault specified by the consumer
 
 ## Navigation
 
@@ -13,7 +14,7 @@
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/vaults) |
 
 ## Parameters
 
