@@ -30,7 +30,7 @@ param(
   [string] $SubscriptionId
 )
 
-if ($installedModules.Name -notcontains "Az.DesktopVirtualization") {
+if ($null -eq (Get-InstalledModule -Name "Az.DesktopVirtualization" -ErrorAction 'SilentlyContinue')) {
   Install-Module Az.DesktopVirtualization -Force -AllowClobber
 }
 
@@ -42,9 +42,8 @@ $parameters = @{
 }
 
 $registrationKey = New-AzWvdRegistrationInfo @parameters
-$registrationInfoToken = $registrationKey.Token
 
 # Write into Deployment Script output stream
 $DeploymentScriptOutputs = @{
-  registrationInfoToken = $registrationInfoToken
+  registrationInfoToken = $registrationKey.Token
 }
