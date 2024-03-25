@@ -206,12 +206,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
                 '*'
               ]
               destinationAddresses: [
-                '192.168.1.0'
+                '10.0.0.4'
               ]
               destinationPorts: [
                 '8080'
               ]
-              translatedAddress: '10.0.0.4'
+              translatedAddress: '192.168.1.0'
               translatedPort: '8080'
             }
           ]
