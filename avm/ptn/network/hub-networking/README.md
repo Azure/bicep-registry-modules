@@ -52,9 +52,6 @@ This instance deploys the module with the minimum set of required parameters.
 module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
   name: 'hubNetworkingDeployment'
   params: {
-    // Required parameters
-    name: 'nhnmin001'
-    // Non-required parameters
     location: '<location>'
   }
 }
@@ -72,11 +69,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
-    "name": {
-      "value": "nhnmin001"
-    },
-    // Non-required parameters
     "location": {
       "value": "<location>"
     }
@@ -100,9 +92,6 @@ This instance deploys the module with most of its features enabled.
 module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
   name: 'hubNetworkingDeployment'
   params: {
-    // Required parameters
-    name: 'nhnmax001'
-    // Non-required parameters
     hubVirtualNetworks: {
       hub1: {
         addressPrefixes: '<addressPrefixes>'
@@ -302,11 +291,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
-    "name": {
-      "value": "nhnmax001"
-    },
-    // Non-required parameters
     "hubVirtualNetworks": {
       "value": {
         "hub1": {
@@ -514,9 +498,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
   name: 'hubNetworkingDeployment'
   params: {
-    // Required parameters
-    name: 'nhnwaf001'
-    // Non-required parameters
     hubVirtualNetworks: {
       hub1: {
         addressPrefixes: '<addressPrefixes>'
@@ -624,11 +605,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
-    "name": {
-      "value": "nhnwaf001"
-    },
-    // Non-required parameters
     "hubVirtualNetworks": {
       "value": {
         "hub1": {
@@ -734,12 +710,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 
 ## Parameters
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the resource to create. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -747,13 +717,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`hubVirtualNetworks`](#parameter-hubvirtualnetworks) | object | A map of the hub virtual networks to create. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
-
-### Parameter: `name`
-
-Name of the resource to create.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `enableTelemetry`
 

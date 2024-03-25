@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "395948477109232771"
+      "templateHash": "9956019233394656429"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.",
@@ -589,12 +589,6 @@
     }
   },
   "parameters": {
-    "name": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. Name of the resource to create."
-      }
-    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",

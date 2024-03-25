@@ -2,9 +2,6 @@ metadata name = 'Hub Networking'
 metadata description = 'This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. Name of the resource to create.')
-param name string
-
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 

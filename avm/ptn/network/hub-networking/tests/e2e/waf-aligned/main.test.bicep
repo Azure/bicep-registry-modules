@@ -58,7 +58,6 @@ for iteration in [ 'init', 'idem' ]: {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
     // You parameters go here
-    name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
     hubVirtualNetworks: {
       hub1: {
@@ -96,6 +95,9 @@ for iteration in [ 'init', 'idem' ]: {
           scaleUnits: 2
           skuName: 'Standard'
         }
+        enableAzureFirewall: true
+        enableBastion: true
+        enablePeering: false
         enableTelemetry: true
         flowTimeoutInMinutes: 30
         ddosProtectionPlanResourceId: ''
@@ -119,9 +121,6 @@ for iteration in [ 'init', 'idem' ]: {
           kind: 'CanNotDelete'
           name: 'hub1Lock'
         }
-        enableAzureFirewall: true
-        enableBastion: true
-        enablePeering: false
         peeringSettings: []
         roleAssignments: []
         subnets: [
