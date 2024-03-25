@@ -42,17 +42,5 @@ module testDeployment '../../../main.bicep' = {
     location: enforcedLocation
     enableAnalyticalStorage: true
     name: '${namePrefix}-analytical'
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: enforcedLocation
-      }
-    ]
-    sqlDatabases: [
-      {
-        name: 'empty-database'
-      }
-    ]
   }
 }

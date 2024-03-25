@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Enabling continous backups'
-metadata description = 'This instance deploys the module enabling continous backups.'
+metadata name = 'Using bounded consistency'
+metadata description = 'This instance deploys the module specifying a default consistency level.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-documentdb.databaseaccounts-
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dddacbc'
+param serviceShort string = 'dddabco'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -40,20 +40,9 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     location: enforcedLocation
-    name: '${namePrefix}-continous-bckup'
-    backupPolicyType: 'Continuous'
-    backupPolicyContinuousTier: 'Continuous7Days'
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: enforcedLocation
-      }
-    ]
-    sqlDatabases: [
-      {
-        name: 'empty-database'
-      }
-    ]
+    name: '${namePrefix}-bounded'
+    defaultConsistencyLevel: 'BoundedStaleness'
+    maxIntervalInSeconds: 600
+    maxStalenessPrefix: 200000
   }
 }

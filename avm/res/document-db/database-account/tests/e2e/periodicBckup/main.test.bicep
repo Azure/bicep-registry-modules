@@ -45,17 +45,5 @@ module testDeployment '../../../main.bicep' = {
     backupIntervalInMinutes: 300
     backupStorageRedundancy: 'Zone'
     backupRetentionIntervalInHours: 16
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: enforcedLocation
-      }
-    ]
-    sqlDatabases: [
-      {
-        name: 'empty-database'
-      }
-    ]
   }
 }

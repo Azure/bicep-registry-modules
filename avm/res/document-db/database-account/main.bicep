@@ -20,8 +20,8 @@ param managedIdentities managedIdentitiesType
 ])
 param databaseAccountOfferType string = 'Standard'
 
-@description('Required. Locations enabled for the Cosmos DB account.')
-param locations failoverLocations[]
+@description('Optional. Default to the location where the account is deployed. Locations enabled for the Cosmos DB account.')
+param locations failoverLocations[] = []
 
 @allowed([
   'Eventual'
@@ -170,13 +170,19 @@ var consistencyPolicy = {
   }
 }
 
-var databaseAccount_locations = [for location in locations: {
-  failoverPriority: location.failoverPriority
-  isZoneRedundant: location.isZoneRedundant
-  locationName: location.locationName
+var defaultFailoverLocation = [ {
+    failoverPriority: 0
+    locationName: location
+    isZoneRedundant: true
+  } ]
+
+var databaseAccount_locations = [for failoverLocation in locations: {
+  failoverPriority: failoverLocation.failoverPriority
+  locationName: failoverLocation.locationName
+  isZoneRedundant: failoverLocation.?isZoneRedundant ?? true
 }]
 
-var kind = !empty(sqlDatabases) || !empty(gremlinDatabases) ? 'GlobalDocumentDB' : (!empty(mongodbDatabases) ? 'MongoDB' : 'Parse')
+var kind = !empty(sqlDatabases) || !empty(gremlinDatabases) ? 'GlobalDocumentDB' : (!empty(mongodbDatabases) ? 'MongoDB' : 'GlobalDocumentDB')
 
 var capabilities = [for capability in capabilitiesToAdd: {
   name: capability
@@ -210,9 +216,9 @@ var databaseAccount_properties = union({
   }, ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases)) ? {
     // Common properties
     consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
-    locations: databaseAccount_locations
     enableMultipleWriteLocations: enableMultipleWriteLocations
     disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
+    locations: empty(databaseAccount_locations) ? defaultFailoverLocation : databaseAccount_locations
 
     ipRules: ipRules
     virtualNetworkRules: virtualNetworkRules
@@ -617,8 +623,8 @@ type failoverLocations = {
   @description('Required. The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists.')
   failoverPriority: int
 
-  @description('Required. Flag to indicate whether or not this region is an AvailabilityZone region')
-  isZoneRedundant: bool
+  @description('Optional. Default to true. Flag to indicate whether or not this region is an AvailabilityZone region')
+  isZoneRedundant: bool?
 
   @description('Required. The name of the region.')
   locationName: string

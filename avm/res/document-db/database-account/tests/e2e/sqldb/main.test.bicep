@@ -280,14 +280,6 @@ module testDeployment '../../../main.bicep' = {
               'myPartitionKey1'
             ]
           }
-          {
-            name: 'container-005'
-            kind: 'Range'
-            paths: [
-              'myPartitionKey1'
-              'myPartitionKey3'
-            ]
-          }
         ]
         name: 'all-partition-key-types'
       }

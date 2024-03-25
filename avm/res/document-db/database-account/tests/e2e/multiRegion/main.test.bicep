@@ -51,7 +51,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-multi-${serviceShort}'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     automaticFailover: false
     location: enforcedLocation
@@ -60,18 +60,13 @@ module testDeployment '../../../main.bicep' = {
     locations: [
       {
         failoverPriority: 0
-        isZoneRedundant: false
+        isZoneRedundant: true
         locationName: enforcedLocation
       }
       {
         failoverPriority: 1
-        isZoneRedundant: false
+        isZoneRedundant: true
         locationName: nestedDependencies.outputs.pairedRegionName
-      }
-    ]
-    sqlDatabases: [
-      {
-        name: 'empty-database'
       }
     ]
   }

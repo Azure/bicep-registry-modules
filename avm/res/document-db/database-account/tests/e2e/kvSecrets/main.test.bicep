@@ -55,12 +55,5 @@ module testDeployment '../../../main.bicep' = {
       keyVaultName: keyVaultName
       primaryReadonlyConnectionStringSecretName: 'custom-secret-name'
     }
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: enforcedLocation
-      }
-    ]
   }
 }

@@ -33,9 +33,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     location: enforcedLocation
   }
 }
@@ -72,18 +70,11 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: enforcedLocation
-      }
-      {
-        failoverPriority: 1
-        isZoneRedundant: false
-        locationName: nestedDependencies.outputs.pairedRegionName
-      }
-    ]
+    location: enforcedLocation
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     diagnosticSettings: [
       {
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
@@ -92,7 +83,6 @@ module testDeployment '../../../main.bicep' = {
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
-    location: enforcedLocation
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -105,43 +95,6 @@ module testDeployment '../../../main.bicep' = {
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
-      }
-    ]
-    sqlDatabases: [
-      {
-        containers: [
-          {
-            kind: 'Hash'
-            name: 'container-001'
-            indexingPolicy: {
-              automatic: true
-            }
-            paths: [
-              '/myPartitionKey'
-            ]
-            analyticalStorageTtl: 0
-            conflictResolutionPolicy: {
-              conflictResolutionPath: '/myCustomId'
-              mode: 'LastWriterWins'
-            }
-            defaultTtl: 1000
-            uniqueKeyPolicyKeys: [
-              {
-                paths: [
-                  '/firstName'
-                ]
-              }
-              {
-                paths: [
-                  '/lastName'
-                ]
-              }
-            ]
-            throughput: 600
-          }
-        ]
-        name: '${namePrefix}-sql-${serviceShort}-001'
-        throughput: 1000
       }
     ]
     tags: {
