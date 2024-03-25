@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "13891865481337735354"
+      "templateHash": "8746844117573459141"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -2840,7 +2840,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "3940529007426648641"
+              "templateHash": "3376784638805058420"
             }
           },
           "definitions": {
@@ -2851,7 +2851,7 @@
                   "type": "string"
                 },
                 "secretValue": {
-                  "type": "string"
+                  "type": "securestring"
                 }
               }
             }

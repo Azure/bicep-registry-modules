@@ -15,5 +15,7 @@ resource keySecretsSecrets 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = [for
 
 type keySecret = {
   secretName: string
+
+  @secure()
   secretValue: string
 }
