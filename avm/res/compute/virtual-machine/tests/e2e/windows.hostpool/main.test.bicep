@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults for Windows'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using a host pool to register the VM'
+metadata description = 'This instance deploys the module and register it in a host pool.'
 
 // ========== //
 // Parameters //

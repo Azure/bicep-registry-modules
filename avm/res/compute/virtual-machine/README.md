@@ -41,7 +41,7 @@ The following section provides usage examples for the module, which were used to
 - [WAF-aligned](#example-4-waf-aligned)
 - [Using only defaults for Windows](#example-5-using-only-defaults-for-windows)
 - [Using guest configuration for Windows](#example-6-using-guest-configuration-for-windows)
-- [Using only defaults for Windows](#example-7-using-only-defaults-for-windows)
+- [Using a host pool to register the VM](#example-7-using-a-host-pool-to-register-the-vm)
 - [Using large parameter set for Windows](#example-8-using-large-parameter-set-for-windows)
 - [Deploy a VM with nVidia graphic card](#example-9-deploy-a-vm-with-nvidia-graphic-card)
 - [Using disk encryption set for the VM.](#example-10-using-disk-encryption-set-for-the-vm)
@@ -1830,9 +1830,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 7: _Using only defaults for Windows_
+### Example 7: _Using a host pool to register the VM_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module and register it in a host pool.
 
 
 <details>
