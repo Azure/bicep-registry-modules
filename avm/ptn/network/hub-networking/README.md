@@ -24,6 +24,7 @@ This module is designed to simplify the creation of multi-region hub networks in
 | `Microsoft.Network/routeTables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/routeTables) |
 | `Microsoft.Network/virtualNetworks` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/virtualNetworkPeerings) |
 
 ## Usage examples
@@ -49,7 +50,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nhnmin'
+  name: 'hubNetworkingDeployment'
   params: {
     // Required parameters
     name: 'nhnmin001'
@@ -97,7 +98,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nhnmax'
+  name: 'hubNetworkingDeployment'
   params: {
     // Required parameters
     name: 'nhnmax001'
@@ -105,6 +106,38 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
     hubVirtualNetworks: {
       hub1: {
         addressPrefixes: '<addressPrefixes>'
+        azureFirewallSettings: {
+          additionalPublicIpConfigurations: []
+          applicationRuleCollections: []
+          azureSkuTier: 'Standard'
+          diagnosticSettings: []
+          enableTelemetry: true
+          firewallPolicyId: ''
+          hubIpAddresses: {}
+          location: 'westus'
+          lock: {}
+          managementIPAddressObject: {}
+          managementIPResourceID: ''
+          natRuleCollections: []
+          networkRuleCollections: []
+          publicIPAddressObject: {
+            name: 'hub1PublicIp'
+          }
+          publicIPResourceID: ''
+          roleAssignments: []
+          tags: {}
+          threatIntelMode: 'Alert'
+          virtualHub: ''
+          zones: []
+        }
+        bastionHost: {
+          disableCopyPaste: true
+          enableFileCopy: false
+          enableIpConnect: false
+          enableShareableLink: false
+          scaleUnits: 2
+          skuName: 'Standard'
+        }
         ddosProtectionPlanResourceId: ''
         diagnosticSettings: [
           {
@@ -124,6 +157,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           '10.0.1.4'
           '10.0.1.5'
         ]
+        enableAzureFirewall: true
         enableBastion: true
         enablePeering: false
         enableTelemetry: true
@@ -168,9 +202,46 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
       }
       hub2: {
         addressPrefixes: '<addressPrefixes>'
+        azureFirewallSettings: {
+          additionalPublicIpConfigurations: []
+          applicationRuleCollections: []
+          azureSkuTier: 'Standard'
+          diagnosticSettings: []
+          enableTelemetry: true
+          firewallPolicyId: ''
+          hubIpAddresses: {}
+          location: 'westus2'
+          lock: {}
+          managementIPAddressObject: {}
+          managementIPResourceID: ''
+          natRuleCollections: []
+          networkRuleCollections: []
+          publicIPAddressObject: {
+            name: 'hub2PublicIp'
+          }
+          publicIPResourceID: ''
+          roleAssignments: []
+          tags: {}
+          threatIntelMode: 'Alert'
+          virtualHub: ''
+          zones: [
+            '1'
+            '2'
+            '3'
+          ]
+        }
+        bastionHost: {
+          disableCopyPaste: true
+          enableFileCopy: false
+          enableIpConnect: false
+          enableShareableLink: false
+          scaleUnits: 2
+          skuName: 'Standard'
+        }
         ddosProtectionPlanResourceId: ''
         diagnosticSettings: []
         dnsServers: []
+        enableAzureFirewall: true
         enableBastion: true
         enablePeering: false
         enableTelemetry: false
@@ -240,6 +311,38 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
       "value": {
         "hub1": {
           "addressPrefixes": "<addressPrefixes>",
+          "azureFirewallSettings": {
+            "additionalPublicIpConfigurations": [],
+            "applicationRuleCollections": [],
+            "azureSkuTier": "Standard",
+            "diagnosticSettings": [],
+            "enableTelemetry": true,
+            "firewallPolicyId": "",
+            "hubIpAddresses": {},
+            "location": "westus",
+            "lock": {},
+            "managementIPAddressObject": {},
+            "managementIPResourceID": "",
+            "natRuleCollections": [],
+            "networkRuleCollections": [],
+            "publicIPAddressObject": {
+              "name": "hub1PublicIp"
+            },
+            "publicIPResourceID": "",
+            "roleAssignments": [],
+            "tags": {},
+            "threatIntelMode": "Alert",
+            "virtualHub": "",
+            "zones": []
+          },
+          "bastionHost": {
+            "disableCopyPaste": true,
+            "enableFileCopy": false,
+            "enableIpConnect": false,
+            "enableShareableLink": false,
+            "scaleUnits": 2,
+            "skuName": "Standard"
+          },
           "ddosProtectionPlanResourceId": "",
           "diagnosticSettings": [
             {
@@ -259,6 +362,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "10.0.1.4",
             "10.0.1.5"
           ],
+          "enableAzureFirewall": true,
           "enableBastion": true,
           "enablePeering": false,
           "enableTelemetry": true,
@@ -303,9 +407,46 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         },
         "hub2": {
           "addressPrefixes": "<addressPrefixes>",
+          "azureFirewallSettings": {
+            "additionalPublicIpConfigurations": [],
+            "applicationRuleCollections": [],
+            "azureSkuTier": "Standard",
+            "diagnosticSettings": [],
+            "enableTelemetry": true,
+            "firewallPolicyId": "",
+            "hubIpAddresses": {},
+            "location": "westus2",
+            "lock": {},
+            "managementIPAddressObject": {},
+            "managementIPResourceID": "",
+            "natRuleCollections": [],
+            "networkRuleCollections": [],
+            "publicIPAddressObject": {
+              "name": "hub2PublicIp"
+            },
+            "publicIPResourceID": "",
+            "roleAssignments": [],
+            "tags": {},
+            "threatIntelMode": "Alert",
+            "virtualHub": "",
+            "zones": [
+              "1",
+              "2",
+              "3"
+            ]
+          },
+          "bastionHost": {
+            "disableCopyPaste": true,
+            "enableFileCopy": false,
+            "enableIpConnect": false,
+            "enableShareableLink": false,
+            "scaleUnits": 2,
+            "skuName": "Standard"
+          },
           "ddosProtectionPlanResourceId": "",
           "diagnosticSettings": [],
           "dnsServers": [],
+          "enableAzureFirewall": true,
           "enableBastion": true,
           "enablePeering": false,
           "enableTelemetry": false,
@@ -371,7 +512,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nhnwaf'
+  name: 'hubNetworkingDeployment'
   params: {
     // Required parameters
     name: 'nhnwaf001'
@@ -379,6 +520,30 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
     hubVirtualNetworks: {
       hub1: {
         addressPrefixes: '<addressPrefixes>'
+        azureFirewallSettings: {
+          additionalPublicIpConfigurations: []
+          applicationRuleCollections: []
+          azureSkuTier: 'Standard'
+          diagnosticSettings: []
+          enableTelemetry: true
+          firewallPolicyId: ''
+          hubIpAddresses: {}
+          location: 'westus'
+          lock: {}
+          managementIPAddressObject: {}
+          managementIPResourceID: ''
+          natRuleCollections: []
+          networkRuleCollections: []
+          publicIPAddressObject: {
+            name: 'hub1PublicIp'
+          }
+          publicIPResourceID: ''
+          roleAssignments: []
+          tags: {}
+          threatIntelMode: 'Alert'
+          virtualHub: ''
+          zones: []
+        }
         ddosProtectionPlanResourceId: ''
         diagnosticSettings: [
           {
@@ -398,6 +563,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           '10.0.1.6'
           '10.0.1.7'
         ]
+        enableAzureFirewall: true
         enableBastion: true
         enablePeering: false
         enableTelemetry: true
@@ -408,6 +574,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           name: 'hub1Lock'
         }
         name: 'hub1'
+        peeringSettings: []
         roleAssignments: []
         subnets: [
           {
@@ -458,6 +625,30 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
       "value": {
         "hub1": {
           "addressPrefixes": "<addressPrefixes>",
+          "azureFirewallSettings": {
+            "additionalPublicIpConfigurations": [],
+            "applicationRuleCollections": [],
+            "azureSkuTier": "Standard",
+            "diagnosticSettings": [],
+            "enableTelemetry": true,
+            "firewallPolicyId": "",
+            "hubIpAddresses": {},
+            "location": "westus",
+            "lock": {},
+            "managementIPAddressObject": {},
+            "managementIPResourceID": "",
+            "natRuleCollections": [],
+            "networkRuleCollections": [],
+            "publicIPAddressObject": {
+              "name": "hub1PublicIp"
+            },
+            "publicIPResourceID": "",
+            "roleAssignments": [],
+            "tags": {},
+            "threatIntelMode": "Alert",
+            "virtualHub": "",
+            "zones": []
+          },
           "ddosProtectionPlanResourceId": "",
           "diagnosticSettings": [
             {
@@ -477,6 +668,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "10.0.1.6",
             "10.0.1.7"
           ],
+          "enableAzureFirewall": true,
           "enableBastion": true,
           "enablePeering": false,
           "enableTelemetry": true,
@@ -487,6 +679,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "name": "hub1Lock"
           },
           "name": "hub1",
+          "peeringSettings": [],
           "roleAssignments": [],
           "subnets": [
             {
@@ -577,6 +770,7 @@ Location for all Resources.
 | `hubBastionName` | array | The name of the bastion host. |
 | `hubBastionResourceId` | array | The resource ID of the bastion host. |
 | `hubVirtualNetworkName` | array | The name of the hub virtual network. |
+| `hubVirtualNetworkNames` | array | The names of the hub virtual network. |
 | `hubVirtualNetworkPeers` | array | The peers of the hub virtual network. |
 | `hubVirtualNetworkResourceId` | array | The resource ID of the hub virtual network. |
 | `location` | array | The location the virtual network was deployed into. |
@@ -584,12 +778,12 @@ Location for all Resources.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/azure-firewall:0.1.1` | Remote reference |
-| `br/public:avm/res/network/bastion-host:0.1.1` | Remote reference |
+| `br/public:avm/res/network/bastion-host:0.2.0` | Remote reference |
 | `br/public:avm/res/network/route-table:0.2.2` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.1.1` | Remote reference |
 
