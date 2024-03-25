@@ -62,14 +62,13 @@ resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-0
 }
 
 // NOTE: This is a workaround for a bug of the resource provider. Ref: https://github.com/Azure/bicep-types-az/issues/1532
-module fileShare_roleAssignments 'modules/nested_roleAssignment.bicep' =
-  if (!empty(roleAssignments)) {
-    name: '${uniqueString(deployment().name)}-Share-Rbac'
-    params: {
-      fileShareResourceId: fileShare.id
-      roleAssignments: roleAssignments!
-    }
+module fileShare_roleAssignments 'modules/nested_roleAssignment.bicep' = if (!empty(roleAssignments)) {
+  name: '${uniqueString(deployment().name)}-Share-Rbac'
+  params: {
+    fileShareResourceId: fileShare.id
+    roleAssignments: roleAssignments!
   }
+}
 
 @description('The name of the deployed file share.')
 output name string = fileShare.name

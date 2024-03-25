@@ -130,17 +130,15 @@ resource api 'Microsoft.ApiManagement/service/apis@2021-08-01' = {
   }
 }
 
-module policy 'policy/main.bicep' = [
-  for (policy, index) in policies ?? []: {
-    name: '${deployment().name}-Policy-${index}'
-    params: {
-      apiManagementServiceName: apiManagementServiceName
-      apiName: api.name
-      format: contains(policy, 'format') ? policy.format : 'xml'
-      value: policy.value
-    }
+module policy 'policy/main.bicep' = [for (policy, index) in policies ?? []: {
+  name: '${deployment().name}-Policy-${index}'
+  params: {
+    apiManagementServiceName: apiManagementServiceName
+    apiName: api.name
+    format: contains(policy, 'format') ? policy.format : 'xml'
+    value: policy.value
   }
-]
+}]
 
 @description('The name of the API management service API.')
 output name string = api.name

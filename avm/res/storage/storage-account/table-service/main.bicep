@@ -25,45 +25,37 @@ resource tableServices 'Microsoft.Storage/storageAccounts/tableServices@2021-09-
   properties: {}
 }
 
-resource tableServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
-  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-    properties: {
-      storageAccountId: diagnosticSetting.?storageAccountResourceId
-      workspaceId: diagnosticSetting.?workspaceResourceId
-      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-      eventHubName: diagnosticSetting.?eventHubName
-      metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
-          category: group.category
-          enabled: group.?enabled ?? true
-          timeGrain: null
-        }
-      ]
-      logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
-          categoryGroup: group.?categoryGroup
-          category: group.?category
-          enabled: group.?enabled ?? true
-        }
-      ]
-      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
-    }
-    scope: tableServices
+resource tableServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+  properties: {
+    storageAccountId: diagnosticSetting.?storageAccountResourceId
+    workspaceId: diagnosticSetting.?workspaceResourceId
+    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+    eventHubName: diagnosticSetting.?eventHubName
+    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
+      category: group.category
+      enabled: group.?enabled ?? true
+      timeGrain: null
+    }]
+    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
+      categoryGroup: group.?categoryGroup
+      category: group.?category
+      enabled: group.?enabled ?? true
+    }]
+    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
   }
-]
+  scope: tableServices
+}]
 
-module tableServices_tables 'table/main.bicep' = [
-  for (table, index) in tables: {
-    name: '${deployment().name}-Table-${index}'
-    params: {
-      name: table.name
-      storageAccountName: storageAccount.name
-      roleAssignments: table.?roleAssignments
-    }
+module tableServices_tables 'table/main.bicep' = [for (table, index) in tables: {
+  name: '${deployment().name}-Table-${index}'
+  params: {
+    name: table.name
+    storageAccountName: storageAccount.name
+    roleAssignments: table.?roleAssignments
   }
-]
+}]
 
 @description('The name of the deployed table service.')
 output name string = tableServices.name

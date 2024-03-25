@@ -60,194 +60,68 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-    params: {
-      location: resourceLocation
-      name: '${namePrefix}${serviceShort}001'
-      skuName: 'Standard_LRS'
-      allowBlobPublicAccess: false
-      requireInfrastructureEncryption: true
-      largeFileSharesState: 'Enabled'
-      enableHierarchicalNamespace: true
-      enableSftp: true
-      enableNfsV3: true
-      privateEndpoints: [
+module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+  params: {
+    location: resourceLocation
+    name: '${namePrefix}${serviceShort}001'
+    skuName: 'Standard_LRS'
+    allowBlobPublicAccess: false
+    requireInfrastructureEncryption: true
+    largeFileSharesState: 'Enabled'
+    enableHierarchicalNamespace: true
+    enableSftp: true
+    enableNfsV3: true
+    privateEndpoints: [
+      {
+        service: 'blob'
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+      virtualNetworkRules: [
         {
-          service: 'blob'
-          subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
-          tags: {
-            'hidden-title': 'This is visible in the resource name'
-            Environment: 'Non-Prod'
-            Role: 'DeploymentValidation'
-          }
+          action: 'Allow'
+          id: nestedDependencies.outputs.subnetResourceId
         }
       ]
-      networkAcls: {
-        bypass: 'AzureServices'
-        defaultAction: 'Deny'
-        virtualNetworkRules: [
-          {
-            action: 'Allow'
-            id: nestedDependencies.outputs.subnetResourceId
-          }
-        ]
-        ipRules: [
-          {
-            action: 'Allow'
-            value: '1.1.1.1'
-          }
-        ]
-      }
-      localUsers: [
+      ipRules: [
         {
-          storageAccountName: '${namePrefix}${serviceShort}001'
-          name: 'testuser'
-          hasSharedKey: false
-          hasSshKey: true
-          hasSshPassword: false
-          homeDirectory: 'avdscripts'
-          permissionScopes: [
-            {
-              permissions: 'r'
-              service: 'blob'
-              resourceName: 'avdscripts'
-            }
-          ]
+          action: 'Allow'
+          value: '1.1.1.1'
         }
       ]
-      blobServices: {
-        lastAccessTimeTrackingPolicyEnabled: true
-        diagnosticSettings: [
+    }
+    localUsers: [
+      {
+        storageAccountName: '${namePrefix}${serviceShort}001'
+        name: 'testuser'
+        hasSharedKey: false
+        hasSshKey: true
+        hasSshPassword: false
+        homeDirectory: 'avdscripts'
+        permissionScopes: [
           {
-            name: 'customSetting'
-            metricCategories: [
-              {
-                category: 'AllMetrics'
-              }
-            ]
-            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-          }
-        ]
-        containers: [
-          {
-            name: 'avdscripts'
-            enableNfsV3AllSquash: true
-            enableNfsV3RootSquash: true
-            publicAccess: 'None'
-          }
-          {
-            name: 'archivecontainer'
-            publicAccess: 'None'
-            metadata: {
-              testKey: 'testValue'
-            }
-            enableWORM: true
-            WORMRetention: 666
-            allowProtectedAppendWrites: false
-          }
-        ]
-        automaticSnapshotPolicyEnabled: true
-        containerDeleteRetentionPolicyEnabled: true
-        containerDeleteRetentionPolicyDays: 10
-        deleteRetentionPolicyEnabled: true
-        deleteRetentionPolicyDays: 9
-      }
-      fileServices: {
-        diagnosticSettings: [
-          {
-            name: 'customSetting'
-            metricCategories: [
-              {
-                category: 'AllMetrics'
-              }
-            ]
-            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-          }
-        ]
-        shares: [
-          {
-            name: 'avdprofiles'
-            accessTier: 'Hot'
-            shareQuota: 5120
-          }
-          {
-            name: 'avdprofiles2'
-            shareQuota: 102400
+            permissions: 'r'
+            service: 'blob'
+            resourceName: 'avdscripts'
           }
         ]
       }
-      tableServices: {
-        diagnosticSettings: [
-          {
-            name: 'customSetting'
-            metricCategories: [
-              {
-                category: 'AllMetrics'
-              }
-            ]
-            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-          }
-        ]
-        tables: [
-          {
-            name: 'table1'
-          }
-          {
-            name: 'table2'
-          }
-        ]
-      }
-      queueServices: {
-        diagnosticSettings: [
-          {
-            name: 'customSetting'
-            metricCategories: [
-              {
-                category: 'AllMetrics'
-              }
-            ]
-            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-          }
-        ]
-        queues: [
-          {
-            name: 'queue1'
-            metadata: {
-              key1: 'value1'
-              key2: 'value2'
-            }
-          }
-          {
-            name: 'queue2'
-            metadata: {}
-          }
-        ]
-      }
-      sasExpirationPeriod: '180.00:00:00'
-      managedIdentities: {
-        systemAssigned: true
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
-      }
+    ]
+    blobServices: {
+      lastAccessTimeTrackingPolicyEnabled: true
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -262,49 +136,173 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      managementPolicyRules: [
+      containers: [
         {
-          enabled: true
-          name: 'FirstRule'
-          type: 'Lifecycle'
-          definition: {
-            actions: {
-              baseBlob: {
-                delete: {
-                  daysAfterModificationGreaterThan: 30
-                }
-                tierToCool: {
-                  daysAfterLastAccessTimeGreaterThan: 5
-                }
-              }
-            }
-            filters: {
-              blobIndexMatch: [
-                {
-                  name: 'BlobIndex'
-                  op: '=='
-                  value: '1'
-                }
-              ]
-              blobTypes: [
-                'blockBlob'
-              ]
-              prefixMatch: [
-                'sample-container/log'
-              ]
-            }
+          name: 'avdscripts'
+          enableNfsV3AllSquash: true
+          enableNfsV3RootSquash: true
+          publicAccess: 'None'
+        }
+        {
+          name: 'archivecontainer'
+          publicAccess: 'None'
+          metadata: {
+            testKey: 'testValue'
           }
+          enableWORM: true
+          WORMRetention: 666
+          allowProtectedAppendWrites: false
         }
       ]
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
-      }
+      automaticSnapshotPolicyEnabled: true
+      containerDeleteRetentionPolicyEnabled: true
+      containerDeleteRetentionPolicyDays: 10
+      deleteRetentionPolicyEnabled: true
+      deleteRetentionPolicyDays: 9
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
+    fileServices: {
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      shares: [
+        {
+          name: 'avdprofiles'
+          accessTier: 'Hot'
+          shareQuota: 5120
+        }
+        {
+          name: 'avdprofiles2'
+          shareQuota: 102400
+        }
+      ]
+    }
+    tableServices: {
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      tables: [
+        {
+          name: 'table1'
+        }
+        {
+          name: 'table2'
+        }
+      ]
+    }
+    queueServices: {
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      queues: [
+        {
+          name: 'queue1'
+          metadata: {
+            key1: 'value1'
+            key2: 'value2'
+          }
+        }
+        {
+          name: 'queue2'
+          metadata: {}
+        }
+      ]
+    }
+    sasExpirationPeriod: '180.00:00:00'
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
+    }
+    diagnosticSettings: [
+      {
+        name: 'customSetting'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+      }
     ]
+    managementPolicyRules: [
+      {
+        enabled: true
+        name: 'FirstRule'
+        type: 'Lifecycle'
+        definition: {
+          actions: {
+            baseBlob: {
+              delete: {
+                daysAfterModificationGreaterThan: 30
+              }
+              tierToCool: {
+                daysAfterLastAccessTimeGreaterThan: 5
+              }
+            }
+          }
+          filters: {
+            blobIndexMatch: [
+              {
+                name: 'BlobIndex'
+                op: '=='
+                value: '1'
+              }
+            ]
+            blobTypes: [
+              'blockBlob'
+            ]
+            prefixMatch: [
+              'sample-container/log'
+            ]
+          }
+        }
+      }
+    ]
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
   }
-]
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
+}]

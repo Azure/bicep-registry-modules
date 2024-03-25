@@ -50,27 +50,23 @@ resource product 'Microsoft.ApiManagement/service/products@2021-08-01' = {
   }
 }
 
-module product_apis 'api/main.bicep' = [
-  for (api, index) in apis: {
-    name: '${deployment().name}-Api-${index}'
-    params: {
-      apiManagementServiceName: apiManagementServiceName
-      name: api.name
-      productName: name
-    }
+module product_apis 'api/main.bicep' = [for (api, index) in apis: {
+  name: '${deployment().name}-Api-${index}'
+  params: {
+    apiManagementServiceName: apiManagementServiceName
+    name: api.name
+    productName: name
   }
-]
+}]
 
-module product_groups 'group/main.bicep' = [
-  for (group, index) in groups: {
-    name: '${deployment().name}-Group-${index}'
-    params: {
-      apiManagementServiceName: apiManagementServiceName
-      name: group.name
-      productName: name
-    }
+module product_groups 'group/main.bicep' = [for (group, index) in groups: {
+  name: '${deployment().name}-Group-${index}'
+  params: {
+    apiManagementServiceName: apiManagementServiceName
+    name: group.name
+    productName: name
   }
-]
+}]
 
 @sys.description('The resource ID of the API management service product.')
 output resourceId string = product.id

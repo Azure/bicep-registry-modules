@@ -54,32 +54,44 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-    params: {
-      location: resourceLocation
-      name: '${namePrefix}${serviceShort}'
-      adminUsername: 'VMAdministrator'
-      imageReference: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2019-datacenter'
-        version: 'latest'
+module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+  params: {
+    location: resourceLocation
+    name: '${namePrefix}${serviceShort}'
+    adminUsername: 'VMAdministrator'
+    imageReference: {
+      publisher: 'MicrosoftWindowsServer'
+      offer: 'WindowsServer'
+      sku: '2019-datacenter'
+      version: 'latest'
+    }
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig01'
+            subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          }
+        ]
+        nicSuffix: '-nic-01'
       }
-      nicConfigurations: [
-        {
-          ipConfigurations: [
-            {
-              name: 'ipconfig01'
-              subnetResourceId: nestedDependencies.outputs.subnetResourceId
-            }
-          ]
-          nicSuffix: '-nic-01'
+    ]
+    osDisk: {
+      diskSizeGB: '128'
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+        diskEncryptionSet: {
+          id: nestedDependencies.outputs.diskEncryptionSetResourceId
         }
-      ]
-      osDisk: {
+      }
+    }
+    osType: 'Windows'
+    vmSize: 'Standard_DS2_v2'
+    adminPassword: password
+    dataDisks: [
+      {
         diskSizeGB: '128'
         managedDisk: {
           storageAccountType: 'Premium_LRS'
@@ -88,20 +100,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       }
-      osType: 'Windows'
-      vmSize: 'Standard_DS2_v2'
-      adminPassword: password
-      dataDisks: [
-        {
-          diskSizeGB: '128'
-          managedDisk: {
-            storageAccountType: 'Premium_LRS'
-            diskEncryptionSet: {
-              id: nestedDependencies.outputs.diskEncryptionSetResourceId
-            }
-          }
-        }
-      ]
-    }
+    ]
   }
-]
+}]

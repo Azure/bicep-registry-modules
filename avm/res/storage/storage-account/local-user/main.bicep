@@ -59,6 +59,7 @@ output resourceId string = localUsers.id
 
 @secure()
 type sshAuthorizedKeysType = {
+
   @description('Optional. The list of SSH authorized keys.')
   secureList: {
     @description('Optional. Description used to store the function/usage of the key.')
