@@ -71,6 +71,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: enforcedLocation
+    disableKeyBasedMetadataWriteAccess: true
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'

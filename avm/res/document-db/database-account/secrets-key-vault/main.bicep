@@ -24,3 +24,8 @@ type keySecret = {
   secretName: string
   secretValue: string
 }
+
+@description('The resource ID of the secrets created.')
+output resourceId array = [for (secret, index) in keySecrets: {
+  id: keySecretsSecrets[index].id
+}]

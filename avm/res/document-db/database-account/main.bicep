@@ -213,6 +213,7 @@ var virtualNetworkRules = [for vnet in (networkRestrictions.?virtualNetworkRules
 
 var databaseAccount_properties = union({
     databaseAccountOfferType: databaseAccountOfferType
+    disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
   }, ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases)) ? {
     // Common properties
     consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
@@ -233,7 +234,6 @@ var databaseAccount_properties = union({
   } : {}), (!empty(sqlDatabases) ? {
     // SQLDB properties
     disableLocalAuth: disableLocalAuth
-    disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
   } : {}), (!empty(mongodbDatabases) ? {
     // MongoDb properties
     apiProperties: {

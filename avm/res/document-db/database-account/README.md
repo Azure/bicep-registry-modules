@@ -203,6 +203,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'dddamin001'
     // Non-required parameters
+    disableKeyBasedMetadataWriteAccess: true
     location: '<location>'
   }
 }
@@ -225,6 +226,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "dddamin001"
     },
     // Non-required parameters
+    "disableKeyBasedMetadataWriteAccess": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     }
@@ -2125,6 +2129,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    disableKeyBasedMetadataWriteAccess: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -2193,6 +2198,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "disableKeyBasedMetadataWriteAccess": {
+      "value": true
     },
     "location": {
       "value": "<location>"
