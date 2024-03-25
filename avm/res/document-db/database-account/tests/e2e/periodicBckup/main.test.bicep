@@ -45,5 +45,10 @@ module testDeployment '../../../main.bicep' = {
     backupIntervalInMinutes: 300
     backupStorageRedundancy: 'Zone'
     backupRetentionIntervalInHours: 16
+    sqlDatabases: [
+      {
+        name: 'no-containers-specified'
+      }
+    ]
   }
 }

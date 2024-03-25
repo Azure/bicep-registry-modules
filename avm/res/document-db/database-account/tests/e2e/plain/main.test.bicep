@@ -54,5 +54,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         locationName: enforcedLocation
       }
     ]
+    sqlDatabases: [
+      {
+        name: 'no-containers-specified'
+      }
+    ]
   }
 }]

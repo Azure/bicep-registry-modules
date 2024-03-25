@@ -97,6 +97,11 @@ module testDeployment '../../../main.bicep' = {
         }
       }
     ]
+    sqlDatabases: [
+      {
+        name: 'no-containers-specified'
+      }
+    ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'

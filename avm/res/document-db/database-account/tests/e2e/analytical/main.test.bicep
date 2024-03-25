@@ -42,5 +42,10 @@ module testDeployment '../../../main.bicep' = {
     location: enforcedLocation
     enableAnalyticalStorage: true
     name: '${namePrefix}-analytical'
+    sqlDatabases: [
+      {
+        name: 'no-containers-specified'
+      }
+    ]
   }
 }

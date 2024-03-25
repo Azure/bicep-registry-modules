@@ -14,7 +14,7 @@ This module deploys a the connection strings and keys into a key vault specified
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/vaults) |
+| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
 
 ## Parameters
 

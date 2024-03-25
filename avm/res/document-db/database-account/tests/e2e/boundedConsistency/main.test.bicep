@@ -44,5 +44,10 @@ module testDeployment '../../../main.bicep' = {
     defaultConsistencyLevel: 'BoundedStaleness'
     maxIntervalInSeconds: 600
     maxStalenessPrefix: 200000
+    sqlDatabases: [
+      {
+        name: 'no-containers-specified'
+      }
+    ]
   }
 }

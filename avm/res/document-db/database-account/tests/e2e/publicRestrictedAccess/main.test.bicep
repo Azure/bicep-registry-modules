@@ -23,7 +23,7 @@ param serviceShort string = 'dddapres'
 param namePrefix string = '#_namePrefix_#'
 
 // Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
-var enforcedLocation = 'eastus'
+var enforcedLocation = 'northeurope'
 
 // ============ //
 // Dependencies //
@@ -57,15 +57,20 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}${serviceShort}001'
     location: enforcedLocation
     networkRestrictions: {
+      publicNetworkAccess: 'Enabled'
       networkAclBypass: 'AzureServices'
       ipRules: [ '79.0.0.0', '80.0.0.0' ]
-      publicNetworkAccess: 'SecuredByPerimeter'
       virtualNetworkRules: [
         {
           subnetId: nestedDependencies.outputs.subnetResourceId
         }
       ]
     }
+    sqlDatabases: [
+      {
+        name: 'no-containers-specified'
+      }
+    ]
   }
   dependsOn: [
     nestedDependencies

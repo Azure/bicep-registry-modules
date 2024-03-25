@@ -69,5 +69,10 @@ module testDeployment '../../../main.bicep' = {
         locationName: nestedDependencies.outputs.pairedRegionName
       }
     ]
+    sqlDatabases: [
+      {
+        name: 'no-containers-specified'
+      }
+    ]
   }
 }

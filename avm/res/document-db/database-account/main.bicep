@@ -217,13 +217,13 @@ var databaseAccount_properties = union({
     // Common properties
     consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
     enableMultipleWriteLocations: enableMultipleWriteLocations
-    disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
     locations: empty(databaseAccount_locations) ? defaultFailoverLocation : databaseAccount_locations
 
     ipRules: ipRules
     virtualNetworkRules: virtualNetworkRules
     networkAclBypass: networkRestrictions.?networkAclBypass ?? 'AzureServices'
     publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Enabled'
+    isVirtualNetworkFilterEnabled: !empty(ipRules) || !empty(virtualNetworkRules)
 
     capabilities: capabilities
     enableFreeTier: enableFreeTier
@@ -233,6 +233,7 @@ var databaseAccount_properties = union({
   } : {}), (!empty(sqlDatabases) ? {
     // SQLDB properties
     disableLocalAuth: disableLocalAuth
+    disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
   } : {}), (!empty(mongodbDatabases) ? {
     // MongoDb properties
     apiProperties: {
