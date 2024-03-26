@@ -60,9 +60,11 @@ resource inboundNatRule 'Microsoft.Network/loadBalancers/inboundNatRules@2023-04
   properties: {
     frontendPort: frontendPort
     backendPort: backendPort
-    backendAddressPool: !empty(backendAddressPoolName) ? {
-      id: '${loadBalancer.id}/backendAddressPools/${backendAddressPoolName}'
-    } : null
+    backendAddressPool: !empty(backendAddressPoolName)
+      ? {
+          id: '${loadBalancer.id}/backendAddressPools/${backendAddressPoolName}'
+        }
+      : null
     enableFloatingIP: enableFloatingIP
     enableTcpReset: enableTcpReset
     frontendIPConfiguration: {

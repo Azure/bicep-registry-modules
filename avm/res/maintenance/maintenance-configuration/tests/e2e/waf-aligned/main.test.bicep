@@ -36,45 +36,47 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    extensionProperties: {
-      InGuestPatchMode: 'User'
-    }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
-    maintenanceScope: 'InGuestPatch'
-    maintenanceWindow: {
-      duration: '03:00'
-      expirationDateTime: '9999-12-31 23:59:59'
-      recurEvery: 'Day'
-      startDateTime: '2022-12-31 13:00'
-      timeZone: 'W. Europe Standard Time'
-    }
-    namespace: '${serviceShort}ns'
-    visibility: 'Custom'
-    installPatches: {
-      linuxParameters: {
-        classificationsToInclude: null
-        packageNameMasksToExclude: null
-        packageNameMasksToInclude: null
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      extensionProperties: {
+        InGuestPatchMode: 'User'
       }
-      rebootSetting: 'IfRequired'
-      windowsParameters: {
-        classificationsToInclude: [
-          'Critical'
-          'Security'
-        ]
-        kbNumbersToExclude: null
-        kbNumbersToInclude: null
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
+      maintenanceScope: 'InGuestPatch'
+      maintenanceWindow: {
+        duration: '03:00'
+        expirationDateTime: '9999-12-31 23:59:59'
+        recurEvery: 'Day'
+        startDateTime: '2022-12-31 13:00'
+        timeZone: 'W. Europe Standard Time'
+      }
+      namespace: '${serviceShort}ns'
+      visibility: 'Custom'
+      installPatches: {
+        linuxParameters: {
+          classificationsToInclude: null
+          packageNameMasksToExclude: null
+          packageNameMasksToInclude: null
+        }
+        rebootSetting: 'IfRequired'
+        windowsParameters: {
+          classificationsToInclude: [
+            'Critical'
+            'Security'
+          ]
+          kbNumbersToExclude: null
+          kbNumbersToInclude: null
+        }
       }
     }
   }
-}]
+]
