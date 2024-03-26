@@ -21,7 +21,7 @@ param serviceShort string = 'dddaanl'
 param namePrefix string = '#_namePrefix_#'
 
 // Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
-var enforcedLocation = 'eastus'
+var enforcedLocation = 'eastasia'
 
 // ============== //
 // General resources
@@ -42,16 +42,9 @@ module testDeployment '../../../main.bicep' = {
     location: enforcedLocation
     enableAnalyticalStorage: true
     name: '${namePrefix}-analytical'
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: enforcedLocation
-      }
-    ]
     sqlDatabases: [
       {
-        name: 'empty-database'
+        name: 'no-containers-specified'
       }
     ]
   }
