@@ -26,12 +26,15 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         addressPrefix
       ]
     }
-    subnets: map(range(0, 2), i => {
+    subnets: map(
+      range(0, 2),
+      i => {
         name: 'subnet-${i}'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 24, i)
         }
-      })
+      }
+    )
   }
 }
 
@@ -81,7 +84,10 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: keyVault::key
   properties: {
     principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e147488a-f6f5-4113-8e2d-b22465e65bf6') // Key Vault Crypto Service Encryption User
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'e147488a-f6f5-4113-8e2d-b22465e65bf6'
+    ) // Key Vault Crypto Service Encryption User
     principalType: 'ServicePrincipal'
   }
 }

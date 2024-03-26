@@ -5,23 +5,23 @@ param location string = resourceGroup().location
 param storageAccountName string
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
-    name: storageAccountName
-    location: location
-    sku: {
-        name: 'Standard_LRS'
-    }
-    kind: 'StorageV2'
-    properties: {
-        isHnsEnabled: true
-    }
+  name: storageAccountName
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+  properties: {
+    isHnsEnabled: true
+  }
 
-    resource blobService 'blobServices@2022-09-01' = {
-        name: 'default'
+  resource blobService 'blobServices@2022-09-01' = {
+    name: 'default'
 
-        resource container 'containers@2022-09-01' = {
-            name: 'synapsews'
-        }
+    resource container 'containers@2022-09-01' = {
+      name: 'synapsews'
     }
+  }
 }
 
 @description('The resource ID of the created Storage Account.')
