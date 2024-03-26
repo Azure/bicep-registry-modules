@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "1307928694299767068"
+      "version": "0.26.54.24096",
+      "templateHash": "3826907101153138616"
     },
     "name": "DocumentDB Database Account SQL Databases",
     "description": "This module deploys a SQL Database in a CosmosDB Account.",
@@ -135,8 +135,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "8159752253553558916"
+              "version": "0.26.54.24096",
+              "templateHash": "11250469246171251281"
             },
             "name": "DocumentDB Database Account SQL Database Containers",
             "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
@@ -244,6 +244,16 @@
               }
             }
           },
+          "variables": {
+            "copy": [
+              {
+                "name": "partitionKeyPaths",
+                "count": "[length(parameters('paths'))]",
+                "input": "[if(startsWith(parameters('paths')[copyIndex('partitionKeyPaths')], '/'), parameters('paths')[copyIndex('partitionKeyPaths')], format('/{0}', parameters('paths')[copyIndex('partitionKeyPaths')]))]"
+              }
+            ],
+            "containerResourceParams": "[union(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'defaultTtl', parameters('defaultTtl'), 'id', parameters('name'), 'indexingPolicy', if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null()), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, 1)), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()))]"
+          },
           "resources": {
             "databaseAccount::sqlDatabase": {
               "existing": true,
@@ -266,25 +276,7 @@
               "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('sqlDatabaseName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
-                "resource": {
-                  "analyticalStorageTtl": "[parameters('analyticalStorageTtl')]",
-                  "conflictResolutionPolicy": "[parameters('conflictResolutionPolicy')]",
-                  "defaultTtl": "[parameters('defaultTtl')]",
-                  "id": "[parameters('name')]",
-                  "indexingPolicy": "[if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null())]",
-                  "partitionKey": {
-                    "copy": [
-                      {
-                        "name": "paths",
-                        "count": "[length(parameters('paths'))]",
-                        "input": "[if(startsWith(parameters('paths')[copyIndex('paths')], '/'), parameters('paths')[copyIndex('paths')], format('/{0}', parameters('paths')[copyIndex('paths')]))]"
-                      }
-                    ],
-                    "kind": "[parameters('kind')]",
-                    "version": "[if(equals(parameters('kind'), 'MultiHash'), 2, 1)]"
-                  },
-                  "uniqueKeyPolicy": "[if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())]"
-                },
+                "resource": "[variables('containerResourceParams')]",
                 "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(and(equals(parameters('autoscaleSettingsMaxThroughput'), null()), not(equals(parameters('throughput'), -1))), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), null())), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
               },
               "dependsOn": [

@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Enabling continous backups'
-metadata description = 'This instance deploys the module enabling continous backups.'
+metadata name = 'Deploying with a key vault reference to save secrets'
+metadata description = 'This instance deploys the module saving all its secrets in a key vault.'
 
 // ========== //
 // Parameters //
@@ -15,13 +15,13 @@ param resourceGroupName string = 'dep-${namePrefix}-documentdb.databaseaccounts-
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dddacbc'
+param serviceShort string = 'dddaskvs'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
 // Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
-var enforcedLocation = 'eastus'
+var enforcedLocation = 'eastasia'
 
 // ============== //
 // General resources
@@ -29,6 +29,15 @@ var enforcedLocation = 'eastus'
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: resourceGroupName
   location: enforcedLocation
+}
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  params: {
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    location: enforcedLocation
+  }
 }
 
 // ============== //
@@ -40,20 +49,10 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     location: enforcedLocation
-    name: '${namePrefix}-continous-bckup'
-    backupPolicyType: 'Continuous'
-    backupPolicyContinuousTier: 'Continuous7Days'
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: enforcedLocation
-      }
-    ]
-    sqlDatabases: [
-      {
-        name: 'empty-database'
-      }
-    ]
+    name: '${namePrefix}-kv-ref'
+    secretsKeyVault: {
+      keyVaultName: nestedDependencies.outputs.keyVaultName
+      primaryReadonlyConnectionStringSecretName: 'custom-secret-name'
+    }
   }
 }

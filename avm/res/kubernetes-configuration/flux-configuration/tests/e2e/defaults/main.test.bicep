@@ -47,32 +47,34 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    clusterName: nestedDependencies.outputs.clusterName
-    namespace: 'flux-system'
-    scope: 'cluster'
-    sourceKind: 'GitRepository'
-    gitRepository: {
-      repositoryRef: {
-        branch: 'main'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      clusterName: nestedDependencies.outputs.clusterName
+      namespace: 'flux-system'
+      scope: 'cluster'
+      sourceKind: 'GitRepository'
+      gitRepository: {
+        repositoryRef: {
+          branch: 'main'
+        }
+        sshKnownHosts: ''
+        syncIntervalInSeconds: 300
+        timeoutInSeconds: 180
+        url: 'https://github.com/mspnp/aks-baseline'
       }
-      sshKnownHosts: ''
-      syncIntervalInSeconds: 300
-      timeoutInSeconds: 180
-      url: 'https://github.com/mspnp/aks-baseline'
-    }
-    kustomizations: {
-      unified: {
-        path: './cluster-manifests'
+      kustomizations: {
+        unified: {
+          path: './cluster-manifests'
+        }
       }
     }
+    dependsOn: [
+      nestedDependencies
+    ]
   }
-  dependsOn: [
-    nestedDependencies
-  ]
-}]
+]
