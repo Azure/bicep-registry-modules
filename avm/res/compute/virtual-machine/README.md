@@ -1832,7 +1832,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 
 ### Example 7: _Using a host pool to register the VM_
 
-This instance deploys the module and register it in a host pool.
+This instance deploys the module and registers it in a host pool.
 
 
 <details>
