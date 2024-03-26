@@ -62,7 +62,7 @@ module testDeployment '../../../main.bicep' = {
       ipRules: [ '79.0.0.0', '80.0.0.0' ]
       virtualNetworkRules: [
         {
-          subnetId: nestedDependencies.outputs.subnetResourceId
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
     }

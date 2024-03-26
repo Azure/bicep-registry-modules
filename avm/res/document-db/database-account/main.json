@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "8746844117573459141"
+      "templateHash": "3819786231029073936"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -429,7 +429,7 @@
       },
       "nullable": true
     },
-    "failoverLocations": {
+    "failoverLocationsType": {
       "type": "object",
       "properties": {
         "failoverPriority": {
@@ -453,7 +453,7 @@
         }
       }
     },
-    "sqlDatabase": {
+    "sqlDatabaseType": {
       "type": "object",
       "properties": {
         "name": {
@@ -479,7 +479,129 @@
         "containers": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/sqlDatabaseContainer"
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of the container."
+                }
+              },
+              "paths": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minLength": 1,
+                "maxLength": 3,
+                "metadata": {
+                  "description": "Required. List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1."
+                }
+              },
+              "analyticalStorageTtl": {
+                "type": "int",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store."
+                }
+              },
+              "autoscaleSettingsMaxThroughput": {
+                "type": "int",
+                "nullable": true,
+                "maxValue": 1000000,
+                "metadata": {
+                  "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled."
+                }
+              },
+              "conflictResolutionPolicy": {
+                "type": "object",
+                "properties": {
+                  "conflictResolutionPath": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Required if mode=LastWriterWins. The conflict resolution path in the case of LastWriterWins mode."
+                    }
+                  },
+                  "conflictResolutionProcedure": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Required if mode=Custom. The procedure to resolve conflicts in the case of custom mode."
+                    }
+                  },
+                  "mode": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Custom",
+                      "LastWriterWins"
+                    ],
+                    "metadata": {
+                      "description": "Required. Indicates the conflict resolution mode."
+                    }
+                  }
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions."
+                }
+              },
+              "defaultTtl": {
+                "type": "int",
+                "nullable": true,
+                "minValue": -1,
+                "maxValue": 2147483647,
+                "metadata": {
+                  "description": "Optional. Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to \"-1\", it is equal to infinity, and items don't expire by default."
+                }
+              },
+              "indexingPolicy": {
+                "type": "object",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Indexing policy of the container."
+                }
+              },
+              "kind": {
+                "type": "string",
+                "allowedValues": [
+                  "Hash",
+                  "MultiHash"
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Default to Hash. Indicates the kind of algorithm used for partitioning."
+                }
+              },
+              "throughput": {
+                "type": "int",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used."
+                }
+              },
+              "uniqueKeyPolicyKeys": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "paths": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "metadata": {
+                        "description": "List of paths must be unique for each document in the Azure Cosmos DB service"
+                      }
+                    }
+                  }
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service."
+                }
+              }
+            }
           },
           "nullable": true,
           "metadata": {
@@ -488,132 +610,7 @@
         }
       }
     },
-    "sqlDatabaseContainer": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Name of the container."
-          }
-        },
-        "paths": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "minLength": 1,
-          "maxLength": 3,
-          "metadata": {
-            "description": "Required. List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1."
-          }
-        },
-        "analyticalStorageTtl": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store."
-          }
-        },
-        "autoscaleSettingsMaxThroughput": {
-          "type": "int",
-          "nullable": true,
-          "maxValue": 1000000,
-          "metadata": {
-            "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled."
-          }
-        },
-        "conflictResolutionPolicy": {
-          "type": "object",
-          "properties": {
-            "conflictResolutionPath": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Required if mode=LastWriterWins. The conflict resolution path in the case of LastWriterWins mode."
-              }
-            },
-            "conflictResolutionProcedure": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Required if mode=Custom. The procedure to resolve conflicts in the case of custom mode."
-              }
-            },
-            "mode": {
-              "type": "string",
-              "allowedValues": [
-                "Custom",
-                "LastWriterWins"
-              ],
-              "metadata": {
-                "description": "Required. Indicates the conflict resolution mode."
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions."
-          }
-        },
-        "defaultTtl": {
-          "type": "int",
-          "nullable": true,
-          "minValue": -1,
-          "maxValue": 2147483647,
-          "metadata": {
-            "description": "Optional. Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to \"-1\", it is equal to infinity, and items don't expire by default."
-          }
-        },
-        "indexingPolicy": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Indexing policy of the container."
-          }
-        },
-        "kind": {
-          "type": "string",
-          "allowedValues": [
-            "Hash",
-            "MultiHash"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Default to Hash. Indicates the kind of algorithm used for partitioning."
-          }
-        },
-        "throughput": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used."
-          }
-        },
-        "uniqueKeyPolicyKeys": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "paths": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "metadata": {
-                  "description": "List of paths must be unique for each document in the Azure Cosmos DB service"
-                }
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service."
-          }
-        }
-      }
-    },
-    "secretsKeyVault": {
+    "secretsKeyVaultType": {
       "type": "object",
       "properties": {
         "keyVaultName": {
@@ -687,7 +684,7 @@
         }
       }
     },
-    "networkRestrictionsConfig": {
+    "networkRestrictionsType": {
       "type": "object",
       "properties": {
         "ipRules": {
@@ -696,7 +693,7 @@
             "type": "string"
           },
           "metadata": {
-            "description": "Optional. Default to []. List of Ip or CIDR ranges."
+            "description": "Optional. Default to []. A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: \"23.40.210.245\" or \"23.40.210.0/8\"."
           }
         },
         "networkAclBypass": {
@@ -724,21 +721,18 @@
         "virtualNetworkRules": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/networkVnetRestrictionsConfig"
+            "type": "object",
+            "properties": {
+              "subnetResourceId": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Resource ID of a subnet."
+                }
+              }
+            }
           },
           "metadata": {
             "description": "Optional. Default to []. List of Virtual Network ACL rules configured for the Cosmos DB account.."
-          }
-        }
-      }
-    },
-    "networkVnetRestrictionsConfig": {
-      "type": "object",
-      "properties": {
-        "subnetId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: “23.40.210.245” or “23.40.210.0/8”."
           }
         }
       }
@@ -784,7 +778,7 @@
     "locations": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/failoverLocations"
+        "$ref": "#/definitions/failoverLocationsType"
       },
       "defaultValue": [],
       "metadata": {
@@ -881,7 +875,7 @@
     "sqlDatabases": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/sqlDatabase"
+        "$ref": "#/definitions/sqlDatabaseType"
       },
       "defaultValue": [],
       "metadata": {
@@ -1003,15 +997,15 @@
         "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
       }
     },
-    "secretsKeyVaultReference": {
-      "$ref": "#/definitions/secretsKeyVault",
+    "secretsKeyVault": {
+      "$ref": "#/definitions/secretsKeyVaultType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Key vault reference and secret settings to add the connection strings and keys generated by the cosmosdb account."
       }
     },
     "networkRestrictions": {
-      "$ref": "#/definitions/networkRestrictionsConfig",
+      "$ref": "#/definitions/networkRestrictionsType",
       "nullable": true,
       "metadata": {
         "description": "Optional. The network configuration of this module."
@@ -2781,11 +2775,11 @@
       ]
     },
     "keyVault": {
-      "condition": "[not(equals(parameters('secretsKeyVaultReference'), null()))]",
+      "condition": "[not(equals(parameters('secretsKeyVault'), null()))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
-      "resourceGroup": "[coalesce(tryGet(parameters('secretsKeyVaultReference'), 'resourceGroupName'), resourceGroup().name)]",
+      "resourceGroup": "[coalesce(tryGet(parameters('secretsKeyVault'), 'resourceGroupName'), resourceGroup().name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2793,40 +2787,40 @@
         "mode": "Incremental",
         "parameters": {
           "keyVaultName": {
-            "value": "[parameters('secretsKeyVaultReference').keyVaultName]"
+            "value": "[parameters('secretsKeyVault').keyVaultName]"
           },
           "keySecrets": {
             "value": [
               {
-                "secretName": "[coalesce(tryGet(parameters('secretsKeyVaultReference'), 'primaryWriteKeySecretName'), 'Primary-Write-Key')]",
+                "secretName": "[coalesce(tryGet(parameters('secretsKeyVault'), 'primaryWriteKeySecretName'), 'Primary-Write-Key')]",
                 "secretValue": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').primaryMasterKey]"
               },
               {
-                "secretName": "[coalesce(tryGet(parameters('secretsKeyVaultReference'), 'primaryReadOnlyKeySecretName'), 'Primary-Readonly-Key')]",
+                "secretName": "[coalesce(tryGet(parameters('secretsKeyVault'), 'primaryReadOnlyKeySecretName'), 'Primary-Readonly-Key')]",
                 "secretValue": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').primaryReadonlyMasterKey]"
               },
               {
-                "secretName": "[coalesce(tryGet(parameters('secretsKeyVaultReference'), 'primaryWriteConnectionStringSecretName'), 'Primary-Write-ConnectionString')]",
+                "secretName": "[coalesce(tryGet(parameters('secretsKeyVault'), 'primaryWriteConnectionStringSecretName'), 'Primary-Write-ConnectionString')]",
                 "secretValue": "[listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[0].connectionString]"
               },
               {
-                "secretName": "[coalesce(tryGet(parameters('secretsKeyVaultReference'), 'primaryReadonlyConnectionStringSecretName'), 'Primary-Readonly-ConnectionString')]",
+                "secretName": "[coalesce(tryGet(parameters('secretsKeyVault'), 'primaryReadonlyConnectionStringSecretName'), 'Primary-Readonly-ConnectionString')]",
                 "secretValue": "[listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[2].connectionString]"
               },
               {
-                "secretName": "[coalesce(tryGet(parameters('secretsKeyVaultReference'), 'secondaryWriteKeySecretName'), 'Secondary-Write-Key')]",
+                "secretName": "[coalesce(tryGet(parameters('secretsKeyVault'), 'secondaryWriteKeySecretName'), 'Secondary-Write-Key')]",
                 "secretValue": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').secondaryMasterKey]"
               },
               {
-                "secretName": "[coalesce(tryGet(parameters('secretsKeyVaultReference'), 'secondaryReadonlyKeySecretName'), 'Secondary-Readonly-Key')]",
+                "secretName": "[coalesce(tryGet(parameters('secretsKeyVault'), 'secondaryReadonlyKeySecretName'), 'Secondary-Readonly-Key')]",
                 "secretValue": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').secondaryReadonlyMasterKey]"
               },
               {
-                "secretName": "[coalesce(tryGet(parameters('secretsKeyVaultReference'), 'secondaryWriteConnectionStringSecretName'), 'Secondary-Write-ConnectionString')]",
+                "secretName": "[coalesce(tryGet(parameters('secretsKeyVault'), 'secondaryWriteConnectionStringSecretName'), 'Secondary-Write-ConnectionString')]",
                 "secretValue": "[listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[1].connectionString]"
               },
               {
-                "secretName": "[coalesce(tryGet(parameters('secretsKeyVaultReference'), 'secondaryReadonlyConnectionStringSecretName'), 'Secondary-Readonly-ConnectionString')]",
+                "secretName": "[coalesce(tryGet(parameters('secretsKeyVault'), 'secondaryReadonlyConnectionStringSecretName'), 'Secondary-Readonly-ConnectionString')]",
                 "secretValue": "[listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[3].connectionString]"
               }
             ]

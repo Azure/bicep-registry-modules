@@ -16,3 +16,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
     tenantId: subscription().tenantId
   }
 }
+
+@description('The name of the Key Vault created.')
+output keyVaultName string = keyVaultName

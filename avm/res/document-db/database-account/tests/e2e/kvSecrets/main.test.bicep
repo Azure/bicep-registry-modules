@@ -22,7 +22,6 @@ param namePrefix string = '#_namePrefix_#'
 
 // Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
 var enforcedLocation = 'eastasia'
-var keyVaultName = 'dep-${namePrefix}-kv-${serviceShort}'
 
 // ============== //
 // General resources
@@ -36,7 +35,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    keyVaultName: keyVaultName
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     location: enforcedLocation
   }
 }
@@ -51,8 +50,8 @@ module testDeployment '../../../main.bicep' = {
   params: {
     location: enforcedLocation
     name: '${namePrefix}-kv-ref'
-    secretsKeyVaultReference: {
-      keyVaultName: keyVaultName
+    secretsKeyVault: {
+      keyVaultName: nestedDependencies.outputs.keyVaultName
       primaryReadonlyConnectionStringSecretName: 'custom-secret-name'
     }
   }
