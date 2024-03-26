@@ -136,8 +136,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
       if ($isOrphaned) {
         $pathExisting = Test-Path $orphanedFilePath
         $pathExisting | Should -Be $true -Because 'The module is orphaned.'
-      }
-      else {
+      } else {
         $pathExisting = Test-Path $orphanedFilePath
         $pathExisting | Should -Be $false -Because ('The module is not orphaned but owned by [{0}].' -f $relevantCSVRow.PrimaryModuleOwnerGHHandle)
       }
