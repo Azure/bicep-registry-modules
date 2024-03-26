@@ -164,36 +164,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         }
       }
     ]
-    natRuleCollections: [
-      {
-        name: 'allow-nat-rules'
-        properties: {
-          action: {
-            type: 'Dnat'
-          }
-          priority: 100
-          rules: [
-            {
-              name: 'allow'
-              protocols: [
-                'TCP'
-              ]
-              sourceAddresses: [
-                '*'
-              ]
-              destinationAddresses: [
-                '10.0.0.4'
-              ]
-              destinationPorts: [
-                '8080'
-              ]
-              translatedAddress: '192.168.1.0'
-              translatedPort: '8080'
-            }
-          ]
-        }
-      }
-    ]
     zones: [
       '1'
       '2'
