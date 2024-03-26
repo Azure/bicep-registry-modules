@@ -77,6 +77,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
+    enableTelemetry: enableTelemetry
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
     domainName: '${namePrefix}.onmicrosoft.com'

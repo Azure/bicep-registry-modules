@@ -61,6 +61,7 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
       }
     ]
     enableTelemetry: '<enableTelemetry>'
+    externalAccess: 'Disabled'
     ldaps: 'Enabled'
     location: '<location>'
     lock: {
@@ -121,6 +122,9 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
     },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
+    },
+    "externalAccess": {
+      "value": "Disabled"
     },
     "ldaps": {
       "value": "Enabled"
@@ -196,6 +200,7 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    enableTelemetry: '<enableTelemetry>'
     externalAccess: 'Disabled'
     ldaps: 'Enabled'
     location: '<location>'
@@ -254,6 +259,9 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "externalAccess": {
       "value": "Disabled"
@@ -929,6 +937,10 @@ Follow the steps [Create required Microsoft Entra resources](https://learn.micro
    ```powershell
    New-MgServicePrincipal -AppId 2565bd9d-da50-47d4-8b85-4c97f669dc36 -DisplayName "Domain Controller Services"
    ```
+
+#### GitHub Action deployment testing
+
+In order to provision Entra Domain Services, the Service Principal that has been set up in [Setup your Azure test environment](https://azure.github.io/Azure-Verified-Modules/contributing/bicep/bicep-contribution-flow/#1-setup-your-azure-test-environment) needs two additional roles, as of [Tutorial: Create and configure a Microsoft Entra Domain Services managed domain - Prerequisites](https://learn.microsoft.com/en-us/entra/identity/domain-services/tutorial-create-instance#prerequisites).
 
 ### Network Security Group (NSG) requirements for AADDS
 

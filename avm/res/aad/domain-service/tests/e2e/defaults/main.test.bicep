@@ -82,6 +82,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
     domainName: '${namePrefix}.onmicrosoft.com'
+    externalAccess: 'Disabled'
     additionalRecipients: [
       '${namePrefix}@noreply.github.com'
     ]
