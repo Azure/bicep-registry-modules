@@ -512,37 +512,6 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    natRuleCollections: [
-      {
-        name: 'allow-nat-rules'
-        properties: {
-          action: {
-            type: 'Dnat'
-          }
-          priority: 100
-          rules: [
-            {
-              description: 'Allow nat rules'
-              destinationAddresses: [
-                '10.0.0.4'
-              ]
-              destinationPorts: [
-                '8080'
-              ]
-              name: 'allow'
-              protocols: [
-                'TCP'
-              ]
-              sourceAddresses: [
-                '*'
-              ]
-              translatedAddress: '192.168.1.0'
-              translatedPort: '8080'
-            }
-          ]
-        }
-      }
-    ]
     networkRuleCollections: [
       {
         name: 'allow-network-rules'
@@ -719,39 +688,6 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "natRuleCollections": {
-      "value": [
-        {
-          "name": "allow-nat-rules",
-          "properties": {
-            "action": {
-              "type": "Dnat"
-            },
-            "priority": 100,
-            "rules": [
-              {
-                "description": "Allow nat rules",
-                "destinationAddresses": [
-                  "10.0.0.4"
-                ],
-                "destinationPorts": [
-                  "8080"
-                ],
-                "name": "allow",
-                "protocols": [
-                  "TCP"
-                ],
-                "sourceAddresses": [
-                  "*"
-                ],
-                "translatedAddress": "192.168.1.0",
-                "translatedPort": "8080"
-              }
-            ]
-          }
-        }
-      ]
     },
     "networkRuleCollections": {
       "value": [
@@ -930,36 +866,6 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       }
     ]
     location: '<location>'
-    natRuleCollections: [
-      {
-        name: 'allow-nat-rules'
-        properties: {
-          action: {
-            type: 'Dnat'
-          }
-          priority: 100
-          rules: [
-            {
-              destinationAddresses: [
-                '10.0.0.4'
-              ]
-              destinationPorts: [
-                '8080'
-              ]
-              name: 'allow'
-              protocols: [
-                'TCP'
-              ]
-              sourceAddresses: [
-                '*'
-              ]
-              translatedAddress: '192.168.1.0'
-              translatedPort: '8080'
-            }
-          ]
-        }
-      }
-    ]
     networkRuleCollections: [
       {
         name: 'allow-network-rules'
@@ -1094,38 +1000,6 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "natRuleCollections": {
-      "value": [
-        {
-          "name": "allow-nat-rules",
-          "properties": {
-            "action": {
-              "type": "Dnat"
-            },
-            "priority": 100,
-            "rules": [
-              {
-                "destinationAddresses": [
-                  "10.0.0.4"
-                ],
-                "destinationPorts": [
-                  "8080"
-                ],
-                "name": "allow",
-                "protocols": [
-                  "TCP"
-                ],
-                "sourceAddresses": [
-                  "*"
-                ],
-                "translatedAddress": "192.168.1.0",
-                "translatedPort": "8080"
-              }
-            ]
-          }
-        }
-      ]
     },
     "networkRuleCollections": {
       "value": [
