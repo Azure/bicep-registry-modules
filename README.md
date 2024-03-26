@@ -1,4 +1,4 @@
-<h1 style="color: steelblue;">⚠️ Upcoming changes ⚠️</h1>
+<h1 style="color: steelblue;">⚠️ Replaced ⚠️</h1>
 
 To provide our customers with a unified experience, Azure Verified Modules ([AVM](https://aka.ms/AVM)) will become the single Microsoft standard for Bicep modules, published to the Public Bicep Registry, via this repository.
 
