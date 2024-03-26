@@ -61,10 +61,10 @@ function Publish-ModuleFromPathToPBR {
   $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
 
   # 4.Create release tag
-  $tagName = New-ModuleReleaseTag -ModuleFolderPath $moduleFolderPath -TargetVersion $targetVersion
+  $gitTagName = New-ModuleReleaseTag -ModuleFolderPath $moduleFolderPath -TargetVersion $targetVersion
 
   # 5. Get the documentation link
-  $documentationUri = Get-ModuleReadmeLink -TagName $tagName -ModuleFolderPath $moduleFolderPath
+  $documentationUri = Get-ModuleReadmeLink -TagName $gitTagName -ModuleFolderPath $moduleFolderPath
 
   # 6. Replace telemetry version value (in Bicep)
   $tokenConfiguration = @{
@@ -108,5 +108,6 @@ function Publish-ModuleFromPathToPBR {
   return @{
     version             = $targetVersion
     publishedModuleName = $publishedModuleName
+    gitTagName          = $gitTagName
   }
 }
