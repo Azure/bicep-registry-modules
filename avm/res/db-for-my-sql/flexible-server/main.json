@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "1650585461086261753"
+      "templateHash": "4782564139886750764"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server.",
@@ -360,7 +360,7 @@
     },
     "geoRedundantBackup": {
       "type": "string",
-      "defaultValue": "Disabled",
+      "defaultValue": "Enabled",
       "allowedValues": [
         "Disabled",
         "Enabled"

@@ -54,7 +54,7 @@ param backupRetentionDays int = 7
   'Enabled'
 ])
 @description('Optional. A value indicating whether Geo-Redundant backup is enabled on the server. If "Enabled" and "cMKKeyName" is not empty, then "geoBackupCMKKeyVaultResourceId" and "cMKUserAssignedIdentityResourceId" are also required.')
-param geoRedundantBackup string = 'Disabled'
+param geoRedundantBackup string = 'Enabled'
 
 @allowed([
   'Default'
