@@ -112,8 +112,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
       # =========
       try {
         $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
-      }
-      catch {
+      } catch {
         $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
         Write-Error $errorMessage
         Set-ItResult -Skipped -Because $errorMessage
@@ -427,17 +426,13 @@ Describe 'Module tests' -Tag 'Module' {
         $SchemaArray = @()
         if ($Schemaverion -eq $RgDeploymentSchema) {
           $SchemaOutput = $true
-        }
-        elseIf ($Schemaverion -eq $SubscriptionDeploymentSchema) {
+        } elseIf ($Schemaverion -eq $SubscriptionDeploymentSchema) {
           $SchemaOutput = $true
-        }
-        elseIf ($Schemaverion -eq $MgDeploymentSchema) {
+        } elseIf ($Schemaverion -eq $MgDeploymentSchema) {
           $SchemaOutput = $true
-        }
-        elseIf ($Schemaverion -eq $TenantDeploymentSchema) {
+        } elseIf ($Schemaverion -eq $TenantDeploymentSchema) {
           $SchemaOutput = $true
-        }
-        else {
+        } else {
           $SchemaOutput = $false
         }
         $SchemaArray += $SchemaOutput
@@ -563,7 +558,7 @@ Describe 'Module tests' -Tag 'Module' {
             $incorrectParameters += $parameter
           }
         }
-        $incorrectParameters | Should -BeNullOrEmpty -Because ("each parameter in the template file should have a description starting with a 'Category' prefix like 'Required.' and ending with a dot. Found incorrect items: [{0}]." -f ($incorrectParameters -join ', '))
+        $incorrectParameters | Should -BeNullOrEmpty -Because ('each parameter in the template file should have a description starting with a "Category" prefix like "Required. " and ending with a dot. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
       }
 
       # TODO: Update specs with note
@@ -644,7 +639,7 @@ Describe 'Module tests' -Tag 'Module' {
             @{
               parameterName  = 'roleAssignments'
               udtName        = 'roleAssignmentType'
-              udtExpectedUrl = "$interfaceBase/diagnostic-settings/udt-schema"
+              udtExpectedUrl = "$interfaceBase/role-assignments/udt-schema"
               link           = "$interfaceBase/role-assignments"
             }
             @{
@@ -710,15 +705,13 @@ Describe 'Module tests' -Tag 'Module' {
               $implementedSchema = $templateFileContentBicep[$implementedSchemaStartIndex..$implementedSchemaEndIndex]
 
               try {
-                $rawReponse = Invoke-WebRequest -Uri $expectedUdtUrl
-                if (($rawReponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
-                  $expectedSchemaFull = $rawReponse.Content -split '\n'
-                }
-                else {
+                $rawResponse = Invoke-WebRequest -Uri $expectedUdtUrl
+                if (($rawResponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
+                  $expectedSchemaFull = $rawResponse.Content -split '\n'
+                } else {
                   throw "Failed to fetch schema from [$expectedUdtUrl]. Skipping schema check"
                 }
-              }
-              catch {
+              } catch {
                 Write-Warning "Failed to fetch schema from [$expectedUdtUrl]. Skipping schema check"
                 return
               }
@@ -742,8 +735,7 @@ Describe 'Module tests' -Tag 'Module' {
               foreach ($finding in (Compare-Object $implementedSchema $expectedSchema)) {
                 if ($finding.SideIndicator -eq '=>') {
                   $formattedDiff += ('+ {0}' -f $finding.InputObject)
-                }
-                elseif ($finding.SideIndicator -eq '<=') {
+                } elseif ($finding.SideIndicator -eq '<=') {
                   $formattedDiff += ('- {0}' -f $finding.InputObject)
                 }
               }
@@ -760,8 +752,7 @@ Describe 'Module tests' -Tag 'Module' {
                 }
               }
             }
-          }
-          else {
+          } else {
             Set-ItResult -Skipped -Because "the module template has no [$parameterName] parameter."
           }
         }
@@ -774,8 +765,7 @@ Describe 'Module tests' -Tag 'Module' {
 
           if ($templateFileContent.definitions.Keys -contains 'managedIdentitiesType' -and $templateFileContent.definitions.managedIdentitiesType.properties.keys -contains 'systemAssigned') {
             $templateFileContent.outputs.Keys | Should -Contain 'systemAssignedMIPrincipalId' -Because 'The AVM specs require a this output. For information please review the [AVM Specs](https://aka.ms/avm/interfaces/managed-identities).'
-          }
-          else {
+          } else {
             Set-ItResult -Skipped -Because 'the module template has no [managedIdentitiesType] UDT definition or does not support system-assigned-identities.'
           }
         }
@@ -788,8 +778,7 @@ Describe 'Module tests' -Tag 'Module' {
 
           if ($templateFileContent.parameters.Keys -contains 'tags') {
             $templateFileContent.parameters.tags.nullable | Should -Be $true -Because 'The AVM specs require a specific format. For information please review the [AVM Specs](https://aka.ms/avm/interfaces/tags).'
-          }
-          else {
+          } else {
             Set-ItResult -Skipped -Because 'the module template has no [tags] parameter.'
           }
         }
@@ -814,8 +803,7 @@ Describe 'Module tests' -Tag 'Module' {
         foreach ($Variab in $Variable) {
           if ($Variab.substring(0, 1) -cnotmatch '[a-z]' -or $Variab -match '-') {
             $CamelCasingFlag += $false
-          }
-          else {
+          } else {
             $CamelCasingFlag += $true
           }
         }
@@ -833,8 +821,7 @@ Describe 'Module tests' -Tag 'Module' {
         # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
         if ($templateFileContent.resources.GetType().Name -eq 'Object[]') {
           $templateResources = $templateFileContent.resources
-        }
-        else {
+        } else {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
@@ -851,8 +838,7 @@ Describe 'Module tests' -Tag 'Module' {
         # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
         if ($templateFileContent.resources.GetType().Name -eq 'Object[]') {
           $templateResources = $templateFileContent.resources
-        }
-        else {
+        } else {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
@@ -875,8 +861,7 @@ Describe 'Module tests' -Tag 'Module' {
         # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
         if ($templateFileContent.resources.GetType().Name -eq 'Object[]') {
           $templateResources = $templateFileContent.resources
-        }
-        else {
+        } else {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
@@ -905,8 +890,7 @@ Describe 'Module tests' -Tag 'Module' {
         # =========
         try {
           $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
-        }
-        catch {
+        } catch {
           $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
           Write-Error $errorMessage
           Set-ItResult -Skipped -Because $errorMessage
@@ -932,8 +916,7 @@ Describe 'Module tests' -Tag 'Module' {
         # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
         if ($templateFileContent.resources.GetType().Name -eq 'Object[]') {
           $templateResources = $templateFileContent.resources
-        }
-        else {
+        } else {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
         $telemetryDeploymentName = ($templateResources | Where-Object { $_.condition -like "*telemetry*" }).name # The AVM telemetry prefix
@@ -954,8 +937,7 @@ Describe 'Module tests' -Tag 'Module' {
         foreach ($Output in $Outputs) {
           if ($Output.substring(0, 1) -cnotmatch '[a-z]' -or $Output -match '-' -or $Output -match '_') {
             $CamelCasingFlag += $false
-          }
-          else {
+          } else {
             $CamelCasingFlag += $true
           }
         }
@@ -1033,8 +1015,7 @@ Describe 'Module tests' -Tag 'Module' {
         $readMeFileContentHeader = (Get-Content -Path $readMeFilePath)[0]
         if ($readMeFileContentHeader -match '^.*`\[(.+)\]`.*') {
           $primaryResourceType = $matches[1]
-        }
-        else {
+        } else {
           Write-Error "Cannot identity primary resource type in readme header [$readMeFileContentHeader] and cannot execute the test."
           return
         }
@@ -1042,8 +1023,7 @@ Describe 'Module tests' -Tag 'Module' {
         # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
         if ($templateFileContent.resources.GetType().Name -eq 'Object[]') {
           $templateResources = $templateFileContent.resources
-        }
-        else {
+        } else {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
@@ -1068,8 +1048,7 @@ Describe 'Module tests' -Tag 'Module' {
         $readMeFileContentHeader = (Get-Content -Path $readMeFilePath)[0]
         if ($readMeFileContentHeader -match '^.*`\[(.+)\]`.*') {
           $primaryResourceType = $matches[1]
-        }
-        else {
+        } else {
           Write-Error "Cannot identity primary resource type in readme header [$readMeFileContentHeader] and cannot execute the test."
           return
         }
@@ -1077,8 +1056,7 @@ Describe 'Module tests' -Tag 'Module' {
         # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
         if ($templateFileContent.resources.GetType().Name -eq 'Object[]') {
           $templateResources = $templateFileContent.resources
-        }
-        else {
+        } else {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
@@ -1245,8 +1223,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
 
       if (($testFileContent | Out-String) -match "param serviceShort string = '(.*)'") {
         $Matches[1] | Should -BeLike '*min'
-      }
-      else {
+      } else {
         Set-ItResult -Skipped -Because 'the module test deployment file should contain a parameter [serviceShort] using the syntax [param serviceShort string = ''*min''] but it doesn''t.'
       }
     }
@@ -1259,8 +1236,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
 
       if (($testFileContent | Out-String) -match "param serviceShort string = '(.*)'") {
         $Matches[1] | Should -BeLike '*max'
-      }
-      else {
+      } else {
         Set-ItResult -Skipped -Because 'the module test deployment file should contain a parameter [serviceShort] using the syntax [param serviceShort string = ''*max''] but it doesn''t.'
       }
     }
@@ -1273,8 +1249,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
 
       if (($testFileContent | Out-String) -match "param serviceShort string = '(.*)'") {
         $Matches[1] | Should -BeLike '*waf'
-      }
-      else {
+      } else {
         Set-ItResult -Skipped -Because 'the module test deployment file should contain a parameter [serviceShort] using the syntax [param serviceShort string = ''*waf''] but it doesn''t.'
       }
     }
@@ -1304,13 +1279,13 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       ($testFileContent | Out-String) | Should -Match "param namePrefix string = '#_namePrefix_#'" -Because 'The test CI needs this value to ensure that deployed resources have unique names per fork.'
     }
 
-    It "[<moduleFolderName>] Bicep test deployment files should invoke test like [`module testDeployment '../.*main.bicep' = {`] for test case [<testName>]" -TestCases $deploymentTestFileTestCases {
+    It "[<moduleFolderName>] Bicep test deployment files should invoke test like [`module testDeployment '../.*main.bicep' = [ or {`] for test case [<testName>]" -TestCases $deploymentTestFileTestCases {
 
       param(
         [object[]] $testFileContent
       )
 
-      $testIndex = ($testFileContent | Select-String ("^module testDeployment '..\/.*main.bicep' = (\[for .+: )?{$") | ForEach-Object { $_.LineNumber - 1 })[0]
+      $testIndex = ($testFileContent | Select-String ("^module testDeployment '..\/.*main.bicep' = .*[\[|\{]$") | ForEach-Object { $_.LineNumber - 1 })[0]
 
       $testIndex -ne -1 | Should -Be $true -Because 'the module test invocation should be in the expected format to allow identification.'
     }
@@ -1346,8 +1321,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
   try {
     $apiSpecs = Invoke-WebRequest -Uri $ApiSpecsFileUri
     $ApiVersions = ConvertFrom-Json $apiSpecs.Content -AsHashtable
-  }
-  catch {
+  } catch {
     Write-Warning "Failed to download API specs file from [$ApiSpecsFileUri]. Skipping API tests"
     Set-ItResult -Skipped -Because "Failed to download API specs file from [$ApiSpecsFileUri]. Skipping API tests."
     return
@@ -1459,8 +1433,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
       # We allow the latest 5 including previews (in case somebody wants to use preview), or the latest 3 non-preview
       $approvedApiVersions += $resourceTypeApiVersions | Select-Object -Last 5
       $approvedApiVersions += $resourceTypeApiVersions | Where-Object { $_ -notlike '*-preview' } | Select-Object -Last 5
-    }
-    else {
+    } else {
       # We allow the latest 5 non-preview preview
       $approvedApiVersions += $resourceTypeApiVersions | Where-Object { $_ -notlike '*-preview' } | Select-Object -Last 5
     }
@@ -1473,8 +1446,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
 
       # The original failed test was
       # $approvedApiVersions | Should -Contain $TargetApi
-    }
-    else {
+    } else {
       # Provide a warning if an API version is second to next to expire.
       $indexOfVersion = $approvedApiVersions.IndexOf($TargetApi)
 
