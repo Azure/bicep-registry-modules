@@ -2937,12 +2937,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`extensionAntiMalwareConfig`](#parameter-extensionantimalwareconfig) | object | The configuration for the [Anti Malware] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionAzureDiskEncryptionConfig`](#parameter-extensionazurediskencryptionconfig) | object | The configuration for the [Azure Disk Encryption] extension. Must at least contain the ["enabled": true] property to be executed. Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys. |
 | [`extensionCustomScriptConfig`](#parameter-extensioncustomscriptconfig) | object | The configuration for the [Custom Script] extension. Must at least contain the ["enabled": true] property to be executed. |
-| [`extensionCustomScriptProtectedSetting`](#parameter-extensioncustomscriptprotectedsetting) | secureObject | Any object that contains the extension specific protected settings. |
+| [`extensionCustomScriptProtectedSetting`](#parameter-extensioncustomscriptprotectedsetting) | secureObject | An object that contains the extension specific protected settings. |
 | [`extensionDependencyAgentConfig`](#parameter-extensiondependencyagentconfig) | object | The configuration for the [Dependency Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionDomainJoinConfig`](#parameter-extensiondomainjoinconfig) | object | The configuration for the [Domain Join] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionDomainJoinPassword`](#parameter-extensiondomainjoinpassword) | securestring | Required if name is specified. Password of the user specified in user parameter. |
 | [`extensionDSCConfig`](#parameter-extensiondscconfig) | object | The configuration for the [Desired State Configuration] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionGuestConfigurationExtension`](#parameter-extensionguestconfigurationextension) | object | The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy. |
+| [`extensionGuestConfigurationExtensionProtectedSettings`](#parameter-extensionguestconfigurationextensionprotectedsettings) | secureObject | An object that contains the extension specific protected settings. |
 | [`extensionHostPoolRegistration`](#parameter-extensionhostpoolregistration) | object | The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy. |
 | [`extensionMonitoringAgentConfig`](#parameter-extensionmonitoringagentconfig) | object | The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionNetworkWatcherAgentConfig`](#parameter-extensionnetworkwatcheragentconfig) | object | The configuration for the [Network Watcher Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
@@ -3279,7 +3280,7 @@ The configuration for the [Custom Script] extension. Must at least contain the [
 
 ### Parameter: `extensionCustomScriptProtectedSetting`
 
-Any object that contains the extension specific protected settings.
+An object that contains the extension specific protected settings.
 
 - Required: No
 - Type: secureObject
@@ -3344,6 +3345,14 @@ The configuration for the [Guest Configuration] extension. Must at least contain
       enabled: false
   }
   ```
+
+### Parameter: `extensionGuestConfigurationExtensionProtectedSettings`
+
+An object that contains the extension specific protected settings.
+
+- Required: No
+- Type: secureObject
+- Default: `{}`
 
 ### Parameter: `extensionHostPoolRegistration`
 

@@ -192,9 +192,13 @@ param extensionGuestConfigurationExtension object = {
 @description('Optional. The guest configuration for the virtual machine. Needs the Guest Configuration extension to be enabled.')
 param guestConfiguration object = {}
 
-@description('Optional. Any object that contains the extension specific protected settings.')
+@description('Optional. An object that contains the extension specific protected settings.')
 @secure()
 param extensionCustomScriptProtectedSetting object = {}
+
+@description('Optional. An object that contains the extension specific protected settings.')
+@secure()
+param extensionGuestConfigurationExtensionProtectedSettings object = {}
 
 // Shared parameters
 @description('Optional. Location for all resources.')
@@ -913,9 +917,7 @@ module vm_azureGuestConfigurationExtension 'extension/main.bicep' = if (extensio
     settings: contains(extensionGuestConfigurationExtension, 'settings') 
      ? extensionGuestConfigurationExtension.settings 
      : {}
-    protectedSettings: contains(extensionGuestConfigurationExtension, 'protectedSettings') 
-     ? extensionGuestConfigurationExtension.protectedSettings 
-     : {}
+    protectedSettings: extensionGuestConfigurationExtensionProtectedSettings
     tags: extensionGuestConfigurationExtension.?tags ?? tags
   }
   dependsOn: [
