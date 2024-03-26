@@ -107,7 +107,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.2.1' = if (empty(bastionSubnetPublicIpResourceId)) {
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.3.2' = if (empty(bastionSubnetPublicIpResourceId)) {
   name: '${uniqueString(deployment().name, location)}-Bastion-PIP'
   params: {
     name: publicIPAddressObject.name
@@ -115,14 +115,14 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.2.1' = if 
     location: location
     lock: lock
     diagnosticSettings: publicIPAddressObject.?diagnosticSettings
-    publicIPAddressVersion: contains(publicIPAddressObject, 'publicIPAddressVersion') ? publicIPAddressObject.publicIPAddressVersion : 'IPv4'
-    publicIPAllocationMethod: contains(publicIPAddressObject, 'publicIPAllocationMethod') ? publicIPAddressObject.publicIPAllocationMethod : 'Static'
-    publicIpPrefixResourceId: contains(publicIPAddressObject, 'publicIPPrefixResourceId') ? publicIPAddressObject.publicIPPrefixResourceId : ''
-    roleAssignments: contains(publicIPAddressObject, 'roleAssignments') ? publicIPAddressObject.roleAssignments : []
-    skuName: contains(publicIPAddressObject, 'skuName') ? publicIPAddressObject.skuName : 'Standard'
-    skuTier: contains(publicIPAddressObject, 'skuTier') ? publicIPAddressObject.skuTier : 'Regional'
+    publicIPAddressVersion: publicIPAddressObject.?publicIPAddressVersion
+    publicIPAllocationMethod: publicIPAddressObject.?publicIPAllocationMethod
+    publicIpPrefixResourceId: publicIPAddressObject.?publicIPPrefixResourceId
+    roleAssignments: publicIPAddressObject.?roleAssignments
+    skuName: publicIPAddressObject.?skuName
+    skuTier: publicIPAddressObject.?skuTier
     tags: publicIPAddressObject.?tags ?? tags
-    zones: contains(publicIPAddressObject, 'zones') ? publicIPAddressObject.zones : []
+    zones: publicIPAddressObject.?zones
   }
 }
 
