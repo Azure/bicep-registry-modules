@@ -53,9 +53,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     location: resourceLocation
     kind: 'functionapp'
     serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
-    siteConfig: {
-      alwaysOn: true
-    }
   }
   dependsOn: [
     nestedDependencies

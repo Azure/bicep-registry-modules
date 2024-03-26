@@ -53,12 +53,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     location: resourceLocation
     kind: 'app'
     serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
-    siteConfig: {
-      healthCheckPath: '/healthz'
-      alwaysOn: true
-    }
   }
-  
+
   dependsOn: [
     nestedDependencies
   ]
