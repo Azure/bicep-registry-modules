@@ -65,9 +65,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
     location: '<location>'
-    siteConfig: {
-      alwaysOn: true
-    }
   }
 }
 ```
@@ -97,11 +94,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "siteConfig": {
-      "value": {
-        "alwaysOn": true
-      }
     }
   }
 }
@@ -659,12 +651,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
     location: '<location>'
-    siteConfig: {
-      alwaysOn: true
-      healthCheckPath: '/healthz'
-    }
   }
-
 }
 ```
 
@@ -693,12 +680,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "siteConfig": {
-      "value": {
-        "alwaysOn": true,
-        "healthCheckPath": "/healthz"
-      }
     }
   }
 }
@@ -1164,7 +1145,7 @@ This instance deploys the module as a Linux Web App with the minimum set of requ
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wswalmin'
+  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app,linux'
@@ -1220,7 +1201,7 @@ This instance deploys the module asa Linux Web App with most of its features ena
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wswalmax'
+  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app,linux'
