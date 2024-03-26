@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "5002868091765088139"
+      "templateHash": "15516401638135218840"
     },
     "name": "Event Grid System Topics",
     "description": "This module deploys an Event Grid System Topic.",
@@ -484,7 +484,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "10785513325752294615"
+              "templateHash": "4789369489264631541"
             },
             "name": "Event Grid System Topic Event Subscriptions",
             "description": "This module deploys an Event Grid System Topic Event Subscription.",
@@ -617,7 +617,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference(resourceId('Microsoft.EventGrid/systemTopics', parameters('systemTopicName')), '2022-06-15', 'full').location]"
+              "value": "[reference(resourceId('Microsoft.EventGrid/systemTopics', parameters('systemTopicName')), '2023-12-15-preview', 'full').location]"
             }
           }
         }
