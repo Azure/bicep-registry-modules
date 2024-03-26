@@ -1,0 +1,98 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "8815382204301394365"
+    },
+    "name": "Relay Namespace Network Rules Sets",
+    "description": "This module deploys a Relay Namespace Network Rule Set.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "namespaceName": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 50,
+      "metadata": {
+        "description": "Conditional. The name of the parent Relay Namespace for the Relay Network Rule Set. Required if the template is used in a standalone deployment."
+      }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. This determines if traffic is allowed over public network. Default is \"Enabled\". If set to \"Disabled\", traffic to this namespace will be restricted over Private Endpoints only and network rules will not be applied."
+      }
+    },
+    "defaultAction": {
+      "type": "string",
+      "defaultValue": "Allow",
+      "allowedValues": [
+        "Allow",
+        "Deny"
+      ],
+      "metadata": {
+        "description": "Optional. Default Action for Network Rule Set. Default is \"Allow\". It will not be set if publicNetworkAccess is \"Disabled\". Otherwise, it will be set to \"Deny\" if ipRules or virtualNetworkRules are being used."
+      }
+    },
+    "ipRules": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of IpRules. It will not be set if publicNetworkAccess is \"Disabled\". Otherwise, when used, defaultAction will be set to \"Deny\"."
+      }
+    }
+  },
+  "resources": {
+    "namespace": {
+      "existing": true,
+      "type": "Microsoft.Relay/namespaces",
+      "apiVersion": "2021-11-01",
+      "name": "[parameters('namespaceName')]"
+    },
+    "networkRuleSet": {
+      "type": "Microsoft.Relay/namespaces/networkRuleSets",
+      "apiVersion": "2021-11-01",
+      "name": "[format('{0}/{1}', parameters('namespaceName'), 'default')]",
+      "properties": {
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+        "defaultAction": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), null(), if(not(empty(parameters('ipRules'))), 'Deny', parameters('defaultAction')))]",
+        "ipRules": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), null(), parameters('ipRules'))]"
+      },
+      "dependsOn": [
+        "namespace"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the network rule set."
+      },
+      "value": "default"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the network rule set."
+      },
+      "value": "[resourceId('Microsoft.Relay/namespaces/networkRuleSets', parameters('namespaceName'), 'default')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the network rule set was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
