@@ -20,30 +20,16 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         name: 'defaultSubnet'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 16, 0)
+          serviceEndpoints: [
+            {
+              service: 'Microsoft.AzureCosmosDB'
+            }
+          ]
         }
       }
     ]
   }
 }
 
-resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink.documents.azure.com'
-  location: 'global'
-
-  resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
-    name: '${virtualNetwork.name}-vnetlink'
-    location: 'global'
-    properties: {
-      virtualNetwork: {
-        id: virtualNetwork.id
-      }
-      registrationEnabled: false
-    }
-  }
-}
-
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
-
-@description('The resource ID of the created Private DNS Zone.')
-output privateDNSZoneResourceId string = privateDNSZone.id
