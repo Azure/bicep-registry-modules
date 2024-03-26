@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "3819786231029073936"
+      "templateHash": "1074920414166959578"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -1041,7 +1041,7 @@
         "name": "virtualNetworkRules",
         "count": "[length(coalesce(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules'), createArray()))]",
         "input": {
-          "id": "[coalesce(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules'), createArray())[copyIndex('virtualNetworkRules')].subnetId]",
+          "id": "[coalesce(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules'), createArray())[copyIndex('virtualNetworkRules')].subnetResourceId]",
           "ignoreMissingVnetServiceEndpoint": false
         }
       }

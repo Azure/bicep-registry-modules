@@ -207,7 +207,7 @@ var ipRules = [for i in (networkRestrictions.?ipRules ?? []): {
 }]
 
 var virtualNetworkRules = [for vnet in (networkRestrictions.?virtualNetworkRules ?? []): {
-  id: vnet.subnetId
+  id: vnet.subnetResourceId
   ignoreMissingVnetServiceEndpoint: false
 }]
 
