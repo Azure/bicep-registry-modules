@@ -124,6 +124,7 @@ for iteration in [ 'init', 'idem' ]: {
         }
         peeringSettings: []
         roleAssignments: []
+        routes: []
         subnets: [
           {
             name: 'GatewaySubnet'

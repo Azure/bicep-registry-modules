@@ -252,6 +252,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           }
         ]
         roleAssignments: []
+        routes: []
         subnets: [
           {
             addressPrefix: '<addressPrefix>'
@@ -453,6 +454,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             }
           ],
           "roleAssignments": [],
+          "routes": [],
           "subnets": [
             {
               "addressPrefix": "<addressPrefix>",
@@ -568,6 +570,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         name: 'hub1'
         peeringSettings: []
         roleAssignments: []
+        routes: []
         subnets: [
           {
             addressPrefix: '<addressPrefix>'
@@ -677,6 +680,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "name": "hub1",
           "peeringSettings": [],
           "roleAssignments": [],
+          "routes": [],
           "subnets": [
             {
               "addressPrefix": "<addressPrefix>",
