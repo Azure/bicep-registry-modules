@@ -20,13 +20,13 @@ param lock lockType
 param managedIdentities managedIdentitiesType
 
 @description('Optional. Event Hub Endpoint.')
-param eventHubEndpoint object = {}
+param eventHubEndpoints array?
 
 @description('Optional. Event Grid Endpoint.')
-param eventGridEndpoint object = {}
+param eventGridEndpoints array?
 
 @description('Optional. Service Bus Endpoint.')
-param serviceBusEndpoint object = {}
+param serviceBusEndpoints array?
 
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointType
@@ -93,8 +93,8 @@ resource digitalTwinsInstance 'Microsoft.DigitalTwins/digitalTwinsInstances@2023
   }
 }
 
-module digitalTwinsInstance_eventHubEndpoint 'endpoint--event-hub/main.bicep' = if (!empty(eventHubEndpoint)) {
-  name: '${uniqueString(deployment().name, location)}-DigitalTwinsInstance-Endpoints-EventHub'
+module digitalTwinsInstance_eventHubEndpoints 'endpoint--event-hub/main.bicep' = [for (eventHubEndpoint, index) in (eventHubEndpoints ?? []): {
+  name: '${uniqueString(deployment().name, location)}-DigitalTwinsInstance-Endpoints-EventHub-${index}'
   params: {
     digitalTwinInstanceName: digitalTwinsInstance.name
     name: contains(eventHubEndpoint, 'name') ? eventHubEndpoint.name : 'EventHubEndpoint'
@@ -107,10 +107,10 @@ module digitalTwinsInstance_eventHubEndpoint 'endpoint--event-hub/main.bicep' = 
     entityPath: contains(eventHubEndpoint, 'entityPath') ? eventHubEndpoint.entityPath : ''
     managedIdentities: contains(eventHubEndpoint, 'managedIdentities') ? eventHubEndpoint.managedIdentities : {}
   }
-}
+}]
 
-module digitalTwinsInstance_eventGridEndpoint 'endpoint--event-grid/main.bicep' = if (!empty(eventGridEndpoint)) {
-  name: '${uniqueString(deployment().name, location)}-DigitalTwinsInstance-Endpoints-EventGrid'
+module digitalTwinsInstance_eventGridEndpoints 'endpoint--event-grid/main.bicep' = [for (eventGridEndpoint, index) in (eventGridEndpoints ?? []): {
+  name: '${uniqueString(deployment().name, location)}-DigitalTwinsInstance-Endpoints-EventGrid-${index}'
   params: {
     digitalTwinInstanceName: digitalTwinsInstance.name
     name: contains(eventGridEndpoint, 'name') ? eventGridEndpoint.name : 'EventGridEndpoint'
@@ -119,10 +119,10 @@ module digitalTwinsInstance_eventGridEndpoint 'endpoint--event-grid/main.bicep' 
     deadLetterUri: contains(eventGridEndpoint, 'deadLetterUri') ? eventGridEndpoint.deadLetterUri : ''
     eventGridDomainResourceId: contains(eventGridEndpoint, 'eventGridDomainId') ? eventGridEndpoint.eventGridDomainId : ''
   }
-}
+}]
 
-module digitalTwinsInstance_serviceBusEndpoint 'endpoint--service-bus/main.bicep' = if (!empty(serviceBusEndpoint)) {
-  name: '${uniqueString(deployment().name, location)}-DigitalTwinsInstance-Endpoints-ServiceBus'
+module digitalTwinsInstance_serviceBusEndpoints 'endpoint--service-bus/main.bicep' = [for (serviceBusEndpoint, index) in (serviceBusEndpoints ?? []): {
+  name: '${uniqueString(deployment().name, location)}-DigitalTwinsInstance-Endpoints-ServiceBus-${index}'
   params: {
     digitalTwinInstanceName: digitalTwinsInstance.name
     name: contains(serviceBusEndpoint, 'name') ? serviceBusEndpoint.name : 'ServiceBusEndpoint'
@@ -135,7 +135,7 @@ module digitalTwinsInstance_serviceBusEndpoint 'endpoint--service-bus/main.bicep
     secondaryConnectionString: contains(serviceBusEndpoint, 'secondaryConnectionString') ? serviceBusEndpoint.secondaryConnectionString : ''
     managedIdentities: contains(serviceBusEndpoint, 'managedIdentities') ? serviceBusEndpoint.managedIdentities : {}
   }
-}
+}]
 
 module digitalTwinsInstance_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-DigitalTwinsInstance-PrivateEndpoint-${index}'

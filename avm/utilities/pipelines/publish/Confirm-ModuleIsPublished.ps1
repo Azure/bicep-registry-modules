@@ -11,6 +11,9 @@ Mandatory. The version of the module to check for. For example: '0.2.0'
 .PARAMETER PublishedModuleName
 Mandatory. The path of the module to check for. For example: 'avm/res/key-vault/vault'
 
+.PARAMETER GitTagName
+Mandatory. The tag name of the module's git tag to check for. For example: 'avm/res/event-hub/namespace/0.2.0'
+
 .EXAMPLE
 Confirm-ModuleIsPublished -Version '0.2.0' -PublishedModuleName 'avm/res/key-vault/vault' -Verbose
 
@@ -24,7 +27,10 @@ function Confirm-ModuleIsPublished {
         [string] $Version,
 
         [Parameter(Mandatory)]
-        [string] $PublishedModuleName
+        [string] $PublishedModuleName,
+
+        [Parameter(Mandatory)]
+        [string] $GitTagName
     )
 
     $baseUrl = 'https://mcr.microsoft.com/v2'
@@ -35,6 +41,16 @@ function Confirm-ModuleIsPublished {
     $end_time = (Get-Date).AddSeconds($time_limit_seconds)
     $retry_seconds = 60
     $index = 0
+
+    #######################################
+    ##   Confirm module tag is created   ##
+    #######################################
+    $existingTag = git ls-remote --tags origin $GitTagName
+    if (-not $existingTag) {
+        throw "Tag [$GitTagName] was not successfully created. Please review."
+    } else {
+        Write-Verbose "Passed: Found Git tag [$GitTagName]" -Verbose
+    }
 
     #####################################
     ##   Confirm module is published   ##
