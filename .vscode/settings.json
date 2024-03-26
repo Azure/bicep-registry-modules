@@ -11,8 +11,5 @@
   },
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "prettier.configPath": "\"C:\\AVMMain\\bicep-registry-modules\\.editorconfig\""
+  }
 }
