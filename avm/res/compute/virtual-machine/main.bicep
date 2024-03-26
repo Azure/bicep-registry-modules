@@ -876,7 +876,7 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHo
      : false
     settings: {
       modulesUrl: extensionHostPoolRegistration.hostPoolModulesUrl
-      configurationFunction: 'Configuration.ps1\\AddSessionHost'
+      configurationFunction: extensionHostPoolRegistration.?configurationFunction ?? 'Configuration.ps1\\AddSessionHost'
       properties: {
         hostPoolName: extensionHostPoolRegistration.hostPoolName
         registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken
