@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Without automatic failover'
-metadata description = 'This instance deploys the module disabling automatic failover.'
+metadata name = 'Deploying multiple regions'
+metadata description = 'This instance deploys the module in multiple regions with configs specific of multi region scenarios.'
 
 // ========== //
 // Parameters //
@@ -15,13 +15,13 @@ param resourceGroupName string = 'dep-${namePrefix}-documentdb.databaseaccounts-
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dddaauo'
+param serviceShort string = 'dddaumr'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
 // Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
-var enforcedLocation = 'eastus'
+var enforcedLocation = 'eastasia'
 
 // ============ //
 // Dependencies //
@@ -55,22 +55,27 @@ module testDeployment '../../../main.bicep' = {
   params: {
     automaticFailover: false
     location: enforcedLocation
-    name: '${namePrefix}-auto-failover-off'
+    backupPolicyType: 'Periodic'
+    backupIntervalInMinutes: 300
+    backupStorageRedundancy: 'Zone'
+    backupRetentionIntervalInHours: 16
+    enableMultipleWriteLocations: true
+    name: '${namePrefix}-multi-region'
     locations: [
       {
         failoverPriority: 0
-        isZoneRedundant: false
+        isZoneRedundant: true
         locationName: enforcedLocation
       }
       {
         failoverPriority: 1
-        isZoneRedundant: false
+        isZoneRedundant: true
         locationName: nestedDependencies.outputs.pairedRegionName
       }
     ]
     sqlDatabases: [
       {
-        name: 'empty-database'
+        name: 'no-containers-specified'
       }
     ]
   }
