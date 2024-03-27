@@ -29,24 +29,26 @@ resource endpoint 'microsoft.cdn/profiles/endpoints@2021-06-01' = {
   tags: tags
 }
 
-module endpoint_origins 'origin/main.bicep' = [for origin in properties.origins: {
-  name: '${name}-origins-${origin.name}'
-  params: {
-    profileName: profile.name
-    endpointName: endpoint.name
-    name: origin.name
-    hostName: origin.properties.hostName
-    httpPort: origin.properties.?httpPort
-    httpsPort: origin.properties.?httpsPort
-    enabled: origin.properties.enabled
-    priority: origin.properties.?priority
-    weight: origin.properties.?weight
-    originHostHeader: origin.properties.?originHostHeader
-    privateLinkAlias: origin.properties.?privateLinkAlias
-    privateLinkLocation: origin.properties.?privateLinkLocation
-    privateLinkResourceId: origin.properties.?privateLinkResourceId
+module endpoint_origins 'origin/main.bicep' = [
+  for origin in properties.origins: {
+    name: '${name}-origins-${origin.name}'
+    params: {
+      profileName: profile.name
+      endpointName: endpoint.name
+      name: origin.name
+      hostName: origin.properties.hostName
+      httpPort: origin.properties.?httpPort
+      httpsPort: origin.properties.?httpsPort
+      enabled: origin.properties.enabled
+      priority: origin.properties.?priority
+      weight: origin.properties.?weight
+      originHostHeader: origin.properties.?originHostHeader
+      privateLinkAlias: origin.properties.?privateLinkAlias
+      privateLinkLocation: origin.properties.?privateLinkLocation
+      privateLinkResourceId: origin.properties.?privateLinkResourceId
+    }
   }
-}]
+]
 
 @description('The name of the endpoint.')
 output name string = endpoint.name

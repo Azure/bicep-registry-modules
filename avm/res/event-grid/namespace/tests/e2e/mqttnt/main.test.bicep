@@ -47,149 +47,154 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    managedIdentities: {
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
-    topics: [
-      {
-        name: 'topic1'
-      }
-    ]
-    topicSpacesState: 'Enabled'
-    maximumClientSessionsPerAuthenticationName: 5
-    maximumSessionExpiryInHours: 2
-    routeTopicResourceId: nestedDependencies.outputs.eventGridNameSpaceTopicResourceId
-    routingIdentityInfo: {
-      type: 'UserAssigned'
-      userAssignedIdentity: nestedDependencies.outputs.managedIdentityResourceId
-    }
-    routingEnrichments: {
-      static: [
-        {
-          key: 'static1'
-          value: 'value1'
-          valueType: 'String'
-        }
-        {
-          key: 'static2'
-          value: 'value2'
-          valueType: 'String'
-        }
-      ]
-      dynamic: [
-        {
-          key: 'dynamic1'
-          value: '\${client.authenticationName}'
-        }
-      ]
-    }
-    alternativeAuthenticationNameSources: [
-      'ClientCertificateEmail'
-      'ClientCertificateUri'
-    ]
-    // caCertificates: [
-    //   {
-    //     name: 'exampleCert'
-    //     encodedCertificate: '''
-    //     '''
-    //   }
-    // ]
-    clients: [
-      {
-        name: 'client1'
-        authenticationName: 'client2auth'
-        description: 'this is client2'
-        clientCertificateAuthenticationValidationSchema: 'ThumbprintMatch'
-        clientCertificateAuthenticationAllowedThumbprints: [
-          '1111111111111111111111111111111111111111'
-          '2222222222222222222222222222222222222222'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      managedIdentities: {
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
         ]
-        state: 'Enabled'
-        attributes: {
-          room: '345'
-          floor: 12
-          deviceTypes: [
-            'Fan'
-            'Light'
+      }
+      topics: [
+        {
+          name: 'topic1'
+        }
+      ]
+      topicSpacesState: 'Enabled'
+      maximumClientSessionsPerAuthenticationName: 5
+      maximumSessionExpiryInHours: 2
+      routeTopicResourceId: nestedDependencies.outputs.eventGridNameSpaceTopicResourceId
+      routingIdentityInfo: {
+        type: 'UserAssigned'
+        userAssignedIdentity: nestedDependencies.outputs.managedIdentityResourceId
+      }
+      routingEnrichments: {
+        static: [
+          {
+            key: 'static1'
+            value: 'value1'
+            valueType: 'String'
+          }
+          {
+            key: 'static2'
+            value: 'value2'
+            valueType: 'String'
+          }
+        ]
+        dynamic: [
+          {
+            key: 'dynamic1'
+            value: '\${client.authenticationName}'
+          }
+        ]
+      }
+      alternativeAuthenticationNameSources: [
+        'ClientCertificateEmail'
+        'ClientCertificateUri'
+      ]
+      // caCertificates: [
+      //   {
+      //     name: 'exampleCert'
+      //     encodedCertificate: '''
+      //     '''
+      //   }
+      // ]
+      clients: [
+        {
+          name: 'client1'
+          authenticationName: 'client2auth'
+          description: 'this is client2'
+          clientCertificateAuthenticationValidationSchema: 'ThumbprintMatch'
+          clientCertificateAuthenticationAllowedThumbprints: [
+            '1111111111111111111111111111111111111111'
+            '2222222222222222222222222222222222222222'
+          ]
+          state: 'Enabled'
+          attributes: {
+            room: '345'
+            floor: 12
+            deviceTypes: [
+              'Fan'
+              'Light'
+            ]
+          }
+        }
+        {
+          name: 'client2'
+          clientCertificateAuthenticationValidationSchema: 'ThumbprintMatch'
+          clientCertificateAuthenticationAllowedThumbprints: [
+            '3333333333333333333333333333333333333333'
           ]
         }
-      }
-      {
-        name: 'client2'
-        clientCertificateAuthenticationValidationSchema: 'ThumbprintMatch'
-        clientCertificateAuthenticationAllowedThumbprints: [
-          '3333333333333333333333333333333333333333'
-        ]
-      }
-      {
-        name: 'client3'
-      }
-      {
-        name: 'client4'
-        clientCertificateAuthenticationValidationSchema: 'IpMatchesAuthenticationName'
-      }
-    ]
-    clientGroups: [
-      {
-        name: 'group1'
-        query: 'attributes.keyName IN [\'a\', \'b\', \'c\']'
-        description: 'this is group1'
-      }
-    ]
-    topicSpaces: [
-      {
-        name: 'topicSpace1'
-        topicTemplates: [
-          'devices/foo/bar'
-          'devices/topic1/+'
-        ]
-      }
-      {
-        name: 'topicSpace2'
-        topicTemplates: [
-          'devices/topic1/+'
-        ]
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Owner'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-          {
-            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-          {
-            roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
-      }
-    ]
-    permissionBindings: [
-      {
-        name: 'bindiing1'
-        description: 'this is binding1'
-        clientGroupName: 'group1'
-        topicSpaceName: 'topicSpace1'
-        permission: 'Publisher'
-      }
-      {
-        name: 'bindiing2'
-        clientGroupName: 'group1'
-        topicSpaceName: 'topicSpace2'
-        permission: 'Subscriber'
-      }
-    ]
+        {
+          name: 'client3'
+        }
+        {
+          name: 'client4'
+          clientCertificateAuthenticationValidationSchema: 'IpMatchesAuthenticationName'
+        }
+      ]
+      clientGroups: [
+        {
+          name: 'group1'
+          query: 'attributes.keyName IN [\'a\', \'b\', \'c\']'
+          description: 'this is group1'
+        }
+      ]
+      topicSpaces: [
+        {
+          name: 'topicSpace1'
+          topicTemplates: [
+            'devices/foo/bar'
+            'devices/topic1/+'
+          ]
+        }
+        {
+          name: 'topicSpace2'
+          topicTemplates: [
+            'devices/topic1/+'
+          ]
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'Owner'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: subscriptionResourceId(
+                'Microsoft.Authorization/roleDefinitions',
+                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+              )
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
+        }
+      ]
+      permissionBindings: [
+        {
+          name: 'bindiing1'
+          description: 'this is binding1'
+          clientGroupName: 'group1'
+          topicSpaceName: 'topicSpace1'
+          permission: 'Publisher'
+        }
+        {
+          name: 'bindiing2'
+          clientGroupName: 'group1'
+          topicSpaceName: 'topicSpace2'
+          permission: 'Subscriber'
+        }
+      ]
+    }
   }
-}]
+]

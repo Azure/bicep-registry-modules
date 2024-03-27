@@ -122,16 +122,25 @@ param backupLongTermRetentionPolicy object = {}
 
 // The SKU object must be built in a variable
 // The alternative, 'null' as default values, leads to non-terminating deployments
-var skuVar = union({
+var skuVar = union(
+  {
     name: skuName
     tier: skuTier
-  }, (skuCapacity != null) ? {
-    capacity: skuCapacity
-  } : !empty(skuFamily) ? {
-    family: skuFamily
-  } : !empty(skuSize) ? {
-    size: skuSize
-  } : {})
+  },
+  (skuCapacity != null)
+    ? {
+        capacity: skuCapacity
+      }
+    : !empty(skuFamily)
+        ? {
+            family: skuFamily
+          }
+        : !empty(skuSize)
+            ? {
+                size: skuSize
+              }
+            : {}
+)
 
 resource server 'Microsoft.Sql/servers@2022-05-01-preview' existing = {
   name: serverName
@@ -160,42 +169,54 @@ resource database 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
     createMode: createMode
     sourceDatabaseId: !empty(sourceDatabaseResourceId) ? sourceDatabaseResourceId : null
     sourceDatabaseDeletionDate: !empty(sourceDatabaseDeletionDate) ? sourceDatabaseDeletionDate : null
-    recoveryServicesRecoveryPointId: !empty(recoveryServicesRecoveryPointResourceId) ? recoveryServicesRecoveryPointResourceId : null
+    recoveryServicesRecoveryPointId: !empty(recoveryServicesRecoveryPointResourceId)
+      ? recoveryServicesRecoveryPointResourceId
+      : null
     restorePointInTime: !empty(restorePointInTime) ? restorePointInTime : null
   }
   sku: skuVar
 }
 
-resource database_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
-      category: group.category
-      enabled: group.?enabled ?? true
-      timeGrain: null
-    }]
-    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
-      categoryGroup: group.?categoryGroup
-      category: group.?category
-      enabled: group.?enabled ?? true
-    }]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+resource database_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: database
   }
-  scope: database
-}]
+]
 
 module database_backupShortTermRetentionPolicy 'backup-short-term-retention-policy/main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-${name}-shBakRetPol'
   params: {
     serverName: serverName
     databaseName: database.name
-    diffBackupIntervalInHours: contains(backupShortTermRetentionPolicy, 'diffBackupIntervalInHours') ? backupShortTermRetentionPolicy.diffBackupIntervalInHours : 24
-    retentionDays: contains(backupShortTermRetentionPolicy, 'retentionDays') ? backupShortTermRetentionPolicy.retentionDays : 7
+    diffBackupIntervalInHours: contains(backupShortTermRetentionPolicy, 'diffBackupIntervalInHours')
+      ? backupShortTermRetentionPolicy.diffBackupIntervalInHours
+      : 24
+    retentionDays: contains(backupShortTermRetentionPolicy, 'retentionDays')
+      ? backupShortTermRetentionPolicy.retentionDays
+      : 7
   }
 }
 
@@ -204,9 +225,15 @@ module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy
   params: {
     serverName: serverName
     databaseName: database.name
-    weeklyRetention: contains(backupLongTermRetentionPolicy, 'weeklyRetention') ? backupLongTermRetentionPolicy.weeklyRetention : ''
-    monthlyRetention: contains(backupLongTermRetentionPolicy, 'monthlyRetention') ? backupLongTermRetentionPolicy.monthlyRetention : ''
-    yearlyRetention: contains(backupLongTermRetentionPolicy, 'yearlyRetention') ? backupLongTermRetentionPolicy.yearlyRetention : ''
+    weeklyRetention: contains(backupLongTermRetentionPolicy, 'weeklyRetention')
+      ? backupLongTermRetentionPolicy.weeklyRetention
+      : ''
+    monthlyRetention: contains(backupLongTermRetentionPolicy, 'monthlyRetention')
+      ? backupLongTermRetentionPolicy.monthlyRetention
+      : ''
+    yearlyRetention: contains(backupLongTermRetentionPolicy, 'yearlyRetention')
+      ? backupLongTermRetentionPolicy.yearlyRetention
+      : ''
     weekOfYear: contains(backupLongTermRetentionPolicy, 'weekOfYear') ? backupLongTermRetentionPolicy.weekOfYear : 1
   }
 }
