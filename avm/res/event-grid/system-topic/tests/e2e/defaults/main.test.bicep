@@ -59,13 +59,15 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    source: nestedDependencies.outputs.storageAccountResourceId
-    topicType: 'Microsoft.Storage.StorageAccounts'
-    location: resourceLocation
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      source: nestedDependencies.outputs.storageAccountResourceId
+      topicType: 'Microsoft.Storage.StorageAccounts'
+      location: resourceLocation
+    }
   }
-}]
+]

@@ -12,7 +12,10 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
 resource msi_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(resourceGroup().id, 'Contributor', managedIdentityName)
   properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c') // Contributor
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ) // Contributor
     principalId: managedIdentity.properties.principalId
     principalType: 'ServicePrincipal'
   }

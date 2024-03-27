@@ -21,10 +21,12 @@ param namePrefix string = '#_namePrefix_#'
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: 'avm-${namePrefix}-resources.resourcegroups-${serviceShort}-rg'
-    location: resourceLocation
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: 'avm-${namePrefix}-resources.resourcegroups-${serviceShort}-rg'
+      location: resourceLocation
+    }
   }
-}]
+]

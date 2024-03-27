@@ -59,7 +59,10 @@ resource msiVnetRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-
   scope: virtualNetwork
   properties: {
     principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7') // Network Contributor
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '4d97b98b-1d4f-4787-a291-c67834d212e7'
+    ) // Network Contributor
     principalType: 'ServicePrincipal'
   }
 }
@@ -69,7 +72,10 @@ resource msiPrivDnsZoneRoleAssignment 'Microsoft.Authorization/roleAssignments@2
   scope: privateDnsZone
   properties: {
     principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f') // Private DNS Zone Contributor
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b12aa53e-6015-4669-85d0-8515ebb3ae7f'
+    ) // Private DNS Zone Contributor
     principalType: 'ServicePrincipal'
   }
 }

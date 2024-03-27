@@ -11,37 +11,37 @@ param applicationInsightsName string
 param storageAccountName string
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
-    name: keyVaultName
-    location: location
-    properties: {
-        sku: {
-            family: 'A'
-            name: 'standard'
-        }
-        tenantId: tenant().tenantId
-        enablePurgeProtection: null
-        enabledForTemplateDeployment: true
-        enabledForDiskEncryption: true
-        enabledForDeployment: true
-        enableRbacAuthorization: true
-        accessPolicies: []
+  name: keyVaultName
+  location: location
+  properties: {
+    sku: {
+      family: 'A'
+      name: 'standard'
     }
+    tenantId: tenant().tenantId
+    enablePurgeProtection: null
+    enabledForTemplateDeployment: true
+    enabledForDiskEncryption: true
+    enabledForDeployment: true
+    enableRbacAuthorization: true
+    accessPolicies: []
+  }
 }
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
-    name: applicationInsightsName
-    location: location
-    kind: ''
-    properties: {}
+  name: applicationInsightsName
+  location: location
+  kind: ''
+  properties: {}
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
-    name: storageAccountName
-    location: location
-    sku: {
-        name: 'Standard_LRS'
-    }
-    kind: 'StorageV2'
+  name: storageAccountName
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
 }
 
 @description('The resource ID of the created Application Insights instance.')

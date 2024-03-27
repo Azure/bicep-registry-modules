@@ -45,23 +45,25 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    allowBranchToBranchTraffic: true
-    allowVnetToVnetTraffic: true
-    disableVpnEncryption: true
-    type: 'Basic'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      allowBranchToBranchTraffic: true
+      allowVnetToVnetTraffic: true
+      disableVpnEncryption: true
+      type: 'Basic'
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
+    dependsOn: [
+      nestedDependencies
+    ]
   }
-  dependsOn: [
-    nestedDependencies
-  ]
-}]
+]
