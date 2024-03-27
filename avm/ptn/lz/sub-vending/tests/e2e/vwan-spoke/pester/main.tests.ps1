@@ -122,7 +122,7 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
 
   Context "Networking - Virtual WAN Hub Tests" {
     BeforeAll {
-      Select-AzSubscription -SubscriptionId "e4e7395f-dc45-411e-b425-95f75e470e16" -ErrorAction Stop
+      Select-AzSubscription -SubscriptionId "9948cae8-8c7c-4f5f-81c1-c53317cab23d" -ErrorAction Stop
       $vwanHub = $vwanHub = Get-AzVirtualHub -ResourceGroupName "rsg-blzv-perm-hubs-001" -Name "vhub-uksouth-blzv" -ErrorAction SilentlyContinue
       $vwanHubVhc = Get-AzVirtualHubVnetConnection -ResourceGroupName "rsg-blzv-perm-hubs-001" -VirtualHubName "vhub-uksouth-blzv" -Name *
     }
