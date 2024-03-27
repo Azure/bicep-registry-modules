@@ -310,7 +310,7 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.2.0' = [
       publicIPAllocationMethod: gatewayPipAllocationMethod
       publicIpPrefixResourceId: !empty(publicIPPrefixResourceId) ? publicIPPrefixResourceId : ''
       tags: tags
-      skuName: gatewayPipSku
+      skuName: 'Standard'
       zones: contains(zoneRedundantSkus, skuName) ? publicIpZones : []
       dnsSettings: {
         domainNameLabel: length(virtualGatewayPipNameVar) == length(domainNameLabel)
