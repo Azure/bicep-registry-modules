@@ -21,7 +21,7 @@ param serviceShort string = 'aaddswaf'
 param enableTelemetry bool = false
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = 'xrhz'
+param namePrefix string = '#_namePrefix_#'
 
 var varDiagSettings = [
   {
@@ -105,7 +105,7 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
     domainName: '${namePrefix}.onmicrosoft.com'
-    additionalRecipients: [ '${namePrefix}@noreply.github.com' ]
+    additionalRecipients: ['${namePrefix}@noreply.github.com']
     diagnosticSettings: varDiagSettings
     lock: varLock
     ldaps: 'Enabled'
@@ -119,19 +119,20 @@ module testDeployment '../../../main.bicep' = {
 }
 
 module waitForDeployment 'main.wait.bicep' = {
-  dependsOn: [ testDeployment ]
+  dependsOn: [testDeployment]
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-waitForDeployment'
   params: {
     serviceShort: serviceShort
     resourceLocation: resourceLocation
     waitTimeInSeconds: '3000' // 50 min
+    tags: varTags
   }
 }
 
 // copy from the init test. Will be executed after a wait time
 module testDeploymentIdem '../../../main.bicep' = {
-  dependsOn: [ waitForDeployment ]
+  dependsOn: [waitForDeployment]
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-idem'
   params: {
@@ -139,7 +140,7 @@ module testDeploymentIdem '../../../main.bicep' = {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
     domainName: '${namePrefix}.onmicrosoft.com'
-    additionalRecipients: [ '${namePrefix}@noreply.github.com' ]
+    additionalRecipients: ['${namePrefix}@noreply.github.com']
     diagnosticSettings: varDiagSettings
     lock: varLock
     ldaps: 'Enabled'
