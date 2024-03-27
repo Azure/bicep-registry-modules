@@ -136,7 +136,7 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
     }
 
     It "All Virtual Hub Connection should have the EnableInternetSecurity property set to $true" -ForEach $vwanHubVhc {
-      Write-Host "       Checking Virtual Hub Connection $($_.Name)..." -ForegroundColor Yellow
+      Write-Host "Checking Virtual Hub Connection $($_.Name)..." -ForegroundColor Yellow
       $_.EnableInternetSecurity | Should -Be $true
     }
   }
