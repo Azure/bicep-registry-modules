@@ -5,6 +5,8 @@ param serviceShort string
 
 param waitTimeInSeconds string
 
+param tags object
+
 resource deployDelay 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-wait-${serviceShort}'
   location: resourceLocation
@@ -21,4 +23,5 @@ resource deployDelay 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
     ]
     scriptContent: 'write-output "Sleeping for $Env:waitSeconds"; start-sleep -Seconds $Env:waitSeconds'
   }
+  tags: tags
 }
