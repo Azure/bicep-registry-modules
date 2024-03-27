@@ -59,7 +59,7 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
     It "Should Have a Role Assignment for an known AAD Group with the Reader role directly upon the Subscription" {
       $iterationCount = 0
       do {
-        $roleAssignment = Get-AzRoleAssignment -Scope "/subscriptions/$subscriptionId" -RoleDefinitionName "Reader" -ObjectId "7eca0dca-6701-46f1-b7b6-8b424dab50b3" -ErrorAction SilentlyContinue
+        $roleAssignment = Get-AzRoleAssignment -Scope "/subscriptions/$subscriptionId" -RoleDefinitionName "Reader" -ObjectId "896b1162-be44-4b28-888a-d01acc1b4271" -ErrorAction SilentlyContinue
         if ($null -eq $roleAssignment) {
           Write-Host "Waiting for Subscription Role Assignments to be eventually consistent... Iteration: $($iterationCount)" -ForegroundColor Yellow
           Start-Sleep -Seconds 40
@@ -69,7 +69,7 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
         $roleAssignment -ne $null -or $iterationCount -ge 10
       )
 
-      $roleAssignment.ObjectId | Should -Be "7eca0dca-6701-46f1-b7b6-8b424dab50b3"
+      $roleAssignment.ObjectId | Should -Be "896b1162-be44-4b28-888a-d01acc1b4271"
       $roleAssignment.RoleDefinitionName | Should -Be "Reader"
       $roleAssignment.scope | Should -Be "/subscriptions/$subscriptionId"
     }
