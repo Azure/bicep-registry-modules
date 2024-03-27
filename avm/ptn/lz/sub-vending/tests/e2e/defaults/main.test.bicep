@@ -29,9 +29,9 @@ module testDeployment '../../../main.bicep' = {
     subscriptionWorkload: 'Production'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
-    deploymentScriptResourceGroupName: 'rsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptManagedIdentityName: 'id-${resourceLocation}-${namePrefix}-${serviceShort}'
-    deploymentScriptName: 'ds-${namePrefix}-${serviceShort}'
+    //deploymentScriptResourceGroupName: 'rsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
+    //deploymentScriptManagedIdentityName: 'id-${resourceLocation}-${namePrefix}-${serviceShort}'
+    //deploymentScriptName: 'ds-${namePrefix}-${serviceShort}'
     virtualNetworkEnabled: false
     roleAssignmentEnabled: true
     roleAssignments: [
@@ -41,14 +41,14 @@ module testDeployment '../../../main.bicep' = {
         relativeScope: ''
       }
     ]
-    deploymentScriptNetworkSecurityGroupName: 'nsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptVirtualNetworkName: 'vnet-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptStorageAccountName: 'stgds${namePrefix}${serviceShort}'
-    deploymentScriptLocation: resourceLocation
+    //deploymentScriptNetworkSecurityGroupName: 'nsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
+    //deploymentScriptVirtualNetworkName: 'vnet-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
+    //deploymentScriptStorageAccountName: 'stgds${namePrefix}${serviceShort}'
+    // deploymentScriptLocation: resourceLocation
     virtualNetworkLocation: resourceLocation
     resourceProviders: {
-      'Microsoft.HybridCompute': ['ArcServerPrivateLinkPreview']
-      'Microsoft.AVS': ['AzureServicesVm']
+      'Microsoft.HybridCompute': [ 'ArcServerPrivateLinkPreview' ]
+      'Microsoft.AVS': [ 'AzureServicesVm' ]
     }
   }
 }
