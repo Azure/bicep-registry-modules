@@ -30,12 +30,7 @@
     "ghcr.io/devcontainers/features/dotnet:2": {},
     "ghcr.io/devcontainers/features/node:1": {},
     "ghcr.io/devcontainers/features/powershell:1": {
-      "modules": [
-        "Az.Accounts",
-        "Az.Resources",
-        "Az.KeyVault",
-        "Pester"
-      ]
+      "modules": ["Az.Accounts", "Az.Resources", "Az.KeyVault", "Pester"]
     },
     "ghcr.io/devcontainers-contrib/features/prettier:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
