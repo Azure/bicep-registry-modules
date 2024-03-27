@@ -72,10 +72,12 @@ resource schedule 'Microsoft.DevTestLab/labs/schedules@2018-09-15' = {
     status: status
     targetResourceId: !empty(targetResourceId) ? targetResourceId : null
     timeZoneId: timeZoneId
-    notificationSettings: notificationSettingsStatus == 'Enabled' ? {
-      status: notificationSettingsStatus
-      timeInMinutes: notificationSettingsTimeInMinutes
-    } : {}
+    notificationSettings: notificationSettingsStatus == 'Enabled'
+      ? {
+          status: notificationSettingsStatus
+          timeInMinutes: notificationSettingsTimeInMinutes
+        }
+      : {}
   }
 }
 

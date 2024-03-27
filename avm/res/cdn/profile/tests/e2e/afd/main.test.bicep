@@ -36,76 +36,78 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: 'dep-${namePrefix}-test-${serviceShort}'
-    location: 'global'
-    originResponseTimeoutSeconds: 60
-    sku: 'Standard_AzureFrontDoor'
-    customDomains: [
-      {
-        name: 'dep-${namePrefix}-test-${serviceShort}-custom-domain'
-        hostName: 'dep-${namePrefix}-test-${serviceShort}-custom-domain.azurewebsites.net'
-        certificateType: 'ManagedCertificate'
-      }
-    ]
-    origionGroups: [
-      {
-        name: 'dep-${namePrefix}-test-${serviceShort}-origin-group'
-        loadBalancingSettings: {
-          additionalLatencyInMilliseconds: 50
-          sampleSize: 4
-          successfulSamplesRequired: 3
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: 'dep-${namePrefix}-test-${serviceShort}'
+      location: 'global'
+      originResponseTimeoutSeconds: 60
+      sku: 'Standard_AzureFrontDoor'
+      customDomains: [
+        {
+          name: 'dep-${namePrefix}-test-${serviceShort}-custom-domain'
+          hostName: 'dep-${namePrefix}-test-${serviceShort}-custom-domain.azurewebsites.net'
+          certificateType: 'ManagedCertificate'
         }
-        origins: [
-          {
-            name: 'dep-${namePrefix}-test-${serviceShort}-origin'
-            hostName: 'dep-${namePrefix}-test-${serviceShort}-origin.azurewebsites.net'
+      ]
+      origionGroups: [
+        {
+          name: 'dep-${namePrefix}-test-${serviceShort}-origin-group'
+          loadBalancingSettings: {
+            additionalLatencyInMilliseconds: 50
+            sampleSize: 4
+            successfulSamplesRequired: 3
           }
-        ]
-      }
-    ]
-    ruleSets: [
-      {
-        name: 'dep${namePrefix}test${serviceShort}ruleset'
-        rules: [
-          {
-            name: 'dep${namePrefix}test${serviceShort}rule'
-            order: 1
-            actions: [
-              {
-                name: 'UrlRedirect'
-                parameters: {
-                  typeName: 'DeliveryRuleUrlRedirectActionParameters'
-                  redirectType: 'PermanentRedirect'
-                  destinationProtocol: 'Https'
-                  customPath: '/test123'
-                  customHostname: 'dev-etradefd.trade.azure.defra.cloud'
+          origins: [
+            {
+              name: 'dep-${namePrefix}-test-${serviceShort}-origin'
+              hostName: 'dep-${namePrefix}-test-${serviceShort}-origin.azurewebsites.net'
+            }
+          ]
+        }
+      ]
+      ruleSets: [
+        {
+          name: 'dep${namePrefix}test${serviceShort}ruleset'
+          rules: [
+            {
+              name: 'dep${namePrefix}test${serviceShort}rule'
+              order: 1
+              actions: [
+                {
+                  name: 'UrlRedirect'
+                  parameters: {
+                    typeName: 'DeliveryRuleUrlRedirectActionParameters'
+                    redirectType: 'PermanentRedirect'
+                    destinationProtocol: 'Https'
+                    customPath: '/test123'
+                    customHostname: 'dev-etradefd.trade.azure.defra.cloud'
+                  }
                 }
-              }
-            ]
-          }
-        ]
-      }
-    ]
-    afdEndpoints: [
-      {
-        name: 'dep-${namePrefix}-test-${serviceShort}-afd-endpoint'
-        routes: [
-          {
-            name: 'dep-${namePrefix}-test-${serviceShort}-afd-route'
-            originGroupName: 'dep-${namePrefix}-test-${serviceShort}-origin-group'
-            customDomainName: 'dep-${namePrefix}-test-${serviceShort}-custom-domain'
-            ruleSets: [
-              {
-                name: 'dep${namePrefix}test${serviceShort}ruleset'
-              }
-            ]
-          }
-        ]
-      }
-    ]
+              ]
+            }
+          ]
+        }
+      ]
+      afdEndpoints: [
+        {
+          name: 'dep-${namePrefix}-test-${serviceShort}-afd-endpoint'
+          routes: [
+            {
+              name: 'dep-${namePrefix}-test-${serviceShort}-afd-route'
+              originGroupName: 'dep-${namePrefix}-test-${serviceShort}-origin-group'
+              customDomainName: 'dep-${namePrefix}-test-${serviceShort}-custom-domain'
+              ruleSets: [
+                {
+                  name: 'dep${namePrefix}test${serviceShort}ruleset'
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   }
-}]
+]
