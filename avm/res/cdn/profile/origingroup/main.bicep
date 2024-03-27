@@ -42,23 +42,25 @@ resource originGroup 'Microsoft.Cdn/profiles/originGroups@2023-05-01' = {
   }
 }
 
-module originGroup_origins 'origin/main.bicep' = [for (origin, index) in origins: {
-  name: '${uniqueString(deployment().name)}-OriginGroup-Origin-${index}'
-  params: {
-    name: origin.name
-    profileName: profileName
-    hostName: origin.hostName
-    originGroupName: originGroup.name
-    enabledState: origin.?enabledState
-    enforceCertificateNameCheck: origin.?enforceCertificateNameCheck
-    httpPort: origin.?httpPort
-    httpsPort: origin.?httpsPort
-    originHostHeader: origin.?originHostHeader ?? origin.hostName
-    priority: origin.?priority
-    weight: origin.?weight
-    sharedPrivateLinkResource: origin.?sharedPrivateLinkResource
+module originGroup_origins 'origin/main.bicep' = [
+  for (origin, index) in origins: {
+    name: '${uniqueString(deployment().name)}-OriginGroup-Origin-${index}'
+    params: {
+      name: origin.name
+      profileName: profileName
+      hostName: origin.hostName
+      originGroupName: originGroup.name
+      enabledState: origin.?enabledState
+      enforceCertificateNameCheck: origin.?enforceCertificateNameCheck
+      httpPort: origin.?httpPort
+      httpsPort: origin.?httpsPort
+      originHostHeader: origin.?originHostHeader ?? origin.hostName
+      priority: origin.?priority
+      weight: origin.?weight
+      sharedPrivateLinkResource: origin.?sharedPrivateLinkResource
+    }
   }
-}]
+]
 
 @description('The name of the origin group.')
 output name string = originGroup.name

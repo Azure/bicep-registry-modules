@@ -61,4 +61,3 @@ output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
 @description('The resource ID of the created Private DNS Zone.')
 output privateDNSZoneResourceId string = privateDNSZone.id
-

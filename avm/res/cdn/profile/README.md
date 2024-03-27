@@ -1,10 +1,5 @@
 # CDN Profiles `[Microsoft.Cdn/profiles]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a CDN Profile.
 
 ## Navigation
@@ -58,7 +53,7 @@ This instance deploys the module as Azure Front Door.
 
 ```bicep
 module profile 'br/public:avm/res/cdn/profile:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdnpafd'
+  name: 'profileDeployment'
   params: {
     // Required parameters
     name: 'dep-test-cdnpafd'
@@ -248,7 +243,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module profile 'br/public:avm/res/cdn/profile:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdnpmin'
+  name: 'profileDeployment'
   params: {
     // Required parameters
     name: 'dep-test-cdnpmin'
@@ -300,7 +295,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module profile 'br/public:avm/res/cdn/profile:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdnpmax'
+  name: 'profileDeployment'
   params: {
     // Required parameters
     name: 'dep-test-cdnpmax'
@@ -464,7 +459,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module profile 'br/public:avm/res/cdn/profile:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdnpwaf'
+  name: 'profileDeployment'
   params: {
     // Required parameters
     name: 'dep-test-cdnpwaf'

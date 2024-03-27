@@ -71,12 +71,20 @@ param managedIdentities managedIdentitiesType
 // Variables       //
 // ================//
 
-var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
-  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-} : null
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 // ============================= //
 // Existing resources references //
@@ -90,27 +98,35 @@ resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@
 // Deployments  //
 // ============ //
 
-resource compute 'Microsoft.MachineLearningServices/workspaces/computes@2022-10-01' = if (deployCompute == true) {
-  name: name
-  location: location
-  tags: empty(resourceId) ? tags : any(null)
-  sku: empty(resourceId) ? {
-    name: sku
-    tier: sku
-  } : any(null)
-  parent: machineLearningWorkspace
-  identity: empty(resourceId) ? identity : any(null)
-  properties: union({
-      description: description
-      disableLocalAuth: disableLocalAuth
-      computeType: computeType
-    }, (!empty(resourceId) ? {
-      resourceId: resourceId
-    } : {
-      computeLocation: computeLocation
-      properties: properties
-    }))
-}
+resource compute 'Microsoft.MachineLearningServices/workspaces/computes@2022-10-01' =
+  if (deployCompute == true) {
+    name: name
+    location: location
+    tags: empty(resourceId) ? tags : any(null)
+    sku: empty(resourceId)
+      ? {
+          name: sku
+          tier: sku
+        }
+      : any(null)
+    parent: machineLearningWorkspace
+    identity: empty(resourceId) ? identity : any(null)
+    properties: union(
+      {
+        description: description
+        disableLocalAuth: disableLocalAuth
+        computeType: computeType
+      },
+      (!empty(resourceId)
+        ? {
+            resourceId: resourceId
+          }
+        : {
+            computeLocation: computeLocation
+            properties: properties
+          })
+    )
+  }
 
 // =========== //
 // Outputs     //

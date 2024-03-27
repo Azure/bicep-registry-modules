@@ -52,7 +52,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ehnmin'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'ehnmin001'
@@ -100,7 +100,7 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ehnenc'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'ehnenc001'
@@ -186,7 +186,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ehnmax'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'ehnmax001'
@@ -604,7 +604,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ehnwaf'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'ehnwaf001'
@@ -1824,7 +1824,7 @@ Switch to make the Event Hub Namespace zone redundant.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |

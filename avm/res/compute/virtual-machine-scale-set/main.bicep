@@ -232,7 +232,7 @@ param skuName string
 param skuCapacity int = 1
 
 @description('Optional. The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set.')
-param availabilityZones array = [ 1, 2, 3 ]
+param availabilityZones array = [1, 2, 3]
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -256,10 +256,12 @@ param sasTokenValidityLength string = 'PT8H'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
-var publicKeysFormatted = [for publicKey in publicKeys: {
-  path: publicKey.path
-  keyData: publicKey.keyData
-}]
+var publicKeysFormatted = [
+  for publicKey in publicKeys: {
+    path: publicKey.path
+    keyData: publicKey.keyData
+  }
+]
 
 var linuxConfiguration = {
   disablePasswordAuthentication: disablePasswordAuthentication
@@ -274,9 +276,11 @@ var windowsConfiguration = {
   enableAutomaticUpdates: enableAutomaticUpdates
   timeZone: empty(timeZone) ? null : timeZone
   additionalUnattendContent: empty(additionalUnattendContent) ? null : additionalUnattendContent
-  winRM: !empty(winRM) ? {
-    listeners: winRM
-  } : null
+  winRM: !empty(winRM)
+    ? {
+        listeners: winRM
+      }
+    : null
 }
 
 var accountSasProperties = {
@@ -287,53 +291,107 @@ var accountSasProperties = {
   signedProtocol: 'https'
 }
 
-var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
-  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-} : null
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 var enableReferencedModulesTelemetry = false
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  'Data Operator for Managed Disks': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '959f8984-c045-4866-89c7-12bf9737be2e')
-  'Desktop Virtualization Power On Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '489581de-a3bd-480d-9518-53dea7416b33')
-  'Desktop Virtualization Power On Off Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '40c5ff49-9181-41f8-ae61-143b0e78555e')
-  'Desktop Virtualization Virtual Machine Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a959dbd1-f747-45e3-8ba6-dd80f235f97c')
-  'DevTest Labs User': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')
-  'Disk Backup Reader': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3e5e47e6-65f7-47ef-90b5-e5dd4d455f24')
-  'Disk Pool Operator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '60fc6e62-5479-42d4-8bf4-67625fcc2840')
-  'Disk Restore Operator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b50d9833-a0cb-478e-945f-707fcc997c13')
-  'Disk Snapshot Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')
+  'Data Operator for Managed Disks': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '959f8984-c045-4866-89c7-12bf9737be2e'
+  )
+  'Desktop Virtualization Power On Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '489581de-a3bd-480d-9518-53dea7416b33'
+  )
+  'Desktop Virtualization Power On Off Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '40c5ff49-9181-41f8-ae61-143b0e78555e'
+  )
+  'Desktop Virtualization Virtual Machine Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'a959dbd1-f747-45e3-8ba6-dd80f235f97c'
+  )
+  'DevTest Labs User': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '76283e04-6283-4c54-8f91-bcf1374a3c64'
+  )
+  'Disk Backup Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '3e5e47e6-65f7-47ef-90b5-e5dd4d455f24'
+  )
+  'Disk Pool Operator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '60fc6e62-5479-42d4-8bf4-67625fcc2840'
+  )
+  'Disk Restore Operator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'b50d9833-a0cb-478e-945f-707fcc997c13'
+  )
+  'Disk Snapshot Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '7efff54f-a5b4-42b5-a1c5-5411624893ce'
+  )
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
-  'Virtual Machine Administrator Login': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c0163c0-47e6-4577-8991-ea5c82e286e4')
-  'Virtual Machine Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')
-  'Virtual Machine User Login': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fb879df8-f326-4884-b1cf-06f3ad86be52')
-  'VM Scanner Operator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'd24ecba3-c1f4-40fa-a7bb-4588a071e8fd')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
+  'Virtual Machine Administrator Login': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '1c0163c0-47e6-4577-8991-ea5c82e286e4'
+  )
+  'Virtual Machine Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
+  )
+  'Virtual Machine User Login': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'fb879df8-f326-4884-b1cf-06f3ad86be52'
+  )
+  'VM Scanner Operator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'd24ecba3-c1f4-40fa-a7bb-4588a071e8fd'
+  )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.compute-virtualmachinescaleset.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.compute-virtualmachinescaleset.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
 resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2022-11-01' = {
   name: name
@@ -342,9 +400,11 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2022-11-01' = {
   identity: identity
   zones: availabilityZones
   properties: {
-    proximityPlacementGroup: !empty(proximityPlacementGroupResourceId) ? {
-      id: proximityPlacementGroupResourceId
-    } : null
+    proximityPlacementGroup: !empty(proximityPlacementGroupResourceId)
+      ? {
+          id: proximityPlacementGroupResourceId
+        }
+      : null
     upgradePolicy: {
       mode: upgradePolicyMode
       rollingUpgradePolicy: {
@@ -375,10 +435,12 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2022-11-01' = {
       securityProfile: {
         encryptionAtHost: encryptionAtHost ? encryptionAtHost : null
         securityType: securityType
-        uefiSettings: securityType == 'TrustedLaunch' ? {
-          secureBootEnabled: secureBootEnabled
-          vTpmEnabled: vTpmEnabled
-        } : null
+        uefiSettings: securityType == 'TrustedLaunch'
+          ? {
+              secureBootEnabled: secureBootEnabled
+              vTpmEnabled: vTpmEnabled
+            }
+          : null
       }
       storageProfile: {
         imageReference: imageReference
@@ -393,52 +455,68 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2022-11-01' = {
           vhdContainers: contains(osDisk, 'vhdContainers') ? osDisk.vhdContainers : null
           managedDisk: {
             storageAccountType: osDisk.managedDisk.storageAccountType
-            diskEncryptionSet: contains(osDisk.managedDisk, 'diskEncryptionSet') ? {
-              id: osDisk.managedDisk.diskEncryptionSet.id
-            } : null
+            diskEncryptionSet: contains(osDisk.managedDisk, 'diskEncryptionSet')
+              ? {
+                  id: osDisk.managedDisk.diskEncryptionSet.id
+                }
+              : null
           }
         }
-        dataDisks: [for (dataDisk, index) in dataDisks: {
-          lun: index
-          diskSizeGB: dataDisk.diskSizeGB
-          createOption: dataDisk.createOption
-          caching: dataDisk.caching
-          writeAcceleratorEnabled: contains(osDisk, 'writeAcceleratorEnabled') ? osDisk.writeAcceleratorEnabled : null
-          managedDisk: {
-            storageAccountType: dataDisk.managedDisk.storageAccountType
-            diskEncryptionSet: contains(dataDisk.managedDisk, 'diskEncryptionSet') ? {
-              id: dataDisk.managedDisk.diskEncryptionSet.id
-            } : null
+        dataDisks: [
+          for (dataDisk, index) in dataDisks: {
+            lun: index
+            diskSizeGB: dataDisk.diskSizeGB
+            createOption: dataDisk.createOption
+            caching: dataDisk.caching
+            writeAcceleratorEnabled: contains(osDisk, 'writeAcceleratorEnabled') ? osDisk.writeAcceleratorEnabled : null
+            managedDisk: {
+              storageAccountType: dataDisk.managedDisk.storageAccountType
+              diskEncryptionSet: contains(dataDisk.managedDisk, 'diskEncryptionSet')
+                ? {
+                    id: dataDisk.managedDisk.diskEncryptionSet.id
+                  }
+                : null
+            }
+            diskIOPSReadWrite: contains(osDisk, 'diskIOPSReadWrite') ? dataDisk.diskIOPSReadWrite : null
+            diskMBpsReadWrite: contains(osDisk, 'diskMBpsReadWrite') ? dataDisk.diskMBpsReadWrite : null
           }
-          diskIOPSReadWrite: contains(osDisk, 'diskIOPSReadWrite') ? dataDisk.diskIOPSReadWrite : null
-          diskMBpsReadWrite: contains(osDisk, 'diskMBpsReadWrite') ? dataDisk.diskMBpsReadWrite : null
-        }]
+        ]
       }
       networkProfile: {
-        networkInterfaceConfigurations: [for (nicConfiguration, index) in nicConfigurations: {
-          name: '${name}${nicConfiguration.nicSuffix}configuration-${index}'
-          properties: {
-            primary: (index == 0) ? true : any(null)
-            enableAcceleratedNetworking: contains(nicConfiguration, 'enableAcceleratedNetworking') ? nicConfiguration.enableAcceleratedNetworking : true
-            networkSecurityGroup: contains(nicConfiguration, 'nsgId') ? {
-              id: nicConfiguration.nsgId
-            } : null
-            ipConfigurations: nicConfiguration.ipConfigurations
+        networkInterfaceConfigurations: [
+          for (nicConfiguration, index) in nicConfigurations: {
+            name: '${name}${nicConfiguration.nicSuffix}configuration-${index}'
+            properties: {
+              primary: (index == 0) ? true : any(null)
+              enableAcceleratedNetworking: contains(nicConfiguration, 'enableAcceleratedNetworking')
+                ? nicConfiguration.enableAcceleratedNetworking
+                : true
+              networkSecurityGroup: contains(nicConfiguration, 'nsgId')
+                ? {
+                    id: nicConfiguration.nsgId
+                  }
+                : null
+              ipConfigurations: nicConfiguration.ipConfigurations
+            }
           }
-        }]
+        ]
       }
       diagnosticsProfile: {
         bootDiagnostics: {
           enabled: !empty(bootDiagnosticStorageAccountName)
-          storageUri: !empty(bootDiagnosticStorageAccountName) ? 'https://${bootDiagnosticStorageAccountName}${bootDiagnosticStorageAccountUri}' : null
+          storageUri: !empty(bootDiagnosticStorageAccountName)
+            ? 'https://${bootDiagnosticStorageAccountName}${bootDiagnosticStorageAccountUri}'
+            : null
         }
       }
       licenseType: empty(licenseType) ? null : licenseType
       priority: vmPriority
       evictionPolicy: enableEvictionPolicy ? 'Deallocate' : null
-      billingProfile: !empty(vmPriority) && !empty(maxPriceForLowPriorityVm) ? {
-        maxPrice: maxPriceForLowPriorityVm
-      } : null
+      billingProfile: !empty(vmPriority) && !empty(maxPriceForLowPriorityVm)
+        ? {
+            maxPrice: maxPriceForLowPriorityVm
+          }
+        : null
       scheduledEventsProfile: scheduledEventsProfile
     }
     overprovision: overprovision
@@ -458,196 +536,279 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2022-11-01' = {
   plan: !empty(plan) ? plan : null
 }
 
-module vmss_domainJoinExtension 'extension/main.bicep' = if (extensionDomainJoinConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VMSS-DomainJoin'
-  params: {
-    virtualMachineScaleSetName: vmss.name
-    name: 'DomainJoin'
-    publisher: 'Microsoft.Compute'
-    type: 'JsonADDomainExtension'
-    typeHandlerVersion: contains(extensionDomainJoinConfig, 'typeHandlerVersion') ? extensionDomainJoinConfig.typeHandlerVersion : '1.3'
-    autoUpgradeMinorVersion: contains(extensionDomainJoinConfig, 'autoUpgradeMinorVersion') ? extensionDomainJoinConfig.autoUpgradeMinorVersion : true
-    enableAutomaticUpgrade: contains(extensionDomainJoinConfig, 'enableAutomaticUpgrade') ? extensionDomainJoinConfig.enableAutomaticUpgrade : false
-    settings: extensionDomainJoinConfig.settings
-    protectedSettings: {
-      Password: extensionDomainJoinPassword
+module vmss_domainJoinExtension 'extension/main.bicep' =
+  if (extensionDomainJoinConfig.enabled) {
+    name: '${uniqueString(deployment().name, location)}-VMSS-DomainJoin'
+    params: {
+      virtualMachineScaleSetName: vmss.name
+      name: 'DomainJoin'
+      publisher: 'Microsoft.Compute'
+      type: 'JsonADDomainExtension'
+      typeHandlerVersion: contains(extensionDomainJoinConfig, 'typeHandlerVersion')
+        ? extensionDomainJoinConfig.typeHandlerVersion
+        : '1.3'
+      autoUpgradeMinorVersion: contains(extensionDomainJoinConfig, 'autoUpgradeMinorVersion')
+        ? extensionDomainJoinConfig.autoUpgradeMinorVersion
+        : true
+      enableAutomaticUpgrade: contains(extensionDomainJoinConfig, 'enableAutomaticUpgrade')
+        ? extensionDomainJoinConfig.enableAutomaticUpgrade
+        : false
+      settings: extensionDomainJoinConfig.settings
+      protectedSettings: {
+        Password: extensionDomainJoinPassword
+      }
     }
   }
-}
 
-module vmss_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAntiMalwareConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VMSS-MicrosoftAntiMalware'
-  params: {
-    virtualMachineScaleSetName: vmss.name
-    name: 'MicrosoftAntiMalware'
-    publisher: 'Microsoft.Azure.Security'
-    type: 'IaaSAntimalware'
-    typeHandlerVersion: contains(extensionAntiMalwareConfig, 'typeHandlerVersion') ? extensionAntiMalwareConfig.typeHandlerVersion : '1.3'
-    autoUpgradeMinorVersion: contains(extensionAntiMalwareConfig, 'autoUpgradeMinorVersion') ? extensionAntiMalwareConfig.autoUpgradeMinorVersion : true
-    enableAutomaticUpgrade: contains(extensionAntiMalwareConfig, 'enableAutomaticUpgrade') ? extensionAntiMalwareConfig.enableAutomaticUpgrade : false
-    settings: extensionAntiMalwareConfig.settings
-  }
-  dependsOn: [
-    vmss_domainJoinExtension
-  ]
-}
-
-resource vmss_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(monitoringWorkspaceId)) {
-  name: last(split((!empty(monitoringWorkspaceId) ? monitoringWorkspaceId : 'law'), '/'))!
-  scope: az.resourceGroup(split((!empty(monitoringWorkspaceId) ? monitoringWorkspaceId : '//'), '/')[2], split((!empty(monitoringWorkspaceId) ? monitoringWorkspaceId : '////'), '/')[4])
-}
-
-module vmss_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonitoringAgentConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VMSS-AzureMonitorAgent'
-  params: {
-    virtualMachineScaleSetName: vmss.name
-    name: 'AzureMonitorAgent'
-    publisher: 'Microsoft.Azure.Monitor'
-    type: osType == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
-    typeHandlerVersion: contains(extensionMonitoringAgentConfig, 'typeHandlerVersion') ? extensionMonitoringAgentConfig.typeHandlerVersion : (osType == 'Windows' ? '1.22' : '1.29')
-    autoUpgradeMinorVersion: contains(extensionMonitoringAgentConfig, 'autoUpgradeMinorVersion') ? extensionMonitoringAgentConfig.autoUpgradeMinorVersion : true
-    enableAutomaticUpgrade: contains(extensionMonitoringAgentConfig, 'enableAutomaticUpgrade') ? extensionMonitoringAgentConfig.enableAutomaticUpgrade : false
-    settings: {
-      workspaceId: !empty(monitoringWorkspaceId) ? reference(vmss_logAnalyticsWorkspace.id, vmss_logAnalyticsWorkspace.apiVersion).customerId : ''
-      GCS_AUTO_CONFIG: osType == 'Linux' ? true : null
+module vmss_microsoftAntiMalwareExtension 'extension/main.bicep' =
+  if (extensionAntiMalwareConfig.enabled) {
+    name: '${uniqueString(deployment().name, location)}-VMSS-MicrosoftAntiMalware'
+    params: {
+      virtualMachineScaleSetName: vmss.name
+      name: 'MicrosoftAntiMalware'
+      publisher: 'Microsoft.Azure.Security'
+      type: 'IaaSAntimalware'
+      typeHandlerVersion: contains(extensionAntiMalwareConfig, 'typeHandlerVersion')
+        ? extensionAntiMalwareConfig.typeHandlerVersion
+        : '1.3'
+      autoUpgradeMinorVersion: contains(extensionAntiMalwareConfig, 'autoUpgradeMinorVersion')
+        ? extensionAntiMalwareConfig.autoUpgradeMinorVersion
+        : true
+      enableAutomaticUpgrade: contains(extensionAntiMalwareConfig, 'enableAutomaticUpgrade')
+        ? extensionAntiMalwareConfig.enableAutomaticUpgrade
+        : false
+      settings: extensionAntiMalwareConfig.settings
     }
-    protectedSettings: {
-      workspaceKey: !empty(monitoringWorkspaceId) ? vmss_logAnalyticsWorkspace.listKeys().primarySharedKey : ''
+    dependsOn: [
+      vmss_domainJoinExtension
+    ]
+  }
+
+resource vmss_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing =
+  if (!empty(monitoringWorkspaceId)) {
+    name: last(split((!empty(monitoringWorkspaceId) ? monitoringWorkspaceId : 'law'), '/'))!
+    scope: az.resourceGroup(
+      split((!empty(monitoringWorkspaceId) ? monitoringWorkspaceId : '//'), '/')[2],
+      split((!empty(monitoringWorkspaceId) ? monitoringWorkspaceId : '////'), '/')[4]
+    )
+  }
+
+module vmss_azureMonitorAgentExtension 'extension/main.bicep' =
+  if (extensionMonitoringAgentConfig.enabled) {
+    name: '${uniqueString(deployment().name, location)}-VMSS-AzureMonitorAgent'
+    params: {
+      virtualMachineScaleSetName: vmss.name
+      name: 'AzureMonitorAgent'
+      publisher: 'Microsoft.Azure.Monitor'
+      type: osType == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
+      typeHandlerVersion: contains(extensionMonitoringAgentConfig, 'typeHandlerVersion')
+        ? extensionMonitoringAgentConfig.typeHandlerVersion
+        : (osType == 'Windows' ? '1.22' : '1.29')
+      autoUpgradeMinorVersion: contains(extensionMonitoringAgentConfig, 'autoUpgradeMinorVersion')
+        ? extensionMonitoringAgentConfig.autoUpgradeMinorVersion
+        : true
+      enableAutomaticUpgrade: contains(extensionMonitoringAgentConfig, 'enableAutomaticUpgrade')
+        ? extensionMonitoringAgentConfig.enableAutomaticUpgrade
+        : false
+      settings: {
+        workspaceId: !empty(monitoringWorkspaceId)
+          ? reference(vmss_logAnalyticsWorkspace.id, vmss_logAnalyticsWorkspace.apiVersion).customerId
+          : ''
+        GCS_AUTO_CONFIG: osType == 'Linux' ? true : null
+      }
+      protectedSettings: {
+        workspaceKey: !empty(monitoringWorkspaceId) ? vmss_logAnalyticsWorkspace.listKeys().primarySharedKey : ''
+      }
     }
+    dependsOn: [
+      vmss_microsoftAntiMalwareExtension
+    ]
   }
-  dependsOn: [
-    vmss_microsoftAntiMalwareExtension
-  ]
-}
 
-module vmss_dependencyAgentExtension 'extension/main.bicep' = if (extensionDependencyAgentConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VMSS-DependencyAgent'
-  params: {
-    virtualMachineScaleSetName: vmss.name
-    name: 'DependencyAgent'
-    publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
-    type: osType == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
-    typeHandlerVersion: contains(extensionDependencyAgentConfig, 'typeHandlerVersion') ? extensionDependencyAgentConfig.typeHandlerVersion : '9.5'
-    autoUpgradeMinorVersion: contains(extensionDependencyAgentConfig, 'autoUpgradeMinorVersion') ? extensionDependencyAgentConfig.autoUpgradeMinorVersion : true
-    enableAutomaticUpgrade: contains(extensionDependencyAgentConfig, 'enableAutomaticUpgrade') ? extensionDependencyAgentConfig.enableAutomaticUpgrade : true
-  }
-  dependsOn: [
-    vmss_azureMonitorAgentExtension
-  ]
-}
-
-module vmss_networkWatcherAgentExtension 'extension/main.bicep' = if (extensionNetworkWatcherAgentConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VMSS-NetworkWatcherAgent'
-  params: {
-    virtualMachineScaleSetName: vmss.name
-    name: 'NetworkWatcherAgent'
-    publisher: 'Microsoft.Azure.NetworkWatcher'
-    type: osType == 'Windows' ? 'NetworkWatcherAgentWindows' : 'NetworkWatcherAgentLinux'
-    typeHandlerVersion: contains(extensionNetworkWatcherAgentConfig, 'typeHandlerVersion') ? extensionNetworkWatcherAgentConfig.typeHandlerVersion : '1.4'
-    autoUpgradeMinorVersion: contains(extensionNetworkWatcherAgentConfig, 'autoUpgradeMinorVersion') ? extensionNetworkWatcherAgentConfig.autoUpgradeMinorVersion : true
-    enableAutomaticUpgrade: contains(extensionNetworkWatcherAgentConfig, 'enableAutomaticUpgrade') ? extensionNetworkWatcherAgentConfig.enableAutomaticUpgrade : false
-  }
-  dependsOn: [
-    vmss_dependencyAgentExtension
-  ]
-}
-
-module vmss_desiredStateConfigurationExtension 'extension/main.bicep' = if (extensionDSCConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VMSS-DesiredStateConfiguration'
-  params: {
-    virtualMachineScaleSetName: vmss.name
-    name: 'DesiredStateConfiguration'
-    publisher: 'Microsoft.Powershell'
-    type: 'DSC'
-    typeHandlerVersion: contains(extensionDSCConfig, 'typeHandlerVersion') ? extensionDSCConfig.typeHandlerVersion : '2.77'
-    autoUpgradeMinorVersion: contains(extensionDSCConfig, 'autoUpgradeMinorVersion') ? extensionDSCConfig.autoUpgradeMinorVersion : true
-    enableAutomaticUpgrade: contains(extensionDSCConfig, 'enableAutomaticUpgrade') ? extensionDSCConfig.enableAutomaticUpgrade : false
-    settings: contains(extensionDSCConfig, 'settings') ? extensionDSCConfig.settings : {}
-    protectedSettings: contains(extensionDSCConfig, 'protectedSettings') ? extensionDSCConfig.protectedSettings : {}
-  }
-  dependsOn: [
-    vmss_networkWatcherAgentExtension
-  ]
-}
-
-module vmss_customScriptExtension 'extension/main.bicep' = if (extensionCustomScriptConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VMSS-CustomScriptExtension'
-  params: {
-    virtualMachineScaleSetName: vmss.name
-    name: 'CustomScriptExtension'
-    publisher: osType == 'Windows' ? 'Microsoft.Compute' : 'Microsoft.Azure.Extensions'
-    type: osType == 'Windows' ? 'CustomScriptExtension' : 'CustomScript'
-    typeHandlerVersion: contains(extensionCustomScriptConfig, 'typeHandlerVersion') ? extensionCustomScriptConfig.typeHandlerVersion : (osType == 'Windows' ? '1.10' : '2.1')
-    autoUpgradeMinorVersion: contains(extensionCustomScriptConfig, 'autoUpgradeMinorVersion') ? extensionCustomScriptConfig.autoUpgradeMinorVersion : true
-    enableAutomaticUpgrade: contains(extensionCustomScriptConfig, 'enableAutomaticUpgrade') ? extensionCustomScriptConfig.enableAutomaticUpgrade : false
-    settings: {
-      fileUris: [for fileData in extensionCustomScriptConfig.fileData: contains(fileData, 'storageAccountId') ? '${fileData.uri}?${listAccountSas(fileData.storageAccountId, '2019-04-01', accountSasProperties).accountSasToken}' : fileData.uri]
+module vmss_dependencyAgentExtension 'extension/main.bicep' =
+  if (extensionDependencyAgentConfig.enabled) {
+    name: '${uniqueString(deployment().name, location)}-VMSS-DependencyAgent'
+    params: {
+      virtualMachineScaleSetName: vmss.name
+      name: 'DependencyAgent'
+      publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
+      type: osType == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
+      typeHandlerVersion: contains(extensionDependencyAgentConfig, 'typeHandlerVersion')
+        ? extensionDependencyAgentConfig.typeHandlerVersion
+        : '9.5'
+      autoUpgradeMinorVersion: contains(extensionDependencyAgentConfig, 'autoUpgradeMinorVersion')
+        ? extensionDependencyAgentConfig.autoUpgradeMinorVersion
+        : true
+      enableAutomaticUpgrade: contains(extensionDependencyAgentConfig, 'enableAutomaticUpgrade')
+        ? extensionDependencyAgentConfig.enableAutomaticUpgrade
+        : true
     }
-    protectedSettings: contains(extensionCustomScriptConfig, 'protectedSettings') ? extensionCustomScriptConfig.protectedSettings : {}
+    dependsOn: [
+      vmss_azureMonitorAgentExtension
+    ]
   }
-  dependsOn: [
-    vmss_desiredStateConfigurationExtension
-  ]
-}
 
-module vmss_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzureDiskEncryptionConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VMSS-AzureDiskEncryption'
-  params: {
-    virtualMachineScaleSetName: vmss.name
-    name: 'AzureDiskEncryption'
-    publisher: 'Microsoft.Azure.Security'
-    type: osType == 'Windows' ? 'AzureDiskEncryption' : 'AzureDiskEncryptionForLinux'
-    typeHandlerVersion: contains(extensionAzureDiskEncryptionConfig, 'typeHandlerVersion') ? extensionAzureDiskEncryptionConfig.typeHandlerVersion : (osType == 'Windows' ? '2.2' : '1.1')
-    autoUpgradeMinorVersion: contains(extensionAzureDiskEncryptionConfig, 'autoUpgradeMinorVersion') ? extensionAzureDiskEncryptionConfig.autoUpgradeMinorVersion : true
-    enableAutomaticUpgrade: contains(extensionAzureDiskEncryptionConfig, 'enableAutomaticUpgrade') ? extensionAzureDiskEncryptionConfig.enableAutomaticUpgrade : false
-    forceUpdateTag: contains(extensionAzureDiskEncryptionConfig, 'forceUpdateTag') ? extensionAzureDiskEncryptionConfig.forceUpdateTag : '1.0'
-    settings: extensionAzureDiskEncryptionConfig.settings
+module vmss_networkWatcherAgentExtension 'extension/main.bicep' =
+  if (extensionNetworkWatcherAgentConfig.enabled) {
+    name: '${uniqueString(deployment().name, location)}-VMSS-NetworkWatcherAgent'
+    params: {
+      virtualMachineScaleSetName: vmss.name
+      name: 'NetworkWatcherAgent'
+      publisher: 'Microsoft.Azure.NetworkWatcher'
+      type: osType == 'Windows' ? 'NetworkWatcherAgentWindows' : 'NetworkWatcherAgentLinux'
+      typeHandlerVersion: contains(extensionNetworkWatcherAgentConfig, 'typeHandlerVersion')
+        ? extensionNetworkWatcherAgentConfig.typeHandlerVersion
+        : '1.4'
+      autoUpgradeMinorVersion: contains(extensionNetworkWatcherAgentConfig, 'autoUpgradeMinorVersion')
+        ? extensionNetworkWatcherAgentConfig.autoUpgradeMinorVersion
+        : true
+      enableAutomaticUpgrade: contains(extensionNetworkWatcherAgentConfig, 'enableAutomaticUpgrade')
+        ? extensionNetworkWatcherAgentConfig.enableAutomaticUpgrade
+        : false
+    }
+    dependsOn: [
+      vmss_dependencyAgentExtension
+    ]
   }
-  dependsOn: [
-    vmss_customScriptExtension
-  ]
-}
 
-resource vmss_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+module vmss_desiredStateConfigurationExtension 'extension/main.bicep' =
+  if (extensionDSCConfig.enabled) {
+    name: '${uniqueString(deployment().name, location)}-VMSS-DesiredStateConfiguration'
+    params: {
+      virtualMachineScaleSetName: vmss.name
+      name: 'DesiredStateConfiguration'
+      publisher: 'Microsoft.Powershell'
+      type: 'DSC'
+      typeHandlerVersion: contains(extensionDSCConfig, 'typeHandlerVersion')
+        ? extensionDSCConfig.typeHandlerVersion
+        : '2.77'
+      autoUpgradeMinorVersion: contains(extensionDSCConfig, 'autoUpgradeMinorVersion')
+        ? extensionDSCConfig.autoUpgradeMinorVersion
+        : true
+      enableAutomaticUpgrade: contains(extensionDSCConfig, 'enableAutomaticUpgrade')
+        ? extensionDSCConfig.enableAutomaticUpgrade
+        : false
+      settings: contains(extensionDSCConfig, 'settings') ? extensionDSCConfig.settings : {}
+      protectedSettings: contains(extensionDSCConfig, 'protectedSettings') ? extensionDSCConfig.protectedSettings : {}
+    }
+    dependsOn: [
+      vmss_networkWatcherAgentExtension
+    ]
   }
-  scope: vmss
-}
 
-resource vmss_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
-      category: group.category
-      enabled: group.?enabled ?? true
-      timeGrain: null
-    }]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+module vmss_customScriptExtension 'extension/main.bicep' =
+  if (extensionCustomScriptConfig.enabled) {
+    name: '${uniqueString(deployment().name, location)}-VMSS-CustomScriptExtension'
+    params: {
+      virtualMachineScaleSetName: vmss.name
+      name: 'CustomScriptExtension'
+      publisher: osType == 'Windows' ? 'Microsoft.Compute' : 'Microsoft.Azure.Extensions'
+      type: osType == 'Windows' ? 'CustomScriptExtension' : 'CustomScript'
+      typeHandlerVersion: contains(extensionCustomScriptConfig, 'typeHandlerVersion')
+        ? extensionCustomScriptConfig.typeHandlerVersion
+        : (osType == 'Windows' ? '1.10' : '2.1')
+      autoUpgradeMinorVersion: contains(extensionCustomScriptConfig, 'autoUpgradeMinorVersion')
+        ? extensionCustomScriptConfig.autoUpgradeMinorVersion
+        : true
+      enableAutomaticUpgrade: contains(extensionCustomScriptConfig, 'enableAutomaticUpgrade')
+        ? extensionCustomScriptConfig.enableAutomaticUpgrade
+        : false
+      settings: {
+        fileUris: [
+          for fileData in extensionCustomScriptConfig.fileData: contains(fileData, 'storageAccountId')
+            ? '${fileData.uri}?${listAccountSas(fileData.storageAccountId, '2019-04-01', accountSasProperties).accountSasToken}'
+            : fileData.uri
+        ]
+      }
+      protectedSettings: contains(extensionCustomScriptConfig, 'protectedSettings')
+        ? extensionCustomScriptConfig.protectedSettings
+        : {}
+    }
+    dependsOn: [
+      vmss_desiredStateConfigurationExtension
+    ]
   }
-  scope: vmss
-}]
 
-resource vmss_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(vmss.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+module vmss_azureDiskEncryptionExtension 'extension/main.bicep' =
+  if (extensionAzureDiskEncryptionConfig.enabled) {
+    name: '${uniqueString(deployment().name, location)}-VMSS-AzureDiskEncryption'
+    params: {
+      virtualMachineScaleSetName: vmss.name
+      name: 'AzureDiskEncryption'
+      publisher: 'Microsoft.Azure.Security'
+      type: osType == 'Windows' ? 'AzureDiskEncryption' : 'AzureDiskEncryptionForLinux'
+      typeHandlerVersion: contains(extensionAzureDiskEncryptionConfig, 'typeHandlerVersion')
+        ? extensionAzureDiskEncryptionConfig.typeHandlerVersion
+        : (osType == 'Windows' ? '2.2' : '1.1')
+      autoUpgradeMinorVersion: contains(extensionAzureDiskEncryptionConfig, 'autoUpgradeMinorVersion')
+        ? extensionAzureDiskEncryptionConfig.autoUpgradeMinorVersion
+        : true
+      enableAutomaticUpgrade: contains(extensionAzureDiskEncryptionConfig, 'enableAutomaticUpgrade')
+        ? extensionAzureDiskEncryptionConfig.enableAutomaticUpgrade
+        : false
+      forceUpdateTag: contains(extensionAzureDiskEncryptionConfig, 'forceUpdateTag')
+        ? extensionAzureDiskEncryptionConfig.forceUpdateTag
+        : '1.0'
+      settings: extensionAzureDiskEncryptionConfig.settings
+    }
+    dependsOn: [
+      vmss_customScriptExtension
+    ]
   }
-  scope: vmss
-}]
+
+resource vmss_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: vmss
+  }
+
+resource vmss_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: vmss
+  }
+]
+
+resource vmss_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(vmss.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: vmss
+  }
+]
 
 @description('The resource ID of the virtual machine scale set.')
 output resourceId string = vmss.id

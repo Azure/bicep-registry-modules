@@ -29,14 +29,20 @@ param virtualNetworkRules array = []
 param ipRules array = []
 
 @description('Optional. The name of the network ruleset.')
- param networkRuleSetName string = 'default'
+param networkRuleSetName string = 'default'
 
-var networkRules = [for (virtualNetworkRule, index) in virtualNetworkRules: {
-  ignoreMissingVnetServiceEndpoint: contains(virtualNetworkRule, 'ignoreMissingVnetServiceEndpoint') ? virtualNetworkRule.ignoreMissingVnetServiceEndpoint : null
-  subnet: contains(virtualNetworkRule, 'subnetResourceId') ? {
-    id: virtualNetworkRule.subnetResourceId
-  } : null
-}]
+var networkRules = [
+  for (virtualNetworkRule, index) in virtualNetworkRules: {
+    ignoreMissingVnetServiceEndpoint: contains(virtualNetworkRule, 'ignoreMissingVnetServiceEndpoint')
+      ? virtualNetworkRule.ignoreMissingVnetServiceEndpoint
+      : null
+    subnet: contains(virtualNetworkRule, 'subnetResourceId')
+      ? {
+          id: virtualNetworkRule.subnetResourceId
+        }
+      : null
+  }
+]
 
 resource namespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' existing = {
   name: namespaceName
@@ -47,7 +53,9 @@ resource networkRuleSet 'Microsoft.EventHub/namespaces/networkRuleSets@2022-10-0
   parent: namespace
   properties: {
     publicNetworkAccess: publicNetworkAccess
-    defaultAction: publicNetworkAccess == 'Disabled' ? null : (!empty(ipRules) || !empty(virtualNetworkRules) ? 'Deny' : defaultAction)
+    defaultAction: publicNetworkAccess == 'Disabled'
+      ? null
+      : (!empty(ipRules) || !empty(virtualNetworkRules) ? 'Deny' : defaultAction)
     trustedServiceAccessEnabled: trustedServiceAccessEnabled
     ipRules: publicNetworkAccess == 'Disabled' ? null : ipRules
     virtualNetworkRules: publicNetworkAccess == 'Disabled' ? null : networkRules

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "8813930198344883772"
+      "version": "0.26.54.24096",
+      "templateHash": "10976156692729855046"
     },
     "name": "Public SSH Keys",
     "description": "This module deploys a Public SSH Key.\n\n> Note: The resource does not auto-generate the key for you.",

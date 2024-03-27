@@ -1,0 +1,107 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "5385249890312845255"
+    },
+    "name": "Recovery Service Vaults Protection Container Protected Item",
+    "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the resource."
+      }
+    },
+    "protectionContainerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. Name of the Azure Recovery Service Vault Protection Container. Required if the template is used in a standalone deployment."
+      }
+    },
+    "recoveryVaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "protectedItemType": {
+      "type": "string",
+      "allowedValues": [
+        "AzureFileShareProtectedItem",
+        "AzureVmWorkloadSAPAseDatabase",
+        "AzureVmWorkloadSAPHanaDatabase",
+        "AzureVmWorkloadSQLDatabase",
+        "DPMProtectedItem",
+        "GenericProtectedItem",
+        "MabFileFolderProtectedItem",
+        "Microsoft.ClassicCompute/virtualMachines",
+        "Microsoft.Compute/virtualMachines",
+        "Microsoft.Sql/servers/databases"
+      ],
+      "metadata": {
+        "description": "Required. The backup item type."
+      }
+    },
+    "policyId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. ID of the backup policy with which this item is backed up."
+      }
+    },
+    "sourceResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Resource ID of the resource to back up."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
+      "apiVersion": "2023-01-01",
+      "name": "[format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "protectedItemType": "[parameters('protectedItemType')]",
+        "policyId": "[parameters('policyId')]",
+        "sourceResourceId": "[parameters('sourceResourceId')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the protected item was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the protected item."
+      },
+      "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems', split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[0], split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[1], split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[2], split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[3])]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The Name of the protected item."
+      },
+      "value": "[format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name'))]"
+    }
+  }
+}

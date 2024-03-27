@@ -45,46 +45,48 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: 'dep-${namePrefix}-test-${serviceShort}'
-    location: resourceLocation
-    originResponseTimeoutSeconds: 60
-    sku: 'Standard_Verizon'
-    endpointProperties: {
-      originHostHeader: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
-      contentTypesToCompress: [
-        'text/plain'
-        'text/html'
-        'text/css'
-        'text/javascript'
-        'application/x-javascript'
-        'application/javascript'
-        'application/json'
-        'application/xml'
-      ]
-      isCompressionEnabled: true
-      isHttpAllowed: true
-      isHttpsAllowed: true
-      queryStringCachingBehavior: 'IgnoreQueryString'
-      origins: [
-        {
-          name: 'dep-${namePrefix}-cdn-endpoint01'
-          properties: {
-            hostName: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
-            httpPort: 80
-            httpsPort: 443
-            enabled: true
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: 'dep-${namePrefix}-test-${serviceShort}'
+      location: resourceLocation
+      originResponseTimeoutSeconds: 60
+      sku: 'Standard_Verizon'
+      endpointProperties: {
+        originHostHeader: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
+        contentTypesToCompress: [
+          'text/plain'
+          'text/html'
+          'text/css'
+          'text/javascript'
+          'application/x-javascript'
+          'application/javascript'
+          'application/json'
+          'application/xml'
+        ]
+        isCompressionEnabled: true
+        isHttpAllowed: true
+        isHttpsAllowed: true
+        queryStringCachingBehavior: 'IgnoreQueryString'
+        origins: [
+          {
+            name: 'dep-${namePrefix}-cdn-endpoint01'
+            properties: {
+              hostName: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
+              httpPort: 80
+              httpsPort: 443
+              enabled: true
+            }
           }
-        }
-      ]
-      originGroups: []
-      geoFilters: []
+        ]
+        originGroups: []
+        geoFilters: []
+      }
     }
+    dependsOn: [
+      nestedDependencies
+    ]
   }
-  dependsOn: [
-    nestedDependencies
-  ]
-}]
+]

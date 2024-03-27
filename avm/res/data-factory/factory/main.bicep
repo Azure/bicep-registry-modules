@@ -82,7 +82,7 @@ param enableTelemetry bool = true
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
 var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
   userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
 } : null
 
@@ -172,6 +172,7 @@ module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [for (
     dataFactoryName: dataFactory.name
     name: integrationRuntime.name
     type: integrationRuntime.type
+    interagrationRuntimeCustomDescription: integrationRuntime.?interagrationRuntimeCustomDescription ?? 'Managed Integration Runtime created by avm-res-datafactory-factories'
     managedVirtualNetworkName: contains(integrationRuntime, 'managedVirtualNetworkName') ? integrationRuntime.managedVirtualNetworkName : ''
     typeProperties: contains(integrationRuntime, 'typeProperties') ? integrationRuntime.typeProperties : {}
   }
