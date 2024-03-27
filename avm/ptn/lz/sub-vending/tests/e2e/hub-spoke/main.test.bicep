@@ -17,7 +17,7 @@ param serviceShort string = 'ssahs'
 
 module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  scope: resourceGroup('e4e7395f-dc45-411e-b425-95f75e470e16', 'rsg-blzv-perm-hubs-001')
+  scope: resourceGroup('9948cae8-8c7c-4f5f-81c1-c53317cab23d', 'rsg-blzv-perm-hubs-001')
   params: {
     hubVirtualNetworkName: 'vnet-uksouth-hub-blzv'
   }
