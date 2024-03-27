@@ -1093,7 +1093,7 @@ A value indicating whether Geo-Redundant backup is enabled on the server. If "En
 
 - Required: No
 - Type: string
-- Default: `'Disabled'`
+- Default: `'Enabled'`
 - Allowed:
   ```Bicep
   [
