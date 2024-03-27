@@ -36,7 +36,7 @@ This module deploys a Data Factory Managed or Self-Hosted Integration Runtime.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`interagrationRuntimeCustomDescription`](#parameter-interagrationruntimecustomdescription) | string | The description of the Integration Runtime. |
+| [`integrationRuntimeCustomDescription`](#parameter-integrationruntimecustomdescription) | string | The description of the Integration Runtime. |
 | [`managedVirtualNetworkName`](#parameter-managedvirtualnetworkname) | string | The name of the Managed Virtual Network if using type "Managed" . |
 | [`typeProperties`](#parameter-typeproperties) | object | Integration Runtime type properties. Required if type is "Managed". |
 
@@ -68,7 +68,7 @@ The name of the parent Azure Data Factory. Required if the template is used in a
 - Required: Yes
 - Type: string
 
-### Parameter: `interagrationRuntimeCustomDescription`
+### Parameter: `integrationRuntimeCustomDescription`
 
 The description of the Integration Runtime.
 
