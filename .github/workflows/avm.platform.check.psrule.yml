@@ -1,4 +1,4 @@
-name: 'avm.platform.check.psrule'
+name: "avm.platform.check.psrule"
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ on:
         type: choice
         description: "PSRule baseline"
         required: true
-        default: 'Azure.Default'
+        default: "Azure.Default"
         options:
           - Azure.Default
           - Azure.Pillar.CostOptimization
@@ -21,18 +21,18 @@ on:
         required: true
         default: true
   schedule:
-    - cron: '0 12 * * 0' # Weekly Sunday Analysis
+    - cron: "0 12 * * 0" # Weekly Sunday Analysis
 
 env:
-    workflowPath: ".github/workflows/avm.platform.check.psrule.yml"
-    targetPath: "avm/res/"
-    PSRuleOutputFilePath: "avm/res/PSRule-output.csv"
-    PSRuleInputFilePath: "avm/res/PSRule-output.md"
-    psRuleFilterRegex: "(defaults|waf-aligned)" # The regex used to filter PSRule compliant files
-    psrulePath: "avm/utilities/pipelines/staticValidation/psrule"
-    ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
-    ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
-    TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
+  workflowPath: ".github/workflows/avm.platform.check.psrule.yml"
+  targetPath: "avm/res/"
+  PSRuleOutputFilePath: "avm/res/PSRule-output.csv"
+  PSRuleInputFilePath: "avm/res/PSRule-output.md"
+  psRuleFilterRegex: "(defaults|waf-aligned)" # The regex used to filter PSRule compliant files
+  psrulePath: "avm/utilities/pipelines/staticValidation/psrule"
+  ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+  ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
+  TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
 
 jobs:
   ###########################
@@ -40,7 +40,7 @@ jobs:
   ###########################
   job_init_psrule_pipeline:
     runs-on: ubuntu-latest
-    name: Initialize pipeline
+    name: "Initialize pipeline"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -58,9 +58,8 @@ jobs:
   #   PSRule   #
   ##############
   job_psrule:
-    # Analyze module library with PSRule
-    name: PSRule validation
     runs-on: ubuntu-latest
+    name: "PSRule validation"
     needs:
       - job_init_psrule_pipeline
     steps:
@@ -75,7 +74,7 @@ jobs:
       # [Token replacement] task(s)
       # ---------------------------
       - name: Replace tokens in relevant files
-        uses: azure/powershell@v1
+        uses: azure/powershell@v2
         with:
           azPSVersion: "latest"
           inlineScript: |
@@ -156,7 +155,7 @@ jobs:
       #-----------------------------
       - name: Parse CSV content
         if: always()
-        uses: azure/powershell@v1
+        uses: azure/powershell@v2
         with:
           azPSVersion: "latest"
           inlineScript: |
@@ -170,7 +169,7 @@ jobs:
             $ParameterInput = @{
               inputFilePath         = '${{ env.PSRuleOutputFilePath }}'
               outputFilePath        = '${{ env.PSRuleInputFilePath }}'
-              skipPassedRulesReport = ${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).skipPassedRulesReport }}
+              skipPassedRulesReport = [System.Convert]::ToBoolean('${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).skipPassedRulesReport }}')
             }
 
             Write-Verbose ('Set PS Rule Output with following parameters:`n{0}' -f (ConvertTo-Json $ParameterInput -Depth 10)) -Verbose
@@ -198,4 +197,3 @@ jobs:
           }
 
           Write-Output '::endgroup::'
-

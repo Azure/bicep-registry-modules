@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "8072514070285903960"
+      "version": "0.26.54.24096",
+      "templateHash": "9585256428416945935"
     },
     "name": "Resource Graph Queries",
     "description": "This module deploys a Resource Graph Query.",
@@ -109,7 +109,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the Resource Graph Query."
+        "description": "Required. The name of the Resource Graph Query."
       }
     },
     "location": {
@@ -148,7 +148,7 @@
     "query": {
       "type": "string",
       "metadata": {
-        "description": "Required. KQL query that will be graph."
+        "description": "Required. The KQL query that will be graph."
       }
     },
     "queryDescription": {

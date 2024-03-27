@@ -1,0 +1,99 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "13701757307300485900"
+    },
+    "name": "Recovery Services Vault Replication Policies",
+    "description": "This module deploys a Recovery Services Vault Replication Policy for Disaster Recovery scenario.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "recoveryVaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the replication policy."
+      }
+    },
+    "appConsistentFrequencyInMinutes": {
+      "type": "int",
+      "defaultValue": 60,
+      "metadata": {
+        "description": "Optional. The app consistent snapshot frequency (in minutes)."
+      }
+    },
+    "crashConsistentFrequencyInMinutes": {
+      "type": "int",
+      "defaultValue": 5,
+      "metadata": {
+        "description": "Optional. The crash consistent snapshot frequency (in minutes)."
+      }
+    },
+    "multiVmSyncStatus": {
+      "type": "string",
+      "defaultValue": "Enable",
+      "allowedValues": [
+        "Enable",
+        "Disable"
+      ],
+      "metadata": {
+        "description": "Optional. A value indicating whether multi-VM sync has to be enabled."
+      }
+    },
+    "recoveryPointHistory": {
+      "type": "int",
+      "defaultValue": 1440,
+      "metadata": {
+        "description": "Optional. The duration in minutes until which the recovery points need to be stored."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.RecoveryServices/vaults/replicationPolicies",
+      "apiVersion": "2023-06-01",
+      "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
+      "properties": {
+        "providerSpecificInput": {
+          "instanceType": "A2A",
+          "appConsistentFrequencyInMinutes": "[parameters('appConsistentFrequencyInMinutes')]",
+          "crashConsistentFrequencyInMinutes": "[parameters('crashConsistentFrequencyInMinutes')]",
+          "multiVmSyncStatus": "[parameters('multiVmSyncStatus')]",
+          "recoveryPointHistory": "[parameters('recoveryPointHistory')]"
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the replication policy."
+      },
+      "value": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the replication policy."
+      },
+      "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationPolicies', split(format('{0}/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[0], split(format('{0}/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[1])]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the replication policy was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

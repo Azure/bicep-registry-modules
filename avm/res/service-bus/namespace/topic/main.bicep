@@ -80,14 +80,29 @@ param roleAssignments roleAssignmentType
 param subscriptions array = []
 
 var builtInRoleNames = {
-  'Azure Service Bus Data Owner': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '090c5cfd-751d-490a-894a-3ce6f1109419')
-  'Azure Service Bus Data Receiver': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')
-  'Azure Service Bus Data Sender': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '69a216fc-b8fb-44d8-bc22-1f3c2cd27a39')
+  'Azure Service Bus Data Owner': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '090c5cfd-751d-490a-894a-3ce6f1109419'
+  )
+  'Azure Service Bus Data Receiver': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0'
+  )
+  'Azure Service Bus Data Sender': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '69a216fc-b8fb-44d8-bc22-1f3c2cd27a39'
+  )
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
 resource namespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' existing = {
@@ -97,7 +112,8 @@ resource namespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' existing
 resource topic 'Microsoft.ServiceBus/namespaces/topics@2022-10-01-preview' = {
   name: name
   parent: namespace
-  properties: union({
+  properties: union(
+    {
       autoDeleteOnIdle: autoDeleteOnIdle
       defaultMessageTimeToLive: defaultMessageTimeToLive
       duplicateDetectionHistoryTimeWindow: duplicateDetectionHistoryTimeWindow
@@ -107,67 +123,84 @@ resource topic 'Microsoft.ServiceBus/namespaces/topics@2022-10-01-preview' = {
       status: status
       supportOrdering: supportOrdering
       maxSizeInMegabytes: maxSizeInMegabytes
-    }, (namespace.sku.name == 'Premium') ? {
-      enableExpress: enableExpress
-      maxMessageSizeInKilobytes: maxMessageSizeInKilobytes
-    } : {})
+    },
+    (namespace.sku.name == 'Premium')
+      ? {
+          enableExpress: enableExpress
+          maxMessageSizeInKilobytes: maxMessageSizeInKilobytes
+        }
+      : {}
+  )
 }
 
-module topic_authorizationRules 'authorization-rule/main.bicep' = [for (authorizationRule, index) in authorizationRules: {
-  name: '${deployment().name}-AuthRule-${index}'
-  params: {
-    namespaceName: namespaceName
-    topicName: topic.name
-    name: authorizationRule.name
-    rights: contains(authorizationRule, 'rights') ? authorizationRule.rights : []
+module topic_authorizationRules 'authorization-rule/main.bicep' = [
+  for (authorizationRule, index) in authorizationRules: {
+    name: '${deployment().name}-AuthRule-${index}'
+    params: {
+      namespaceName: namespaceName
+      topicName: topic.name
+      name: authorizationRule.name
+      rights: contains(authorizationRule, 'rights') ? authorizationRule.rights : []
+    }
   }
-}]
+]
 
-resource topic_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource topic_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: topic
   }
-  scope: topic
-}
 
-resource topic_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(topic.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+resource topic_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(topic.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: topic
   }
-  scope: topic
-}]
+]
 
-module topic_subscription 'subscription/main.bicep' = [for (subscription, index) in (subscriptions ?? []): {
-  name: '${deployment().name}-subscription-${index}'
-  params: {
-    name: subscription.name
-    namespaceName: namespace.name
-    topicName: topic.name
-    autoDeleteOnIdle: subscription.?autoDeleteOnIdle ?? 'PT1H'
-    defaultMessageTimeToLive: subscription.?defaultMessageTimeToLive ?? 'P14D'
-    duplicateDetectionHistoryTimeWindow: subscription.?duplicateDetectionHistoryTimeWindow ?? 'PT10M'
-    enableBatchedOperations: subscription.?enableBatchedOperations ?? true
-    clientAffineProperties: subscription.?clientAffineProperties ?? {}
-    deadLetteringOnFilterEvaluationExceptions: subscription.?deadLetteringOnFilterEvaluationExceptions ?? true
-    deadLetteringOnMessageExpiration: subscription.?deadLetteringOnMessageExpiration ?? false
-    forwardDeadLetteredMessagesTo: subscription.?forwardDeadLetteredMessagesTo
-    forwardTo: subscription.?forwardTo
-    isClientAffine: subscription.?isClientAffine ?? false
-    lockDuration: subscription.?lockDuration ?? 'PT1M'
-    maxDeliveryCount: subscription.?maxDeliveryCount ?? 10
-    requiresSession: subscription.?requiresSession ?? false
-    status: subscription.?status ?? 'Active'
+module topic_subscription 'subscription/main.bicep' = [
+  for (subscription, index) in (subscriptions ?? []): {
+    name: '${deployment().name}-subscription-${index}'
+    params: {
+      name: subscription.name
+      namespaceName: namespace.name
+      topicName: topic.name
+      autoDeleteOnIdle: subscription.?autoDeleteOnIdle ?? 'PT1H'
+      defaultMessageTimeToLive: subscription.?defaultMessageTimeToLive ?? 'P14D'
+      duplicateDetectionHistoryTimeWindow: subscription.?duplicateDetectionHistoryTimeWindow ?? 'PT10M'
+      enableBatchedOperations: subscription.?enableBatchedOperations ?? true
+      clientAffineProperties: subscription.?clientAffineProperties ?? {}
+      deadLetteringOnFilterEvaluationExceptions: subscription.?deadLetteringOnFilterEvaluationExceptions ?? true
+      deadLetteringOnMessageExpiration: subscription.?deadLetteringOnMessageExpiration ?? false
+      forwardDeadLetteredMessagesTo: subscription.?forwardDeadLetteredMessagesTo
+      forwardTo: subscription.?forwardTo
+      isClientAffine: subscription.?isClientAffine ?? false
+      lockDuration: subscription.?lockDuration ?? 'PT1M'
+      maxDeliveryCount: subscription.?maxDeliveryCount ?? 10
+      requiresSession: subscription.?requiresSession ?? false
+      status: subscription.?status ?? 'Active'
+    }
   }
-}]
+]
 
 @description('The name of the deployed topic.')
 output name string = topic.name
@@ -266,5 +299,14 @@ type subscriptionsType = {
   requiresSession: bool?
 
   @description('Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.')
-  status: ('Active' | 'Disabled' | 'Restoring' | 'SendDisabled' | 'ReceiveDisabled' | 'Creating' | 'Deleting' | 'Renaming' | 'Unknown')?
+  status: (
+    | 'Active'
+    | 'Disabled'
+    | 'Restoring'
+    | 'SendDisabled'
+    | 'ReceiveDisabled'
+    | 'Creating'
+    | 'Deleting'
+    | 'Renaming'
+    | 'Unknown')?
 }[]?

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "2256713976702167408"
+      "version": "0.26.54.24096",
+      "templateHash": "1556415774507310743"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -780,10 +780,12 @@
       "defaultValue": "loadBalancer",
       "allowedValues": [
         "loadBalancer",
-        "userDefinedRouting"
+        "userDefinedRouting",
+        "managedNATGateway",
+        "userAssignedNATGateway"
       ],
       "metadata": {
-        "description": "Optional. Specifies outbound (egress) routing method. - loadBalancer or userDefinedRouting."
+        "description": "Optional. Specifies outbound (egress) routing method."
       }
     },
     "skuTier": {
@@ -1600,7 +1602,7 @@
           "privateDNSZone": "[parameters('privateDNSZone')]"
         },
         "azureMonitorProfile": {
-          "logs": "[if(parameters('enableAzureMonitorProfileLogs'), createObject('enabled', parameters('enableAzureMonitorProfileLogs'), 'appMonitoring', createObject('enabled', parameters('enableAppMonitoring')), 'containerInsights', createObject('enabled', parameters('enableContainerInsights'), 'logAnalyticsWorkspaceResourceId', if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), null()), 'windowsHostLogs', createObject('enabled', parameters('enableWindowsHostLogs')))), null())]",
+          "logs": "[if(parameters('enableAzureMonitorProfileLogs'), createObject('appMonitoring', createObject('enabled', parameters('enableAppMonitoring')), 'containerInsights', createObject('enabled', parameters('enableContainerInsights'), 'logAnalyticsWorkspaceResourceId', if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), null()), 'windowsHostLogs', createObject('enabled', parameters('enableWindowsHostLogs')))), null())]",
           "metrics": "[if(parameters('enableAzureMonitorProfileMetrics'), createObject('enabled', parameters('enableAzureMonitorProfileMetrics'), 'appMonitoringOpenTelemetryMetrics', createObject('enabled', parameters('enableAppMonitoringOpenTelemetryMetrics')), 'kubeStateMetrics', createObject('metricLabelsAllowlist', parameters('metricLabelsAllowlist'), 'metricAnnotationsAllowList', parameters('metricAnnotationsAllowList'))), null())]"
         },
         "podIdentityProfile": {
@@ -1860,8 +1862,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "11449186283530676915"
+              "version": "0.26.54.24096",
+              "templateHash": "8772299678418708256"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",

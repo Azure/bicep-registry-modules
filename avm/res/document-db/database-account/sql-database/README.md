@@ -35,10 +35,10 @@ This module deploys a SQL Database in a CosmosDB Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`autoscaleSettingsMaxThroughput`](#parameter-autoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to -1, then the property will be set to null and autoscale will be disabled. |
+| [`autoscaleSettingsMaxThroughput`](#parameter-autoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. |
 | [`containers`](#parameter-containers) | array | Array of containers to deploy in the SQL database. |
 | [`tags`](#parameter-tags) | object | Tags of the SQL database resource. |
-| [`throughput`](#parameter-throughput) | int | Request units per second. Will be set to null if autoscaleSettingsMaxThroughput is used. |
+| [`throughput`](#parameter-throughput) | int | Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. |
 
 ### Parameter: `name`
 
@@ -56,7 +56,7 @@ The name of the parent Database Account. Required if the template is used in a s
 
 ### Parameter: `autoscaleSettingsMaxThroughput`
 
-Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to -1, then the property will be set to null and autoscale will be disabled.
+Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled.
 
 - Required: No
 - Type: int
@@ -78,11 +78,10 @@ Tags of the SQL database resource.
 
 ### Parameter: `throughput`
 
-Request units per second. Will be set to null if autoscaleSettingsMaxThroughput is used.
+Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.
 
 - Required: No
 - Type: int
-- Default: `400`
 
 
 ## Outputs

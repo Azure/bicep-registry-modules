@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "17204586034528334587"
+      "version": "0.26.54.24096",
+      "templateHash": "4620280027037163005"
     },
     "name": "Virtual Machine Image Templates",
     "description": "This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB).",
@@ -291,7 +291,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name prefix of the Image Template to be built by the Azure Image Builder service."
+        "description": "Required. The name prefix of the Image Template to be built by the Azure Image Builder service."
       }
     },
     "location": {
@@ -307,7 +307,7 @@
       "minValue": 0,
       "maxValue": 960,
       "metadata": {
-        "description": "Optional. Image build timeout in minutes. 0 means the default 240 minutes."
+        "description": "Optional. The image build timeout in minutes. 0 means the default 240 minutes."
       }
     },
     "vmSize": {

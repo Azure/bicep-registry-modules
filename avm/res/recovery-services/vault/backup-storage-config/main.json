@@ -1,0 +1,83 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "7323008272687100781"
+    },
+    "name": "Recovery Services Vault Backup Storage Config",
+    "description": "This module deploys a Recovery Service Vault Backup Storage Configuration.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "recoveryVaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "vaultstorageconfig",
+      "metadata": {
+        "description": "Optional. The name of the backup storage config."
+      }
+    },
+    "storageModelType": {
+      "type": "string",
+      "defaultValue": "GeoRedundant",
+      "allowedValues": [
+        "GeoRedundant",
+        "LocallyRedundant",
+        "ReadAccessGeoZoneRedundant",
+        "ZoneRedundant"
+      ],
+      "metadata": {
+        "description": "Optional. Change Vault Storage Type (Works if vault has not registered any backup instance)."
+      }
+    },
+    "crossRegionRestoreFlag": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Opt in details of Cross Region Restore feature."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.RecoveryServices/vaults/backupstorageconfig",
+      "apiVersion": "2023-01-01",
+      "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
+      "properties": {
+        "storageModelType": "[parameters('storageModelType')]",
+        "crossRegionRestoreFlag": "[parameters('crossRegionRestoreFlag')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the backup storage config."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the backup storage config."
+      },
+      "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupstorageconfig', parameters('recoveryVaultName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the backup storage configuration was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
