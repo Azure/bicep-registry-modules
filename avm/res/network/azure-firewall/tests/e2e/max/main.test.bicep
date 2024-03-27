@@ -61,19 +61,63 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
-    applicationRuleCollections: [
-      {
-        name: 'allow-app-rules'
-        properties: {
-          action: {
-            type: 'Allow'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
+      applicationRuleCollections: [
+        {
+          name: 'allow-app-rules'
+          properties: {
+            action: {
+              type: 'Allow'
+            }
+            priority: 100
+            rules: [
+              {
+                fqdnTags: [
+                  'AppServiceEnvironment'
+                  'WindowsUpdate'
+                ]
+                name: 'allow-ase-tags'
+                protocols: [
+                  {
+                    port: 80
+                    protocolType: 'Http'
+                  }
+                  {
+                    port: 443
+                    protocolType: 'Https'
+                  }
+                ]
+                sourceAddresses: [
+                  '*'
+                ]
+              }
+              {
+                name: 'allow-ase-management'
+                protocols: [
+                  {
+                    port: 80
+                    protocolType: 'Http'
+                  }
+                  {
+                    port: 443
+                    protocolType: 'Https'
+                  }
+                ]
+                sourceAddresses: [
+                  '*'
+                ]
+                targetFqdns: [
+                  'bing.com'
+                ]
+              }
+            ]
           }
         }
       ]
@@ -83,45 +127,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           name: 'customSetting'
           metricCategories: [
             {
-              fqdnTags: [
-                'AppServiceEnvironment'
-                'WindowsUpdate'
-              ]
-              name: 'allow-ase-tags'
-              description: 'allow ase tags'
-              protocols: [
-                {
-                  port: 80
-                  protocolType: 'Http'
-                }
-                {
-                  port: 443
-                  protocolType: 'Https'
-                }
-              ]
-              sourceAddresses: [
-                '*'
-              ]
-            }
-            {
-              name: 'allow-ase-management'
-              description: 'allow ase management'
-              protocols: [
-                {
-                  port: 80
-                  protocolType: 'Http'
-                }
-                {
-                  port: 443
-                  protocolType: 'Https'
-                }
-              ]
-              sourceAddresses: [
-                '*'
-              ]
-              targetFqdns: [
-                'bing.com'
-              ]
+              category: 'AllMetrics'
             }
           ]
           eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
@@ -139,7 +145,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           name: 'allow-network-rules'
           properties: {
             action: {
-              type: 'allow'
+              type: 'Allow'
             }
             priority: 100
             rules: [
@@ -159,62 +165,24 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
                   '*'
                 ]
               }
+              {
+                name: 'allow-azure-devops'
+                protocols: [
+                  'Any'
+                ]
+                description: 'allow azure devops'
+                sourceAddresses: [
+                  '*'
+                ]
+                destinationAddresses: [
+                  'AzureDevOps'
+                ]
+                destinationPorts: [
+                  '443'
+                ]
+              }
             ]
           }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    networkRuleCollections: [
-      {
-        name: 'allow-network-rules'
-        properties: {
-          action: {
-            type: 'Allow'
-          }
-          priority: 100
-          rules: [
-            {
-              destinationAddresses: [
-                '*'
-              ]
-              destinationPorts: [
-                '12000'
-                '123'
-              ]
-              name: 'allow-ntp'
-              description: 'allow network rules'
-              protocols: [
-                'Any'
-              ]
-              sourceAddresses: [
-                '*'
-              ]
-            }
-            {
-              name: 'allow-azure-devops'
-              protocols: [
-                'Any'
-              ]
-              description: 'allow azure devops'
-              sourceAddresses: [
-                '*'
-              ]
-              destinationAddresses: [
-                'AzureDevOps'
-              ]
-              destinationPorts: [
-                '443'
-              ]
-            }
-          ]
         }
       ]
       roleAssignments: [

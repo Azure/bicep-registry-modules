@@ -449,7 +449,6 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
           priority: 100
           rules: [
             {
-              description: 'allow ase tags'
               fqdnTags: [
                 'AppServiceEnvironment'
                 'WindowsUpdate'
@@ -470,7 +469,6 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
               ]
             }
             {
-              description: 'allow ase management'
               name: 'allow-ase-management'
               protocols: [
                 {
@@ -522,7 +520,6 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
           priority: 100
           rules: [
             {
-              description: 'allow network rules'
               destinationAddresses: [
                 '*'
               ]
@@ -619,7 +616,6 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
             "priority": 100,
             "rules": [
               {
-                "description": "allow ase tags",
                 "fqdnTags": [
                   "AppServiceEnvironment",
                   "WindowsUpdate"
@@ -640,7 +636,6 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
                 ]
               },
               {
-                "description": "allow ase management",
                 "name": "allow-ase-management",
                 "protocols": [
                   {
@@ -700,7 +695,6 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
             "priority": 100,
             "rules": [
               {
-                "description": "allow network rules",
                 "destinationAddresses": [
                   "*"
                 ],
