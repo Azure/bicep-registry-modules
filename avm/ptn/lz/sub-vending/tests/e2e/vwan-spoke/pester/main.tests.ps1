@@ -124,11 +124,11 @@ Describe "Bicep Landing Zone (Sub) Vending Tests" {
     }
 
     It "Should have a Virtual Network with a Virtual Network Peering to the Hub Virtual Network called 'vnet-uksouth-hub-blzv'" {
-      $vnetVwan.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be $TestInputData.DeploymentOutputs.hubNetworkResourceId.Value
+      $vnetVwan.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be "/subscriptions/2b8681e7-7c7f-474a-b649-6377f4c1b74d/resourceGroups/RG_vhub-uksouth-blzv_73df07af-62ce-4aed-b15e-832d49d4984f/providers/Microsoft.Network/virtualNetworks/HV_vhub-uksouth-blzv_ed0b8a35-0235-4ada-9405-39530ef6c722"
     }
 
     It "Should have a Virtual Network with a Virtual Network Peering to the Hub Virtual Network called 'vnet-uksouth-hub-blzv' that is in the Connected state and FullyInSync" {
-      $vnetVwan.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be $TestInputData.DeploymentOutputs.hubNetworkResourceId.Value
+      $vnetVwan.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be "/subscriptions/2b8681e7-7c7f-474a-b649-6377f4c1b74d/resourceGroups/RG_vhub-uksouth-blzv_73df07af-62ce-4aed-b15e-832d49d4984f/providers/Microsoft.Network/virtualNetworks/HV_vhub-uksouth-blzv_ed0b8a35-0235-4ada-9405-39530ef6c722"
       $vnetVwan.VirtualNetworkPeerings[0].PeeringState | Should -Be "Connected"
       $vnetVwan.VirtualNetworkPeerings[0].PeeringSyncLevel | Should -Be "FullyInSync"
     }
