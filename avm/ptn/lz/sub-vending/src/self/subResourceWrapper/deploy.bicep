@@ -423,7 +423,7 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (virt
     addressPrefixes: virtualNetworkAddressSpace
     dnsServers: virtualNetworkDnsServers
     ddosProtectionPlanResourceId: virtualNetworkDdosPlanId
-    peerings: (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(hubVirtualNetworkResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) 
+    peerings: (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(hubVirtualNetworkResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))
      ? [
       {
         allowForwardedTraffic: true
@@ -437,7 +437,7 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.1.0' = if (virt
         remotePeeringAllowGatewayTransit: true
         remotePeeringUseRemoteGateways: false
       }
-    ] 
+    ]
      : []
     enableTelemetry: disableTelemetry
   }
@@ -455,7 +455,7 @@ module createLzVirtualWanConnection '../../resources/Microsoft.Network/virtualHu
     virtualHubName: virtualWanHubName
     remoteVirtualNetworkId: '/subscriptions/${subscriptionId}/resourceGroups/${virtualNetworkResourceGroupName}/providers/Microsoft.Network/virtualNetworks/${virtualNetworkName}'
     enableInternetSecurity: virtualNetworkVwanEnableInternetSecurity
-    routingConfiguration: !vHubRoutingIntentEnabled 
+    routingConfiguration: !vHubRoutingIntentEnabled
      ? {
       associatedRouteTable: {
         id: virtualWanHubConnectionAssociatedRouteTable
@@ -464,7 +464,7 @@ module createLzVirtualWanConnection '../../resources/Microsoft.Network/virtualHu
         ids: virtualWanHubConnectionPropogatedRouteTables
         labels: virtualWanHubConnectionPropogatedLabels
       }
-    } 
+    }
      : {}
   }
 }
@@ -575,6 +575,7 @@ module createDsNsg 'br/public:avm/res/network/network-security-group:0.1.0' = if
     enableTelemetry: disableTelemetry
   }
 }
+
 module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.5.0' = if (!empty(resourceProviders)) {
   dependsOn: [
     createRoleAssignmentsDeploymentScriptStorageAccount
@@ -585,7 +586,7 @@ module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.5.0' 
     location: deploymentScriptLocation
     name: deploymentScriptStorageAccountName
     kind: 'StorageV2'
-    skuName: 'Standard_LRS'
+    skuName: 'Standard_ZRS'
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: 'Deny'
