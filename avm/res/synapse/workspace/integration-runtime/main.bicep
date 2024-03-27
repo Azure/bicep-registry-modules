@@ -25,16 +25,18 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' existing = {
 resource integrationRuntime 'Microsoft.Synapse/workspaces/integrationRuntimes@2021-06-01' = {
   name: name
   parent: workspace
-  properties: type == 'Managed' ? {
-    type: type
-    managedVirtualNetwork: {
-      referenceName: 'default'
-      type: 'ManagedVirtualNetworkReference'
-    }
-    typeProperties: typeProperties
-  } : {
-    type: type
-  }
+  properties: type == 'Managed'
+    ? {
+        type: type
+        managedVirtualNetwork: {
+          referenceName: 'default'
+          type: 'ManagedVirtualNetworkReference'
+        }
+        typeProperties: typeProperties
+      }
+    : {
+        type: type
+      }
 }
 
 @description('The name of the Resource Group the Integration Runtime was created in.')

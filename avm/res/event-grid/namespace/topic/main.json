@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "2836208779363789051"
+      "version": "0.26.54.24096",
+      "templateHash": "4459336414537252998"
     },
     "name": "Eventgrid Namespace Topics",
     "description": "This module deploys an Eventgrid Namespace Topic.",
@@ -277,8 +277,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "13130499975324434363"
+              "version": "0.26.54.24096",
+              "templateHash": "18248314164362964337"
             },
             "name": "Event Subscriptions",
             "description": "This module deploys an Event Subscription.",
