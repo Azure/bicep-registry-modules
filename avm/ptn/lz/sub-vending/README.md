@@ -256,7 +256,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     }
     subscriptionWorkload: 'Production'
     virtualNetworkAddressSpace: [
-      '10.100.0.0/16'
+      '10.110.0.0/16'
     ]
     virtualNetworkEnabled: true
     virtualNetworkLocation: '<virtualNetworkLocation>'
@@ -356,7 +356,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     },
     "virtualNetworkAddressSpace": {
       "value": [
-        "10.100.0.0/16"
+        "10.110.0.0/16"
       ]
     },
     "virtualNetworkEnabled": {
@@ -429,7 +429,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     }
     subscriptionWorkload: 'Production'
     virtualNetworkAddressSpace: [
-      '10.200.0.0/16'
+      '10.210.0.0/16'
     ]
     virtualNetworkEnabled: true
     virtualNetworkLocation: '<virtualNetworkLocation>'
@@ -521,7 +521,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     },
     "virtualNetworkAddressSpace": {
       "value": [
-        "10.200.0.0/16"
+        "10.210.0.0/16"
       ]
     },
     "virtualNetworkEnabled": {

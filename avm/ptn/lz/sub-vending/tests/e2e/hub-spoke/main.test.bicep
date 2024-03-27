@@ -48,7 +48,7 @@ module testDeployment '../../../main.bicep' = {
     deploymentScriptStorageAccountName: 'stgds${namePrefix}${serviceShort}${substring(uniqueString(deployment().name), 0, 4)}'
     deploymentScriptLocation: resourceLocation
     virtualNetworkAddressSpace: [
-      '10.100.0.0/16'
+      '10.110.0.0/16'
     ]
     virtualNetworkResourceGroupLockEnabled: false
     virtualNetworkPeeringEnabled: true

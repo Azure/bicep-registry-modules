@@ -45,7 +45,7 @@ module testDeployment '../../../main.bicep' = {
     deploymentScriptName: 'ds-${namePrefix}${serviceShort}'
     virtualNetworkName: 'vnet-${resourceLocation}-vwan-${namePrefix}-${serviceShort}'
     virtualNetworkAddressSpace: [
-      '10.200.0.0/16'
+      '10.210.0.0/16'
     ]
     virtualNetworkResourceGroupLockEnabled: false
     virtualNetworkPeeringEnabled: true
