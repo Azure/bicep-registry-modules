@@ -49,6 +49,7 @@ module testDeployment '../../../main.bicep' = {
     ]
     virtualNetworkResourceGroupLockEnabled: false
     virtualNetworkPeeringEnabled: true
+    virtualNetworkUseRemoteGateways: false
     hubNetworkResourceId: nestedDependencies.outputs.virtualHubResourceId
     roleAssignmentEnabled: true
     roleAssignments: [

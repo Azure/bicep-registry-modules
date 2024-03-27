@@ -25,7 +25,6 @@ module nestedDependencies 'dependencies.bicep' = {
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    deploymentScriptLocation: resourceLocation
     subscriptionAliasEnabled: true
     subscriptionBillingScope: subscriptionBillingScope
     subscriptionAliasName: 'sub-blzv-tests-${namePrefix}-${serviceShort}'
@@ -47,6 +46,7 @@ module testDeployment '../../../main.bicep' = {
     deploymentScriptNetworkSecurityGroupName: 'nsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
     deploymentScriptVirtualNetworkName: 'vnet-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
     deploymentScriptStorageAccountName: 'stgds${namePrefix}${serviceShort}'
+    deploymentScriptLocation: resourceLocation
     virtualNetworkAddressSpace: [
       '10.100.0.0/16'
     ]
@@ -63,8 +63,8 @@ module testDeployment '../../../main.bicep' = {
       }
     ]
     resourceProviders: {
-      'Microsoft.HybridCompute': ['ArcServerPrivateLinkPreview']
-      'Microsoft.AVS': ['AzureServicesVm']
+      'Microsoft.HybridCompute': [ 'ArcServerPrivateLinkPreview' ]
+      'Microsoft.AVS': [ 'AzureServicesVm' ]
     }
   }
 }
