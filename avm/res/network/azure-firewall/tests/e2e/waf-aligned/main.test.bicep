@@ -75,8 +75,13 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           action: {
             type: 'Allow'
           }
-          priority: 100
-          rules: [
+        }
+      ]
+      publicIPResourceID: nestedDependencies.outputs.publicIPResourceId
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
             {
               fqdnTags: [
                 'AppServiceEnvironment'
@@ -117,16 +122,38 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
               ]
             }
           ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
-      }
-    ]
-    publicIPResourceID: nestedDependencies.outputs.publicIPResourceId
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
+      ]
+      networkRuleCollections: [
+        {
+          name: 'allow-network-rules'
+          properties: {
+            action: {
+              type: 'allow'
+            }
+            priority: 100
+            rules: [
+              {
+                destinationAddresses: [
+                  '*'
+                ]
+                destinationPorts: [
+                  '12000'
+                  '123'
+                ]
+                name: 'allow-ntp'
+                protocols: [
+                  'Any'
+                ]
+                sourceAddresses: [
+                  '*'
+                ]
+              }
+            ]
           }
         ]
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
@@ -162,17 +189,17 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             }
           ]
         }
+      ]
+      zones: [
+        '1'
+        '2'
+        '3'
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-    ]
-    zones: [
-      '1'
-      '2'
-      '3'
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
-}]
+]

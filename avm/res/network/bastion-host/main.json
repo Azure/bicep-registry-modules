@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "403145241490619459"
+      "version": "0.26.54.24096",
+      "templateHash": "6331481515117626704"
     },
     "name": "Bastion Hosts",
     "description": "This module deploys a Bastion Host.",

@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Disabling local authentication. i.e. access keys'
-metadata description = 'This instance deploys the module disabling local authentication.'
+metadata name = 'Using bounded consistency'
+metadata description = 'This instance deploys the module specifying a default consistency level.'
 
 // ========== //
 // Parameters //
@@ -15,16 +15,17 @@ param resourceGroupName string = 'dep-${namePrefix}-documentdb.databaseaccounts-
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dddadlo'
+param serviceShort string = 'dddabco'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
 // Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
-var enforcedLocation = 'eastus'
+var enforcedLocation = 'eastasia'
 
+// ============== //
 // General resources
-// =================
+// ============== //
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: resourceGroupName
   location: enforcedLocation
@@ -38,19 +39,14 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
-    disableLocalAuth: true
     location: enforcedLocation
-    name: '${namePrefix}-local-auth-off'
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: enforcedLocation
-      }
-    ]
+    name: '${namePrefix}-bounded'
+    defaultConsistencyLevel: 'BoundedStaleness'
+    maxIntervalInSeconds: 600
+    maxStalenessPrefix: 200000
     sqlDatabases: [
       {
-        name: 'empty-database'
+        name: 'no-containers-specified'
       }
     ]
   }

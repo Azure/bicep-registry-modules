@@ -46,47 +46,49 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    clusterName: nestedDependencies.outputs.clusterName
-    extensionType: 'microsoft.flux'
-    configurationSettings: {
-      'image-automation-controller.enabled': 'false'
-      'image-reflector-controller.enabled': 'false'
-      'kustomize-controller.enabled': 'true'
-      'notification-controller.enabled': 'false'
-      'source-controller.enabled': 'true'
-    }
-    releaseNamespace: 'flux-system'
-    releaseTrain: 'Stable'
-    version: '0.5.2'
-    fluxConfigurations: [
-      {
-        namespace: 'flux-system'
-        scope: 'cluster'
-        gitRepository: {
-          repositoryRef: {
-            branch: 'main'
-          }
-          sshKnownHosts: ''
-          syncIntervalInSeconds: 300
-          timeoutInSeconds: 180
-          url: 'https://github.com/mspnp/aks-baseline'
-        }
-        kustomizations: {
-          unified: {
-            path: './cluster-manifests'
-          }
-        }
-        suspend: false
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      clusterName: nestedDependencies.outputs.clusterName
+      extensionType: 'microsoft.flux'
+      configurationSettings: {
+        'image-automation-controller.enabled': 'false'
+        'image-reflector-controller.enabled': 'false'
+        'kustomize-controller.enabled': 'true'
+        'notification-controller.enabled': 'false'
+        'source-controller.enabled': 'true'
       }
+      releaseNamespace: 'flux-system'
+      releaseTrain: 'Stable'
+      version: '0.5.2'
+      fluxConfigurations: [
+        {
+          namespace: 'flux-system'
+          scope: 'cluster'
+          gitRepository: {
+            repositoryRef: {
+              branch: 'main'
+            }
+            sshKnownHosts: ''
+            syncIntervalInSeconds: 300
+            timeoutInSeconds: 180
+            url: 'https://github.com/mspnp/aks-baseline'
+          }
+          kustomizations: {
+            unified: {
+              path: './cluster-manifests'
+            }
+          }
+          suspend: false
+        }
+      ]
+    }
+    dependsOn: [
+      nestedDependencies
     ]
   }
-  dependsOn: [
-    nestedDependencies
-  ]
-}]
+]
