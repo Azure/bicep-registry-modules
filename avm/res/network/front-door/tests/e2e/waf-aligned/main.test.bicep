@@ -50,112 +50,114 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 var resourceName = '${namePrefix}${serviceShort}001'
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: resourceName
-    location: resourceLocation
-    backendPools: [
-      {
-        name: 'backendPool'
-        properties: {
-          backends: [
-            {
-              address: 'biceptest.local'
-              backendHostHeader: 'backendAddress'
-              enabledState: 'Enabled'
-              httpPort: 80
-              httpsPort: 443
-              priority: 1
-              privateLinkAlias: ''
-              privateLinkApprovalMessage: ''
-              privateLinkLocation: ''
-              weight: 50
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: resourceName
+      location: resourceLocation
+      backendPools: [
+        {
+          name: 'backendPool'
+          properties: {
+            backends: [
+              {
+                address: 'biceptest.local'
+                backendHostHeader: 'backendAddress'
+                enabledState: 'Enabled'
+                httpPort: 80
+                httpsPort: 443
+                priority: 1
+                privateLinkAlias: ''
+                privateLinkApprovalMessage: ''
+                privateLinkLocation: ''
+                weight: 50
+              }
+            ]
+            HealthProbeSettings: {
+              id: '${resourceGroup.id}/providers/Microsoft.Network/frontDoors/${resourceName}/HealthProbeSettings/heathProbe'
             }
-          ]
-          HealthProbeSettings: {
-            id: '${resourceGroup.id}/providers/Microsoft.Network/frontDoors/${resourceName}/HealthProbeSettings/heathProbe'
-          }
-          LoadBalancingSettings: {
-            id: '${resourceGroup.id}/providers/Microsoft.Network/frontDoors/${resourceName}/LoadBalancingSettings/loadBalancer'
-          }
-        }
-      }
-    ]
-    enforceCertificateNameCheck: 'Disabled'
-    frontendEndpoints: [
-      {
-        name: 'frontEnd'
-        properties: {
-          hostName: '${resourceName}.${environment().suffixes.azureFrontDoorEndpointSuffix}'
-          sessionAffinityEnabledState: 'Disabled'
-          sessionAffinityTtlSeconds: 60
-        }
-      }
-    ]
-    healthProbeSettings: [
-      {
-        name: 'heathProbe'
-        properties: {
-          enabledState: ''
-          healthProbeMethod: ''
-          intervalInSeconds: 60
-          path: '/'
-          protocol: 'Https'
-        }
-      }
-    ]
-    loadBalancingSettings: [
-      {
-        name: 'loadBalancer'
-        properties: {
-          additionalLatencyMilliseconds: 0
-          sampleSize: 50
-          successfulSamplesRequired: 1
-        }
-      }
-    ]
-    routingRules: [
-      {
-        name: 'routingRule'
-        properties: {
-          acceptedProtocols: [
-            'Http'
-            'Https'
-          ]
-          enabledState: 'Enabled'
-          frontendEndpoints: [
-            {
-              id: '${resourceGroup.id}/providers/Microsoft.Network/frontDoors/${resourceName}/FrontendEndpoints/frontEnd'
+            LoadBalancingSettings: {
+              id: '${resourceGroup.id}/providers/Microsoft.Network/frontDoors/${resourceName}/LoadBalancingSettings/loadBalancer'
             }
-          ]
-          patternsToMatch: [
-            '/*'
-          ]
-          routeConfiguration: {
-            '@odata.type': '#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration'
-            backendPool: {
-              id: '${resourceGroup.id}/providers/Microsoft.Network/frontDoors/${resourceName}/BackendPools/backendPool'
-            }
-            forwardingProtocol: 'MatchRequest'
           }
         }
+      ]
+      enforceCertificateNameCheck: 'Disabled'
+      frontendEndpoints: [
+        {
+          name: 'frontEnd'
+          properties: {
+            hostName: '${resourceName}.${environment().suffixes.azureFrontDoorEndpointSuffix}'
+            sessionAffinityEnabledState: 'Disabled'
+            sessionAffinityTtlSeconds: 60
+          }
+        }
+      ]
+      healthProbeSettings: [
+        {
+          name: 'heathProbe'
+          properties: {
+            enabledState: ''
+            healthProbeMethod: ''
+            intervalInSeconds: 60
+            path: '/'
+            protocol: 'Https'
+          }
+        }
+      ]
+      loadBalancingSettings: [
+        {
+          name: 'loadBalancer'
+          properties: {
+            additionalLatencyMilliseconds: 0
+            sampleSize: 50
+            successfulSamplesRequired: 1
+          }
+        }
+      ]
+      routingRules: [
+        {
+          name: 'routingRule'
+          properties: {
+            acceptedProtocols: [
+              'Http'
+              'Https'
+            ]
+            enabledState: 'Enabled'
+            frontendEndpoints: [
+              {
+                id: '${resourceGroup.id}/providers/Microsoft.Network/frontDoors/${resourceName}/FrontendEndpoints/frontEnd'
+              }
+            ]
+            patternsToMatch: [
+              '/*'
+            ]
+            routeConfiguration: {
+              '@odata.type': '#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration'
+              backendPool: {
+                id: '${resourceGroup.id}/providers/Microsoft.Network/frontDoors/${resourceName}/BackendPools/backendPool'
+              }
+              forwardingProtocol: 'MatchRequest'
+            }
+          }
+        }
+      ]
+      sendRecvTimeoutSeconds: 10
+      diagnosticSettings: [
+        {
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-    ]
-    sendRecvTimeoutSeconds: 10
-    diagnosticSettings: [
-      {
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
-}]
+]

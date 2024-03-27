@@ -47,69 +47,74 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    ipConfigurations: [
-      {
-        name: '${serviceShort}01'
-        properties: {
-          primary: true
-          privateIPAllocationMethod: 'Dynamic'
-          subnet: {
-            id: nestedDependencies.outputs.subnetResourceId
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      ipConfigurations: [
+        {
+          name: '${serviceShort}01'
+          properties: {
+            primary: true
+            privateIPAllocationMethod: 'Dynamic'
+            subnet: {
+              id: nestedDependencies.outputs.subnetResourceId
+            }
           }
         }
-      }
-    ]
-    loadBalancerFrontendIpConfigurations: [
-      {
-        id: nestedDependencies.outputs.loadBalancerFrontendIpConfigurationResourceId
-      }
-    ]
-    autoApproval: {
-      subscriptions: [
-        '*'
       ]
-    }
-    visibility: {
-      subscriptions: [
-        subscription().subscriptionId
+      loadBalancerFrontendIpConfigurations: [
+        {
+          id: nestedDependencies.outputs.loadBalancerFrontendIpConfigurationResourceId
+        }
       ]
-    }
-    enableProxyProtocol: true
-    fqdns: [
-      '${serviceShort}.plsfqdn01.azure.privatelinkservice'
-      '${serviceShort}.plsfqdn02.azure.privatelinkservice'
-    ]
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+      autoApproval: {
+        subscriptions: [
+          '*'
+        ]
       }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+      visibility: {
+        subscriptions: [
+          subscription().subscriptionId
+        ]
       }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+      enableProxyProtocol: true
+      fqdns: [
+        '${serviceShort}.plsfqdn01.azure.privatelinkservice'
+        '${serviceShort}.plsfqdn02.azure.privatelinkservice'
+      ]
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
-}]
+]

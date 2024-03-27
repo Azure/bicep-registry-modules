@@ -8,13 +8,13 @@ param managedIdentityName string
 param dnsZoneName string
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
-    name: managedIdentityName
-    location: location
+  name: managedIdentityName
+  location: location
 }
 
 resource dnsZone 'Microsoft.Network/dnsZones@2018-05-01' = {
-    name: dnsZoneName
-    location: 'global'
+  name: dnsZoneName
+  location: 'global'
 }
 
 @description('The principal ID of the created Managed Identity.')

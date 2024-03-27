@@ -35,129 +35,184 @@ param enableTelemetry bool = true
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  'Log Analytics Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')
-  'Log Analytics Reader': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')
-  'Logic App Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '87a39d53-fc1b-424a-814c-f7e04687dc9e')
-  'Monitoring Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')
-  'Monitoring Metrics Publisher': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')
-  'Monitoring Reader': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')
-  'Network Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')
+  'Log Analytics Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '92aaf0da-9dab-42b6-94a3-d43ce8d16293'
+  )
+  'Log Analytics Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '73c42c96-874c-492b-b04d-ab87d138a893'
+  )
+  'Logic App Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '87a39d53-fc1b-424a-814c-f7e04687dc9e'
+  )
+  'Monitoring Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '749f88d5-cbae-40b8-bcfc-e573ddc772fa'
+  )
+  'Monitoring Metrics Publisher': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '3913510d-42f4-4e42-8a64-420c390055eb'
+  )
+  'Monitoring Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
+  )
+  'Network Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '4d97b98b-1d4f-4787-a291-c67834d212e7'
+  )
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
-  'Private DNS Zone Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')
+  'Private DNS Zone Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'b12aa53e-6015-4669-85d0-8515ebb3ae7f'
+  )
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'Tag Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4a9ae827-6dc8-4573-8ac7-8239d42aa03f')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Role Based Access Control Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'Tag Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '4a9ae827-6dc8-4573-8ac7-8239d42aa03f'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.insights-privatelinkscope.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.insights-privatelinkscope.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
 resource privateLinkScope 'microsoft.insights/privateLinkScopes@2021-07-01-preview' = {
   name: name
   location: location
   tags: tags
   properties: {
-    accessModeSettings: !empty(privateEndpoints) ? {
-      ingestionAccessMode: accessModeSettings.?ingestionAccessMode ?? 'PrivateOnly'
-      queryAccessMode: accessModeSettings.?queryAccessMode ?? 'PrivateOnly'
-      exclusions: accessModeSettings.?exclusions ?? []
-    } : accessModeSettings ?? {
-      ingestionAccessMode: accessModeSettings.?ingestionAccessMode ?? 'Open'
-      queryAccessMode: accessModeSettings.?queryAccessMode ?? 'Open'
-      exclusions: accessModeSettings.?exclusions ?? []
+    accessModeSettings: !empty(privateEndpoints)
+      ? {
+          ingestionAccessMode: accessModeSettings.?ingestionAccessMode ?? 'PrivateOnly'
+          queryAccessMode: accessModeSettings.?queryAccessMode ?? 'PrivateOnly'
+          exclusions: accessModeSettings.?exclusions ?? []
+        }
+      : accessModeSettings ?? {
+          ingestionAccessMode: accessModeSettings.?ingestionAccessMode ?? 'Open'
+          queryAccessMode: accessModeSettings.?queryAccessMode ?? 'Open'
+          exclusions: accessModeSettings.?exclusions ?? []
+        }
+  }
+}
+
+module privateLinkScope_scopedResource 'scoped-resource/main.bicep' = [
+  for (scopedResource, index) in (scopedResources ?? []): {
+    name: '${uniqueString(deployment().name, location)}-PrivateLinkScope-ScopedResource-${index}'
+    params: {
+      name: scopedResource.name
+      privateLinkScopeName: privateLinkScope.name
+      linkedResourceId: scopedResource.linkedResourceId
     }
   }
-}
+]
 
-module privateLinkScope_scopedResource 'scoped-resource/main.bicep' = [for (scopedResource, index) in (scopedResources ?? []): {
-  name: '${uniqueString(deployment().name, location)}-PrivateLinkScope-ScopedResource-${index}'
-  params: {
-    name: scopedResource.name
-    privateLinkScopeName: privateLinkScope.name
-    linkedResourceId: scopedResource.linkedResourceId
+resource privateLinkScope_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: privateLinkScope
   }
-}]
 
-resource privateLinkScope_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
-  }
-  scope: privateLinkScope
-}
-
-module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-PrivateLinkScope-PrivateEndpoint-${index}'
-  params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(privateLinkScope.id, '/'))}-${privateEndpoint.?service ?? 'azuremonitor'}-${index}'
-    privateLinkServiceConnections: [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(privateLinkScope.id, '/'))}-${privateEndpoint.?service ?? 'azuremonitor'}-${index}'
-        properties: {
-          privateLinkServiceId: privateLinkScope.id
-          groupIds: [
-            privateEndpoint.?service ?? 'azuremonitor'
-          ]
+module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    name: '${uniqueString(deployment().name, location)}-PrivateLinkScope-PrivateEndpoint-${index}'
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(privateLinkScope.id, '/'))}-${privateEndpoint.?service ?? 'azuremonitor'}-${index}'
+      privateLinkServiceConnections: [
+        {
+          name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(privateLinkScope.id, '/'))}-${privateEndpoint.?service ?? 'azuremonitor'}-${index}'
+          properties: {
+            privateLinkServiceId: privateLinkScope.id
+            groupIds: [
+              privateEndpoint.?service ?? 'azuremonitor'
+            ]
+          }
         }
-      }
-    ]
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(privateLinkScope.id, '/'))}-${privateEndpoint.?service ?? 'azuremonitor'}-${index}'
-        properties: {
-          privateLinkServiceId: privateLinkScope.id
-          groupIds: [
-            privateEndpoint.?service ?? 'azuremonitor'
+      ]
+      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(privateLinkScope.id, '/'))}-${privateEndpoint.?service ?? 'azuremonitor'}-${index}'
+              properties: {
+                privateLinkServiceId: privateLinkScope.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'azuremonitor'
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
           ]
-          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
-        }
-      }
-    ] : null
-    subnetResourceId: privateEndpoint.subnetResourceId
-    location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: privateEndpoint.?lock ?? lock
-    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
-    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
-    roleAssignments: privateEndpoint.?roleAssignments
-    tags: privateEndpoint.?tags ?? tags
-    customDnsConfigs: privateEndpoint.?customDnsConfigs
-    ipConfigurations: privateEndpoint.?ipConfigurations
-    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
-    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
   }
-}]
+]
 
-resource privateLinkScope_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(privateLinkScope.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+resource privateLinkScope_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(privateLinkScope.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: privateLinkScope
   }
-  scope: privateLinkScope
-}]
+]
 
 @description('The name of the private link scope.')
 output name string = privateLinkScope.name

@@ -8,34 +8,34 @@ param keyVaultName string
 param managedIdentityName string
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-    name: managedIdentityName
-    location: location
+  name: managedIdentityName
+  location: location
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
-    name: keyVaultName
-    location: location
-    properties: {
-        sku: {
-            family: 'A'
-            name: 'standard'
-        }
-        tenantId: tenant().tenantId
-        enablePurgeProtection: true // Required by disk encryption set
-        softDeleteRetentionInDays: 7
-        enabledForTemplateDeployment: true
-        enabledForDiskEncryption: true
-        enabledForDeployment: true
-        enableRbacAuthorization: true
-        accessPolicies: []
+  name: keyVaultName
+  location: location
+  properties: {
+    sku: {
+      family: 'A'
+      name: 'standard'
     }
+    tenantId: tenant().tenantId
+    enablePurgeProtection: true // Required by disk encryption set
+    softDeleteRetentionInDays: 7
+    enabledForTemplateDeployment: true
+    enabledForDiskEncryption: true
+    enabledForDeployment: true
+    enableRbacAuthorization: true
+    accessPolicies: []
+  }
 
-    resource key 'keys@2022-07-01' = {
-        name: 'keyEncryptionKey'
-        properties: {
-            kty: 'RSA'
-        }
+  resource key 'keys@2022-07-01' = {
+    name: 'keyEncryptionKey'
+    properties: {
+      kty: 'RSA'
     }
+  }
 }
 
 @description('The resource ID of the created Key Vault.')

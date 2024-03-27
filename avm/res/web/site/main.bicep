@@ -157,41 +157,65 @@ param hybridConnectionRelays array?
 ])
 param publicNetworkAccess string?
 
-var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
-  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-} : null
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 var builtInRoleNames = {
-  'App Compliance Automation Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f37683f-2463-46b6-9ce7-9b788b988ba2')
+  'App Compliance Automation Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '0f37683f-2463-46b6-9ce7-9b788b988ba2'
+  )
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
-  'Web Plan Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2cc479cb-7b4d-49a8-b449-8c00fd0f0a4b')
-  'Website Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'de139f84-1756-47ae-9be6-808fbbe84772')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
+  'Web Plan Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '2cc479cb-7b4d-49a8-b449-8c00fd0f0a4b'
+  )
+  'Website Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'de139f84-1756-47ae-9be6-808fbbe84772'
+  )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.web-site.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.web-site.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
 resource app 'Microsoft.Web/sites@2022-09-01' = {
   name: name
@@ -203,9 +227,11 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
     serverFarmId: serverFarmResourceId
     clientAffinityEnabled: clientAffinityEnabled
     httpsOnly: httpsOnly
-    hostingEnvironmentProfile: !empty(appServiceEnvironmentResourceId) ? {
-      id: appServiceEnvironmentResourceId
-    } : null
+    hostingEnvironmentProfile: !empty(appServiceEnvironmentResourceId)
+      ? {
+          id: appServiceEnvironmentResourceId
+        }
+      : null
     storageAccountRequired: storageAccountRequired
     keyVaultReferenceIdentity: keyVaultAccessIdentityResourceId
     virtualNetworkSubnetId: virtualNetworkSubnetId
@@ -221,7 +247,9 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
     hostNameSslStates: hostNameSslStates
     hyperV: hyperV
     redundancyMode: redundancyMode
-    publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
+    publicNetworkAccess: !empty(publicNetworkAccess)
+      ? any(publicNetworkAccess)
+      : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
     vnetContentShareEnabled: vnetContentShareEnabled
     vnetImagePullEnabled: vnetImagePullEnabled
     vnetRouteAllEnabled: vnetRouteAllEnabled
@@ -229,181 +257,216 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
   }
 }
 
-module app_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettingsKeyValuePairs)) {
-  name: '${uniqueString(deployment().name, location)}-Site-Config-AppSettings'
-  params: {
-    appName: app.name
-    kind: kind
-    storageAccountResourceId: storageAccountResourceId
-    storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
-    appInsightResourceId: appInsightResourceId
-    appSettingsKeyValuePairs: appSettingsKeyValuePairs
+module app_appsettings 'config--appsettings/main.bicep' =
+  if (!empty(appSettingsKeyValuePairs)) {
+    name: '${uniqueString(deployment().name, location)}-Site-Config-AppSettings'
+    params: {
+      appName: app.name
+      kind: kind
+      storageAccountResourceId: storageAccountResourceId
+      storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
+      appInsightResourceId: appInsightResourceId
+      appSettingsKeyValuePairs: appSettingsKeyValuePairs
+    }
   }
-}
 
-module app_authsettingsv2 'config--authsettingsv2/main.bicep' = if (!empty(authSettingV2Configuration)) {
-  name: '${uniqueString(deployment().name, location)}-Site-Config-AuthSettingsV2'
-  params: {
-    appName: app.name
-    kind: kind
-    authSettingV2Configuration: authSettingV2Configuration ?? {}
+module app_authsettingsv2 'config--authsettingsv2/main.bicep' =
+  if (!empty(authSettingV2Configuration)) {
+    name: '${uniqueString(deployment().name, location)}-Site-Config-AuthSettingsV2'
+    params: {
+      appName: app.name
+      kind: kind
+      authSettingV2Configuration: authSettingV2Configuration ?? {}
+    }
   }
-}
 
 @batchSize(1)
-module app_slots 'slot/main.bicep' = [for (slot, index) in (slots ?? []): {
-  name: '${uniqueString(deployment().name, location)}-Slot-${slot.name}'
-  params: {
-    name: slot.name
-    appName: app.name
-    location: location
-    kind: kind
-    serverFarmResourceId: serverFarmResourceId
-    httpsOnly: slot.?httpsOnly ?? httpsOnly
-    appServiceEnvironmentResourceId: appServiceEnvironmentResourceId
-    clientAffinityEnabled: slot.?clientAffinityEnabled ?? clientAffinityEnabled
-    managedIdentities: slot.?managedIdentities ?? managedIdentities
-    keyVaultAccessIdentityResourceId: slot.?keyVaultAccessIdentityResourceId ?? keyVaultAccessIdentityResourceId
-    storageAccountRequired: slot.?storageAccountRequired ?? storageAccountRequired
-    virtualNetworkSubnetId: slot.?virtualNetworkSubnetId ?? virtualNetworkSubnetId
-    siteConfig: slot.?siteConfig ?? siteConfig
-    storageAccountResourceId: slot.?storageAccountResourceId ?? storageAccountResourceId
-    storageAccountUseIdentityAuthentication: slot.?storageAccountUseIdentityAuthentication ?? storageAccountUseIdentityAuthentication
-    appInsightResourceId: slot.?appInsightResourceId ?? appInsightResourceId
-    authSettingV2Configuration: slot.?authSettingV2Configuration ?? authSettingV2Configuration
-    diagnosticSettings: slot.?diagnosticSettings
-    roleAssignments: slot.?roleAssignments ?? roleAssignments
-    appSettingsKeyValuePairs: slot.?appSettingsKeyValuePairs ?? appSettingsKeyValuePairs
-    basicPublishingCredentialsPolicies: slot.?basicPublishingCredentialsPolicies ?? basicPublishingCredentialsPolicies
-    lock: slot.?lock ?? lock
-    privateEndpoints: slot.?privateEndpoints ?? []
-    tags: slot.?tags ?? tags
-    clientCertEnabled: slot.?clientCertEnabled
-    clientCertExclusionPaths: slot.?clientCertExclusionPaths
-    clientCertMode: slot.?clientCertMode
-    cloningInfo: slot.?cloningInfo
-    containerSize: slot.?containerSize
-    customDomainVerificationId: slot.?customDomainVerificationId
-    dailyMemoryTimeQuota: slot.?dailyMemoryTimeQuota
-    enabled: slot.?enabled
-    enableTelemetry: slot.?enableTelemetry ?? enableTelemetry
-    hostNameSslStates: slot.?hostNameSslStates
-    hyperV: slot.?hyperV
-    publicNetworkAccess: slot.?publicNetworkAccess ?? ((!empty(slot.?privateEndpoints) || !empty(privateEndpoints)) ? 'Disabled' : 'Enabled')
-    redundancyMode: slot.?redundancyMode
-    vnetContentShareEnabled: slot.?vnetContentShareEnabled
-    vnetImagePullEnabled: slot.?vnetImagePullEnabled
-    vnetRouteAllEnabled: slot.?vnetRouteAllEnabled
-    hybridConnectionRelays: slot.?hybridConnectionRelays
+module app_slots 'slot/main.bicep' = [
+  for (slot, index) in (slots ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Slot-${slot.name}'
+    params: {
+      name: slot.name
+      appName: app.name
+      location: location
+      kind: kind
+      serverFarmResourceId: serverFarmResourceId
+      httpsOnly: slot.?httpsOnly ?? httpsOnly
+      appServiceEnvironmentResourceId: appServiceEnvironmentResourceId
+      clientAffinityEnabled: slot.?clientAffinityEnabled ?? clientAffinityEnabled
+      managedIdentities: slot.?managedIdentities ?? managedIdentities
+      keyVaultAccessIdentityResourceId: slot.?keyVaultAccessIdentityResourceId ?? keyVaultAccessIdentityResourceId
+      storageAccountRequired: slot.?storageAccountRequired ?? storageAccountRequired
+      virtualNetworkSubnetId: slot.?virtualNetworkSubnetId ?? virtualNetworkSubnetId
+      siteConfig: slot.?siteConfig ?? siteConfig
+      storageAccountResourceId: slot.?storageAccountResourceId ?? storageAccountResourceId
+      storageAccountUseIdentityAuthentication: slot.?storageAccountUseIdentityAuthentication ?? storageAccountUseIdentityAuthentication
+      appInsightResourceId: slot.?appInsightResourceId ?? appInsightResourceId
+      authSettingV2Configuration: slot.?authSettingV2Configuration ?? authSettingV2Configuration
+      diagnosticSettings: slot.?diagnosticSettings
+      roleAssignments: slot.?roleAssignments ?? roleAssignments
+      appSettingsKeyValuePairs: slot.?appSettingsKeyValuePairs ?? appSettingsKeyValuePairs
+      basicPublishingCredentialsPolicies: slot.?basicPublishingCredentialsPolicies ?? basicPublishingCredentialsPolicies
+      lock: slot.?lock ?? lock
+      privateEndpoints: slot.?privateEndpoints ?? []
+      tags: slot.?tags ?? tags
+      clientCertEnabled: slot.?clientCertEnabled
+      clientCertExclusionPaths: slot.?clientCertExclusionPaths
+      clientCertMode: slot.?clientCertMode
+      cloningInfo: slot.?cloningInfo
+      containerSize: slot.?containerSize
+      customDomainVerificationId: slot.?customDomainVerificationId
+      dailyMemoryTimeQuota: slot.?dailyMemoryTimeQuota
+      enabled: slot.?enabled
+      enableTelemetry: slot.?enableTelemetry ?? enableTelemetry
+      hostNameSslStates: slot.?hostNameSslStates
+      hyperV: slot.?hyperV
+      publicNetworkAccess: slot.?publicNetworkAccess ?? ((!empty(slot.?privateEndpoints) || !empty(privateEndpoints))
+        ? 'Disabled'
+        : 'Enabled')
+      redundancyMode: slot.?redundancyMode
+      vnetContentShareEnabled: slot.?vnetContentShareEnabled
+      vnetImagePullEnabled: slot.?vnetImagePullEnabled
+      vnetRouteAllEnabled: slot.?vnetRouteAllEnabled
+      hybridConnectionRelays: slot.?hybridConnectionRelays
+    }
   }
-}]
+]
 
-module app_basicPublishingCredentialsPolicies 'basic-publishing-credentials-policy/main.bicep' = [for (basicPublishingCredentialsPolicy, index) in (basicPublishingCredentialsPolicies ?? []): {
-  name: '${uniqueString(deployment().name, location)}-Site-Publish-Cred-${index}'
-  params: {
-    webAppName: app.name
-    name: basicPublishingCredentialsPolicy.name
-    allow: basicPublishingCredentialsPolicy.?allow
-    location: location
+module app_basicPublishingCredentialsPolicies 'basic-publishing-credentials-policy/main.bicep' = [
+  for (basicPublishingCredentialsPolicy, index) in (basicPublishingCredentialsPolicies ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Site-Publish-Cred-${index}'
+    params: {
+      webAppName: app.name
+      name: basicPublishingCredentialsPolicy.name
+      allow: basicPublishingCredentialsPolicy.?allow
+      location: location
+    }
   }
-}]
+]
 
-module app_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep' = [for (hybridConnectionRelay, index) in (hybridConnectionRelays ?? []): {
-  name: '${uniqueString(deployment().name, location)}-HybridConnectionRelay-${index}'
-  params: {
-    hybridConnectionResourceId: hybridConnectionRelay.resourceId
-    appName: app.name
-    sendKeyName: hybridConnectionRelay.?sendKeyName
+module app_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep' = [
+  for (hybridConnectionRelay, index) in (hybridConnectionRelays ?? []): {
+    name: '${uniqueString(deployment().name, location)}-HybridConnectionRelay-${index}'
+    params: {
+      hybridConnectionResourceId: hybridConnectionRelay.resourceId
+      appName: app.name
+      sendKeyName: hybridConnectionRelay.?sendKeyName
+    }
   }
-}]
+]
 
-resource app_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource app_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: app
   }
-  scope: app
-}
 
-resource app_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
-      category: group.category
-      enabled: group.?enabled ?? true
-      timeGrain: null
-    }]
-    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
-      categoryGroup: group.?categoryGroup
-      category: group.?category
-      enabled: group.?enabled ?? true
-    }]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
-  }
-  scope: app
-}]
-
-resource app_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(app.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
-  }
-  scope: app
-}]
-
-module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-App-PrivateEndpoint-${index}'
-  params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites'}-${index}'
-    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites'}-${index}'
-        properties: {
-          privateLinkServiceId: app.id
-          groupIds: [
-            privateEndpoint.?service ?? 'sites'
-          ]
+resource app_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
         }
-      }
-    ] : null
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites'}-${index}'
-        properties: {
-          privateLinkServiceId: app.id
-          groupIds: [
-            privateEndpoint.?service ?? 'sites'
-          ]
-          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
         }
-      }
-    ] : null
-    subnetResourceId: privateEndpoint.subnetResourceId
-    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
-    location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: privateEndpoint.?lock ?? lock
-    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
-    roleAssignments: privateEndpoint.?roleAssignments
-    tags: privateEndpoint.?tags ?? tags
-    customDnsConfigs: privateEndpoint.?customDnsConfigs
-    ipConfigurations: privateEndpoint.?ipConfigurations
-    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
-    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: app
   }
-}]
+]
+
+resource app_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(app.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: app
+  }
+]
+
+module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    name: '${uniqueString(deployment().name, location)}-App-PrivateEndpoint-${index}'
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites'}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites'}-${index}'
+              properties: {
+                privateLinkServiceId: app.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'sites'
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites'}-${index}'
+              properties: {
+                privateLinkServiceId: app.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'sites'
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
+  }
+]
 
 @description('The name of the site.')
 output name string = app.name
@@ -424,7 +487,9 @@ output resourceGroupName string = resourceGroup().name
 output systemAssignedMIPrincipalId string = app.?identity.?principalId ?? ''
 
 @description('The principal ID of the system assigned identity of slots.')
-output slotSystemAssignedMIPrincipalIds array = [for (slot, index) in (slots ?? []): app_slots[index].outputs.systemAssignedMIPrincipalId]
+output slotSystemAssignedMIPrincipalIds array = [
+  for (slot, index) in (slots ?? []): app_slots[index].outputs.systemAssignedMIPrincipalId
+]
 
 @description('The location the resource was deployed into.')
 output location string = app.location

@@ -1,4 +1,4 @@
-<h1 style="color: steelblue;">⚠️ Upcoming changes ⚠️</h1>
+<h1 style="color: steelblue;">⚠️ Retired ⚠️</h1>
 
 This module has been retired without a replacement module in Azure Verified Modules (AVM).
 

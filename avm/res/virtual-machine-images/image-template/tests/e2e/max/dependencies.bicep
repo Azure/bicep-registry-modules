@@ -190,7 +190,11 @@ resource imageManagedIdentityOperatorRbac 'Microsoft.Authorization/roleAssignmen
 
 // Allow Deployment Script MSI to access storage account container to upload files
 resource storageContributorRbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(assetsStorageAccount::blobService::container.id, storageBlobDataContributorRole.id, imageManagedIdentity.id)
+  name: guid(
+    assetsStorageAccount::blobService::container.id,
+    storageBlobDataContributorRole.id,
+    imageManagedIdentity.id
+  )
   scope: assetsStorageAccount::blobService::container
   properties: {
     roleDefinitionId: storageBlobDataContributorRole.id
@@ -226,7 +230,13 @@ resource dsStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
         {
           // Allow deployment script to use storage account for private networking of container instance
           action: 'Allow'
-          id: resourceId(subscription().subscriptionId, resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', virtualNetwork.name, deploymentScriptSubnetName)
+          id: resourceId(
+            subscription().subscriptionId,
+            resourceGroup().name,
+            'Microsoft.Network/virtualNetworks/subnets',
+            virtualNetwork.name,
+            deploymentScriptSubnetName
+          )
         }
       ]
     }
@@ -278,7 +288,13 @@ resource assetsStorageAccount_upload 'Microsoft.Resources/deploymentScripts@2023
     containerSettings: {
       subnetIds: [
         {
-          id: resourceId(subscription().subscriptionId, resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', virtualNetwork.name, deploymentScriptSubnetName)
+          id: resourceId(
+            subscription().subscriptionId,
+            resourceGroup().name,
+            'Microsoft.Network/virtualNetworks/subnets',
+            virtualNetwork.name,
+            deploymentScriptSubnetName
+          )
         }
       ]
     }
