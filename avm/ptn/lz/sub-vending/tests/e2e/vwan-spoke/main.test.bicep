@@ -20,6 +20,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup('e4e7395f-dc45-411e-b425-95f75e470e16', 'rsg-blzv-perm-hubs-001')
   params: {
     hubVirtualNetworkName: 'vnet-uksouth-hub-blzv'
+    virtualHubName: 'vhub-uksouth-blzv'
   }
 }
 module testDeployment '../../../main.bicep' = {
