@@ -53,7 +53,7 @@ Function Get-AvmCsvData {
     # Remove '@Azure/' from the ModuleOwnersGHTeam property
     $item.ModuleOwnersGHTeam = $item.ModuleOwnersGHTeam -replace '@Azure\/', ''
     # Remove '@Azure/' from the ModuleContributorsGHTeam property
-    $item.ModuleContributorsGHTeam = $item.ModuleContributorsGHTeam -replace '@Azure/', ''
+    $item.ModuleContributorsGHTeam = $item.ModuleContributorsGHTeam -replace '@Azure\/', ''
   }
 
   # Return the modified data
