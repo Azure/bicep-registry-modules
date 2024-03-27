@@ -77,5 +77,4 @@ rule:
   includeLocal: false
   exclude:
     # Ignore the following rules for all resources
-    - Azure.KeyVault.PurgeProtect
     - Azure.VM.UseHybridUseBenefit
