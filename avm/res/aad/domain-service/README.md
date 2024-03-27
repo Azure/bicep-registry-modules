@@ -29,150 +29,9 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/aad/domain-service:<version>`.
 
-- [Using default parameter set](#example-1-using-default-parameter-set)
-- [WAF-aligned](#example-2-waf-aligned)
+- [WAF-aligned](#example-1-waf-aligned)
 
-### Example 1: _Using default parameter set_
-
-This instance deploys the module with default features enabled.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
-  name: 'domainServiceDeployment'
-  params: {
-    // Required parameters
-    domainName: 'onmicrosoft.com'
-    // Non-required parameters
-    additionalRecipients: [
-      '@noreply.github.com'
-    ]
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    enableTelemetry: '<enableTelemetry>'
-    externalAccess: 'Disabled'
-    ldaps: 'Enabled'
-    location: '<location>'
-    lock: {
-      kind: 'None'
-      name: 'myCustomLockName'
-    }
-    name: 'aaddsmin001'
-    pfxCertificate: '<pfxCertificate>'
-    pfxCertificatePassword: '<pfxCertificatePassword>'
-    replicaSets: [
-      {
-        location: 'WestEurope'
-        subnetId: '<subnetId>'
-      }
-    ]
-    sku: 'Standard'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "domainName": {
-      "value": "onmicrosoft.com"
-    },
-    // Non-required parameters
-    "additionalRecipients": {
-      "value": [
-        "@noreply.github.com"
-      ]
-    },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
-    "externalAccess": {
-      "value": "Disabled"
-    },
-    "ldaps": {
-      "value": "Enabled"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "None",
-        "name": "myCustomLockName"
-      }
-    },
-    "name": {
-      "value": "aaddsmin001"
-    },
-    "pfxCertificate": {
-      "value": "<pfxCertificate>"
-    },
-    "pfxCertificatePassword": {
-      "value": "<pfxCertificatePassword>"
-    },
-    "replicaSets": {
-      "value": [
-        {
-          "location": "WestEurope",
-          "subnetId": "<subnetId>"
-        }
-      ]
-    },
-    "sku": {
-      "value": "Standard"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 2: _WAF-aligned_
+### Example 1: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -191,38 +50,18 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
     additionalRecipients: [
       '@noreply.github.com'
     ]
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
+    diagnosticSettings: '<diagnosticSettings>'
     enableTelemetry: '<enableTelemetry>'
-    externalAccess: 'Disabled'
+    externalAccess: 'Enabled'
     ldaps: 'Enabled'
     location: '<location>'
-    lock: {
-      kind: 'None'
-      name: 'myCustomLockName'
-    }
+    lock: '<lock>'
     name: 'aaddswaf001'
     pfxCertificate: '<pfxCertificate>'
     pfxCertificatePassword: '<pfxCertificatePassword>'
-    replicaSets: [
-      {
-        location: 'WestEurope'
-        subnetId: '<subnetId>'
-      }
-    ]
+    replicaSets: '<replicaSets>'
     sku: 'Standard'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
+    tags: '<tags>'
   }
 }
 ```
@@ -250,21 +89,13 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
       ]
     },
     "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
+      "value": "<diagnosticSettings>"
     },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
     },
     "externalAccess": {
-      "value": "Disabled"
+      "value": "Enabled"
     },
     "ldaps": {
       "value": "Enabled"
@@ -273,10 +104,7 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
       "value": "<location>"
     },
     "lock": {
-      "value": {
-        "kind": "None",
-        "name": "myCustomLockName"
-      }
+      "value": "<lock>"
     },
     "name": {
       "value": "aaddswaf001"
@@ -288,22 +116,13 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
       "value": "<pfxCertificatePassword>"
     },
     "replicaSets": {
-      "value": [
-        {
-          "location": "WestEurope",
-          "subnetId": "<subnetId>"
-        }
-      ]
+      "value": "<replicaSets>"
     },
     "sku": {
       "value": "Standard"
     },
     "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
+      "value": "<tags>"
     }
   }
 }
@@ -343,7 +162,7 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
 | [`ldaps`](#parameter-ldaps) | string | A flag to determine whether or not Secure LDAP is enabled or disabled. |
 | [`location`](#parameter-location) | string | The location to deploy the Azure ADDS Services. Uses the resource group location if not specified. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`name`](#parameter-name) | string | The name of the AADDS resource. Defaults to the domain name specific to the Azure ADDS service. |
+| [`name`](#parameter-name) | string | The name of the AADDS resource. Defaults to the domain name specific to the Azure ADDS service. The prefix of your specified domain name (such as dscontoso in the dscontoso.com domain name) must contain 15 or fewer characters. |
 | [`notifyDcAdmins`](#parameter-notifydcadmins) | string | The value is to notify the DC Admins. |
 | [`notifyGlobalAdmins`](#parameter-notifyglobaladmins) | string | The value is to notify the Global Admins. |
 | [`ntlmV1`](#parameter-ntlmv1) | string | The value is to enable clients making request using NTLM v1. |
@@ -634,7 +453,7 @@ Specify the name of lock.
 
 ### Parameter: `name`
 
-The name of the AADDS resource. Defaults to the domain name specific to the Azure ADDS service.
+The name of the AADDS resource. Defaults to the domain name specific to the Azure ADDS service. The prefix of your specified domain name (such as dscontoso in the dscontoso.com domain name) must contain 15 or fewer characters.
 
 - Required: No
 - Type: string

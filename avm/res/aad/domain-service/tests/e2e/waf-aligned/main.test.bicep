@@ -21,7 +21,32 @@ param serviceShort string = 'aaddswaf'
 param enableTelemetry bool = false
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'xrhz'
+
+var varDiagSettings = [
+  {
+    name: 'customSetting'
+    eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+    eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+    storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+    workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+  }
+]
+var varLock = {
+  kind: 'None'
+  name: 'myCustomLockName'
+}
+var varReplicaSets = [
+  {
+    location: 'NorthEurope'
+    subnetId: nestedDependencies.outputs.subnetResourceId
+  }
+]
+var varTags = {
+  'hidden-title': 'This is visible in the resource name'
+  Environment: 'Non-Prod'
+  Role: 'DeploymentValidation'
+}
 
 // ============ //
 // Dependencies //
@@ -72,46 +97,57 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
 
 // 'idem' as second iteration will fail, as AAD DS is not ready for a second deployment during its provisioning state even when reported as 'succeeded' by the init iteration
 // as of https://azure.github.io/Azure-Verified-Modules/specs/shared/#id-snfr7---category-testing---idempotency-tests the idem test it is not required
-@batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
+module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-init'
   params: {
     enableTelemetry: enableTelemetry
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
     domainName: '${namePrefix}.onmicrosoft.com'
-    externalAccess: 'Disabled'
-    additionalRecipients: [
-      '${namePrefix}@noreply.github.com'
-    ]
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    lock: {
-      kind: 'None'
-      name: 'myCustomLockName'
-    }
+    additionalRecipients: [ '${namePrefix}@noreply.github.com' ]
+    diagnosticSettings: varDiagSettings
+    lock: varLock
     ldaps: 'Enabled'
+    externalAccess: 'Enabled'
     pfxCertificate: keyVault.getSecret(nestedDependencies.outputs.certSecretName)
     pfxCertificatePassword: keyVault.getSecret(nestedDependencies.outputs.certPWSecretName)
-    replicaSets: [
-      {
-        location: 'WestEurope'
-        subnetId: nestedDependencies.outputs.subnetResourceId
-      }
-    ]
+    replicaSets: varReplicaSets
     sku: 'Standard'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
+    tags: varTags
   }
-}]
+}
+
+module waitForDeployment 'main.wait.bicep' = {
+  dependsOn: [ testDeployment ]
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-waitForDeployment'
+  params: {
+    serviceShort: serviceShort
+    resourceLocation: resourceLocation
+    waitTimeInSeconds: '3000' // 50 min
+  }
+}
+
+// copy from the init test. Will be executed after a wait time
+module testDeploymentIdem '../../../main.bicep' = {
+  dependsOn: [ waitForDeployment ]
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-idem'
+  params: {
+    enableTelemetry: enableTelemetry
+    name: '${namePrefix}${serviceShort}001'
+    location: resourceLocation
+    domainName: '${namePrefix}.onmicrosoft.com'
+    additionalRecipients: [ '${namePrefix}@noreply.github.com' ]
+    diagnosticSettings: varDiagSettings
+    lock: varLock
+    ldaps: 'Enabled'
+    externalAccess: 'Enabled'
+    pfxCertificate: keyVault.getSecret(nestedDependencies.outputs.certSecretName)
+    pfxCertificatePassword: keyVault.getSecret(nestedDependencies.outputs.certPWSecretName)
+    replicaSets: varReplicaSets
+    sku: 'Standard'
+    tags: varTags
+  }
+}

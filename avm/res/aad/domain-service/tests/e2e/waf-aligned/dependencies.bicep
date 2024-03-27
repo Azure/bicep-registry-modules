@@ -89,7 +89,7 @@ resource nsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2023-09-01' = {
         name: 'AllowLDAPs'
         properties: {
           access: 'Allow'
-          priority: 201
+          priority: 401
           direction: 'Inbound'
           protocol: 'Tcp'
           sourceAddressPrefix: 'VirtualNetwork'
