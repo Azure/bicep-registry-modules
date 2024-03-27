@@ -60,7 +60,7 @@ module testDeployment '../../../main.bicep' = {
     ]
     deploymentScriptNetworkSecurityGroupName: 'nsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
     deploymentScriptVirtualNetworkName: 'vnet-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptStorageAccountName: 'stgds${namePrefix}${serviceShort}'
+    deploymentScriptStorageAccountName: 'stgds${namePrefix}${serviceShort}${substring(uniqueString(deployment().name), 0, 4)}'
     deploymentScriptLocation: resourceLocation
     resourceProviders: {}
   }

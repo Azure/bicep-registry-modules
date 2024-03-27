@@ -45,7 +45,7 @@ module testDeployment '../../../main.bicep' = {
     virtualNetworkName: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
     deploymentScriptNetworkSecurityGroupName: 'nsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
     deploymentScriptVirtualNetworkName: 'vnet-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptStorageAccountName: 'stgds${namePrefix}${serviceShort}'
+    deploymentScriptStorageAccountName: 'stgds${namePrefix}${serviceShort}${substring(uniqueString(deployment().name), 0, 4)}'
     deploymentScriptLocation: resourceLocation
     virtualNetworkAddressSpace: [
       '10.100.0.0/16'
