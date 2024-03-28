@@ -71,11 +71,8 @@ function Sync-AvmModulesList {
       # create issue
       $issueUrl = gh issue create --title $title --body $body --label $label --repo $Repo
       # add issue to project
-      $ProjectNumber = 538 # AVM Core Team
+      $ProjectNumber = 538 # AVM - Issue Triage
       Add-GithubIssueToProject -Repo $Repo -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
-      # TODO: clone repo
-      # TODO: change code
-      # TODO: create PR and link issue
     }
   }
 }
