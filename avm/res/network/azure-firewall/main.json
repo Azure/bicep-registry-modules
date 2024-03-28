@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "1527004517287633679"
+      "templateHash": "3831870271484638637"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall.",
@@ -223,6 +223,440 @@
         }
       },
       "nullable": true
+    },
+    "natRuleCollectionType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Name of the NAT rule collection."
+            }
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Dnat",
+                      "Snat"
+                    ],
+                    "metadata": {
+                      "description": "Required. The type of action."
+                    }
+                  }
+                },
+                "metadata": {
+                  "description": "Required. The action type of a NAT rule collection."
+                }
+              },
+              "priority": {
+                "type": "int",
+                "minValue": 100,
+                "maxValue": 65000,
+                "metadata": {
+                  "description": "Required. Priority of the NAT rule collection."
+                }
+              },
+              "rules": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Name of the NAT rule."
+                      }
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Description of the rule."
+                      }
+                    },
+                    "protocols": {
+                      "type": "array",
+                      "allowedValues": [
+                        "Any",
+                        "ICMP",
+                        "TCP",
+                        "UDP"
+                      ],
+                      "metadata": {
+                        "description": "Required. Array of AzureFirewallNetworkRuleProtocols applicable to this NAT rule."
+                      }
+                    },
+                    "destinationAddresses": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. List of destination IP addresses for this rule. Supports IP ranges, prefixes, and service tags."
+                      }
+                    },
+                    "destinationPorts": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. List of destination ports."
+                      }
+                    },
+                    "sourceAddresses": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. List of source IP addresses for this rule."
+                      }
+                    },
+                    "sourceIpGroups": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. List of source IpGroups for this rule."
+                      }
+                    },
+                    "translatedAddress": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The translated address for this NAT rule."
+                      }
+                    },
+                    "translatedFqdn": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The translated FQDN for this NAT rule."
+                      }
+                    },
+                    "translatedPort": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The translated port for this NAT rule."
+                      }
+                    }
+                  }
+                },
+                "metadata": {
+                  "description": "Required. Collection of rules used by a NAT rule collection."
+                }
+              }
+            },
+            "metadata": {
+              "description": "Required. Properties of the azure firewall NAT rule collection."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "applicationRuleCollectionType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Name of the application rule collection."
+            }
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Allow",
+                      "Deny"
+                    ],
+                    "metadata": {
+                      "description": "Required. The type of action."
+                    }
+                  }
+                },
+                "metadata": {
+                  "description": "Required. The action type of a rule collection."
+                }
+              },
+              "priority": {
+                "type": "int",
+                "minValue": 100,
+                "maxValue": 65000,
+                "metadata": {
+                  "description": "Required. Priority of the application rule collection."
+                }
+              },
+              "rules": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Name of the application rule."
+                      }
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Description of the rule."
+                      }
+                    },
+                    "protocols": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "port": {
+                            "type": "int",
+                            "nullable": true,
+                            "maxValue": 64000,
+                            "metadata": {
+                              "description": "Optional. Port number for the protocol."
+                            }
+                          },
+                          "protocolType": {
+                            "type": "string",
+                            "allowedValues": [
+                              "Http",
+                              "Https",
+                              "Mssql"
+                            ],
+                            "metadata": {
+                              "description": "Required. Protocol type."
+                            }
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "Required. Array of ApplicationRuleProtocols."
+                      }
+                    },
+                    "fqdnTags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. List of FQDN Tags for this rule."
+                      }
+                    },
+                    "targetFqdns": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. List of FQDNs for this rule."
+                      }
+                    },
+                    "sourceAddresses": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. List of source IP addresses for this rule."
+                      }
+                    },
+                    "sourceIpGroups": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. List of source IpGroups for this rule."
+                      }
+                    }
+                  }
+                },
+                "metadata": {
+                  "description": "Required. Collection of rules used by a application rule collection."
+                }
+              }
+            },
+            "metadata": {
+              "description": "Required. Properties of the azure firewall application rule collection."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "networkRuleCollectionType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Name of the network rule collection."
+            }
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Allow",
+                      "Deny"
+                    ],
+                    "metadata": {
+                      "description": "Required. The type of action."
+                    }
+                  }
+                },
+                "metadata": {
+                  "description": "Required. The action type of a rule collection."
+                }
+              },
+              "priority": {
+                "type": "int",
+                "minValue": 100,
+                "maxValue": 65000,
+                "metadata": {
+                  "description": "Required. Priority of the network rule collection."
+                }
+              },
+              "rules": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Name of the network rule."
+                      }
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Description of the rule."
+                      }
+                    },
+                    "protocols": {
+                      "type": "array",
+                      "allowedValues": [
+                        "Any",
+                        "ICMP",
+                        "TCP",
+                        "UDP"
+                      ],
+                      "metadata": {
+                        "description": "Required. Array of AzureFirewallNetworkRuleProtocols."
+                      }
+                    },
+                    "destinationAddresses": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. List of destination IP addresses."
+                      }
+                    },
+                    "destinationFqdns": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. List of destination FQDNs."
+                      }
+                    },
+                    "destinationIpGroups": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. List of destination IP groups for this rule."
+                      }
+                    },
+                    "destinationPorts": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. List of destination ports."
+                      }
+                    },
+                    "sourceAddresses": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. List of source IP addresses for this rule."
+                      }
+                    },
+                    "sourceIpGroups": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. List of source IpGroups for this rule."
+                      }
+                    }
+                  }
+                },
+                "metadata": {
+                  "description": "Required. Collection of rules used by a network rule collection."
+                }
+              }
+            },
+            "metadata": {
+              "description": "Required. Properties of the azure firewall network rule collection."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -289,22 +723,19 @@
       }
     },
     "applicationRuleCollections": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/applicationRuleCollectionType",
       "metadata": {
         "description": "Optional. Collection of application rule collections used by Azure Firewall."
       }
     },
     "networkRuleCollections": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/networkRuleCollectionType",
       "metadata": {
         "description": "Optional. Collection of network rule collections used by Azure Firewall."
       }
     },
     "natRuleCollections": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/natRuleCollectionType",
       "metadata": {
         "description": "Optional. Collection of NAT rule collections used by Azure Firewall."
       }
@@ -445,7 +876,7 @@
       "location": "[parameters('location')]",
       "zones": "[if(equals(length(parameters('zones')), 0), null(), parameters('zones'))]",
       "tags": "[parameters('tags')]",
-      "properties": "[if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('threatIntelMode', parameters('threatIntelMode'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'ipConfigurations', concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), reference('publicIPAddress').outputs.name.value), 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), reference('publicIPAddress').outputs.resourceId.value))), createObject())))), variables('additionalPublicIpConfigurationsVar')), 'managementIpConfiguration', if(variables('requiresManagementIp'), createObject('name', if(not(empty(parameters('managementIPResourceID'))), last(split(parameters('managementIPResourceID'), '/')), reference('managementIPAddress').outputs.name.value), 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallManagementSubnet', parameters('virtualNetworkResourceId')))), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('managementIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('managementIPResourceID'))), parameters('managementIPResourceID'), reference('managementIPAddress').outputs.resourceId.value))), createObject()))), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'applicationRuleCollections', parameters('applicationRuleCollections'), 'natRuleCollections', parameters('natRuleCollections'), 'networkRuleCollections', parameters('networkRuleCollections')), createObject('firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'hubIPAddresses', if(not(empty(parameters('hubIPAddresses'))), parameters('hubIPAddresses'), null()), 'virtualHub', if(not(empty(parameters('virtualHubId'))), createObject('id', parameters('virtualHubId')), null())))]",
+      "properties": "[if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('threatIntelMode', parameters('threatIntelMode'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'ipConfigurations', concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), reference('publicIPAddress').outputs.name.value), 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), reference('publicIPAddress').outputs.resourceId.value))), createObject())))), variables('additionalPublicIpConfigurationsVar')), 'managementIpConfiguration', if(variables('requiresManagementIp'), createObject('name', if(not(empty(parameters('managementIPResourceID'))), last(split(parameters('managementIPResourceID'), '/')), reference('managementIPAddress').outputs.name.value), 'properties', union(createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallManagementSubnet', parameters('virtualNetworkResourceId')))), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('managementIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('managementIPResourceID'))), parameters('managementIPResourceID'), reference('managementIPAddress').outputs.resourceId.value))), createObject()))), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'applicationRuleCollections', coalesce(parameters('applicationRuleCollections'), createArray()), 'natRuleCollections', coalesce(parameters('natRuleCollections'), createArray()), 'networkRuleCollections', coalesce(parameters('networkRuleCollections'), createArray())), createObject('firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'hubIPAddresses', if(not(empty(parameters('hubIPAddresses'))), parameters('hubIPAddresses'), null()), 'virtualHub', if(not(empty(parameters('virtualHubId'))), createObject('id', parameters('virtualHubId')), null())))]",
       "dependsOn": [
         "managementIPAddress",
         "publicIPAddress"
@@ -1757,21 +2188,21 @@
       "metadata": {
         "description": "List of Application Rule Collections."
       },
-      "value": "[parameters('applicationRuleCollections')]"
+      "value": "[coalesce(parameters('applicationRuleCollections'), createArray())]"
     },
     "networkRuleCollections": {
       "type": "array",
       "metadata": {
         "description": "List of Network Rule Collections."
       },
-      "value": "[parameters('networkRuleCollections')]"
+      "value": "[coalesce(parameters('networkRuleCollections'), createArray())]"
     },
     "natRuleCollections": {
       "type": "array",
       "metadata": {
         "description": "Collection of NAT rule collections used by Azure Firewall."
       },
-      "value": "[parameters('natRuleCollections')]"
+      "value": "[coalesce(parameters('natRuleCollections'), createArray())]"
     },
     "location": {
       "type": "string",

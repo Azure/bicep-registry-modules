@@ -34,13 +34,13 @@ param managementIPResourceID string = ''
 param managementIPAddressObject object = {}
 
 @description('Optional. Collection of application rule collections used by Azure Firewall.')
-param applicationRuleCollections array = []
+param applicationRuleCollections applicationRuleCollectionType
 
 @description('Optional. Collection of network rule collections used by Azure Firewall.')
-param networkRuleCollections array = []
+param networkRuleCollections networkRuleCollectionType
 
 @description('Optional. Collection of NAT rule collections used by Azure Firewall.')
-param natRuleCollections array = []
+param natRuleCollections natRuleCollectionType
 
 @description('Optional. Resource ID of the Firewall Policy that should be attached.')
 param firewallPolicyId string = ''
@@ -261,41 +261,33 @@ resource azureFirewall 'Microsoft.Network/azureFirewalls@2023-04-01' = {
   location: location
   zones: length(zones) == 0 ? null : zones
   tags: tags
-  properties: azureSkuName == 'AZFW_VNet'
-    ? {
-        threatIntelMode: threatIntelMode
-        firewallPolicy: !empty(firewallPolicyId)
-          ? {
-              id: firewallPolicyId
-            }
-          : null
-        ipConfigurations: ipConfigurations
-        managementIpConfiguration: requiresManagementIp ? managementIPConfiguration : null
-        sku: {
-          name: azureSkuName
-          tier: azureSkuTier
-        }
-        applicationRuleCollections: applicationRuleCollections
-        natRuleCollections: natRuleCollections
-        networkRuleCollections: networkRuleCollections
-      }
-    : {
-        firewallPolicy: !empty(firewallPolicyId)
-          ? {
-              id: firewallPolicyId
-            }
-          : null
-        sku: {
-          name: azureSkuName
-          tier: azureSkuTier
-        }
-        hubIPAddresses: !empty(hubIPAddresses) ? hubIPAddresses : null
-        virtualHub: !empty(virtualHubId)
-          ? {
-              id: virtualHubId
-            }
-          : null
-      }
+  properties: azureSkuName == 'AZFW_VNet' ? {
+    threatIntelMode: threatIntelMode
+    firewallPolicy: !empty(firewallPolicyId) ? {
+      id: firewallPolicyId
+    } : null
+    ipConfigurations: ipConfigurations
+    managementIpConfiguration: requiresManagementIp ? managementIPConfiguration : null
+    sku: {
+      name: azureSkuName
+      tier: azureSkuTier
+    }
+    applicationRuleCollections: applicationRuleCollections ?? []
+    natRuleCollections: natRuleCollections ?? []
+    networkRuleCollections: networkRuleCollections ?? []
+  } : {
+    firewallPolicy: !empty(firewallPolicyId) ? {
+      id: firewallPolicyId
+    } : null
+    sku: {
+      name: azureSkuName
+      tier: azureSkuTier
+    }
+    hubIPAddresses: !empty(hubIPAddresses) ? hubIPAddresses : null
+    virtualHub: !empty(virtualHubId) ? {
+      id: virtualHubId
+    } : null
+  }
 }
 
 resource azureFirewall_lock 'Microsoft.Authorization/locks@2020-05-01' =
@@ -379,13 +371,13 @@ output ipConfAzureFirewallSubnet object = contains(azureFirewall.properties, 'ip
   : {}
 
 @description('List of Application Rule Collections.')
-output applicationRuleCollections array = applicationRuleCollections
+output applicationRuleCollections array = applicationRuleCollections ?? []
 
 @description('List of Network Rule Collections.')
-output networkRuleCollections array = networkRuleCollections
+output networkRuleCollections array = networkRuleCollections ?? []
 
 @description('Collection of NAT rule collections used by Azure Firewall.')
-output natRuleCollections array = natRuleCollections
+output natRuleCollections array = natRuleCollections ?? []
 
 @description('The location the resource was deployed into.')
 output location string = azureFirewall.location
@@ -467,4 +459,155 @@ type diagnosticSettingType = {
 
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
+}[]?
+
+type natRuleCollectionType = {
+  @description('Required. Name of the NAT rule collection.')
+  name: string
+
+  @description('Required. Properties of the azure firewall NAT rule collection.')
+  properties: {
+    @description('Required. The action type of a NAT rule collection.')
+    action: {
+      @description('Required. The type of action.')
+      type: 'Dnat' | 'Snat'
+    }
+
+    @description('Required. Priority of the NAT rule collection.')
+    @minValue(100)
+    @maxValue(65000)
+    priority: int
+
+    @description('Required. Collection of rules used by a NAT rule collection.')
+    rules: {
+      @description('Required. Name of the NAT rule.')
+      name: string
+
+      @description('Optional. Description of the rule.')
+      description: string?
+
+      @description('Required. Array of AzureFirewallNetworkRuleProtocols applicable to this NAT rule.')
+      protocols: ('TCP' | 'UDP' | 'Any' | 'ICMP')[]
+
+      @description('Optional. List of destination IP addresses for this rule. Supports IP ranges, prefixes, and service tags.')
+      destinationAddresses: string[]?
+
+      @description('Optional. List of destination ports.')
+      destinationPorts: string[]?
+
+      @description('Optional. List of source IP addresses for this rule.')
+      sourceAddresses: string[]?
+
+      @description('Optional. List of source IpGroups for this rule.')
+      sourceIpGroups: string[]?
+
+      @description('Optional. The translated address for this NAT rule.')
+      translatedAddress: string?
+
+      @description('Optional. The translated FQDN for this NAT rule.')
+      translatedFqdn: string?
+
+      @description('Optional. The translated port for this NAT rule.')
+      translatedPort: string?
+    }[]
+  }
+}[]?
+
+type applicationRuleCollectionType = {
+  @description('Required. Name of the application rule collection.')
+  name: string
+
+  @description('Required. Properties of the azure firewall application rule collection.')
+  properties: {
+    @description('Required. The action type of a rule collection.')
+    action: {
+      @description('Required. The type of action.')
+      type: 'Allow' | 'Deny'
+    }
+
+    @description('Required. Priority of the application rule collection.')
+    @minValue(100)
+    @maxValue(65000)
+    priority: int
+
+    @description('Required. Collection of rules used by a application rule collection.')
+    rules: {
+      @description('Required. Name of the application rule.')
+      name: string
+
+      @description('Optional. Description of the rule.')
+      description: string?
+
+      @description('Required. Array of ApplicationRuleProtocols.')
+      protocols: {
+        @description('Optional. Port number for the protocol.')
+        @maxValue(64000)
+        port: int?
+
+        @description('Required. Protocol type.')
+        protocolType: 'Http' | 'Https' | 'Mssql'
+      }[]
+
+      @description('Optional. List of FQDN Tags for this rule.')
+      fqdnTags: string[]?
+
+      @description('Optional. List of FQDNs for this rule.')
+      targetFqdns: string[]?
+
+      @description('Optional. List of source IP addresses for this rule.')
+      sourceAddresses: string[]?
+
+      @description('Optional. List of source IpGroups for this rule.')
+      sourceIpGroups: string[]?
+    }[]
+  }
+}[]?
+
+type networkRuleCollectionType = {
+  @description('Required. Name of the network rule collection.')
+  name: string
+
+  @description('Required. Properties of the azure firewall network rule collection.')
+  properties: {
+    @description('Required. The action type of a rule collection.')
+    action: {
+      @description('Required. The type of action.')
+      type: 'Allow' | 'Deny'
+    }
+
+    @description('Required. Priority of the network rule collection.')
+    @minValue(100)
+    @maxValue(65000)
+    priority: int
+
+    @description('Required. Collection of rules used by a network rule collection.')
+    rules: {
+      @description('Required. Name of the network rule.')
+      name: string
+
+      @description('Optional. Description of the rule.')
+      description: string?
+
+      @description('Required. Array of AzureFirewallNetworkRuleProtocols.')
+      protocols: ('TCP' | 'UDP' | 'Any' | 'ICMP')[]
+
+      @description('Optional. List of destination IP addresses.')
+      destinationAddresses: string[]?
+
+      @description('Optional. List of destination FQDNs.')
+      destinationFqdns: string[]?
+
+      @description('Optional. List of destination IP groups for this rule.')
+      destinationIpGroups: string[]?
+
+      @description('Optional. List of destination ports.')
+      destinationPorts: string[]?
+
+      @description('Optional. List of source IP addresses for this rule.')
+      sourceAddresses: string[]?
+
+      @description('Optional. List of source IpGroups for this rule.')
+      sourceIpGroups: string[]?
+    }[]
+  }
 }[]?

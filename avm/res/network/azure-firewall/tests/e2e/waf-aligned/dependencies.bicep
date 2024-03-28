@@ -60,5 +60,8 @@ output virtualNetworkResourceId string = virtualNetwork.id
 @description('The resource ID of the created Public IP.')
 output publicIPResourceId string = publicIP.id
 
+@description('The public IP Address of the created Public IP.')
+output publicIPAddress string = publicIP.properties.ipAddress
+
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId

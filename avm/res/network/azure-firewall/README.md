@@ -444,7 +444,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         name: 'allow-app-rules'
         properties: {
           action: {
-            type: 'allow'
+            type: 'Allow'
           }
           priority: 100
           rules: [
@@ -456,12 +456,12 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
               name: 'allow-ase-tags'
               protocols: [
                 {
-                  port: '80'
-                  protocolType: 'HTTP'
+                  port: 80
+                  protocolType: 'Http'
                 }
                 {
-                  port: '443'
-                  protocolType: 'HTTPS'
+                  port: 443
+                  protocolType: 'Https'
                 }
               ]
               sourceAddresses: [
@@ -472,12 +472,12 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
               name: 'allow-ase-management'
               protocols: [
                 {
-                  port: '80'
-                  protocolType: 'HTTP'
+                  port: 80
+                  protocolType: 'Http'
                 }
                 {
-                  port: '443'
-                  protocolType: 'HTTPS'
+                  port: 443
+                  protocolType: 'Https'
                 }
               ]
               sourceAddresses: [
@@ -515,7 +515,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         name: 'allow-network-rules'
         properties: {
           action: {
-            type: 'allow'
+            type: 'Allow'
           }
           priority: 100
           rules: [
@@ -528,6 +528,22 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
                 '123'
               ]
               name: 'allow-ntp'
+              protocols: [
+                'Any'
+              ]
+              sourceAddresses: [
+                '*'
+              ]
+            }
+            {
+              description: 'allow azure devops'
+              destinationAddresses: [
+                'AzureDevOps'
+              ]
+              destinationPorts: [
+                '443'
+              ]
+              name: 'allow-azure-devops'
               protocols: [
                 'Any'
               ]
@@ -595,7 +611,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
           "name": "allow-app-rules",
           "properties": {
             "action": {
-              "type": "allow"
+              "type": "Allow"
             },
             "priority": 100,
             "rules": [
@@ -607,12 +623,12 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
                 "name": "allow-ase-tags",
                 "protocols": [
                   {
-                    "port": "80",
-                    "protocolType": "HTTP"
+                    "port": 80,
+                    "protocolType": "Http"
                   },
                   {
-                    "port": "443",
-                    "protocolType": "HTTPS"
+                    "port": 443,
+                    "protocolType": "Https"
                   }
                 ],
                 "sourceAddresses": [
@@ -623,12 +639,12 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
                 "name": "allow-ase-management",
                 "protocols": [
                   {
-                    "port": "80",
-                    "protocolType": "HTTP"
+                    "port": 80,
+                    "protocolType": "Http"
                   },
                   {
-                    "port": "443",
-                    "protocolType": "HTTPS"
+                    "port": 443,
+                    "protocolType": "Https"
                   }
                 ],
                 "sourceAddresses": [
@@ -674,7 +690,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
           "name": "allow-network-rules",
           "properties": {
             "action": {
-              "type": "allow"
+              "type": "Allow"
             },
             "priority": 100,
             "rules": [
@@ -687,6 +703,22 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
                   "123"
                 ],
                 "name": "allow-ntp",
+                "protocols": [
+                  "Any"
+                ],
+                "sourceAddresses": [
+                  "*"
+                ]
+              },
+              {
+                "description": "allow azure devops",
+                "destinationAddresses": [
+                  "AzureDevOps"
+                ],
+                "destinationPorts": [
+                  "443"
+                ],
+                "name": "allow-azure-devops",
                 "protocols": [
                   "Any"
                 ],
@@ -766,7 +798,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         name: 'allow-app-rules'
         properties: {
           action: {
-            type: 'allow'
+            type: 'Allow'
           }
           priority: 100
           rules: [
@@ -778,12 +810,12 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
               name: 'allow-ase-tags'
               protocols: [
                 {
-                  port: '80'
-                  protocolType: 'HTTP'
+                  port: 80
+                  protocolType: 'Http'
                 }
                 {
-                  port: '443'
-                  protocolType: 'HTTPS'
+                  port: 443
+                  protocolType: 'Https'
                 }
               ]
               sourceAddresses: [
@@ -794,12 +826,12 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
               name: 'allow-ase-management'
               protocols: [
                 {
-                  port: '80'
-                  protocolType: 'HTTP'
+                  port: 80
+                  protocolType: 'Http'
                 }
                 {
-                  port: '443'
-                  protocolType: 'HTTPS'
+                  port: 443
+                  protocolType: 'Https'
                 }
               ]
               sourceAddresses: [
@@ -833,7 +865,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         name: 'allow-network-rules'
         properties: {
           action: {
-            type: 'allow'
+            type: 'Allow'
           }
           priority: 100
           rules: [
@@ -896,7 +928,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
           "name": "allow-app-rules",
           "properties": {
             "action": {
-              "type": "allow"
+              "type": "Allow"
             },
             "priority": 100,
             "rules": [
@@ -908,12 +940,12 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
                 "name": "allow-ase-tags",
                 "protocols": [
                   {
-                    "port": "80",
-                    "protocolType": "HTTP"
+                    "port": 80,
+                    "protocolType": "Http"
                   },
                   {
-                    "port": "443",
-                    "protocolType": "HTTPS"
+                    "port": 443,
+                    "protocolType": "Https"
                   }
                 ],
                 "sourceAddresses": [
@@ -924,12 +956,12 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
                 "name": "allow-ase-management",
                 "protocols": [
                   {
-                    "port": "80",
-                    "protocolType": "HTTP"
+                    "port": 80,
+                    "protocolType": "Http"
                   },
                   {
-                    "port": "443",
-                    "protocolType": "HTTPS"
+                    "port": 443,
+                    "protocolType": "Https"
                   }
                 ],
                 "sourceAddresses": [
@@ -969,7 +1001,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
           "name": "allow-network-rules",
           "properties": {
             "action": {
-              "type": "allow"
+              "type": "Allow"
             },
             "priority": 100,
             "rules": [
@@ -1106,7 +1138,176 @@ Collection of application rule collections used by Azure Firewall.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-applicationrulecollectionsname) | string | Name of the application rule collection. |
+| [`properties`](#parameter-applicationrulecollectionsproperties) | object | Properties of the azure firewall application rule collection. |
+
+### Parameter: `applicationRuleCollections.name`
+
+Name of the application rule collection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `applicationRuleCollections.properties`
+
+Properties of the azure firewall application rule collection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`action`](#parameter-applicationrulecollectionspropertiesaction) | object | The action type of a rule collection. |
+| [`priority`](#parameter-applicationrulecollectionspropertiespriority) | int | Priority of the application rule collection. |
+| [`rules`](#parameter-applicationrulecollectionspropertiesrules) | array | Collection of rules used by a application rule collection. |
+
+### Parameter: `applicationRuleCollections.properties.action`
+
+The action type of a rule collection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-applicationrulecollectionspropertiesactiontype) | string | The type of action. |
+
+### Parameter: `applicationRuleCollections.properties.action.type`
+
+The type of action.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Deny'
+  ]
+  ```
+
+### Parameter: `applicationRuleCollections.properties.priority`
+
+Priority of the application rule collection.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `applicationRuleCollections.properties.rules`
+
+Collection of rules used by a application rule collection.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-applicationrulecollectionspropertiesrulesname) | string | Name of the application rule. |
+| [`protocols`](#parameter-applicationrulecollectionspropertiesrulesprotocols) | array | Array of ApplicationRuleProtocols. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-applicationrulecollectionspropertiesrulesdescription) | string | Description of the rule. |
+| [`fqdnTags`](#parameter-applicationrulecollectionspropertiesrulesfqdntags) | array | List of FQDN Tags for this rule. |
+| [`sourceAddresses`](#parameter-applicationrulecollectionspropertiesrulessourceaddresses) | array | List of source IP addresses for this rule. |
+| [`sourceIpGroups`](#parameter-applicationrulecollectionspropertiesrulessourceipgroups) | array | List of source IpGroups for this rule. |
+| [`targetFqdns`](#parameter-applicationrulecollectionspropertiesrulestargetfqdns) | array | List of FQDNs for this rule. |
+
+### Parameter: `applicationRuleCollections.properties.rules.name`
+
+Name of the application rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `applicationRuleCollections.properties.rules.protocols`
+
+Array of ApplicationRuleProtocols.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`protocolType`](#parameter-applicationrulecollectionspropertiesrulesprotocolsprotocoltype) | string | Protocol type. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`port`](#parameter-applicationrulecollectionspropertiesrulesprotocolsport) | int | Port number for the protocol. |
+
+### Parameter: `applicationRuleCollections.properties.rules.protocols.protocolType`
+
+Protocol type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Http'
+    'Https'
+    'Mssql'
+  ]
+  ```
+
+### Parameter: `applicationRuleCollections.properties.rules.protocols.port`
+
+Port number for the protocol.
+
+- Required: No
+- Type: int
+
+### Parameter: `applicationRuleCollections.properties.rules.description`
+
+Description of the rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `applicationRuleCollections.properties.rules.fqdnTags`
+
+List of FQDN Tags for this rule.
+
+- Required: No
+- Type: array
+
+### Parameter: `applicationRuleCollections.properties.rules.sourceAddresses`
+
+List of source IP addresses for this rule.
+
+- Required: No
+- Type: array
+
+### Parameter: `applicationRuleCollections.properties.rules.sourceIpGroups`
+
+List of source IpGroups for this rule.
+
+- Required: No
+- Type: array
+
+### Parameter: `applicationRuleCollections.properties.rules.targetFqdns`
+
+List of FQDNs for this rule.
+
+- Required: No
+- Type: array
 
 ### Parameter: `azureSkuTier`
 
@@ -1352,7 +1553,175 @@ Collection of NAT rule collections used by Azure Firewall.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-natrulecollectionsname) | string | Name of the NAT rule collection. |
+| [`properties`](#parameter-natrulecollectionsproperties) | object | Properties of the azure firewall NAT rule collection. |
+
+### Parameter: `natRuleCollections.name`
+
+Name of the NAT rule collection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `natRuleCollections.properties`
+
+Properties of the azure firewall NAT rule collection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`action`](#parameter-natrulecollectionspropertiesaction) | object | The action type of a NAT rule collection. |
+| [`priority`](#parameter-natrulecollectionspropertiespriority) | int | Priority of the NAT rule collection. |
+| [`rules`](#parameter-natrulecollectionspropertiesrules) | array | Collection of rules used by a NAT rule collection. |
+
+### Parameter: `natRuleCollections.properties.action`
+
+The action type of a NAT rule collection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-natrulecollectionspropertiesactiontype) | string | The type of action. |
+
+### Parameter: `natRuleCollections.properties.action.type`
+
+The type of action.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dnat'
+    'Snat'
+  ]
+  ```
+
+### Parameter: `natRuleCollections.properties.priority`
+
+Priority of the NAT rule collection.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `natRuleCollections.properties.rules`
+
+Collection of rules used by a NAT rule collection.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-natrulecollectionspropertiesrulesname) | string | Name of the NAT rule. |
+| [`protocols`](#parameter-natrulecollectionspropertiesrulesprotocols) | array | Array of AzureFirewallNetworkRuleProtocols applicable to this NAT rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-natrulecollectionspropertiesrulesdescription) | string | Description of the rule. |
+| [`destinationAddresses`](#parameter-natrulecollectionspropertiesrulesdestinationaddresses) | array | List of destination IP addresses for this rule. Supports IP ranges, prefixes, and service tags. |
+| [`destinationPorts`](#parameter-natrulecollectionspropertiesrulesdestinationports) | array | List of destination ports. |
+| [`sourceAddresses`](#parameter-natrulecollectionspropertiesrulessourceaddresses) | array | List of source IP addresses for this rule. |
+| [`sourceIpGroups`](#parameter-natrulecollectionspropertiesrulessourceipgroups) | array | List of source IpGroups for this rule. |
+| [`translatedAddress`](#parameter-natrulecollectionspropertiesrulestranslatedaddress) | string | The translated address for this NAT rule. |
+| [`translatedFqdn`](#parameter-natrulecollectionspropertiesrulestranslatedfqdn) | string | The translated FQDN for this NAT rule. |
+| [`translatedPort`](#parameter-natrulecollectionspropertiesrulestranslatedport) | string | The translated port for this NAT rule. |
+
+### Parameter: `natRuleCollections.properties.rules.name`
+
+Name of the NAT rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `natRuleCollections.properties.rules.protocols`
+
+Array of AzureFirewallNetworkRuleProtocols applicable to this NAT rule.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'Any'
+    'ICMP'
+    'TCP'
+    'UDP'
+  ]
+  ```
+
+### Parameter: `natRuleCollections.properties.rules.description`
+
+Description of the rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `natRuleCollections.properties.rules.destinationAddresses`
+
+List of destination IP addresses for this rule. Supports IP ranges, prefixes, and service tags.
+
+- Required: No
+- Type: array
+
+### Parameter: `natRuleCollections.properties.rules.destinationPorts`
+
+List of destination ports.
+
+- Required: No
+- Type: array
+
+### Parameter: `natRuleCollections.properties.rules.sourceAddresses`
+
+List of source IP addresses for this rule.
+
+- Required: No
+- Type: array
+
+### Parameter: `natRuleCollections.properties.rules.sourceIpGroups`
+
+List of source IpGroups for this rule.
+
+- Required: No
+- Type: array
+
+### Parameter: `natRuleCollections.properties.rules.translatedAddress`
+
+The translated address for this NAT rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `natRuleCollections.properties.rules.translatedFqdn`
+
+The translated FQDN for this NAT rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `natRuleCollections.properties.rules.translatedPort`
+
+The translated port for this NAT rule.
+
+- Required: No
+- Type: string
 
 ### Parameter: `networkRuleCollections`
 
@@ -1360,7 +1729,167 @@ Collection of network rule collections used by Azure Firewall.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-networkrulecollectionsname) | string | Name of the network rule collection. |
+| [`properties`](#parameter-networkrulecollectionsproperties) | object | Properties of the azure firewall network rule collection. |
+
+### Parameter: `networkRuleCollections.name`
+
+Name of the network rule collection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkRuleCollections.properties`
+
+Properties of the azure firewall network rule collection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`action`](#parameter-networkrulecollectionspropertiesaction) | object | The action type of a rule collection. |
+| [`priority`](#parameter-networkrulecollectionspropertiespriority) | int | Priority of the network rule collection. |
+| [`rules`](#parameter-networkrulecollectionspropertiesrules) | array | Collection of rules used by a network rule collection. |
+
+### Parameter: `networkRuleCollections.properties.action`
+
+The action type of a rule collection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-networkrulecollectionspropertiesactiontype) | string | The type of action. |
+
+### Parameter: `networkRuleCollections.properties.action.type`
+
+The type of action.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Deny'
+  ]
+  ```
+
+### Parameter: `networkRuleCollections.properties.priority`
+
+Priority of the network rule collection.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `networkRuleCollections.properties.rules`
+
+Collection of rules used by a network rule collection.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-networkrulecollectionspropertiesrulesname) | string | Name of the network rule. |
+| [`protocols`](#parameter-networkrulecollectionspropertiesrulesprotocols) | array | Array of AzureFirewallNetworkRuleProtocols. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-networkrulecollectionspropertiesrulesdescription) | string | Description of the rule. |
+| [`destinationAddresses`](#parameter-networkrulecollectionspropertiesrulesdestinationaddresses) | array | List of destination IP addresses. |
+| [`destinationFqdns`](#parameter-networkrulecollectionspropertiesrulesdestinationfqdns) | array | List of destination FQDNs. |
+| [`destinationIpGroups`](#parameter-networkrulecollectionspropertiesrulesdestinationipgroups) | array | List of destination IP groups for this rule. |
+| [`destinationPorts`](#parameter-networkrulecollectionspropertiesrulesdestinationports) | array | List of destination ports. |
+| [`sourceAddresses`](#parameter-networkrulecollectionspropertiesrulessourceaddresses) | array | List of source IP addresses for this rule. |
+| [`sourceIpGroups`](#parameter-networkrulecollectionspropertiesrulessourceipgroups) | array | List of source IpGroups for this rule. |
+
+### Parameter: `networkRuleCollections.properties.rules.name`
+
+Name of the network rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkRuleCollections.properties.rules.protocols`
+
+Array of AzureFirewallNetworkRuleProtocols.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'Any'
+    'ICMP'
+    'TCP'
+    'UDP'
+  ]
+  ```
+
+### Parameter: `networkRuleCollections.properties.rules.description`
+
+Description of the rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkRuleCollections.properties.rules.destinationAddresses`
+
+List of destination IP addresses.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkRuleCollections.properties.rules.destinationFqdns`
+
+List of destination FQDNs.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkRuleCollections.properties.rules.destinationIpGroups`
+
+List of destination IP groups for this rule.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkRuleCollections.properties.rules.destinationPorts`
+
+List of destination ports.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkRuleCollections.properties.rules.sourceAddresses`
+
+List of source IP addresses for this rule.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkRuleCollections.properties.rules.sourceIpGroups`
+
+List of source IpGroups for this rule.
+
+- Required: No
+- Type: array
 
 ### Parameter: `publicIPAddressObject`
 
