@@ -79,12 +79,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
               memoryInGB: 4
             }
           }
-          volumeMounts: [
-            {
-              name: 'my-name'
-              mountPath: '/mnt/empty'
-            }
-          ]
         }
       }
       {
