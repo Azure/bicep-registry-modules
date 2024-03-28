@@ -893,8 +893,8 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' =
         ? extensionHostPoolRegistration.enableAutomaticUpgrade
         : false
       settings: {
-        modulesUrl: extensionHostPoolRegistration.hostPoolModulesUrl
-        configurationFunction: extensionHostPoolRegistration.?configurationFunction ?? 'Configuration.ps1\\AddSessionHost'
+        modulesUrl: extensionHostPoolRegistration.modulesUrl
+        configurationFunction: extensionHostPoolRegistration.configurationFunction
         properties: {
           hostPoolName: extensionHostPoolRegistration.hostPoolName
           registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken

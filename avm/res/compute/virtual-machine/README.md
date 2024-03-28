@@ -1884,6 +1884,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     extensionHostPoolRegistration: {
+      configurationFunction: 'Configuration.ps1\\AddSessionHost'
       enabled: true
       hostPoolName: '<hostPoolName>'
       modulesUrl: '<modulesUrl>'
@@ -1976,6 +1977,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "extensionHostPoolRegistration": {
       "value": {
+        "configurationFunction": "Configuration.ps1\\AddSessionHost",
         "enabled": true,
         "hostPoolName": "<hostPoolName>",
         "modulesUrl": "<modulesUrl>",
