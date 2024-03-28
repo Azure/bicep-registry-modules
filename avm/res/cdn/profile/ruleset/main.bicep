@@ -20,18 +20,20 @@ resource ruleSet 'Microsoft.Cdn/profiles/ruleSets@2023-05-01' = {
   parent: profile
 }
 
-module ruleSet_rules 'rule/main.bicep' = [for (rule, index) in (rules ?? []): {
-  name: '${uniqueString(deployment().name)}-RuleSet-Rule-${rule.name}-${index}'
-  params: {
-    profileName: profileName
-    ruleSetName: name
-    name: rule.name
-    order: rule.order
-    actions: rule.?actions
-    conditions: rule.?conditions
-    matchProcessingBehavior: rule.?matchProcessingBehavior
+module ruleSet_rules 'rule/main.bicep' = [
+  for (rule, index) in (rules ?? []): {
+    name: '${uniqueString(deployment().name)}-RuleSet-Rule-${rule.name}-${index}'
+    params: {
+      profileName: profileName
+      ruleSetName: name
+      name: rule.name
+      order: rule.order
+      actions: rule.?actions
+      conditions: rule.?conditions
+      matchProcessingBehavior: rule.?matchProcessingBehavior
+    }
   }
-}]
+]
 
 @description('The name of the rule set.')
 output name string = ruleSet.name

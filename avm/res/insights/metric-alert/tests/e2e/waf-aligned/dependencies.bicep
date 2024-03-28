@@ -2,13 +2,13 @@
 param actionGroupName string
 
 resource actionGroup 'Microsoft.Insights/actionGroups@2022-06-01' = {
-    name: actionGroupName
-    location: 'global'
+  name: actionGroupName
+  location: 'global'
 
-    properties: {
-        enabled: true
-        groupShortName: substring(actionGroupName, 0, 11)
-    }
+  properties: {
+    enabled: true
+    groupShortName: substring(actionGroupName, 0, 11)
+  }
 }
 
 @description('The resource ID of the created Action Group.')
