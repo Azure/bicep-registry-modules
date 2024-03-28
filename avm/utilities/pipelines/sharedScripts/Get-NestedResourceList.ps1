@@ -44,7 +44,7 @@ function Get-NestedResourceList {
         if ($resource.type -eq 'Microsoft.Resources/deployments') {
             if ($resource.properties.template -is [System.Collections.Hashtable]) {
                 $res += Get-NestedResourceList -TemplateFileContent $resource.properties.template
-            }        
+            }
         } else {
             $res += Get-NestedResourceList -TemplateFileContent $resource
         }

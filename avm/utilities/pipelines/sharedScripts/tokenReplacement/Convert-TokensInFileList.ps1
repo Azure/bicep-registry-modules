@@ -101,8 +101,7 @@ function Convert-TokensInFileList {
         Convert-TokenInFile @ConvertTokenListFunctionInput
         $ConversionStatus = $true
       }
-    }
-    catch {
+    } catch {
       $ConversionStatus = $false
       Write-Verbose $_.Exception.Message -Verbose
     }

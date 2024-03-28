@@ -171,7 +171,7 @@ body:
         - "avm/res/synapse/workspace"
         - "avm/res/virtual-machine-images/image-template"
         - "avm/res/web/connection"
-        # - "avm/res/web/hosting-environment"
+        - "avm/res/web/hosting-environment"
         - "avm/res/web/serverfarm"
         - "avm/res/web/site"
         - "avm/res/web/static-site"

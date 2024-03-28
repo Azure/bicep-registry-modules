@@ -46,26 +46,28 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    appInsightResourceId: nestedDependencies.outputs.appInsightResourceId
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-    }
-    webTestName: 'wt${namePrefix}$${serviceShort}001'
-    syntheticMonitorId: '${namePrefix}${serviceShort}001'
-    locations: [
-      {
-        Id: 'emea-nl-ams-azr'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      appInsightResourceId: nestedDependencies.outputs.appInsightResourceId
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
       }
-    ]
-    request: {
-      RequestUrl: 'https://learn.microsoft.com/en-us/'
-      HttpVerb: 'GET'
+      webTestName: 'wt${namePrefix}$${serviceShort}001'
+      syntheticMonitorId: '${namePrefix}${serviceShort}001'
+      locations: [
+        {
+          Id: 'emea-nl-ams-azr'
+        }
+      ]
+      request: {
+        RequestUrl: 'https://learn.microsoft.com/en-us/'
+        HttpVerb: 'GET'
+      }
     }
   }
-}]
+]

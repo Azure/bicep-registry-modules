@@ -106,55 +106,88 @@ param disasterRecoveryConfig object = {}
 
 var maximumThroughputUnitsVar = !isAutoInflateEnabled ? 0 : maximumThroughputUnits
 
-var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
-  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-} : null
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 var builtInRoleNames = {
-  'Azure Event Hubs Data Owner': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f526a384-b230-433a-b45c-95f59c4a2dec')
-  'Azure Event Hubs Data Receiver': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a638d3c7-ab3a-418d-83e6-5f17a39d4fde')
-  'Azure Event Hubs Data Sender': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2b629674-e913-4c01-ae53-ef4638d8f975')
+  'Azure Event Hubs Data Owner': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f526a384-b230-433a-b45c-95f59c4a2dec'
+  )
+  'Azure Event Hubs Data Receiver': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'a638d3c7-ab3a-418d-83e6-5f17a39d4fde'
+  )
+  'Azure Event Hubs Data Sender': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '2b629674-e913-4c01-ae53-ef4638d8f975'
+  )
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-  scope: resourceGroup(split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2], split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4])
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
+  if (!empty(customerManagedKey.?keyVaultResourceId)) {
+    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+    scope: resourceGroup(
+      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+    resource cMKKey 'keys@2023-02-01' existing =
+      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+        name: customerManagedKey.?keyName ?? 'dummyKey'
+      }
   }
-}
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
-  scope: resourceGroup(split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2], split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4])
-}
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing =
+  if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+    name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+    scope: resourceGroup(
+      split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
+      split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    )
+  }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.eventhub-namespace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.eventhub-namespace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
 resource eventHubNamespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' = {
   name: name
@@ -168,182 +201,260 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' = 
   }
   properties: {
     disableLocalAuth: disableLocalAuth
-    encryption: !empty(customerManagedKey) ? {
-      keySource: 'Microsoft.KeyVault'
-      keyVaultProperties: [
-        {
-          identity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? {
-            userAssignedIdentity: cMKUserAssignedIdentity.id
-          } : null
-          keyName: customerManagedKey!.keyName
-          keyVaultUri: cMKKeyVault.properties.vaultUri
-          keyVersion: !empty(customerManagedKey.?keyVersion ?? '') ? customerManagedKey!.keyVersion : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+    encryption: !empty(customerManagedKey)
+      ? {
+          keySource: 'Microsoft.KeyVault'
+          keyVaultProperties: [
+            {
+              identity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+                ? {
+                    userAssignedIdentity: cMKUserAssignedIdentity.id
+                  }
+                : null
+              keyName: customerManagedKey!.keyName
+              keyVaultUri: cMKKeyVault.properties.vaultUri
+              keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
+                ? customerManagedKey!.keyVersion
+                : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+            }
+          ]
+          requireInfrastructureEncryption: requireInfrastructureEncryption
         }
-      ]
-      requireInfrastructureEncryption: requireInfrastructureEncryption
-    } : null
+      : null
     isAutoInflateEnabled: isAutoInflateEnabled
     kafkaEnabled: kafkaEnabled
     maximumThroughputUnits: maximumThroughputUnitsVar
     minimumTlsVersion: minimumTlsVersion
-    publicNetworkAccess: contains(networkRuleSets, 'publicNetworkAccess') ? networkRuleSets.publicNetworkAccess : (!empty(privateEndpoints) && empty(networkRuleSets) ? 'Disabled' : publicNetworkAccess)
+    publicNetworkAccess: contains(networkRuleSets, 'publicNetworkAccess')
+      ? networkRuleSets.publicNetworkAccess
+      : (!empty(privateEndpoints) && empty(networkRuleSets) ? 'Disabled' : publicNetworkAccess)
     zoneRedundant: zoneRedundant
   }
 }
 
-module eventHubNamespace_authorizationRules 'authorization-rule/main.bicep' = [for (authorizationRule, index) in authorizationRules: {
-  name: '${uniqueString(deployment().name, location)}-EvhbNamespace-AuthRule-${index}'
-  params: {
-    namespaceName: eventHubNamespace.name
-    name: authorizationRule.name
-    rights: contains(authorizationRule, 'rights') ? authorizationRule.rights : []
+module eventHubNamespace_authorizationRules 'authorization-rule/main.bicep' = [
+  for (authorizationRule, index) in authorizationRules: {
+    name: '${uniqueString(deployment().name, location)}-EvhbNamespace-AuthRule-${index}'
+    params: {
+      namespaceName: eventHubNamespace.name
+      name: authorizationRule.name
+      rights: contains(authorizationRule, 'rights') ? authorizationRule.rights : []
+    }
   }
-}]
+]
 
-module eventHubNamespace_disasterRecoveryConfig 'disaster-recovery-config/main.bicep' = if (!empty(disasterRecoveryConfig)) {
-  name: '${uniqueString(deployment().name, location)}-EvhbNamespace-DisRecConfig'
-  params: {
-    namespaceName: eventHubNamespace.name
-    name: disasterRecoveryConfig.name
-    partnerNamespaceId: contains(disasterRecoveryConfig, 'partnerNamespaceId') ? disasterRecoveryConfig.partnerNamespaceId : ''
+module eventHubNamespace_disasterRecoveryConfig 'disaster-recovery-config/main.bicep' =
+  if (!empty(disasterRecoveryConfig)) {
+    name: '${uniqueString(deployment().name, location)}-EvhbNamespace-DisRecConfig'
+    params: {
+      namespaceName: eventHubNamespace.name
+      name: disasterRecoveryConfig.name
+      partnerNamespaceId: contains(disasterRecoveryConfig, 'partnerNamespaceId')
+        ? disasterRecoveryConfig.partnerNamespaceId
+        : ''
+    }
   }
-}
 
-module eventHubNamespace_eventhubs 'eventhub/main.bicep' = [for (eventHub, index) in eventhubs: {
-  name: '${uniqueString(deployment().name, location)}-EvhbNamespace-EventHub-${index}'
-  params: {
-    namespaceName: eventHubNamespace.name
-    name: eventHub.name
-    authorizationRules: contains(eventHub, 'authorizationRules') ? eventHub.authorizationRules : [
-      {
-        name: 'RootManageSharedAccessKey'
-        rights: [
-          'Listen'
-          'Manage'
-          'Send'
-        ]
-      }
-    ]
-    captureDescriptionDestinationArchiveNameFormat: contains(eventHub, 'captureDescriptionDestinationArchiveNameFormat') ? eventHub.captureDescriptionDestinationArchiveNameFormat : '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-    captureDescriptionDestinationBlobContainer: contains(eventHub, 'captureDescriptionDestinationBlobContainer') ? eventHub.captureDescriptionDestinationBlobContainer : ''
-    captureDescriptionDestinationName: contains(eventHub, 'captureDescriptionDestinationName') ? eventHub.captureDescriptionDestinationName : 'EventHubArchive.AzureBlockBlob'
-    captureDescriptionDestinationStorageAccountResourceId: contains(eventHub, 'captureDescriptionDestinationStorageAccountResourceId') ? eventHub.captureDescriptionDestinationStorageAccountResourceId : ''
-    captureDescriptionEnabled: contains(eventHub, 'captureDescriptionEnabled') ? eventHub.captureDescriptionEnabled : false
-    captureDescriptionEncoding: contains(eventHub, 'captureDescriptionEncoding') ? eventHub.captureDescriptionEncoding : 'Avro'
-    captureDescriptionIntervalInSeconds: contains(eventHub, 'captureDescriptionIntervalInSeconds') ? eventHub.captureDescriptionIntervalInSeconds : 300
-    captureDescriptionSizeLimitInBytes: contains(eventHub, 'captureDescriptionSizeLimitInBytes') ? eventHub.captureDescriptionSizeLimitInBytes : 314572800
-    captureDescriptionSkipEmptyArchives: contains(eventHub, 'captureDescriptionSkipEmptyArchives') ? eventHub.captureDescriptionSkipEmptyArchives : false
-    consumergroups: contains(eventHub, 'consumergroups') ? eventHub.consumergroups : []
-    lock: eventHub.?lock ?? lock
-    messageRetentionInDays: contains(eventHub, 'messageRetentionInDays') ? eventHub.messageRetentionInDays : 1
-    partitionCount: contains(eventHub, 'partitionCount') ? eventHub.partitionCount : 2
-    roleAssignments: contains(eventHub, 'roleAssignments') ? eventHub.roleAssignments : []
-    status: contains(eventHub, 'status') ? eventHub.status : 'Active'
-    retentionDescriptionCleanupPolicy: contains(eventHub, 'retentionDescriptionCleanupPolicy') ? eventHub.retentionDescriptionCleanupPolicy : 'Delete'
-    retentionDescriptionRetentionTimeInHours: contains(eventHub, 'retentionDescriptionRetentionTimeInHours') ? eventHub.retentionDescriptionRetentionTimeInHours : 1
-    retentionDescriptionTombstoneRetentionTimeInHours: contains(eventHub, 'retentionDescriptionTombstoneRetentionTimeInHours') ? eventHub.retentionDescriptionTombstoneRetentionTimeInHours : 1
-  }
-}]
-
-module eventHubNamespace_networkRuleSet 'network-rule-set/main.bicep' = if (!empty(networkRuleSets) || !empty(privateEndpoints)) {
-  name: '${uniqueString(deployment().name, location)}-EvhbNamespace-NetworkRuleSet'
-  params: {
-    namespaceName: eventHubNamespace.name
-    publicNetworkAccess: contains(networkRuleSets, 'publicNetworkAccess') ? networkRuleSets.publicNetworkAccess : (!empty(privateEndpoints) && empty(networkRuleSets) ? 'Disabled' : 'Enabled')
-    defaultAction: contains(networkRuleSets, 'defaultAction') ? networkRuleSets.defaultAction : 'Allow'
-    trustedServiceAccessEnabled: networkRuleSets.?trustedServiceAccessEnabled
-    ipRules: contains(networkRuleSets, 'ipRules') ? networkRuleSets.ipRules : []
-    virtualNetworkRules: contains(networkRuleSets, 'virtualNetworkRules') ? networkRuleSets.virtualNetworkRules : []
-  }
-}
-
-module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-EventHubNamespace-PrivateEndpoint-${index}'
-  params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(eventHubNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
-    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(eventHubNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
-        properties: {
-          privateLinkServiceId: eventHubNamespace.id
-          groupIds: [
-            privateEndpoint.?service ?? 'namespace'
+module eventHubNamespace_eventhubs 'eventhub/main.bicep' = [
+  for (eventHub, index) in eventhubs: {
+    name: '${uniqueString(deployment().name, location)}-EvhbNamespace-EventHub-${index}'
+    params: {
+      namespaceName: eventHubNamespace.name
+      name: eventHub.name
+      authorizationRules: contains(eventHub, 'authorizationRules')
+        ? eventHub.authorizationRules
+        : [
+            {
+              name: 'RootManageSharedAccessKey'
+              rights: [
+                'Listen'
+                'Manage'
+                'Send'
+              ]
+            }
           ]
-        }
-      }
-    ] : null
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(eventHubNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
-        properties: {
-          privateLinkServiceId: eventHubNamespace.id
-          groupIds: [
-            privateEndpoint.?service ?? 'namespace'
+      captureDescriptionDestinationArchiveNameFormat: contains(
+          eventHub,
+          'captureDescriptionDestinationArchiveNameFormat'
+        )
+        ? eventHub.captureDescriptionDestinationArchiveNameFormat
+        : '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+      captureDescriptionDestinationBlobContainer: contains(eventHub, 'captureDescriptionDestinationBlobContainer')
+        ? eventHub.captureDescriptionDestinationBlobContainer
+        : ''
+      captureDescriptionDestinationName: contains(eventHub, 'captureDescriptionDestinationName')
+        ? eventHub.captureDescriptionDestinationName
+        : 'EventHubArchive.AzureBlockBlob'
+      captureDescriptionDestinationStorageAccountResourceId: contains(
+          eventHub,
+          'captureDescriptionDestinationStorageAccountResourceId'
+        )
+        ? eventHub.captureDescriptionDestinationStorageAccountResourceId
+        : ''
+      captureDescriptionEnabled: contains(eventHub, 'captureDescriptionEnabled')
+        ? eventHub.captureDescriptionEnabled
+        : false
+      captureDescriptionEncoding: contains(eventHub, 'captureDescriptionEncoding')
+        ? eventHub.captureDescriptionEncoding
+        : 'Avro'
+      captureDescriptionIntervalInSeconds: contains(eventHub, 'captureDescriptionIntervalInSeconds')
+        ? eventHub.captureDescriptionIntervalInSeconds
+        : 300
+      captureDescriptionSizeLimitInBytes: contains(eventHub, 'captureDescriptionSizeLimitInBytes')
+        ? eventHub.captureDescriptionSizeLimitInBytes
+        : 314572800
+      captureDescriptionSkipEmptyArchives: contains(eventHub, 'captureDescriptionSkipEmptyArchives')
+        ? eventHub.captureDescriptionSkipEmptyArchives
+        : false
+      consumergroups: contains(eventHub, 'consumergroups') ? eventHub.consumergroups : []
+      lock: eventHub.?lock ?? lock
+      messageRetentionInDays: contains(eventHub, 'messageRetentionInDays') ? eventHub.messageRetentionInDays : 1
+      partitionCount: contains(eventHub, 'partitionCount') ? eventHub.partitionCount : 2
+      roleAssignments: contains(eventHub, 'roleAssignments') ? eventHub.roleAssignments : []
+      status: contains(eventHub, 'status') ? eventHub.status : 'Active'
+      retentionDescriptionCleanupPolicy: contains(eventHub, 'retentionDescriptionCleanupPolicy')
+        ? eventHub.retentionDescriptionCleanupPolicy
+        : 'Delete'
+      retentionDescriptionRetentionTimeInHours: contains(eventHub, 'retentionDescriptionRetentionTimeInHours')
+        ? eventHub.retentionDescriptionRetentionTimeInHours
+        : 1
+      retentionDescriptionTombstoneRetentionTimeInHours: contains(
+          eventHub,
+          'retentionDescriptionTombstoneRetentionTimeInHours'
+        )
+        ? eventHub.retentionDescriptionTombstoneRetentionTimeInHours
+        : 1
+    }
+  }
+]
+
+module eventHubNamespace_networkRuleSet 'network-rule-set/main.bicep' =
+  if (!empty(networkRuleSets) || !empty(privateEndpoints)) {
+    name: '${uniqueString(deployment().name, location)}-EvhbNamespace-NetworkRuleSet'
+    params: {
+      namespaceName: eventHubNamespace.name
+      publicNetworkAccess: contains(networkRuleSets, 'publicNetworkAccess')
+        ? networkRuleSets.publicNetworkAccess
+        : (!empty(privateEndpoints) && empty(networkRuleSets) ? 'Disabled' : 'Enabled')
+      defaultAction: contains(networkRuleSets, 'defaultAction') ? networkRuleSets.defaultAction : 'Allow'
+      trustedServiceAccessEnabled: networkRuleSets.?trustedServiceAccessEnabled
+      ipRules: contains(networkRuleSets, 'ipRules') ? networkRuleSets.ipRules : []
+      virtualNetworkRules: contains(networkRuleSets, 'virtualNetworkRules') ? networkRuleSets.virtualNetworkRules : []
+    }
+  }
+
+module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    name: '${uniqueString(deployment().name, location)}-EventHubNamespace-PrivateEndpoint-${index}'
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(eventHubNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(eventHubNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
+              properties: {
+                privateLinkServiceId: eventHubNamespace.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'namespace'
+                ]
+              }
+            }
           ]
-          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(eventHubNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
+              properties: {
+                privateLinkServiceId: eventHubNamespace.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'namespace'
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
+  }
+]
+
+resource eventHubNamespace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(eventHubNamespace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: eventHubNamespace
+  }
+]
+
+resource eventHubNamespace_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: eventHubNamespace
+  }
+
+resource eventHubNamespace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
         }
-      }
-    ] : null
-    subnetResourceId: privateEndpoint.subnetResourceId
-    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
-    location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: privateEndpoint.?lock ?? lock
-    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
-    roleAssignments: privateEndpoint.?roleAssignments
-    tags: privateEndpoint.?tags ?? tags
-    customDnsConfigs: privateEndpoint.?customDnsConfigs
-    ipConfigurations: privateEndpoint.?ipConfigurations
-    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
-    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: eventHubNamespace
   }
-}]
-
-resource eventHubNamespace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(eventHubNamespace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
-  }
-  scope: eventHubNamespace
-}]
-
-resource eventHubNamespace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
-  }
-  scope: eventHubNamespace
-}
-
-resource eventHubNamespace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
-      category: group.category
-      enabled: group.?enabled ?? true
-      timeGrain: null
-    }]
-    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
-      categoryGroup: group.?categoryGroup
-      category: group.?category
-      enabled: group.?enabled ?? true
-    }]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
-  }
-  scope: eventHubNamespace
-}]
+]
 
 @description('The name of the eventspace.')
 output name string = eventHubNamespace.name
@@ -361,7 +472,9 @@ output systemAssignedMIPrincipalId string = eventHubNamespace.?identity.?princip
 output location string = eventHubNamespace.location
 
 @description('The Resources IDs of the EventHubs within this eventspace.')
-output eventHubResourceIds array = [for index in range(0, length(eventhubs ?? [])): eventHubNamespace_eventhubs[index].outputs.resourceId]
+output eventHubResourceIds array = [
+  for index in range(0, length(eventhubs ?? [])): eventHubNamespace_eventhubs[index].outputs.resourceId
+]
 
 // =============== //
 //   Definitions   //

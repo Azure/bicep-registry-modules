@@ -30,12 +30,18 @@ param virtualNetworkRules array = []
 @description('Optional. List of IpRules. It will not be set if publicNetworkAccess is "Disabled". Otherwise, when used, defaultAction will be set to "Deny".')
 param ipRules array = []
 
-var networkRules = [for (virtualNetworkRule, index) in virtualNetworkRules: {
-  ignoreMissingVnetServiceEndpoint: contains(virtualNetworkRule, 'ignoreMissingVnetServiceEndpoint') ? virtualNetworkRule.ignoreMissingVnetServiceEndpoint : null
-  subnet: contains(virtualNetworkRule, 'subnetResourceId') ? {
-    id: virtualNetworkRule.subnetResourceId
-  } : null
-}]
+var networkRules = [
+  for (virtualNetworkRule, index) in virtualNetworkRules: {
+    ignoreMissingVnetServiceEndpoint: contains(virtualNetworkRule, 'ignoreMissingVnetServiceEndpoint')
+      ? virtualNetworkRule.ignoreMissingVnetServiceEndpoint
+      : null
+    subnet: contains(virtualNetworkRule, 'subnetResourceId')
+      ? {
+          id: virtualNetworkRule.subnetResourceId
+        }
+      : null
+  }
+]
 
 resource namespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' existing = {
   name: namespaceName
@@ -46,7 +52,9 @@ resource networkRuleSet 'Microsoft.ServiceBus/namespaces/networkRuleSets@2022-10
   parent: namespace
   properties: {
     publicNetworkAccess: publicNetworkAccess
-    defaultAction: publicNetworkAccess == 'Enabled' ? (!empty(ipRules) || !empty(virtualNetworkRules) ? 'Deny' : defaultAction) : null
+    defaultAction: publicNetworkAccess == 'Enabled'
+      ? (!empty(ipRules) || !empty(virtualNetworkRules) ? 'Deny' : defaultAction)
+      : null
     trustedServiceAccessEnabled: publicNetworkAccess == 'Enabled' ? trustedServiceAccessEnabled : null
     ipRules: publicNetworkAccess == 'Enabled' ? ipRules : null
     virtualNetworkRules: publicNetworkAccess == 'Enabled' ? networkRules : null

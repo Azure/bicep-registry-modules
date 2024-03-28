@@ -1,4 +1,4 @@
-<h1 style="color: steelblue;">⚠️ Upcoming changes ⚠️</h1>
+<h1 style="color: steelblue;">⚠️ Replaced ⚠️</h1>
 
 This module has been replaced by the following equivalent module in Azure Verified Modules (AVM): [avm/res/cognitive-services/account](https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/cognitive-services/account).
 
