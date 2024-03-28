@@ -53,51 +53,54 @@ module nestedDependencies 'dependencies.bicep' = {
 // }
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}'
-    adminUsername: 'localAdminUser'
-    imageReference: {
-      publisher: 'Canonical'
-      offer: '0001-com-ubuntu-server-jammy'
-      sku: '22_04-lts-gen2'
-      version: 'latest'
-    }
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig01'
-            pipConfiguration: {
-              publicIpNameSuffix: '-pip-01'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}'
+      adminUsername: 'localAdminUser'
+      imageReference: {
+        publisher: 'Canonical'
+        offer: '0001-com-ubuntu-server-jammy'
+        sku: '22_04-lts-gen2'
+        version: 'latest'
+      }
+      availabilityZone: 0
+      nicConfigurations: [
+        {
+          ipConfigurations: [
+            {
+              name: 'ipconfig01'
+              pipConfiguration: {
+                publicIpNameSuffix: '-pip-01'
+              }
+              subnetResourceId: nestedDependencies.outputs.subnetResourceId
             }
-            subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          }
-        ]
-        nicSuffix: '-nic-01'
+          ]
+          nicSuffix: '-nic-01'
+        }
+      ]
+      osDisk: {
+        diskSizeGB: '128'
+        caching: 'ReadWrite'
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
       }
-    ]
-    osDisk: {
-      diskSizeGB: '128'
-      caching: 'ReadWrite'
-      managedDisk: {
-        storageAccountType: 'Premium_LRS'
-      }
+      osType: 'Linux'
+      vmSize: 'Standard_DS2_v2'
+      disablePasswordAuthentication: true
+      publicKeys: [
+        {
+          keyData: nestedDependencies.outputs.SSHKeyPublicKey
+          path: '/home/localAdminUser/.ssh/authorized_keys'
+        }
+      ]
     }
-    osType: 'Linux'
-    vmSize: 'Standard_DS2_v2'
-    disablePasswordAuthentication: true
-    publicKeys: [
-      {
-        keyData: nestedDependencies.outputs.SSHKeyPublicKey
-        path: '/home/localAdminUser/.ssh/authorized_keys'
-      }
+    dependsOn: [
+      nestedDependencies // Required to leverage `existing` SSH key reference
     ]
   }
-  dependsOn: [
-    nestedDependencies // Required to leverage `existing` SSH key reference
-  ]
-}]
+]

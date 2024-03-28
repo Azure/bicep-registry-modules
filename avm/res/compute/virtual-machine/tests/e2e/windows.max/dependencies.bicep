@@ -66,7 +66,10 @@ resource msiRGContrRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-
   scope: resourceGroup()
   properties: {
     principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c') // Contributor
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ) // Contributor
     principalType: 'ServicePrincipal'
   }
 }
@@ -211,12 +214,28 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 }
 
+resource backupServiceKeyVaultPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('${keyVault.name}-${location}-268f6a53-9f68-4a38-ae47-166f730d86af-KeyVault-KeyVaultAdministrator-RoleAssignment')
+  scope: keyVault
+  properties: {
+    principalId: '268f6a53-9f68-4a38-ae47-166f730d86af' // Backup Management Service Enterprise Application Object Id (Note: this is tenant specific)
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '00482a5a-887f-4fb3-b363-3b7fe8e74483'
+    ) // Key Vault Administrator
+    principalType: 'ServicePrincipal'
+  }
+}
+
 resource msiKVReadRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-KeyVault-Key-Read-RoleAssignment')
   scope: keyVault::key
   properties: {
     principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424') // Key Vault Crypto User
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '12338af0-0e69-4776-bea7-57ae8d297424'
+    ) // Key Vault Crypto User
     principalType: 'ServicePrincipal'
   }
 }
