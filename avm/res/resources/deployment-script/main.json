@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "6812401706170828518"
+      "version": "0.26.54.24096",
+      "templateHash": "6519455487255292674"
     },
     "name": "Deployment Scripts",
     "description": "This module deploys Deployment Scripts.",
@@ -118,6 +118,34 @@
         }
       },
       "nullable": true
+    },
+    "environmentVariableType": {
+      "type": "secureObject",
+      "properties": {
+        "secureList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "secureValue": {
+                "type": "string",
+                "nullable": true
+              },
+              "value": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          },
+          "metadata": {
+            "description": "Optional. The list of environment variables to pass over to the deployment script."
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -187,10 +215,8 @@
       }
     },
     "environmentVariables": {
-      "type": "secureObject",
-      "defaultValue": {},
+      "$ref": "#/definitions/environmentVariableType",
       "metadata": {
-        "example": "secureList: [\n  {\n    name: 'string'\n    secureValue: 'string'\n    value: 'string'\n  }\n]\n",
         "description": "Optional. The environment variables to pass over to the script. The list is passed as an object with a key name \"secureList\" and the value is the list of environment variables (array). The list must have a 'name' and a 'value' or a 'secretValue' property for each object."
       }
     },
@@ -396,7 +422,7 @@
         "containerSettings": "[if(not(empty(variables('containerSettings'))), variables('containerSettings'), null())]",
         "storageAccountSettings": "[if(not(empty(parameters('storageAccountResourceId'))), if(not(empty(parameters('storageAccountResourceId'))), createObject('storageAccountKey', if(empty(parameters('subnetResourceIds')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '//'), '/')[2], split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), 'dummyAccount'), '/'))), '2023-01-01').keys[0].value, null()), 'storageAccountName', last(split(parameters('storageAccountResourceId'), '/'))), null()), null())]",
         "arguments": "[parameters('arguments')]",
-        "environmentVariables": "[if(not(empty(parameters('environmentVariables'))), parameters('environmentVariables').secureList, createArray())]",
+        "environmentVariables": "[if(not(equals(parameters('environmentVariables'), null())), parameters('environmentVariables').secureList, createArray())]",
         "scriptContent": "[if(not(empty(parameters('scriptContent'))), parameters('scriptContent'), null())]",
         "primaryScriptUri": "[if(not(empty(parameters('primaryScriptUri'))), parameters('primaryScriptUri'), null())]",
         "supportingScriptUris": "[if(not(empty(parameters('supportingScriptUris'))), parameters('supportingScriptUris'), null())]",

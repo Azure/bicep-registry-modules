@@ -56,7 +56,7 @@ runs:
   using: "composite"
   steps:
     - name: Azure Login
-      uses: Azure/login@v1
+      uses: azure/login@v2
       with:
         creds: ${{ env.AZURE_CREDENTIALS }}
         enable-AzPSSession: true
@@ -65,7 +65,7 @@ runs:
     # ---------------------------
     - name: "Get Resource Location"
       id: get-resource-location
-      uses: azure/powershell@v1
+      uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -75,7 +75,7 @@ runs:
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'regionSelector' 'Get-AzAvailableResourceLocation.ps1')
 
-          # Set fucntion input parameters
+          # Set function input parameters
           $functionInput = @{
               ModuleRoot = '${{ inputs.modulePath }}'
               GlobalResourceGroupLocation = '${{ inputs.deploymentMetadataLocation }}'
@@ -86,7 +86,6 @@ runs:
 
           $resourceLocation = Get-AzAvailableResourceLocation @functionInput -Verbose
 
-          $deploymentLocation = @{}
           Write-Verbose ('{0}-{1}' -f 'resourceLocation', $resourceLocation) -Verbose
           Write-Output ('{0}={1}' -f 'resourceLocation', $resourceLocation) >> $env:GITHUB_OUTPUT
 
@@ -95,7 +94,7 @@ runs:
     # [Token replacement] task(s)
     # ---------------------------
     - name: "Replace tokens in template file"
-      uses: azure/powershell@v1
+      uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -161,7 +160,7 @@ runs:
     # [Deployment validation] task(s)
     # -------------------------------
     - name: "Validate template file"
-      uses: azure/powershell@v1
+      uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -213,7 +212,7 @@ runs:
     # ------------------------------
     - name: "Deploy template file"
       id: deploy_step
-      uses: azure/powershell@v1
+      uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -369,7 +368,7 @@ runs:
     # ----------------------------
     - name: "Remove deployed resources"
       if: ${{ (success() || failure()) && inputs.removeDeployment == 'true' && steps.deploy_step.outputs.deploymentNames != '' }}
-      uses: azure/powershell@v1
+      uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
         inlineScript: |

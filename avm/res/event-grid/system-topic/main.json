@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "8773071401179464366"
+      "version": "0.26.54.24096",
+      "templateHash": "6398074442417781494"
     },
     "name": "Event Grid System Topics",
     "description": "This module deploys an Event Grid System Topic.",
@@ -483,8 +483,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "5245070501778317327"
+              "version": "0.26.54.24096",
+              "templateHash": "10785513325752294615"
             },
             "name": "Event Grid System Topic Event Subscriptions",
             "description": "This module deploys an Event Grid System Topic Event Subscription.",

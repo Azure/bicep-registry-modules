@@ -60,143 +60,149 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    location: resourceLocation
-    skuObject: {
-      name: 'Premium'
-      capacity: 2
-    }
-    premiumMessagingPartitions: 1
-    zoneRedundant: true
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
-    roleAssignments: []
-    networkRuleSets: {
-      defaultAction: 'Deny'
-      trustedServiceAccessEnabled: true
-      virtualNetworkRules: [
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      location: resourceLocation
+      skuObject: {
+        name: 'Premium'
+        capacity: 2
+      }
+      premiumMessagingPartitions: 1
+      zoneRedundant: true
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
+      roleAssignments: []
+      networkRuleSets: {
+        defaultAction: 'Deny'
+        trustedServiceAccessEnabled: true
+        virtualNetworkRules: [
+          {
+            ignoreMissingVnetServiceEndpoint: true
+            subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          }
+        ]
+        ipRules: [
+          {
+            ipMask: '10.0.1.0/32'
+            action: 'Allow'
+          }
+          {
+            ipMask: '10.0.2.0/32'
+            action: 'Allow'
+          }
+        ]
+      }
+      authorizationRules: [
         {
-          ignoreMissingVnetServiceEndpoint: true
+          name: 'RootManageSharedAccessKey'
+          rights: [
+            'Listen'
+            'Manage'
+            'Send'
+          ]
+        }
+        {
+          name: 'AnotherKey'
+          rights: [
+            'Listen'
+            'Send'
+          ]
+        }
+      ]
+      queues: [
+        {
+          name: '${namePrefix}${serviceShort}q001'
+          roleAssignments: []
+          authorizationRules: [
+            {
+              name: 'RootManageSharedAccessKey'
+              rights: [
+                'Listen'
+                'Manage'
+                'Send'
+              ]
+            }
+            {
+              name: 'AnotherKey'
+              rights: [
+                'Listen'
+                'Send'
+              ]
+            }
+          ]
+          autoDeleteOnIdle: 'PT5M'
+          maxMessageSizeInKilobytes: 2048
+        }
+      ]
+      topics: [
+        {
+          name: '${namePrefix}${serviceShort}t001'
+          roleAssignments: []
+          authorizationRules: [
+            {
+              name: 'RootManageSharedAccessKey'
+              rights: [
+                'Listen'
+                'Manage'
+                'Send'
+              ]
+            }
+            {
+              name: 'AnotherKey'
+              rights: [
+                'Listen'
+                'Send'
+              ]
+            }
+          ]
+        }
+      ]
+      diagnosticSettings: [
+        {
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      privateEndpoints: [
+        {
+          service: 'namespace'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
         }
       ]
-      ipRules: [
-        {
-          ipMask: '10.0.1.0/32'
-          action: 'Allow'
-        }
-        {
-          ipMask: '10.0.2.0/32'
-          action: 'Allow'
-        }
-      ]
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourcesIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      disableLocalAuth: true
+      publicNetworkAccess: 'Enabled'
+      minimumTlsVersion: '1.2'
     }
-    authorizationRules: [
-      {
-        name: 'RootManageSharedAccessKey'
-        rights: [
-          'Listen'
-          'Manage'
-          'Send'
-        ]
-      }
-      {
-        name: 'AnotherKey'
-        rights: [
-          'Listen'
-          'Send'
-        ]
-      }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
     ]
-    queues: [
-      {
-        name: '${namePrefix}${serviceShort}q001'
-        roleAssignments: []
-        authorizationRules: [
-          {
-            name: 'RootManageSharedAccessKey'
-            rights: [
-              'Listen'
-              'Manage'
-              'Send'
-            ]
-          }
-          {
-            name: 'AnotherKey'
-            rights: [
-              'Listen'
-              'Send'
-            ]
-          }
-        ]
-        autoDeleteOnIdle: 'PT5M'
-        maxMessageSizeInKilobytes: 2048
-      }
-    ]
-    topics: [
-      {
-        name: '${namePrefix}${serviceShort}t001'
-        roleAssignments: []
-        authorizationRules: [
-          {
-            name: 'RootManageSharedAccessKey'
-            rights: [
-              'Listen'
-              'Manage'
-              'Send'
-            ]
-          }
-          {
-            name: 'AnotherKey'
-            rights: [
-              'Listen'
-              'Send'
-            ]
-          }
-        ]
-      }
-    ]
-    diagnosticSettings: [
-      {
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    privateEndpoints: [
-      {
-        service: 'namespace'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
-      }
-    ]
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourcesIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
-    disableLocalAuth: true
-    publicNetworkAccess: 'Enabled'
-    minimumTlsVersion: '1.2'
   }
-}]
+]

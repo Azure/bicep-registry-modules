@@ -43,7 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-npiamin'
+  name: 'publicIpAddressDeployment'
   params: {
     // Required parameters
     name: 'npiamin001'
@@ -91,7 +91,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-npiamax'
+  name: 'publicIpAddressDeployment'
   params: {
     // Required parameters
     name: 'npiamax001'
@@ -257,7 +257,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-npiawaf'
+  name: 'publicIpAddressDeployment'
   params: {
     // Required parameters
     name: 'npiawaf001'
@@ -929,6 +929,14 @@ A list of availability zones denoting the IP allocated for the resource needs to
 
 - Required: No
 - Type: array
+- Default:
+  ```Bicep
+  [
+    '1'
+    '2'
+    '3'
+  ]
+  ```
 
 
 ## Outputs

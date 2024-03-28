@@ -1,0 +1,121 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "3984181780336367181"
+    },
+    "name": "Event Hub Namespace Network Rule Sets",
+    "description": "This module deploys an Event Hub Namespace Network Rule Set.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "namespaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent event hub namespace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. This determines if traffic is allowed over public network. Default is \"Enabled\". If set to \"Disabled\", traffic to this namespace will be restricted over Private Endpoints only and network rules will not be applied."
+      }
+    },
+    "defaultAction": {
+      "type": "string",
+      "defaultValue": "Allow",
+      "allowedValues": [
+        "Allow",
+        "Deny"
+      ],
+      "metadata": {
+        "description": "Optional. Default Action for Network Rule Set. Default is \"Allow\". It will not be set if publicNetworkAccess is \"Disabled\". Otherwise, it will be set to \"Deny\" if ipRules or virtualNetworkRules are being used."
+      }
+    },
+    "trustedServiceAccessEnabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Value that indicates whether Trusted Service Access is enabled or not."
+      }
+    },
+    "virtualNetworkRules": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. An array of subnet resource ID objects that this Event Hub Namespace is exposed to via Service Endpoints. You can enable the `ignoreMissingVnetServiceEndpoint` if you wish to add this virtual network to Event Hub Namespace but do not have an existing service endpoint. It will not be set if publicNetworkAccess is \"Disabled\". Otherwise, when used, defaultAction will be set to \"Deny\"."
+      }
+    },
+    "ipRules": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. An array of objects for the public IP ranges you want to allow via the Event Hub Namespace firewall. Supports IPv4 address or CIDR. It will not be set if publicNetworkAccess is \"Disabled\". Otherwise, when used, defaultAction will be set to \"Deny\"."
+      }
+    },
+    "networkRuleSetName": {
+      "type": "string",
+      "defaultValue": "default",
+      "metadata": {
+        "description": "Optional. The name of the network ruleset."
+      }
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "networkRules",
+        "count": "[length(parameters('virtualNetworkRules'))]",
+        "input": {
+          "ignoreMissingVnetServiceEndpoint": "[if(contains(parameters('virtualNetworkRules')[copyIndex('networkRules')], 'ignoreMissingVnetServiceEndpoint'), parameters('virtualNetworkRules')[copyIndex('networkRules')].ignoreMissingVnetServiceEndpoint, null())]",
+          "subnet": "[if(contains(parameters('virtualNetworkRules')[copyIndex('networkRules')], 'subnetResourceId'), createObject('id', parameters('virtualNetworkRules')[copyIndex('networkRules')].subnetResourceId), null())]"
+        }
+      }
+    ]
+  },
+  "resources": [
+    {
+      "type": "Microsoft.EventHub/namespaces/networkRuleSets",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('networkRuleSetName'))]",
+      "properties": {
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+        "defaultAction": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), null(), if(or(not(empty(parameters('ipRules'))), not(empty(parameters('virtualNetworkRules')))), 'Deny', parameters('defaultAction')))]",
+        "trustedServiceAccessEnabled": "[parameters('trustedServiceAccessEnabled')]",
+        "ipRules": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), null(), parameters('ipRules'))]",
+        "virtualNetworkRules": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), null(), variables('networkRules'))]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the network rule set."
+      },
+      "value": "[parameters('networkRuleSetName')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the network rule set."
+      },
+      "value": "[resourceId('Microsoft.EventHub/namespaces/networkRuleSets', parameters('namespaceName'), parameters('networkRuleSetName'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the network rule set was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
