@@ -28,6 +28,10 @@ spec:
     # Azure Virtual Machine
     - Azure.VM.AMA
     - Azure.VM.Standalone
+    # Azure App Service
+    - Azure.AppService.AlwaysOn
+    - Azure.AppService.WebProbe
+    - Azure.AppService.WebProbePath
   if:
     name: "."
     contains:
