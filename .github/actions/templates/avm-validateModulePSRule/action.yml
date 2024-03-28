@@ -38,7 +38,7 @@ runs:
     # [Token replacement] task(s)
     # ---------------------------
     - name: "Replace tokens in template file"
-      uses: azure/powershell@v1
+      uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -133,7 +133,7 @@ runs:
 
     - name: "Parse CSV content"
       if: always()
-      uses: azure/powershell@v1
+      uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
         inlineScript: |
