@@ -31,7 +31,7 @@
 /avm/res/compute/virtual-machine/ @Azure/avm-res-compute-virtualmachine-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/compute/virtual-machine-scale-set/ @Azure/avm-res-compute-virtualmachinescaleset-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/consumption/budget/ @Azure/avm-res-consumption-budget-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/container-instance/container-group/ @Azure/avm-res-containerinstance-containergroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/container-instance/container-group/ @Azure/avm-res-containerinstance-containergroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/container-registry/registry/ @Azure/avm-res-containerregistry-registry-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/container-service/managed-cluster/ @Azure/avm-res-containerservice-managedcluster-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/databricks/access-connector/ @Azure/avm-res-databricks-accessconnector-module-owners-bicep @Azure/avm-core-team-technical-bicep
