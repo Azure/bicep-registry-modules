@@ -57,7 +57,7 @@ module testDeployment '../../../main.bicep' = [
           audiences: [
             'api://AzureADTokenExchange'
           ]
-          issuer: 'https://contoso.com/${subscription().tenantId}/${guid(deployment().name)}/'
+          issuer: 'https://contoso.com/${subscription().tenantId}/${guid(deployment().name)}01/'
           subject: 'system:serviceaccount:default:workload-identity-sa'
         }
         {
@@ -65,7 +65,7 @@ module testDeployment '../../../main.bicep' = [
           audiences: [
             'api://AzureADTokenExchange'
           ]
-          issuer: 'https://contoso.com/${subscription().tenantId}/${guid(deployment().name)}/'
+          issuer: 'https://contoso.com/${subscription().tenantId}/${guid(deployment().name)}02/'
           subject: 'system:serviceaccount:default:workload-identity-sa'
         }
       ]
