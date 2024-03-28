@@ -146,6 +146,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
     $topLevelModuleTestCases = [System.Collections.ArrayList]@()
     foreach ($moduleFolderPath in $moduleFolderPaths) {
+      Write-Verbose ("moduleFolderPath: $moduleFolderPath") -Verbose
       $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
       if (($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2) {
         $topLevelModuleTestCases += @{
