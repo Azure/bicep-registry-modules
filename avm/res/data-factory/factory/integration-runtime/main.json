@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "5995255380692588407"
+      "templateHash": "6019779622358376532"
     },
     "name": "Data Factory Integration RunTimes",
     "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime.",
@@ -48,7 +48,7 @@
         "description": "Optional. Integration Runtime type properties. Required if type is \"Managed\"."
       }
     },
-    "interagrationRuntimeCustomDescription": {
+    "integrationRuntimeCustomDescription": {
       "type": "string",
       "defaultValue": "Managed Integration Runtime created by avm-res-datafactory-factories",
       "metadata": {
@@ -67,7 +67,7 @@
       "type": "Microsoft.DataFactory/factories/integrationRuntimes",
       "apiVersion": "2018-06-01",
       "name": "[format('{0}/{1}', parameters('dataFactoryName'), parameters('name'))]",
-      "properties": "[if(equals(parameters('type'), 'Managed'), createObject('description', parameters('interagrationRuntimeCustomDescription'), 'type', parameters('type'), 'managedVirtualNetwork', variables('managedVirtualNetworkVar'), 'typeProperties', parameters('typeProperties')), createObject('type', parameters('type')))]"
+      "properties": "[if(equals(parameters('type'), 'Managed'), createObject('description', parameters('integrationRuntimeCustomDescription'), 'type', parameters('type'), 'managedVirtualNetwork', variables('managedVirtualNetworkVar'), 'typeProperties', parameters('typeProperties')), createObject('type', parameters('type')))]"
     }
   ],
   "outputs": {
