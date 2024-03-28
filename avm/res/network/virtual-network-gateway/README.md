@@ -410,7 +410,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     ]
     tags: {
       Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
     vpnGatewayGeneration: 'Generation2'
@@ -558,7 +557,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "tags": {
       "value": {
         "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
     },
@@ -775,7 +773,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     ]
     tags: {
       Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
     vpnGatewayGeneration: 'Generation2'
@@ -904,7 +901,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "tags": {
       "value": {
         "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
     },
