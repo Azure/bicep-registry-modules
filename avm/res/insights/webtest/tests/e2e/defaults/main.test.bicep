@@ -46,17 +46,19 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    appInsightResourceId: nestedDependencies.outputs.appInsightResourceId
-    webTestName: 'wt${namePrefix}$${serviceShort}001'
-    request: {
-      RequestUrl: 'https://learn.microsoft.com/en-us/'
-      HttpVerb: 'GET'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      appInsightResourceId: nestedDependencies.outputs.appInsightResourceId
+      webTestName: 'wt${namePrefix}$${serviceShort}001'
+      request: {
+        RequestUrl: 'https://learn.microsoft.com/en-us/'
+        HttpVerb: 'GET'
+      }
     }
   }
-}]
+]

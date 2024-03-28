@@ -44,56 +44,58 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: 'global'
-    conditions: [
-      {
-        field: 'category'
-        equals: 'ServiceHealth'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: 'global'
+      conditions: [
+        {
+          field: 'category'
+          equals: 'ServiceHealth'
+        }
+        {
+          anyOf: [
+            {
+              field: 'properties.incidentType'
+              equals: 'Incident'
+            }
+            {
+              field: 'properties.incidentType'
+              equals: 'Maintenance'
+            }
+          ]
+        }
+        {
+          field: 'properties.impactedServices[*].ServiceName'
+          containsAny: [
+            'Action Groups'
+            'Activity Logs & Alerts'
+          ]
+        }
+        {
+          field: 'properties.impactedServices[*].ImpactedRegions[*].RegionName'
+          containsAny: [
+            'West Europe'
+            'Global'
+          ]
+        }
+      ]
+      actions: [
+        {
+          actionGroupId: nestedDependencies.outputs.actionGroupResourceId
+        }
+      ]
+      scopes: [
+        subscription().id
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-      {
-        anyOf: [
-          {
-            field: 'properties.incidentType'
-            equals: 'Incident'
-          }
-          {
-            field: 'properties.incidentType'
-            equals: 'Maintenance'
-          }
-        ]
-      }
-      {
-        field: 'properties.impactedServices[*].ServiceName'
-        containsAny: [
-          'Action Groups'
-          'Activity Logs & Alerts'
-        ]
-      }
-      {
-        field: 'properties.impactedServices[*].ImpactedRegions[*].RegionName'
-        containsAny: [
-          'West Europe'
-          'Global'
-        ]
-      }
-    ]
-    actions: [
-      {
-        actionGroupId: nestedDependencies.outputs.actionGroupResourceId
-      }
-    ]
-    scopes: [
-      subscription().id
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
-}]
+]

@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "10525202939204553685"
+      "version": "0.26.54.24096",
+      "templateHash": "8788910381196616673"
     },
     "name": "Virtual Hub Route Tables",
     "description": "This module deploys a Virtual Hub Route Table.",

@@ -5,20 +5,6 @@
 ## This composite action contains the logic to validate a module using a set of PSRule tests
 ##
 #########################################################
-##
-##-------------------------------------------##
-## ACTION PARAMETERS                         ##
-##-------------------------------------------##
-##
-##   |=================================================================================================================================================================|
-##   | Parameter                | Required | Default | Description                          | Example                                                                  |
-##   |--------------------------|----------|---------|--------------------------------------|--------------------------------------------------------------------------|
-##   | templateFilePath         | true     | ''      | The path to the module PSRule tests. | 'modules/api-management/service/.test/common/main.test.bicep'            |
-##   | subscriptionId           | false    | ''      | The subscriptionId to deploy to      | '1a97b80a-4dda-4f50-ab53-349e29344654'                                   |
-##   | managementGroupId        | false    | ''      | The managementGroupId to deploy to   | '1a97b80a-4dda-4f50-ab53-349e29344654'                                   |
-##   |=================================================================================================================================================================|
-##
-##---------------------------------------------##
 
 name: "Execute PSRule module tests"
 description: "Execute PSRule module tests (if any)"
@@ -37,6 +23,10 @@ inputs:
   psrulePath:
     description: "The path to PSRule configurations"
     required: false
+  skipPassedRulesReport:
+    description: "Show only failed rules in job summary"
+    required: false
+    default: $false
   psruleBaseline:
     description: "The PSRule baseline to be used"
     required: true
@@ -48,7 +38,7 @@ runs:
     # [Token replacement] task(s)
     # ---------------------------
     - name: "Replace tokens in template file"
-      uses: azure/powershell@v1
+      uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -143,7 +133,7 @@ runs:
 
     - name: "Parse CSV content"
       if: always()
-      uses: azure/powershell@v1
+      uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -155,9 +145,9 @@ runs:
 
           # Populate parameter input
           $ParameterInput = @{
-            inputFilePath           = '${{ inputs.templateFilePath}}-PSRule-output.csv'
-            outputFilePath          = '${{ inputs.templateFilePath}}-PSRule-output.md'
-            skipPassedRulesReport   = $false
+            inputFilePath         = '${{ inputs.templateFilePath}}-PSRule-output.csv'
+            outputFilePath        = '${{ inputs.templateFilePath}}-PSRule-output.md'
+            skipPassedRulesReport = ${{ inputs.skipPassedRulesReport}}
           }
 
           Write-Verbose ('Set PS Rule Output with following parameters:`n{0}' -f (ConvertTo-Json $ParameterInput -Depth 10)) -Verbose
