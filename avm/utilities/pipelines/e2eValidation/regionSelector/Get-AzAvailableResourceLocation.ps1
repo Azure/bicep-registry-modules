@@ -48,18 +48,18 @@ function Get-AzAvailableResourceLocation {
 
     [Parameter(Mandatory = $false)]
     [array] $ExcludedRegions = @(
-      "asiasoutheast",
-      "brazilsouth",
-      "eastus2",
-      "japaneast",
-      "koreacentral",
-      "qatercentral",
-      "southcentralus",
-      "switzerlandnorth",
-      "uaenorth",
-      "westeurope",
-      "westus2",
-      "westus2"
+      'asiasoutheast',
+      'brazilsouth',
+      'eastus2',
+      'japaneast',
+      'koreacentral',
+      'qatercentral',
+      'southcentralus',
+      'switzerlandnorth',
+      'uaenorth',
+      'westeurope',
+      'westus2',
+      'westus2'
     )
   )
 
@@ -82,18 +82,17 @@ function Get-AzAvailableResourceLocation {
   $ResourceRegionList = (Get-AzResourceProvider | Where-Object { $_.ProviderNamespace -eq $formattedResourceProvider }).ResourceTypes | Where-Object { $_.ResourceTypeName -eq $formattedServiceName } | Select-Object -ExpandProperty Locations
   Write-Verbose "Region list: $($resourceRegionList | ConvertTo-Json)"
 
-  if ($resourceRegionList -eq "global" -or $null -eq $resourceRegionList) {
+  if ($resourceRegionList -eq 'global' -or $null -eq $resourceRegionList) {
     Write-Verbose "Resource is global or does not have a location in the Resource Providers API, default region [$GlobalResourceGroupLocation] will be used for resource group creation"
     $location = $GlobalResourceGroupLocation # Set Location to resource group location. Globabl resources should have hardocded location in `main.bicep`
-  }
-  else {
+  } else {
 
     $locations = Get-AzLocation | Where-Object {
       $_.DisplayName -in $ResourceRegionList -and
       $_.Location -notin $ExcludedRegions -and
-      $_.PairedRegion -ne "{}" -and
-      $_.RegionCategory -eq "Recommended"
-    } |  Select-Object -ExpandProperty Location
+      $_.PairedRegion -ne '{}' -and
+      $_.RegionCategory -eq 'Recommended'
+    } | Select-Object -ExpandProperty Location
     Write-Verbose "Available Locations: $($locations | ConvertTo-Json)"
 
     $filteredAllowedLocations = @($locations | Where-Object { $_ -in $AllowedRegionsList })
