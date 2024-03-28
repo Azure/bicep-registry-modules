@@ -2,7 +2,7 @@
 
 <#
 .SYNOPSIS
-Get modified files between previous and current commit depending on if you are running on main or a custom branch.
+Get modified files between previous and current commit depending on if you are running on main/master or a custom branch.
 
 .EXAMPLE
 Get-ModifiedFileList
@@ -13,16 +13,13 @@ Mode                 LastWriteTime         Length Name
 ----                 -------------         ------ ----
 la---          08.12.2021    15:50           7133 Script.ps1
 
-Get modified files between previous and current commit depending on if you are running on main or a custom branch.
+Get modified files between previous and current commit depending on if you are running on main/master or a custom branch.
 #>
 function Get-ModifiedFileList {
 
   if ((Get-GitBranchName) -eq 'main') {
-    Write-Verbose 'Running on main: Gathering modified files from the previous head' -Verbose
+    Write-Verbose 'Gathering modified files from the previous head' -Verbose
     $Diff = git diff --name-only --diff-filter=AM HEAD^ HEAD
-  }
-  else {
-    Write-Verbose 'Running on a custom branch: Skipping modified files' -Verbose
   }
   $ModifiedFiles = $Diff ? ($Diff | Get-Item -Force) : @()
 
@@ -187,6 +184,7 @@ Could return paths like
 #>
 function Get-ModulesToPublish {
 
+
   [CmdletBinding()]
   param (
     [Parameter(Mandatory)]
@@ -197,7 +195,7 @@ function Get-ModulesToPublish {
   $PathsToInclude = $versionFile.PathFilters
 
   # Check as per a `diff` with head^-1 if there was a change in any file that would justify a publish
-  $TemplateFilesToPublish = Get-TemplateFileToPublish -ModuleFolderPath $ModuleFolderPath -PathsToInclude $PathsToInclude -Verbose
+  $TemplateFilesToPublish = Get-TemplateFileToPublish -ModuleFolderPath $ModuleFolderPath -PathsToInclude $PathsToInclude
 
   # Filter out any children (as they're currently not considered for publishing)
   # $TemplateFilesToPublish = $TemplateFilesToPublish | Where-Object {
