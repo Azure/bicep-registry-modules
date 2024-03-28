@@ -11,7 +11,7 @@ Mandatory. Type of CSV file, that should be parsed ('Bicep-Resource', 'Bicep-Pat
 .EXAMPLE
 Get-AvmCsvData -ModuleIndex 'Bicep-Resource'
 
-Next line will parse the AVM Bicep modules
+Parse the AVM Bicep modules
 #>
 Function Get-AvmCsvData {
   [CmdletBinding()]
