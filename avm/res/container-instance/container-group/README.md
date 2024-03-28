@@ -573,12 +573,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
               memoryInGB: 4
             }
           }
-          volumeMounts: [
-            {
-              mountPath: '/mnt/empty'
-              name: 'my-name'
-            }
-          ]
         }
       }
       {
@@ -665,13 +659,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
                 "cpu": 2,
                 "memoryInGB": 4
               }
-            },
-            "volumeMounts": [
-              {
-                "mountPath": "/mnt/empty",
-                "name": "my-name"
-              }
-            ]
+            }
           }
         },
         {
