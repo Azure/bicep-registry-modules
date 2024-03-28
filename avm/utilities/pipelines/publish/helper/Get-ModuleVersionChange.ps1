@@ -44,11 +44,11 @@ function Get-ModuleVersionChange {
   }
 
   if ($newVersion -lt $oldVersion) {
-    Write-Verbose "The new version is smaller than the old version"
+    Write-Verbose 'The new version is smaller than the old version'
   } elseif ($newVersion -eq $oldVersion) {
-    Write-Verbose "The new version equals the old version"
+    Write-Verbose 'The new version equals the old version'
   } else {
-    Write-Verbose "The new version is greater than the old version"
+    Write-Verbose 'The new version is greater than the old version'
   }
 
   if (-not [String]::IsNullOrEmpty($newVersion) -and -not [String]::IsNullOrEmpty($oldVersion)) {
