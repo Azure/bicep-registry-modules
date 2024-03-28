@@ -51,63 +51,64 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}'
-    adminUsername: 'localAdminUser'
-    managedIdentities: {
-      systemAssigned: true
-    }
-    availabilityZone: '0'
-    imageReference: {
-      publisher: 'MicrosoftWindowsServer'
-      offer: 'WindowsServer'
-      sku: '2022-datacenter-azure-edition'
-      version: 'latest'
-    }
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig01'
-            subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          }
-        ]
-        nicSuffix: '-nic-01'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}'
+      adminUsername: 'localAdminUser'
+      managedIdentities: {
+        systemAssigned: true
       }
-    ]
-    osDisk: {
-      diskSizeGB: '128'
-      caching: 'ReadWrite'
-      managedDisk: {
-        storageAccountType: 'Premium_LRS'
+      availabilityZone: 0
+      imageReference: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2022-datacenter-azure-edition'
+        version: 'latest'
       }
-    }
-    osType: 'Windows'
-    vmSize: 'Standard_DS2_v2'
-    adminPassword: password
-    extensionAadJoinConfig: {
-      enabled: true
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
+      nicConfigurations: [
+        {
+          ipConfigurations: [
+            {
+              name: 'ipconfig01'
+              subnetResourceId: nestedDependencies.outputs.subnetResourceId
+            }
+          ]
+          nicSuffix: '-nic-01'
+        }
+      ]
+      osDisk: {
+        diskSizeGB: '128'
+        caching: 'ReadWrite'
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
       }
-    }
-    extensionHostPoolRegistration: {
-      enabled: true
-      hostPoolName: nestedDependencies.outputs.hostPoolName
-      registrationInfoToken: nestedDependencies.outputs.registrationInfoToken
-      modulesUrl: 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
+      osType: 'Windows'
+      vmSize: 'Standard_DS2_v2'
+      adminPassword: password
+      extensionAadJoinConfig: {
+        enabled: true
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
+      extensionHostPoolRegistration: {
+        enabled: true
+        hostPoolName: nestedDependencies.outputs.hostPoolName
+        registrationInfoToken: nestedDependencies.outputs.registrationInfoToken
+        modulesUrl: 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
       }
     }
   }
-}
 ]

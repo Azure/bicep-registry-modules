@@ -164,7 +164,7 @@ module testDeployment '../../../main.bicep' = {
     }
     osType: 'Linux'
     vmSize: 'Standard_DS2_v2'
-    availabilityZone: '1'
+    availabilityZone: 1
     backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
     backupVaultName: nestedDependencies.outputs.recoveryServicesVaultName
     backupVaultResourceGroup: nestedDependencies.outputs.recoveryServicesVaultResourceGroupName
@@ -290,7 +290,10 @@ module testDeployment '../../../main.bicep' = {
         principalType: 'ServicePrincipal'
       }
       {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+        roleDefinitionIdOrName: subscriptionResourceId(
+          'Microsoft.Authorization/roleDefinitions',
+          'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+        )
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }

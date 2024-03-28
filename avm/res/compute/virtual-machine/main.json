@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "14881677570232695867"
+      "templateHash": "11337690191653715343"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -330,12 +330,12 @@
       }
     },
     "availabilityZone": {
-      "type": "string",
+      "type": "int",
       "allowedValues": [
-        "0",
-        "1",
-        "2",
-        "3"
+        0,
+        1,
+        2,
+        3
       ],
       "metadata": {
         "description": "Required. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set."
@@ -502,7 +502,14 @@
       "type": "secureObject",
       "defaultValue": {},
       "metadata": {
-        "description": "Optional. Any object that contains the extension specific protected settings."
+        "description": "Optional. An object that contains the extension specific protected settings."
+      }
+    },
+    "extensionGuestConfigurationExtensionProtectedSettings": {
+      "type": "secureObject",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. An object that contains the extension specific protected settings."
       }
     },
     "location": {
@@ -727,7 +734,7 @@
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
       "tags": "[parameters('tags')]",
-      "zones": "[if(not(equals(parameters('availabilityZone'), '0')), array(parameters('availabilityZone')), null())]",
+      "zones": "[if(not(equals(parameters('availabilityZone'), 0)), array(string(parameters('availabilityZone'))), null())]",
       "plan": "[if(not(empty(parameters('plan'))), parameters('plan'), null())]",
       "properties": {
         "hardwareProfile": {
@@ -849,7 +856,8 @@
         "guestConfiguration": "[parameters('guestConfiguration')]"
       },
       "dependsOn": [
-        "vm"
+        "vm",
+        "vm_azureGuestConfigurationExtension"
       ]
     },
     "vm_lock": {
@@ -4429,7 +4437,7 @@
           "settings": {
             "value": {
               "modulesUrl": "[parameters('extensionHostPoolRegistration').hostPoolModulesUrl]",
-              "configurationFunction": "Configuration.ps1\\AddSessionHost",
+              "configurationFunction": "[coalesce(tryGet(parameters('extensionHostPoolRegistration'), 'configurationFunction'), 'Configuration.ps1\\AddSessionHost')]",
               "properties": {
                 "hostPoolName": "[parameters('extensionHostPoolRegistration').hostPoolName]",
                 "registrationInfoToken": "[parameters('extensionHostPoolRegistration').registrationInfoToken]",
@@ -4634,7 +4642,9 @@
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionGuestConfigurationExtension').enableAutomaticUpgrade), createObject('value', true()))]",
           "forceUpdateTag": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'forceUpdateTag'), createObject('value', parameters('extensionGuestConfigurationExtension').forceUpdateTag), createObject('value', '1.0'))]",
           "settings": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'settings'), createObject('value', parameters('extensionGuestConfigurationExtension').settings), createObject('value', createObject()))]",
-          "protectedSettings": "[if(contains(parameters('extensionGuestConfigurationExtension'), 'protectedSettings'), createObject('value', parameters('extensionGuestConfigurationExtension').protectedSettings), createObject('value', createObject()))]",
+          "protectedSettings": {
+            "value": "[parameters('extensionGuestConfigurationExtensionProtectedSettings')]"
+          },
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionGuestConfigurationExtension'), 'tags'), parameters('tags'))]"
           }
