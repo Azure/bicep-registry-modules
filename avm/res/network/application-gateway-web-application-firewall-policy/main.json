@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "3420975646156794928"
+      "templateHash": "5759664010024104092"
     },
     "name": "Application Gateway Web Application Firewall (WAF) Policies",
     "description": "This module deploys an Application Gateway Web Application Firewall (WAF) Policy.",
@@ -42,9 +42,8 @@
     },
     "managedRules": {
       "type": "object",
-      "nullable": true,
       "metadata": {
-        "description": "Optional. Describes the managedRules structure."
+        "description": "Required. Describes the managedRules structure."
       }
     },
     "customRules": {

@@ -14,8 +14,8 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Describes the managedRules structure.')
-param managedRules object?
+@description('Required. Describes the managedRules structure.')
+param managedRules object
 
 @description('Optional. The custom rules inside the policy.')
 param customRules array?

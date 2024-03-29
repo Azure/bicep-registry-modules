@@ -43,9 +43,6 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
   name: 'applicationGatewayWebApplicationFirewallPolicyDeployment'
   params: {
     // Required parameters
-    name: 'nagwafpmin001'
-    // Non-required parameters
-    location: '<location>'
     managedRules: {
       managedRuleSets: [
         {
@@ -55,6 +52,9 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
         }
       ]
     }
+    name: 'nagwafpmin001'
+    // Non-required parameters
+    location: '<location>'
   }
 }
 ```
@@ -72,13 +72,6 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "nagwafpmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "managedRules": {
       "value": {
         "managedRuleSets": [
@@ -89,6 +82,13 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
           }
         ]
       }
+    },
+    "name": {
+      "value": "nagwafpmin001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -111,9 +111,6 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
   name: 'applicationGatewayWebApplicationFirewallPolicyDeployment'
   params: {
     // Required parameters
-    name: 'nagwafpmax001'
-    // Non-required parameters
-    location: '<location>'
     managedRules: {
       managedRuleSets: [
         {
@@ -128,6 +125,9 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
         }
       ]
     }
+    name: 'nagwafpmax001'
+    // Non-required parameters
+    location: '<location>'
     policySettings: {
       fileUploadLimitInMb: 10
       mode: 'Prevention'
@@ -155,13 +155,6 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "nagwafpmax001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "managedRules": {
       "value": {
         "managedRuleSets": [
@@ -177,6 +170,13 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
           }
         ]
       }
+    },
+    "name": {
+      "value": "nagwafpmax001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
     },
     "policySettings": {
       "value": {
@@ -213,9 +213,6 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
   name: 'applicationGatewayWebApplicationFirewallPolicyDeployment'
   params: {
     // Required parameters
-    name: 'nagwafpwaf001'
-    // Non-required parameters
-    location: '<location>'
     managedRules: {
       managedRuleSets: [
         {
@@ -230,6 +227,9 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
         }
       ]
     }
+    name: 'nagwafpwaf001'
+    // Non-required parameters
+    location: '<location>'
     policySettings: {
       fileUploadLimitInMb: 10
       mode: 'Prevention'
@@ -257,13 +257,6 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "nagwafpwaf001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "managedRules": {
       "value": {
         "managedRuleSets": [
@@ -279,6 +272,13 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
           }
         ]
       }
+    },
+    "name": {
+      "value": "nagwafpwaf001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
     },
     "policySettings": {
       "value": {
@@ -308,6 +308,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`managedRules`](#parameter-managedrules) | object | Describes the managedRules structure. |
 | [`name`](#parameter-name) | string | Name of the Application Gateway WAF policy. |
 
 **Optional parameters**
@@ -317,9 +318,15 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
 | [`customRules`](#parameter-customrules) | array | The custom rules inside the policy. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
-| [`managedRules`](#parameter-managedrules) | object | Describes the managedRules structure. |
 | [`policySettings`](#parameter-policysettings) | object | The PolicySettings for policy. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
+
+### Parameter: `managedRules`
+
+Describes the managedRules structure.
+
+- Required: Yes
+- Type: object
 
 ### Parameter: `name`
 
@@ -350,13 +357,6 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-
-### Parameter: `managedRules`
-
-Describes the managedRules structure.
-
-- Required: No
-- Type: object
 
 ### Parameter: `policySettings`
 
