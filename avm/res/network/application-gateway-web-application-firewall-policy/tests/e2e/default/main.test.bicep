@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'Using only defaults'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -15,9 +15,9 @@ param resourceGroupName string = 'dep-${namePrefix}-network.applicationGatewayWe
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nagwafpwaf'
+param serviceShort string = 'nagwafpmin'
 
-@description('Optional. A token to inject into the name of each resource.')
+@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -41,32 +41,9 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
+      // You parameters go here
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      policySettings: {
-        fileUploadLimitInMb: 10
-        state: 'Enabled'
-        mode: 'Prevention'
-      }
-      managedRules: {
-        managedRuleSets: [
-          {
-            ruleSetType: 'OWASP'
-            ruleSetVersion: '3.2'
-            ruleGroupOverrides: []
-          }
-          {
-            ruleSetType: 'Microsoft_BotManagerRuleSet'
-            ruleSetVersion: '0.1'
-            ruleGroupOverrides: []
-          }
-        ]
-      }
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
-      }
     }
   }
 ]
