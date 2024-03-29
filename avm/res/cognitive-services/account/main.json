@@ -461,6 +461,43 @@
         }
       },
       "nullable": true
+    },
+    "deploymentsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Specify the name of cognitive service account deployment."
+            }
+          },
+          "model": {
+            "type": "object",
+            "nullable": false,
+            "metadata": {
+              "description": "Required. Properties of Cognitive Services account deployment model."
+            }
+          },
+          "sku": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The resource model definition representing SKU"
+            }
+          },
+          "raiPolicyName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of RAI policy."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -538,6 +575,12 @@
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "Optional. Location for all Resources."
+      }
+    },
+    "deployments": {
+      "$ref": "#/definitions/deploymentsType",
+      "metadata": {
+        "description": "Optional. The AI deployments settings of the service."
       }
     },
     "diagnosticSettings": {
@@ -787,6 +830,24 @@
       "dependsOn": [
         "cMKKeyVault",
         "cMKUserAssignedIdentity"
+      ]
+    },
+    "cognitiveService_deployments": {
+      "copy": {
+        "name": "cognitiveService_deployments",
+        "count": "[length(coalesce(parameters('deployments'), createArray()))]",
+        "batchSize": 1
+      },
+      "type": "Microsoft.CognitiveServices/accounts/deployments",
+      "apiVersion": "2023-05-01",
+      "name": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+      "properties": {
+        "model": "[coalesce(parameters('deployments'), createArray())[copyIndex()].model]",
+        "raiPolicyName": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'raiPolicyName'), null())]"
+      },
+      "sku": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'sku'), createObject('name', 'Standard', 'capacity', 20))]",
+      "dependsOn": [
+        "cognitiveService"
       ]
     },
     "cognitiveService_lock": {

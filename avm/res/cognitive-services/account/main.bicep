@@ -126,6 +126,9 @@ param managedIdentities managedIdentitiesType
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. Array of deployments about cognitive service accounts to create.')
+param deployments deploymentsType
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -338,6 +341,22 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
     dynamicThrottlingEnabled: dynamicThrottlingEnabled
   }
 }
+
+@batchSize(1)
+resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = [
+  for (deployment, index) in (deployments ?? []): {
+    parent: cognitiveService
+    name: deployment.?name ?? '${name}-deployments'
+    properties: {
+      model: deployment.model
+      raiPolicyName: deployment.?raiPolicyName ?? null
+    }
+    sku: deployment.?sku ?? {
+      name: 'Standard'
+      capacity: 20
+    }
+  }
+]
 
 resource cognitiveService_lock 'Microsoft.Authorization/locks@2020-05-01' =
   if (!empty(lock ?? {}) && lock.?kind != 'None') {
@@ -640,3 +659,17 @@ type lockType = {
   @description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
+
+type deploymentsType = {
+  @description('Optional. Specify the name of cognitive service account deployment.')
+  name: string?
+
+  @description('Required. Properties of Cognitive Services account deployment model.')
+  model: object
+
+  @description('Optional. The resource model definition representing SKU')
+  sku: object?
+
+  @description('Optional. The name of RAI policy.')
+  raiPolicyName: string?
+}[]?
