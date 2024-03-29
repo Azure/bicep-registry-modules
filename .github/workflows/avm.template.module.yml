@@ -53,7 +53,8 @@ jobs:
     # name: "PSRule [${{ matrix.testCases.name }}]"
     name: "PSRule []"
     runs-on: ubuntu-latest
-    if: (fromJson(inputs.workflowInput)).staticValidation == 'true' && ${{ inputs.psRuleModuleTestFilePaths != '[]' && inputs.psRuleModuleTestFilePaths != '' }}
+    # if: (fromJson(inputs.workflowInput)).staticValidation == 'true' && ${{ inputs.psRuleModuleTestFilePaths != '[]' && inputs.psRuleModuleTestFilePaths != '' }}
+    if: ${{ inputs.psRuleModuleTestFilePaths != '' }}
     strategy:
       fail-fast: false
       matrix:
