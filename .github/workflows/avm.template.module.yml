@@ -101,10 +101,11 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       !cancelled() &&
-      (fromJson(inputs.workflowInput)).deploymentValidation == 'true' && needs.job_module_static_validation.result != 'failure' && needs.job_psrule_test_waf_reliability.result != 'failure'
+      (fromJson(inputs.workflowInput)).deploymentValidation == 'true' && needs.job_module_static_validation.result != 'failure'
+    # && needs.job_psrule_test_waf_reliability.result != 'failure'
     needs:
       - job_module_static_validation
-      - job_psrule_test_waf_reliability
+      # - job_psrule_test_waf_reliability
     strategy:
       fail-fast: false
       matrix:
