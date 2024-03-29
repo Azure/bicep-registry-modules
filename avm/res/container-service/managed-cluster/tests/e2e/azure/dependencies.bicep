@@ -36,12 +36,15 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         addressPrefix
       ]
     }
-    subnets: map(range(0, 3), i => {
+    subnets: map(
+      range(0, 3),
+      i => {
         name: 'subnet-${i}'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 24, i)
         }
-      })
+      }
+    )
   }
 }
 
@@ -93,7 +96,10 @@ resource keyPermissionsKeyVaultCryptoUser 'Microsoft.Authorization/roleAssignmen
   scope: keyVault
   properties: {
     principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424') // KeyVault-Crypto-User
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '12338af0-0e69-4776-bea7-57ae8d297424'
+    ) // KeyVault-Crypto-User
     principalType: 'ServicePrincipal'
   }
 }
@@ -148,7 +154,10 @@ resource roleAssignmentKubeletIdentity 'Microsoft.Authorization/roleAssignments@
   scope: managedIdentityKubeletIdentity
   properties: {
     principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f1a07417-d97a-45cb-824c-7a7467783830') // Managed Identity Operator Role used for Kubelet identity.
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'f1a07417-d97a-45cb-824c-7a7467783830'
+    ) // Managed Identity Operator Role used for Kubelet identity.
     principalType: 'ServicePrincipal'
   }
 }

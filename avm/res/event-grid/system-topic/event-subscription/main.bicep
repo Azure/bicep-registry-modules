@@ -21,14 +21,12 @@ param deliveryWithResourceIdentity object = {}
 param destination object
 
 @description('Optional. The event delivery schema for the event subscription.')
-@allowed(
-  [
-    'CloudEventSchemaV1_0'
-    'CustomInputSchema'
-    'EventGridSchema'
-    'EventGridEvent'
-  ]
-)
+@allowed([
+  'CloudEventSchemaV1_0'
+  'CustomInputSchema'
+  'EventGridSchema'
+  'EventGridEvent'
+])
 param eventDeliverySchema string = 'EventGridSchema'
 
 @description('Optional. The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ).')

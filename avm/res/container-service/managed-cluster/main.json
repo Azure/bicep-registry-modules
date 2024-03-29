@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "15404583857670962921"
+      "version": "0.26.54.24096",
+      "templateHash": "1556415774507310743"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1862,8 +1862,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "11449186283530676915"
+              "version": "0.26.54.24096",
+              "templateHash": "8772299678418708256"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",

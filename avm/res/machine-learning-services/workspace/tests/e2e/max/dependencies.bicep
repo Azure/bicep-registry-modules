@@ -66,7 +66,10 @@ resource keyVaultServicePermissions 'Microsoft.Authorization/roleAssignments@202
   scope: keyVault
   properties: {
     principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c') // Contributor
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ) // Contributor
     principalType: 'ServicePrincipal'
   }
 }
@@ -75,7 +78,10 @@ resource keyVaultDataPermissions 'Microsoft.Authorization/roleAssignments@2022-0
   scope: keyVault
   properties: {
     principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483') // Key Vault Administrator
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '00482a5a-887f-4fb3-b363-3b7fe8e74483'
+    ) // Key Vault Administrator
     principalType: 'ServicePrincipal'
   }
 }

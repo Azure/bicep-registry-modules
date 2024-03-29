@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "3680417048986934448"
+      "version": "0.26.54.24096",
+      "templateHash": "8948100547542268397"
     },
     "name": "Virtual Machine Scale Set Extensions",
     "description": "This module deploys a Virtual Machine Scale Set Extension.",

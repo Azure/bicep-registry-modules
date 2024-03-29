@@ -40,24 +40,26 @@ resource ruleCollection 'Microsoft.Network/networkManagers/securityAdminConfigur
   }
 }
 
-module securityAdminConfigurations_rules 'rule/main.bicep' = [for (rule, index) in rules: {
-  name: '${uniqueString(deployment().name)}-RuleCollections-Rules-${index}'
-  params: {
-    networkManagerName: networkManager.name
-    securityAdminConfigurationName: securityAdminConfigurationName
-    ruleCollectionName: ruleCollection.name
-    name: rule.name
-    access: rule.access
-    description: contains(rule, 'description') ? rule.description : ''
-    destinationPortRanges: contains(rule, 'destinationPortRanges') ? rule.destinationPortRanges : []
-    destinations: contains(rule, 'destinations') ? rule.destinations : []
-    direction: rule.direction
-    priority: rule.priority
-    protocol: rule.protocol
-    sourcePortRanges: contains(rule, 'sourcePortRanges') ? rule.sourcePortRanges : []
-    sources: contains(rule, 'sources') ? rule.sources : []
+module securityAdminConfigurations_rules 'rule/main.bicep' = [
+  for (rule, index) in rules: {
+    name: '${uniqueString(deployment().name)}-RuleCollections-Rules-${index}'
+    params: {
+      networkManagerName: networkManager.name
+      securityAdminConfigurationName: securityAdminConfigurationName
+      ruleCollectionName: ruleCollection.name
+      name: rule.name
+      access: rule.access
+      description: contains(rule, 'description') ? rule.description : ''
+      destinationPortRanges: contains(rule, 'destinationPortRanges') ? rule.destinationPortRanges : []
+      destinations: contains(rule, 'destinations') ? rule.destinations : []
+      direction: rule.direction
+      priority: rule.priority
+      protocol: rule.protocol
+      sourcePortRanges: contains(rule, 'sourcePortRanges') ? rule.sourcePortRanges : []
+      sources: contains(rule, 'sources') ? rule.sources : []
+    }
   }
-}]
+]
 
 @sys.description('The name of the deployed admin rule collection.')
 output name string = ruleCollection.name

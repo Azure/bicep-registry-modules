@@ -46,7 +46,7 @@
 /avm/res/desktop-virtualization/workspace/ @Azure/avm-res-desktopvirtualization-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/dev-center/devcenter/ @Azure/avm-res-devcenter-devcenter-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/dev-test-lab/lab/ @Azure/avm-res-devtestlab-lab-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/digital-twins/digital-twins-instance/ @Azure/avm-res-digitaltwins-digitaltwinsinstance-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/digital-twins/digital-twins-instance/ @Azure/avm-res-digitaltwins-digitaltwinsinstance-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/document-db/database-account/ @Azure/avm-res-documentdb-databaseaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/event-grid/domain/ @Azure/avm-res-eventgrid-domain-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/event-grid/namespace/ @Azure/avm-res-eventgrid-namespace-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -119,7 +119,7 @@
 /avm/res/power-bi-dedicated/capacity/ @Azure/avm-res-powerbidedicated-capacity-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/purview/account/ @Azure/avm-res-purview-account-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/recovery-services/vault/ @Azure/avm-res-recoveryservices-vault-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/relay/namespace/ @Azure/avm-res-relay-namespace-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/relay/namespace/ @Azure/avm-res-relay-namespace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/resource-graph/query/ @Azure/avm-res-resourcegraph-query-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/resources/deployment-script/ @Azure/avm-res-resources-deploymentscript-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/resources/resource-group/ @Azure/avm-res-resources-resourcegroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -135,8 +135,8 @@
 /avm/res/synapse/private-link-hub/ @Azure/avm-res-synapse-privatelinkhub-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/synapse/workspace/ @Azure/avm-res-synapse-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/virtual-machine-images/image-template/ @Azure/avm-res-virtualmachineimages-imagetemplate-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/web/connection/ @Azure/avm-res-web-connection-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/web/hosting-environment/ @Azure/avm-res-web-hostingenvironment-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/web/connection/ @Azure/avm-res-web-connection-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/web/hosting-environment/ @Azure/avm-res-web-hostingenvironment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/web/serverfarm/ @Azure/avm-res-web-serverfarm-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/web/site/ @Azure/avm-res-web-site-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/web/static-site/ @Azure/avm-res-web-staticsite-module-owners-bicep @Azure/avm-core-team-technical-bicep

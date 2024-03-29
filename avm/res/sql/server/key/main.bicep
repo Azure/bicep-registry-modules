@@ -22,7 +22,9 @@ var splittedKeyUri = split(uri, '/')
 
 // if serverManaged, use serverManaged, if uri provided use concated uri value
 // MUST match the pattern '<keyVaultName>_<keyName>_<keyVersion>'
-var serverKeyName = empty(uri) ? 'ServiceManaged' : '${split(splittedKeyUri[2], '.')[0]}_${splittedKeyUri[4]}_${splittedKeyUri[5]}'
+var serverKeyName = empty(uri)
+  ? 'ServiceManaged'
+  : '${split(splittedKeyUri[2], '.')[0]}_${splittedKeyUri[4]}_${splittedKeyUri[5]}'
 
 resource server 'Microsoft.Sql/servers@2022-05-01-preview' existing = {
   name: serverName

@@ -46,51 +46,56 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: 'Global'
-    criterias: [
-      {
-        criterionType: 'StaticThresholdCriterion'
-        metricName: 'Percentage CPU'
-        metricNamespace: 'microsoft.compute/virtualmachines'
-        name: 'HighCPU'
-        operator: 'GreaterThan'
-        threshold: '90'
-        timeAggregation: 'Average'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: 'Global'
+      criterias: [
+        {
+          criterionType: 'StaticThresholdCriterion'
+          metricName: 'Percentage CPU'
+          metricNamespace: 'microsoft.compute/virtualmachines'
+          name: 'HighCPU'
+          operator: 'GreaterThan'
+          threshold: '90'
+          timeAggregation: 'Average'
+        }
+      ]
+      actions: [
+        nestedDependencies.outputs.actionGroupResourceId
+      ]
+      alertCriteriaType: 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      targetResourceRegion: 'westeurope'
+      targetResourceType: 'microsoft.compute/virtualmachines'
+      windowSize: 'PT15M'
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-    ]
-    actions: [
-      nestedDependencies.outputs.actionGroupResourceId
-    ]
-    alertCriteriaType: 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    targetResourceRegion: 'westeurope'
-    targetResourceType: 'microsoft.compute/virtualmachines'
-    windowSize: 'PT15M'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
-}]
+]

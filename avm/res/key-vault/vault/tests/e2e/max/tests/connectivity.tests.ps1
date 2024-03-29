@@ -15,7 +15,7 @@ Describe 'Validate private endpoint deployment' {
 
     Context 'Validate sucessful deployment' {
 
-        It "Private endpoints should be deployed in resource group" {
+        It 'Private endpoints should be deployed in resource group' {
 
             $keyVaultResourceId = $TestInputData.DeploymentOutputs.resourceId.Value
             $testResourceGroup = ($keyVaultResourceId -split '\/')[4]
