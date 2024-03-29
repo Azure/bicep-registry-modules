@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "15587505924021485846"
+      "templateHash": "3932688069202193002"
     },
     "name": "Healthcare API Workspaces",
     "description": "This module deploys a Healthcare API Workspace.",
@@ -108,7 +108,8 @@
   "parameters": {
     "name": {
       "type": "string",
-      "maxLength": 50,
+      "minLength": 3,
+      "maxLength": 24,
       "metadata": {
         "description": "Required. The name of the Health Data Services Workspace service."
       }
@@ -159,21 +160,21 @@
     },
     "dicomservices": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Deploy DICOM services."
       }
     },
     "fhirservices": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Deploy FHIR services."
       }
     },
     "iotconnectors": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Deploy IOT connectors."
       }
@@ -267,7 +268,7 @@
     "workspace_fhirservices": {
       "copy": {
         "name": "workspace_fhirservices",
-        "count": "[length(parameters('fhirservices'))]"
+        "count": "[length(coalesce(parameters('fhirservices'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -279,7 +280,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('fhirservices')[copyIndex()].name]"
+            "value": "[coalesce(parameters('fhirservices'), createArray())[copyIndex()].name]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -288,37 +289,77 @@
             "value": "[parameters('name')]"
           },
           "kind": {
-            "value": "[parameters('fhirservices')[copyIndex()].kind]"
+            "value": "[coalesce(parameters('fhirservices'), createArray())[copyIndex()].kind]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('fhirservices')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "publicNetworkAccess": "[if(contains(parameters('fhirservices')[copyIndex()], 'publicNetworkAccess'), createObject('value', parameters('fhirservices')[copyIndex()].publicNetworkAccess), createObject('value', 'Disabled'))]",
-          "managedIdentities": "[if(contains(parameters('fhirservices')[copyIndex()], 'managedIdentities'), createObject('value', parameters('fhirservices')[copyIndex()].managedIdentities), createObject('value', null()))]",
-          "roleAssignments": "[if(contains(parameters('fhirservices')[copyIndex()], 'roleAssignments'), createObject('value', parameters('fhirservices')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "accessPolicyObjectIds": "[if(contains(parameters('fhirservices')[copyIndex()], 'accessPolicyObjectIds'), createObject('value', parameters('fhirservices')[copyIndex()].accessPolicyObjectIds), createObject('value', createArray()))]",
-          "acrLoginServers": "[if(contains(parameters('fhirservices')[copyIndex()], 'acrLoginServers'), createObject('value', parameters('fhirservices')[copyIndex()].acrLoginServers), createObject('value', createArray()))]",
-          "acrOciArtifacts": "[if(contains(parameters('fhirservices')[copyIndex()], 'acrOciArtifacts'), createObject('value', parameters('fhirservices')[copyIndex()].acrOciArtifacts), createObject('value', createArray()))]",
-          "authenticationAuthority": "[if(contains(parameters('fhirservices')[copyIndex()], 'authenticationAuthority'), createObject('value', parameters('fhirservices')[copyIndex()].authenticationAuthority), createObject('value', uri(environment().authentication.loginEndpoint, subscription().tenantId)))]",
-          "authenticationAudience": "[if(contains(parameters('fhirservices')[copyIndex()], 'authenticationAudience'), createObject('value', parameters('fhirservices')[copyIndex()].authenticationAudience), createObject('value', format('https://{0}-{1}.fhir.azurehealthcareapis.com', parameters('name'), parameters('fhirservices')[copyIndex()].name)))]",
-          "corsOrigins": "[if(contains(parameters('fhirservices')[copyIndex()], 'corsOrigins'), createObject('value', parameters('fhirservices')[copyIndex()].corsOrigins), createObject('value', createArray()))]",
-          "corsHeaders": "[if(contains(parameters('fhirservices')[copyIndex()], 'corsHeaders'), createObject('value', parameters('fhirservices')[copyIndex()].corsHeaders), createObject('value', createArray()))]",
-          "corsMethods": "[if(contains(parameters('fhirservices')[copyIndex()], 'corsMethods'), createObject('value', parameters('fhirservices')[copyIndex()].corsMethods), createObject('value', createArray()))]",
-          "corsMaxAge": "[if(contains(parameters('fhirservices')[copyIndex()], 'corsMaxAge'), createObject('value', parameters('fhirservices')[copyIndex()].corsMaxAge), createObject('value', -1))]",
-          "corsAllowCredentials": "[if(contains(parameters('fhirservices')[copyIndex()], 'corsAllowCredentials'), createObject('value', parameters('fhirservices')[copyIndex()].corsAllowCredentials), createObject('value', false()))]",
+          "publicNetworkAccess": {
+            "value": "[tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'publicNetworkAccess')]"
+          },
+          "managedIdentities": {
+            "value": "[tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'managedIdentities')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
+          "accessPolicyObjectIds": {
+            "value": "[tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'accessPolicyObjectIds')]"
+          },
+          "acrLoginServers": {
+            "value": "[tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'acrLoginServers')]"
+          },
+          "acrOciArtifacts": {
+            "value": "[tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'acrOciArtifacts')]"
+          },
+          "authenticationAuthority": {
+            "value": "[coalesce(tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'authenticationAuthority'), uri(environment().authentication.loginEndpoint, subscription().tenantId))]"
+          },
+          "authenticationAudience": {
+            "value": "[coalesce(tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'authenticationAudience'), format('https://{0}-{1}.fhir.azurehealthcareapis.com', parameters('name'), coalesce(parameters('fhirservices'), createArray())[copyIndex()].name))]"
+          },
+          "corsOrigins": {
+            "value": "[tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'corsOrigins')]"
+          },
+          "corsHeaders": {
+            "value": "[tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'corsHeaders')]"
+          },
+          "corsMethods": {
+            "value": "[tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'corsMethods')]"
+          },
+          "corsMaxAge": {
+            "value": "[tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'corsMaxAge')]"
+          },
+          "corsAllowCredentials": {
+            "value": "[tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'corsAllowCredentials')]"
+          },
           "diagnosticSettings": {
-            "value": "[tryGet(parameters('fhirservices')[copyIndex()], 'diagnosticSettings')]"
+            "value": "[tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'diagnosticSettings')]"
           },
-          "exportStorageAccountName": "[if(contains(parameters('fhirservices')[copyIndex()], 'exportStorageAccountName'), createObject('value', parameters('fhirservices')[copyIndex()].exportStorageAccountName), createObject('value', ''))]",
-          "importStorageAccountName": "[if(contains(parameters('fhirservices')[copyIndex()], 'importStorageAccountName'), createObject('value', parameters('fhirservices')[copyIndex()].importStorageAccountName), createObject('value', ''))]",
-          "importEnabled": "[if(contains(parameters('fhirservices')[copyIndex()], 'importEnabled'), createObject('value', parameters('fhirservices')[copyIndex()].importEnabled), createObject('value', false()))]",
-          "initialImportMode": "[if(contains(parameters('fhirservices')[copyIndex()], 'initialImportMode'), createObject('value', parameters('fhirservices')[copyIndex()].initialImportMode), createObject('value', false()))]",
+          "exportStorageAccountName": {
+            "value": "[tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'exportStorageAccountName')]"
+          },
+          "importStorageAccountName": {
+            "value": "[tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'importStorageAccountName')]"
+          },
+          "importEnabled": {
+            "value": "[tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'importEnabled')]"
+          },
+          "initialImportMode": {
+            "value": "[tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'initialImportMode')]"
+          },
           "lock": {
-            "value": "[coalesce(tryGet(parameters('fhirservices')[copyIndex()], 'lock'), parameters('lock'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
-          "resourceVersionPolicy": "[if(contains(parameters('fhirservices')[copyIndex()], 'resourceVersionPolicy'), createObject('value', parameters('fhirservices')[copyIndex()].resourceVersionPolicy), createObject('value', 'versioned'))]",
-          "resourceVersionOverrides": "[if(contains(parameters('fhirservices')[copyIndex()], 'resourceVersionOverrides'), createObject('value', parameters('fhirservices')[copyIndex()].resourceVersionOverrides), createObject('value', createObject()))]",
-          "smartProxyEnabled": "[if(contains(parameters('fhirservices')[copyIndex()], 'smartProxyEnabled'), createObject('value', parameters('fhirservices')[copyIndex()].smartProxyEnabled), createObject('value', false()))]"
+          "resourceVersionPolicy": {
+            "value": "[tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'resourceVersionPolicy')]"
+          },
+          "resourceVersionOverrides": {
+            "value": "[tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'resourceVersionOverrides')]"
+          },
+          "smartProxyEnabled": {
+            "value": "[tryGet(coalesce(parameters('fhirservices'), createArray())[copyIndex()], 'smartProxyEnabled')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -328,7 +369,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "11388037245227112727"
+              "templateHash": "12093832959002416443"
             },
             "name": "Healthcare API Workspace FHIR Services",
             "description": "This module deploys a Healthcare API Workspace FHIR Service.",
@@ -477,14 +518,21 @@
                           "type": "string",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs."
+                            "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                          }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
                     },
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
                     }
                   },
                   "metricCategories": {
@@ -495,14 +543,21 @@
                         "category": {
                           "type": "string",
                           "metadata": {
-                            "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics."
+                            "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                          }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
                     },
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                      "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
                     }
                   },
                   "logAnalyticsDestinationType": {
@@ -559,7 +614,8 @@
           "parameters": {
             "name": {
               "type": "string",
-              "maxLength": 50,
+              "minLength": 3,
+              "maxLength": 24,
               "metadata": {
                 "description": "Required. The name of the FHIR service."
               }
@@ -583,21 +639,21 @@
             },
             "accessPolicyObjectIds": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. List of Azure AD object IDs (User or Apps) that is allowed access to the FHIR service."
               }
             },
             "acrLoginServers": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The list of the Azure container registry login servers."
               }
             },
             "acrOciArtifacts": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The list of Open Container Initiative (OCI) artifacts."
               }
@@ -618,21 +674,21 @@
             },
             "corsOrigins": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Specify URLs of origin sites that can access this API, or use \"*\" to allow access from any site."
               }
             },
             "corsHeaders": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Specify HTTP headers which can be used during the request. Use \"*\" for any header."
               }
             },
             "corsMethods": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "allowedValues": [
                 "DELETE",
                 "GET",
@@ -647,7 +703,7 @@
             },
             "corsMaxAge": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Specify how long a result from a request can be cached in seconds. Example: 600 means 10 minutes."
               }
@@ -674,7 +730,7 @@
             },
             "exportStorageAccountName": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The name of the default export storage account."
               }
@@ -737,7 +793,7 @@
             },
             "resourceVersionOverrides": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A list of FHIR Resources and their version policy overrides."
               }
@@ -767,14 +823,14 @@
             "copy": [
               {
                 "name": "accessPolicies",
-                "count": "[length(parameters('accessPolicyObjectIds'))]",
+                "count": "[length(coalesce(parameters('accessPolicyObjectIds'), createArray()))]",
                 "input": {
-                  "objectId": "[parameters('accessPolicyObjectIds')[copyIndex('accessPolicies')]]"
+                  "objectId": "[coalesce(parameters('accessPolicyObjectIds'), createArray())[copyIndex('accessPolicies')]]"
                 }
               }
             ],
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
             "exportConfiguration": {
               "storageAccountName": "[parameters('exportStorageAccountName')]"
             },
@@ -820,24 +876,24 @@
                 "corsConfiguration": {
                   "allowCredentials": "[parameters('corsAllowCredentials')]",
                   "headers": "[parameters('corsHeaders')]",
-                  "maxAge": "[if(equals(parameters('corsMaxAge'), -1), null(), parameters('corsMaxAge'))]",
+                  "maxAge": "[parameters('corsMaxAge')]",
                   "methods": "[parameters('corsMethods')]",
                   "origins": "[parameters('corsOrigins')]"
                 },
                 "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
-                "exportConfiguration": "[if(equals(parameters('exportStorageAccountName'), ''), createObject(), variables('exportConfiguration'))]",
+                "exportConfiguration": "[if(empty(parameters('exportStorageAccountName')), createObject(), variables('exportConfiguration'))]",
                 "importConfiguration": {
                   "enabled": "[parameters('importEnabled')]",
                   "initialImportMode": "[parameters('initialImportMode')]",
-                  "integrationDataStore": "[if(equals(parameters('importStorageAccountName'), ''), null(), parameters('importStorageAccountName'))]"
+                  "integrationDataStore": "[parameters('importStorageAccountName')]"
                 },
                 "resourceVersionPolicyConfiguration": {
                   "default": "[parameters('resourceVersionPolicy')]",
-                  "resourceTypeOverrides": "[if(empty(parameters('resourceVersionOverrides')), null(), parameters('resourceVersionOverrides'))]"
+                  "resourceTypeOverrides": "[parameters('resourceVersionOverrides')]"
                 },
                 "acrConfiguration": {
                   "loginServers": "[parameters('acrLoginServers')]",
-                  "ociArtifacts": "[if(empty(parameters('acrOciArtifacts')), null(), parameters('acrOciArtifacts'))]"
+                  "ociArtifacts": "[parameters('acrOciArtifacts')]"
                 }
               },
               "dependsOn": [
@@ -868,12 +924,30 @@
               "scope": "[format('Microsoft.HealthcareApis/workspaces/{0}/fhirservices/{1}', parameters('workspaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
+                "copy": [
+                  {
+                    "name": "metrics",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                    "input": {
+                      "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                      "timeGrain": null
+                    }
+                  },
+                  {
+                    "name": "logs",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                    "input": {
+                      "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+                      "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                    }
+                  }
+                ],
                 "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
                 "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
                 "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
                 "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
-                "metrics": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]",
-                "logs": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'AllLogs', 'enabled', true())))]",
                 "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
                 "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
               },
@@ -957,7 +1031,7 @@
     "workspace_dicomservices": {
       "copy": {
         "name": "workspace_dicomservices",
-        "count": "[length(parameters('dicomservices'))]"
+        "count": "[length(coalesce(parameters('dicomservices'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -969,7 +1043,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('dicomservices')[copyIndex()].name]"
+            "value": "[coalesce(parameters('dicomservices'), createArray())[copyIndex()].name]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -978,20 +1052,34 @@
             "value": "[parameters('name')]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('dicomservices')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('dicomservices'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "publicNetworkAccess": "[if(contains(parameters('dicomservices')[copyIndex()], 'publicNetworkAccess'), createObject('value', parameters('dicomservices')[copyIndex()].publicNetworkAccess), createObject('value', 'Disabled'))]",
-          "managedIdentities": "[if(contains(parameters('dicomservices')[copyIndex()], 'managedIdentities'), createObject('value', parameters('dicomservices')[copyIndex()].managedIdentities), createObject('value', null()))]",
-          "corsOrigins": "[if(contains(parameters('dicomservices')[copyIndex()], 'corsOrigins'), createObject('value', parameters('dicomservices')[copyIndex()].corsOrigins), createObject('value', createArray()))]",
-          "corsHeaders": "[if(contains(parameters('dicomservices')[copyIndex()], 'corsHeaders'), createObject('value', parameters('dicomservices')[copyIndex()].corsHeaders), createObject('value', createArray()))]",
-          "corsMethods": "[if(contains(parameters('dicomservices')[copyIndex()], 'corsMethods'), createObject('value', parameters('dicomservices')[copyIndex()].corsMethods), createObject('value', createArray()))]",
-          "corsMaxAge": "[if(contains(parameters('dicomservices')[copyIndex()], 'corsMaxAge'), createObject('value', parameters('dicomservices')[copyIndex()].corsMaxAge), createObject('value', -1))]",
-          "corsAllowCredentials": "[if(contains(parameters('dicomservices')[copyIndex()], 'corsAllowCredentials'), createObject('value', parameters('dicomservices')[copyIndex()].corsAllowCredentials), createObject('value', false()))]",
+          "publicNetworkAccess": {
+            "value": "[tryGet(coalesce(parameters('dicomservices'), createArray())[copyIndex()], 'publicNetworkAccess')]"
+          },
+          "managedIdentities": {
+            "value": "[tryGet(coalesce(parameters('dicomservices'), createArray())[copyIndex()], 'managedIdentities')]"
+          },
+          "corsOrigins": {
+            "value": "[tryGet(coalesce(parameters('dicomservices'), createArray())[copyIndex()], 'corsOrigins')]"
+          },
+          "corsHeaders": {
+            "value": "[tryGet(coalesce(parameters('dicomservices'), createArray())[copyIndex()], 'corsHeaders')]"
+          },
+          "corsMethods": {
+            "value": "[tryGet(coalesce(parameters('dicomservices'), createArray())[copyIndex()], 'corsMethods')]"
+          },
+          "corsMaxAge": {
+            "value": "[tryGet(coalesce(parameters('dicomservices'), createArray())[copyIndex()], 'corsMaxAge')]"
+          },
+          "corsAllowCredentials": {
+            "value": "[tryGet(coalesce(parameters('dicomservices'), createArray())[copyIndex()], 'corsAllowCredentials')]"
+          },
           "diagnosticSettings": {
-            "value": "[tryGet(parameters('dicomservices')[copyIndex()], 'diagnosticSettings')]"
+            "value": "[tryGet(coalesce(parameters('dicomservices'), createArray())[copyIndex()], 'diagnosticSettings')]"
           },
           "lock": {
-            "value": "[coalesce(tryGet(parameters('dicomservices')[copyIndex()], 'lock'), parameters('lock'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('dicomservices'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           }
         },
         "template": {
@@ -1002,7 +1090,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "14679056984684587584"
+              "templateHash": "11079383736940820428"
             },
             "name": "Healthcare API Workspace DICOM Services",
             "description": "This module deploys a Healthcare API Workspace DICOM Service.",
@@ -1085,14 +1173,21 @@
                           "type": "string",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs."
+                            "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                          }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
                     },
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
                     }
                   },
                   "metricCategories": {
@@ -1103,14 +1198,21 @@
                         "category": {
                           "type": "string",
                           "metadata": {
-                            "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics."
+                            "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                          }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
                     },
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                      "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
                     }
                   },
                   "logAnalyticsDestinationType": {
@@ -1167,7 +1269,8 @@
           "parameters": {
             "name": {
               "type": "string",
-              "maxLength": 50,
+              "minLength": 3,
+              "maxLength": 24,
               "metadata": {
                 "description": "Required. The name of the DICOM service."
               }
@@ -1180,21 +1283,20 @@
             },
             "corsOrigins": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Specify URLs of origin sites that can access this API, or use \"*\" to allow access from any site."
               }
             },
             "corsHeaders": {
               "type": "array",
-              "defaultValue": [],
               "metadata": {
                 "description": "Optional. Specify HTTP headers which can be used during the request. Use \"*\" for any header."
               }
             },
             "corsMethods": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "allowedValues": [
                 "DELETE",
                 "GET",
@@ -1209,7 +1311,7 @@
             },
             "corsMaxAge": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Specify how long a result from a request can be cached in seconds. Example: 600 means 10 minutes."
               }
@@ -1267,7 +1369,7 @@
           },
           "variables": {
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
           },
           "resources": {
             "workspace": {
@@ -1287,7 +1389,7 @@
                 "corsConfiguration": {
                   "allowCredentials": "[parameters('corsAllowCredentials')]",
                   "headers": "[parameters('corsHeaders')]",
-                  "maxAge": "[if(equals(parameters('corsMaxAge'), -1), null(), parameters('corsMaxAge'))]",
+                  "maxAge": "[parameters('corsMaxAge')]",
                   "methods": "[parameters('corsMethods')]",
                   "origins": "[parameters('corsOrigins')]"
                 },
@@ -1321,12 +1423,30 @@
               "scope": "[format('Microsoft.HealthcareApis/workspaces/{0}/dicomservices/{1}', parameters('workspaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
+                "copy": [
+                  {
+                    "name": "metrics",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                    "input": {
+                      "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                      "timeGrain": null
+                    }
+                  },
+                  {
+                    "name": "logs",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                    "input": {
+                      "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+                      "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                    }
+                  }
+                ],
                 "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
                 "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
                 "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
                 "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
-                "metrics": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]",
-                "logs": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'AllLogs', 'enabled', true())))]",
                 "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
                 "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
               },
@@ -1381,7 +1501,7 @@
     "workspace_iotconnector": {
       "copy": {
         "name": "workspace_iotconnector",
-        "count": "[length(parameters('iotconnectors'))]"
+        "count": "[length(coalesce(parameters('iotconnectors'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1393,7 +1513,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('iotconnectors')[copyIndex()].name]"
+            "value": "[coalesce(parameters('iotconnectors'), createArray())[copyIndex()].name]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -1402,23 +1522,31 @@
             "value": "[parameters('name')]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('iotconnectors')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('iotconnectors'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "eventHubName": {
-            "value": "[parameters('iotconnectors')[copyIndex()].eventHubName]"
+            "value": "[coalesce(parameters('iotconnectors'), createArray())[copyIndex()].eventHubName]"
           },
           "eventHubNamespaceName": {
-            "value": "[parameters('iotconnectors')[copyIndex()].eventHubNamespaceName]"
+            "value": "[coalesce(parameters('iotconnectors'), createArray())[copyIndex()].eventHubNamespaceName]"
           },
-          "deviceMapping": "[if(contains(parameters('iotconnectors')[copyIndex()], 'deviceMapping'), createObject('value', parameters('iotconnectors')[copyIndex()].deviceMapping), createObject('value', createObject('templateType', 'CollectionContent', 'template', createArray())))]",
-          "fhirdestination": "[if(contains(parameters('iotconnectors')[copyIndex()], 'fhirdestination'), createObject('value', parameters('iotconnectors')[copyIndex()].fhirdestination), createObject('value', createObject()))]",
-          "consumerGroup": "[if(contains(parameters('iotconnectors')[copyIndex()], 'consumerGroup'), createObject('value', parameters('iotconnectors')[copyIndex()].consumerGroup), createObject('value', parameters('iotconnectors')[copyIndex()].name))]",
-          "managedIdentities": "[if(contains(parameters('iotconnectors')[copyIndex()], 'managedIdentities'), createObject('value', parameters('iotconnectors')[copyIndex()].managedIdentities), createObject('value', null()))]",
+          "deviceMapping": {
+            "value": "[tryGet(coalesce(parameters('iotconnectors'), createArray())[copyIndex()], 'deviceMapping')]"
+          },
+          "fhirdestination": {
+            "value": "[tryGet(coalesce(parameters('iotconnectors'), createArray())[copyIndex()], 'fhirdestination')]"
+          },
+          "consumerGroup": {
+            "value": "[coalesce(tryGet(coalesce(parameters('iotconnectors'), createArray())[copyIndex()], 'consumerGroup'), coalesce(parameters('iotconnectors'), createArray())[copyIndex()].name)]"
+          },
+          "managedIdentities": {
+            "value": "[tryGet(coalesce(parameters('iotconnectors'), createArray())[copyIndex()], 'managedIdentities')]"
+          },
           "diagnosticSettings": {
-            "value": "[tryGet(parameters('iotconnectors')[copyIndex()], 'diagnosticSettings')]"
+            "value": "[tryGet(coalesce(parameters('iotconnectors'), createArray())[copyIndex()], 'diagnosticSettings')]"
           },
           "lock": {
-            "value": "[coalesce(tryGet(parameters('iotconnectors')[copyIndex()], 'lock'), parameters('lock'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('iotconnectors'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           }
         },
         "template": {
@@ -1429,7 +1557,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "3109700821219679161"
+              "templateHash": "10248081241426202699"
             },
             "name": "Healthcare API Workspace IoT Connectors",
             "description": "This module deploys a Healthcare API Workspace IoT Connector.",
@@ -1512,14 +1640,21 @@
                           "type": "string",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs."
+                            "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                          }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
                     },
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
                     }
                   },
                   "metricCategories": {
@@ -1530,14 +1665,21 @@
                         "category": {
                           "type": "string",
                           "metadata": {
-                            "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics."
+                            "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                          }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
                     },
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                      "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
                     }
                   },
                   "logAnalyticsDestinationType": {
@@ -1594,7 +1736,8 @@
           "parameters": {
             "name": {
               "type": "string",
-              "maxLength": 50,
+              "minLength": 3,
+              "maxLength": 24,
               "metadata": {
                 "description": "Required. The name of the MedTech service."
               }
@@ -1676,7 +1819,7 @@
           },
           "variables": {
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
           },
           "resources": {
             "workspace": {
@@ -1730,12 +1873,30 @@
               "scope": "[format('Microsoft.HealthcareApis/workspaces/{0}/iotconnectors/{1}', parameters('workspaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
+                "copy": [
+                  {
+                    "name": "metrics",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                    "input": {
+                      "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                      "timeGrain": null
+                    }
+                  },
+                  {
+                    "name": "logs",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                    "input": {
+                      "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+                      "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                    }
+                  }
+                ],
                 "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
                 "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
                 "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
                 "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
-                "metrics": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]",
-                "logs": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'AllLogs', 'enabled', true())))]",
                 "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
                 "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
               },
@@ -1760,11 +1921,15 @@
                   "iotConnectorName": {
                     "value": "[parameters('name')]"
                   },
-                  "resourceIdentityResolutionType": "[if(contains(parameters('fhirdestination'), 'resourceIdentityResolutionType'), createObject('value', parameters('fhirdestination').resourceIdentityResolutionType), createObject('value', 'Lookup'))]",
+                  "resourceIdentityResolutionType": {
+                    "value": "[tryGet(parameters('fhirdestination'), 'resourceIdentityResolutionType')]"
+                  },
                   "fhirServiceResourceId": {
                     "value": "[parameters('fhirdestination').fhirServiceResourceId]"
                   },
-                  "destinationMapping": "[if(contains(parameters('fhirdestination'), 'destinationMapping'), createObject('value', parameters('fhirdestination').destinationMapping), createObject('value', createObject('templateType', 'CollectionFhir', 'template', createArray())))]",
+                  "destinationMapping": {
+                    "value": "[tryGet(parameters('fhirdestination'), 'destinationMapping')]"
+                  },
                   "location": {
                     "value": "[parameters('location')]"
                   },

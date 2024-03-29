@@ -682,7 +682,6 @@ Deploy DICOM services.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `enableTelemetry`
 
@@ -698,7 +697,6 @@ Deploy FHIR services.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `iotconnectors`
 
@@ -706,7 +704,6 @@ Deploy IOT connectors.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `location`
 
