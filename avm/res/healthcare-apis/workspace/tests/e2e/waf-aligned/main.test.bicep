@@ -11,7 +11,7 @@ metadata description = 'This instance deploys the module in alignment with the b
 param resourceGroupName string = 'dep-${namePrefix}-healthcareapis.workspaces-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param location string = deployment().location
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'hawwaf'
@@ -27,31 +27,32 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: location
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-paramNested'
+  name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
   params: {
     eventHubConsumerGroupName: '${namePrefix}-az-iomt-x-001'
     eventHubNamespaceName: 'dep-${namePrefix}-ehns-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}'
+    location: resourceLocation
   }
 }
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../.shared/.templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: location
+    location: resourceLocation
   }
 }
 
@@ -64,7 +65,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: location
+    location: resourceLocation
     publicNetworkAccess: 'Enabled'
     lock: {
       kind: 'CanNotDelete'
@@ -80,7 +81,7 @@ module testDeployment '../../../main.bicep' = {
         corsMethods: ['GET']
         corsMaxAge: 600
         corsAllowCredentials: false
-        location: location
+        location: resourceLocation
         diagnosticSettings: [
           {
             name: 'customSetting'
@@ -127,7 +128,7 @@ module testDeployment '../../../main.bicep' = {
         corsMethods: ['GET']
         corsMaxAge: 600
         corsAllowCredentials: false
-        location: location
+        location: resourceLocation
         diagnosticSettings: [
           {
             name: 'customSetting'
