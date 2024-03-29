@@ -15,13 +15,13 @@ param tags object?
 param enableTelemetry bool = true
 
 @description('Optional. Describes the managedRules structure.')
-param managedRules object = {}
+param managedRules object?
 
 @description('Optional. The custom rules inside the policy.')
-param customRules array = []
+param customRules array?
 
 @description('Optional. The PolicySettings for policy.')
-param policySettings object = {}
+param policySettings object?
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
   if (enableTelemetry) {
@@ -47,7 +47,7 @@ resource applicationGatewayWAFPolicy 'Microsoft.Network/ApplicationGatewayWebApp
   location: location
   tags: tags
   properties: {
-    managedRules: managedRules
+    managedRules: managedRules ?? {}
     customRules: customRules
     policySettings: policySettings
   }
