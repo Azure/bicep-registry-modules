@@ -16,9 +16,6 @@ param location string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'hawmax'
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '[[namePrefix]]'
 
@@ -66,7 +63,6 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
-    enableDefaultTelemetry: enableDefaultTelemetry
     name: '${namePrefix}${serviceShort}001'
     location: location
     publicNetworkAccess: 'Enabled'
@@ -79,9 +75,9 @@ module testDeployment '../../../main.bicep' = {
         name: '${namePrefix}-az-fhir-x-001'
         kind: 'fhir-R4'
         workspaceName: '${namePrefix}${serviceShort}001'
-        corsOrigins: [ '*' ]
-        corsHeaders: [ '*' ]
-        corsMethods: [ 'GET' ]
+        corsOrigins: ['*']
+        corsHeaders: ['*']
+        corsMethods: ['GET']
         corsMaxAge: 600
         corsAllowCredentials: false
         location: location
@@ -102,7 +98,6 @@ module testDeployment '../../../main.bicep' = {
         publicNetworkAccess: 'Enabled'
         resourceVersionPolicy: 'versioned'
         smartProxyEnabled: false
-        enableDefaultTelemetry: enableDefaultTelemetry
         managedIdentities: {
           systemAssigned: false
           userAssignedResourceIds: [
@@ -113,7 +108,10 @@ module testDeployment '../../../main.bicep' = {
         initialImportMode: false
         roleAssignments: [
           {
-            roleDefinitionIdOrName: resourceId('Microsoft.Authorization/roleDefinitions', '5a1fc7df-4bf1-4951-a576-89034ee01acd')
+            roleDefinitionIdOrName: resourceId(
+              'Microsoft.Authorization/roleDefinitions',
+              '5a1fc7df-4bf1-4951-a576-89034ee01acd'
+            )
             principalId: nestedDependencies.outputs.managedIdentityPrincipalId
             principalType: 'ServicePrincipal'
           }
@@ -124,9 +122,9 @@ module testDeployment '../../../main.bicep' = {
       {
         name: '${namePrefix}-az-dicom-x-001'
         workspaceName: '${namePrefix}${serviceShort}001'
-        corsOrigins: [ '*' ]
-        corsHeaders: [ '*' ]
-        corsMethods: [ 'GET' ]
+        corsOrigins: ['*']
+        corsHeaders: ['*']
+        corsMethods: ['GET']
         corsMaxAge: 600
         corsAllowCredentials: false
         location: location
@@ -145,13 +143,13 @@ module testDeployment '../../../main.bicep' = {
           }
         ]
         publicNetworkAccess: 'Enabled'
-        enableDefaultTelemetry: enableDefaultTelemetry
         managedIdentities: {
           systemAssigned: false
           userAssignedResourceIds: [
             nestedDependencies.outputs.managedIdentityResourceId
           ]
-        } }
+        }
+      }
     ]
     roleAssignments: [
       {
@@ -165,7 +163,10 @@ module testDeployment '../../../main.bicep' = {
         principalType: 'ServicePrincipal'
       }
       {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+        roleDefinitionIdOrName: subscriptionResourceId(
+          'Microsoft.Authorization/roleDefinitions',
+          'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+        )
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }
