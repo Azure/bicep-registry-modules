@@ -102,9 +102,7 @@
         },
         "state": "[parameters('state')]"
       },
-      "dependsOn": [
-        "namespace"
-      ]
+      "dependsOn": ["namespace"]
     }
   },
   "outputs": {

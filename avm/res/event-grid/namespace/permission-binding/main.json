@@ -46,10 +46,7 @@
     },
     "permission": {
       "type": "string",
-      "allowedValues": [
-        "Publisher",
-        "Subscriber"
-      ],
+      "allowedValues": ["Publisher", "Subscriber"],
       "metadata": {
         "description": "Required. The allowed permission."
       }
@@ -72,9 +69,7 @@
         "permission": "[parameters('permission')]",
         "topicSpaceName": "[parameters('topicSpaceName')]"
       },
-      "dependsOn": [
-        "namespace"
-      ]
+      "dependsOn": ["namespace"]
     }
   },
   "outputs": {
