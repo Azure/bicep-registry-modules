@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "15635348365399723785"
+      "version": "0.26.54.24096",
+      "templateHash": "3109700821219679161"
     },
     "name": "Healthcare API Workspace IoT Connectors",
     "description": "This module deploys a Healthcare API Workspace IoT Connector.",
@@ -249,35 +249,13 @@
       "metadata": {
         "description": "Optional. Tags of the resource."
       }
-    },
-    "enableDefaultTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
-      }
     }
   },
   "variables": {
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-    "enableReferencedModulesTelemetry": false
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
   },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
-    },
     "workspace": {
       "existing": true,
       "type": "Microsoft.HealthcareApis/workspaces",
@@ -364,9 +342,6 @@
             "value": "[parameters('fhirdestination').fhirServiceResourceId]"
           },
           "destinationMapping": "[if(contains(parameters('fhirdestination'), 'destinationMapping'), createObject('value', parameters('fhirdestination').destinationMapping), createObject('value', createObject('templateType', 'CollectionFhir', 'template', createArray())))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          },
           "location": {
             "value": "[parameters('location')]"
           },
@@ -380,8 +355,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "6245123463457389463"
+              "version": "0.26.54.24096",
+              "templateHash": "11968373756464803910"
             },
             "name": "Healthcare API Workspace IoT Connector FHIR Destinations",
             "description": "This module deploys a Healthcare API Workspace IoT Connector FHIR Destination.",
@@ -430,13 +405,6 @@
                 "description": "Optional. Location for all resources."
               }
             },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
-              }
-            },
             "resourceIdentityResolutionType": {
               "type": "string",
               "defaultValue": "Lookup",
@@ -450,20 +418,6 @@
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.HealthcareApis/workspaces/iotconnectors/fhirdestinations",
               "apiVersion": "2022-06-01",

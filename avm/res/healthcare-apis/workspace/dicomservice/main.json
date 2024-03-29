@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "4829507560537153518"
+      "version": "0.26.54.24096",
+      "templateHash": "14679056984684587584"
     },
     "name": "Healthcare API Workspace DICOM Services",
     "description": "This module deploys a Healthcare API Workspace DICOM Service.",
@@ -267,13 +267,6 @@
       "metadata": {
         "description": "Optional. Tags of the resource."
       }
-    },
-    "enableDefaultTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
-      }
     }
   },
   "variables": {
@@ -281,20 +274,6 @@
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
   },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
-    },
     "workspace": {
       "existing": true,
       "type": "Microsoft.HealthcareApis/workspaces",

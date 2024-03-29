@@ -9,6 +9,7 @@ This module deploys a Healthcare API Workspace FHIR Service.
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -48,7 +49,6 @@ This module deploys a Healthcare API Workspace FHIR Service.
 | [`corsMethods`](#parameter-corsmethods) | array | Specify the allowed HTTP methods. |
 | [`corsOrigins`](#parameter-corsorigins) | array | Specify URLs of origin sites that can access this API, or use "*" to allow access from any site. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via the Customer Usage Attribution ID (GUID). |
 | [`exportStorageAccountName`](#parameter-exportstorageaccountname) | string | The name of the default export storage account. |
 | [`importEnabled`](#parameter-importenabled) | bool | If the import operation is enabled. |
 | [`importStorageAccountName`](#parameter-importstorageaccountname) | string | The name of the default integration storage account. |
@@ -225,6 +225,27 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 - Required: No
 - Type: array
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs. |
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs.
+
+- Required: No
+- Type: string
+
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
@@ -238,6 +259,19 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics. |
+
+### Parameter: `diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -259,14 +293,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via the Customer Usage Attribution ID (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `exportStorageAccountName`
 
@@ -587,3 +613,7 @@ acrOciArtifacts: [
 </details>
 
 <p>
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "16618408806092022062"
+      "version": "0.26.54.24096",
+      "templateHash": "5535405274723489759"
     },
     "name": "Healthcare API Workspaces",
     "description": "This module deploys a Healthcare API Workspace.",
@@ -150,11 +150,11 @@
         "description": "Optional. Tags of the resource."
       }
     },
-    "enableDefaultTelemetry": {
+    "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "dicomservices": {
@@ -180,7 +180,6 @@
     }
   },
   "variables": {
-    "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "DICOM Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '58a3b984-7adf-4c20-983a-32417c86fbc8')]",
@@ -199,17 +198,23 @@
     }
   },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.healthcareapis-workspace.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
-          "resources": []
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
         }
       }
     },
@@ -313,10 +318,7 @@
           },
           "resourceVersionPolicy": "[if(contains(parameters('fhirservices')[copyIndex()], 'resourceVersionPolicy'), createObject('value', parameters('fhirservices')[copyIndex()].resourceVersionPolicy), createObject('value', 'versioned'))]",
           "resourceVersionOverrides": "[if(contains(parameters('fhirservices')[copyIndex()], 'resourceVersionOverrides'), createObject('value', parameters('fhirservices')[copyIndex()].resourceVersionOverrides), createObject('value', createObject()))]",
-          "smartProxyEnabled": "[if(contains(parameters('fhirservices')[copyIndex()], 'smartProxyEnabled'), createObject('value', parameters('fhirservices')[copyIndex()].smartProxyEnabled), createObject('value', false()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "smartProxyEnabled": "[if(contains(parameters('fhirservices')[copyIndex()], 'smartProxyEnabled'), createObject('value', parameters('fhirservices')[copyIndex()].smartProxyEnabled), createObject('value', false()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -325,8 +327,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "13185908730981475512"
+              "version": "0.26.54.24096",
+              "templateHash": "16496708775676658812"
             },
             "name": "Healthcare API Workspace FHIR Services",
             "description": "This module deploys a Healthcare API Workspace FHIR Service.",
@@ -759,13 +761,6 @@
               "metadata": {
                 "description": "Optional. Tags of the resource."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
-              }
             }
           },
           "variables": {
@@ -801,20 +796,6 @@
             }
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             "workspace": {
               "existing": true,
               "type": "Microsoft.HealthcareApis/workspaces",
@@ -1011,9 +992,6 @@
           },
           "lock": {
             "value": "[coalesce(tryGet(parameters('dicomservices')[copyIndex()], 'lock'), parameters('lock'))]"
-          },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1023,8 +1001,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "4829507560537153518"
+              "version": "0.26.54.24096",
+              "templateHash": "14679056984684587584"
             },
             "name": "Healthcare API Workspace DICOM Services",
             "description": "This module deploys a Healthcare API Workspace DICOM Service.",
@@ -1285,13 +1263,6 @@
               "metadata": {
                 "description": "Optional. Tags of the resource."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
-              }
             }
           },
           "variables": {
@@ -1299,20 +1270,6 @@
             "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             "workspace": {
               "existing": true,
               "type": "Microsoft.HealthcareApis/workspaces",
@@ -1462,9 +1419,6 @@
           },
           "lock": {
             "value": "[coalesce(tryGet(parameters('iotconnectors')[copyIndex()], 'lock'), parameters('lock'))]"
-          },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1474,8 +1428,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "15635348365399723785"
+              "version": "0.26.54.24096",
+              "templateHash": "3109700821219679161"
             },
             "name": "Healthcare API Workspace IoT Connectors",
             "description": "This module deploys a Healthcare API Workspace IoT Connector.",
@@ -1718,35 +1672,13 @@
               "metadata": {
                 "description": "Optional. Tags of the resource."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
-              }
             }
           },
           "variables": {
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-            "enableReferencedModulesTelemetry": false
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             "workspace": {
               "existing": true,
               "type": "Microsoft.HealthcareApis/workspaces",
@@ -1833,9 +1765,6 @@
                     "value": "[parameters('fhirdestination').fhirServiceResourceId]"
                   },
                   "destinationMapping": "[if(contains(parameters('fhirdestination'), 'destinationMapping'), createObject('value', parameters('fhirdestination').destinationMapping), createObject('value', createObject('templateType', 'CollectionFhir', 'template', createArray())))]",
-                  "enableDefaultTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
-                  },
                   "location": {
                     "value": "[parameters('location')]"
                   },
@@ -1849,8 +1778,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "6245123463457389463"
+                      "version": "0.26.54.24096",
+                      "templateHash": "11968373756464803910"
                     },
                     "name": "Healthcare API Workspace IoT Connector FHIR Destinations",
                     "description": "This module deploys a Healthcare API Workspace IoT Connector FHIR Destination.",
@@ -1899,13 +1828,6 @@
                         "description": "Optional. Location for all resources."
                       }
                     },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
-                      }
-                    },
                     "resourceIdentityResolutionType": {
                       "type": "string",
                       "defaultValue": "Lookup",
@@ -1919,20 +1841,6 @@
                     }
                   },
                   "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
-                    },
                     {
                       "type": "Microsoft.HealthcareApis/workspaces/iotconnectors/fhirdestinations",
                       "apiVersion": "2022-06-01",
