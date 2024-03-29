@@ -34,10 +34,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
   params: {
-    eventHubConsumerGroupName: '${namePrefix}-az-iomt-x-001'
-    eventHubNamespaceName: 'dep-${namePrefix}-ehns-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
     location: resourceLocation
   }
 }
@@ -67,13 +64,10 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
     publicNetworkAccess: 'Enabled'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     fhirservices: [
       {
         name: '${namePrefix}-az-fhir-x-001'
+        location: resourceLocation
         kind: 'fhir-R4'
         workspaceName: '${namePrefix}${serviceShort}001'
         corsOrigins: ['*']
@@ -81,15 +75,8 @@ module testDeployment '../../../main.bicep' = {
         corsMethods: ['GET']
         corsMaxAge: 600
         corsAllowCredentials: false
-        location: resourceLocation
         diagnosticSettings: [
           {
-            name: 'customSetting'
-            metricCategories: [
-              {
-                category: 'AllMetrics'
-              }
-            ]
             eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
             eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
             storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
@@ -107,36 +94,20 @@ module testDeployment '../../../main.bicep' = {
         }
         importEnabled: false
         initialImportMode: false
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: resourceId(
-              'Microsoft.Authorization/roleDefinitions',
-              '5a1fc7df-4bf1-4951-a576-89034ee01acd'
-            )
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
       }
     ]
     dicomservices: [
       {
         name: '${namePrefix}-az-dicom-x-001'
+        location: resourceLocation
         workspaceName: '${namePrefix}${serviceShort}001'
         corsOrigins: ['*']
         corsHeaders: ['*']
         corsMethods: ['GET']
         corsMaxAge: 600
         corsAllowCredentials: false
-        location: resourceLocation
         diagnosticSettings: [
           {
-            name: 'customSetting'
-            metricCategories: [
-              {
-                category: 'AllMetrics'
-              }
-            ]
             eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
             eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
             storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId

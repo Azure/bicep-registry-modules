@@ -34,10 +34,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
   params: {
-    eventHubConsumerGroupName: '${namePrefix}-az-iomt-x-001'
-    eventHubNamespaceName: 'dep-${namePrefix}-ehns-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
     location: resourceLocation
   }
 }
@@ -108,6 +105,16 @@ module testDeployment '../../../main.bicep' = {
         importEnabled: false
         initialImportMode: false
         roleAssignments: [
+          {
+            roleDefinitionIdOrName: 'Owner'
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+          {
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
           {
             roleDefinitionIdOrName: resourceId(
               'Microsoft.Authorization/roleDefinitions',
