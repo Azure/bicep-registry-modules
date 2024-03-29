@@ -48,11 +48,7 @@
         },
         "kind": {
           "type": "string",
-          "allowedValues": [
-            "CanNotDelete",
-            "None",
-            "ReadOnly"
-          ],
+          "allowedValues": ["CanNotDelete", "None", "ReadOnly"],
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -108,9 +104,7 @@
           },
           "conditionVersion": {
             "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
+            "allowedValues": ["2.0"],
             "nullable": true,
             "metadata": {
               "description": "Optional. Version of the condition."
@@ -199,10 +193,7 @@
           },
           "logAnalyticsDestinationType": {
             "type": "string",
-            "allowedValues": [
-              "AzureDiagnostics",
-              "Dedicated"
-            ],
+            "allowedValues": ["AzureDiagnostics", "Dedicated"],
             "nullable": true,
             "metadata": {
               "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
@@ -378,9 +369,7 @@
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
         "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
       },
-      "dependsOn": [
-        "systemTopic"
-      ]
+      "dependsOn": ["systemTopic"]
     },
     "systemTopic_diagnosticSettings": {
       "copy": {
@@ -419,9 +408,7 @@
         "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
         "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
       },
-      "dependsOn": [
-        "systemTopic"
-      ]
+      "dependsOn": ["systemTopic"]
     },
     "systemTopic_roleAssignments": {
       "copy": {
@@ -441,9 +428,7 @@
         "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
         "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
-      "dependsOn": [
-        "systemTopic"
-      ]
+      "dependsOn": ["systemTopic"]
     },
     "systemTopics_eventSubscriptions": {
       "copy": {
@@ -622,9 +607,7 @@
           }
         }
       },
-      "dependsOn": [
-        "systemTopic"
-      ]
+      "dependsOn": ["systemTopic"]
     }
   },
   "outputs": {
