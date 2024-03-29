@@ -193,6 +193,16 @@ module workspace 'br/public:avm/res/healthcare-apis/workspace:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
@@ -335,6 +345,16 @@ module workspace 'br/public:avm/res/healthcare-apis/workspace:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
@@ -421,12 +441,6 @@ module workspace 'br/public:avm/res/healthcare-apis/workspace:<version>' = {
           {
             eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
             eventHubName: '<eventHubName>'
-            metricCategories: [
-              {
-                category: 'AllMetrics'
-              }
-            ]
-            name: 'customSetting'
             storageAccountResourceId: '<storageAccountResourceId>'
             workspaceResourceId: '<workspaceResourceId>'
           }
@@ -460,12 +474,6 @@ module workspace 'br/public:avm/res/healthcare-apis/workspace:<version>' = {
           {
             eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
             eventHubName: '<eventHubName>'
-            metricCategories: [
-              {
-                category: 'AllMetrics'
-              }
-            ]
-            name: 'customSetting'
             storageAccountResourceId: '<storageAccountResourceId>'
             workspaceResourceId: '<workspaceResourceId>'
           }
@@ -483,22 +491,11 @@ module workspace 'br/public:avm/res/healthcare-apis/workspace:<version>' = {
         name: 'az-fhir-x-001'
         publicNetworkAccess: 'Enabled'
         resourceVersionPolicy: 'versioned'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-          }
-        ]
         smartProxyEnabled: false
         workspaceName: 'hawwaf001'
       }
     ]
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     publicNetworkAccess: 'Enabled'
     tags: {
       Environment: 'Non-Prod'
@@ -544,12 +541,6 @@ module workspace 'br/public:avm/res/healthcare-apis/workspace:<version>' = {
             {
               "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
               "eventHubName": "<eventHubName>",
-              "metricCategories": [
-                {
-                  "category": "AllMetrics"
-                }
-              ],
-              "name": "customSetting",
               "storageAccountResourceId": "<storageAccountResourceId>",
               "workspaceResourceId": "<workspaceResourceId>"
             }
@@ -585,12 +576,6 @@ module workspace 'br/public:avm/res/healthcare-apis/workspace:<version>' = {
             {
               "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
               "eventHubName": "<eventHubName>",
-              "metricCategories": [
-                {
-                  "category": "AllMetrics"
-                }
-              ],
-              "name": "customSetting",
               "storageAccountResourceId": "<storageAccountResourceId>",
               "workspaceResourceId": "<workspaceResourceId>"
             }
@@ -608,13 +593,6 @@ module workspace 'br/public:avm/res/healthcare-apis/workspace:<version>' = {
           "name": "az-fhir-x-001",
           "publicNetworkAccess": "Enabled",
           "resourceVersionPolicy": "versioned",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-            }
-          ],
           "smartProxyEnabled": false,
           "workspaceName": "hawwaf001"
         }
@@ -622,12 +600,6 @@ module workspace 'br/public:avm/res/healthcare-apis/workspace:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "publicNetworkAccess": {
       "value": "Enabled"
