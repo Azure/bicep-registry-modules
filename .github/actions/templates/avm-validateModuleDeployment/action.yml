@@ -56,7 +56,7 @@ runs:
   using: "composite"
   steps:
     - name: Azure Login
-      uses: Azure/login@v1
+      uses: azure/login@v2
       with:
         creds: ${{ env.AZURE_CREDENTIALS }}
         enable-AzPSSession: true
