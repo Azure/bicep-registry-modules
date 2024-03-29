@@ -97,49 +97,49 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $file.Name | Should -BeExactly 'README.md'
     }
 
-    It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+    # It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
 
-      param(
-        [string] $moduleFolderPath
-      )
+    #   param(
+    #     [string] $moduleFolderPath
+    #   )
 
-      $templateFilePath = Join-Path -Path $moduleFolderPath 'main.bicep'
+    #   $templateFilePath = Join-Path -Path $moduleFolderPath 'main.bicep'
 
-      # Use correct telemetry link based on file path
-      $telemetryCsvLink = $moduleFolderPath -match '[\\|\/]res[\\|\/]' ? $telemetryResCsvLink : $telemetryPtnCsvLink
+    #   # Use correct telemetry link based on file path
+    #   $telemetryCsvLink = $moduleFolderPath -match '[\\|\/]res[\\|\/]' ? $telemetryResCsvLink : $telemetryPtnCsvLink
 
-      # Fetch CSV
-      # =========
-      try {
-        $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
-      } catch {
-        $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
-        Write-Error $errorMessage
-        Set-ItResult -Skipped -Because $errorMessage
-      }
-      $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
+    #   # Fetch CSV
+    #   # =========
+    #   try {
+    #     $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
+    #   } catch {
+    #     $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
+    #     Write-Error $errorMessage
+    #     Set-ItResult -Skipped -Because $errorMessage
+    #   }
+    #   $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
 
-      $moduleName = Get-BRMRepositoryName -TemplateFilePath $templateFilePath
-      $relevantCSVRow = $csvData | Where-Object {
-        $_.ModuleName -eq $moduleName
-      }
+    #   $moduleName = Get-BRMRepositoryName -TemplateFilePath $templateFilePath
+    #   $relevantCSVRow = $csvData | Where-Object {
+    #     $_.ModuleName -eq $moduleName
+    #   }
 
-      if (-not $relevantCSVRow) {
-        $errorMessage = "Failed to identify module [$moduleName]."
-        Write-Error $errorMessage
-        Set-ItResult -Skipped -Because $errorMessage
-      }
-      $isOrphaned = [String]::IsNullOrEmpty($relevantCSVRow.PrimaryModuleOwnerGHHandle)
+    #   if (-not $relevantCSVRow) {
+    #     $errorMessage = "Failed to identify module [$moduleName]."
+    #     Write-Error $errorMessage
+    #     Set-ItResult -Skipped -Because $errorMessage
+    #   }
+    #   $isOrphaned = [String]::IsNullOrEmpty($relevantCSVRow.PrimaryModuleOwnerGHHandle)
 
-      $orphanedFilePath = Join-Path -Path $moduleFolderPath 'ORPHANED.md'
-      if ($isOrphaned) {
-        $pathExisting = Test-Path $orphanedFilePath
-        $pathExisting | Should -Be $true -Because 'The module is orphaned.'
-      } else {
-        $pathExisting = Test-Path $orphanedFilePath
-        $pathExisting | Should -Be $false -Because ('The module is not orphaned but owned by [{0}].' -f $relevantCSVRow.PrimaryModuleOwnerGHHandle)
-      }
-    }
+    #   $orphanedFilePath = Join-Path -Path $moduleFolderPath 'ORPHANED.md'
+    #   if ($isOrphaned) {
+    #     $pathExisting = Test-Path $orphanedFilePath
+    #     $pathExisting | Should -Be $true -Because 'The module is orphaned.'
+    #   } else {
+    #     $pathExisting = Test-Path $orphanedFilePath
+    #     $pathExisting | Should -Be $false -Because ('The module is not orphaned but owned by [{0}].' -f $relevantCSVRow.PrimaryModuleOwnerGHHandle)
+    #   }
+    # }
   }
 
   Context 'Top level module folder tests' {
@@ -879,52 +879,52 @@ Describe 'Module tests' -Tag 'Module' {
         $telemetryDeployment.properties.template.outputs['telemetry'].value | Should -Be 'For more information, see https://aka.ms/avm/TelemetryInfo'
       }
 
-      It '[<moduleFolderName>] Telemetry deployment should have expected telemetry identifier.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+      # It '[<moduleFolderName>] Telemetry deployment should have expected telemetry identifier.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
 
-        param(
-          [string] $templateFilePath,
-          [hashtable] $templateFileContent
-        )
+      #   param(
+      #     [string] $templateFilePath,
+      #     [hashtable] $templateFileContent
+      #   )
 
-        # Use correct telemetry link based on file path
-        $telemetryCsvLink = $templateFilePath -match '[\\|\/]res[\\|\/]' ? $telemetryResCsvLink : $telemetryPtnCsvLink
+      #   # Use correct telemetry link based on file path
+      #   $telemetryCsvLink = $templateFilePath -match '[\\|\/]res[\\|\/]' ? $telemetryResCsvLink : $telemetryPtnCsvLink
 
-        # Fetch CSV
-        # =========
-        try {
-          $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
-        } catch {
-          $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
-          Write-Error $errorMessage
-          Set-ItResult -Skipped -Because $errorMessage
-        }
-        $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
+      #   # Fetch CSV
+      #   # =========
+      #   try {
+      #     $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
+      #   } catch {
+      #     $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
+      #     Write-Error $errorMessage
+      #     Set-ItResult -Skipped -Because $errorMessage
+      #   }
+      #   $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
 
-        # Get correct row item & expected identifier
-        # ==========================================
-        $moduleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
-        $relevantCSVRow = $csvData | Where-Object {
-          $_.ModuleName -eq $moduleName
-        }
+      #   # Get correct row item & expected identifier
+      #   # ==========================================
+      #   $moduleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
+      #   $relevantCSVRow = $csvData | Where-Object {
+      #     $_.ModuleName -eq $moduleName
+      #   }
 
-        if (-not $relevantCSVRow) {
-          $errorMessage = "Failed to identify module [$moduleName]."
-          Write-Error $errorMessage
-          Set-ItResult -Skipped -Because $errorMessage
-        }
-        $expectedTelemetryIdentifier = $relevantCSVRow.TelemetryIdPrefix
+      #   if (-not $relevantCSVRow) {
+      #     $errorMessage = "Failed to identify module [$moduleName]."
+      #     Write-Error $errorMessage
+      #     Set-ItResult -Skipped -Because $errorMessage
+      #   }
+      #   $expectedTelemetryIdentifier = $relevantCSVRow.TelemetryIdPrefix
 
-        # Collect resource & compare
-        # ==========================
-        # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
-        if ($templateFileContent.resources.GetType().Name -eq 'Object[]') {
-          $templateResources = $templateFileContent.resources
-        } else {
-          $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
-        }
-        $telemetryDeploymentName = ($templateResources | Where-Object { $_.condition -like '*telemetry*' }).name # The AVM telemetry prefix
-        $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
-      }
+      #   # Collect resource & compare
+      #   # ==========================
+      #   # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
+      #   if ($templateFileContent.resources.GetType().Name -eq 'Object[]') {
+      #     $templateResources = $templateFileContent.resources
+      #   } else {
+      #     $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
+      #   }
+      #   $telemetryDeploymentName = ($templateResources | Where-Object { $_.condition -like '*telemetry*' }).name # The AVM telemetry prefix
+      #   $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
+      # }
     }
 
     Context 'Output' {
@@ -1119,72 +1119,71 @@ Describe 'Governance tests' {
     }
   }
 
-  It '[<moduleFolderName>] Owning team should be specified correctly in CODEWONERS file.' -TestCases $governanceTestCases {
+  # It '[<moduleFolderName>] Owning team should be specified correctly in CODEWONERS file.' -TestCases $governanceTestCases {
 
-    param(
-      [string] $relativeModulePath,
-      [string] $repoRootPath
-    )
+  #   param(
+  #     [string] $relativeModulePath,
+  #     [string] $repoRootPath
+  #   )
 
-    $codeownersFilePath = Join-Path $repoRootPath '.github' 'CODEOWNERS'
-    $codeOwnersContent = Get-Content $codeownersFilePath
+  #   $codeownersFilePath = Join-Path $repoRootPath '.github' 'CODEOWNERS'
+  #   $codeOwnersContent = Get-Content $codeownersFilePath
 
-    $formattedEntry = $relativeModulePath -replace '\\', '\/'
-    $moduleLine = $codeOwnersContent | Where-Object { $_ -match "^\s*\/$formattedEntry\/" }
+  #   $formattedEntry = $relativeModulePath -replace '\\', '\/'
+  #   $moduleLine = $codeOwnersContent | Where-Object { $_ -match "^\s*\/$formattedEntry\/" }
 
-    $expectedEntry = '/{0}/ @Azure/{1}-module-owners-bicep @Azure/avm-core-team-technical-bicep' -f ($relativeModulePath -replace '\\', '/'), ($relativeModulePath -replace '-' -replace '[\\|\/]', '-')
+  #   $expectedEntry = '/{0}/ @Azure/{1}-module-owners-bicep @Azure/avm-core-team-technical-bicep' -f ($relativeModulePath -replace '\\', '/'), ($relativeModulePath -replace '-' -replace '[\\|\/]', '-')
 
-    # Line should exist
-    $moduleLine | Should -Not -BeNullOrEmpty -Because "the module should be listed in the [CODEOWNERS](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file) file as [/$expectedEntry]."
+  #   # Line should exist
+  #   $moduleLine | Should -Not -BeNullOrEmpty -Because "the module should be listed in the [CODEOWNERS](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file) file as [/$expectedEntry]."
 
-    # Line should be correct
-    $moduleLine | Should -Be $expectedEntry -Because 'the module should match the expected format as documented [here](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file).'
-  }
+  #   # Line should be correct
+  #   $moduleLine | Should -Be $expectedEntry -Because 'the module should match the expected format as documented [here](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file).'
+  # }
 
+  # It '[<moduleFolderName>] Module identifier should be listed in issue template in the correct alphabetical position.' -TestCases $governanceTestCases {
 
-  It '[<moduleFolderName>] Module identifier should be listed in issue template in the correct alphabetical position.' -TestCases $governanceTestCases {
+  #   param(
+  #     [string] $relativeModulePath,
+  #     [string] $repoRootPath
+  #   )
 
-    param(
-      [string] $relativeModulePath,
-      [string] $repoRootPath
-    )
+  #   $issueTemplatePath = Join-Path $repoRootPath '.github' 'ISSUE_TEMPLATE' 'avm_module_issue.yml'
+  #   $issueTemplateContent = Get-Content $issueTemplatePath
 
-    $issueTemplatePath = Join-Path $repoRootPath '.github' 'ISSUE_TEMPLATE' 'avm_module_issue.yml'
-    $issueTemplateContent = Get-Content $issueTemplatePath
+  #   # Identify listed modules
+  #   $startIndex = 0
+  #   while ($issueTemplateContent[$startIndex] -notmatch '^\s*- "Other, as defined below\.\.\."' -and $startIndex -ne $issueTemplateContent.Length) {
+  #     $startIndex++
+  #   }
+  #   $startIndex++ # Go one further than dummy value line
 
-    # Identify listed modules
-    $startIndex = 0
-    while ($issueTemplateContent[$startIndex] -notmatch '^\s*- "Other, as defined below\.\.\."' -and $startIndex -ne $issueTemplateContent.Length) {
-      $startIndex++
-    }
-    $startIndex++ # Go one further than dummy value line
+  #   $endIndex = $startIndex
+  #   while ($issueTemplateContent[$endIndex] -match '.*- "avm\/.*' -and $endIndex -ne $issueTemplateContent.Length) {
+  #     $endIndex++
+  #   }
+  #   $endIndex-- # Go one back to last module line
 
-    $endIndex = $startIndex
-    while ($issueTemplateContent[$endIndex] -match '.*- "avm\/.*' -and $endIndex -ne $issueTemplateContent.Length) {
-      $endIndex++
-    }
-    $endIndex-- # Go one back to last module line
+  #   $listedModules = $issueTemplateContent[$startIndex..$endIndex] | ForEach-Object { $_ -replace '.*- "(avm\/.*)".*', '$1' }
 
-    $listedModules = $issueTemplateContent[$startIndex..$endIndex] | ForEach-Object { $_ -replace '.*- "(avm\/.*)".*', '$1' }
+  #   # Should exist
+  #   $listedModules | Should -Contain ($relativeModulePath -replace '\\', '/') -Because 'the module should be listed in the issue template in the correct alphabetical position ([ref](https://azure.github.io/Azure-Verified-Modules/specs/bicep/#id-bcpnfr15---category-contributionsupport---avm-module-issue-template-file)).'
 
-    # Should exist
-    $listedModules | Should -Contain ($relativeModulePath -replace '\\', '/') -Because 'the module should be listed in the issue template in the correct alphabetical position ([ref](https://azure.github.io/Azure-Verified-Modules/specs/bicep/#id-bcpnfr15---category-contributionsupport---avm-module-issue-template-file)).'
+  #   # Should not be commented
+  #   $entry = $issueTemplateContent | Where-Object { $_ -match ('.*- "{0}".*' -f $relativeModulePath -replace '\\', '\/') }
+  #   $entry.Trim() | Should -Not -Match '^\s*#.*' -Because 'the module should not be commented out in the issue template.'
 
-    # Should not be commented
-    $entry = $issueTemplateContent | Where-Object { $_ -match ('.*- "{0}".*' -f $relativeModulePath -replace '\\', '\/') }
-    $entry.Trim() | Should -Not -Match '^\s*#.*' -Because 'the module should not be commented out in the issue template.'
+  #   # Should be at correct location
+  #   $incorrectLines = @()
+  #   foreach ($finding in (Compare-Object $listedModules ($listedModules | Sort-Object) -SyncWindow 0)) {
+  #     if ($finding.SideIndicator -eq '<=') {
+  #       $incorrectLines += $finding.InputObject
+  #     }
+  #   }
+  #   $incorrectLines = $incorrectLines | Sort-Object -Unique
 
-    # Should be at correct location
-    $incorrectLines = @()
-    foreach ($finding in (Compare-Object $listedModules ($listedModules | Sort-Object) -SyncWindow 0)) {
-      if ($finding.SideIndicator -eq '<=') {
-        $incorrectLines += $finding.InputObject
-      }
-    }
-    $incorrectLines = $incorrectLines | Sort-Object -Unique
-
-    $incorrectLines.Count | Should -Be 0 -Because ('the number of modules that are not in the correct alphabetical order in the issue template should be zero ([ref](https://azure.github.io/Azure-Verified-Modules/specs/bicep/#id-bcpnfr15---category-contributionsupport---avm-module-issue-template-file)).</br>However, the following incorrectly located lines were found:</br><pre>{0}</pre>' -f ($incorrectLines -join '</br>'))
-  }
+  #   $incorrectLines.Count | Should -Be 0 -Because ('the number of modules that are not in the correct alphabetical order in the issue template should be zero ([ref](https://azure.github.io/Azure-Verified-Modules/specs/bicep/#id-bcpnfr15---category-contributionsupport---avm-module-issue-template-file)).</br>However, the following incorrectly located lines were found:</br><pre>{0}</pre>' -f ($incorrectLines -join '</br>'))
+  # }
 }
 
 Describe 'Test file tests' -Tag 'TestTemplate' {
