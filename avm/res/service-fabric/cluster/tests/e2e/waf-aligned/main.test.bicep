@@ -52,10 +52,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     location: resourceLocation
     name: '${namePrefix}${serviceShort}001'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     tags: {
       'hidden-title': 'This is visible in the resource name'
       resourceType: 'Service Fabric'
