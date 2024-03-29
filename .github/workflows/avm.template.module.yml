@@ -52,9 +52,7 @@ jobs:
   job_psrule_test: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "PSRule [${{ matrix.testCases.name }}]"
     runs-on: ubuntu-latest
-    if: |
-      ${{ inputs.psRuleModuleTestFilePaths != '' &&
-      (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
+    if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
     strategy:
       fail-fast: false
       matrix:
@@ -76,9 +74,7 @@ jobs:
   job_psrule_test_waf_reliability: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "PSRule - WAF Reliability [${{ matrix.testCases.name }}]"
     runs-on: ubuntu-latest
-    if: |
-      ${{ inputs.psRuleModuleTestFilePaths != '' &&
-      (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
+    if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
     strategy:
       fail-fast: false
       matrix:
