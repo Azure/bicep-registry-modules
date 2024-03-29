@@ -46,6 +46,15 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
     name: 'nagwafpmin001'
     // Non-required parameters
     location: '<location>'
+    managedRules: {
+      managedRuleSets: [
+        {
+          ruleGroupOverrides: []
+          ruleSetType: 'OWASP'
+          ruleSetVersion: '3.2'
+        }
+      ]
+    }
   }
 }
 ```
@@ -69,6 +78,17 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "managedRules": {
+      "value": {
+        "managedRuleSets": [
+          {
+            "ruleGroupOverrides": [],
+            "ruleSetType": "OWASP",
+            "ruleSetVersion": "3.2"
+          }
+        ]
+      }
     }
   }
 }

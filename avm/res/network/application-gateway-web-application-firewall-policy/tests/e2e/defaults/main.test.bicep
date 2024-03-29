@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -41,9 +41,17 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      // You parameters go here
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      managedRules: {
+        managedRuleSets: [
+          {
+            ruleSetType: 'OWASP'
+            ruleSetVersion: '3.2'
+            ruleGroupOverrides: []
+          }
+        ]
+      }
     }
   }
 ]
