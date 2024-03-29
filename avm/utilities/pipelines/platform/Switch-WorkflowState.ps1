@@ -77,7 +77,7 @@ function Switch-WorkflowState {
         throw 'Function should not run for [Azure/bicep-registry-modules].'
     }
 
-    $workflows = gh workflow list --repo $repo --all --json "name,state,id" --limit 999 | ConvertFrom-Json -Depth 100
+    $workflows = gh workflow list --repo $repo --all --json 'name,state,id' --limit 999 | ConvertFrom-Json -Depth 100
     $relevantWorkflows = $workflows | Where-Object {
         $_.name -match $IncludePattern -and $_.name -notmatch $ExlcudePattern
     }

@@ -50,44 +50,45 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceGroup.location
-    administratorLogin: 'adminUserName'
-    administratorLoginPassword: password
-    skuName: 'Standard_D2ds_v4'
-    tier: 'GeneralPurpose'
-    delegatedSubnetResourceId: nestedDependencies.outputs.subnetResourceId
-    privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-    storageAutoIoScaling: 'Enabled'
-    storageSizeGB: 64
-    storageIOPS: 400
-    backupRetentionDays: 10
-    databases: [
-      {
-
-        name: 'testdb1'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceGroup.location
+      administratorLogin: 'adminUserName'
+      administratorLoginPassword: password
+      skuName: 'Standard_D2ds_v4'
+      tier: 'GeneralPurpose'
+      delegatedSubnetResourceId: nestedDependencies.outputs.subnetResourceId
+      privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+      storageAutoIoScaling: 'Enabled'
+      storageSizeGB: 64
+      storageIOPS: 400
+      backupRetentionDays: 10
+      databases: [
+        {
+          name: 'testdb1'
+        }
+      ]
+      highAvailability: 'SameZone'
+      storageAutoGrow: 'Enabled'
+      managedIdentities: {
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
       }
-    ]
-    highAvailability: 'SameZone'
-    storageAutoGrow: 'Enabled'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
+      administrators: [
+        {
+          identityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+          login: nestedDependencies.outputs.managedIdentityName
+          sid: nestedDependencies.outputs.managedIdentityPrincipalId
+        }
       ]
     }
-    administrators: [
-      {
-        identityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-        login: nestedDependencies.outputs.managedIdentityName
-        sid: nestedDependencies.outputs.managedIdentityPrincipalId
-      }
+    dependsOn: [
+      nestedDependencies
     ]
   }
-  dependsOn: [
-    nestedDependencies
-  ]
-}]
+]

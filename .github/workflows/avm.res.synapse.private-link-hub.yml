@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.synapse.private-link-hub.yml"
       - "avm/res/synapse/private-link-hub/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:

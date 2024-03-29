@@ -64,63 +64,65 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // Test Execution //
 // ============== //
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: 'global'
-    monitorConfig: {
-      protocol: 'https'
-      port: '443'
-      path: '/'
-    }
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: 'global'
+      monitorConfig: {
+        protocol: 'https'
+        port: '443'
+        path: '/'
+      }
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
+      endpoints: [
+        {
+          name: 'webApp01Endpoint'
+          type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
+          properties: {
+            targetResourceId: nestedDependencies.outputs.webApp01ResourceId
+            weight: 1
+            priority: 1
+            endpointLocation: 'eastus'
+            endpointStatus: 'Enabled'
           }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
-    endpoints: [
-      {
-        name: 'webApp01Endpoint'
-        type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
-        properties: {
-          targetResourceId: nestedDependencies.outputs.webApp01ResourceId
-          weight: 1
-          priority: 1
-          endpointLocation: 'eastus'
-          endpointStatus: 'Enabled'
         }
-      }
-      {
-        name: 'webApp02Endpoint'
-        type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
-        properties: {
-          targetResourceId: nestedDependencies.outputs.webApp02ResourceId
-          weight: 1
-          priority: 2
-          endpointLocation: 'westus'
-          endpointStatus: 'Enabled'
+        {
+          name: 'webApp02Endpoint'
+          type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
+          properties: {
+            targetResourceId: nestedDependencies.outputs.webApp02ResourceId
+            weight: 1
+            priority: 2
+            endpointLocation: 'westus'
+            endpointStatus: 'Enabled'
+          }
         }
-      }
-    ]
+      ]
+    }
   }
-}]
+]

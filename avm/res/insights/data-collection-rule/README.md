@@ -47,7 +47,7 @@ This instance deploys the module to setup collection of custom logs and ingestio
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-idcrcusadv'
+  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataFlows: [
@@ -267,7 +267,7 @@ This instance deploys the module to setup collection of custom logs.
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-idcrcusbas'
+  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataFlows: [
@@ -455,7 +455,7 @@ This instance deploys the module to setup the collection of IIS logs.
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-idcrcusiis'
+  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataFlows: [
@@ -599,7 +599,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-idcrmin'
+  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataFlows: [
@@ -733,7 +733,7 @@ This instance deploys the module to setup the collection of Linux-specific perfo
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-idcrlin'
+  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataFlows: [
@@ -1101,7 +1101,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-idcrmax'
+  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataFlows: [
@@ -1335,7 +1335,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-idcrwaf'
+  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataFlows: [
@@ -1611,7 +1611,7 @@ This instance deploys the module to setup the connection of Windows-specific per
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-idcrwin'
+  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataFlows: [
