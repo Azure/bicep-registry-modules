@@ -182,7 +182,6 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     location: '<location>'
-    skuName: 'Standard'
   }
 }
 ```
@@ -209,9 +208,6 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "skuName": {
-      "value": "Standard"
     }
   }
 }
