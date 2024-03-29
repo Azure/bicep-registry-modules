@@ -136,8 +136,9 @@ jobs:
   job_publish_module: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Publishing"
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && success()
+    if: github.ref == 'refs/heads/main' && needs.job_module_static_validation.result == 'success' && needs.job_module_deploy_validation.result == 'success'
     needs:
+      - job_module_static_validation
       - job_module_deploy_validation
     steps:
       - name: "Checkout"
