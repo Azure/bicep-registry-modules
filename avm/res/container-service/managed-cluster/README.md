@@ -3215,7 +3215,9 @@ Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
 | `ingressApplicationGatewayIdentityObjectId` | string | The Object ID of Application Gateway Ingress Controller (AGIC) identity. |
 | `keyvaultIdentityClientId` | string | The Client ID of the Key Vault Secrets Provider identity. |
 | `keyvaultIdentityObjectId` | string | The Object ID of the Key Vault Secrets Provider identity. |
+| `kubeletidentityClientId` | string | The Client ID of the AKS identity. |
 | `kubeletidentityObjectId` | string | The Object ID of the AKS identity. |
+| `kubeletidentityResourceId` | string | The Resource ID of the AKS identity. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the managed cluster. |
 | `oidcIssuerUrl` | string | The OIDC token issuer URL. |
