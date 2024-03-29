@@ -2,8 +2,9 @@ metadata name = 'Healthcare API Workspaces'
 metadata description = 'This module deploys a Healthcare API Workspace.'
 metadata owner = 'Azure/module-maintainers'
 
+@minLength(3)
+@maxLength(24)
 @description('Required. The name of the Health Data Services Workspace service.')
-@maxLength(50)
 param name string
 
 @description('Optional. Location for all resources.')
@@ -29,13 +30,13 @@ param tags object?
 param enableTelemetry bool = true
 
 @description('Optional. Deploy DICOM services.')
-param dicomservices array = []
+param dicomservices array?
 
 @description('Optional. Deploy FHIR services.')
-param fhirservices array = []
+param fhirservices array?
 
 @description('Optional. Deploy IOT connectors.')
-param iotconnectors array = []
+param iotconnectors array?
 
 // =========== //
 // Deployments //
@@ -151,7 +152,7 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
 ]
 
 module workspace_fhirservices 'fhirservice/main.bicep' = [
-  for (fhir, index) in fhirservices: {
+  for (fhir, index) in fhirservices ?? []: {
     name: '${uniqueString(deployment().name, location)}-Health-FHIR-${index}'
     params: {
       name: fhir.name
@@ -159,51 +160,50 @@ module workspace_fhirservices 'fhirservice/main.bicep' = [
       workspaceName: workspace.name
       kind: fhir.kind
       tags: fhir.?tags ?? tags
-      publicNetworkAccess: contains(fhir, 'publicNetworkAccess') ? fhir.publicNetworkAccess : 'Disabled'
-      managedIdentities: contains(fhir, 'managedIdentities') ? fhir.managedIdentities : null
-      roleAssignments: contains(fhir, 'roleAssignments') ? fhir.roleAssignments : []
-      accessPolicyObjectIds: contains(fhir, 'accessPolicyObjectIds') ? fhir.accessPolicyObjectIds : []
-      acrLoginServers: contains(fhir, 'acrLoginServers') ? fhir.acrLoginServers : []
-      acrOciArtifacts: contains(fhir, 'acrOciArtifacts') ? fhir.acrOciArtifacts : []
-      authenticationAuthority: contains(fhir, 'authenticationAuthority')
-        ? fhir.authenticationAuthority
-        : uri(environment().authentication.loginEndpoint, subscription().tenantId)
-      authenticationAudience: contains(fhir, 'authenticationAudience')
-        ? fhir.authenticationAudience
-        : 'https://${workspace.name}-${fhir.name}.fhir.azurehealthcareapis.com'
-      corsOrigins: contains(fhir, 'corsOrigins') ? fhir.corsOrigins : []
-      corsHeaders: contains(fhir, 'corsHeaders') ? fhir.corsHeaders : []
-      corsMethods: contains(fhir, 'corsMethods') ? fhir.corsMethods : []
-      corsMaxAge: contains(fhir, 'corsMaxAge') ? fhir.corsMaxAge : -1
-      corsAllowCredentials: contains(fhir, 'corsAllowCredentials') ? fhir.corsAllowCredentials : false
+      publicNetworkAccess: fhir.?publicNetworkAccess
+      managedIdentities: fhir.?managedIdentities
+      roleAssignments: fhir.?roleAssignments
+      accessPolicyObjectIds: fhir.?accessPolicyObjectIds
+      acrLoginServers: fhir.?acrLoginServers
+      acrOciArtifacts: fhir.?acrOciArtifacts
+      authenticationAuthority: fhir.?authenticationAuthority ?? uri(
+        environment().authentication.loginEndpoint,
+        subscription().tenantId
+      )
+      authenticationAudience: fhir.?authenticationAudience ?? 'https://${workspace.name}-${fhir.name}.fhir.azurehealthcareapis.com'
+      corsOrigins: fhir.?corsOrigins
+      corsHeaders: fhir.?corsHeaders
+      corsMethods: fhir.?corsMethods
+      corsMaxAge: fhir.?corsMaxAge
+      corsAllowCredentials: fhir.?corsAllowCredentials
       diagnosticSettings: fhir.?diagnosticSettings
-      exportStorageAccountName: contains(fhir, 'exportStorageAccountName') ? fhir.exportStorageAccountName : ''
-      importStorageAccountName: contains(fhir, 'importStorageAccountName') ? fhir.importStorageAccountName : ''
-      importEnabled: contains(fhir, 'importEnabled') ? fhir.importEnabled : false
-      initialImportMode: contains(fhir, 'initialImportMode') ? fhir.initialImportMode : false
+      exportStorageAccountName: fhir.?exportStorageAccountName
+      importStorageAccountName: fhir.?importStorageAccountName
+      importEnabled: fhir.?importEnabled
+      initialImportMode: fhir.?initialImportMode
       lock: fhir.?lock ?? lock
-      resourceVersionPolicy: contains(fhir, 'resourceVersionPolicy') ? fhir.resourceVersionPolicy : 'versioned'
-      resourceVersionOverrides: contains(fhir, 'resourceVersionOverrides') ? fhir.resourceVersionOverrides : {}
-      smartProxyEnabled: contains(fhir, 'smartProxyEnabled') ? fhir.smartProxyEnabled : false
+      resourceVersionPolicy: fhir.?resourceVersionPolicy
+      resourceVersionOverrides: fhir.?resourceVersionOverrides
+      smartProxyEnabled: fhir.?smartProxyEnabled
     }
   }
 ]
 
 module workspace_dicomservices 'dicomservice/main.bicep' = [
-  for (dicom, index) in dicomservices: {
+  for (dicom, index) in dicomservices ?? []: {
     name: '${uniqueString(deployment().name, location)}-Health-DICOM-${index}'
     params: {
       name: dicom.name
       location: location
       workspaceName: workspace.name
       tags: dicom.?tags ?? tags
-      publicNetworkAccess: contains(dicom, 'publicNetworkAccess') ? dicom.publicNetworkAccess : 'Disabled'
-      managedIdentities: contains(dicom, 'managedIdentities') ? dicom.managedIdentities : null
-      corsOrigins: contains(dicom, 'corsOrigins') ? dicom.corsOrigins : []
-      corsHeaders: contains(dicom, 'corsHeaders') ? dicom.corsHeaders : []
-      corsMethods: contains(dicom, 'corsMethods') ? dicom.corsMethods : []
-      corsMaxAge: contains(dicom, 'corsMaxAge') ? dicom.corsMaxAge : -1
-      corsAllowCredentials: contains(dicom, 'corsAllowCredentials') ? dicom.corsAllowCredentials : false
+      publicNetworkAccess: dicom.?publicNetworkAccess
+      managedIdentities: dicom.?managedIdentities
+      corsOrigins: dicom.?corsOrigins
+      corsHeaders: dicom.?corsHeaders
+      corsMethods: dicom.?corsMethods
+      corsMaxAge: dicom.?corsMaxAge
+      corsAllowCredentials: dicom.?corsAllowCredentials
       diagnosticSettings: dicom.?diagnosticSettings
       lock: dicom.?lock ?? lock
     }
@@ -211,7 +211,7 @@ module workspace_dicomservices 'dicomservice/main.bicep' = [
 ]
 
 module workspace_iotconnector 'iotconnector/main.bicep' = [
-  for (iotConnector, index) in iotconnectors: {
+  for (iotConnector, index) in iotconnectors ?? []: {
     name: '${uniqueString(deployment().name, location)}-Health-IOMT-${index}'
     params: {
       name: iotConnector.name
@@ -220,15 +220,10 @@ module workspace_iotconnector 'iotconnector/main.bicep' = [
       tags: iotConnector.?tags ?? tags
       eventHubName: iotConnector.eventHubName
       eventHubNamespaceName: iotConnector.eventHubNamespaceName
-      deviceMapping: contains(iotConnector, 'deviceMapping')
-        ? iotConnector.deviceMapping
-        : {
-            templateType: 'CollectionContent'
-            template: []
-          }
-      fhirdestination: contains(iotConnector, 'fhirdestination') ? iotConnector.fhirdestination : {}
-      consumerGroup: contains(iotConnector, 'consumerGroup') ? iotConnector.consumerGroup : iotConnector.name
-      managedIdentities: contains(iotConnector, 'managedIdentities') ? iotConnector.managedIdentities : null
+      deviceMapping: iotConnector.?deviceMapping
+      fhirdestination: iotConnector.?fhirdestination
+      consumerGroup: iotConnector.?consumerGroup ?? iotConnector.name
+      managedIdentities: iotConnector.?managedIdentities
       diagnosticSettings: iotConnector.?diagnosticSettings
       lock: iotConnector.?lock ?? lock
     }

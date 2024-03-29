@@ -2,7 +2,8 @@ metadata name = 'Healthcare API Workspace FHIR Services'
 metadata description = 'This module deploys a Healthcare API Workspace FHIR Service.'
 metadata owner = 'Azure/module-maintainers'
 
-@maxLength(50)
+@minLength(3)
+@maxLength(24)
 @description('Required. The name of the FHIR service.')
 param name string
 
@@ -17,13 +18,13 @@ param kind string = 'fhir-R4'
 param workspaceName string
 
 @description('Optional. List of Azure AD object IDs (User or Apps) that is allowed access to the FHIR service.')
-param accessPolicyObjectIds array = []
+param accessPolicyObjectIds array?
 
 @description('Optional. The list of the Azure container registry login servers.')
-param acrLoginServers array = []
+param acrLoginServers array?
 
 @description('Optional. The list of Open Container Initiative (OCI) artifacts.')
-param acrOciArtifacts array = []
+param acrOciArtifacts array?
 
 @description('Optional. The authority url for the service.')
 param authenticationAuthority string = uri(environment().authentication.loginEndpoint, subscription().tenantId)
@@ -32,10 +33,10 @@ param authenticationAuthority string = uri(environment().authentication.loginEnd
 param authenticationAudience string = 'https://${workspaceName}-${name}.fhir.azurehealthcareapis.com'
 
 @description('Optional. Specify URLs of origin sites that can access this API, or use "*" to allow access from any site.')
-param corsOrigins array = []
+param corsOrigins array?
 
 @description('Optional. Specify HTTP headers which can be used during the request. Use "*" for any header.')
-param corsHeaders array = []
+param corsHeaders array?
 
 @allowed([
   'DELETE'
@@ -46,10 +47,10 @@ param corsHeaders array = []
   'PUT'
 ])
 @description('Optional. Specify the allowed HTTP methods.')
-param corsMethods array = []
+param corsMethods array?
 
 @description('Optional. Specify how long a result from a request can be cached in seconds. Example: 600 means 10 minutes.')
-param corsMaxAge int = -1
+param corsMaxAge int?
 
 @description('Optional. Use this setting to indicate that cookies should be included in CORS requests.')
 param corsAllowCredentials bool = false
@@ -61,7 +62,7 @@ param location string = resourceGroup().location
 param diagnosticSettings diagnosticSettingType
 
 @description('Optional. The name of the default export storage account.')
-param exportStorageAccountName string = ''
+param exportStorageAccountName string?
 
 @description('Optional. The name of the default integration storage account.')
 param importStorageAccountName string = ''
@@ -94,7 +95,7 @@ param publicNetworkAccess string = 'Disabled'
 param resourceVersionPolicy string = 'versioned'
 
 @description('Optional. A list of FHIR Resources and their version policy overrides.')
-param resourceVersionOverrides object = {}
+param resourceVersionOverrides object?
 
 @description('Optional. If the SMART on FHIR proxy is enabled.')
 param smartProxyEnabled bool = false
@@ -115,13 +116,13 @@ var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
         ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
 
 var accessPolicies = [
-  for id in accessPolicyObjectIds: {
+  for id in accessPolicyObjectIds ?? []: {
     objectId: id
   }
 ]
@@ -204,24 +205,24 @@ resource fhir 'Microsoft.HealthcareApis/workspaces/fhirservices@2022-06-01' = {
     corsConfiguration: {
       allowCredentials: corsAllowCredentials
       headers: corsHeaders
-      maxAge: corsMaxAge == -1 ? null : corsMaxAge
+      maxAge: corsMaxAge
       methods: corsMethods
       origins: corsOrigins
     }
     publicNetworkAccess: publicNetworkAccess
-    exportConfiguration: exportStorageAccountName == '' ? {} : exportConfiguration
+    exportConfiguration: empty(exportStorageAccountName) ? {} : exportConfiguration
     importConfiguration: {
       enabled: importEnabled
       initialImportMode: initialImportMode
-      integrationDataStore: importStorageAccountName == '' ? null : importStorageAccountName
+      integrationDataStore: importStorageAccountName
     }
     resourceVersionPolicyConfiguration: {
       default: resourceVersionPolicy
-      resourceTypeOverrides: empty(resourceVersionOverrides) ? null : resourceVersionOverrides
+      resourceTypeOverrides: resourceVersionOverrides
     }
     acrConfiguration: {
       loginServers: acrLoginServers
-      ociArtifacts: empty(acrOciArtifacts) ? null : acrOciArtifacts
+      ociArtifacts: acrOciArtifacts
     }
   }
 }

@@ -2,18 +2,19 @@ metadata name = 'Healthcare API Workspace DICOM Services'
 metadata description = 'This module deploys a Healthcare API Workspace DICOM Service.'
 metadata owner = 'Azure/module-maintainers'
 
+@minLength(3)
+@maxLength(24)
 @description('Required. The name of the DICOM service.')
-@maxLength(50)
 param name string
 
 @description('Conditional. The name of the parent health data services workspace. Required if the template is used in a standalone deployment.')
 param workspaceName string
 
 @description('Optional. Specify URLs of origin sites that can access this API, or use "*" to allow access from any site.')
-param corsOrigins array = []
+param corsOrigins array?
 
 @description('Optional. Specify HTTP headers which can be used during the request. Use "*" for any header.')
-param corsHeaders array = []
+param corsHeaders array
 
 @allowed([
   'DELETE'
@@ -24,10 +25,10 @@ param corsHeaders array = []
   'PUT'
 ])
 @description('Optional. Specify the allowed HTTP methods.')
-param corsMethods array = []
+param corsMethods array?
 
 @description('Optional. Specify how long a result from a request can be cached in seconds. Example: 600 means 10 minutes.')
-param corsMaxAge int = -1
+param corsMaxAge int?
 
 @description('Optional. Use this setting to indicate that cookies should be included in CORS requests.')
 param corsAllowCredentials bool = false
@@ -64,7 +65,7 @@ var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
         ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -86,7 +87,7 @@ resource dicom 'Microsoft.HealthcareApis/workspaces/dicomservices@2022-06-01' = 
     corsConfiguration: {
       allowCredentials: corsAllowCredentials
       headers: corsHeaders
-      maxAge: corsMaxAge == -1 ? null : corsMaxAge
+      maxAge: corsMaxAge
       methods: corsMethods
       origins: corsOrigins
     }

@@ -2,8 +2,9 @@ metadata name = 'Healthcare API Workspace IoT Connectors'
 metadata description = 'This module deploys a Healthcare API Workspace IoT Connector.'
 metadata owner = 'Azure/module-maintainers'
 
+@minLength(3)
+@maxLength(24)
 @description('Required. The name of the MedTech service.')
-@maxLength(50)
 param name string
 
 @description('Conditional. The name of the parent health data services workspace. Required if the template is used in a standalone deployment.')
@@ -52,7 +53,7 @@ var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
         ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -129,16 +130,9 @@ module fhir_destination 'fhirdestination/main.bicep' =
     params: {
       name: '${uniqueString(workspaceName, iotConnector.name)}-map'
       iotConnectorName: iotConnector.name
-      resourceIdentityResolutionType: contains(fhirdestination, 'resourceIdentityResolutionType')
-        ? fhirdestination.resourceIdentityResolutionType
-        : 'Lookup'
+      resourceIdentityResolutionType: fhirdestination.?resourceIdentityResolutionType
       fhirServiceResourceId: fhirdestination.fhirServiceResourceId
-      destinationMapping: contains(fhirdestination, 'destinationMapping')
-        ? fhirdestination.destinationMapping
-        : {
-            templateType: 'CollectionFhir'
-            template: []
-          }
+      destinationMapping: fhirdestination.?destinationMapping
       location: location
       workspaceName: workspaceName
     }
