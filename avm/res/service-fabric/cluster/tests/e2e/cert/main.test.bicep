@@ -65,10 +65,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         name: 'Node01'
       }
     ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
   }
 }]
