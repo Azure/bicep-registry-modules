@@ -45,9 +45,12 @@ function Set-AvmGitHubIssueOwnerConfig {
       throw 'No valid module name was found in the issue.'
     }
 
-    $moduleIndex = $moduleName.StartsWith("avm/res") ? "Bicep-Resource" : "Bicep-Pattern"
+    $moduleIndex = $moduleName.StartsWith('avm/res') ? 'Bicep-Resource' : 'Bicep-Pattern'
     # get CSV data
-    $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
+    $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName
+
+
+    # TODO: add res or ptn label
 
     # new/unknown module
     if ($null -eq $module) {
@@ -59,7 +62,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 "@
     }
     # orphaned module
-    elseif ($module.ModuleStatus -eq "Module Orphaned :eyes:") {
+    elseif ($module.ModuleStatus -eq 'Module Orphaned :eyes:') {
       $reply = @"
 **@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
@@ -86,7 +89,7 @@ function Set-AvmGitHubIssueOwnerConfig {
       gh issue comment $issue.url --body $reply --repo $Repo
     }
 
-    if (($module.ModuleStatus -ne "Module Orphaned :eyes:") -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
+    if (($module.ModuleStatus -ne 'Module Orphaned :eyes:') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
       if ($PSCmdlet.ShouldProcess(("owner [{0}] to issue [$($issue.title)]" -f $module.PrimaryModuleOwnerGHHandle), 'Assign')) {
         # assign owner
         $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
