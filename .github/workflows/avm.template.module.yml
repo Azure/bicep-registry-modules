@@ -140,11 +140,12 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' &&
       always() &&
-      !cancelled() &&
-      (fromJson(inputs.workflowInput)).staticValidation == 'true' &&
-      (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
       needs.job_module_static_validation.result == 'success' &&
       needs.job_module_deploy_validation.result == 'success'
+    # !cancelled() &&
+    # (fromJson(inputs.workflowInput)).staticValidation == 'true' &&
+    # (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
+      
     # if: github.ref == 'refs/heads/main' &&
     #   needs.job_module_static_validation.result == 'success' && needs.job_module_deploy_validation.result == 'success'
     needs:
