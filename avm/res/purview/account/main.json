@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "6363425469984006749"
+      "templateHash": "12372769218574856669"
     },
     "name": "Purview Accounts",
     "description": "This module deploys a Purview Account.",
@@ -417,6 +417,13 @@
             "metadata": {
               "description": "Optional. Enable/Disable usage telemetry for module."
             }
+          },
+          "resourceGroupName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
+            }
           }
         }
       },
@@ -660,6 +667,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Account-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1321,6 +1329,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Portal-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1982,6 +1991,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Storage-Blob-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2643,6 +2653,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Storage-Queue-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3304,6 +3315,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Eventhub-Namespace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "1037376719472164263"
+      "templateHash": "2466458269350254610"
     },
     "name": "Azure Synapse Analytics",
     "description": "This module deploys an Azure Synapse Analytics (Private Link Hub).",
@@ -282,6 +282,13 @@
             "metadata": {
               "description": "Optional. Enable/Disable usage telemetry for module."
             }
+          },
+          "resourceGroupName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
+            }
           }
         }
       },
@@ -416,6 +423,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-PrivateLinkHub-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

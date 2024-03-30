@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "7527516376989418326"
+      "templateHash": "13939047246671917683"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory.",
@@ -304,6 +304,13 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. Enable/Disable usage telemetry for module."
+            }
+          },
+          "resourceGroupName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
             }
           }
         }
@@ -1142,6 +1149,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-dataFactory-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

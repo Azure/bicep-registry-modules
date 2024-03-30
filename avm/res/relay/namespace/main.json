@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "10643789990116879548"
+      "templateHash": "1677501830991724783"
     },
     "name": "Relay Namespaces",
     "description": "This module deploys a Relay Namespace",
@@ -281,6 +281,13 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. Enable/Disable usage telemetry for module."
+            }
+          },
+          "resourceGroupName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
             }
           }
         }
