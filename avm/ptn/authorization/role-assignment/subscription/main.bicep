@@ -67,5 +67,9 @@ output name string = roleAssignment.name
 
 @sys.description('The resource ID of the Role Assignment.')
 output resourceId string = roleAssignment.id
+
+@sys.description('The name of the resource group the role assignment was applied at.')
+output subscriptionName string = subscription().displayName
+
 @sys.description('The scope this Role Assignment applies to.')
 output scope string = subscription().id
