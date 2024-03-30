@@ -46,33 +46,35 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    vpnGatewayGeneration: 'Generation2'
-    skuName: 'VpnGw2AZ'
-    gatewayType: 'Vpn'
-    vNetResourceId: nestedDependencies.outputs.vnetResourceId
-    activeActive: true
-    domainNameLabel: [
-      '${namePrefix}-dm-${serviceShort}'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      vpnGatewayGeneration: 'Generation2'
+      skuName: 'VpnGw2AZ'
+      gatewayType: 'Vpn'
+      vNetResourceId: nestedDependencies.outputs.vnetResourceId
+      activeActive: true
+      domainNameLabel: [
+        '${namePrefix}-dm-${serviceShort}'
+      ]
+      publicIpZones: [
+        '1'
+        '2'
+        '3'
+      ]
+      vpnType: 'RouteBased'
+      enablePrivateIpAddress: true
+      gatewayDefaultSiteLocalNetworkGatewayId: nestedDependencies.outputs.localNetworkGatewayResourceId
+      disableIPSecReplayProtection: true
+      allowRemoteVnetTraffic: true
+      enableBgpRouteTranslationForNat: true
+    }
+    dependsOn: [
+      nestedDependencies
     ]
-    publicIpZones: [
-      '1'
-      '2'
-      '3'
-    ]
-    vpnType: 'RouteBased'
-    enablePrivateIpAddress: true
-    gatewayDefaultSiteLocalNetworkGatewayId: nestedDependencies.outputs.localNetworkGatewayResourceId
-    disableIPSecReplayProtection: true
-    allowRemoteVnetTraffic: true
-    enableBgpRouteTranslationForNat: true
   }
-  dependsOn: [
-    nestedDependencies
-  ]
-}]
+]
