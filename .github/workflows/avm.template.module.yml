@@ -140,10 +140,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' &&
       needs.job_module_static_validation.result != 'failure' &&
-      needs.job_module_static_validation.result != 'skipped' &&
       needs.job_module_static_validation.result != 'canceled' &&
       needs.job_module_deploy_validation.result != 'failure' &&
-      needs.job_module_deploy_validation.result != 'skipped' &&
       needs.job_module_deploy_validation.result != 'canceled'
     # if: github.ref == 'refs/heads/main' &&
     #   needs.job_module_static_validation.result == 'success' && needs.job_module_deploy_validation.result == 'success'
