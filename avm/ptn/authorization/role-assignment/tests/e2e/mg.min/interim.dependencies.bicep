@@ -20,6 +20,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     managedIdentityName: managedIdentityName
+    location: location
   }
 }
 
