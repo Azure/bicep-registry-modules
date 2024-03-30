@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "8193140269981034553"
+      "templateHash": "7132206622598400364"
     },
     "name": "User Assigned Identities",
     "description": "This module deploys a User Assigned Identity.",
@@ -266,7 +266,9 @@
     "userAssignedIdentity_federatedIdentityCredentials": {
       "copy": {
         "name": "userAssignedIdentity_federatedIdentityCredentials",
-        "count": "[length(coalesce(parameters('federatedIdentityCredentials'), createArray()))]"
+        "count": "[length(coalesce(parameters('federatedIdentityCredentials'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",

@@ -39,7 +39,7 @@ function Set-AvmGitHubIssueOwnerConfig {
   $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
 
   if ($issue.title.StartsWith('[AVM Module Issue]')) {
-    $moduleName = ($issue.body.Split("`n") -match "avm/(?:res|ptn)")[0].Trim().Replace(' ', '')
+    $moduleName = ($issue.body.Split("`n") -match 'avm/(?:res|ptn)')[0].Trim().Replace(' ', '')
 
     if ([string]::IsNullOrEmpty($moduleName)) {
       throw 'No valid module name was found in the issue.'
@@ -78,7 +78,7 @@ function Set-AvmGitHubIssueOwnerConfig {
     }
 
     if ($PSCmdlet.ShouldProcess("class label to issue [$($issue.title)]", 'Add')) {
-      gh issue edit $issue.url --add-label ($moduleIndex -eq "Bicep-Resource" ? "Class: Resource Module :package:" : "Class: Pattern Module :package:") --repo $Repo
+      gh issue edit $issue.url --add-label ($moduleIndex -eq 'Bicep-Resource' ? 'Class: Resource Module :package:' : 'Class: Pattern Module :package:') --repo $Repo
     }
 
     if ($PSCmdlet.ShouldProcess("reply comment to issue [$($issue.title)]", 'Add')) {
