@@ -143,8 +143,8 @@ jobs:
       !cancelled() &&
       (fromJson(inputs.workflowInput)).staticValidation == 'true' &&
       (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
-      needs.job_module_static_validation.result != 'failure' &&
-      needs.job_module_deploy_validation.result != 'failure'
+      needs.job_module_static_validation.result == 'success' &&
+      needs.job_module_deploy_validation.result == 'success'
     # if: github.ref == 'refs/heads/main' &&
     #   needs.job_module_static_validation.result == 'success' && needs.job_module_deploy_validation.result == 'success'
     needs:
