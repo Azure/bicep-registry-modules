@@ -41,7 +41,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nsepmin'
+  name: 'serviceEndpointPolicyDeployment'
   params: {
     // Required parameters
     name: 'nsepmin001'
@@ -89,7 +89,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nsepwaf'
+  name: 'serviceEndpointPolicyDeployment'
   params: {
     // Required parameters
     name: 'nsepwaf001'
@@ -183,7 +183,6 @@ An Array of contextual service endpoint policy.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `enableTelemetry`
 
@@ -332,7 +331,6 @@ The alias indicating if the policy belongs to a service.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `serviceEndpointPolicyDefinitions`
 
@@ -340,7 +338,6 @@ An Array of service endpoint policy definitions.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `tags`
 
