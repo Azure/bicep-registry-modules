@@ -345,6 +345,7 @@ resource slot_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-0
 module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-Slot-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(app.id, '/'))}-${name}-${privateEndpoint.?service ?? 'sites-${slot.name}'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true

@@ -232,6 +232,7 @@ resource signalR 'Microsoft.SignalRService/signalR@2022-02-01' = {
 module signalR_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-signalR-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(signalR.id, '/'))}-${privateEndpoint.?service ?? 'signalr'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true

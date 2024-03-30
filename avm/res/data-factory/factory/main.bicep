@@ -293,6 +293,7 @@ resource dataFactory_roleAssignments 'Microsoft.Authorization/roleAssignments@20
 module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-dataFactory-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(dataFactory.id, '/'))}-${privateEndpoint.?service ?? 'dataFactory'}-${index}'
       privateLinkServiceConnections: [
