@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults for Windows'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Deploy a VM with nVidia graphic card'
+metadata description = 'This instance deploys the module for a VM with dedicated nVidia graphic card.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmwinmin'
+param serviceShort string = 'cvmwinnvidia'
 
 @description('Optional. The password to leverage for the login.')
 @secure()
@@ -23,6 +23,9 @@ param password string = newGuid()
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
+
+#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be ued in the AVM testing subscription
+var tempLocation = 'eastus'
 
 // ============ //
 // Dependencies //
@@ -32,14 +35,14 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: tempLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, tempLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
+    location: tempLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
@@ -51,9 +54,9 @@ module nestedDependencies 'dependencies.bicep' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, tempLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
+      location: tempLocation
       name: '${namePrefix}${serviceShort}'
       adminUsername: 'localAdminUser'
       imageReference: {
@@ -82,8 +85,11 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Windows'
-      vmSize: 'Standard_DS2_v2'
+      vmSize: 'Standard_NV6ads_A10_v5'
       adminPassword: password
+      extensionNvidiaGpuDriverWindows: {
+        enabled: true
+      }
     }
   }
 ]
