@@ -45,7 +45,10 @@ resource msiRGContrRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-
   scope: resourceGroup()
   properties: {
     principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c') // Contributor
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ) // Contributor
     principalType: 'ServicePrincipal'
   }
 }
