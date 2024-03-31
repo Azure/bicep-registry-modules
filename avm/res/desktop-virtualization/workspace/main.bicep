@@ -60,7 +60,8 @@ var builtInRoleNames = {
   'Desktop Virtualization Workspace Reader': '/providers/Microsoft.Authorization/roleDefinitions/0fa44ee9-7a7d-466b-9bb2-2bf446b1204d'
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   if (enableTelemetry) {
     name: take(
       '46d3xbcp.res.desktopvirtualization-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',

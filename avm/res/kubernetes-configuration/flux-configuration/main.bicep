@@ -47,7 +47,8 @@ param sourceKind string
 @description('Optional. Whether this configuration should suspend its reconciliation of its kustomizations and sources.')
 param suspend bool = false
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   if (enableTelemetry) {
     name: '46d3xbcp.res.kubernetesconfiguration-fluxconfig.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
     properties: {

@@ -64,7 +64,8 @@ resource rgQuery_lock 'Microsoft.Authorization/locks@2020-05-01' =
     scope: rgQuery
   }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   if (enableTelemetry) {
     name: '46d3xbcp.resourcegraph-query.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
     properties: {

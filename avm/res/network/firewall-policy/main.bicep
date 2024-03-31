@@ -110,7 +110,8 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   if (enableTelemetry) {
     name: '46d3xbcp.res.network-firewallpolicy.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
     properties: {
