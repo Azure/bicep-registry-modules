@@ -1,4 +1,4 @@
-name: "avm.ptn.finops-toolkit-finops-hub"
+name: "avm.ptn.finops-toolkit.finops-hub"
 
 on:
   schedule:
@@ -34,7 +34,7 @@ on:
 
 env:
   modulePath: "avm/ptn/finops-toolkit/finops-hub"
-  workflowPath: ".github/workflows/avm.ptn.finops-toolkit-finops-hub.yml"
+  workflowPath: ".github/workflows/avm.ptn.finops-toolkit.finops-hub.yml"
 
 concurrency:
   group: ${{ github.workflow }}
