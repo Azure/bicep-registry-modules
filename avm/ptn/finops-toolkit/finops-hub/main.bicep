@@ -33,6 +33,9 @@ param exportContainer string = 'exports'
 @description('Optional. The name of the container used for normalized data ingestion.')
 param ingestionContainer string = 'ingestion'
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 //==============================================================================
 // Resources
 //==============================================================================
@@ -51,6 +54,25 @@ module hub 'modules/hub.bicep' = {
     ingestionContainer: ingestionContainer
   }
 }
+
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.ptn.finopstoolkit-finopshub.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
+        }
+      }
+    }
+  }
 
 //==============================================================================
 // Outputs
