@@ -1,0 +1,75 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "18089979917703174519"
+    },
+    "name": "Hosting Environment Custom DNS Suffix Configuration",
+    "description": "This module deploys a Hosting Environment Custom DNS Suffix Configuration.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "hostingEnvironmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Hosting Environment. Required if the template is used in a standalone deployment."
+      }
+    },
+    "dnsSuffix": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Enable the default custom domain suffix to use for all sites deployed on the ASE."
+      }
+    },
+    "certificateUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The URL referencing the Azure Key Vault certificate secret that should be used as the default SSL/TLS certificate for sites with the custom domain suffix."
+      }
+    },
+    "keyVaultReferenceIdentity": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The user-assigned identity to use for resolving the key vault certificate reference. If not specified, the system-assigned ASE identity will be used if available."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/hostingEnvironments/configurations",
+      "apiVersion": "2022-03-01",
+      "name": "[format('{0}/{1}', parameters('hostingEnvironmentName'), 'customdnssuffix')]",
+      "properties": {
+        "certificateUrl": "[parameters('certificateUrl')]",
+        "keyVaultReferenceIdentity": "[parameters('keyVaultReferenceIdentity')]",
+        "dnsSuffix": "[parameters('dnsSuffix')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the configuration."
+      },
+      "value": "customdnssuffix"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed configuration."
+      },
+      "value": "[resourceId('Microsoft.Web/hostingEnvironments/configurations', parameters('hostingEnvironmentName'), 'customdnssuffix')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed configuration."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

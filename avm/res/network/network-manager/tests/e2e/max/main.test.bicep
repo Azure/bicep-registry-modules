@@ -51,217 +51,222 @@ var networkManagerName = '${namePrefix}${serviceShort}001'
 var networkManagerExpecetedResourceID = '${resourceGroup.id}/providers/Microsoft.Network/networkManagers/${networkManagerName}'
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: networkManagerName
-    location: resourceLocation
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: networkManagerName
+      location: resourceLocation
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    networkManagerScopeAccesses: [
-      'Connectivity'
-      'SecurityAdmin'
-    ]
-    networkManagerScopes: {
-      managementGroups: [
-        // Note: Required the `Microsoft.Network` provider to be registered at management group level via `az provider register --namespace Microsoft.Network -m '<MgmtGroupName>'`
-        '/providers/Microsoft.Management/managementGroups/#_managementGroupId_#'
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
       ]
+      networkManagerScopeAccesses: [
+        'Connectivity'
+        'SecurityAdmin'
+      ]
+      networkManagerScopes: {
+        managementGroups: [
+          // Note: Required the `Microsoft.Network` provider to be registered at management group level via `az provider register --namespace Microsoft.Network -m '<MgmtGroupName>'`
+          '/providers/Microsoft.Management/managementGroups/#_managementGroupId_#'
+        ]
+      }
+      networkGroups: [
+        {
+          name: 'network-group-spokes'
+          description: 'network-group-spokes description'
+          staticMembers: [
+            {
+              name: 'virtualNetworkSpoke1'
+              resourceId: nestedDependencies.outputs.virtualNetworkSpoke1Id
+            }
+            {
+              name: 'virtualNetworkSpoke2'
+              resourceId: nestedDependencies.outputs.virtualNetworkSpoke2Id
+            }
+          ]
+        }
+      ]
+      connectivityConfigurations: [
+        {
+          name: 'hubSpokeConnectivity'
+          description: 'hubSpokeConnectivity description'
+          connectivityTopology: 'HubAndSpoke'
+          hubs: [
+            {
+              resourceId: nestedDependencies.outputs.virtualNetworkHubId
+              resourceType: 'Microsoft.Network/virtualNetworks'
+            }
+          ]
+          deleteExistingPeering: 'True'
+          isGlobal: 'True'
+          appliesToGroups: [
+            {
+              networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
+              useHubGateway: 'False'
+              groupConnectivity: 'None'
+              isGlobal: 'False'
+            }
+          ]
+        }
+        {
+          name: 'MeshConnectivity'
+          description: 'MeshConnectivity description'
+          connectivityTopology: 'Mesh'
+          deleteExistingPeering: 'True'
+          isGlobal: 'True'
+          appliesToGroups: [
+            {
+              networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
+              useHubGateway: 'False'
+              groupConnectivity: 'None'
+              isGlobal: 'False'
+            }
+          ]
+        }
+      ]
+      scopeConnections: [
+        {
+          name: 'scope-connection-test'
+          description: 'description of the scope connection'
+          resourceId: subscription().id
+          tenantid: tenant().tenantId
+        }
+      ]
+      securityAdminConfigurations: [
+        {
+          name: 'test-security-admin-config'
+          description: 'description of the security admin config'
+          applyOnNetworkIntentPolicyBasedServices: [
+            'AllowRulesOnly'
+          ]
+          ruleCollections: [
+            {
+              name: 'test-rule-collection-1'
+              description: 'test-rule-collection-description'
+              appliesToGroups: [
+                {
+                  networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
+                }
+              ]
+              rules: [
+                {
+                  name: 'test-inbound-allow-rule-1'
+                  description: 'test-inbound-allow-rule-1-description'
+                  access: 'Allow'
+                  direction: 'Inbound'
+                  priority: 150
+                  protocol: 'Tcp'
+                }
+                {
+                  name: 'test-outbound-deny-rule-2'
+                  description: 'test-outbound-deny-rule-2-description'
+                  access: 'Deny'
+                  direction: 'Outbound'
+                  priority: 200
+                  protocol: 'Tcp'
+                  sourcePortRanges: [
+                    '80'
+                    '442-445'
+                  ]
+                  sources: [
+                    {
+                      addressPrefix: 'AppService.WestEurope'
+                      addressPrefixType: 'ServiceTag'
+                    }
+                  ]
+                }
+              ]
+            }
+            {
+              name: 'test-rule-collection-2'
+              description: 'test-rule-collection-description'
+              appliesToGroups: [
+                {
+                  networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
+                }
+              ]
+              rules: [
+                {
+                  name: 'test-inbound-allow-rule-3'
+                  description: 'test-inbound-allow-rule-3-description'
+                  access: 'Allow'
+                  direction: 'Inbound'
+                  destinationPortRanges: [
+                    '80'
+                    '442-445'
+                  ]
+                  destinations: [
+                    {
+                      addressPrefix: '192.168.20.20'
+                      addressPrefixType: 'IPPrefix'
+                    }
+                  ]
+                  priority: 250
+                  protocol: 'Tcp'
+                }
+                {
+                  name: 'test-inbound-allow-rule-4'
+                  description: 'test-inbound-allow-rule-4-description'
+                  access: 'Allow'
+                  direction: 'Inbound'
+                  sources: [
+                    {
+                      addressPrefix: '10.0.0.0/24'
+                      addressPrefixType: 'IPPrefix'
+                    }
+                    {
+                      addressPrefix: '100.100.100.100'
+                      addressPrefixType: 'IPPrefix'
+                    }
+                  ]
+                  destinations: [
+                    {
+                      addressPrefix: '172.16.0.0/24'
+                      addressPrefixType: 'IPPrefix'
+                    }
+                    {
+                      addressPrefix: '172.16.1.0/24'
+                      addressPrefixType: 'IPPrefix'
+                    }
+                  ]
+                  priority: 260
+                  protocol: 'Tcp'
+                }
+              ]
+            }
+          ]
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
-    networkGroups: [
-      {
-        name: 'network-group-spokes'
-        description: 'network-group-spokes description'
-        staticMembers: [
-          {
-            name: 'virtualNetworkSpoke1'
-            resourceId: nestedDependencies.outputs.virtualNetworkSpoke1Id
-          }
-          {
-            name: 'virtualNetworkSpoke2'
-            resourceId: nestedDependencies.outputs.virtualNetworkSpoke2Id
-          }
-        ]
-      }
+    dependsOn: [
+      nestedDependencies
     ]
-    connectivityConfigurations: [
-      {
-        name: 'hubSpokeConnectivity'
-        description: 'hubSpokeConnectivity description'
-        connectivityTopology: 'HubAndSpoke'
-        hubs: [
-          {
-            resourceId: nestedDependencies.outputs.virtualNetworkHubId
-            resourceType: 'Microsoft.Network/virtualNetworks'
-          }
-        ]
-        deleteExistingPeering: 'True'
-        isGlobal: 'True'
-        appliesToGroups: [
-          {
-            networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
-            useHubGateway: 'False'
-            groupConnectivity: 'None'
-            isGlobal: 'False'
-          }
-        ]
-      }
-      {
-        name: 'MeshConnectivity'
-        description: 'MeshConnectivity description'
-        connectivityTopology: 'Mesh'
-        deleteExistingPeering: 'True'
-        isGlobal: 'True'
-        appliesToGroups: [
-          {
-            networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
-            useHubGateway: 'False'
-            groupConnectivity: 'None'
-            isGlobal: 'False'
-          }
-        ]
-      }
-    ]
-    scopeConnections: [
-      {
-        name: 'scope-connection-test'
-        description: 'description of the scope connection'
-        resourceId: subscription().id
-        tenantid: tenant().tenantId
-      }
-    ]
-    securityAdminConfigurations: [
-      {
-        name: 'test-security-admin-config'
-        description: 'description of the security admin config'
-        applyOnNetworkIntentPolicyBasedServices: [
-          'AllowRulesOnly'
-        ]
-        ruleCollections: [
-          {
-            name: 'test-rule-collection-1'
-            description: 'test-rule-collection-description'
-            appliesToGroups: [
-              {
-                networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
-              }
-            ]
-            rules: [
-              {
-                name: 'test-inbound-allow-rule-1'
-                description: 'test-inbound-allow-rule-1-description'
-                access: 'Allow'
-                direction: 'Inbound'
-                priority: 150
-                protocol: 'Tcp'
-              }
-              {
-                name: 'test-outbound-deny-rule-2'
-                description: 'test-outbound-deny-rule-2-description'
-                access: 'Deny'
-                direction: 'Outbound'
-                priority: 200
-                protocol: 'Tcp'
-                sourcePortRanges: [
-                  '80'
-                  '442-445'
-                ]
-                sources: [
-                  {
-                    addressPrefix: 'AppService.WestEurope'
-                    addressPrefixType: 'ServiceTag'
-                  }
-                ]
-              }
-            ]
-          }
-          {
-            name: 'test-rule-collection-2'
-            description: 'test-rule-collection-description'
-            appliesToGroups: [
-              {
-                networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
-              }
-            ]
-            rules: [
-              {
-                name: 'test-inbound-allow-rule-3'
-                description: 'test-inbound-allow-rule-3-description'
-                access: 'Allow'
-                direction: 'Inbound'
-                destinationPortRanges: [
-                  '80'
-                  '442-445'
-                ]
-                destinations: [
-                  {
-                    addressPrefix: '192.168.20.20'
-                    addressPrefixType: 'IPPrefix'
-                  }
-                ]
-                priority: 250
-                protocol: 'Tcp'
-              }
-              {
-                name: 'test-inbound-allow-rule-4'
-                description: 'test-inbound-allow-rule-4-description'
-                access: 'Allow'
-                direction: 'Inbound'
-                sources: [
-                  {
-                    addressPrefix: '10.0.0.0/24'
-                    addressPrefixType: 'IPPrefix'
-                  }
-                  {
-                    addressPrefix: '100.100.100.100'
-                    addressPrefixType: 'IPPrefix'
-                  }
-                ]
-                destinations: [
-                  {
-                    addressPrefix: '172.16.0.0/24'
-                    addressPrefixType: 'IPPrefix'
-                  }
-                  {
-                    addressPrefix: '172.16.1.0/24'
-                    addressPrefixType: 'IPPrefix'
-                  }
-                ]
-                priority: 260
-                protocol: 'Tcp'
-              }
-            ]
-          }
-        ]
-      }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
   }
-  dependsOn: [
-    nestedDependencies
-  ]
-}]
+]

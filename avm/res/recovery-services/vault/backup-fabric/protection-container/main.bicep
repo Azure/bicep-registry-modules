@@ -58,18 +58,20 @@ resource protectionContainer 'Microsoft.RecoveryServices/vaults/backupFabrics/pr
   }
 }
 
-module protectionContainer_protectedItems 'protected-item/main.bicep' = [for (protectedItem, index) in protectedItems: {
-  name: '${uniqueString(deployment().name, location)}-ProtectedItem-${index}'
-  params: {
-    policyId: protectedItem.policyId
-    name: protectedItem.name
-    protectedItemType: protectedItem.protectedItemType
-    protectionContainerName: protectionContainer.name
-    recoveryVaultName: recoveryVaultName
-    sourceResourceId: protectedItem.sourceResourceId
-    location: location
+module protectionContainer_protectedItems 'protected-item/main.bicep' = [
+  for (protectedItem, index) in protectedItems: {
+    name: '${uniqueString(deployment().name, location)}-ProtectedItem-${index}'
+    params: {
+      policyId: protectedItem.policyId
+      name: protectedItem.name
+      protectedItemType: protectedItem.protectedItemType
+      protectionContainerName: protectionContainer.name
+      recoveryVaultName: recoveryVaultName
+      sourceResourceId: protectedItem.sourceResourceId
+      location: location
+    }
   }
-}]
+]
 
 @description('The name of the Resource Group the Protection Container was created in.')
 output resourceGroupName string = resourceGroup().name

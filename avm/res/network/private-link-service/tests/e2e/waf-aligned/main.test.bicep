@@ -46,48 +46,50 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    ipConfigurations: [
-      {
-        name: '${serviceShort}01'
-        properties: {
-          primary: true
-          privateIPAllocationMethod: 'Dynamic'
-          subnet: {
-            id: nestedDependencies.outputs.subnetResourceId
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      ipConfigurations: [
+        {
+          name: '${serviceShort}01'
+          properties: {
+            primary: true
+            privateIPAllocationMethod: 'Dynamic'
+            subnet: {
+              id: nestedDependencies.outputs.subnetResourceId
+            }
           }
         }
-      }
-    ]
-    loadBalancerFrontendIpConfigurations: [
-      {
-        id: nestedDependencies.outputs.loadBalancerFrontendIpConfigurationResourceId
-      }
-    ]
-    autoApproval: {
-      subscriptions: [
-        '*'
       ]
-    }
-    visibility: {
-      subscriptions: [
-        subscription().subscriptionId
+      loadBalancerFrontendIpConfigurations: [
+        {
+          id: nestedDependencies.outputs.loadBalancerFrontendIpConfigurationResourceId
+        }
       ]
-    }
-    enableProxyProtocol: true
-    fqdns: [
-      '${serviceShort}.plsfqdn01.azure.privatelinkservice'
-      '${serviceShort}.plsfqdn02.azure.privatelinkservice'
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
+      autoApproval: {
+        subscriptions: [
+          '*'
+        ]
+      }
+      visibility: {
+        subscriptions: [
+          subscription().subscriptionId
+        ]
+      }
+      enableProxyProtocol: true
+      fqdns: [
+        '${serviceShort}.plsfqdn01.azure.privatelinkservice'
+        '${serviceShort}.plsfqdn02.azure.privatelinkservice'
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
   }
-}]
+]
