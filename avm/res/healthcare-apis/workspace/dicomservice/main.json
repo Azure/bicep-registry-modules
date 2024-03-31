@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "11079383736940820428"
+      "templateHash": "6288548209361871051"
     },
     "name": "Healthcare API Workspace DICOM Services",
     "description": "This module deploys a Healthcare API Workspace DICOM Service.",
@@ -398,7 +398,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('dicom', '2022-06-01', 'full').identity, 'principalId')), reference('dicom', '2022-06-01', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('dicom', '2022-06-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",

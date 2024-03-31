@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "12093832959002416443"
+      "templateHash": "7816820888547495947"
     },
     "name": "Healthcare API Workspace FHIR Services",
     "description": "This module deploys a Healthcare API Workspace FHIR Service.",
@@ -457,15 +457,6 @@
     }
   },
   "variables": {
-    "copy": [
-      {
-        "name": "accessPolicies",
-        "count": "[length(coalesce(parameters('accessPolicyObjectIds'), createArray()))]",
-        "input": {
-          "objectId": "[coalesce(parameters('accessPolicyObjectIds'), createArray())[copyIndex('accessPolicies')]]"
-        }
-      }
-    ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "exportConfiguration": {
@@ -504,7 +495,15 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "accessPolicies": "[variables('accessPolicies')]",
+        "copy": [
+          {
+            "name": "accessPolicies",
+            "count": "[length(coalesce(parameters('accessPolicyObjectIds'), createArray()))]",
+            "input": {
+              "objectId": "[coalesce(parameters('accessPolicyObjectIds'), createArray())[copyIndex('accessPolicies')]]"
+            }
+          }
+        ],
         "authenticationConfiguration": {
           "authority": "[parameters('authenticationAuthority')]",
           "audience": "[parameters('authenticationAudience')]",

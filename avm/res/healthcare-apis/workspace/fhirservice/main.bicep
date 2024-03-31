@@ -121,12 +121,6 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-var accessPolicies = [
-  for id in accessPolicyObjectIds ?? []: {
-    objectId: id
-  }
-]
-
 var exportConfiguration = {
   storageAccountName: exportStorageAccountName
 }
@@ -196,7 +190,11 @@ resource fhir 'Microsoft.HealthcareApis/workspaces/fhirservices@2022-06-01' = {
   tags: tags
   identity: identity
   properties: {
-    accessPolicies: accessPolicies
+    accessPolicies: [
+      for id in accessPolicyObjectIds ?? []: {
+        objectId: id
+      }
+    ]
     authenticationConfiguration: {
       authority: authenticationAuthority
       audience: authenticationAudience
