@@ -54,7 +54,9 @@
         "description": "[parameters('description')]",
         "query": "[parameters('query')]"
       },
-      "dependsOn": ["namespace"]
+      "dependsOn": [
+        "namespace"
+      ]
     }
   },
   "outputs": {

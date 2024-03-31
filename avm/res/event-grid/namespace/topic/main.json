@@ -25,7 +25,11 @@
         },
         "kind": {
           "type": "string",
-          "allowedValues": ["CanNotDelete", "None", "ReadOnly"],
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -81,7 +85,9 @@
           },
           "conditionVersion": {
             "type": "string",
-            "allowedValues": ["2.0"],
+            "allowedValues": [
+              "2.0"
+            ],
             "nullable": true,
             "metadata": {
               "description": "Optional. Version of the condition."
@@ -188,7 +194,9 @@
         "inputSchema": "[parameters('inputSchema')]",
         "publisherType": "[parameters('publisherType')]"
       },
-      "dependsOn": ["namespace"]
+      "dependsOn": [
+        "namespace"
+      ]
     },
     "topic_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -200,7 +208,9 @@
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
         "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
       },
-      "dependsOn": ["topic"]
+      "dependsOn": [
+        "topic"
+      ]
     },
     "topic_roleAssignments": {
       "copy": {
@@ -220,7 +230,9 @@
         "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
         "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
-      "dependsOn": ["topic"]
+      "dependsOn": [
+        "topic"
+      ]
     },
     "topic_eventSubscriptions": {
       "copy": {
@@ -320,7 +332,9 @@
                   },
                   "conditionVersion": {
                     "type": "string",
-                    "allowedValues": ["2.0"],
+                    "allowedValues": [
+                      "2.0"
+                    ],
                     "nullable": true,
                     "metadata": {
                       "description": "Optional. Version of the condition."
@@ -408,7 +422,9 @@
               "type": "Microsoft.EventGrid/namespaces/topics",
               "apiVersion": "2023-12-15-preview",
               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]",
-              "dependsOn": ["namespace"]
+              "dependsOn": [
+                "namespace"
+              ]
             },
             "namespace": {
               "existing": true,
@@ -425,7 +441,9 @@
                 "eventDeliverySchema": "[parameters('eventDeliverySchema')]",
                 "filtersConfiguration": "[parameters('filtersConfiguration')]"
               },
-              "dependsOn": ["namespace::topic"]
+              "dependsOn": [
+                "namespace::topic"
+              ]
             },
             "eventSubscription_roleAssignments": {
               "copy": {
@@ -445,7 +463,9 @@
                 "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
                 "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
               },
-              "dependsOn": ["eventSubscription"]
+              "dependsOn": [
+                "eventSubscription"
+              ]
             }
           },
           "outputs": {
@@ -473,7 +493,10 @@
           }
         }
       },
-      "dependsOn": ["namespace", "topic"]
+      "dependsOn": [
+        "namespace",
+        "topic"
+      ]
     }
   },
   "outputs": {

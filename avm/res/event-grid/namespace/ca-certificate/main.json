@@ -54,7 +54,9 @@
         "description": "[parameters('description')]",
         "encodedCertificate": "[parameters('encodedCertificate')]"
       },
-      "dependsOn": ["namespace"]
+      "dependsOn": [
+        "namespace"
+      ]
     }
   },
   "outputs": {

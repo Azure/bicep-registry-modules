@@ -48,7 +48,11 @@
         },
         "kind": {
           "type": "string",
-          "allowedValues": ["CanNotDelete", "None", "ReadOnly"],
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -104,7 +108,9 @@
           },
           "conditionVersion": {
             "type": "string",
-            "allowedValues": ["2.0"],
+            "allowedValues": [
+              "2.0"
+            ],
             "nullable": true,
             "metadata": {
               "description": "Optional. Version of the condition."
@@ -375,7 +381,10 @@
           },
           "logAnalyticsDestinationType": {
             "type": "string",
-            "allowedValues": ["AzureDiagnostics", "Dedicated"],
+            "allowedValues": [
+              "AzureDiagnostics",
+              "Dedicated"
+            ],
             "nullable": true,
             "metadata": {
               "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
@@ -467,7 +476,11 @@
     "publicNetworkAccess": {
       "type": "string",
       "nullable": true,
-      "allowedValues": ["Disabled", "Enabled", "SecuredByPerimeter"],
+      "allowedValues": [
+        "Disabled",
+        "Enabled",
+        "SecuredByPerimeter"
+      ],
       "metadata": {
         "description": "Optional. This determines if traffic is allowed over public network. By default it is enabled. You can further restrict to specific IPs by configuring."
       }
@@ -506,7 +519,10 @@
     "topicSpacesState": {
       "type": "string",
       "defaultValue": "Disabled",
-      "allowedValues": ["Enabled", "Disabled"],
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
       "metadata": {
         "description": "Optional. Indicates if Topic Spaces Configuration is enabled for the namespace. This enables the MQTT Broker functionality for the namespace. Once enabled, this property cannot be disabled."
       }
@@ -671,7 +687,9 @@
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
         "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
       },
-      "dependsOn": ["namespace"]
+      "dependsOn": [
+        "namespace"
+      ]
     },
     "namespace_diagnosticSettings": {
       "copy": {
@@ -710,7 +728,9 @@
         "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
         "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
       },
-      "dependsOn": ["namespace"]
+      "dependsOn": [
+        "namespace"
+      ]
     },
     "namespace_roleAssignments": {
       "copy": {
@@ -730,7 +750,9 @@
         "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
         "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
-      "dependsOn": ["namespace"]
+      "dependsOn": [
+        "namespace"
+      ]
     },
     "namespace_privateEndpoints": {
       "copy": {
@@ -850,7 +872,9 @@
                   },
                   "conditionVersion": {
                     "type": "string",
-                    "allowedValues": ["2.0"],
+                    "allowedValues": [
+                      "2.0"
+                    ],
                     "nullable": true,
                     "metadata": {
                       "description": "Optional. Version of the condition."
@@ -879,7 +903,11 @@
                 },
                 "kind": {
                   "type": "string",
-                  "allowedValues": ["CanNotDelete", "None", "ReadOnly"],
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
@@ -1207,7 +1235,9 @@
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
                 "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
               },
-              "dependsOn": ["privateEndpoint"]
+              "dependsOn": [
+                "privateEndpoint"
+              ]
             },
             "privateEndpoint_roleAssignments": {
               "copy": {
@@ -1227,7 +1257,9 @@
                 "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
                 "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
               },
-              "dependsOn": ["privateEndpoint"]
+              "dependsOn": [
+                "privateEndpoint"
+              ]
             },
             "privateEndpoint_privateDnsZoneGroup": {
               "condition": "[not(empty(parameters('privateDnsZoneResourceIds')))]",
@@ -1335,7 +1367,9 @@
                   }
                 }
               },
-              "dependsOn": ["privateEndpoint"]
+              "dependsOn": [
+                "privateEndpoint"
+              ]
             }
           },
           "outputs": {
@@ -1377,7 +1411,9 @@
           }
         }
       },
-      "dependsOn": ["namespace"]
+      "dependsOn": [
+        "namespace"
+      ]
     },
     "namespace_topics": {
       "copy": {
@@ -1442,7 +1478,11 @@
                 },
                 "kind": {
                   "type": "string",
-                  "allowedValues": ["CanNotDelete", "None", "ReadOnly"],
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
@@ -1498,7 +1538,9 @@
                   },
                   "conditionVersion": {
                     "type": "string",
-                    "allowedValues": ["2.0"],
+                    "allowedValues": [
+                      "2.0"
+                    ],
                     "nullable": true,
                     "metadata": {
                       "description": "Optional. Version of the condition."
@@ -1605,7 +1647,9 @@
                 "inputSchema": "[parameters('inputSchema')]",
                 "publisherType": "[parameters('publisherType')]"
               },
-              "dependsOn": ["namespace"]
+              "dependsOn": [
+                "namespace"
+              ]
             },
             "topic_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1617,7 +1661,9 @@
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
                 "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
               },
-              "dependsOn": ["topic"]
+              "dependsOn": [
+                "topic"
+              ]
             },
             "topic_roleAssignments": {
               "copy": {
@@ -1637,7 +1683,9 @@
                 "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
                 "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
               },
-              "dependsOn": ["topic"]
+              "dependsOn": [
+                "topic"
+              ]
             },
             "topic_eventSubscriptions": {
               "copy": {
@@ -1737,7 +1785,9 @@
                           },
                           "conditionVersion": {
                             "type": "string",
-                            "allowedValues": ["2.0"],
+                            "allowedValues": [
+                              "2.0"
+                            ],
                             "nullable": true,
                             "metadata": {
                               "description": "Optional. Version of the condition."
@@ -1825,7 +1875,9 @@
                       "type": "Microsoft.EventGrid/namespaces/topics",
                       "apiVersion": "2023-12-15-preview",
                       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]",
-                      "dependsOn": ["namespace"]
+                      "dependsOn": [
+                        "namespace"
+                      ]
                     },
                     "namespace": {
                       "existing": true,
@@ -1842,7 +1894,9 @@
                         "eventDeliverySchema": "[parameters('eventDeliverySchema')]",
                         "filtersConfiguration": "[parameters('filtersConfiguration')]"
                       },
-                      "dependsOn": ["namespace::topic"]
+                      "dependsOn": [
+                        "namespace::topic"
+                      ]
                     },
                     "eventSubscription_roleAssignments": {
                       "copy": {
@@ -1862,7 +1916,9 @@
                         "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
                         "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
                       },
-                      "dependsOn": ["eventSubscription"]
+                      "dependsOn": [
+                        "eventSubscription"
+                      ]
                     }
                   },
                   "outputs": {
@@ -1890,7 +1946,10 @@
                   }
                 }
               },
-              "dependsOn": ["namespace", "topic"]
+              "dependsOn": [
+                "namespace",
+                "topic"
+              ]
             }
           },
           "outputs": {
@@ -1918,7 +1977,9 @@
           }
         }
       },
-      "dependsOn": ["namespace"]
+      "dependsOn": [
+        "namespace"
+      ]
     },
     "namespace_caCertificates": {
       "copy": {
@@ -2004,7 +2065,9 @@
                 "description": "[parameters('description')]",
                 "encodedCertificate": "[parameters('encodedCertificate')]"
               },
-              "dependsOn": ["namespace"]
+              "dependsOn": [
+                "namespace"
+              ]
             }
           },
           "outputs": {
@@ -2032,7 +2095,9 @@
           }
         }
       },
-      "dependsOn": ["namespace"]
+      "dependsOn": [
+        "namespace"
+      ]
     },
     "namespace_clients": {
       "copy": {
@@ -2178,7 +2243,9 @@
                 },
                 "state": "[parameters('state')]"
               },
-              "dependsOn": ["namespace"]
+              "dependsOn": [
+                "namespace"
+              ]
             }
           },
           "outputs": {
@@ -2206,7 +2273,9 @@
           }
         }
       },
-      "dependsOn": ["namespace"]
+      "dependsOn": [
+        "namespace"
+      ]
     },
     "namespace_clientGroups": {
       "copy": {
@@ -2292,7 +2361,9 @@
                 "description": "[parameters('description')]",
                 "query": "[parameters('query')]"
               },
-              "dependsOn": ["namespace"]
+              "dependsOn": [
+                "namespace"
+              ]
             }
           },
           "outputs": {
@@ -2320,7 +2391,9 @@
           }
         }
       },
-      "dependsOn": ["namespace"]
+      "dependsOn": [
+        "namespace"
+      ]
     },
     "namespace_topicSpaces": {
       "copy": {
@@ -2415,7 +2488,9 @@
                   },
                   "conditionVersion": {
                     "type": "string",
-                    "allowedValues": ["2.0"],
+                    "allowedValues": [
+                      "2.0"
+                    ],
                     "nullable": true,
                     "metadata": {
                       "description": "Optional. Version of the condition."
@@ -2499,7 +2574,9 @@
                 "description": "[parameters('description')]",
                 "topicTemplates": "[parameters('topicTemplates')]"
               },
-              "dependsOn": ["namespace"]
+              "dependsOn": [
+                "namespace"
+              ]
             },
             "topic_roleAssignments": {
               "copy": {
@@ -2519,7 +2596,9 @@
                 "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
                 "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
               },
-              "dependsOn": ["topicSpace"]
+              "dependsOn": [
+                "topicSpace"
+              ]
             }
           },
           "outputs": {
@@ -2547,7 +2626,9 @@
           }
         }
       },
-      "dependsOn": ["namespace"]
+      "dependsOn": [
+        "namespace"
+      ]
     },
     "namespace_permissionBindings": {
       "copy": {
@@ -2631,7 +2712,10 @@
             },
             "permission": {
               "type": "string",
-              "allowedValues": ["Publisher", "Subscriber"],
+              "allowedValues": [
+                "Publisher",
+                "Subscriber"
+              ],
               "metadata": {
                 "description": "Required. The allowed permission."
               }
@@ -2654,7 +2738,9 @@
                 "permission": "[parameters('permission')]",
                 "topicSpaceName": "[parameters('topicSpaceName')]"
               },
-              "dependsOn": ["namespace"]
+              "dependsOn": [
+                "namespace"
+              ]
             }
           },
           "outputs": {
