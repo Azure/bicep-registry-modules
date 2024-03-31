@@ -1,4 +1,4 @@
-name: Platform - Toggle AVM workflows
+name: .Platform - Toggle AVM workflows
 
 on:
   workflow_dispatch:

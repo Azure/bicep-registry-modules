@@ -1,4 +1,4 @@
-name: Platform - Check PSRule
+name: .Platform - Check PSRule
 
 on:
   workflow_dispatch:

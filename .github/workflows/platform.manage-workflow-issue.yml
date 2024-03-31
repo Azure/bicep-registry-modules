@@ -1,4 +1,4 @@
-name: Platform - Manage workflow issue
+name: .Platform - Manage workflow issue
 
 on:
   schedule:
