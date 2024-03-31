@@ -22,31 +22,29 @@ Function Get-AvmCsvData {
   )
 
   # CSV file URLs
-  $BicepResourceUrl = "https://aka.ms/avm/index/bicep/res/csv"
-  $BicepPatternUrl = "https://aka.ms/avm/index/bicep/ptn/csv"
+  $BicepResourceUrl = 'https://aka.ms/avm/index/bicep/res/csv'
+  $BicepPatternUrl = 'https://aka.ms/avm/index/bicep/ptn/csv'
 
   # Retrieve the CSV file
   switch ($ModuleIndex) {
     'Bicep-Resource' {
       try {
         $unfilteredCSV = Invoke-WebRequest -Uri $BicepResourceUrl
-      }
-      catch {
-        throw "Unable to retrieve CSV file - Check network connection."
+      } catch {
+        throw 'Unable to retrieve CSV file - Check network connection.'
       }
     }
     'Bicep-Pattern' {
       try {
         $unfilteredCSV = Invoke-WebRequest -Uri $BicepPatternUrl
-      }
-      catch {
-        throw "Unable to retrieve CSV file - Check network connection."
+      } catch {
+        throw 'Unable to retrieve CSV file - Check network connection.'
       }
     }
   }
 
   # Convert the CSV content to a PowerShell object
-  $formattedBicepFullCsv = ConvertFrom-CSV $unfilteredCSV.Content
+  $formattedBicepFullCsv = ConvertFrom-Csv $unfilteredCSV.Content
 
   # Loop through each item in the filtered data
   foreach ($item in $formattedBicepFullCsv) {
