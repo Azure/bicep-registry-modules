@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults for Windows'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using guest configuration for Windows'
+metadata description = 'This instance deploys the module with the a guest configuration.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmwinmin'
+param serviceShort string = 'cvmwinguest'
 
 @description('Optional. The password to leverage for the login.')
 @secure()
@@ -53,6 +53,9 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
+      managedIdentities: {
+        systemAssigned: true
+      }
       location: resourceLocation
       name: '${namePrefix}${serviceShort}'
       adminUsername: 'localAdminUser'
@@ -84,6 +87,32 @@ module testDeployment '../../../main.bicep' = [
       osType: 'Windows'
       vmSize: 'Standard_DS2_v2'
       adminPassword: password
+      extensionGuestConfigurationExtension: {
+        enabled: true
+      }
+      guestConfiguration: {
+        name: 'AzureWindowsBaseline'
+        version: '1.*'
+        assignmentType: 'ApplyAndMonitor'
+        configurationParameter: [
+          {
+            name: 'Minimum Password Length;ExpectedValue'
+            value: '16'
+          }
+          {
+            name: 'Minimum Password Length;RemediateValue'
+            value: '16'
+          }
+          {
+            name: 'Maximum Password Age;ExpectedValue'
+            value: '75'
+          }
+          {
+            name: 'Maximum Password Age;RemediateValue'
+            value: '75'
+          }
+        ]
+      }
     }
   }
 ]
