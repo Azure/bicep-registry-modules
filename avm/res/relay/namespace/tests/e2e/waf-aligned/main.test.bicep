@@ -59,90 +59,91 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
-    networkRuleSets: {
-      defaultAction: 'Deny'
-      trustedServiceAccessEnabled: true
-      virtualNetworkRules: [
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
+      networkRuleSets: {
+        defaultAction: 'Deny'
+        trustedServiceAccessEnabled: true
+        virtualNetworkRules: [
+          {
+            subnet: {
+              ignoreMissingVnetServiceEndpoint: true
+              id: nestedDependencies.outputs.subnetResourceId
+            }
+          }
+        ]
+        ipRules: [
+          {
+            ipMask: '10.0.1.0/32'
+            action: 'Allow'
+          }
+          {
+            ipMask: '10.0.2.0/32'
+            action: 'Allow'
+          }
+        ]
+      }
+      authorizationRules: [
         {
-          subnet: {
-            ignoreMissingVnetServiceEndpoint: true
-            id: nestedDependencies.outputs.subnetResourceId
+          name: 'RootManageSharedAccessKey'
+          rights: [
+            'Listen'
+            'Manage'
+            'Send'
+          ]
+        }
+        {
+          name: 'AnotherKey'
+          rights: [
+            'Listen'
+            'Send'
+          ]
+        }
+      ]
+      hybridConnections: [
+        {
+          name: '${namePrefix}${serviceShort}hc001'
+          userMetadata: '[{"key":"endpoint","value":"db-server.constoso.com:1433"}]'
+        }
+      ]
+      wcfRelays: [
+        {
+          name: '${namePrefix}${serviceShort}wcf001'
+          relayType: 'NetTcp'
+        }
+      ]
+      diagnosticSettings: [
+        {
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      privateEndpoints: [
+        {
+          service: 'namespace'
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
           }
         }
       ]
-      ipRules: [
-        {
-          ipMask: '10.0.1.0/32'
-          action: 'Allow'
-        }
-        {
-          ipMask: '10.0.2.0/32'
-          action: 'Allow'
-        }
-      ]
     }
-    authorizationRules: [
-      {
-        name: 'RootManageSharedAccessKey'
-        rights: [
-          'Listen'
-          'Manage'
-          'Send'
-        ]
-      }
-      {
-        name: 'AnotherKey'
-        rights: [
-          'Listen'
-          'Send'
-        ]
-      }
-    ]
-    hybridConnections: [
-      {
-        name: '${namePrefix}${serviceShort}hc001'
-        userMetadata: '[{"key":"endpoint","value":"db-server.constoso.com:1433"}]'
-      }
-    ]
-    wcfRelays: [
-      {
-        name: '${namePrefix}${serviceShort}wcf001'
-        relayType: 'NetTcp'
-      }
-    ]
-    diagnosticSettings: [
-      {
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    privateEndpoints: [
-      {
-        service: 'namespace'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
-      }
-    ]
   }
-}
 ]
