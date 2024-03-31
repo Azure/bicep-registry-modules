@@ -1,4 +1,4 @@
-name: "avm.ptn.finopstoolkit-finopshub"
+name: "avm.ptn.finops-toolkit-finops-hub"
 
 on:
   schedule:
@@ -26,7 +26,7 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.ptn.finopstoolkit.finopshub.yml"
+      - ".github/workflows/avm.ptn.finops-toolkit.finops-hub.yml"
       - "avm/ptn/finops-toolkit/finops-hub/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
@@ -34,7 +34,7 @@ on:
 
 env:
   modulePath: "avm/ptn/finops-toolkit/finops-hub"
-  workflowPath: ".github/workflows/avm.ptn.finopstoolkit-finopshub.yml"
+  workflowPath: ".github/workflows/avm.ptn.finops-toolkit-finops-hub.yml"
 
 concurrency:
   group: ${{ github.workflow }}
