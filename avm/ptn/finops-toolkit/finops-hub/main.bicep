@@ -16,7 +16,7 @@ param location string = resourceGroup().location
 param storageSku string = 'Premium_LRS'
 
 @description('Optional. Tags to apply to all resources. We will also add the cm-resource-parent tag for improved cost roll-ups in Cost Management.')
-param tags object = {}
+param tags object?
 
 @description('Optional. Tags to apply to resources based on their resource type. Resource type specific tags will be merged with tags for all resources.')
 param tagsByResource object = {}
@@ -86,6 +86,9 @@ output location string = location
 
 @description('Name of the Data Factory.')
 output dataFactorytName string = hub.outputs.dataFactorytName
+
+@description('The resource group the finops hub was deployed into.')
+output resourceGroupName string = resourceGroup().name
 
 @description('The resource ID of the deployed storage account.')
 output storageAccountId string = hub.outputs.storageAccountId
