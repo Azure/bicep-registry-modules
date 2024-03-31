@@ -98,14 +98,14 @@ param proximityPlacementGroupResourceId string = ''
 @description('Optional. Resource ID of an availability set. Cannot be used in combination with availability zone nor scale set.')
 param availabilitySetResourceId string = ''
 
-@description('Optional. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.')
+@description('Required. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.')
 @allowed([
   0
   1
   2
   3
 ])
-param availabilityZone int = 0
+param availabilityZone int
 
 // External resources
 @description('Required. Configures NICs and PIPs.')
@@ -133,7 +133,7 @@ param extensionDomainJoinConfig object = {
   enabled: false
 }
 
-@description('Optional. The configuration for the [AAD Join] extension. Must at least contain the ["enabled": true] property to be executed.')
+@description('Optional. The configuration for the [AAD Join] extension. Must at least contain the ["enabled": true] property to be executed. To enroll in Intune, add the setting mdmId: "0000000a-0000-0000-c000-000000000000".')
 param extensionAadJoinConfig object = {
   enabled: false
 }
@@ -174,9 +174,31 @@ param extensionCustomScriptConfig object = {
   fileData: []
 }
 
-@description('Optional. Any object that contains the extension specific protected settings.')
+@description('Optional. The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least contain the ["enabled": true] property to be executed.')
+param extensionNvidiaGpuDriverWindows object = {
+  enabled: false
+}
+
+@description('Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.')
+param extensionHostPoolRegistration object = {
+  enabled: false
+}
+
+@description('Optional. The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.')
+param extensionGuestConfigurationExtension object = {
+  enabled: false
+}
+
+@description('Optional. The guest configuration for the virtual machine. Needs the Guest Configuration extension to be enabled.')
+param guestConfiguration object = {}
+
+@description('Optional. An object that contains the extension specific protected settings.')
 @secure()
 param extensionCustomScriptProtectedSetting object = {}
+
+@description('Optional. An object that contains the extension specific protected settings.')
+@secure()
+param extensionGuestConfigurationExtensionProtectedSettings object = {}
 
 // Shared parameters
 @description('Optional. Location for all resources.')
@@ -433,7 +455,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
   location: location
   identity: identity
   tags: tags
-  zones: availabilityZone != 0 ? array(availabilityZone) : null
+  zones: availabilityZone != 0 ? array(string(availabilityZone)) : null
   plan: !empty(plan) ? plan : null
   properties: {
     hardwareProfile: {
@@ -567,7 +589,7 @@ module vm_aadJoinExtension 'extension/main.bicep' =
       type: osType == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginforLinux'
       typeHandlerVersion: contains(extensionAadJoinConfig, 'typeHandlerVersion')
         ? extensionAadJoinConfig.typeHandlerVersion
-        : '1.0'
+        : (osType == 'Windows' ? '2.0' : '1.0')
       autoUpgradeMinorVersion: contains(extensionAadJoinConfig, 'autoUpgradeMinorVersion')
         ? extensionAadJoinConfig.autoUpgradeMinorVersion
         : true
@@ -603,6 +625,9 @@ module vm_domainJoinExtension 'extension/main.bicep' =
         Password: extensionDomainJoinPassword
       }
     }
+    dependsOn: [
+      vm_aadJoinExtension
+    ]
   }
 
 module vm_microsoftAntiMalwareExtension 'extension/main.bicep' =
@@ -626,6 +651,9 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' =
       settings: extensionAntiMalwareConfig.settings
       tags: extensionAntiMalwareConfig.?tags ?? tags
     }
+    dependsOn: [
+      vm_domainJoinExtension
+    ]
   }
 
 resource vm_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing =
@@ -677,6 +705,9 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' =
           : ''
       }
     }
+    dependsOn: [
+      vm_microsoftAntiMalwareExtension
+    ]
   }
 
 module vm_dependencyAgentExtension 'extension/main.bicep' =
@@ -699,6 +730,9 @@ module vm_dependencyAgentExtension 'extension/main.bicep' =
         : true
       tags: extensionDependencyAgentConfig.?tags ?? tags
     }
+    dependsOn: [
+      vm_azureMonitorAgentExtension
+    ]
   }
 
 module vm_networkWatcherAgentExtension 'extension/main.bicep' =
@@ -721,6 +755,9 @@ module vm_networkWatcherAgentExtension 'extension/main.bicep' =
         : false
       tags: extensionNetworkWatcherAgentConfig.?tags ?? tags
     }
+    dependsOn: [
+      vm_dependencyAgentExtension
+    ]
   }
 
 module vm_desiredStateConfigurationExtension 'extension/main.bicep' =
@@ -745,6 +782,9 @@ module vm_desiredStateConfigurationExtension 'extension/main.bicep' =
       tags: extensionDSCConfig.?tags ?? tags
       protectedSettings: contains(extensionDSCConfig, 'protectedSettings') ? extensionDSCConfig.protectedSettings : {}
     }
+    dependsOn: [
+      vm_networkWatcherAgentExtension
+    ]
   }
 
 module vm_customScriptExtension 'extension/main.bicep' =
@@ -806,8 +846,111 @@ module vm_azureDiskEncryptionExtension 'extension/main.bicep' =
     }
     dependsOn: [
       vm_customScriptExtension
-      vm_azureMonitorAgentExtension
     ]
+  }
+
+module vm_nvidiaGpuDriverWindowsExtension 'extension/main.bicep' =
+  if (extensionNvidiaGpuDriverWindows.enabled) {
+    name: '${uniqueString(deployment().name, location)}-VM-NvidiaGpuDriverWindows'
+    params: {
+      virtualMachineName: vm.name
+      name: 'NvidiaGpuDriverWindows'
+      location: location
+      publisher: 'Microsoft.HpcCompute'
+      type: 'NvidiaGpuDriverWindows'
+      typeHandlerVersion: contains(extensionNvidiaGpuDriverWindows, 'typeHandlerVersion')
+        ? extensionNvidiaGpuDriverWindows.typeHandlerVersion
+        : '1.4'
+      autoUpgradeMinorVersion: contains(extensionNvidiaGpuDriverWindows, 'autoUpgradeMinorVersion')
+        ? extensionNvidiaGpuDriverWindows.autoUpgradeMinorVersion
+        : true
+      enableAutomaticUpgrade: contains(extensionNvidiaGpuDriverWindows, 'enableAutomaticUpgrade')
+        ? extensionNvidiaGpuDriverWindows.enableAutomaticUpgrade
+        : false
+      tags: extensionNvidiaGpuDriverWindows.?tags ?? tags
+    }
+    dependsOn: [
+      vm_azureDiskEncryptionExtension
+    ]
+  }
+
+module vm_hostPoolRegistrationExtension 'extension/main.bicep' =
+  if (extensionHostPoolRegistration.enabled) {
+    name: '${uniqueString(deployment().name, location)}-VM-HostPoolRegistration'
+    params: {
+      virtualMachineName: vm.name
+      name: 'HostPoolRegistration'
+      location: location
+      publisher: 'Microsoft.PowerShell'
+      type: 'DSC'
+      typeHandlerVersion: contains(extensionHostPoolRegistration, 'typeHandlerVersion')
+        ? extensionHostPoolRegistration.typeHandlerVersion
+        : '2.77'
+      autoUpgradeMinorVersion: contains(extensionHostPoolRegistration, 'autoUpgradeMinorVersion')
+        ? extensionHostPoolRegistration.autoUpgradeMinorVersion
+        : true
+      enableAutomaticUpgrade: contains(extensionHostPoolRegistration, 'enableAutomaticUpgrade')
+        ? extensionHostPoolRegistration.enableAutomaticUpgrade
+        : false
+      settings: {
+        modulesUrl: extensionHostPoolRegistration.modulesUrl
+        configurationFunction: extensionHostPoolRegistration.configurationFunction
+        properties: {
+          hostPoolName: extensionHostPoolRegistration.hostPoolName
+          registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken
+          aadJoin: true
+        }
+      }
+      tags: extensionHostPoolRegistration.?tags ?? tags
+    }
+    dependsOn: [
+      vm_nvidiaGpuDriverWindowsExtension
+    ]
+  }
+
+module vm_azureGuestConfigurationExtension 'extension/main.bicep' =
+  if (extensionGuestConfigurationExtension.enabled) {
+    name: '${uniqueString(deployment().name, location)}-VM-GuestConfiguration'
+    params: {
+      virtualMachineName: vm.name
+      name: osType == 'Windows' ? 'AzurePolicyforWindows' : 'AzurePolicyforLinux'
+      location: location
+      publisher: 'Microsoft.GuestConfiguration'
+      type: osType == 'Windows' ? 'ConfigurationforWindows' : 'ConfigurationForLinux'
+      typeHandlerVersion: contains(extensionGuestConfigurationExtension, 'typeHandlerVersion')
+        ? extensionGuestConfigurationExtension.typeHandlerVersion
+        : (osType == 'Windows' ? '1.0' : '1.0')
+      autoUpgradeMinorVersion: contains(extensionGuestConfigurationExtension, 'autoUpgradeMinorVersion')
+        ? extensionGuestConfigurationExtension.autoUpgradeMinorVersion
+        : true
+      enableAutomaticUpgrade: contains(extensionGuestConfigurationExtension, 'enableAutomaticUpgrade')
+        ? extensionGuestConfigurationExtension.enableAutomaticUpgrade
+        : true
+      forceUpdateTag: contains(extensionGuestConfigurationExtension, 'forceUpdateTag')
+        ? extensionGuestConfigurationExtension.forceUpdateTag
+        : '1.0'
+      settings: contains(extensionGuestConfigurationExtension, 'settings')
+        ? extensionGuestConfigurationExtension.settings
+        : {}
+      protectedSettings: extensionGuestConfigurationExtensionProtectedSettings
+      tags: extensionGuestConfigurationExtension.?tags ?? tags
+    }
+    dependsOn: [
+      vm_hostPoolRegistrationExtension
+    ]
+  }
+
+resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2020-06-25' =
+  if (!empty(guestConfiguration)) {
+    name: 'AzureWindowsBaseline'
+    scope: vm
+    dependsOn: [
+      vm_azureGuestConfigurationExtension
+    ]
+    location: location
+    properties: {
+      guestConfiguration: guestConfiguration
+    }
   }
 
 module vm_backup 'modules/protected-item.bicep' =
@@ -824,14 +967,7 @@ module vm_backup 'modules/protected-item.bicep' =
     }
     scope: az.resourceGroup(backupVaultResourceGroup)
     dependsOn: [
-      vm_aadJoinExtension
-      vm_domainJoinExtension
-      vm_azureMonitorAgentExtension
-      vm_microsoftAntiMalwareExtension
-      vm_networkWatcherAgentExtension
-      vm_dependencyAgentExtension
-      vm_desiredStateConfigurationExtension
-      vm_customScriptExtension
+      vm_azureGuestConfigurationExtension
     ]
   }
 
