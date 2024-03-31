@@ -147,23 +147,27 @@ var builtInRoleNames = {
   'Managed Applications Reader': '/providers/Microsoft.Authorization/roleDefinitions/b9331d33-8a36-4f8c-b097-4f54124fdb44'
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: take('46d3xbcp.res.desktopvirtualization-hostpool.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}', 64)
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: take(
+      '46d3xbcp.res.desktopvirtualization-hostpool.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
+      64
+    )
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
 resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
   name: name
@@ -196,88 +200,109 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
   }
 }
 
-module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-HostPool-PrivateEndpoint-${index}'
-  params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
-    privateLinkServiceConnections: [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
-        properties: {
-          privateLinkServiceId: hostPool.id
-          groupIds: [
-            privateEndpoint.?service ?? 'connection'
-          ]
+module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    name: '${uniqueString(deployment().name, location)}-HostPool-PrivateEndpoint-${index}'
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
+      privateLinkServiceConnections: [
+        {
+          name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
+          properties: {
+            privateLinkServiceId: hostPool.id
+            groupIds: [
+              privateEndpoint.?service ?? 'connection'
+            ]
+          }
         }
-      }
-    ]
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
-        properties: {
-          privateLinkServiceId: hostPool.id
-          groupIds: [
-            privateEndpoint.?service ?? 'connection'
+      ]
+      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
+              properties: {
+                privateLinkServiceId: hostPool.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'connection'
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
           ]
-          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
+  }
+]
+
+resource hostPool_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: hostPool
+  }
+
+resource hostPool_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(hostPool.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: hostPool
+  }
+]
+
+resource hostPool_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
         }
-      }
-    ] : null
-    subnetResourceId: privateEndpoint.subnetResourceId
-    location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: privateEndpoint.?lock ?? lock
-    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
-    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
-    roleAssignments: privateEndpoint.?roleAssignments
-    tags: privateEndpoint.?tags ?? tags
-    customDnsConfigs: privateEndpoint.?customDnsConfigs
-    ipConfigurations: privateEndpoint.?ipConfigurations
-    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
-    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: hostPool
   }
-}]
-
-resource hostPool_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
-  }
-  scope: hostPool
-}
-
-resource hostPool_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(hostPool.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
-  }
-  scope: hostPool
-}]
-
-resource hostPool_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
-      categoryGroup: group.?categoryGroup
-      category: group.?category
-      enabled: group.?enabled ?? true
-    }]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
-  }
-  scope: hostPool
-}]
+]
 
 @sys.description('The resource ID of the host pool.')
 output resourceId string = hostPool.id

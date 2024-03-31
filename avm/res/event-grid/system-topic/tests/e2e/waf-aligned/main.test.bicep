@@ -60,57 +60,61 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    source: nestedDependencies.outputs.storageAccountResourceId
-    topicType: 'Microsoft.Storage.StorageAccounts'
-    location: resourceLocation
-    eventSubscriptions: [ {
-        name: '${namePrefix}${serviceShort}001'
-        expirationTimeUtc: '2099-01-01T11:00:21.715Z'
-        filter: {
-          isSubjectCaseSensitive: false
-          enableAdvancedFilteringOnArrays: true
-        }
-        retryPolicy: {
-          maxDeliveryAttempts: 10
-          eventTimeToLive: '120'
-        }
-        eventDeliverySchema: 'CloudEventSchemaV1_0'
-        destination: {
-          endpointType: 'StorageQueue'
-          properties: {
-            resourceId: nestedDependencies.outputs.storageAccountResourceId
-            queueMessageTimeToLiveInSeconds: 86400
-            queueName: nestedDependencies.outputs.queueName
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      source: nestedDependencies.outputs.storageAccountResourceId
+      topicType: 'Microsoft.Storage.StorageAccounts'
+      location: resourceLocation
+      eventSubscriptions: [
+        {
+          name: '${namePrefix}${serviceShort}001'
+          expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+          filter: {
+            isSubjectCaseSensitive: false
+            enableAdvancedFilteringOnArrays: true
+          }
+          retryPolicy: {
+            maxDeliveryAttempts: 10
+            eventTimeToLive: '120'
+          }
+          eventDeliverySchema: 'CloudEventSchemaV1_0'
+          destination: {
+            endpointType: 'StorageQueue'
+            properties: {
+              resourceId: nestedDependencies.outputs.storageAccountResourceId
+              queueMessageTimeToLiveInSeconds: 86400
+              queueName: nestedDependencies.outputs.queueName
+            }
           }
         }
-      } ]
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+      ]
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-    ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
   }
-}]
+]

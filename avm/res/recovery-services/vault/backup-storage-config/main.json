@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "16823125725342753814"
+      "version": "0.26.54.24096",
+      "templateHash": "7323008272687100781"
     },
     "name": "Recovery Services Vault Backup Storage Config",
     "description": "This module deploys a Recovery Service Vault Backup Storage Configuration.",

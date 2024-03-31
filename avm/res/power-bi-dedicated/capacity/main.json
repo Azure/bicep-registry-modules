@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "401112188619972880"
+      "version": "0.26.54.24096",
+      "templateHash": "6849452941887309833"
     },
     "name": "Power BI Dedicated Capacities",
     "description": "This module deploys a Power BI Dedicated Capacity.",

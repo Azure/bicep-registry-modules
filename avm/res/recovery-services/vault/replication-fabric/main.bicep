@@ -26,18 +26,22 @@ resource replicationFabric 'Microsoft.RecoveryServices/vaults/replicationFabrics
   }
 }
 
-module fabric_replicationContainers 'replication-protection-container/main.bicep' = [for (container, index) in replicationContainers: {
-  name: '${deployment().name}-RCont-${index}'
-  params: {
-    name: container.name
-    recoveryVaultName: recoveryVaultName
-    replicationFabricName: name
-    replicationContainerMappings: contains(container, 'replicationContainerMappings') ? container.replicationContainerMappings : []
+module fabric_replicationContainers 'replication-protection-container/main.bicep' = [
+  for (container, index) in replicationContainers: {
+    name: '${deployment().name}-RCont-${index}'
+    params: {
+      name: container.name
+      recoveryVaultName: recoveryVaultName
+      replicationFabricName: name
+      replicationContainerMappings: contains(container, 'replicationContainerMappings')
+        ? container.replicationContainerMappings
+        : []
+    }
+    dependsOn: [
+      replicationFabric
+    ]
   }
-  dependsOn: [
-    replicationFabric
-  ]
-}]
+]
 
 @description('The name of the replication fabric.')
 output name string = replicationFabric.name
