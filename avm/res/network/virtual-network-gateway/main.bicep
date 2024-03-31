@@ -223,7 +223,7 @@ var vpnClientConfiguration = !empty(clientRootCertData)
         {
           name: 'RootCert1'
           properties: {
-            PublicCertData: clientRootCertData
+            publicCertData: clientRootCertData
           }
         }
       ]
@@ -232,7 +232,7 @@ var vpnClientConfiguration = !empty(clientRootCertData)
             {
               name: 'RevokedCert1'
               properties: {
-                Thumbprint: clientRevokedCertThumbprint
+                thumbprint: clientRevokedCertThumbprint
               }
             }
           ]
