@@ -294,7 +294,6 @@ Tags to apply to all resources. We will also add the cm-resource-parent tag for 
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `tagsByResource`
 
@@ -312,6 +311,7 @@ Tags to apply to resources based on their resource type. Resource type specific 
 | `dataFactorytName` | string | Name of the Data Factory. |
 | `location` | string | The location the resources wer deployed to. |
 | `name` | string | The name of the resource group. |
+| `resourceGroupName` | string | The resource group the finops hub was deployed into. |
 | `storageAccountId` | string | The resource ID of the deployed storage account. |
 | `storageAccountName` | string | Name of the storage account created for the hub instance. This must be used when connecting FinOps toolkit Power BI reports to your data. |
 | `storageUrlForPowerBI` | string | URL to use when connecting custom Power BI reports to your data. |

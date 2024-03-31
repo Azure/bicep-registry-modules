@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "6242288730248923418"
+      "templateHash": "14241516504724548520"
     },
     "name": "Finops-hub",
     "description": "This module deploys a Finops hub from the Finops toolkit.",
@@ -38,7 +39,7 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Tags to apply to all resources. We will also add the cm-resource-parent tag for improved cost roll-ups in Cost Management."
       }
@@ -86,8 +87,8 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
@@ -107,7 +108,7 @@
         }
       }
     },
-    {
+    "hub": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "hub",
@@ -11092,7 +11093,7 @@
         }
       }
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",
@@ -11113,28 +11114,35 @@
       "metadata": {
         "description": "Name of the Data Factory."
       },
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'hub'), '2022-09-01').outputs.dataFactorytName.value]"
+      "value": "[reference('hub').outputs.dataFactorytName.value]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the finops hub was deployed into."
+      },
+      "value": "[resourceGroup().name]"
     },
     "storageAccountId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the deployed storage account."
       },
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'hub'), '2022-09-01').outputs.storageAccountId.value]"
+      "value": "[reference('hub').outputs.storageAccountId.value]"
     },
     "storageAccountName": {
       "type": "string",
       "metadata": {
         "description": "Name of the storage account created for the hub instance. This must be used when connecting FinOps toolkit Power BI reports to your data."
       },
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'hub'), '2022-09-01').outputs.storageAccountName.value]"
+      "value": "[reference('hub').outputs.storageAccountName.value]"
     },
     "storageUrlForPowerBI": {
       "type": "string",
       "metadata": {
         "description": "URL to use when connecting custom Power BI reports to your data."
       },
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'hub'), '2022-09-01').outputs.storageUrlForPowerBI.value]"
+      "value": "[reference('hub').outputs.storageUrlForPowerBI.value]"
     }
   }
 }
