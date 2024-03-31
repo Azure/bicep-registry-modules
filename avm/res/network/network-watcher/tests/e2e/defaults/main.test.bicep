@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module with the minimum set of
 param resourceGroupName string = 'NetworkWatcherRG' // Note, this is the default NetworkWatcher resource group. Do not change.
 
 @description('Optional. The location to deploy resources to.')
-param location string = deployment().location
+param resourcelocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'nnwmin'
@@ -31,7 +31,7 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: location
+  location: resourcelocation
 }
 
 // ============== //
@@ -42,7 +42,7 @@ var testLocation = 'northeurope'
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
+  name: '${uniqueString(deployment().name, resourcelocation)}-test-${serviceShort}-${iteration}'
   params: {
     enableTelemetry: enableDefaultTelemetry
     // Note: This value is not required and only set to enable testing
