@@ -1,0 +1,89 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "7725737508882142877"
+    },
+    "name": "Recovery Services Vault Replication Alert Settings",
+    "description": "This module deploys a Recovery Services Vault Replication Alert Settings.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "recoveryVaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "defaultAlertSetting",
+      "metadata": {
+        "description": "Optional. The name of the replication Alert Setting."
+      }
+    },
+    "customEmailAddresses": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Comma separated list of custom email address for sending alert emails."
+      }
+    },
+    "locale": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The locale for the email notification."
+      }
+    },
+    "sendToOwners": {
+      "type": "string",
+      "defaultValue": "Send",
+      "allowedValues": [
+        "DoNotSend",
+        "Send"
+      ],
+      "metadata": {
+        "description": "Optional. The value indicating whether to send email to subscription administrator."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.RecoveryServices/vaults/replicationAlertSettings",
+      "apiVersion": "2022-10-01",
+      "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
+      "properties": {
+        "customEmailAddresses": "[if(not(empty(parameters('customEmailAddresses'))), parameters('customEmailAddresses'), null())]",
+        "locale": "[parameters('locale')]",
+        "sendToOwners": "[parameters('sendToOwners')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the replication Alert Setting."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the replication alert setting was created."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the replication alert setting."
+      },
+      "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationAlertSettings', parameters('recoveryVaultName'), parameters('name'))]"
+    }
+  }
+}

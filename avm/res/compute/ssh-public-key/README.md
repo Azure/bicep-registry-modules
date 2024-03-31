@@ -19,7 +19,7 @@ This module deploys a Public SSH Key.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/sshPublicKeys` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/sshPublicKeys) |
+| `Microsoft.Compute/sshPublicKeys` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-07-01/sshPublicKeys) |
 
 ## Usage examples
 
@@ -44,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cspkmin'
+  name: 'sshPublicKeyDeployment'
   params: {
     // Required parameters
     name: 'cspkmin001'
@@ -92,7 +92,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cspkmax'
+  name: 'sshPublicKeyDeployment'
   params: {
     // Required parameters
     name: 'sshkey-cspkmax001'
@@ -206,7 +206,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cspkwaf'
+  name: 'sshPublicKeyDeployment'
   params: {
     // Required parameters
     name: 'sshkey-cspkwaf001'

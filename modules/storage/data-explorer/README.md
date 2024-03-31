@@ -1,3 +1,9 @@
+<h1 style="color: steelblue;">⚠️ Retired ⚠️</h1>
+
+This module has been retired without a replacement module in Azure Verified Modules (AVM).
+
+For more information, see the informational notice [here](https://github.com/Azure/bicep-registry-modules?tab=readme-ov-file#%EF%B8%8F-upcoming-changes-%EF%B8%8F).
+
 # Azure Data Explorer
 
 This Bicep module creates a Kusto Cluster with the specified number of nodes and version.

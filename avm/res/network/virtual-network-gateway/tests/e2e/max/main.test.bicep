@@ -61,104 +61,113 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    vpnGatewayGeneration: 'Generation2'
-    skuName: 'VpnGw2AZ'
-    gatewayType: 'Vpn'
-    vNetResourceId: nestedDependencies.outputs.vnetResourceId
-    activeActive: true
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      vpnGatewayGeneration: 'Generation2'
+      skuName: 'VpnGw2AZ'
+      gatewayType: 'Vpn'
+      vNetResourceId: nestedDependencies.outputs.vnetResourceId
+      activeActive: true
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      domainNameLabel: [
+        '${namePrefix}-dm-${serviceShort}'
+      ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-    ]
-    domainNameLabel: [
-      '${namePrefix}-dm-${serviceShort}'
-    ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+      publicIpZones: [
+        '1'
+        '2'
+        '3'
+      ]
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      vpnType: 'RouteBased'
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
+      enablePrivateIpAddress: true
+      gatewayDefaultSiteLocalNetworkGatewayId: nestedDependencies.outputs.localNetworkGatewayResourceId
+      disableIPSecReplayProtection: true
+      allowRemoteVnetTraffic: true
+      natRules: [
+        {
+          name: 'nat-rule-1-static-IngressSnat'
+          type: 'Static'
+          mode: 'IngressSnat'
+          internalMappings: [
+            {
+              addressSpace: '10.100.0.0/24'
+              portRange: '100'
+            }
+          ]
+          externalMappings: [
+            {
+              addressSpace: '192.168.0.0/24'
+              portRange: '100'
+            }
+          ]
+        }
+        {
+          name: 'nat-rule-2-dynamic-EgressSnat'
+          type: 'Static'
+          mode: 'EgressSnat'
+          internalMappings: [
+            {
+              addressSpace: '172.16.0.0/26'
+            }
+          ]
+          externalMappings: [
+            {
+              addressSpace: '10.200.0.0/26'
+            }
+          ]
+        }
+      ]
+      enableBgpRouteTranslationForNat: true
     }
-    publicIpZones: [
-      '1'
-      '2'
-      '3'
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
     ]
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    vpnType: 'RouteBased'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
-    enablePrivateIpAddress: true
-    gatewayDefaultSiteLocalNetworkGatewayId: nestedDependencies.outputs.localNetworkGatewayResourceId
-    disableIPSecReplayProtection: true
-    allowRemoteVnetTraffic: true
-    natRules: [
-      {
-        name: 'nat-rule-1-static-IngressSnat'
-        type: 'Static'
-        mode: 'IngressSnat'
-        internalMappings: [
-          {
-            addressSpace: '10.100.0.0/24'
-            portRange: '100'
-          }
-        ]
-        externalMappings: [
-          {
-            addressSpace: '192.168.0.0/24'
-            portRange: '100'
-          }
-        ]
-      }
-      {
-        name: 'nat-rule-2-dynamic-EgressSnat'
-        type: 'Dynamic'
-        mode: 'EgressSnat'
-        internalMappings: [
-          {
-            addressSpace: '172.16.0.0/26'
-          }
-        ]
-        externalMappings: [
-          {
-            addressSpace: '10.200.0.0/26'
-          }
-        ]
-      }
-    ]
-    enableBgpRouteTranslationForNat: true
   }
-}]
+]

@@ -46,56 +46,61 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    virtualHubResourceId: nestedDependencies.outputs.virtualHubResourceId
-    bgpSettings: {
-      asn: 65515
-      peerWeight: 0
-    }
-    vpnConnections: [
-      {
-        connectionBandwidth: 100
-        enableBgp: false
-        name: 'Connection-${last(split(nestedDependencies.outputs.vpnSiteResourceId, '/'))}'
-        remoteVpnSiteResourceId: nestedDependencies.outputs.vpnSiteResourceId
-        enableInternetSecurity: true
-        vpnConnectionProtocolType: 'IKEv2'
-        enableRateLimiting: false
-        useLocalAzureIpAddress: false
-        usePolicyBasedTrafficSelectors: false
-        routingWeight: 0
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      virtualHubResourceId: nestedDependencies.outputs.virtualHubResourceId
+      bgpSettings: {
+        asn: 65515
+        peerWeight: 0
       }
-    ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    natRules: [
-      {
-        externalMappings: [
-          {
-            addressSpace: '192.168.21.0/24'
-          }
-        ]
-        internalMappings: [
-          {
-            addressSpace: '10.4.0.0/24'
-          }
-        ]
-        mode: 'EgressSnat'
-        name: 'natRule1'
-        type: 'Static'
+      vpnConnections: [
+        {
+          connectionBandwidth: 100
+          enableBgp: false
+          name: 'Connection-${last(split(nestedDependencies.outputs.vpnSiteResourceId, '/'))}'
+          remoteVpnSiteResourceId: nestedDependencies.outputs.vpnSiteResourceId
+          enableInternetSecurity: true
+          vpnConnectionProtocolType: 'IKEv2'
+          enableRateLimiting: false
+          useLocalAzureIpAddress: false
+          usePolicyBasedTrafficSelectors: false
+          routingWeight: 0
+        }
+      ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
+      natRules: [
+        {
+          externalMappings: [
+            {
+              addressSpace: '192.168.21.0/24'
+            }
+          ]
+          internalMappings: [
+            {
+              addressSpace: '10.4.0.0/24'
+            }
+          ]
+          mode: 'EgressSnat'
+          name: 'natRule1'
+          type: 'Static'
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
+    dependsOn: [
+      nestedDependencies
+    ]
   }
-}]
+]

@@ -94,7 +94,7 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Key-Vault-Crypto-User-RoleAssignment')
   scope: keyVault::key
   properties: {
-    principalId: 'b9199ba0-d7a7-499e-a9c1-ee87112c5aec' // AzureDatabricks Enterprise Application Object Id (Note: this is tenant specific)
+    principalId: '711330f9-cfad-4b10-a462-d82faa92027d' // AzureDatabricks Enterprise Application Object Id (Note: this is tenant specific)
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424') // Key Vault Crypto User
     principalType: 'ServicePrincipal'
   }
@@ -284,7 +284,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-01-01' = {
         }
       }
       {
-        name: 'custom-public-subnet'
+        name: 'publicSubnet'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 20, 1)
           networkSecurityGroup: {
@@ -301,7 +301,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-01-01' = {
         }
       }
       {
-        name: 'custom-private-subnet'
+        name: 'privateSubnet'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 20, 2)
           networkSecurityGroup: {
@@ -340,10 +340,10 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 @description('The resource ID of the created Virtual Network Default Subnet.')
 output defaultSubnetResourceId string = virtualNetwork.properties.subnets[0].id
 
-@description('The name of the created Virtual Network Public Subnet.')
+@description('The name of the 2nd created Virtual Network Public Subnet.')
 output customPublicSubnetName string = virtualNetwork.properties.subnets[1].name
 
-@description('The name of the created Virtual Network Private Subnet.')
+@description('The name of the 3rd created Virtual Network Private Subnet.')
 output customPrivateSubnetName string = virtualNetwork.properties.subnets[2].name
 
 @description('The resource ID of the created Virtual Network.')

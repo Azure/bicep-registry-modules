@@ -46,61 +46,66 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}-${serviceShort}'
-    virtualWanId: nestedDependencies.outputs.virtualWWANResourceId
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      tagA: 'valueA'
-      tagB: 'valueB'
-    }
-    deviceProperties: {
-      linkSpeedInMbps: 0
-    }
-    vpnSiteLinks: [
-      {
-        name: '${namePrefix}-vSite-${serviceShort}'
-        properties: {
-          bgpProperties: {
-            asn: 65010
-            bgpPeeringAddress: '1.1.1.1'
-          }
-          ipAddress: '1.2.3.4'
-          linkProperties: {
-            linkProviderName: 'contoso'
-            linkSpeedInMbps: 5
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}-${serviceShort}'
+      virtualWanId: nestedDependencies.outputs.virtualWWANResourceId
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        tagA: 'valueA'
+        tagB: 'valueB'
+      }
+      deviceProperties: {
+        linkSpeedInMbps: 0
+      }
+      vpnSiteLinks: [
+        {
+          name: '${namePrefix}-vSite-${serviceShort}'
+          properties: {
+            bgpProperties: {
+              asn: 65010
+              bgpPeeringAddress: '1.1.1.1'
+            }
+            ipAddress: '1.2.3.4'
+            linkProperties: {
+              linkProviderName: 'contoso'
+              linkSpeedInMbps: 5
+            }
           }
         }
-      }
-      {
-        name: 'Link1'
-        properties: {
-          bgpProperties: {
-            asn: 65020
-            bgpPeeringAddress: '192.168.1.0'
-          }
-          ipAddress: '2.2.2.2'
-          linkProperties: {
-            linkProviderName: 'contoso'
-            linkSpeedInMbps: 5
+        {
+          name: 'Link1'
+          properties: {
+            bgpProperties: {
+              asn: 65020
+              bgpPeeringAddress: '192.168.1.0'
+            }
+            ipAddress: '2.2.2.2'
+            linkProperties: {
+              linkProviderName: 'contoso'
+              linkSpeedInMbps: 5
+            }
           }
         }
+      ]
+      o365Policy: {
+        breakOutCategories: {
+          optimize: true
+          allow: true
+          default: true
+        }
       }
+    }
+    dependsOn: [
+      nestedDependencies
     ]
-    o365Policy: {
-      breakOutCategories: {
-        optimize: true
-        allow: true
-        default: true
-      }
-    }
   }
-}]
+]

@@ -69,213 +69,222 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    primaryAgentPoolProfile: [
-      {
-        availabilityZones: [
-          '3'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      primaryAgentPoolProfile: [
+        {
+          availabilityZones: [
+            '3'
+          ]
+          count: 1
+          enableAutoScaling: true
+          maxCount: 3
+          maxPods: 30
+          minCount: 1
+          mode: 'System'
+          name: 'systempool'
+          osDiskSizeGB: 0
+          osType: 'Linux'
+          serviceCidr: ''
+          type: 'VirtualMachineScaleSets'
+          vmSize: 'Standard_DS2_v2'
+          vnetSubnetID: nestedDependencies.outputs.subnetResourceIds[0]
+        }
+      ]
+      agentPools: [
+        {
+          availabilityZones: [
+            '3'
+          ]
+          count: 2
+          enableAutoScaling: true
+          maxCount: 3
+          maxPods: 30
+          minCount: 1
+          minPods: 2
+          mode: 'User'
+          name: 'userpool1'
+          nodeLabels: {}
+          nodeTaints: [
+            'CriticalAddonsOnly=true:NoSchedule'
+          ]
+          osDiskSizeGB: 128
+          osType: 'Linux'
+          scaleSetEvictionPolicy: 'Delete'
+          scaleSetPriority: 'Regular'
+          type: 'VirtualMachineScaleSets'
+          vmSize: 'Standard_DS2_v2'
+          vnetSubnetID: nestedDependencies.outputs.subnetResourceIds[1]
+          proximityPlacementGroupResourceId: nestedDependencies.outputs.proximityPlacementGroupResourceId
+        }
+        {
+          availabilityZones: [
+            '3'
+          ]
+          count: 2
+          enableAutoScaling: true
+          maxCount: 3
+          maxPods: 30
+          minCount: 1
+          minPods: 2
+          mode: 'User'
+          name: 'userpool2'
+          nodeLabels: {}
+          nodeTaints: [
+            'CriticalAddonsOnly=true:NoSchedule'
+          ]
+          osDiskSizeGB: 128
+          osType: 'Linux'
+          scaleSetEvictionPolicy: 'Delete'
+          scaleSetPriority: 'Regular'
+          type: 'VirtualMachineScaleSets'
+          vmSize: 'Standard_DS2_v2'
+          vnetSubnetID: nestedDependencies.outputs.subnetResourceIds[2]
+        }
+      ]
+      autoUpgradeProfileUpgradeChannel: 'stable'
+      enableWorkloadIdentity: true
+      enableOidcIssuerProfile: true
+      networkPlugin: 'azure'
+      networkDataplane: 'azure'
+      networkPluginMode: 'overlay'
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
+      openServiceMeshEnabled: true
+      enableStorageProfileBlobCSIDriver: true
+      enableStorageProfileDiskCSIDriver: true
+      enableStorageProfileFileCSIDriver: true
+      enableStorageProfileSnapshotController: true
+      managedIdentities: {
+        userAssignedResourcesIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
         ]
-        count: 1
-        enableAutoScaling: true
-        maxCount: 3
-        maxPods: 30
-        minCount: 1
-        mode: 'System'
-        name: 'systempool'
-        osDiskSizeGB: 0
-        osType: 'Linux'
-        serviceCidr: ''
-        type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
-        vnetSubnetID: nestedDependencies.outputs.subnetResourceIds[0]
       }
-    ]
-    agentPools: [
-      {
-        availabilityZones: [
-          '3'
-        ]
-        count: 2
-        enableAutoScaling: true
-        maxCount: 3
-        maxPods: 30
-        minCount: 1
-        minPods: 2
-        mode: 'User'
-        name: 'userpool1'
-        nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
-        osDiskSizeGB: 128
-        osType: 'Linux'
-        scaleSetEvictionPolicy: 'Delete'
-        scaleSetPriority: 'Regular'
-        type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
-        vnetSubnetID: nestedDependencies.outputs.subnetResourceIds[1]
-        proximityPlacementGroupResourceId: nestedDependencies.outputs.proximityPlacementGroupResourceId
+      identityProfile: {
+        kubeletidentity: {
+          resourceId: nestedDependencies.outputs.managedIdentityKubeletIdentityResourceId
+        }
       }
-      {
-        availabilityZones: [
-          '3'
-        ]
-        count: 2
-        enableAutoScaling: true
-        maxCount: 3
-        maxPods: 30
-        minCount: 1
-        minPods: 2
-        mode: 'User'
-        name: 'userpool2'
-        nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
-        osDiskSizeGB: 128
-        osType: 'Linux'
-        scaleSetEvictionPolicy: 'Delete'
-        scaleSetPriority: 'Regular'
-        type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
-        vnetSubnetID: nestedDependencies.outputs.subnetResourceIds[2]
+      omsAgentEnabled: true
+      monitoringWorkspaceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+      enableAzureDefender: true
+      enableKeyvaultSecretsProvider: true
+      enablePodSecurityPolicy: false
+      enableAzureMonitorProfileMetrics: true
+      customerManagedKey: {
+        keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
+        keyVaultNetworkAccess: 'Public'
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       }
-    ]
-    autoUpgradeProfileUpgradeChannel: 'stable'
-    enableWorkloadIdentity: true
-    enableOidcIssuerProfile: true
-    networkPlugin: 'azure'
-    networkDataplane: 'azure'
-    networkPluginMode: 'overlay'
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
+      fluxExtension: {
+        configurationSettings: {
+          'helm-controller.enabled': 'true'
+          'source-controller.enabled': 'true'
+          'kustomize-controller.enabled': 'true'
+          'notification-controller.enabled': 'true'
+          'image-automation-controller.enabled': 'false'
+          'image-reflector-controller.enabled': 'false'
+        }
+        configurations: [
           {
-            category: 'AllMetrics'
+            namespace: 'flux-system'
+            scope: 'cluster'
+            gitRepository: {
+              repositoryRef: {
+                branch: 'main'
+              }
+              sshKnownHosts: ''
+              syncIntervalInSeconds: 300
+              timeoutInSeconds: 180
+              url: 'https://github.com/mspnp/aks-baseline'
+            }
+          }
+          {
+            namespace: 'flux-system-helm'
+            scope: 'cluster'
+            gitRepository: {
+              repositoryRef: {
+                branch: 'main'
+              }
+              sshKnownHosts: ''
+              syncIntervalInSeconds: 300
+              timeoutInSeconds: 180
+              url: 'https://github.com/Azure/gitops-flux2-kustomize-helm-mt'
+            }
+            kustomizations: {
+              infra: {
+                path: './infrastructure'
+                dependsOn: []
+                timeoutInSeconds: 600
+                syncIntervalInSeconds: 600
+                validation: 'none'
+                prune: true
+              }
+              apps: {
+                path: './apps/staging'
+                dependsOn: [
+                  'infra'
+                ]
+                timeoutInSeconds: 600
+                syncIntervalInSeconds: 600
+                retryIntervalInSeconds: 120
+                prune: true
+              }
+            }
           }
         ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
+    }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
     ]
-    diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
-    openServiceMeshEnabled: true
-    enableStorageProfileBlobCSIDriver: true
-    enableStorageProfileDiskCSIDriver: true
-    enableStorageProfileFileCSIDriver: true
-    enableStorageProfileSnapshotController: true
-    managedIdentities: {
-      userAssignedResourcesIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
-    identityProfile: {
-      kubeletidentity: {
-        resourceId: nestedDependencies.outputs.managedIdentityKubeletIdentityResourceId
-      }
-    }
-    omsAgentEnabled: true
-    monitoringWorkspaceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
-    enableAzureDefender: true
-    enableKeyvaultSecretsProvider: true
-    enablePodSecurityPolicy: false
-    enableAzureMonitorProfileMetrics: true
-    customerManagedKey: {
-      keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-      keyVaultNetworkAccess: 'Public'
-      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-    }
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
-    fluxExtension: {
-      configurationSettings: {
-        'helm-controller.enabled': 'true'
-        'source-controller.enabled': 'true'
-        'kustomize-controller.enabled': 'true'
-        'notification-controller.enabled': 'true'
-        'image-automation-controller.enabled': 'false'
-        'image-reflector-controller.enabled': 'false'
-      }
-      configurations: [
-        {
-          namespace: 'flux-system'
-          scope: 'cluster'
-          gitRepository: {
-            repositoryRef: {
-              branch: 'main'
-            }
-            sshKnownHosts: ''
-            syncIntervalInSeconds: 300
-            timeoutInSeconds: 180
-            url: 'https://github.com/mspnp/aks-baseline'
-          }
-        }
-        {
-          namespace: 'flux-system-helm'
-          scope: 'cluster'
-          gitRepository: {
-            repositoryRef: {
-              branch: 'main'
-            }
-            sshKnownHosts: ''
-            syncIntervalInSeconds: 300
-            timeoutInSeconds: 180
-            url: 'https://github.com/Azure/gitops-flux2-kustomize-helm-mt'
-          }
-          kustomizations: {
-            infra: {
-              path: './infrastructure'
-              dependsOn: []
-              timeoutInSeconds: 600
-              syncIntervalInSeconds: 600
-              validation: 'none'
-              prune: true
-            }
-            apps: {
-              path: './apps/staging'
-              dependsOn: [
-                'infra'
-              ]
-              timeoutInSeconds: 600
-              syncIntervalInSeconds: 600
-              retryIntervalInSeconds: 120
-              prune: true
-            }
-          }
-        }
-      ]
-    }
   }
-}]
+]

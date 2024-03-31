@@ -1,0 +1,141 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "13689565005288174531"
+    },
+    "name": "Recovery Services Vault Backup Config",
+    "description": "This module deploys a Recovery Services Vault Backup Config.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "recoveryVaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "vaultconfig",
+      "metadata": {
+        "description": "Optional. Name of the Azure Recovery Service Vault Backup Policy."
+      }
+    },
+    "enhancedSecurityState": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "Optional. Enable this setting to protect hybrid backups against accidental deletes and add additional layer of authentication for critical operations."
+      }
+    },
+    "resourceGuardOperationRequests": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. ResourceGuard Operation Requests."
+      }
+    },
+    "softDeleteFeatureState": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "Optional. Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes."
+      }
+    },
+    "storageModelType": {
+      "type": "string",
+      "defaultValue": "GeoRedundant",
+      "allowedValues": [
+        "GeoRedundant",
+        "LocallyRedundant",
+        "ReadAccessGeoZoneRedundant",
+        "ZoneRedundant"
+      ],
+      "metadata": {
+        "description": "Optional. Storage type."
+      }
+    },
+    "storageType": {
+      "type": "string",
+      "defaultValue": "GeoRedundant",
+      "allowedValues": [
+        "GeoRedundant",
+        "LocallyRedundant",
+        "ReadAccessGeoZoneRedundant",
+        "ZoneRedundant"
+      ],
+      "metadata": {
+        "description": "Optional. Storage type."
+      }
+    },
+    "storageTypeState": {
+      "type": "string",
+      "defaultValue": "Locked",
+      "allowedValues": [
+        "Locked",
+        "Unlocked"
+      ],
+      "metadata": {
+        "description": "Optional. Once a machine is registered against a resource, the storageTypeState is always Locked."
+      }
+    },
+    "isSoftDeleteFeatureStateEditable": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Is soft delete feature state editable."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.RecoveryServices/vaults/backupconfig",
+      "apiVersion": "2023-01-01",
+      "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
+      "properties": {
+        "enhancedSecurityState": "[parameters('enhancedSecurityState')]",
+        "resourceGuardOperationRequests": "[parameters('resourceGuardOperationRequests')]",
+        "softDeleteFeatureState": "[parameters('softDeleteFeatureState')]",
+        "storageModelType": "[parameters('storageModelType')]",
+        "storageType": "[parameters('storageType')]",
+        "storageTypeState": "[parameters('storageTypeState')]",
+        "isSoftDeleteFeatureStateEditable": "[parameters('isSoftDeleteFeatureStateEditable')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the backup config."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the backup config."
+      },
+      "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupconfig', parameters('recoveryVaultName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the backup config was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

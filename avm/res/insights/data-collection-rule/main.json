@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "1284995352756523865"
+      "version": "0.26.54.24096",
+      "templateHash": "7431041910788264170"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule.",

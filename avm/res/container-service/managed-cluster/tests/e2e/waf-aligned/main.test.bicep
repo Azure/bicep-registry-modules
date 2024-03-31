@@ -63,132 +63,138 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    enablePrivateCluster: true
-    primaryAgentPoolProfile: [
-      {
-        availabilityZones: [
-          '3'
-        ]
-        count: 3
-        enableAutoScaling: true
-        maxCount: 3
-        maxPods: 50
-        minCount: 1
-        mode: 'System'
-        name: 'systempool'
-        osDiskSizeGB: 0
-        osType: 'Linux'
-        serviceCidr: ''
-        type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
-        vnetSubnetID: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
-      }
-    ]
-    agentPools: [
-      {
-        availabilityZones: [
-          '3'
-        ]
-        count: 2
-        enableAutoScaling: true
-        maxCount: 3
-        maxPods: 50
-        minCount: 1
-        minPods: 2
-        mode: 'User'
-        name: 'userpool1'
-        nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
-        osDiskType: 'Ephemeral'
-        osDiskSizeGB: 60
-        osType: 'Linux'
-        scaleSetEvictionPolicy: 'Delete'
-        scaleSetPriority: 'Regular'
-        type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
-        vnetSubnetID: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
-      }
-      {
-        availabilityZones: [
-          '3'
-        ]
-        count: 2
-        enableAutoScaling: true
-        maxCount: 3
-        maxPods: 50
-        minCount: 1
-        minPods: 2
-        mode: 'User'
-        name: 'userpool2'
-        nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
-        osDiskType: 'Ephemeral'
-        osDiskSizeGB: 60
-        osType: 'Linux'
-        scaleSetEvictionPolicy: 'Delete'
-        scaleSetPriority: 'Regular'
-        type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
-      }
-    ]
-    autoUpgradeProfileUpgradeChannel: 'stable'
-    networkPlugin: 'azure'
-    networkPolicy: 'azure'
-    skuTier: 'Standard'
-    dnsServiceIP: '10.10.200.10'
-    serviceCidr: '10.10.200.0/24'
-    omsAgentEnabled: true
-    monitoringWorkspaceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-    disableLocalAccounts: true
-    enableAzureDefender: true
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        logCategoriesAndGroups: [
-          {
-            category: 'kube-apiserver'
-          }
-          {
-            category: 'kube-controller-manager'
-          }
-          {
-            category: 'kube-scheduler'
-          }
-          {
-            category: 'cluster-autoscaler'
-          }
-        ]
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    privateDNSZone: nestedDependencies.outputs.privateDnsZoneResourceId
-    managedIdentities: {
-      userAssignedResourcesIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      enablePrivateCluster: true
+      primaryAgentPoolProfile: [
+        {
+          availabilityZones: [
+            '3'
+          ]
+          count: 3
+          enableAutoScaling: true
+          maxCount: 3
+          maxPods: 50
+          minCount: 1
+          mode: 'System'
+          name: 'systempool'
+          osDiskSizeGB: 0
+          osType: 'Linux'
+          serviceCidr: ''
+          type: 'VirtualMachineScaleSets'
+          vmSize: 'Standard_DS2_v2'
+          vnetSubnetID: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
+        }
       ]
+      agentPools: [
+        {
+          availabilityZones: [
+            '3'
+          ]
+          count: 2
+          enableAutoScaling: true
+          maxCount: 3
+          maxPods: 50
+          minCount: 1
+          minPods: 2
+          mode: 'User'
+          name: 'userpool1'
+          nodeLabels: {}
+          nodeTaints: [
+            'CriticalAddonsOnly=true:NoSchedule'
+          ]
+          osDiskType: 'Ephemeral'
+          osDiskSizeGB: 60
+          osType: 'Linux'
+          scaleSetEvictionPolicy: 'Delete'
+          scaleSetPriority: 'Regular'
+          type: 'VirtualMachineScaleSets'
+          vmSize: 'Standard_DS2_v2'
+          vnetSubnetID: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
+        }
+        {
+          availabilityZones: [
+            '3'
+          ]
+          count: 2
+          enableAutoScaling: true
+          maxCount: 3
+          maxPods: 50
+          minCount: 1
+          minPods: 2
+          mode: 'User'
+          name: 'userpool2'
+          nodeLabels: {}
+          nodeTaints: [
+            'CriticalAddonsOnly=true:NoSchedule'
+          ]
+          osDiskType: 'Ephemeral'
+          osDiskSizeGB: 60
+          osType: 'Linux'
+          scaleSetEvictionPolicy: 'Delete'
+          scaleSetPriority: 'Regular'
+          type: 'VirtualMachineScaleSets'
+          vmSize: 'Standard_DS2_v2'
+        }
+      ]
+      autoUpgradeProfileUpgradeChannel: 'stable'
+      networkPlugin: 'azure'
+      networkPolicy: 'azure'
+      skuTier: 'Standard'
+      dnsServiceIP: '10.10.200.10'
+      serviceCidr: '10.10.200.0/24'
+      omsAgentEnabled: true
+      monitoringWorkspaceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+      disableLocalAccounts: true
+      enableAzureDefender: true
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          logCategoriesAndGroups: [
+            {
+              category: 'kube-apiserver'
+            }
+            {
+              category: 'kube-controller-manager'
+            }
+            {
+              category: 'kube-scheduler'
+            }
+            {
+              category: 'cluster-autoscaler'
+            }
+          ]
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      privateDNSZone: nestedDependencies.outputs.privateDnsZoneResourceId
+      managedIdentities: {
+        userAssignedResourcesIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
+    ]
   }
-}]
+]

@@ -45,36 +45,41 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    skuName: 'VpnGw2AZ'
-    gatewayType: 'Vpn'
-    vNetResourceId: nestedDependencies.outputs.vnetResourceId
-    activeActive: false
-    domainNameLabel: [
-      '${namePrefix}-dm-${serviceShort}'
-    ]
-    publicIpZones: [
-      '1'
-      '2'
-      '3'
-    ]
-    vpnClientAadConfiguration: {
-      // The Application ID of the "Azure VPN" Azure AD Enterprise App for Azure Public
-      aadAudience: '41b23e61-6c1e-4545-b367-cd054e0ed4b4'
-      aadIssuer: 'https://sts.windows.net/${tenant().tenantId}/'
-      aadTenant: '${environment().authentication.loginEndpoint}/${tenant().tenantId}/'
-      vpnAuthenticationTypes: [
-        'AAD'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      skuName: 'VpnGw2AZ'
+      gatewayType: 'Vpn'
+      vNetResourceId: nestedDependencies.outputs.vnetResourceId
+      activeActive: false
+      domainNameLabel: [
+        '${namePrefix}-dm-${serviceShort}'
       ]
-      vpnClientProtocols: [
-        'OpenVPN'
+      publicIpZones: [
+        '1'
+        '2'
+        '3'
       ]
+      vpnClientAadConfiguration: {
+        // The Application ID of the "Azure VPN" Azure AD Enterprise App for Azure Public
+        aadAudience: '41b23e61-6c1e-4545-b367-cd054e0ed4b4'
+        aadIssuer: 'https://sts.windows.net/${tenant().tenantId}/'
+        aadTenant: '${environment().authentication.loginEndpoint}/${tenant().tenantId}/'
+        vpnAuthenticationTypes: [
+          'AAD'
+        ]
+        vpnClientProtocols: [
+          'OpenVPN'
+        ]
+      }
+      vpnType: 'RouteBased'
     }
-    vpnType: 'RouteBased'
+    dependsOn: [
+      nestedDependencies
+    ]
   }
-}]
+]

@@ -2,7 +2,7 @@ metadata name = 'Virtual Networks'
 metadata description = 'This module deploys a Virtual Network (vNet).'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. The Virtual Network (vNet) Name.')
+@description('Required. The name of the Virtual Network (vNet).')
 param name string
 
 @description('Optional. Location for all resources.')
@@ -52,44 +52,46 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var dnsServersVar = {
-  dnsServers: array(dnsServers)
-}
-
-var ddosProtectionPlan = {
-  id: ddosProtectionPlanResourceId
-}
-
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  'Network Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')
+  'Network Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '4d97b98b-1d4f-4787-a291-c67834d212e7'
+  )
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
 // ============ //
 // Dependencies //
 // ============ //
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.network-virtualnetwork.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.network-virtualnetwork.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   name: name
@@ -99,37 +101,61 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
     addressSpace: {
       addressPrefixes: addressPrefixes
     }
-    ddosProtectionPlan: !empty(ddosProtectionPlanResourceId) ? ddosProtectionPlan : null
-    dhcpOptions: !empty(dnsServers) ? dnsServersVar : null
+    ddosProtectionPlan: !empty(ddosProtectionPlanResourceId)
+      ? {
+          id: ddosProtectionPlanResourceId
+        }
+      : null
+    dhcpOptions: !empty(dnsServers)
+      ? {
+          dnsServers: array(dnsServers)
+        }
+      : null
     enableDdosProtection: !empty(ddosProtectionPlanResourceId)
-    encryption: vnetEncryption == true ? {
-      enabled: vnetEncryption
-      enforcement: vnetEncryptionEnforcement
-    } : null
+    encryption: vnetEncryption == true
+      ? {
+          enabled: vnetEncryption
+          enforcement: vnetEncryptionEnforcement
+        }
+      : null
     flowTimeoutInMinutes: flowTimeoutInMinutes != 0 ? flowTimeoutInMinutes : null
-    subnets: [for subnet in subnets: {
-      name: subnet.name
-      properties: {
-        addressPrefix: subnet.addressPrefix
-        addressPrefixes: contains(subnet, 'addressPrefixes') ? subnet.addressPrefixes : []
-        applicationGatewayIPConfigurations: contains(subnet, 'applicationGatewayIPConfigurations') ? subnet.applicationGatewayIPConfigurations : []
-        delegations: contains(subnet, 'delegations') ? subnet.delegations : []
-        ipAllocations: contains(subnet, 'ipAllocations') ? subnet.ipAllocations : []
-        natGateway: contains(subnet, 'natGatewayResourceId') ? {
-          id: subnet.natGatewayResourceId
-        } : null
-        networkSecurityGroup: contains(subnet, 'networkSecurityGroupResourceId') ? {
-          id: subnet.networkSecurityGroupResourceId
-        } : null
-        privateEndpointNetworkPolicies: contains(subnet, 'privateEndpointNetworkPolicies') ? subnet.privateEndpointNetworkPolicies : null
-        privateLinkServiceNetworkPolicies: contains(subnet, 'privateLinkServiceNetworkPolicies') ? subnet.privateLinkServiceNetworkPolicies : null
-        routeTable: contains(subnet, 'routeTableResourceId') ? {
-          id: subnet.routeTableResourceId
-        } : null
-        serviceEndpoints: contains(subnet, 'serviceEndpoints') ? subnet.serviceEndpoints : []
-        serviceEndpointPolicies: contains(subnet, 'serviceEndpointPolicies') ? subnet.serviceEndpointPolicies : []
+    subnets: [
+      for subnet in subnets: {
+        name: subnet.name
+        properties: {
+          addressPrefix: subnet.addressPrefix
+          addressPrefixes: contains(subnet, 'addressPrefixes') ? subnet.addressPrefixes : []
+          applicationGatewayIPConfigurations: contains(subnet, 'applicationGatewayIPConfigurations')
+            ? subnet.applicationGatewayIPConfigurations
+            : []
+          delegations: contains(subnet, 'delegations') ? subnet.delegations : []
+          ipAllocations: contains(subnet, 'ipAllocations') ? subnet.ipAllocations : []
+          natGateway: contains(subnet, 'natGatewayResourceId')
+            ? {
+                id: subnet.natGatewayResourceId
+              }
+            : null
+          networkSecurityGroup: contains(subnet, 'networkSecurityGroupResourceId')
+            ? {
+                id: subnet.networkSecurityGroupResourceId
+              }
+            : null
+          privateEndpointNetworkPolicies: contains(subnet, 'privateEndpointNetworkPolicies')
+            ? subnet.privateEndpointNetworkPolicies
+            : null
+          privateLinkServiceNetworkPolicies: contains(subnet, 'privateLinkServiceNetworkPolicies')
+            ? subnet.privateLinkServiceNetworkPolicies
+            : null
+          routeTable: contains(subnet, 'routeTableResourceId')
+            ? {
+                id: subnet.routeTableResourceId
+              }
+            : null
+          serviceEndpoints: contains(subnet, 'serviceEndpoints') ? subnet.serviceEndpoints : []
+          serviceEndpointPolicies: contains(subnet, 'serviceEndpointPolicies') ? subnet.serviceEndpointPolicies : []
+        }
       }
-    }]
+    ]
   }
 }
 
@@ -141,106 +167,148 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
 // You can safely remove the below child module (virtualNetwork_subnets) in your consumption of the module (virtualNetworks) to reduce the template size and duplication.
 //NOTE End  : ------------------------------------
 
-module virtualNetwork_subnets 'subnet/main.bicep' = [for (subnet, index) in subnets: {
-  name: '${uniqueString(deployment().name, location)}-subnet-${index}'
-  params: {
-    virtualNetworkName: virtualNetwork.name
-    name: subnet.name
-    addressPrefix: subnet.addressPrefix
-    addressPrefixes: contains(subnet, 'addressPrefixes') ? subnet.addressPrefixes : []
-    applicationGatewayIPConfigurations: contains(subnet, 'applicationGatewayIPConfigurations') ? subnet.applicationGatewayIPConfigurations : []
-    delegations: contains(subnet, 'delegations') ? subnet.delegations : []
-    ipAllocations: contains(subnet, 'ipAllocations') ? subnet.ipAllocations : []
-    natGatewayResourceId: contains(subnet, 'natGatewayResourceId') ? subnet.natGatewayResourceId : ''
-    networkSecurityGroupResourceId: contains(subnet, 'networkSecurityGroupResourceId') ? subnet.networkSecurityGroupResourceId : ''
-    privateEndpointNetworkPolicies: contains(subnet, 'privateEndpointNetworkPolicies') ? subnet.privateEndpointNetworkPolicies : ''
-    privateLinkServiceNetworkPolicies: contains(subnet, 'privateLinkServiceNetworkPolicies') ? subnet.privateLinkServiceNetworkPolicies : ''
-    roleAssignments: contains(subnet, 'roleAssignments') ? subnet.roleAssignments : []
-    routeTableResourceId: contains(subnet, 'routeTableResourceId') ? subnet.routeTableResourceId : ''
-    serviceEndpointPolicies: contains(subnet, 'serviceEndpointPolicies') ? subnet.serviceEndpointPolicies : []
-    serviceEndpoints: contains(subnet, 'serviceEndpoints') ? subnet.serviceEndpoints : []
+module virtualNetwork_subnets 'subnet/main.bicep' = [
+  for (subnet, index) in subnets: {
+    name: '${uniqueString(deployment().name, location)}-subnet-${index}'
+    params: {
+      virtualNetworkName: virtualNetwork.name
+      name: subnet.name
+      addressPrefix: subnet.addressPrefix
+      addressPrefixes: contains(subnet, 'addressPrefixes') ? subnet.addressPrefixes : []
+      applicationGatewayIPConfigurations: contains(subnet, 'applicationGatewayIPConfigurations')
+        ? subnet.applicationGatewayIPConfigurations
+        : []
+      delegations: contains(subnet, 'delegations') ? subnet.delegations : []
+      ipAllocations: contains(subnet, 'ipAllocations') ? subnet.ipAllocations : []
+      natGatewayResourceId: contains(subnet, 'natGatewayResourceId') ? subnet.natGatewayResourceId : ''
+      networkSecurityGroupResourceId: contains(subnet, 'networkSecurityGroupResourceId')
+        ? subnet.networkSecurityGroupResourceId
+        : ''
+      privateEndpointNetworkPolicies: contains(subnet, 'privateEndpointNetworkPolicies')
+        ? subnet.privateEndpointNetworkPolicies
+        : ''
+      privateLinkServiceNetworkPolicies: contains(subnet, 'privateLinkServiceNetworkPolicies')
+        ? subnet.privateLinkServiceNetworkPolicies
+        : ''
+      roleAssignments: contains(subnet, 'roleAssignments') ? subnet.roleAssignments : []
+      routeTableResourceId: contains(subnet, 'routeTableResourceId') ? subnet.routeTableResourceId : ''
+      serviceEndpointPolicies: contains(subnet, 'serviceEndpointPolicies') ? subnet.serviceEndpointPolicies : []
+      serviceEndpoints: contains(subnet, 'serviceEndpoints') ? subnet.serviceEndpoints : []
+    }
   }
-}]
+]
 
 // Local to Remote peering
-module virtualNetwork_peering_local 'virtual-network-peering/main.bicep' = [for (peering, index) in peerings: {
-  name: '${uniqueString(deployment().name, location)}-virtualNetworkPeering-local-${index}'
-  params: {
-    localVnetName: virtualNetwork.name
-    remoteVirtualNetworkId: peering.remoteVirtualNetworkId
-    name: contains(peering, 'name') ? peering.name : '${name}-${last(split(peering.remoteVirtualNetworkId, '/'))}'
-    allowForwardedTraffic: contains(peering, 'allowForwardedTraffic') ? peering.allowForwardedTraffic : true
-    allowGatewayTransit: contains(peering, 'allowGatewayTransit') ? peering.allowGatewayTransit : false
-    allowVirtualNetworkAccess: contains(peering, 'allowVirtualNetworkAccess') ? peering.allowVirtualNetworkAccess : true
-    doNotVerifyRemoteGateways: contains(peering, 'doNotVerifyRemoteGateways') ? peering.doNotVerifyRemoteGateways : true
-    useRemoteGateways: contains(peering, 'useRemoteGateways') ? peering.useRemoteGateways : false
+module virtualNetwork_peering_local 'virtual-network-peering/main.bicep' = [
+  for (peering, index) in peerings: {
+    name: '${uniqueString(deployment().name, location)}-virtualNetworkPeering-local-${index}'
+    params: {
+      localVnetName: virtualNetwork.name
+      remoteVirtualNetworkId: peering.remoteVirtualNetworkId
+      name: contains(peering, 'name') ? peering.name : '${name}-${last(split(peering.remoteVirtualNetworkId, '/'))}'
+      allowForwardedTraffic: contains(peering, 'allowForwardedTraffic') ? peering.allowForwardedTraffic : true
+      allowGatewayTransit: contains(peering, 'allowGatewayTransit') ? peering.allowGatewayTransit : false
+      allowVirtualNetworkAccess: contains(peering, 'allowVirtualNetworkAccess')
+        ? peering.allowVirtualNetworkAccess
+        : true
+      doNotVerifyRemoteGateways: contains(peering, 'doNotVerifyRemoteGateways')
+        ? peering.doNotVerifyRemoteGateways
+        : true
+      useRemoteGateways: contains(peering, 'useRemoteGateways') ? peering.useRemoteGateways : false
+    }
   }
-}]
+]
 
 // Remote to local peering (reverse)
-module virtualNetwork_peering_remote 'virtual-network-peering/main.bicep' = [for (peering, index) in peerings: if (contains(peering, 'remotePeeringEnabled') ? peering.remotePeeringEnabled == true : false) {
-  name: '${uniqueString(deployment().name, location)}-virtualNetworkPeering-remote-${index}'
-  scope: resourceGroup(split(peering.remoteVirtualNetworkId, '/')[2], split(peering.remoteVirtualNetworkId, '/')[4])
-  params: {
-    localVnetName: last(split(peering.remoteVirtualNetworkId, '/'))!
-    remoteVirtualNetworkId: virtualNetwork.id
-    name: contains(peering, 'remotePeeringName') ? peering.remotePeeringName : '${last(split(peering.remoteVirtualNetworkId, '/'))}-${name}'
-    allowForwardedTraffic: contains(peering, 'remotePeeringAllowForwardedTraffic') ? peering.remotePeeringAllowForwardedTraffic : true
-    allowGatewayTransit: contains(peering, 'remotePeeringAllowGatewayTransit') ? peering.remotePeeringAllowGatewayTransit : false
-    allowVirtualNetworkAccess: contains(peering, 'remotePeeringAllowVirtualNetworkAccess') ? peering.remotePeeringAllowVirtualNetworkAccess : true
-    doNotVerifyRemoteGateways: contains(peering, 'remotePeeringDoNotVerifyRemoteGateways') ? peering.remotePeeringDoNotVerifyRemoteGateways : true
-    useRemoteGateways: contains(peering, 'remotePeeringUseRemoteGateways') ? peering.remotePeeringUseRemoteGateways : false
+module virtualNetwork_peering_remote 'virtual-network-peering/main.bicep' = [
+  for (peering, index) in peerings: if (contains(peering, 'remotePeeringEnabled')
+    ? peering.remotePeeringEnabled == true
+    : false) {
+    name: '${uniqueString(deployment().name, location)}-virtualNetworkPeering-remote-${index}'
+    scope: resourceGroup(split(peering.remoteVirtualNetworkId, '/')[2], split(peering.remoteVirtualNetworkId, '/')[4])
+    params: {
+      localVnetName: last(split(peering.remoteVirtualNetworkId, '/'))!
+      remoteVirtualNetworkId: virtualNetwork.id
+      name: contains(peering, 'remotePeeringName')
+        ? peering.remotePeeringName
+        : '${last(split(peering.remoteVirtualNetworkId, '/'))}-${name}'
+      allowForwardedTraffic: contains(peering, 'remotePeeringAllowForwardedTraffic')
+        ? peering.remotePeeringAllowForwardedTraffic
+        : true
+      allowGatewayTransit: contains(peering, 'remotePeeringAllowGatewayTransit')
+        ? peering.remotePeeringAllowGatewayTransit
+        : false
+      allowVirtualNetworkAccess: contains(peering, 'remotePeeringAllowVirtualNetworkAccess')
+        ? peering.remotePeeringAllowVirtualNetworkAccess
+        : true
+      doNotVerifyRemoteGateways: contains(peering, 'remotePeeringDoNotVerifyRemoteGateways')
+        ? peering.remotePeeringDoNotVerifyRemoteGateways
+        : true
+      useRemoteGateways: contains(peering, 'remotePeeringUseRemoteGateways')
+        ? peering.remotePeeringUseRemoteGateways
+        : false
+    }
   }
-}]
+]
 
-resource virtualNetwork_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource virtualNetwork_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: virtualNetwork
   }
-  scope: virtualNetwork
-}
 
-resource virtualNetwork_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    metrics: diagnosticSetting.?metricCategories ?? [
-      {
-        category: 'AllMetrics'
-        timeGrain: null
-        enabled: true
-      }
-    ]
-    logs: diagnosticSetting.?logCategoriesAndGroups ?? [
-      {
-        categoryGroup: 'AllLogs'
-        enabled: true
-      }
-    ]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+resource virtualNetwork_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: virtualNetwork
   }
-  scope: virtualNetwork
-}]
+]
 
-resource virtualNetwork_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(virtualNetwork.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+resource virtualNetwork_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(virtualNetwork.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : roleAssignment.roleDefinitionIdOrName
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: virtualNetwork
   }
-  scope: virtualNetwork
-}]
+]
 
 @description('The resource group the virtual network was deployed into.')
 output resourceGroupName string = resourceGroup().name
@@ -255,7 +323,9 @@ output name string = virtualNetwork.name
 output subnetNames array = [for subnet in subnets: subnet.name]
 
 @description('The resource IDs of the deployed subnets.')
-output subnetResourceIds array = [for subnet in subnets: az.resourceId('Microsoft.Network/virtualNetworks/subnets', name, subnet.name)]
+output subnetResourceIds array = [
+  for subnet in subnets: az.resourceId('Microsoft.Network/virtualNetworks/subnets', name, subnet.name)
+]
 
 @description('The location the resource was deployed into.')
 output location string = virtualNetwork.location
@@ -299,19 +369,25 @@ type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
 
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
+  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
   logCategoriesAndGroups: {
     @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
     category: string?
 
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to \'AllLogs\' to collect all logs.')
+    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
     categoryGroup: string?
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
   }[]?
 
-  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to \'\' to disable metric collection.')
+  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
   metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to \'AllMetrics\' to collect all metrics.')
+    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
     category: string
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
   }[]?
 
   @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')

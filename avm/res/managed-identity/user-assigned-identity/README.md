@@ -43,7 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-miuaimin'
+  name: 'userAssignedIdentityDeployment'
   params: {
     // Required parameters
     name: 'miuaimin001'
@@ -91,7 +91,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-miuaimax'
+  name: 'userAssignedIdentityDeployment'
   params: {
     // Required parameters
     name: 'miuaimax001'
@@ -103,6 +103,14 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
         ]
         issuer: '<issuer>'
         name: 'test-fed-cred-miuaimax-001'
+        subject: 'system:serviceaccount:default:workload-identity-sa'
+      }
+      {
+        audiences: [
+          'api://AzureADTokenExchange'
+        ]
+        issuer: '<issuer>'
+        name: 'test-fed-cred-miuaimax-002'
         subject: 'system:serviceaccount:default:workload-identity-sa'
       }
     ]
@@ -163,6 +171,14 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
           "issuer": "<issuer>",
           "name": "test-fed-cred-miuaimax-001",
           "subject": "system:serviceaccount:default:workload-identity-sa"
+        },
+        {
+          "audiences": [
+            "api://AzureADTokenExchange"
+          ],
+          "issuer": "<issuer>",
+          "name": "test-fed-cred-miuaimax-002",
+          "subject": "system:serviceaccount:default:workload-identity-sa"
         }
       ]
     },
@@ -219,7 +235,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-miuaiwaf'
+  name: 'userAssignedIdentityDeployment'
   params: {
     // Required parameters
     name: 'miuaiwaf001'
@@ -231,6 +247,14 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
         ]
         issuer: '<issuer>'
         name: 'test-fed-cred-miuaiwaf-001'
+        subject: 'system:serviceaccount:default:workload-identity-sa'
+      }
+      {
+        audiences: [
+          'api://AzureADTokenExchange'
+        ]
+        issuer: '<issuer>'
+        name: 'test-fed-cred-miuaiwaf-002'
         subject: 'system:serviceaccount:default:workload-identity-sa'
       }
     ]
@@ -273,6 +297,14 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
           ],
           "issuer": "<issuer>",
           "name": "test-fed-cred-miuaiwaf-001",
+          "subject": "system:serviceaccount:default:workload-identity-sa"
+        },
+        {
+          "audiences": [
+            "api://AzureADTokenExchange"
+          ],
+          "issuer": "<issuer>",
+          "name": "test-fed-cred-miuaiwaf-002",
           "subject": "system:serviceaccount:default:workload-identity-sa"
         }
       ]
@@ -341,7 +373,43 @@ The federated identity credentials list to indicate which token from the externa
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`audiences`](#parameter-federatedidentitycredentialsaudiences) | array | The list of audiences that can appear in the issued token. |
+| [`issuer`](#parameter-federatedidentitycredentialsissuer) | string | The URL of the issuer to be trusted. |
+| [`name`](#parameter-federatedidentitycredentialsname) | string | The name of the federated identity credential. |
+| [`subject`](#parameter-federatedidentitycredentialssubject) | string | The identifier of the external identity. |
+
+### Parameter: `federatedIdentityCredentials.audiences`
+
+The list of audiences that can appear in the issued token.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `federatedIdentityCredentials.issuer`
+
+The URL of the issuer to be trusted.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `federatedIdentityCredentials.name`
+
+The name of the federated identity credential.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `federatedIdentityCredentials.subject`
+
+The identifier of the external identity.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `location`
 

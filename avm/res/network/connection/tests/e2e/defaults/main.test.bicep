@@ -54,19 +54,24 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    virtualNetworkGateway1: {
-      id: nestedDependencies.outputs.primaryVNETGatewayResourceID
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      virtualNetworkGateway1: {
+        id: nestedDependencies.outputs.primaryVNETGatewayResourceID
+      }
+      virtualNetworkGateway2: {
+        id: nestedDependencies.outputs.secondaryVNETGatewayResourceID
+      }
+      connectionType: 'Vnet2Vnet'
+      vpnSharedKey: password
     }
-    virtualNetworkGateway2: {
-      id: nestedDependencies.outputs.secondaryVNETGatewayResourceID
-    }
-    connectionType: 'Vnet2Vnet'
-    vpnSharedKey: password
+    dependsOn: [
+      nestedDependencies
+    ]
   }
-}]
+]

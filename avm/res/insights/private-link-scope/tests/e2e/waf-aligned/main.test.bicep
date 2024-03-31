@@ -47,127 +47,132 @@ module nestedDependencies 'dependencies.bicep' = {
 var locationUpdated = toLower(replace(resourceLocation, ' ', ''))
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: 'global'
-    scopedResources: [
-      {
-        name: 'scoped1'
-        linkedResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    privateEndpoints: [
-      {
-        name: 'pe-${namePrefix}'
-        customNetworkInterfaceName: 'nic-pe-${namePrefix}'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: 'global'
+      scopedResources: [
+        {
+          name: 'scoped1'
+          linkedResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
-        ipConfigurations: [
-          {
-            name: 'api'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'api'
-              privateIPAddress: '10.0.0.11'
-            }
+      ]
+      privateEndpoints: [
+        {
+          name: 'pe-${namePrefix}'
+          customNetworkInterfaceName: 'nic-pe-${namePrefix}'
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
           }
-          {
-            name: 'globalinai'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'global.in.ai'
-              privateIPAddress: '10.0.0.12'
+          ipConfigurations: [
+            {
+              name: 'api'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'api'
+                privateIPAddress: '10.0.0.11'
+              }
             }
-          }
-          {
-            name: 'profiler'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'profiler'
-              privateIPAddress: '10.0.0.13'
+            {
+              name: 'globalinai'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'global.in.ai'
+                privateIPAddress: '10.0.0.12'
+              }
             }
-          }
-          {
-            name: 'live'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'live'
-              privateIPAddress: '10.0.0.14'
+            {
+              name: 'profiler'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'profiler'
+                privateIPAddress: '10.0.0.13'
+              }
             }
-          }
-          {
-            name: 'diagservicesquery'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'diagservicesquery'
-              privateIPAddress: '10.0.0.15'
+            {
+              name: 'live'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'live'
+                privateIPAddress: '10.0.0.14'
+              }
             }
-          }
-          {
-            name: 'snapshot'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'snapshot'
-              privateIPAddress: '10.0.0.16'
+            {
+              name: 'diagservicesquery'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'diagservicesquery'
+                privateIPAddress: '10.0.0.15'
+              }
             }
-          }
-          {
-            name: 'agentsolutionpackstore'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'agentsolutionpackstore'
-              privateIPAddress: '10.0.0.17'
+            {
+              name: 'snapshot'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'snapshot'
+                privateIPAddress: '10.0.0.16'
+              }
             }
-          }
-          {
-            name: 'dce-global'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'dce-global'
-              privateIPAddress: '10.0.0.18'
+            {
+              name: 'agentsolutionpackstore'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'agentsolutionpackstore'
+                privateIPAddress: '10.0.0.17'
+              }
             }
-          }
-          {
-            name: 'oms-${locationUpdated}'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'oms-${locationUpdated}'
-              privateIPAddress: '10.0.0.19'
+            {
+              name: 'dce-global'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'dce-global'
+                privateIPAddress: '10.0.0.18'
+              }
             }
-          }
-          {
-            name: 'ods-${locationUpdated}'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'ods-${locationUpdated}'
-              privateIPAddress: '10.0.0.20'
+            {
+              name: 'oms-${locationUpdated}'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'oms-${locationUpdated}'
+                privateIPAddress: '10.0.0.19'
+              }
             }
-          }
-          {
-            name: 'agent-${locationUpdated}'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'agent-${locationUpdated}'
-              privateIPAddress: '10.0.0.21'
+            {
+              name: 'ods-${locationUpdated}'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'ods-${locationUpdated}'
+                privateIPAddress: '10.0.0.20'
+              }
             }
-          }
-        ]
+            {
+              name: 'agent-${locationUpdated}'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'agent-${locationUpdated}'
+                privateIPAddress: '10.0.0.21'
+              }
+            }
+          ]
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
+    dependsOn: [
+      nestedDependencies
+    ]
   }
-}]
+]

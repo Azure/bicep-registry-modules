@@ -95,55 +95,88 @@ param customerManagedKey customerManagedKeyType
 @description('Optional. Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters.')
 param requireInfrastructureEncryption bool = true
 
-var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourcesIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourcesIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'UserAssigned' : null)
-  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-} : null
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'UserAssigned' : null)
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 var builtInRoleNames = {
-  'Azure Service Bus Data Owner': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '090c5cfd-751d-490a-894a-3ce6f1109419')
-  'Azure Service Bus Data Receiver': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')
-  'Azure Service Bus Data Sender': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '69a216fc-b8fb-44d8-bc22-1f3c2cd27a39')
+  'Azure Service Bus Data Owner': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '090c5cfd-751d-490a-894a-3ce6f1109419'
+  )
+  'Azure Service Bus Data Receiver': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0'
+  )
+  'Azure Service Bus Data Sender': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '69a216fc-b8fb-44d8-bc22-1f3c2cd27a39'
+  )
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.servicebus-namespace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.servicebus-namespace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-  scope: resourceGroup(split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2], split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4])
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
+  if (!empty(customerManagedKey.?keyVaultResourceId)) {
+    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+    scope: resourceGroup(
+      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+    resource cMKKey 'keys@2023-02-01' existing =
+      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+        name: customerManagedKey.?keyName ?? 'dummyKey'
+      }
   }
-}
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
-  scope: resourceGroup(split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2], split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4])
-}
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing =
+  if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+    name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+    scope: resourceGroup(
+      split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
+      split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    )
+  }
 
 resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' = {
   name: name
@@ -155,198 +188,250 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview
   }
   identity: identity
   properties: {
-    publicNetworkAccess: !empty(publicNetworkAccess) ? publicNetworkAccess : (!empty(privateEndpoints) && empty(networkRuleSets) ? 'Disabled' : 'Enabled')
+    publicNetworkAccess: !empty(publicNetworkAccess)
+      ? publicNetworkAccess
+      : (!empty(privateEndpoints) && empty(networkRuleSets) ? 'Disabled' : 'Enabled')
     minimumTlsVersion: minimumTlsVersion
     alternateName: alternateName
     zoneRedundant: zoneRedundant
     disableLocalAuth: disableLocalAuth
     premiumMessagingPartitions: skuObject.name == 'Premium' ? premiumMessagingPartitions : 0
-    encryption: !empty(customerManagedKey) ? {
-      keySource: 'Microsoft.KeyVault'
-      keyVaultProperties: [
-        {
-          identity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? {
-            userAssignedIdentity: cMKUserAssignedIdentity.id
-          } : null
-          keyName: customerManagedKey!.keyName
-          keyVaultUri: cMKKeyVault.properties.vaultUri
-          keyVersion: !empty(customerManagedKey.?keyVersion ?? '') ? customerManagedKey!.keyVersion : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+    encryption: !empty(customerManagedKey)
+      ? {
+          keySource: 'Microsoft.KeyVault'
+          keyVaultProperties: [
+            {
+              identity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+                ? {
+                    userAssignedIdentity: cMKUserAssignedIdentity.id
+                  }
+                : null
+              keyName: customerManagedKey!.keyName
+              keyVaultUri: cMKKeyVault.properties.vaultUri
+              keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
+                ? customerManagedKey!.keyVersion
+                : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+            }
+          ]
+          requireInfrastructureEncryption: requireInfrastructureEncryption
+        }
+      : null
+  }
+}
+
+module serviceBusNamespace_authorizationRules 'authorization-rule/main.bicep' = [
+  for (authorizationRule, index) in authorizationRules: {
+    name: '${uniqueString(deployment().name, location)}-AuthorizationRules-${index}'
+    params: {
+      namespaceName: serviceBusNamespace.name
+      name: authorizationRule.name
+      rights: authorizationRule.?rights
+    }
+  }
+]
+
+module serviceBusNamespace_disasterRecoveryConfig 'disaster-recovery-config/main.bicep' =
+  if (!empty(disasterRecoveryConfig)) {
+    name: '${uniqueString(deployment().name, location)}-DisasterRecoveryConfig'
+    params: {
+      namespaceName: serviceBusNamespace.name
+      name: disasterRecoveryConfig.?name ?? 'default'
+      alternateName: disasterRecoveryConfig.?alternateName
+      partnerNamespaceResourceID: disasterRecoveryConfig.?partnerNamespace
+    }
+  }
+
+module serviceBusNamespace_migrationConfigurations 'migration-configuration/main.bicep' =
+  if (!empty(migrationConfiguration ?? {})) {
+    name: '${uniqueString(deployment().name, location)}-MigrationConfigurations'
+    params: {
+      namespaceName: serviceBusNamespace.name
+      postMigrationName: migrationConfiguration!.postMigrationName
+      targetNamespaceResourceId: migrationConfiguration!.targetNamespace
+    }
+  }
+
+module serviceBusNamespace_networkRuleSet 'network-rule-set/main.bicep' =
+  if (!empty(networkRuleSets) || !empty(privateEndpoints)) {
+    name: '${uniqueString(deployment().name, location)}-NetworkRuleSet'
+    params: {
+      namespaceName: serviceBusNamespace.name
+      publicNetworkAccess: networkRuleSets.?publicNetworkAccess ?? (!empty(privateEndpoints) && empty(networkRuleSets)
+        ? 'Disabled'
+        : 'Enabled')
+      defaultAction: networkRuleSets.?defaultAction ?? 'Allow'
+      trustedServiceAccessEnabled: networkRuleSets.?trustedServiceAccessEnabled ?? true
+      ipRules: networkRuleSets.?ipRules ?? []
+      virtualNetworkRules: networkRuleSets.?virtualNetworkRules ?? []
+    }
+  }
+
+module serviceBusNamespace_queues 'queue/main.bicep' = [
+  for (queue, index) in (queues ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Queue-${index}'
+    params: {
+      namespaceName: serviceBusNamespace.name
+      name: queue.name
+      autoDeleteOnIdle: queue.?autoDeleteOnIdle
+      forwardDeadLetteredMessagesTo: queue.?forwardDeadLetteredMessagesTo
+      forwardTo: queue.?forwardTo
+      maxMessageSizeInKilobytes: queue.?maxMessageSizeInKilobytes
+      authorizationRules: queue.?authorizationRules
+      deadLetteringOnMessageExpiration: queue.?deadLetteringOnMessageExpiration
+      defaultMessageTimeToLive: queue.?defaultMessageTimeToLive
+      duplicateDetectionHistoryTimeWindow: queue.?duplicateDetectionHistoryTimeWindow
+      enableBatchedOperations: queue.?enableBatchedOperations
+      enableExpress: queue.?enableExpress
+      enablePartitioning: queue.?enablePartitioning
+      lock: queue.?lock ?? lock
+      lockDuration: queue.?lockDuration
+      maxDeliveryCount: queue.?maxDeliveryCount
+      maxSizeInMegabytes: queue.?maxSizeInMegabytes
+      requiresDuplicateDetection: queue.?requiresDuplicateDetection
+      requiresSession: queue.?requiresSession
+      roleAssignments: queue.?roleAssignments
+      status: queue.?status
+    }
+  }
+]
+
+module serviceBusNamespace_topics 'topic/main.bicep' = [
+  for (topic, index) in (topics ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Topic-${index}'
+    params: {
+      namespaceName: serviceBusNamespace.name
+      name: topic.name
+      authorizationRules: topic.?authorizationRules
+      autoDeleteOnIdle: topic.?autoDeleteOnIdle
+      defaultMessageTimeToLive: topic.?defaultMessageTimeToLive
+      duplicateDetectionHistoryTimeWindow: topic.?duplicateDetectionHistoryTimeWindow
+      enableBatchedOperations: topic.?enableBatchedOperations
+      enableExpress: topic.?enableExpress
+      enablePartitioning: topic.?enablePartitioning
+      lock: topic.?lock ?? lock
+      maxMessageSizeInKilobytes: topic.?maxMessageSizeInKilobytes
+      requiresDuplicateDetection: topic.?requiresDuplicateDetection
+      roleAssignments: topic.?roleAssignments
+      status: topic.?status
+      supportOrdering: topic.?supportOrdering
+      subscriptions: topic.?subscriptions
+      maxSizeInMegabytes: topic.?maxSizeInMegabytes
+    }
+  }
+]
+
+resource serviceBusNamespace_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: serviceBusNamespace
+  }
+
+resource serviceBusNamespace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
         }
       ]
-      requireInfrastructureEncryption: requireInfrastructureEncryption
-    } : null
-  }
-}
-
-module serviceBusNamespace_authorizationRules 'authorization-rule/main.bicep' = [for (authorizationRule, index) in authorizationRules: {
-  name: '${uniqueString(deployment().name, location)}-AuthorizationRules-${index}'
-  params: {
-    namespaceName: serviceBusNamespace.name
-    name: authorizationRule.name
-    rights: authorizationRule.?rights
-  }
-}]
-
-module serviceBusNamespace_disasterRecoveryConfig 'disaster-recovery-config/main.bicep' = if (!empty(disasterRecoveryConfig)) {
-  name: '${uniqueString(deployment().name, location)}-DisasterRecoveryConfig'
-  params: {
-    namespaceName: serviceBusNamespace.name
-    name: disasterRecoveryConfig.?name ?? 'default'
-    alternateName: disasterRecoveryConfig.?alternateName
-    partnerNamespaceResourceID: disasterRecoveryConfig.?partnerNamespace
-  }
-}
-
-module serviceBusNamespace_migrationConfigurations 'migration-configuration/main.bicep' = if (!empty(migrationConfiguration ?? {})) {
-  name: '${uniqueString(deployment().name, location)}-MigrationConfigurations'
-  params: {
-    namespaceName: serviceBusNamespace.name
-    postMigrationName: migrationConfiguration!.postMigrationName
-    targetNamespaceResourceId: migrationConfiguration!.targetNamespace
-  }
-}
-
-module serviceBusNamespace_networkRuleSet 'network-rule-set/main.bicep' = if (!empty(networkRuleSets) || !empty(privateEndpoints)) {
-  name: '${uniqueString(deployment().name, location)}-NetworkRuleSet'
-  params: {
-    namespaceName: serviceBusNamespace.name
-    publicNetworkAccess: networkRuleSets.?publicNetworkAccess ?? (!empty(privateEndpoints) && empty(networkRuleSets) ? 'Disabled' : 'Enabled')
-    defaultAction: networkRuleSets.?defaultAction ?? 'Allow'
-    trustedServiceAccessEnabled: networkRuleSets.?trustedServiceAccessEnabled ?? true
-    ipRules: networkRuleSets.?ipRules ?? []
-    virtualNetworkRules: networkRuleSets.?virtualNetworkRules ?? []
-  }
-}
-
-module serviceBusNamespace_queues 'queue/main.bicep' = [for (queue, index) in (queues ?? []): {
-  name: '${uniqueString(deployment().name, location)}-Queue-${index}'
-  params: {
-    namespaceName: serviceBusNamespace.name
-    name: queue.name
-    autoDeleteOnIdle: queue.?autoDeleteOnIdle
-    forwardDeadLetteredMessagesTo: queue.?forwardDeadLetteredMessagesTo
-    forwardTo: queue.?forwardTo
-    maxMessageSizeInKilobytes: queue.?maxMessageSizeInKilobytes
-    authorizationRules: queue.?authorizationRules
-    deadLetteringOnMessageExpiration: queue.?deadLetteringOnMessageExpiration
-    defaultMessageTimeToLive: queue.?defaultMessageTimeToLive
-    duplicateDetectionHistoryTimeWindow: queue.?duplicateDetectionHistoryTimeWindow
-    enableBatchedOperations: queue.?enableBatchedOperations
-    enableExpress: queue.?enableExpress
-    enablePartitioning: queue.?enablePartitioning
-    lock: queue.?lock ?? lock
-    lockDuration: queue.?lockDuration
-    maxDeliveryCount: queue.?maxDeliveryCount
-    maxSizeInMegabytes: queue.?maxSizeInMegabytes
-    requiresDuplicateDetection: queue.?requiresDuplicateDetection
-    requiresSession: queue.?requiresSession
-    roleAssignments: queue.?roleAssignments
-    status: queue.?status
-  }
-}]
-
-module serviceBusNamespace_topics 'topic/main.bicep' = [for (topic, index) in (topics ?? []): {
-  name: '${uniqueString(deployment().name, location)}-Topic-${index}'
-  params: {
-    namespaceName: serviceBusNamespace.name
-    name: topic.name
-    authorizationRules: topic.?authorizationRules
-    autoDeleteOnIdle: topic.?autoDeleteOnIdle
-    defaultMessageTimeToLive: topic.?defaultMessageTimeToLive
-    duplicateDetectionHistoryTimeWindow: topic.?duplicateDetectionHistoryTimeWindow
-    enableBatchedOperations: topic.?enableBatchedOperations
-    enableExpress: topic.?enableExpress
-    enablePartitioning: topic.?enablePartitioning
-    lock: topic.?lock ?? lock
-    maxMessageSizeInKilobytes: topic.?maxMessageSizeInKilobytes
-    requiresDuplicateDetection: topic.?requiresDuplicateDetection
-    roleAssignments: topic.?roleAssignments
-    status: topic.?status
-    supportOrdering: topic.?supportOrdering
-    subscriptions: topic.?subscriptions
-    maxSizeInMegabytes: topic.?maxSizeInMegabytes
-  }
-}]
-
-resource serviceBusNamespace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
-  }
-  scope: serviceBusNamespace
-}
-
-resource serviceBusNamespace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    metrics: diagnosticSetting.?metricCategories ?? [
-      {
-        category: 'AllMetrics'
-        timeGrain: null
-        enabled: true
-      }
-    ]
-    logs: diagnosticSetting.?logCategoriesAndGroups ?? [
-      {
-        categoryGroup: 'AllLogs'
-        enabled: true
-      }
-    ]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
-  }
-  scope: serviceBusNamespace
-}]
-
-module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-serviceBusNamespace-PrivateEndpoint-${index}'
-  params: {
-    privateLinkServiceConnections: [
-      {
-        name: name
-        properties: {
-          privateLinkServiceId: serviceBusNamespace.id
-          groupIds: [
-            privateEndpoint.?service ?? 'namespace'
-          ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
         }
-      }
-    ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'vault'}-${index}'
-    subnetResourceId: privateEndpoint.subnetResourceId
-    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
-    location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: privateEndpoint.?lock ?? lock
-    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
-    roleAssignments: privateEndpoint.?roleAssignments
-    tags: privateEndpoint.?tags ?? tags
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
-    customDnsConfigs: privateEndpoint.?customDnsConfigs
-    ipConfigurations: privateEndpoint.?ipConfigurations
-    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
-    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: serviceBusNamespace
   }
-}]
+]
 
-resource serviceBusNamespace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(serviceBusNamespace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    name: '${uniqueString(deployment().name, location)}-ServiceBusNamespace-PrivateEndpoint-${index}'
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
+              properties: {
+                privateLinkServiceId: serviceBusNamespace.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'namespace'
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
+              properties: {
+                privateLinkServiceId: serviceBusNamespace.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'namespace'
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
   }
-  scope: serviceBusNamespace
-}]
+]
+
+resource serviceBusNamespace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(serviceBusNamespace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: serviceBusNamespace
+  }
+]
 
 @description('The resource ID of the deployed service bus namespace.')
 output resourceId string = serviceBusNamespace.id
@@ -413,17 +498,24 @@ type privateEndpointType = {
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
-  @description('Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".')
+  @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
   service: string?
 
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.')
+  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
   privateDnsZoneGroupName: string?
 
   @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
   privateDnsZoneResourceIds: string[]?
+
+  @description('Optional. If Manual Private Link Connection is required.')
+  isManualConnection: bool?
+
+  @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
+  @maxLength(140)
+  manualConnectionRequestMessage: string?
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
@@ -467,9 +559,6 @@ type privateEndpointType = {
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
   tags: object?
 
-  @description('Optional. Manual PrivateLink Service Connections.')
-  manualPrivateLinkServiceConnections: array?
-
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
 }[]?
@@ -478,19 +567,25 @@ type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
 
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
+  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
   logCategoriesAndGroups: {
     @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
     category: string?
 
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to \'AllLogs\' to collect all logs.')
+    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
     categoryGroup: string?
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
   }[]?
 
-  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to \'\' to disable metric collection.')
+  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
   metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to \'AllMetrics\' to collect all metrics.')
+    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
     category: string
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
   }[]?
 
   @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
@@ -649,7 +744,16 @@ type queueType = {
   roleAssignments: roleAssignmentType?
 
   @description('Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.')
-  status: ('Active' | 'Disabled' | 'Restoring' | 'SendDisabled' | 'ReceiveDisabled' | 'Creating' | 'Deleting' | 'Renaming' | 'Unknown')?
+  status: (
+    | 'Active'
+    | 'Disabled'
+    | 'Restoring'
+    | 'SendDisabled'
+    | 'ReceiveDisabled'
+    | 'Creating'
+    | 'Deleting'
+    | 'Renaming'
+    | 'Unknown')?
 }[]?
 
 type topicType = {
@@ -693,7 +797,16 @@ type topicType = {
   roleAssignments: roleAssignmentType?
 
   @description('Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.')
-  status: ('Active' | 'Disabled' | 'Restoring' | 'SendDisabled' | 'ReceiveDisabled' | 'Creating' | 'Deleting' | 'Renaming' | 'Unknown')?
+  status: (
+    | 'Active'
+    | 'Disabled'
+    | 'Restoring'
+    | 'SendDisabled'
+    | 'ReceiveDisabled'
+    | 'Creating'
+    | 'Deleting'
+    | 'Renaming'
+    | 'Unknown')?
 
   @description('Optional. Value that indicates whether the topic supports ordering.')
   supportOrdering: bool?
@@ -752,6 +865,15 @@ type topicType = {
     requiresSession: bool?
 
     @description('Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.')
-    status: ('Active' | 'Disabled' | 'Restoring' | 'SendDisabled' | 'ReceiveDisabled' | 'Creating' | 'Deleting' | 'Renaming' | 'Unknown')?
+    status: (
+      | 'Active'
+      | 'Disabled'
+      | 'Restoring'
+      | 'SendDisabled'
+      | 'ReceiveDisabled'
+      | 'Creating'
+      | 'Deleting'
+      | 'Renaming'
+      | 'Unknown')?
   }[]?
 }[]?

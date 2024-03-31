@@ -1,0 +1,125 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "486340638220018026"
+    },
+    "name": "DevTest Lab Policy Sets Policies",
+    "description": "This module deploys a DevTest Lab Policy Sets Policy.\n\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "labName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent lab. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the policy."
+      }
+    },
+    "description": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The description of the policy."
+      }
+    },
+    "evaluatorType": {
+      "type": "string",
+      "allowedValues": [
+        "AllowedValuesPolicy",
+        "MaxValuePolicy"
+      ],
+      "metadata": {
+        "description": "Required. The evaluator type of the policy (i.e. AllowedValuesPolicy, MaxValuePolicy)."
+      }
+    },
+    "factData": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The fact data of the policy."
+      }
+    },
+    "factName": {
+      "type": "string",
+      "allowedValues": [
+        "EnvironmentTemplate",
+        "GalleryImage",
+        "LabPremiumVmCount",
+        "LabTargetCost",
+        "LabVmCount",
+        "LabVmSize",
+        "ScheduleEditPermission",
+        "UserOwnedLabPremiumVmCount",
+        "UserOwnedLabVmCount",
+        "UserOwnedLabVmCountInSubnet"
+      ],
+      "metadata": {
+        "description": "Required. The fact name of the policy."
+      }
+    },
+    "status": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "Optional. The status of the policy."
+      }
+    },
+    "threshold": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The threshold of the policy (i.e. a number for MaxValuePolicy, and a JSON array of values for AllowedValuesPolicy)."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DevTestLab/labs/policysets/policies",
+      "apiVersion": "2018-09-15",
+      "name": "[format('{0}/{1}/{2}', parameters('labName'), 'default', parameters('name'))]",
+      "properties": {
+        "description": "[parameters('description')]",
+        "evaluatorType": "[parameters('evaluatorType')]",
+        "factData": "[parameters('factData')]",
+        "factName": "[parameters('factName')]",
+        "status": "[parameters('status')]",
+        "threshold": "[parameters('threshold')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the policy."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the policy."
+      },
+      "value": "[resourceId('Microsoft.DevTestLab/labs/policysets/policies', parameters('labName'), 'default', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the policy was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
