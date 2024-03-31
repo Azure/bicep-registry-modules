@@ -20,6 +20,9 @@ param serviceShort string = 'nnwmin'
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
 param enableDefaultTelemetry bool = true
 
+@description('Optional. A token to inject into the name of each resource.')
+param namePrefix string = '#_namePrefix_#'
+
 // ============ //
 // Dependencies //
 // ============ //

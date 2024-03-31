@@ -525,7 +525,7 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`connectionMonitors`](#parameter-connectionmonitors) | array | Array that contains the Connection Monitors. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`flowLogs`](#parameter-flowlogs) | array | Array that contains the Flow Logs. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -543,7 +543,7 @@ Array that contains the Connection Monitors.
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool

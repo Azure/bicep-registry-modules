@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "18004934498458632880"
+      "templateHash": "4219657545547090726"
     },
     "name": "Network Watchers",
     "description": "This module deploys a Network Watcher.",
@@ -158,7 +158,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
