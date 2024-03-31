@@ -63,7 +63,7 @@ param publicNetworkAccess string = 'enabled'
 @description('Optional. The number of replicas in the search service. If specified, it must be a value between 1 and 12 inclusive for standard SKUs or between 1 and 3 inclusive for basic SKU.')
 @minValue(1)
 @maxValue(12)
-param replicaCount int = 1
+param replicaCount int = 3
 
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType

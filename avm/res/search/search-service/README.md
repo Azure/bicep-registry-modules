@@ -1261,7 +1261,7 @@ The number of replicas in the search service. If specified, it must be a value b
 
 - Required: No
 - Type: int
-- Default: `1`
+- Default: `3`
 
 ### Parameter: `roleAssignments`
 
