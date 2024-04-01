@@ -52,14 +52,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/finops-toolkit/finops-hub:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using only defaults](#example-3-using-only-defaults)
+- [Defaults](#example-1-defaults)
+- [Max](#example-2-max)
+- [Waf-Aligned](#example-3-waf-aligned)
 
-### Example 1: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
+### Example 1: _Defaults_
 
 <details>
 
@@ -71,7 +68,6 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   params: {
     // Required parameters
     hubName: 'finops-hub-ssamin'
-    // Non-required parameters
     location: '<location>'
   }
 }
@@ -93,7 +89,6 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
     "hubName": {
       "value": "finops-hub-ssamin"
     },
-    // Non-required parameters
     "location": {
       "value": "<location>"
     }
@@ -104,10 +99,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
+### Example 2: _Max_
 
 <details>
 
@@ -119,7 +111,6 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   params: {
     // Required parameters
     hubName: 'finops-hub-ssamax'
-    // Non-required parameters
     location: '<location>'
   }
 }
@@ -141,7 +132,6 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
     "hubName": {
       "value": "finops-hub-ssamax"
     },
-    // Non-required parameters
     "location": {
       "value": "<location>"
     }
@@ -152,10 +142,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
+### Example 3: _Waf-Aligned_
 
 <details>
 
@@ -167,7 +154,6 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   params: {
     // Required parameters
     hubName: 'finops-hub-ssawaf'
-    // Non-required parameters
     location: '<location>'
   }
 }
@@ -189,7 +175,6 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
     "hubName": {
       "value": "finops-hub-ssawaf"
     },
-    // Non-required parameters
     "location": {
       "value": "<location>"
     }
@@ -208,6 +193,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`configContainer`](#parameter-configcontainer) | string | The name of the container used for configuration settings. |
+| [`convertToParquet`](#parameter-converttoparquet) | bool | Indicates whether ingested data should be converted to Parquet. Default: true. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`exportContainer`](#parameter-exportcontainer) | string | The name of the container used for Cost Management exports. |
 | [`exportScopes`](#parameter-exportscopes) | array | List of scope IDs to create exports for. |
@@ -225,6 +211,14 @@ The name of the container used for configuration settings.
 - Required: No
 - Type: string
 - Default: `'config'`
+
+### Parameter: `convertToParquet`
+
+Indicates whether ingested data should be converted to Parquet. Default: true.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `enableTelemetry`
 
@@ -292,7 +286,7 @@ Storage SKU to use. LRS = Lowest cost, ZRS = High availability. Note Standard SK
 
 Tags to apply to all resources. We will also add the cm-resource-parent tag for improved cost roll-ups in Cost Management.
 
-- Required: No
+- Required: Yes
 - Type: object
 
 ### Parameter: `tagsByResource`

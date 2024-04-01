@@ -16,7 +16,7 @@ param location string = resourceGroup().location
 param storageSku string = 'Premium_LRS'
 
 @description('Optional. Tags to apply to all resources. We will also add the cm-resource-parent tag for improved cost roll-ups in Cost Management.')
-param tags object?
+param tags object
 
 @description('Optional. Tags to apply to resources based on their resource type. Resource type specific tags will be merged with tags for all resources.')
 param tagsByResource object = {}
@@ -33,14 +33,49 @@ param exportContainer string = 'exports'
 @description('Optional. The name of the container used for normalized data ingestion.')
 param ingestionContainer string = 'ingestion'
 
+@description('Optional. Indicates whether ingested data should be converted to Parquet. Default: true.')
+param convertToParquet bool = true
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+//------------------------------------------------------------------------------
+// Variables
+//------------------------------------------------------------------------------
+
+// Generate globally unique storage account name: 3-24 chars; lowercase letters/numbers only
+var safeHubName = replace(replace(toLower(hubName), '-', ''), '_', '')
+var storageAccountSuffix = uniqueSuffix
+var storageAccountName = '${take(safeHubName, 24 - length(storageAccountSuffix))}${storageAccountSuffix}'
+
+// Add cm-resource-parent to group resources in Cost Management
+var resourceTags = union(
+  tags,
+  {
+    'cm-resource-parent': '${resourceGroup().id}/providers/Microsoft.Cloud/hubs/${hubName}'
+    'ftk-version': loadTextContent('modules/version.txt')
+    'ftk-tool': 'FinOps hubs'
+  }
+)
+
+// Generate globally unique Data Factory name: 3-63 chars; letters, numbers, non-repeating dashes
+var uniqueSuffix = uniqueString(hubName, resourceGroup().id)
+var dataFactoryPrefix = '${replace(hubName, '_', '-')}-engine'
+var dataFactorySuffix = '-${uniqueSuffix}'
+var dataFactoryName = replace(
+  '${take(dataFactoryPrefix, 63 - length(dataFactorySuffix))}${dataFactorySuffix}',
+  '--',
+  '-'
+)
+
+// The last segment of the telemetryId is used to identify this module
+var telemetryId = '00f120b5-2007-6120-0000-40b000000000'
 
 //==============================================================================
 // Resources
 //==============================================================================
 
-module hub 'modules/hub.bicep' = {
+/*module hub 'modules/hub.bicep' = {
   name: 'hub'
   params: {
     hubName: hubName
@@ -52,6 +87,108 @@ module hub 'modules/hub.bicep' = {
     configContainer: configContainer
     exportContainer: exportContainer
     ingestionContainer: ingestionContainer
+  }
+}*/
+
+resource defaultTelemetry 'Microsoft.Resources/deployments@2022-09-01' =
+  if (enableTelemetry) {
+    name: 'pid-${telemetryId}-${uniqueString(deployment().name, location)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        metadata: {
+          _generator: {
+            name: 'FinOps toolkit'
+            version: loadTextContent('modules/version.txt')
+          }
+        }
+        resources: []
+      }
+    }
+  }
+
+//------------------------------------------------------------------------------
+// ADLSv2 storage account for staging and archive
+//------------------------------------------------------------------------------
+
+module storage 'modules/storage.bicep' = {
+  name: 'storage'
+  params: {
+    sku: storageSku
+    location: location
+    tags: resourceTags
+    tagsByResource: tagsByResource
+    exportScopes: exportScopes
+    configContainer: configContainer
+    exportContainer: exportContainer
+    ingestionContainer: ingestionContainer
+    storageAccountName: storageAccountName
+  }
+}
+
+//------------------------------------------------------------------------------
+// Data Factory and pipelines
+//------------------------------------------------------------------------------
+resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
+  name: dataFactoryName
+  location: location
+  tags: union(
+    resourceTags,
+    contains(tagsByResource, 'Microsoft.DataFactory/factories') ? tagsByResource['Microsoft.DataFactory/factories'] : {}
+  )
+  identity: { type: 'SystemAssigned' }
+  properties: union(
+    // Using union() to hide the error that gets surfaced because globalConfigurations is not in the ADF schema yet.
+    {},
+    {
+      globalConfigurations: {
+        PipelineBillingEnabled: 'true'
+      }
+    }
+  )
+}
+
+module dataFactoryResources 'modules/dataFactory.bicep' = {
+  name: 'dataFactoryResources'
+  params: {
+    dataFactoryName: dataFactoryName
+    convertToParquet: convertToParquet
+    keyVaultName: keyVault.outputs.name
+    storageAccountName: storage.outputs.name
+    exportContainerName: exportContainer
+    ingestionContainerName: ingestionContainer
+    location: location
+    tags: resourceTags
+    tagsByResource: tagsByResource
+  }
+}
+
+//------------------------------------------------------------------------------
+// Key Vault for storing secrets
+//------------------------------------------------------------------------------
+
+module keyVault 'modules/keyVault.bicep' = {
+  name: 'keyVault'
+  params: {
+    hubName: hubName
+    uniqueSuffix: uniqueSuffix
+    location: location
+    tags: resourceTags
+    tagsByResource: tagsByResource
+    storageAccountName: storage.outputs.name
+    accessPolicies: [
+      {
+        objectId: dataFactory.identity.principalId
+        tenantId: subscription().tenantId
+        permissions: {
+          secrets: [
+            'get'
+          ]
+        }
+      }
+    ]
   }
 }
 
@@ -85,16 +222,16 @@ output name string = hubName
 output location string = location
 
 @description('Name of the Data Factory.')
-output dataFactorytName string = hub.outputs.dataFactorytName
+output dataFactorytName string = dataFactoryName
 
 @description('The resource group the finops hub was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
 @description('The resource ID of the deployed storage account.')
-output storageAccountId string = hub.outputs.storageAccountId
+output storageAccountId string = storage.outputs.resourceId
 
 @description('Name of the storage account created for the hub instance. This must be used when connecting FinOps toolkit Power BI reports to your data.')
-output storageAccountName string = hub.outputs.storageAccountName
+output storageAccountName string = storage.outputs.name
 
 @description('URL to use when connecting custom Power BI reports to your data.')
-output storageUrlForPowerBI string = hub.outputs.storageUrlForPowerBI
+output storageUrlForPowerBI string = 'https://${storage.outputs.name}.dfs.${environment().suffixes.storage}/${ingestionContainer}'
