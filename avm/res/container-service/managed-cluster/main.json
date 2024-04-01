@@ -2723,21 +2723,21 @@
       },
       "value": "[coalesce(tryGet(tryGet(reference('managedCluster', '2023-07-02-preview', 'full'), 'identity'), 'principalId'), '')]"
     },
-    "kubeletidentityClientId": {
+    "kubeletIdentityClientId": {
       "type": "string",
       "metadata": {
         "description": "The Client ID of the AKS identity."
       },
       "value": "[coalesce(tryGet(tryGet(tryGet(reference('managedCluster'), 'identityProfile'), 'kubeletidentity'), 'clientId'), '')]"
     },
-    "kubeletidentityObjectId": {
+    "kubeletIdentityObjectId": {
       "type": "string",
       "metadata": {
         "description": "The Object ID of the AKS identity."
       },
       "value": "[coalesce(tryGet(tryGet(tryGet(reference('managedCluster'), 'identityProfile'), 'kubeletidentity'), 'objectId'), '')]"
     },
-    "kubeletidentityResourceId": {
+    "kubeletIdentityResourceId": {
       "type": "string",
       "metadata": {
         "description": "The Resource ID of the AKS identity."

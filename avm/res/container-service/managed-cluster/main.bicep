@@ -884,13 +884,13 @@ output controlPlaneFQDN string = enablePrivateCluster
 output systemAssignedMIPrincipalId string = managedCluster.?identity.?principalId ?? ''
 
 @description('The Client ID of the AKS identity.')
-output kubeletidentityClientId string = managedCluster.properties.?identityProfile.?kubeletidentity.?clientId ?? ''
+output kubeletIdentityClientId string = managedCluster.properties.?identityProfile.?kubeletidentity.?clientId ?? ''
 
 @description('The Object ID of the AKS identity.')
-output kubeletidentityObjectId string = managedCluster.properties.?identityProfile.?kubeletidentity.?objectId ?? ''
+output kubeletIdentityObjectId string = managedCluster.properties.?identityProfile.?kubeletidentity.?objectId ?? ''
 
 @description('The Resource ID of the AKS identity.')
-output kubeletidentityResourceId string = managedCluster.properties.?identityProfile.?kubeletidentity.?resourceId ?? ''
+output kubeletIdentityResourceId string = managedCluster.properties.?identityProfile.?kubeletidentity.?resourceId ?? ''
 
 @description('The Object ID of the OMS agent identity.')
 output omsagentIdentityObjectId string = managedCluster.properties.?addonProfiles.?omsagent.?identity.?objectId ?? ''
