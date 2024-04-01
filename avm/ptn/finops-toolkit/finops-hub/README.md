@@ -317,7 +317,7 @@ Tags to apply to resources based on their resource type. Resource type specific 
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `dataFactorytName` | string | Name of the Data Factory. |
+| `dataFactoryName` | string | Name of the Data Factory. |
 | `location` | string | The location the resources wer deployed to. |
 | `name` | string | The name of the resource group. |
 | `resourceGroupName` | string | The resource group the finops hub was deployed into. |

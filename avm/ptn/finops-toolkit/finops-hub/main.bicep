@@ -47,13 +47,14 @@ param enableTelemetry bool = true
 var safeHubName = replace(replace(toLower(hubName), '-', ''), '_', '')
 var storageAccountSuffix = uniqueSuffix
 var storageAccountName = '${take(safeHubName, 24 - length(storageAccountSuffix))}${storageAccountSuffix}'
+var ftkVersion = loadTextContent('modules/ftkver.txt')
 
 // Add cm-resource-parent to group resources in Cost Management
 var resourceTags = union(
   tags ?? {},
   {
     'cm-resource-parent': '${resourceGroup().id}/providers/Microsoft.Cloud/hubs/${hubName}'
-    'ftk-version': loadTextContent('modules/version.txt')
+    'ftk-version': ftkVersion
     'ftk-tool': 'FinOps hubs'
   }
 )
@@ -188,7 +189,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
         metadata: {
           _generator: {
             name: 'FinOps toolkit'
-            version: loadTextContent('modules/version.txt')
+            version: loadTextContent('modules/ftkver.txt')
           }
         }
         resources: []
@@ -208,7 +209,7 @@ output name string = hubName
 output location string = location
 
 @description('Name of the Data Factory.')
-output dataFactorytName string = dataFactoryName
+output dataFactoryName string = dataFactoryName
 
 @description('The resource group the finops hub was deployed into.')
 output resourceGroupName string = resourceGroup().name

@@ -130,7 +130,7 @@ module uploadSettings 'br/public:avm/res/resources/deployment-script:0.2.0' = {
       secureList: [
         {
           name: 'ftkVersion'
-          value: loadTextContent('./version.txt')
+          value: loadTextContent('./ftkver.txt')
         }
         {
           name: 'exportScopes'
