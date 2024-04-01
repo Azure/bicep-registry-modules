@@ -52,29 +52,31 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    storageAccountId: nestedDependencies.outputs.storageAccountResourceId
-    customerManagedKey: {
-      keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      storageAccountId: nestedDependencies.outputs.storageAccountResourceId
+      customerManagedKey: {
+        keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+      }
+      poolAllocationMode: 'BatchService'
+      storageAuthenticationMode: 'BatchAccountManagedIdentity'
+      managedIdentities: {
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+      }
     }
-    poolAllocationMode: 'BatchService'
-    storageAuthenticationMode: 'BatchAccountManagedIdentity'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-    }
+    dependsOn: [
+      nestedDependencies
+    ]
   }
-  dependsOn: [
-    nestedDependencies
-  ]
-}]
+]
