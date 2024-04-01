@@ -28,7 +28,6 @@ This module deploys a Network Watcher Connection Monitor.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`endpoints`](#parameter-endpoints) | array | List of connection monitor endpoints. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`networkWatcherName`](#parameter-networkwatchername) | string | Name of the network watcher resource. Must be in the resource group where the Flow log will be created and same region as the NSG. |
@@ -43,14 +42,6 @@ Name of the resource.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `enableTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `endpoints`
 

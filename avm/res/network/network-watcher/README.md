@@ -46,7 +46,6 @@ This instance deploys the module with the minimum set of required parameters.
 module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
   name: 'networkWatcherDeployment'
   params: {
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
   }
 }
@@ -64,9 +63,6 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     }

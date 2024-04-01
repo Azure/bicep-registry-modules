@@ -31,7 +31,6 @@ This module controls the Network Security Group Flow Logs and analytics settings
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enabled`](#parameter-enabled) | bool | If the flow log should be enabled. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`formatVersion`](#parameter-formatversion) | int | The flow log format version. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`name`](#parameter-name) | string | Name of the resource. |
@@ -58,14 +57,6 @@ Resource ID of the NSG that must be enabled for Flow Logs.
 ### Parameter: `enabled`
 
 If the flow log should be enabled.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `enableTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
 
 - Required: No
 - Type: bool
