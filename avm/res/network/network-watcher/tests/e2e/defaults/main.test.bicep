@@ -23,6 +23,9 @@ param enableDefaultTelemetry bool = true
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+#disable-next-line no-hardcoded-location // Disabled as the default RG & location are created in always one location, but each test has to deploy into a different one
+var testLocation = 'eastus'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -31,18 +34,17 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourcelocation
+  location: testLocation
 }
 
 // ============== //
 // Test Execution //
 // ============== //
-#disable-next-line no-hardcoded-location // Disabled as the default RG & location are created in always one location, but each test has to deploy into a different one
-var testLocation = 'northeurope'
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourcelocation)}-test-${serviceShort}-${iteration}'
+  name: '${uniqueString(deployment().name, testLocation)}-test-${serviceShort}-${iteration}'
   params: {
     enableTelemetry: enableDefaultTelemetry
     // Note: This value is not required and only set to enable testing

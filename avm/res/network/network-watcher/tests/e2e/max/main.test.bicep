@@ -23,6 +23,7 @@ param namePrefix string = '#_namePrefix_#'
 
 #disable-next-line no-hardcoded-location // Disabled as the default RG & location are created in always one location, but each test has to deploy into a different one
 var testLocation = 'australiaeast'
+var resourceGroupLocation  = 'eastus'
 
 // ============ //
 // Dependencies //
@@ -32,7 +33,7 @@ var testLocation = 'australiaeast'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: testLocation
+  location: resourceGroupLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
