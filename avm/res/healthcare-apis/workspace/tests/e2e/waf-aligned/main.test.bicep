@@ -63,66 +63,6 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    publicNetworkAccess: 'Enabled'
-    fhirservices: [
-      {
-        name: '${namePrefix}-az-fhir-x-001'
-        location: resourceLocation
-        kind: 'fhir-R4'
-        workspaceName: '${namePrefix}${serviceShort}001'
-        corsOrigins: ['*']
-        corsHeaders: ['*']
-        corsMethods: ['GET']
-        corsMaxAge: 600
-        corsAllowCredentials: false
-        diagnosticSettings: [
-          {
-            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-          }
-        ]
-        publicNetworkAccess: 'Enabled'
-        resourceVersionPolicy: 'versioned'
-        smartProxyEnabled: false
-        managedIdentities: {
-          systemAssigned: false
-          userAssignedResourceIds: [
-            nestedDependencies.outputs.managedIdentityResourceId
-          ]
-        }
-        importEnabled: false
-        initialImportMode: false
-      }
-    ]
-    dicomservices: [
-      {
-        name: '${namePrefix}-az-dicom-x-001'
-        location: resourceLocation
-        workspaceName: '${namePrefix}${serviceShort}001'
-        corsOrigins: ['*']
-        corsHeaders: ['*']
-        corsMethods: ['GET']
-        corsMaxAge: 600
-        corsAllowCredentials: false
-        diagnosticSettings: [
-          {
-            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-          }
-        ]
-        publicNetworkAccess: 'Enabled'
-        managedIdentities: {
-          systemAssigned: false
-          userAssignedResourceIds: [
-            nestedDependencies.outputs.managedIdentityResourceId
-          ]
-        }
-      }
-    ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'

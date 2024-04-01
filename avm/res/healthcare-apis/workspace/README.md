@@ -59,7 +59,6 @@ module workspace 'br/public:avm/res/healthcare-apis/workspace:<version>' = {
     name: 'hawmin001'
     // Non-required parameters
     location: '<location>'
-    publicNetworkAccess: 'Enabled'
   }
 }
 ```
@@ -83,9 +82,6 @@ module workspace 'br/public:avm/res/healthcare-apis/workspace:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "publicNetworkAccess": {
-      "value": "Enabled"
     }
   }
 }
@@ -424,79 +420,7 @@ module workspace 'br/public:avm/res/healthcare-apis/workspace:<version>' = {
     // Required parameters
     name: 'hawwaf001'
     // Non-required parameters
-    dicomservices: [
-      {
-        corsAllowCredentials: false
-        corsHeaders: [
-          '*'
-        ]
-        corsMaxAge: 600
-        corsMethods: [
-          'GET'
-        ]
-        corsOrigins: [
-          '*'
-        ]
-        diagnosticSettings: [
-          {
-            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-            eventHubName: '<eventHubName>'
-            storageAccountResourceId: '<storageAccountResourceId>'
-            workspaceResourceId: '<workspaceResourceId>'
-          }
-        ]
-        location: '<location>'
-        managedIdentities: {
-          systemAssigned: false
-          userAssignedResourceIds: [
-            '<managedIdentityResourceId>'
-          ]
-        }
-        name: 'az-dicom-x-001'
-        publicNetworkAccess: 'Enabled'
-        workspaceName: 'hawwaf001'
-      }
-    ]
-    fhirservices: [
-      {
-        corsAllowCredentials: false
-        corsHeaders: [
-          '*'
-        ]
-        corsMaxAge: 600
-        corsMethods: [
-          'GET'
-        ]
-        corsOrigins: [
-          '*'
-        ]
-        diagnosticSettings: [
-          {
-            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-            eventHubName: '<eventHubName>'
-            storageAccountResourceId: '<storageAccountResourceId>'
-            workspaceResourceId: '<workspaceResourceId>'
-          }
-        ]
-        importEnabled: false
-        initialImportMode: false
-        kind: 'fhir-R4'
-        location: '<location>'
-        managedIdentities: {
-          systemAssigned: false
-          userAssignedResourceIds: [
-            '<managedIdentityResourceId>'
-          ]
-        }
-        name: 'az-fhir-x-001'
-        publicNetworkAccess: 'Enabled'
-        resourceVersionPolicy: 'versioned'
-        smartProxyEnabled: false
-        workspaceName: 'hawwaf001'
-      }
-    ]
     location: '<location>'
-    publicNetworkAccess: 'Enabled'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -523,86 +447,8 @@ module workspace 'br/public:avm/res/healthcare-apis/workspace:<version>' = {
       "value": "hawwaf001"
     },
     // Non-required parameters
-    "dicomservices": {
-      "value": [
-        {
-          "corsAllowCredentials": false,
-          "corsHeaders": [
-            "*"
-          ],
-          "corsMaxAge": 600,
-          "corsMethods": [
-            "GET"
-          ],
-          "corsOrigins": [
-            "*"
-          ],
-          "diagnosticSettings": [
-            {
-              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-              "eventHubName": "<eventHubName>",
-              "storageAccountResourceId": "<storageAccountResourceId>",
-              "workspaceResourceId": "<workspaceResourceId>"
-            }
-          ],
-          "location": "<location>",
-          "managedIdentities": {
-            "systemAssigned": false,
-            "userAssignedResourceIds": [
-              "<managedIdentityResourceId>"
-            ]
-          },
-          "name": "az-dicom-x-001",
-          "publicNetworkAccess": "Enabled",
-          "workspaceName": "hawwaf001"
-        }
-      ]
-    },
-    "fhirservices": {
-      "value": [
-        {
-          "corsAllowCredentials": false,
-          "corsHeaders": [
-            "*"
-          ],
-          "corsMaxAge": 600,
-          "corsMethods": [
-            "GET"
-          ],
-          "corsOrigins": [
-            "*"
-          ],
-          "diagnosticSettings": [
-            {
-              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-              "eventHubName": "<eventHubName>",
-              "storageAccountResourceId": "<storageAccountResourceId>",
-              "workspaceResourceId": "<workspaceResourceId>"
-            }
-          ],
-          "importEnabled": false,
-          "initialImportMode": false,
-          "kind": "fhir-R4",
-          "location": "<location>",
-          "managedIdentities": {
-            "systemAssigned": false,
-            "userAssignedResourceIds": [
-              "<managedIdentityResourceId>"
-            ]
-          },
-          "name": "az-fhir-x-001",
-          "publicNetworkAccess": "Enabled",
-          "resourceVersionPolicy": "versioned",
-          "smartProxyEnabled": false,
-          "workspaceName": "hawwaf001"
-        }
-      ]
-    },
     "location": {
       "value": "<location>"
-    },
-    "publicNetworkAccess": {
-      "value": "Enabled"
     },
     "tags": {
       "value": {
