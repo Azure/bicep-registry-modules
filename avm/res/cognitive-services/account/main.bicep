@@ -666,22 +666,22 @@ type deploymentsType = {
 
   @description('Required. Properties of Cognitive Services account deployment model.')
   model: {
-    @description('Required. The name of Cognitive Services account deployment model')
+    @description('Required. The name of Cognitive Services account deployment model.')
     name: string
 
-    @description('Required. The format of Cognitive Services account deployment model')
+    @description('Required. The format of Cognitive Services account deployment model.')
     format: string
 
-    @description('Required. The version of Cognitive Services account deployment model')
+    @description('Required. The version of Cognitive Services account deployment model.')
     version: string
   }
 
-  @description('Optional. The resource model definition representing SKU')
+  @description('Optional. The resource model definition representing SKU.')
   sku: {
-    @description('Required. The name of the resource model definition representing SKU')
+    @description('Required. The name of the resource model definition representing SKU.')
     name: string
 
-    @description('Required. The capacity of the resource model definition representing SKU')
+    @description('Required. The capacity of the resource model definition representing SKU.')
     capacity: int
   }?
 
