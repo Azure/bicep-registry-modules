@@ -681,6 +681,7 @@ Resource tags.
 | `name` | string | The name of the load test. |
 | `resourceGroupName` | string | The resource group the load test was deployed into. |
 | `resourceId` | string | The resource ID of the load test. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 

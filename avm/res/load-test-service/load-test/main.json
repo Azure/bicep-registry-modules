@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "16387528517718835808"
+      "templateHash": "9692134932303845531"
     },
     "name": "Load Testing Service",
     "description": "This module deploys a Load test.",
@@ -373,6 +373,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('loadTest', '2022-12-01', 'full').location]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[coalesce(tryGet(tryGet(reference('loadTest', '2022-12-01', 'full'), 'identity'), 'principalId'), '')]"
     }
   }
 }

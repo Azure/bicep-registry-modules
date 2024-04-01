@@ -183,6 +183,9 @@ output resourceGroupName string = resourceGroup().name
 @description('The location the resource was deployed into.')
 output location string = loadTest.location
 
+@description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string = loadTest.?identity.?principalId ?? ''
+
 // =============== //
 //   Definitions   //
 // =============== //
