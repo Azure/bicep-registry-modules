@@ -455,7 +455,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
   location: location
   identity: identity
   tags: tags
-  zones: availabilityZone != 0 ? [string(availabilityZone)] : null
+  zones: availabilityZone != 0 ? array(string(availabilityZone)) : null
   plan: !empty(plan) ? plan : null
   properties: {
     hardwareProfile: {
