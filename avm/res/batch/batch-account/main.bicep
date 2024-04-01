@@ -74,61 +74,89 @@ param customerManagedKey customerManagedKeyType
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
-var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
-var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? 'SystemAssigned' : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
-  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-} : null
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? 'SystemAssigned'
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
-var accountAccessNetworkProfileIpRules = [for allowedIpRule in networkProfile.?accountAccess.?allowedIpRules ?? []: {
-  action: 'Allow'
-  value: allowedIpRule
-}]
+var accountAccessNetworkProfileIpRules = [
+  for allowedIpRule in networkProfile.?accountAccess.?allowedIpRules ?? []: {
+    action: 'Allow'
+    value: allowedIpRule
+  }
+]
 
-var nodeManagementAccessNetworkProfileIpRules = [for allowedIpRule in networkProfile.?nodeManagementAccess.?allowedIpRules ?? []: {
-  action: 'Allow'
-  value: allowedIpRule
-}]
+var nodeManagementAccessNetworkProfileIpRules = [
+  for allowedIpRule in networkProfile.?nodeManagementAccess.?allowedIpRules ?? []: {
+    action: 'Allow'
+    value: allowedIpRule
+  }
+]
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.batch-batchaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.batch-batchaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
-resource batchKeyVaultReference 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (poolAllocationMode == 'UserSubscription') {
-  name: last(split((keyVaultReferenceResourceId ?? 'dummyVault'), '/'))
-  scope: resourceGroup(split((keyVaultReferenceResourceId ?? '//'), '/')[2], split((keyVaultReferenceResourceId ?? '////'), '/')[4])
-}
-
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-  scope: resourceGroup(split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2], split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4])
-
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+resource batchKeyVaultReference 'Microsoft.KeyVault/vaults@2023-02-01' existing =
+  if (poolAllocationMode == 'UserSubscription') {
+    name: last(split((keyVaultReferenceResourceId ?? 'dummyVault'), '/'))
+    scope: resourceGroup(
+      split((keyVaultReferenceResourceId ?? '//'), '/')[2],
+      split((keyVaultReferenceResourceId ?? '////'), '/')[4]
+    )
   }
-}
+
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
+  if (!empty(customerManagedKey.?keyVaultResourceId)) {
+    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+    scope: resourceGroup(
+      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    )
+
+    resource cMKKey 'keys@2023-02-01' existing =
+      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+        name: customerManagedKey.?keyName ?? 'dummyKey'
+      }
+  }
 
 resource batchAccount 'Microsoft.Batch/batchAccounts@2022-06-01' = {
   name: name
@@ -139,123 +167,164 @@ resource batchAccount 'Microsoft.Batch/batchAccounts@2022-06-01' = {
     allowedAuthenticationModes: allowedAuthenticationModes
     autoStorage: {
       authenticationMode: storageAuthenticationMode
-      nodeIdentityReference: null != storageAccessIdentityResourceId ? {
-        resourceId: storageAccessIdentityResourceId
-      } : null
+      nodeIdentityReference: null != storageAccessIdentityResourceId
+        ? {
+            resourceId: storageAccessIdentityResourceId
+          }
+        : null
       storageAccountId: storageAccountId
     }
-    encryption: !empty(customerManagedKey) ? {
-      keySource: 'Microsoft.KeyVault'
-      keyVaultProperties: {
-        keyIdentifier: !empty(customerManagedKey.?keyVersion ?? '') ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}' : cMKKeyVault::cMKKey.properties.keyUriWithVersion
-      }
-    } : null
-    keyVaultReference: poolAllocationMode == 'UserSubscription' ? {
-      id: batchKeyVaultReference.id
-      url: batchKeyVaultReference.properties.vaultUri
-    } : null
-    networkProfile: !empty(networkProfile ?? {}) ? {
-      accountAccess: !empty(accountAccessNetworkProfileIpRules) ? {
-        defaultAction: networkProfile.?accountAccess.?defaultAction ?? 'Deny'
-        ipRules: accountAccessNetworkProfileIpRules
-      } : null
-      nodeManagementAccess: !empty(nodeManagementAccessNetworkProfileIpRules) ? {
-        defaultAction: networkProfile.?nodeManagementAccess.?defaultAction ?? 'Deny'
-        ipRules: nodeManagementAccessNetworkProfileIpRules
-      } : null
-    } : null
+    encryption: !empty(customerManagedKey)
+      ? {
+          keySource: 'Microsoft.KeyVault'
+          keyVaultProperties: {
+            keyIdentifier: !empty(customerManagedKey.?keyVersion ?? '')
+              ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}'
+              : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+          }
+        }
+      : null
+    keyVaultReference: poolAllocationMode == 'UserSubscription'
+      ? {
+          id: batchKeyVaultReference.id
+          url: batchKeyVaultReference.properties.vaultUri
+        }
+      : null
+    networkProfile: !empty(networkProfile ?? {})
+      ? {
+          accountAccess: !empty(accountAccessNetworkProfileIpRules)
+            ? {
+                defaultAction: networkProfile.?accountAccess.?defaultAction ?? 'Deny'
+                ipRules: accountAccessNetworkProfileIpRules
+              }
+            : null
+          nodeManagementAccess: !empty(nodeManagementAccessNetworkProfileIpRules)
+            ? {
+                defaultAction: networkProfile.?nodeManagementAccess.?defaultAction ?? 'Deny'
+                ipRules: nodeManagementAccessNetworkProfileIpRules
+              }
+            : null
+        }
+      : null
     poolAllocationMode: poolAllocationMode
-    publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : ((!empty(privateEndpoints ?? []) && empty(networkProfile ?? [])) ? 'Disabled' : null)
+    publicNetworkAccess: !empty(publicNetworkAccess)
+      ? any(publicNetworkAccess)
+      : ((!empty(privateEndpoints ?? []) && empty(networkProfile ?? [])) ? 'Disabled' : null)
   }
 }
 
-resource batchAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource batchAccount_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: batchAccount
   }
-  scope: batchAccount
-}
 
-resource batchAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
-      category: group.category
-      enabled: group.?enabled ?? true
-      timeGrain: null
-    }]
-    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
-      categoryGroup: group.?categoryGroup
-      category: group.?category
-      enabled: group.?enabled ?? true
-    }]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
-  }
-  scope: batchAccount
-}]
-
-module batchAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-BatchAccount-PrivateEndpoint-${index}'
-  params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(batchAccount.id, '/'))}-${privateEndpoint.service}-${index}'
-    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(batchAccount.id, '/'))}-${privateEndpoint.service}-${index}'
-        properties: {
-          privateLinkServiceId: batchAccount.id
-          groupIds: [
-            privateEndpoint.service
-          ]
+resource batchAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
         }
-      }
-    ] : null
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(batchAccount.id, '/'))}-${privateEndpoint.service}-${index}'
-        properties: {
-          privateLinkServiceId: batchAccount.id
-          groupIds: [
-            privateEndpoint.service
-          ]
-          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
         }
-      }
-    ] : null
-    subnetResourceId: privateEndpoint.subnetResourceId
-    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
-    location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: privateEndpoint.?lock ?? lock
-    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
-    roleAssignments: privateEndpoint.?roleAssignments
-    tags: privateEndpoint.?tags ?? tags
-    customDnsConfigs: privateEndpoint.?customDnsConfigs
-    ipConfigurations: privateEndpoint.?ipConfigurations
-    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
-    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: batchAccount
   }
-}]
+]
 
-resource batchAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(batchAccount.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+module batchAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    name: '${uniqueString(deployment().name, location)}-BatchAccount-PrivateEndpoint-${index}'
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(batchAccount.id, '/'))}-${privateEndpoint.service}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(batchAccount.id, '/'))}-${privateEndpoint.service}-${index}'
+              properties: {
+                privateLinkServiceId: batchAccount.id
+                groupIds: [
+                  privateEndpoint.service
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(batchAccount.id, '/'))}-${privateEndpoint.service}-${index}'
+              properties: {
+                privateLinkServiceId: batchAccount.id
+                groupIds: [
+                  privateEndpoint.service
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
   }
-  scope: batchAccount
-}]
+]
+
+resource batchAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(batchAccount.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: batchAccount
+  }
+]
 
 @description('The name of the batch account.')
 output name string = batchAccount.name
