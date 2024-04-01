@@ -52,11 +52,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/finops-toolkit/finops-hub:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Max](#example-2-max)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using only defaults](#example-3-using-only-defaults)
 
-### Example 1: _Defaults_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -68,6 +71,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   params: {
     // Required parameters
     hubName: 'finops-hub-ssamin'
+    // Non-required parameters
     location: '<location>'
   }
 }
@@ -89,6 +93,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
     "hubName": {
       "value": "finops-hub-ssamin"
     },
+    // Non-required parameters
     "location": {
       "value": "<location>"
     }
@@ -99,7 +104,10 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -111,6 +119,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   params: {
     // Required parameters
     hubName: 'finops-hub-ssamax'
+    // Non-required parameters
     location: '<location>'
   }
 }
@@ -132,6 +141,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
     "hubName": {
       "value": "finops-hub-ssamax"
     },
+    // Non-required parameters
     "location": {
       "value": "<location>"
     }
@@ -142,7 +152,10 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 3: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -154,6 +167,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   params: {
     // Required parameters
     hubName: 'finops-hub-ssawaf'
+    // Non-required parameters
     location: '<location>'
   }
 }
@@ -175,6 +189,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
     "hubName": {
       "value": "finops-hub-ssawaf"
     },
+    // Non-required parameters
     "location": {
       "value": "<location>"
     }
@@ -286,8 +301,9 @@ Storage SKU to use. LRS = Lowest cost, ZRS = High availability. Note Standard SK
 
 Tags to apply to all resources. We will also add the cm-resource-parent tag for improved cost roll-ups in Cost Management.
 
-- Required: Yes
+- Required: No
 - Type: object
+- Default: `{}`
 
 ### Parameter: `tagsByResource`
 

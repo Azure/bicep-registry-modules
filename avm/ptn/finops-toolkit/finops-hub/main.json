@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "10845267987303748192"
+      "templateHash": "11650627853671191086"
     },
     "name": "Finops-hub",
     "description": "This module deploys a Finops hub from the Finops toolkit.",
@@ -38,6 +38,7 @@
     },
     "tags": {
       "type": "object",
+      "defaultValue": {},
       "metadata": {
         "description": "Optional. Tags to apply to all resources. We will also add the cm-resource-parent tag for improved cost roll-ups in Cost Management."
       }
