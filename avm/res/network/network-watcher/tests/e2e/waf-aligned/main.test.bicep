@@ -23,7 +23,7 @@ param namePrefix string = '#_namePrefix_#'
 
 #disable-next-line no-hardcoded-location // Disabled as the default RG & location are created in always one location, but each test has to deploy into a different one
 var testLocation = 'northeurope'
-var resourceGroupLocation  = 'eastus'
+var resourceGroupLocation  = 'westeurope'
 
 // ============ //
 // Dependencies //
