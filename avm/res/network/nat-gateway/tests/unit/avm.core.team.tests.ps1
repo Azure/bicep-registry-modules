@@ -29,7 +29,7 @@ Describe 'AVM Core Team Module Specific Tests' {
 
   Context 'WAF - Reliability Pillar - Parameter Tests' {
 
-    It 'NAT Gateway Module Availability Zone Parameter Should Not Have A Default Value Set' {
+    It 'NAT Gateway Module Availability Zone Parameter Should Not Have A Default Value Set 5ms (4ms|1ms)' {
       $isRequired = Get-IsParameterRequired -TemplateFileContent $moduleJsonContentHashtable -Parameter $moduleJsonContentHashtable.parameters.zones
       $isRequired | Should -Be $true
     }
