@@ -303,7 +303,6 @@ Tags to apply to all resources. We will also add the cm-resource-parent tag for 
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `tagsByResource`
 

@@ -16,7 +16,7 @@ param location string = resourceGroup().location
 param storageSku string = 'Premium_LRS'
 
 @description('Optional. Tags to apply to all resources. We will also add the cm-resource-parent tag for improved cost roll-ups in Cost Management.')
-param tags object = {}
+param tags object?
 
 @description('Optional. Tags to apply to resources based on their resource type. Resource type specific tags will be merged with tags for all resources.')
 param tagsByResource object = {}
@@ -50,7 +50,7 @@ var storageAccountName = '${take(safeHubName, 24 - length(storageAccountSuffix))
 
 // Add cm-resource-parent to group resources in Cost Management
 var resourceTags = union(
-  tags,
+  tags ?? {},
   {
     'cm-resource-parent': '${resourceGroup().id}/providers/Microsoft.Cloud/hubs/${hubName}'
     'ftk-version': loadTextContent('modules/version.txt')
@@ -74,40 +74,6 @@ var telemetryId = '00f120b5-2007-6120-0000-40b000000000'
 //==============================================================================
 // Resources
 //==============================================================================
-
-/*module hub 'modules/hub.bicep' = {
-  name: 'hub'
-  params: {
-    hubName: hubName
-    location: location
-    storageSku: storageSku
-    tags: tags
-    tagsByResource: tagsByResource
-    exportScopes: exportScopes
-    configContainer: configContainer
-    exportContainer: exportContainer
-    ingestionContainer: ingestionContainer
-  }
-}*/
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2022-09-01' =
-  if (enableTelemetry) {
-    name: 'pid-${telemetryId}-${uniqueString(deployment().name, location)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        metadata: {
-          _generator: {
-            name: 'FinOps toolkit'
-            version: loadTextContent('modules/version.txt')
-          }
-        }
-        resources: []
-      }
-    }
-  }
 
 //------------------------------------------------------------------------------
 // ADLSv2 storage account for staging and archive
@@ -207,6 +173,25 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
             value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
           }
         }
+      }
+    }
+  }
+
+resource defaultTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: 'pid-${telemetryId}-${uniqueString(deployment().name, location)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        metadata: {
+          _generator: {
+            name: 'FinOps toolkit'
+            version: loadTextContent('modules/version.txt')
+          }
+        }
+        resources: []
       }
     }
   }
