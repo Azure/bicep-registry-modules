@@ -46,7 +46,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, testLocation)}-test-${serviceShort}-${iteration}'
   params: {
-    enableTelemetry: enableDefaultTelemetry
     // Note: This value is not required and only set to enable testing
     location: testLocation
   }
