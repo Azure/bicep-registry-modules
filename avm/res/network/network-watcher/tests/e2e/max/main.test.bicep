@@ -17,11 +17,12 @@ param resourcelocation string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'nnwmax'
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
+
+#disable-next-line no-hardcoded-location // Disabled as the default RG & location are created in always one location, but each test has to deploy into a different one
+var testLocation = 'australiaeast'
 
 // ============ //
 // Dependencies //
@@ -31,19 +32,19 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourcelocation
+  location: testLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourcelocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, testLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     firstNetworkSecurityGroupName: 'dep-${namePrefix}-nsg-1-${serviceShort}'
     secondNetworkSecurityGroupName: 'dep-${namePrefix}-nsg-2-${serviceShort}'
     virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    location: resourcelocation
+    location: testLocation
   }
 }
 
@@ -57,21 +58,18 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourcelocation
+    location: testLocation
   }
 }
 
 // ============== //
 // Test Execution //
 // ============== //
-#disable-next-line no-hardcoded-location // Disabled as the default RG & location are created in always one location, but each test has to deploy into a different one
-var testLocation = 'westeurope'
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, testLocation)}-test-${serviceShort}-${iteration}'
   params: {
-    enableTelemetry: enableDefaultTelemetry
     name: 'NetworkWatcher_${testLocation}'
     location: testLocation
     connectionMonitors: [

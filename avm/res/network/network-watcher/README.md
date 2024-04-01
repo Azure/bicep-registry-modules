@@ -143,7 +143,6 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableTelemetry: '<enableTelemetry>'
     flowLogs: [
       {
         enabled: false
@@ -254,9 +253,6 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "flowLogs": {
       "value": [
@@ -381,7 +377,6 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableTelemetry: '<enableTelemetry>'
     flowLogs: [
       {
         enabled: false
@@ -475,9 +470,6 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "flowLogs": {
       "value": [

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "4219657545547090726"
+      "templateHash": "7160948442066895953"
     },
     "name": "Network Watchers",
     "description": "This module deploys a Network Watcher.",
@@ -163,7 +163,6 @@
     }
   },
   "variables": {
-    "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
@@ -264,10 +263,7 @@
           },
           "testConfigurations": "[if(contains(parameters('connectionMonitors')[copyIndex()], 'testConfigurations'), createObject('value', parameters('connectionMonitors')[copyIndex()].testConfigurations), createObject('value', createArray()))]",
           "testGroups": "[if(contains(parameters('connectionMonitors')[copyIndex()], 'testGroups'), createObject('value', parameters('connectionMonitors')[copyIndex()].testGroups), createObject('value', createArray()))]",
-          "workspaceResourceId": "[if(contains(parameters('connectionMonitors')[copyIndex()], 'workspaceResourceId'), createObject('value', parameters('connectionMonitors')[copyIndex()].workspaceResourceId), createObject('value', ''))]",
-          "enableTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "workspaceResourceId": "[if(contains(parameters('connectionMonitors')[copyIndex()], 'workspaceResourceId'), createObject('value', parameters('connectionMonitors')[copyIndex()].workspaceResourceId), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -459,10 +455,7 @@
             "value": "[parameters('flowLogs')[copyIndex()].targetResourceId]"
           },
           "trafficAnalyticsInterval": "[if(contains(parameters('flowLogs')[copyIndex()], 'trafficAnalyticsInterval'), createObject('value', parameters('flowLogs')[copyIndex()].trafficAnalyticsInterval), createObject('value', 60))]",
-          "workspaceResourceId": "[if(contains(parameters('flowLogs')[copyIndex()], 'workspaceResourceId'), createObject('value', parameters('flowLogs')[copyIndex()].workspaceResourceId), createObject('value', ''))]",
-          "enableTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "workspaceResourceId": "[if(contains(parameters('flowLogs')[copyIndex()], 'workspaceResourceId'), createObject('value', parameters('flowLogs')[copyIndex()].workspaceResourceId), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

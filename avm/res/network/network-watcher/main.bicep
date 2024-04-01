@@ -27,7 +27,6 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var enableReferencedModulesTelemetry = false
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -96,7 +95,6 @@ module networkWatcher_connectionMonitors 'connection-monitor/main.bicep' = [for 
     testConfigurations: contains(connectionMonitor, 'testConfigurations') ? connectionMonitor.testConfigurations : []
     testGroups: contains(connectionMonitor, 'testGroups') ? connectionMonitor.testGroups : []
     workspaceResourceId: contains(connectionMonitor, 'workspaceResourceId') ? connectionMonitor.workspaceResourceId : ''
-    enableTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -113,7 +111,6 @@ module networkWatcher_flowLogs 'flow-log/main.bicep' = [for (flowLog, index) in 
     targetResourceId: flowLog.targetResourceId
     trafficAnalyticsInterval: contains(flowLog, 'trafficAnalyticsInterval') ? flowLog.trafficAnalyticsInterval : 60
     workspaceResourceId: contains(flowLog, 'workspaceResourceId') ? flowLog.workspaceResourceId : ''
-    enableTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
