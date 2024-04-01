@@ -53,8 +53,14 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
 resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2022-11-01' existing = {
@@ -76,36 +82,44 @@ resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2022-11-01'
 }
 
 @batchSize(1)
-module capacityPool_volumes 'volume/main.bicep' = [for (volume, index) in volumes: {
-  name: '${deployment().name}-Vol-${index}'
-  params: {
-    netAppAccountName: netAppAccount.name
-    capacityPoolName: capacityPool.name
-    name: volume.name
-    location: location
-    serviceLevel: serviceLevel
-    creationToken: contains(volume, 'creationToken') ? volume.creationToken : volume.name
-    usageThreshold: volume.usageThreshold
-    protocolTypes: contains(volume, 'protocolTypes') ? volume.protocolTypes : []
-    subnetResourceId: volume.subnetResourceId
-    exportPolicyRules: contains(volume, 'exportPolicyRules') ? volume.exportPolicyRules : []
-    roleAssignments: contains(volume, 'roleAssignments') ? volume.roleAssignments : []
+module capacityPool_volumes 'volume/main.bicep' = [
+  for (volume, index) in volumes: {
+    name: '${deployment().name}-Vol-${index}'
+    params: {
+      netAppAccountName: netAppAccount.name
+      capacityPoolName: capacityPool.name
+      name: volume.name
+      location: location
+      serviceLevel: serviceLevel
+      creationToken: contains(volume, 'creationToken') ? volume.creationToken : volume.name
+      usageThreshold: volume.usageThreshold
+      protocolTypes: contains(volume, 'protocolTypes') ? volume.protocolTypes : []
+      subnetResourceId: volume.subnetResourceId
+      exportPolicyRules: contains(volume, 'exportPolicyRules') ? volume.exportPolicyRules : []
+      roleAssignments: contains(volume, 'roleAssignments') ? volume.roleAssignments : []
+    }
   }
-}]
+]
 
-resource capacityPool_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(capacityPool.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+resource capacityPool_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(capacityPool.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: capacityPool
   }
-  scope: capacityPool
-}]
+]
 
 @description('The name of the Capacity Pool.')
 output name string = capacityPool.name
