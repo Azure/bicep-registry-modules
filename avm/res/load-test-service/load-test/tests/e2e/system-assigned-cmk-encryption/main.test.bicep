@@ -21,8 +21,7 @@ param serviceShort string = 'ltscmk'
 param baseTime string = utcNow('u')
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-//param namePrefix string = '#_namePrefix_#'
-param namePrefix string = 'rdscmk'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -56,10 +55,12 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: nestedDependencies.outputs.loadTestName
     location: location
+    managedIdentities: {
+      systemAssigned: true
+    }
     customerManagedKey: {
-      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       keyName: nestedDependencies.outputs.keyVaultKeyName
-      keyUri: nestedDependencies.outputs.keyVaultKeyUrl
+      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       systemAssigned: true
     }
   }
