@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "4593361593861215330"
+      "version": "0.21.1.54444",
+      "templateHash": "8425419604220163860"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",
@@ -479,47 +479,47 @@
             "properties": {
               "name": {
                 "type": "string",
-                "nullable": false,
                 "metadata": {
                   "description": "Required. The name of Cognitive Services account deployment model"
                 }
               },
               "format": {
                 "type": "string",
-                "nullable": false,
                 "metadata": {
                   "description": "Required. The format of Cognitive Services account deployment model"
                 }
               },
               "version": {
                 "type": "string",
-                "nullable": false,
                 "metadata": {
                   "description": "Required. The version of Cognitive Services account deployment model"
                 }
               }
             },
-            "nullable": false
+            "metadata": {
+              "description": "Required. Properties of Cognitive Services account deployment model."
+            }
           },
           "sku": {
             "type": "object",
             "properties": {
               "name": {
                 "type": "string",
-                "nullable": false,
                 "metadata": {
                   "description": "Required. The name of the resource model definition representing SKU"
                 }
               },
               "capacity": {
                 "type": "int",
-                "nullable": false,
                 "metadata": {
                   "description": "Required. The capacity of the resource model definition representing SKU"
                 }
               }
             },
-            "nullable": true
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The resource model definition representing SKU"
+            }
           },
           "raiPolicyName": {
             "type": "string",
@@ -608,12 +608,6 @@
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "Optional. Location for all Resources."
-      }
-    },
-    "deployments": {
-      "$ref": "#/definitions/deploymentsType",
-      "metadata": {
-        "description": "Optional. The AI deployments settings of the service."
       }
     },
     "diagnosticSettings": {
@@ -747,6 +741,12 @@
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
+    },
+    "deployments": {
+      "$ref": "#/definitions/deploymentsType",
+      "metadata": {
+        "description": "Optional. Array of deployments about cognitive service accounts to create."
+      }
     }
   },
   "variables": {
@@ -869,11 +869,12 @@
       "copy": {
         "name": "cognitiveService_deployments",
         "count": "[length(coalesce(parameters('deployments'), createArray()))]",
+        "mode": "serial",
         "batchSize": 1
       },
       "type": "Microsoft.CognitiveServices/accounts/deployments",
       "apiVersion": "2023-05-01",
-      "name": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+      "name": "[format('{0}/{1}', parameters('name'), coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'name'), format('{0}-deployments', parameters('name'))))]",
       "properties": {
         "model": "[coalesce(parameters('deployments'), createArray())[copyIndex()].model]",
         "raiPolicyName": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'raiPolicyName'), null())]"
