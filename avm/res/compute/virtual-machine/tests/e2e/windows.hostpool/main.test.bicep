@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults for Windows'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using a host pool to register the VM'
+metadata description = 'This instance deploys the module and registers it in a host pool.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmwinmin'
+param serviceShort string = 'cvmwinhp'
 
 @description('Optional. The password to leverage for the login.')
 @secure()
@@ -41,6 +41,9 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    hostPoolName: 'dep${namePrefix}-hp-${serviceShort}01'
+    getRegistrationTokenDeploymentScriptName: 'dep-${namePrefix}-rtds-${serviceShort}'
   }
 }
 
@@ -56,13 +59,16 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       name: '${namePrefix}${serviceShort}'
       adminUsername: 'localAdminUser'
+      managedIdentities: {
+        systemAssigned: true
+      }
+      availabilityZone: 0
       imageReference: {
         publisher: 'MicrosoftWindowsServer'
         offer: 'WindowsServer'
         sku: '2022-datacenter-azure-edition'
         version: 'latest'
       }
-      availabilityZone: 0
       nicConfigurations: [
         {
           ipConfigurations: [
@@ -84,6 +90,26 @@ module testDeployment '../../../main.bicep' = [
       osType: 'Windows'
       vmSize: 'Standard_DS2_v2'
       adminPassword: password
+      extensionAadJoinConfig: {
+        enabled: true
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
+      extensionHostPoolRegistration: {
+        enabled: true
+        hostPoolName: nestedDependencies.outputs.hostPoolName
+        registrationInfoToken: nestedDependencies.outputs.registrationInfoToken
+        modulesUrl: 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
+        configurationFunction: 'Configuration.ps1\\AddSessionHost'
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
     }
   }
 ]
