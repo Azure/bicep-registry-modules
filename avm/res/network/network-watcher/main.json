@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "7160948442066895953"
+      "templateHash": "15494927611157088343"
     },
     "name": "Network Watchers",
     "description": "This module deploys a Network Watcher.",
@@ -273,7 +273,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "3303731305267866858"
+              "templateHash": "6805107237853307554"
             },
             "name": "Network Watchers Connection Monitors",
             "description": "This module deploys a Network Watcher Connection Monitor.",
@@ -343,9 +343,6 @@
               }
             }
           },
-          "variables": {
-            "outputs": "[if(not(empty(parameters('workspaceResourceId'))), createArray(createObject('type', 'Workspace', 'workspaceSettings', createObject('workspaceResourceId', parameters('workspaceResourceId')))), null())]"
-          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
@@ -383,7 +380,7 @@
                 "endpoints": "[parameters('endpoints')]",
                 "testConfigurations": "[parameters('testConfigurations')]",
                 "testGroups": "[parameters('testGroups')]",
-                "outputs": "[variables('outputs')]"
+                "outputs": "[if(not(empty(parameters('workspaceResourceId'))), createArray(createObject('type', 'Workspace', 'workspaceSettings', createObject('workspaceResourceId', parameters('workspaceResourceId')))), null())]"
               },
               "dependsOn": [
                 "networkWatcher"
