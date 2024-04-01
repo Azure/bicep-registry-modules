@@ -9,13 +9,13 @@ metadata description = 'This instance deploys the module in alignment with the b
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-resourcegraph.queries-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-loadTestService.loadTest-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'rdswaf'
+param serviceShort string = 'ltwaf'
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
 param enableTelemetry bool = true
