@@ -177,7 +177,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+/*resource defaultTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
   if (enableTelemetry) {
     name: 'pid-${telemetryId}-${uniqueString(deployment().name, location)}'
     properties: {
@@ -195,6 +195,7 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
       }
     }
   }
+*/
 
 //==============================================================================
 // Outputs
@@ -219,4 +220,4 @@ output storageAccountId string = storage.outputs.resourceId
 output storageAccountName string = storage.outputs.name
 
 @description('URL to use when connecting custom Power BI reports to your data.')
-output storageUrlForPowerBI string = 'https://${storage.outputs.name}.dfs.${environment().suffixes.storage}/${ingestionContainer}'
+output storageUrlForPowerBi string = 'https://${storage.outputs.name}.dfs.${environment().suffixes.storage}/${ingestionContainer}'

@@ -12,7 +12,7 @@ param location string = resourceGroup().location
 param sku string = 'Premium_LRS'
 
 @description('Optional. Tags to apply to all resources. We will also add the cm-resource-parent tag for improved cost roll-ups in Cost Management.')
-param tags object = {}
+param tags object?
 
 @description('Optional. Tags to apply to resources based on their resource type. Resource type specific tags will be merged with tags for all resources.')
 param tagsByResource object = {}
@@ -43,7 +43,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.8.0' = {
     skuName: sku
     kind: 'BlockBlobStorage'
     tags: union(
-      tags,
+      tags ?? {},
       contains(tagsByResource, 'Microsoft.Storage/storageAccounts')
         ? tagsByResource['Microsoft.Storage/storageAccounts']
         : {}
@@ -99,7 +99,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.8.0' = {
 resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: '${storageAccountName}_blobManager'
   tags: union(
-    tags,
+    tags ?? {},
     contains(tagsByResource, 'Microsoft.ManagedIdentity/userAssignedIdentities')
       ? tagsByResource['Microsoft.ManagedIdentity/userAssignedIdentities']
       : {}
@@ -114,7 +114,7 @@ module uploadSettings 'br/public:avm/res/resources/deployment-script:0.2.0' = {
     kind: 'AzurePowerShell'
     location: startsWith(location, 'china') ? 'chinaeast2' : location
     tags: union(
-      tags,
+      tags ?? {},
       contains(tagsByResource, 'Microsoft.Resources/deploymentScripts')
         ? tagsByResource['Microsoft.Resources/deploymentScripts']
         : {}

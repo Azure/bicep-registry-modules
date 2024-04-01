@@ -27,7 +27,7 @@ param convertToParquet bool = true
 param location string = resourceGroup().location
 
 @description('Optional. Tags to apply to all resources. We will also add the cm-resource-parent tag for improved cost roll-ups in Cost Management.')
-param tags object = {}
+param tags object?
 
 @description('Optional. Tags to apply to resources based on their resource type. Resource type specific tags will be merged with tags for all resources.')
 param tagsByResource object = {}
@@ -235,7 +235,12 @@ module deleteOldResources 'br/public:avm/res/resources/deployment-script:0.2.0' 
 resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: '${dataFactoryName}_triggerManager'
   location: location
-  tags: union(tags, contains(tagsByResource, 'Microsoft.ManagedIdentity/userAssignedIdentities') ? tagsByResource['Microsoft.ManagedIdentity/userAssignedIdentities'] : {})
+  tags: union(
+    tags ?? {},
+    contains(tagsByResource, 'Microsoft.ManagedIdentity/userAssignedIdentities')
+      ? tagsByResource['Microsoft.ManagedIdentity/userAssignedIdentities']
+      : {}
+  )
 }
 
 // Assign access to the identity
@@ -261,7 +266,7 @@ module stopHubTriggers 'br/public:avm/res/resources/deployment-script:0.2.0' = {
     location: location
     kind: 'AzurePowerShell'
     tags: union(
-      tags,
+      tags ?? {},
       contains(tagsByResource, 'Microsoft.Resources/deploymentScripts')
         ? tagsByResource['Microsoft.Resources/deploymentScripts']
         : {}
@@ -874,7 +879,7 @@ module startHubTriggers 'br/public:avm/res/resources/deployment-script:0.2.0' = 
     name: 'startHubTriggers'
     location: location
     tags: union(
-      tags,
+      tags ?? {},
       contains(tagsByResource, 'Microsoft.Resources/deploymentScripts')
         ? tagsByResource['Microsoft.Resources/deploymentScripts']
         : {}

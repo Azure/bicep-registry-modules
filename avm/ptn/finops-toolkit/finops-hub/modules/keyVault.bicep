@@ -28,7 +28,7 @@ param storageAccountName string
 param sku string = 'premium'
 
 @description('Optional. Resource tags.')
-param tags object = {}
+param tags object?
 
 @description('Optional. Tags to apply to resources based on their resource type. Resource type specific tags will be merged with tags for all resources.')
 param tagsByResource object = {}
@@ -42,12 +42,14 @@ var keyVaultPrefix = '${replace(hubName, '_', '-')}-vault'
 var keyVaultSuffix = '-${uniqueSuffix}'
 var keyVaultName = replace('${take(keyVaultPrefix, 24 - length(keyVaultSuffix))}${keyVaultSuffix}', '--', '-')
 
-var formattedAccessPolicies = [for accessPolicy in accessPolicies: {
-  applicationId: contains(accessPolicy, 'applicationId') ? accessPolicy.applicationId : ''
-  objectId: contains(accessPolicy, 'objectId') ? accessPolicy.objectId : ''
-  permissions: accessPolicy.permissions
-  tenantId: contains(accessPolicy, 'tenantId') ? accessPolicy.tenantId : tenant().tenantId
-}]
+var formattedAccessPolicies = [
+  for accessPolicy in accessPolicies: {
+    applicationId: contains(accessPolicy, 'applicationId') ? accessPolicy.applicationId : ''
+    objectId: contains(accessPolicy, 'objectId') ? accessPolicy.objectId : ''
+    permissions: accessPolicy.permissions
+    tenantId: contains(accessPolicy, 'tenantId') ? accessPolicy.tenantId : tenant().tenantId
+  }
+]
 
 //==============================================================================
 // Resources
@@ -58,7 +60,10 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.4.0' = {
   params: {
     name: keyVaultName
     location: location
-    tags: union(tags, contains(tagsByResource, 'Microsoft.KeyVault/vaults') ? tagsByResource['Microsoft.KeyVault/vaults'] : {})
+    tags: union(
+      tags ?? {},
+      contains(tagsByResource, 'Microsoft.KeyVault/vaults') ? tagsByResource['Microsoft.KeyVault/vaults'] : {}
+    )
     enableVaultForDeployment: true
     enableVaultForTemplateDeployment: true
     enableVaultForDiskEncryption: true
