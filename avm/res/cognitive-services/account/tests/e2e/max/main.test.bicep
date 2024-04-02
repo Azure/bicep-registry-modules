@@ -186,10 +186,6 @@ module testDeployment '../../../main.bicep' = [
             name: 'gpt-35-turbo'
             version: '0301'
           }
-          sku: {
-            name: 'Standard'
-            capacity: 20
-          }
         }
       ]
     }
