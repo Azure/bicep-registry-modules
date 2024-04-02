@@ -1,14 +1,14 @@
-# Event Grid System Topics `[Microsoft.EventGrid/systemTopics]`
+# Healthcare API Workspace FHIR Services `[Microsoft.HealthcareApis/workspaces/fhirservices]`
 
-This module deploys an Event Grid System Topic.
+This module deploys a Healthcare API Workspace FHIR Service.
 
 ## Navigation
 
 - [Resource Types](#Resource-Types)
-- [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -17,434 +17,8 @@ This module deploys an Event Grid System Topic.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.EventGrid/systemTopics` | [2023-12-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/systemTopics) |
-| `Microsoft.EventGrid/systemTopics/eventSubscriptions` | [2022-06-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2022-06-15/systemTopics/eventSubscriptions) |
+| `Microsoft.HealthcareApis/workspaces/fhirservices` | [2022-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HealthcareApis/workspaces) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-
-## Usage examples
-
-The following section provides usage examples for the module, which were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository.
-
->**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
-
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/event-grid/system-topic:<version>`.
-
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
-
-### Example 1: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
-  name: 'systemTopicDeployment'
-  params: {
-    // Required parameters
-    name: 'egstmin001'
-    source: '<source>'
-    topicType: 'Microsoft.Storage.StorageAccounts'
-    // Non-required parameters
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "egstmin001"
-    },
-    "source": {
-      "value": "<source>"
-    },
-    "topicType": {
-      "value": "Microsoft.Storage.StorageAccounts"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 2: _Using large parameter set_
-
-This instance deploys the module with most of its features enabled.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
-  name: 'systemTopicDeployment'
-  params: {
-    // Required parameters
-    name: 'egstmax001'
-    source: '<source>'
-    topicType: 'Microsoft.Storage.StorageAccounts'
-    // Non-required parameters
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    eventSubscriptions: [
-      {
-        destination: {
-          endpointType: 'StorageQueue'
-          properties: {
-            queueMessageTimeToLiveInSeconds: 86400
-            queueName: '<queueName>'
-            resourceId: '<resourceId>'
-          }
-        }
-        eventDeliverySchema: 'CloudEventSchemaV1_0'
-        expirationTimeUtc: '2099-01-01T11:00:21.715Z'
-        filter: {
-          enableAdvancedFilteringOnArrays: true
-          isSubjectCaseSensitive: false
-        }
-        name: 'egstmax001'
-        retryPolicy: {
-          eventTimeToLive: '120'
-          maxDeliveryAttempts: 10
-        }
-      }
-    ]
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      systemAssigned: true
-    }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "egstmax001"
-    },
-    "source": {
-      "value": "<source>"
-    },
-    "topicType": {
-      "value": "Microsoft.Storage.StorageAccounts"
-    },
-    // Non-required parameters
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "eventSubscriptions": {
-      "value": [
-        {
-          "destination": {
-            "endpointType": "StorageQueue",
-            "properties": {
-              "queueMessageTimeToLiveInSeconds": 86400,
-              "queueName": "<queueName>",
-              "resourceId": "<resourceId>"
-            }
-          },
-          "eventDeliverySchema": "CloudEventSchemaV1_0",
-          "expirationTimeUtc": "2099-01-01T11:00:21.715Z",
-          "filter": {
-            "enableAdvancedFilteringOnArrays": true,
-            "isSubjectCaseSensitive": false
-          },
-          "name": "egstmax001",
-          "retryPolicy": {
-            "eventTimeToLive": "120",
-            "maxDeliveryAttempts": 10
-          }
-        }
-      ]
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 3: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
-  name: 'systemTopicDeployment'
-  params: {
-    // Required parameters
-    name: 'egstwaf001'
-    source: '<source>'
-    topicType: 'Microsoft.Storage.StorageAccounts'
-    // Non-required parameters
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    eventSubscriptions: [
-      {
-        destination: {
-          endpointType: 'StorageQueue'
-          properties: {
-            queueMessageTimeToLiveInSeconds: 86400
-            queueName: '<queueName>'
-            resourceId: '<resourceId>'
-          }
-        }
-        eventDeliverySchema: 'CloudEventSchemaV1_0'
-        expirationTimeUtc: '2099-01-01T11:00:21.715Z'
-        filter: {
-          enableAdvancedFilteringOnArrays: true
-          isSubjectCaseSensitive: false
-        }
-        name: 'egstwaf001'
-        retryPolicy: {
-          eventTimeToLive: '120'
-          maxDeliveryAttempts: 10
-        }
-      }
-    ]
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "egstwaf001"
-    },
-    "source": {
-      "value": "<source>"
-    },
-    "topicType": {
-      "value": "Microsoft.Storage.StorageAccounts"
-    },
-    // Non-required parameters
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "eventSubscriptions": {
-      "value": [
-        {
-          "destination": {
-            "endpointType": "StorageQueue",
-            "properties": {
-              "queueMessageTimeToLiveInSeconds": 86400,
-              "queueName": "<queueName>",
-              "resourceId": "<resourceId>"
-            }
-          },
-          "eventDeliverySchema": "CloudEventSchemaV1_0",
-          "expirationTimeUtc": "2099-01-01T11:00:21.715Z",
-          "filter": {
-            "enableAdvancedFilteringOnArrays": true,
-            "isSubjectCaseSensitive": false
-          },
-          "name": "egstwaf001",
-          "retryPolicy": {
-            "eventTimeToLive": "120",
-            "maxDeliveryAttempts": 10
-          }
-        }
-      ]
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
 
 ## Parameters
 
@@ -452,43 +26,141 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the Event Grid Topic. |
-| [`source`](#parameter-source) | string | Source for the system topic. |
-| [`topicType`](#parameter-topictype) | string | TopicType for the system topic. |
+| [`name`](#parameter-name) | string | The name of the FHIR service. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`workspaceName`](#parameter-workspacename) | string | The name of the parent health data services workspace. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`accessPolicyObjectIds`](#parameter-accesspolicyobjectids) | array | List of Azure AD object IDs (User or Apps) that is allowed access to the FHIR service. |
+| [`acrLoginServers`](#parameter-acrloginservers) | array | The list of the Azure container registry login servers. |
+| [`acrOciArtifacts`](#parameter-acrociartifacts) | array | The list of Open Container Initiative (OCI) artifacts. |
+| [`authenticationAudience`](#parameter-authenticationaudience) | string | The audience url for the service. |
+| [`authenticationAuthority`](#parameter-authenticationauthority) | string | The authority url for the service. |
+| [`corsAllowCredentials`](#parameter-corsallowcredentials) | bool | Use this setting to indicate that cookies should be included in CORS requests. |
+| [`corsHeaders`](#parameter-corsheaders) | array | Specify HTTP headers which can be used during the request. Use "*" for any header. |
+| [`corsMaxAge`](#parameter-corsmaxage) | int | Specify how long a result from a request can be cached in seconds. Example: 600 means 10 minutes. |
+| [`corsMethods`](#parameter-corsmethods) | array | Specify the allowed HTTP methods. |
+| [`corsOrigins`](#parameter-corsorigins) | array | Specify URLs of origin sites that can access this API, or use "*" to allow access from any site. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`eventSubscriptions`](#parameter-eventsubscriptions) | array | Event subscriptions to deploy. |
-| [`location`](#parameter-location) | string | Location for all Resources. |
+| [`exportStorageAccountName`](#parameter-exportstorageaccountname) | string | The name of the default export storage account. |
+| [`importEnabled`](#parameter-importenabled) | bool | If the import operation is enabled. |
+| [`importStorageAccountName`](#parameter-importstorageaccountname) | string | The name of the default integration storage account. |
+| [`initialImportMode`](#parameter-initialimportmode) | bool | If the FHIR service is in InitialImportMode. |
+| [`kind`](#parameter-kind) | string | The kind of the service. Defaults to R4. |
+| [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Control permission for data plane traffic coming from public networks while private endpoint is enabled. |
+| [`resourceVersionOverrides`](#parameter-resourceversionoverrides) | object | A list of FHIR Resources and their version policy overrides. |
+| [`resourceVersionPolicy`](#parameter-resourceversionpolicy) | string | The default value for tracking history across all resources. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`smartProxyEnabled`](#parameter-smartproxyenabled) | bool | If the SMART on FHIR proxy is enabled. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
 
-The name of the Event Grid Topic.
+The name of the FHIR service.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `source`
+### Parameter: `workspaceName`
 
-Source for the system topic.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `topicType`
-
-TopicType for the system topic.
+The name of the parent health data services workspace. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `accessPolicyObjectIds`
+
+List of Azure AD object IDs (User or Apps) that is allowed access to the FHIR service.
+
+- Required: No
+- Type: array
+
+### Parameter: `acrLoginServers`
+
+The list of the Azure container registry login servers.
+
+- Required: No
+- Type: array
+
+### Parameter: `acrOciArtifacts`
+
+The list of Open Container Initiative (OCI) artifacts.
+
+- Required: No
+- Type: array
+
+### Parameter: `authenticationAudience`
+
+The audience url for the service.
+
+- Required: No
+- Type: string
+- Default: `[format('https://{0}-{1}.fhir.azurehealthcareapis.com', parameters('workspaceName'), parameters('name'))]`
+
+### Parameter: `authenticationAuthority`
+
+The authority url for the service.
+
+- Required: No
+- Type: string
+- Default: `[uri(environment().authentication.loginEndpoint, subscription().tenantId)]`
+
+### Parameter: `corsAllowCredentials`
+
+Use this setting to indicate that cookies should be included in CORS requests.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `corsHeaders`
+
+Specify HTTP headers which can be used during the request. Use "*" for any header.
+
+- Required: No
+- Type: array
+
+### Parameter: `corsMaxAge`
+
+Specify how long a result from a request can be cached in seconds. Example: 600 means 10 minutes.
+
+- Required: No
+- Type: int
+
+### Parameter: `corsMethods`
+
+Specify the allowed HTTP methods.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'DELETE'
+    'GET'
+    'OPTIONS'
+    'PATCH'
+    'POST'
+    'PUT'
+  ]
+  ```
+
+### Parameter: `corsOrigins`
+
+Specify URLs of origin sites that can access this API, or use "*" to allow access from any site.
+
+- Required: No
+- Type: array
 
 ### Parameter: `diagnosticSettings`
 
@@ -636,25 +308,55 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
-### Parameter: `enableTelemetry`
+### Parameter: `exportStorageAccountName`
 
-Enable/Disable usage telemetry for module.
+The name of the default export storage account.
+
+- Required: No
+- Type: string
+
+### Parameter: `importEnabled`
+
+If the import operation is enabled.
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
-### Parameter: `eventSubscriptions`
+### Parameter: `importStorageAccountName`
 
-Event subscriptions to deploy.
+The name of the default integration storage account.
 
 - Required: No
-- Type: array
-- Default: `[]`
+- Type: string
+- Default: `''`
+
+### Parameter: `initialImportMode`
+
+If the FHIR service is in InitialImportMode.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `kind`
+
+The kind of the service. Defaults to R4.
+
+- Required: No
+- Type: string
+- Default: `'fhir-R4'`
+- Allowed:
+  ```Bicep
+  [
+    'fhir-R4'
+    'fhir-Stu3'
+  ]
+  ```
 
 ### Parameter: `location`
 
-Location for all Resources.
+Location for all resources.
 
 - Required: No
 - Type: string
@@ -708,7 +410,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourcesIds`](#parameter-managedidentitiesuserassignedresourcesids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -717,12 +419,50 @@ Enables system assigned managed identity on the resource.
 - Required: No
 - Type: bool
 
-### Parameter: `managedIdentities.userAssignedResourcesIds`
+### Parameter: `managedIdentities.userAssignedResourceIds`
 
 The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
+
+### Parameter: `publicNetworkAccess`
+
+Control permission for data plane traffic coming from public networks while private endpoint is enabled.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `resourceVersionOverrides`
+
+A list of FHIR Resources and their version policy overrides.
+
+- Required: No
+- Type: object
+
+### Parameter: `resourceVersionPolicy`
+
+The default value for tracking history across all resources.
+
+- Required: No
+- Type: string
+- Default: `'versioned'`
+- Allowed:
+  ```Bicep
+  [
+    'no-version'
+    'versioned'
+    'versioned-update'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -813,6 +553,14 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `smartProxyEnabled`
+
+If the SMART on FHIR proxy is enabled.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -826,14 +574,57 @@ Tags of the resource.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the event grid system topic. |
-| `resourceGroupName` | string | The name of the resource group the event grid system topic was deployed into. |
-| `resourceId` | string | The resource ID of the event grid system topic. |
+| `name` | string | The name of the fhir service. |
+| `resourceGroupName` | string | The resource group where the namespace is deployed. |
+| `resourceId` | string | The resource ID of the fhir service. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+| `workspaceName` | string | The name of the fhir workspace. |
 
 ## Cross-referenced modules
 
 _None_
+
+## Notes
+
+### Parameter Usage: `acrOciArtifacts`
+
+You can specify multiple Azure Container OCI artifacts using the following format:
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"acrOciArtifacts": {
+    "value": {
+        [{
+          "digest": "sha256:0a2e01852872580b2c2fea9380ff8d7b637d3928783c55beb3f21a6e58d5d108",
+          "imageName": "myimage:v1",
+          "loginServer": "myregistry.azurecr.io"
+        }]
+    }
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+acrOciArtifacts: [
+    {
+        digest: 'sha256:0a2e01852872580b2c2fea9380ff8d7b637d3928783c55beb3f21a6e58d5d108'
+        imageName: 'myimage:v1'
+        loginServer: 'myregistry.azurecr.io'
+    }
+]
+```
+
+</details>
+
+<p>
 
 ## Data Collection
 

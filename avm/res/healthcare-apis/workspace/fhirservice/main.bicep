@@ -1,30 +1,104 @@
-metadata name = 'Event Grid System Topics'
-metadata description = 'This module deploys an Event Grid System Topic.'
+metadata name = 'Healthcare API Workspace FHIR Services'
+metadata description = 'This module deploys a Healthcare API Workspace FHIR Service.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. The name of the Event Grid Topic.')
+@minLength(3)
+@maxLength(24)
+@description('Required. The name of the FHIR service.')
 param name string
 
-@description('Optional. Location for all Resources.')
+@allowed([
+  'fhir-R4'
+  'fhir-Stu3'
+])
+@description('Optional. The kind of the service. Defaults to R4.')
+param kind string = 'fhir-R4'
+
+@description('Conditional. The name of the parent health data services workspace. Required if the template is used in a standalone deployment.')
+param workspaceName string
+
+@description('Optional. List of Azure AD object IDs (User or Apps) that is allowed access to the FHIR service.')
+param accessPolicyObjectIds array?
+
+@description('Optional. The list of the Azure container registry login servers.')
+param acrLoginServers array?
+
+@description('Optional. The list of Open Container Initiative (OCI) artifacts.')
+param acrOciArtifacts array?
+
+@description('Optional. The authority url for the service.')
+param authenticationAuthority string = uri(environment().authentication.loginEndpoint, subscription().tenantId)
+
+@description('Optional. The audience url for the service.')
+param authenticationAudience string = 'https://${workspaceName}-${name}.fhir.azurehealthcareapis.com'
+
+@description('Optional. Specify URLs of origin sites that can access this API, or use "*" to allow access from any site.')
+param corsOrigins array?
+
+@description('Optional. Specify HTTP headers which can be used during the request. Use "*" for any header.')
+param corsHeaders array?
+
+@allowed([
+  'DELETE'
+  'GET'
+  'OPTIONS'
+  'PATCH'
+  'POST'
+  'PUT'
+])
+@description('Optional. Specify the allowed HTTP methods.')
+param corsMethods array?
+
+@description('Optional. Specify how long a result from a request can be cached in seconds. Example: 600 means 10 minutes.')
+param corsMaxAge int?
+
+@description('Optional. Use this setting to indicate that cookies should be included in CORS requests.')
+param corsAllowCredentials bool = false
+
+@description('Optional. Location for all resources.')
 param location string = resourceGroup().location
-
-@description('Required. Source for the system topic.')
-param source string
-
-@description('Required. TopicType for the system topic.')
-param topicType string
-
-@description('Optional. Event subscriptions to deploy.')
-param eventSubscriptions array = []
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
-@description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+@description('Optional. The name of the default export storage account.')
+param exportStorageAccountName string?
+
+@description('Optional. The name of the default integration storage account.')
+param importStorageAccountName string = ''
+
+@description('Optional. If the import operation is enabled.')
+param importEnabled bool = false
+
+@description('Optional. If the FHIR service is in InitialImportMode.')
+param initialImportMode bool = false
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
+
+@description('Optional. Array of role assignments to create.')
+param roleAssignments roleAssignmentType
+
+@allowed([
+  'Disabled'
+  'Enabled'
+])
+@description('Optional. Control permission for data plane traffic coming from public networks while private endpoint is enabled.')
+param publicNetworkAccess string = 'Disabled'
+
+@allowed([
+  'no-version'
+  'versioned'
+  'versioned-update'
+])
+@description('Optional. The default value for tracking history across all resources.')
+param resourceVersionPolicy string = 'versioned'
+
+@description('Optional. A list of FHIR Resources and their version policy overrides.')
+param resourceVersionOverrides object?
+
+@description('Optional. If the SMART on FHIR proxy is enabled.')
+param smartProxyEnabled bool = false
 
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
@@ -32,11 +106,8 @@ param managedIdentities managedIdentitiesType
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
-
 var formattedUserAssignedIdentities = reduce(
-  map((managedIdentities.?userAssignedResourcesIds ?? []), (id) => { '${id}': {} }),
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
@@ -44,29 +115,56 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'UserAssigned' : null)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
 
+var exportConfiguration = {
+  storageAccountName: exportStorageAccountName
+}
+
+// =========== //
+// Deployments //
+// =========== //
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  'EventGrid Contributor': subscriptionResourceId(
+  'DICOM Data Owner': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
-    '1e241071-0855-49ea-94dc-649edcd759de'
+    '58a3b984-7adf-4c20-983a-32417c86fbc8'
   )
-  'EventGrid Data Sender': subscriptionResourceId(
+  'DICOM Data Reader': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
-    'd5a91429-5739-47e2-a06b-3470a27159e7'
+    'e89c7a3c-2f64-4fa1-a847-3e4c9ba4283a'
   )
-  'EventGrid EventSubscription Contributor': subscriptionResourceId(
+  'FHIR Data Contributor': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
-    '428e0ff0-5e57-4d9c-a221-2c70d0e0a443'
+    '5a1fc7df-4bf1-4951-a576-89034ee01acd'
   )
-  'EventGrid EventSubscription Reader': subscriptionResourceId(
+  'FHIR Data Converter': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
-    '2414bbcf-6497-4faf-8c65-045460748405'
+    'a1705bd2-3a8f-45a5-8683-466fcfd5cc24'
+  )
+  'FHIR Data Exporter': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '3db33094-8700-4567-8da5-1501d4e7e843'
+  )
+  'FHIR Data Importer': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '4465e953-8ced-4406-a58e-0f6e3f3b530b'
+  )
+  'FHIR Data Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '4c8d0bbc-75d3-4935-991f-5f3c56d81508'
+  )
+  'FHIR Data Writer': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '3f88fce4-5892-4214-ae73-ba5294559913'
+  )
+  'FHIR SMART User': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '4ba50f17-9666-485c-a643-ff00808643f0'
   )
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
@@ -80,68 +178,54 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: take(
-      '46d3xbcp.res.eventgrid-systemtopic.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
-      64
-    )
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
-        }
-      }
-    }
-  }
+resource workspace 'Microsoft.HealthcareApis/workspaces@2022-06-01' existing = {
+  name: workspaceName
+}
 
-resource systemTopic 'Microsoft.EventGrid/systemTopics@2023-12-15-preview' = {
+resource fhir 'Microsoft.HealthcareApis/workspaces/fhirservices@2022-06-01' = {
   name: name
+  parent: workspace
   location: location
-  identity: identity
+  kind: kind
   tags: tags
+  identity: identity
   properties: {
-    source: source
-    topicType: topicType
+    accessPolicies: [
+      for id in accessPolicyObjectIds ?? []: {
+        objectId: id
+      }
+    ]
+    authenticationConfiguration: {
+      authority: authenticationAuthority
+      audience: authenticationAudience
+      smartProxyEnabled: smartProxyEnabled
+    }
+    corsConfiguration: {
+      allowCredentials: corsAllowCredentials
+      headers: corsHeaders
+      maxAge: corsMaxAge
+      methods: corsMethods
+      origins: corsOrigins
+    }
+    publicNetworkAccess: publicNetworkAccess
+    exportConfiguration: empty(exportStorageAccountName) ? {} : exportConfiguration
+    importConfiguration: {
+      enabled: importEnabled
+      initialImportMode: initialImportMode
+      integrationDataStore: importStorageAccountName
+    }
+    resourceVersionPolicyConfiguration: {
+      default: resourceVersionPolicy
+      resourceTypeOverrides: resourceVersionOverrides
+    }
+    acrConfiguration: {
+      loginServers: acrLoginServers
+      ociArtifacts: acrOciArtifacts
+    }
   }
 }
 
-// Event subscriptions
-module systemTopics_eventSubscriptions 'event-subscription/main.bicep' = [
-  for (eventSubscription, index) in eventSubscriptions: {
-    name: '${uniqueString(deployment().name, location)}-EventGrid-SystemTopics-EventSubscriptions-${index}'
-    params: {
-      destination: eventSubscription.destination
-      systemTopicName: systemTopic.name
-      name: eventSubscription.name
-      deadLetterDestination: contains(eventSubscription, 'deadLetterDestination')
-        ? eventSubscription.deadLetterDestination
-        : {}
-      deadLetterWithResourceIdentity: contains(eventSubscription, 'deadLetterWithResourceIdentity')
-        ? eventSubscription.deadLetterWithResourceIdentity
-        : {}
-      deliveryWithResourceIdentity: contains(eventSubscription, 'deliveryWithResourceIdentity')
-        ? eventSubscription.deliveryWithResourceIdentity
-        : {}
-      eventDeliverySchema: contains(eventSubscription, 'eventDeliverySchema')
-        ? eventSubscription.eventDeliverySchema
-        : 'EventGridSchema'
-      expirationTimeUtc: contains(eventSubscription, 'expirationTimeUtc') ? eventSubscription.expirationTimeUtc : ''
-      filter: contains(eventSubscription, 'filter') ? eventSubscription.filter : {}
-      labels: contains(eventSubscription, 'labels') ? eventSubscription.labels : []
-      retryPolicy: contains(eventSubscription, 'retryPolicy') ? eventSubscription.retryPolicy : {}
-    }
-  }
-]
-
-resource systemTopic_lock 'Microsoft.Authorization/locks@2020-05-01' =
+resource fhir_lock 'Microsoft.Authorization/locks@2020-05-01' =
   if (!empty(lock ?? {}) && lock.?kind != 'None') {
     name: lock.?name ?? 'lock-${name}'
     properties: {
@@ -150,10 +234,10 @@ resource systemTopic_lock 'Microsoft.Authorization/locks@2020-05-01' =
         ? 'Cannot delete resource or child resources.'
         : 'Cannot delete or modify the resource or child resources.'
     }
-    scope: systemTopic
+    scope: fhir
   }
 
-resource systemTopic_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+resource fhir_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
     properties: {
@@ -178,13 +262,13 @@ resource systemTopic_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2
       marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
       logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
     }
-    scope: systemTopic
+    scope: fhir
   }
 ]
 
-resource systemTopic_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+resource fhir_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(systemTopic.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    name: guid(fhir.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
     properties: {
       roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
         ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
@@ -198,24 +282,32 @@ resource systemTopic_roleAssignments 'Microsoft.Authorization/roleAssignments@20
       conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
-    scope: systemTopic
+    scope: fhir
   }
 ]
 
-@description('The name of the event grid system topic.')
-output name string = systemTopic.name
+@description('The name of the fhir service.')
+output name string = fhir.name
 
-@description('The resource ID of the event grid system topic.')
-output resourceId string = systemTopic.id
+@description('The resource ID of the fhir service.')
+output resourceId string = fhir.id
 
-@description('The name of the resource group the event grid system topic was deployed into.')
+@description('The resource group where the namespace is deployed.')
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = systemTopic.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(
+    fhir.identity,
+    'principalId'
+  )
+  ? fhir.identity.principalId
+  : ''
 
 @description('The location the resource was deployed into.')
-output location string = systemTopic.location
+output location string = fhir.location
+
+@description('The name of the fhir workspace.')
+output workspaceName string = workspace.name
 
 // =============== //
 //   Definitions   //
@@ -226,7 +318,7 @@ type managedIdentitiesType = {
   systemAssigned: bool?
 
   @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourcesIds: string[]?
+  userAssignedResourceIds: string[]?
 }?
 
 type lockType = {
