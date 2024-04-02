@@ -46,78 +46,79 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      containers: [
+        {
+          name: '${namePrefix}-az-aci-x-001'
+          properties: {
+            command: []
+            environmentVariables: []
+            image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+            ports: [
+              {
+                port: 80
+                protocol: 'Tcp'
+              }
+              {
+                port: 443
+                protocol: 'Tcp'
+              }
+            ]
+            resources: {
+              requests: {
+                cpu: 2
+                memoryInGB: 4
+              }
+            }
+          }
+        }
+        {
+          name: '${namePrefix}-az-aci-x-002'
+          properties: {
+            command: []
+            environmentVariables: []
+            image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+            ports: [
+              {
+                port: 8080
+                protocol: 'Tcp'
+              }
+            ]
+            resources: {
+              requests: {
+                cpu: 2
+                memoryInGB: 2
+              }
+            }
+          }
+        }
+      ]
+      ipAddressType: 'Private'
+      ipAddressPorts: [
+        {
+          protocol: 'Tcp'
+          port: 80
+        }
+        {
+          protocol: 'Tcp'
+          port: 443
+        }
+        {
+          protocol: 'Tcp'
+          port: 8080
+        }
+      ]
+      subnetId: nestedDependencies.outputs.subnetResourceId
     }
-    containers: [
-      {
-        name: '${namePrefix}-az-aci-x-001'
-        properties: {
-          command: []
-          environmentVariables: []
-          image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
-          ports: [
-            {
-              port: 80
-              protocol: 'Tcp'
-            }
-            {
-              port: 443
-              protocol: 'Tcp'
-            }
-          ]
-          resources: {
-            requests: {
-              cpu: 2
-              memoryInGB: 4
-            }
-          }
-        }
-      }
-      {
-        name: '${namePrefix}-az-aci-x-002'
-        properties: {
-          command: []
-          environmentVariables: []
-          image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
-          ports: [
-            {
-              port: 8080
-              protocol: 'Tcp'
-            }
-          ]
-          resources: {
-            requests: {
-              cpu: 2
-              memoryInGB: 2
-            }
-          }
-        }
-      }
-    ]
-    ipAddressType: 'Private'
-    ipAddressPorts: [
-      {
-        protocol: 'Tcp'
-        port: 80
-      }
-      {
-        protocol: 'Tcp'
-        port: 443
-      }
-      {
-        protocol: 'Tcp'
-        port: 8080
-      }
-    ]
-    subnetId: nestedDependencies.outputs.subnetResourceId
   }
-}
 ]
