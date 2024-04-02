@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "17817082308870298180"
+      "templateHash": "8350737768348747167"
     },
     "name": "NAT Gateways",
     "description": "This module deploys a NAT Gateway.",
@@ -113,8 +113,9 @@
       }
     },
     "zones": {
-      "type": "array",
+      "type": "int",
       "allowedValues": [
+        0,
         1,
         2,
         3
@@ -237,7 +238,7 @@
         "publicIpPrefixes": "[reference('formattedPublicIpPrefixResourceIds').outputs.formattedResourceIds.value]",
         "publicIpAddresses": "[reference('formattedPublicIpResourceIds').outputs.formattedResourceIds.value]"
       },
-      "zones": "[parameters('zones')]",
+      "zones": "[if(not(equals(parameters('zones'), 0)), createArray(string(parameters('zones'))), null())]",
       "dependsOn": [
         "formattedPublicIpPrefixResourceIds",
         "formattedPublicIpResourceIds"
@@ -325,7 +326,7 @@
             "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "zones": {
-            "value": "[tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'zones')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'zones'), if(not(equals(parameters('zones'), 0)), createArray(string(parameters('zones'))), null()))]"
           },
           "enableTelemetry": {
             "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"

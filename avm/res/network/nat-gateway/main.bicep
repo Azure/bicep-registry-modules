@@ -7,6 +7,7 @@ param name string
 
 @description('Required. A list of availability zones denoting the zone in which Nat Gateway should be deployed.')
 @allowed([
+  0
   1
   2
   3
@@ -98,7 +99,7 @@ module publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.2.1' = [
       skuName: 'Standard' // Must be standard
       skuTier: publicIPAddressObject.?skuTier
       tags: publicIPAddressObject.?tags ?? tags
-      zones: publicIPAddressObject.?zones
+      zones: publicIPAddressObject.?zones ?? (zones != 0 ? [ string(zones) ]  : null)
       enableTelemetry: publicIPAddressObject.?enableTelemetry ?? enableTelemetry
       ddosSettings: publicIPAddressObject.?ddosSettings
       dnsSettings: publicIPAddressObject.?dnsSettings
@@ -156,7 +157,7 @@ resource natGateway 'Microsoft.Network/natGateways@2023-04-01' = {
     publicIpPrefixes: formattedPublicIpPrefixResourceIds.outputs.formattedResourceIds
     publicIpAddresses: formattedPublicIpResourceIds.outputs.formattedResourceIds
   }
-  zones: zones
+  zones: zones != 0 ? [ string(zones) ]  : null
 }
 
 resource natGateway_lock 'Microsoft.Authorization/locks@2020-05-01' =
