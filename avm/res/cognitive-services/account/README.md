@@ -113,33 +113,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         model: {
           format: 'OpenAI'
           name: 'gpt-35-turbo'
-          version: '0613'
+          version: '0301'
         }
         name: 'gpt-35-turbo'
-        sku: {
-          capacity: 20
-          name: 'Standard'
-        }
-      }
-      {
-        model: {
-          format: 'OpenAI'
-          name: 'gpt-4'
-          version: '0613'
-        }
-        name: 'gpt-4'
-        sku: {
-          capacity: 10
-          name: 'Standard'
-        }
-      }
-      {
-        model: {
-          format: 'OpenAI'
-          name: 'text-embedding-ada-002'
-          version: '2'
-        }
-        name: 'text-embedding-ada-002'
         sku: {
           capacity: 20
           name: 'Standard'
@@ -287,33 +263,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
           "model": {
             "format": "OpenAI",
             "name": "gpt-35-turbo",
-            "version": "0613"
+            "version": "0301"
           },
           "name": "gpt-35-turbo",
-          "sku": {
-            "capacity": 20,
-            "name": "Standard"
-          }
-        },
-        {
-          "model": {
-            "format": "OpenAI",
-            "name": "gpt-4",
-            "version": "0613"
-          },
-          "name": "gpt-4",
-          "sku": {
-            "capacity": 10,
-            "name": "Standard"
-          }
-        },
-        {
-          "model": {
-            "format": "OpenAI",
-            "name": "text-embedding-ada-002",
-            "version": "2"
-          },
-          "name": "text-embedding-ada-002",
           "sku": {
             "capacity": 20,
             "name": "Standard"

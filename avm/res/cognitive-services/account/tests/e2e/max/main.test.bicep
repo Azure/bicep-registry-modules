@@ -184,31 +184,7 @@ module testDeployment '../../../main.bicep' = [
           model: {
             format: 'OpenAI'
             name: 'gpt-35-turbo'
-            version: '0613'
-          }
-          sku: {
-            name: 'Standard'
-            capacity: 20
-          }
-        }
-        {
-          name: 'gpt-4'
-          model: {
-            format: 'OpenAI'
-            name: 'gpt-4'
-            version: '0613'
-          }
-          sku: {
-            name: 'Standard'
-            capacity: 10
-          }
-        }
-        {
-          name: 'text-embedding-ada-002'
-          model: {
-            format: 'OpenAI'
-            name: 'text-embedding-ada-002'
-            version: '2'
+            version: '0301'
           }
           sku: {
             name: 'Standard'
