@@ -58,7 +58,6 @@ module testDeployment '../../../main.bicep' = [
           {
             ruleSetType: 'Microsoft_BotManagerRuleSet'
             ruleSetVersion: '0.1'
-            ruleGroupOverrides: []
           }
         ]
       }

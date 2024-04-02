@@ -48,7 +48,6 @@ module testDeployment '../../../main.bicep' = [
           {
             ruleSetType: 'OWASP'
             ruleSetVersion: '3.2'
-            ruleGroupOverrides: []
           }
         ]
       }

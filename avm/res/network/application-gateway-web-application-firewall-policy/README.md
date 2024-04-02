@@ -46,7 +46,6 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
     managedRules: {
       managedRuleSets: [
         {
-          ruleGroupOverrides: []
           ruleSetType: 'OWASP'
           ruleSetVersion: '3.2'
         }
@@ -76,7 +75,6 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
       "value": {
         "managedRuleSets": [
           {
-            "ruleGroupOverrides": [],
             "ruleSetType": "OWASP",
             "ruleSetVersion": "3.2"
           }
@@ -221,7 +219,6 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
           ruleSetVersion: '3.2'
         }
         {
-          ruleGroupOverrides: []
           ruleSetType: 'Microsoft_BotManagerRuleSet'
           ruleSetVersion: '0.1'
         }
@@ -266,7 +263,6 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
             "ruleSetVersion": "3.2"
           },
           {
-            "ruleGroupOverrides": [],
             "ruleSetType": "Microsoft_BotManagerRuleSet",
             "ruleSetVersion": "0.1"
           }
