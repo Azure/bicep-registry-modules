@@ -453,6 +453,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
 resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
   name: name
   location: location
+  #disable-next-line BCP036
   identity: identity
   tags: tags
   zones: availabilityZone != 0 ? array(string(availabilityZone)) : null
@@ -486,7 +487,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
       }
       dataDisks: [
         for (dataDisk, index) in dataDisks ?? []: {
-          lun: index
+          lun: dataDisk.lun ?? index
           name: dataDisk.name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
           diskSizeGB: dataDisk.diskSizeGB
           createOption: dataDisk.createOption ?? 'Empty'
@@ -544,6 +545,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
       : null
     priority: priority
     evictionPolicy: enableEvictionPolicy ? 'Deallocate' : null
+    #disable-next-line BCP036
     billingProfile: !empty(priority) && !empty(maxPriceForLowPriorityVm)
       ? {
           maxPrice: maxPriceForLowPriorityVm
@@ -1094,8 +1096,8 @@ type dataDisksType = {
   @description('Optional. The disk name.')
   name: string?
 
-  @description('Required. Specifies the logical unit number of the data disk.')
-  lun: int
+  @description('Optional. Specifies the logical unit number of the data disk.')
+  lun: int?
 
   @description('Required. Specifies the size of an empty data disk in gigabytes.')
   @maxValue(1023)

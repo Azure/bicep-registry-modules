@@ -81,7 +81,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       osDisk: {
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
           diskEncryptionSet: {
@@ -94,7 +94,7 @@ module testDeployment '../../../main.bicep' = [
       adminPassword: password
       dataDisks: [
         {
-          diskSizeGB: '128'
+          diskSizeGB: 128
           managedDisk: {
             storageAccountType: 'Premium_LRS'
             diskEncryptionSet: {

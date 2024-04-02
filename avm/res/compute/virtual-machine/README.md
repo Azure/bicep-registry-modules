@@ -35,21 +35,18 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/virtual-machine:<version>`.
 
-- [Using automanage for the VM.](#example-1-using-automanage-for-the-vm)
-- [Using only defaults for Linux](#example-2-using-only-defaults-for-linux)
-- [Using large parameter set for Linux](#example-3-using-large-parameter-set-for-linux)
-- [WAF-aligned](#example-4-waf-aligned)
-- [Using only defaults for Windows](#example-5-using-only-defaults-for-windows)
-- [Using guest configuration for Windows](#example-6-using-guest-configuration-for-windows)
-- [Using a host pool to register the VM](#example-7-using-a-host-pool-to-register-the-vm)
-- [Using large parameter set for Windows](#example-8-using-large-parameter-set-for-windows)
-- [Deploy a VM with nVidia graphic card](#example-9-deploy-a-vm-with-nvidia-graphic-card)
-- [Using disk encryption set for the VM.](#example-10-using-disk-encryption-set-for-the-vm)
+- [Atmg](#example-1-atmg)
+- [Linux.Defaults](#example-2-linuxdefaults)
+- [Linux.Max](#example-3-linuxmax)
+- [Waf-Aligned](#example-4-waf-aligned)
+- [Windows.Defaults](#example-5-windowsdefaults)
+- [Windows.Guestconfiguration](#example-6-windowsguestconfiguration)
+- [Windows.Hostpool](#example-7-windowshostpool)
+- [Windows.Max](#example-8-windowsmax)
+- [Windows.Nvidia](#example-9-windowsnvidia)
+- [Windows.Ssecmk](#example-10-windowsssecmk)
 
-### Example 1: _Using automanage for the VM._
-
-This instance deploys the module with registering to an automation account.
-
+### Example 1: _Atmg_
 
 <details>
 
@@ -200,10 +197,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using only defaults for Linux_
-
-This instance deploys the module with the minimum set of required parameters.
-
+### Example 2: _Linux.Defaults_
 
 <details>
 
@@ -342,10 +336,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set for Linux_
-
-This instance deploys the module with most of its features enabled.
-
+### Example 3: _Linux.Max_
 
 <details>
 
@@ -914,10 +905,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Well-Architected Framework for Windows.
-
+### Example 4: _Waf-Aligned_
 
 <details>
 
@@ -1522,10 +1510,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 5: _Using only defaults for Windows_
-
-This instance deploys the module with the minimum set of required parameters.
-
+### Example 5: _Windows.Defaults_
 
 <details>
 
@@ -1644,10 +1629,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 6: _Using guest configuration for Windows_
-
-This instance deploys the module with the a guest configuration.
-
+### Example 6: _Windows.Guestconfiguration_
 
 <details>
 
@@ -1830,10 +1812,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 7: _Using a host pool to register the VM_
-
-This instance deploys the module and registers it in a host pool.
-
+### Example 7: _Windows.Hostpool_
 
 <details>
 
@@ -2004,10 +1983,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 8: _Using large parameter set for Windows_
-
-This instance deploys the module with most of its features enabled.
-
+### Example 8: _Windows.Max_
 
 <details>
 
@@ -2614,10 +2590,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 9: _Deploy a VM with nVidia graphic card_
-
-This instance deploys the module for a VM with dedicated nVidia graphic card.
-
+### Example 9: _Windows.Nvidia_
 
 <details>
 
@@ -2744,10 +2717,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 10: _Using disk encryption set for the VM._
-
-This instance deploys the module with disk enryption set.
-
+### Example 10: _Windows.Ssecmk_
 
 <details>
 
@@ -3046,6 +3016,138 @@ Specifies the OS disk. For security reasons, it is recommended to specify DiskEn
 - Required: Yes
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diskSizeGB`](#parameter-osdiskdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
+| [`managedDisk`](#parameter-osdiskmanageddisk) | object | The managed disk parameters. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`caching`](#parameter-osdiskcaching) | string | Specifies the caching requirements. |
+| [`createOption`](#parameter-osdiskcreateoption) | string | Specifies how the virtual machine should be created. |
+| [`deleteOption`](#parameter-osdiskdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. |
+| [`name`](#parameter-osdiskname) | string | The disk name. |
+
+### Parameter: `osDisk.diskSizeGB`
+
+Specifies the size of an empty data disk in gigabytes.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `osDisk.managedDisk`
+
+The managed disk parameters.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`storageAccountType`](#parameter-osdiskmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diskEncryptionSet`](#parameter-osdiskmanageddiskdiskencryptionset) | object | Specifies the customer managed disk encryption set resource id for the managed disk. |
+
+### Parameter: `osDisk.managedDisk.storageAccountType`
+
+Specifies the storage account type for the managed disk.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Premium_LRS'
+    'Premium_ZRS'
+    'PremiumV2_LRS'
+    'Standard_LRS'
+    'StandardSSD_LRS'
+    'StandardSSD_ZRS'
+    'UltraSSD_LRS'
+  ]
+  ```
+
+### Parameter: `osDisk.managedDisk.diskEncryptionSet`
+
+Specifies the customer managed disk encryption set resource id for the managed disk.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-osdiskmanageddiskdiskencryptionsetid) | string | The resource ID of the disk encryption set. |
+
+### Parameter: `osDisk.managedDisk.diskEncryptionSet.id`
+
+The resource ID of the disk encryption set.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `osDisk.caching`
+
+Specifies the caching requirements.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'None'
+    'ReadOnly'
+    'ReadWrite'
+  ]
+  ```
+
+### Parameter: `osDisk.createOption`
+
+Specifies how the virtual machine should be created.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Attach'
+    'Empty'
+    'FromImage'
+  ]
+  ```
+
+### Parameter: `osDisk.deleteOption`
+
+Specifies whether data disk should be deleted or detached upon VM deletion.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Delete'
+    'Detach'
+  ]
+  ```
+
+### Parameter: `osDisk.name`
+
+The disk name.
+
+- Required: No
+- Type: string
+
 ### Parameter: `osType`
 
 The chosen OS type.
@@ -3177,7 +3279,146 @@ Specifies the data disks. For security reasons, it is recommended to specify Dis
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diskSizeGB`](#parameter-datadisksdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
+| [`lun`](#parameter-datadiskslun) | int | Specifies the logical unit number of the data disk. |
+| [`managedDisk`](#parameter-datadisksmanageddisk) | object | The managed disk parameters. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`caching`](#parameter-datadiskscaching) | string | Specifies the caching requirements. |
+| [`createOption`](#parameter-datadiskscreateoption) | string | Specifies how the virtual machine should be created. |
+| [`deleteOption`](#parameter-datadisksdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. |
+| [`name`](#parameter-datadisksname) | string | The disk name. |
+
+### Parameter: `dataDisks.diskSizeGB`
+
+Specifies the size of an empty data disk in gigabytes.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `dataDisks.lun`
+
+Specifies the logical unit number of the data disk.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `dataDisks.managedDisk`
+
+The managed disk parameters.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`storageAccountType`](#parameter-datadisksmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diskEncryptionSet`](#parameter-datadisksmanageddiskdiskencryptionset) | object | Specifies the customer managed disk encryption set resource id for the managed disk. |
+
+### Parameter: `dataDisks.managedDisk.storageAccountType`
+
+Specifies the storage account type for the managed disk.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Premium_LRS'
+    'Premium_ZRS'
+    'PremiumV2_LRS'
+    'Standard_LRS'
+    'StandardSSD_LRS'
+    'StandardSSD_ZRS'
+    'UltraSSD_LRS'
+  ]
+  ```
+
+### Parameter: `dataDisks.managedDisk.diskEncryptionSet`
+
+Specifies the customer managed disk encryption set resource id for the managed disk.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-datadisksmanageddiskdiskencryptionsetid) | string | The resource ID of the disk encryption set. |
+
+### Parameter: `dataDisks.managedDisk.diskEncryptionSet.id`
+
+The resource ID of the disk encryption set.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dataDisks.caching`
+
+Specifies the caching requirements.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'None'
+    'ReadOnly'
+    'ReadWrite'
+  ]
+  ```
+
+### Parameter: `dataDisks.createOption`
+
+Specifies how the virtual machine should be created.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Attach'
+    'Empty'
+    'FromImage'
+  ]
+  ```
+
+### Parameter: `dataDisks.deleteOption`
+
+Specifies whether data disk should be deleted or detached upon VM deletion.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Delete'
+    'Detach'
+  ]
+  ```
+
+### Parameter: `dataDisks.name`
+
+The disk name.
+
+- Required: No
+- Type: string
 
 ### Parameter: `dedicatedHostId`
 

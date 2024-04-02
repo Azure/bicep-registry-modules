@@ -160,9 +160,9 @@ module testDeployment '../../../main.bicep' = [
       ]
       osDisk: {
         caching: 'ReadWrite'
-        createOption: 'fromImage'
+        createOption: 'FromImage'
         deleteOption: 'Delete'
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
@@ -179,7 +179,7 @@ module testDeployment '../../../main.bicep' = [
           caching: 'ReadOnly'
           createOption: 'Empty'
           deleteOption: 'Delete'
-          diskSizeGB: '128'
+          diskSizeGB: 128
           managedDisk: {
             storageAccountType: 'Premium_LRS'
           }
@@ -188,7 +188,7 @@ module testDeployment '../../../main.bicep' = [
           caching: 'ReadOnly'
           createOption: 'Empty'
           deleteOption: 'Delete'
-          diskSizeGB: '128'
+          diskSizeGB: 128
           managedDisk: {
             storageAccountType: 'Premium_LRS'
           }
