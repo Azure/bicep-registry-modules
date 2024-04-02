@@ -181,6 +181,11 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     name: 'ssamin001'
     // Non-required parameters
     allowBlobPublicAccess: false
+    location: '<location>'
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Allow'
+    }
   }
 }
 ```
@@ -204,6 +209,15 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     // Non-required parameters
     "allowBlobPublicAccess": {
       "value": false
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "networkAcls": {
+      "value": {
+        "bypass": "AzureServices",
+        "defaultAction": "Allow"
+      }
     }
   }
 }
@@ -2052,13 +2066,6 @@ Networks ACLs, this value contains IPs to whitelist and/or Subnet information. I
 
 - Required: No
 - Type: object
-- Default:
-  ```Bicep
-  {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-  }
-  ```
 
 **Required parameters**
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "13878793352750035767"
+      "templateHash": "527574595623774686"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -194,7 +194,8 @@
             "description": "Required. Specifies the default action of allow or deny when no other rules match."
           }
         }
-      }
+      },
+      "nullable": true
     },
     "privateEndpointType": {
       "type": "array",
@@ -615,10 +616,6 @@
     },
     "networkAcls": {
       "$ref": "#/definitions/networkAclsType",
-      "defaultValue": {
-        "bypass": "AzureServices",
-        "defaultAction": "Deny"
-      },
       "metadata": {
         "description": "Required. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny."
       }
@@ -928,7 +925,7 @@
         "isNfsV3Enabled": "[if(parameters('enableNfsV3'), parameters('enableNfsV3'), '')]",
         "largeFileSharesState": "[if(or(equals(parameters('skuName'), 'Standard_LRS'), equals(parameters('skuName'), 'Standard_ZRS')), parameters('largeFileSharesState'), null())]",
         "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
-        "networkAcls": "[if(not(empty(parameters('networkAcls'))), createObject('resourceAccessRules', tryGet(parameters('networkAcls'), 'resourceAccessRules'), 'bypass', tryGet(parameters('networkAcls'), 'bypass'), 'defaultAction', tryGet(parameters('networkAcls'), 'defaultAction'), 'virtualNetworkRules', tryGet(parameters('networkAcls'), 'virtualNetworkRules'), 'ipRules', tryGet(parameters('networkAcls'), 'ipRules')), null())]",
+        "networkAcls": "[if(not(empty(parameters('networkAcls'))), createObject('resourceAccessRules', tryGet(parameters('networkAcls'), 'resourceAccessRules'), 'bypass', parameters('networkAcls').bypass, 'defaultAction', parameters('networkAcls').defaultAction, 'virtualNetworkRules', tryGet(parameters('networkAcls'), 'virtualNetworkRules'), 'ipRules', tryGet(parameters('networkAcls'), 'ipRules')), null())]",
         "allowBlobPublicAccess": "[parameters('allowBlobPublicAccess')]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkAcls'))), 'Disabled', null()))]",
         "azureFilesIdentityBasedAuthentication": "[if(not(empty(parameters('azureFilesIdentityBasedAuthentication'))), parameters('azureFilesIdentityBasedAuthentication'), null())]"
@@ -2020,7 +2017,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "12175020972967228537"
+              "templateHash": "18223201950367023198"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service.",
@@ -2173,10 +2170,10 @@
             "changeFeedRetentionInDays": {
               "type": "int",
               "nullable": true,
-              "minValue": 0,
+              "minValue": 1,
               "maxValue": 146000,
               "metadata": {
-                "description": "Optional. Indicates whether change feed event logging is enabled for the Blob service. Indicates the duration of changeFeed retention in days. A \"0\" value indicates an infinite retention of the change feed."
+                "description": "Optional. Indicates whether change feed event logging is enabled for the Blob service. Indicates the duration of changeFeed retention in days. If left blank, it indicates an infinite retention of the change feed."
               }
             },
             "containerDeleteRetentionPolicyEnabled": {

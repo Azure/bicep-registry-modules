@@ -69,7 +69,7 @@ param privateEndpoints privateEndpointType
 param managementPolicyRules array?
 
 @description('Required. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
-param networkAcls networkAclsType?
+param networkAcls networkAclsType
 
 @description('Optional. A Boolean indicating whether or not the service applies a secondary layer of encryption with platform managed keys for data at rest. For security reasons, it is recommended to set it to true.')
 param requireInfrastructureEncryption bool = true
@@ -393,8 +393,8 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     networkAcls: !empty(networkAcls)
       ? {
           resourceAccessRules: networkAcls.?resourceAccessRules
-          bypass: networkAcls.?bypass
-          defaultAction: networkAcls.?defaultAction
+          bypass: networkAcls.bypass
+          defaultAction: networkAcls.defaultAction
           virtualNetworkRules: networkAcls.?virtualNetworkRules
           ipRules: networkAcls.?ipRules
         }
