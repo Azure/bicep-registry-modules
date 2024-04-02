@@ -11,7 +11,7 @@ param name string
   2
   3
 ])
-param zones array
+param zones int
 
 @description('Optional. The idle timeout of the NAT gateway.')
 param idleTimeoutInMinutes int = 5
