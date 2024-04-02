@@ -50,7 +50,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   params: {
     // Required parameters
     name: 'nngmin001'
-    zones: 1
+    zone: 1
     // Non-required parameters
     location: '<location>'
   }
@@ -73,7 +73,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     "name": {
       "value": "nngmin001"
     },
-    "zones": {
+    "zone": {
       "value": 1
     },
     // Non-required parameters
@@ -102,7 +102,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   params: {
     // Required parameters
     name: 'nngmax001'
-    zones: 1
+    zone: 1
     // Non-required parameters
     location: '<location>'
     lock: {
@@ -193,7 +193,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     "name": {
       "value": "nngmax001"
     },
-    "zones": {
+    "zone": {
       "value": 1
     },
     // Non-required parameters
@@ -298,7 +298,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   params: {
     // Required parameters
     name: 'nngcprx001'
-    zones: 0
+    zone: 0
     // Non-required parameters
     location: '<location>'
     publicIPPrefixObjects: [
@@ -330,7 +330,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     "name": {
       "value": "nngcprx001"
     },
-    "zones": {
+    "zone": {
       "value": 0
     },
     // Non-required parameters
@@ -370,7 +370,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   params: {
     // Required parameters
     name: 'nngwaf001'
-    zones: 1
+    zone: 1
     // Non-required parameters
     location: '<location>'
     lock: {
@@ -427,7 +427,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     "name": {
       "value": "nngwaf001"
     },
-    "zones": {
+    "zone": {
       "value": 1
     },
     // Non-required parameters
@@ -489,7 +489,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Azure Bastion resource. |
-| [`zones`](#parameter-zones) | int | A list of availability zones denoting the zone in which Nat Gateway should be deployed. |
+| [`zone`](#parameter-zone) | int | A list of availability zones denoting the zone in which Nat Gateway should be deployed. |
 
 **Optional parameters**
 
@@ -513,7 +513,7 @@ Name of the Azure Bastion resource.
 - Required: Yes
 - Type: string
 
-### Parameter: `zones`
+### Parameter: `zone`
 
 A list of availability zones denoting the zone in which Nat Gateway should be deployed.
 

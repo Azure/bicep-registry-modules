@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "8350737768348747167"
+      "templateHash": "16414745789092801684"
     },
     "name": "NAT Gateways",
     "description": "This module deploys a NAT Gateway.",
@@ -112,7 +112,7 @@
         "description": "Required. Name of the Azure Bastion resource."
       }
     },
-    "zones": {
+    "zone": {
       "type": "int",
       "allowedValues": [
         0,
@@ -238,7 +238,7 @@
         "publicIpPrefixes": "[reference('formattedPublicIpPrefixResourceIds').outputs.formattedResourceIds.value]",
         "publicIpAddresses": "[reference('formattedPublicIpResourceIds').outputs.formattedResourceIds.value]"
       },
-      "zones": "[if(not(equals(parameters('zones'), 0)), createArray(string(parameters('zones'))), null())]",
+      "zones": "[if(not(equals(parameters('zone'), 0)), createArray(string(parameters('zone'))), null())]",
       "dependsOn": [
         "formattedPublicIpPrefixResourceIds",
         "formattedPublicIpResourceIds"
@@ -326,7 +326,7 @@
             "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "zones": {
-            "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'zones'), if(not(equals(parameters('zones'), 0)), createArray(string(parameters('zones'))), null()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'zones'), if(not(equals(parameters('zone'), 0)), createArray(string(parameters('zone'))), null()))]"
           },
           "enableTelemetry": {
             "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
