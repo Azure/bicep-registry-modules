@@ -1,10 +1,7 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT License.
-
 # Init outputs
 $DeploymentScriptOutputs = @{}
 
-# 
+#
 $adfParams = @{
     ResourceGroupName = $env:DataFactoryResourceGroup
     DataFactoryName   = $env:DataFactoryName

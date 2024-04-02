@@ -1,6 +1,3 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT License.
-
 Write-Output "Updating settings.json file..."
 Write-Output "  Storage account: $env:storageAccountName"
 Write-Output "  Container: $env:containerName"
