@@ -53,8 +53,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/finops-toolkit/finops-hub:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using only defaults](#example-3-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -104,9 +104,9 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 2: _Using large parameter set_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with most of its features enabled.
 
 
 <details>
@@ -120,7 +120,18 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
     // Required parameters
     hubName: 'finops-hub-ssamax'
     // Non-required parameters
+    configContainer: 'config'
+    convertToParquet: true
+    exportContainer: 'exports'
+    exportScopes: []
+    ingestionContainer: 'ingestion'
     location: '<location>'
+    storageSku: 'Premium_LRS'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -142,8 +153,33 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
       "value": "finops-hub-ssamax"
     },
     // Non-required parameters
+    "configContainer": {
+      "value": "config"
+    },
+    "convertToParquet": {
+      "value": true
+    },
+    "exportContainer": {
+      "value": "exports"
+    },
+    "exportScopes": {
+      "value": []
+    },
+    "ingestionContainer": {
+      "value": "ingestion"
+    },
     "location": {
       "value": "<location>"
+    },
+    "storageSku": {
+      "value": "Premium_LRS"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
@@ -152,9 +188,9 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using only defaults_
+### Example 3: _WAF-aligned_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
@@ -168,7 +204,18 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
     // Required parameters
     hubName: 'finops-hub-ssawaf'
     // Non-required parameters
+    configContainer: 'config'
+    convertToParquet: true
+    exportContainer: 'exports'
+    exportScopes: []
+    ingestionContainer: 'ingestion'
     location: '<location>'
+    storageSku: 'Premium_ZRS'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -190,8 +237,33 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
       "value": "finops-hub-ssawaf"
     },
     // Non-required parameters
+    "configContainer": {
+      "value": "config"
+    },
+    "convertToParquet": {
+      "value": true
+    },
+    "exportContainer": {
+      "value": "exports"
+    },
+    "exportScopes": {
+      "value": []
+    },
+    "ingestionContainer": {
+      "value": "ingestion"
+    },
     "location": {
       "value": "<location>"
+    },
+    "storageSku": {
+      "value": "Premium_ZRS"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }

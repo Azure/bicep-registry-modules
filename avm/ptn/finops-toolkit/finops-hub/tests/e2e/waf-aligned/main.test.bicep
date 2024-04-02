@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
 
 // ========== //
 // Parameters //
@@ -43,6 +43,17 @@ module testDeployment '../../../main.bicep' = [
     params: {
       hubName: '${namePrefix}-finops-hub-${serviceShort}'
       location: resourceLocation
+      storageSku: 'Premium_ZRS'
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
+      configContainer: 'config'
+      convertToParquet: true
+      exportContainer: 'exports'
+      ingestionContainer: 'ingestion'
+      exportScopes: []
     }
   }
 ]
