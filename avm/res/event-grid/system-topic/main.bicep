@@ -102,7 +102,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-resource systemTopic 'Microsoft.EventGrid/systemTopics@2021-12-01' = {
+resource systemTopic 'Microsoft.EventGrid/systemTopics@2023-12-15-preview' = {
   name: name
   location: location
   identity: identity
