@@ -65,7 +65,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      kind: 'AIServices'
+      kind: 'Face'
       customSubDomainName: '${namePrefix}x${serviceShort}'
       location: resourceLocation
       diagnosticSettings: [
@@ -178,20 +178,6 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
-      deployments: [
-        {
-          name: 'gpt-35-turbo'
-          model: {
-            format: 'OpenAI'
-            name: 'gpt-35-turbo'
-            version: '0301'
-          }
-          sku: {
-            name: 'Standard'
-            capacity: 20
-          }
-        }
-      ]
     }
     dependsOn: [
       nestedDependencies
@@ -199,3 +185,28 @@ module testDeployment '../../../main.bicep' = [
     ]
   }
 ]
+
+module testAIModelDeployment '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-ai-deployment'
+  params: {
+    name: '${namePrefix}${serviceShort}002'
+    kind: 'AIServices'
+    location: resourceLocation
+    customSubDomainName: '${namePrefix}x${serviceShort}ai'
+    deployments: [
+      {
+        name: 'gpt-35-turbo'
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-35-turbo'
+          version: '0301'
+        }
+        sku: {
+          name: 'Standard'
+          capacity: 20
+        }
+      }
+    ]
+  }
+}

@@ -104,24 +104,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   name: 'accountDeployment'
   params: {
     // Required parameters
-    kind: 'AIServices'
+    kind: 'Face'
     name: 'csamax001'
     // Non-required parameters
     customSubDomainName: 'xcsamax'
-    deployments: [
-      {
-        model: {
-          format: 'OpenAI'
-          name: 'gpt-35-turbo'
-          version: '0301'
-        }
-        name: 'gpt-35-turbo'
-        sku: {
-          capacity: 20
-          name: 'Standard'
-        }
-      }
-    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -248,7 +234,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   "parameters": {
     // Required parameters
     "kind": {
-      "value": "AIServices"
+      "value": "Face"
     },
     "name": {
       "value": "csamax001"
@@ -256,22 +242,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     // Non-required parameters
     "customSubDomainName": {
       "value": "xcsamax"
-    },
-    "deployments": {
-      "value": [
-        {
-          "model": {
-            "format": "OpenAI",
-            "name": "gpt-35-turbo",
-            "version": "0301"
-          },
-          "name": "gpt-35-turbo",
-          "sku": {
-            "capacity": 20,
-            "name": "Standard"
-          }
-        }
-      ]
     },
     "diagnosticSettings": {
       "value": [
