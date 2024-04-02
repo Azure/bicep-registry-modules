@@ -78,7 +78,7 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01
     automaticSnapshotPolicyEnabled: automaticSnapshotPolicyEnabled
     changeFeed: changeFeedEnabled ? {
       enabled: true
-      retentionInDays: changeFeedRetentionInDays
+      retentionInDays: changeFeedRetentionInDays ?? null
     } : null
     containerDeleteRetentionPolicy: {
       enabled: containerDeleteRetentionPolicyEnabled

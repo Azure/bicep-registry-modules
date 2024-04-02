@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "18223201950367023198"
+      "templateHash": "12035585784444075183"
     },
     "name": "Storage Account blob Services",
     "description": "This module deploys a Storage Account Blob Service.",
@@ -284,7 +284,7 @@
       "name": "[format('{0}/{1}', parameters('storageAccountName'), variables('name'))]",
       "properties": {
         "automaticSnapshotPolicyEnabled": "[parameters('automaticSnapshotPolicyEnabled')]",
-        "changeFeed": "[if(parameters('changeFeedEnabled'), createObject('enabled', true(), 'retentionInDays', parameters('changeFeedRetentionInDays')), null())]",
+        "changeFeed": "[if(parameters('changeFeedEnabled'), createObject('enabled', true(), 'retentionInDays', coalesce(parameters('changeFeedRetentionInDays'), null())), null())]",
         "containerDeleteRetentionPolicy": {
           "enabled": "[parameters('containerDeleteRetentionPolicyEnabled')]",
           "days": "[parameters('containerDeleteRetentionPolicyDays')]",
