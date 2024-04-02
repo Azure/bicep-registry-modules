@@ -18,6 +18,7 @@ This module deploys a Cognitive Service.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.CognitiveServices/accounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts) |
+| `Microsoft.CognitiveServices/accounts/deployments` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts/deployments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
@@ -107,6 +108,44 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     name: 'csamax001'
     // Non-required parameters
     customSubDomainName: 'xcsamax'
+    deployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-35-turbo'
+          version: '0613'
+        }
+        name: 'gpt-35-turbo'
+        sku: {
+          capacity: 20
+          name: 'Standard'
+        }
+      }
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-4'
+          version: '0613'
+        }
+        name: 'gpt-4'
+        sku: {
+          capacity: 10
+          name: 'Standard'
+        }
+      }
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'text-embedding-ada-002'
+          version: '2'
+        }
+        name: 'text-embedding-ada-002'
+        sku: {
+          capacity: 20
+          name: 'Standard'
+        }
+      }
+    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -241,6 +280,46 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     // Non-required parameters
     "customSubDomainName": {
       "value": "xcsamax"
+    },
+    "deployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-35-turbo",
+            "version": "0613"
+          },
+          "name": "gpt-35-turbo",
+          "sku": {
+            "capacity": 20,
+            "name": "Standard"
+          }
+        },
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "gpt-4",
+            "version": "0613"
+          },
+          "name": "gpt-4",
+          "sku": {
+            "capacity": 10,
+            "name": "Standard"
+          }
+        },
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "text-embedding-ada-002",
+            "version": "2"
+          },
+          "name": "text-embedding-ada-002",
+          "sku": {
+            "capacity": 20,
+            "name": "Standard"
+          }
+        }
+      ]
     },
     "diagnosticSettings": {
       "value": [
@@ -820,6 +899,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 | [`allowedFqdnList`](#parameter-allowedfqdnlist) | array | List of allowed FQDN. |
 | [`apiProperties`](#parameter-apiproperties) | object | The API properties for special APIs. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
+| [`deployments`](#parameter-deployments) | array | Array of deployments about cognitive service accounts to create. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Allow only Azure AD authentication. Should be enabled for security reasons. |
 | [`dynamicThrottlingEnabled`](#parameter-dynamicthrottlingenabled) | bool | The flag to enable dynamic throttling. |
@@ -954,6 +1034,105 @@ The version of the customer managed key to reference for encryption. If not prov
 User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
 
 - Required: No
+- Type: string
+
+### Parameter: `deployments`
+
+Array of deployments about cognitive service accounts to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`model`](#parameter-deploymentsmodel) | object | Properties of Cognitive Services account deployment model. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-deploymentsname) | string | Specify the name of cognitive service account deployment. |
+| [`raiPolicyName`](#parameter-deploymentsraipolicyname) | string | The name of RAI policy. |
+| [`sku`](#parameter-deploymentssku) | object | The resource model definition representing SKU. |
+
+### Parameter: `deployments.model`
+
+Properties of Cognitive Services account deployment model.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`format`](#parameter-deploymentsmodelformat) | string | The format of Cognitive Services account deployment model. |
+| [`name`](#parameter-deploymentsmodelname) | string | The name of Cognitive Services account deployment model. |
+| [`version`](#parameter-deploymentsmodelversion) | string | The version of Cognitive Services account deployment model. |
+
+### Parameter: `deployments.model.format`
+
+The format of Cognitive Services account deployment model.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deployments.model.name`
+
+The name of Cognitive Services account deployment model.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deployments.model.version`
+
+The version of Cognitive Services account deployment model.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deployments.name`
+
+Specify the name of cognitive service account deployment.
+
+- Required: No
+- Type: string
+
+### Parameter: `deployments.raiPolicyName`
+
+The name of RAI policy.
+
+- Required: No
+- Type: string
+
+### Parameter: `deployments.sku`
+
+The resource model definition representing SKU.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`capacity`](#parameter-deploymentsskucapacity) | int | The capacity of the resource model definition representing SKU. |
+| [`name`](#parameter-deploymentsskuname) | string | The name of the resource model definition representing SKU. |
+
+### Parameter: `deployments.sku.capacity`
+
+The capacity of the resource model definition representing SKU.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `deployments.sku.name`
+
+The name of the resource model definition representing SKU.
+
+- Required: Yes
 - Type: string
 
 ### Parameter: `diagnosticSettings`
