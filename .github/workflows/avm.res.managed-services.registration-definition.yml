@@ -1,4 +1,4 @@
-name: "avm.res.managed-identity.user-assigned-identity"
+name: "avm.res.managed-services.registration-definition"
 
 on:
   schedule:
