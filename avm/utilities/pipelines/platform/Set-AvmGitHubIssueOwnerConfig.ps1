@@ -22,31 +22,29 @@ Function Get-AvmCsvData {
   )
 
   # CSV file URLs
-  $BicepResourceUrl = "https://aka.ms/avm/index/bicep/res/csv"
-  $BicepPatternUrl = "https://aka.ms/avm/index/bicep/ptn/csv"
+  $BicepResourceUrl = 'https://aka.ms/avm/index/bicep/res/csv'
+  $BicepPatternUrl = 'https://aka.ms/avm/index/bicep/ptn/csv'
 
   # Retrieve the CSV file
   switch ($ModuleIndex) {
     'Bicep-Resource' {
       try {
         $unfilteredCSV = Invoke-WebRequest -Uri $BicepResourceUrl
-      }
-      catch {
-        Write-Error "Unable to retrieve CSV file - Check network connection."
+      } catch {
+        Write-Error 'Unable to retrieve CSV file - Check network connection.'
       }
     }
     'Bicep-Pattern' {
       try {
         $unfilteredCSV = Invoke-WebRequest -Uri $BicepPatternUrl
-      }
-      catch {
-        Write-Error "Unable to retrieve CSV file - Check network connection."
+      } catch {
+        Write-Error 'Unable to retrieve CSV file - Check network connection.'
       }
     }
   }
 
   # Convert the CSV content to a PowerShell object
-  $formattedBicepFullCsv = ConvertFrom-CSV $unfilteredCSV.Content
+  $formattedBicepFullCsv = ConvertFrom-Csv $unfilteredCSV.Content
 
   # Loop through each item in the filtered data
   foreach ($item in $formattedBicepFullCsv) {
@@ -92,14 +90,14 @@ function Set-AvmGitHubIssueOwnerConfig {
   $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
 
   if ($issue.title.StartsWith('[AVM Module Issue]')) {
-    $moduleName = ($issue.body.Split("`n") -match "avm/(?:res|ptn)")[0].Trim().Replace(' ', '')
+    $moduleName = ($issue.body.Split("`n") -match 'avm/(?:res|ptn)')[0].Trim().Replace(' ', '')
 
     if ([string]::IsNullOrEmpty($moduleName)) {
       throw 'No valid module name was found in the issue.'
     }
 
-    $moduleIndex = $moduleName.StartsWith("avm/res") ? "Bicep-Resource" : "Bicep-Pattern"
-    $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
+    $moduleIndex = $moduleName.StartsWith('avm/res') ? 'Bicep-Resource' : 'Bicep-Pattern'
+    $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName
 
     if ([string]::IsNullOrEmpty($module)) {
       throw "Module $moduleName was not found in $moduleIndex CSV file."
@@ -113,11 +111,11 @@ A member of the @azure/$($module.ModuleOwnersGHTeam) or @azure/$($module.ModuleC
 
     if ($PSCmdlet.ShouldProcess("attention label to issue [$($issue.title)]", 'Add')) {
       # add labels
-      gh issue edit $issue.url --add-label "Needs: Attention :wave:" --repo $Repo
+      gh issue edit $issue.url --add-label 'Needs: Attention :wave:' --repo $Repo
     }
 
     if ($PSCmdlet.ShouldProcess("class label to issue [$($issue.title)]", 'Add')) {
-      gh issue edit $issue.url --add-label ($moduleIndex -eq "Bicep-Resource" ? "Class: Resource Module :package:" : "Class: Pattern Module :package:") --repo $Repo
+      gh issue edit $issue.url --add-label ($moduleIndex -eq 'Bicep-Resource' ? 'Class: Resource Module :package:' : 'Class: Pattern Module :package:') --repo $Repo
     }
 
     if ($PSCmdlet.ShouldProcess("reply comment to issue [$($issue.title)]", 'Add')) {
