@@ -104,7 +104,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   name: 'accountDeployment'
   params: {
     // Required parameters
-    kind: 'Face'
+    kind: 'AIServices'
     name: 'csamax001'
     // Non-required parameters
     customSubDomainName: 'xcsamax'
@@ -248,7 +248,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   "parameters": {
     // Required parameters
     "kind": {
-      "value": "Face"
+      "value": "AIServices"
     },
     "name": {
       "value": "csamax001"

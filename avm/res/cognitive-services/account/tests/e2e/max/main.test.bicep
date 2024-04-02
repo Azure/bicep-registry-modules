@@ -65,7 +65,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      kind: 'Face'
+      kind: 'AIServices'
       customSubDomainName: '${namePrefix}x${serviceShort}'
       location: resourceLocation
       diagnosticSettings: [
@@ -185,6 +185,10 @@ module testDeployment '../../../main.bicep' = [
             format: 'OpenAI'
             name: 'gpt-35-turbo'
             version: '0301'
+          }
+          sku: {
+            name: 'Standard'
+            capacity: 20
           }
         }
       ]
