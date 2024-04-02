@@ -157,7 +157,7 @@ resource natGateway 'Microsoft.Network/natGateways@2023-04-01' = {
     publicIpPrefixes: formattedPublicIpPrefixResourceIds.outputs.formattedResourceIds
     publicIpAddresses: formattedPublicIpResourceIds.outputs.formattedResourceIds
   }
-  zones: zone != 0 ? [ string(zone) ]  : null
+  zones: zone != 0 ? [ string(zone) ] : null
 }
 
 resource natGateway_lock 'Microsoft.Authorization/locks@2020-05-01' =
