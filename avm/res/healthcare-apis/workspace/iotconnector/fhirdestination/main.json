@@ -1,0 +1,121 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "11968373756464803910"
+    },
+    "name": "Healthcare API Workspace IoT Connector FHIR Destinations",
+    "description": "This module deploys a Healthcare API Workspace IoT Connector FHIR Destination.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "maxLength": 24,
+      "metadata": {
+        "description": "Required. The name of the FHIR destination."
+      }
+    },
+    "destinationMapping": {
+      "type": "object",
+      "defaultValue": {
+        "templateType": "CollectionFhir",
+        "template": []
+      },
+      "metadata": {
+        "description": "Required. The mapping JSON that determines how normalized data is converted to FHIR Observations."
+      }
+    },
+    "iotConnectorName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the MedTech service to add this destination to. Required if the template is used in a standalone deployment."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent health data services workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "fhirServiceResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource identifier of the FHIR Service to connect to."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "resourceIdentityResolutionType": {
+      "type": "string",
+      "defaultValue": "Lookup",
+      "allowedValues": [
+        "Create",
+        "Lookup"
+      ],
+      "metadata": {
+        "description": "Optional. Determines how resource identity is resolved on the destination."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.HealthcareApis/workspaces/iotconnectors/fhirdestinations",
+      "apiVersion": "2022-06-01",
+      "name": "[format('{0}/{1}/{2}', parameters('workspaceName'), parameters('iotConnectorName'), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "resourceIdentityResolutionType": "[parameters('resourceIdentityResolutionType')]",
+        "fhirServiceResourceId": "[parameters('fhirServiceResourceId')]",
+        "fhirMapping": {
+          "content": "[parameters('destinationMapping')]"
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the FHIR destination."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the FHIR destination."
+      },
+      "value": "[resourceId('Microsoft.HealthcareApis/workspaces/iotconnectors/fhirdestinations', parameters('workspaceName'), parameters('iotConnectorName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group where the namespace is deployed."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference(resourceId('Microsoft.HealthcareApis/workspaces/iotconnectors/fhirdestinations', parameters('workspaceName'), parameters('iotConnectorName'), parameters('name')), '2022-06-01', 'full').location]"
+    },
+    "iotConnectorName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the medtech service."
+      },
+      "value": "[parameters('iotConnectorName')]"
+    }
+  }
+}
