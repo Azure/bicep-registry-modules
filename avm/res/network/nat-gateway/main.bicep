@@ -5,6 +5,15 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. Name of the Azure Bastion resource.')
 param name string
 
+@description('Required. A list of availability zones denoting the zone in which Nat Gateway should be deployed.')
+@allowed([
+  0
+  1
+  2
+  3
+])
+param zone int
+
 @description('Optional. The idle timeout of the NAT gateway.')
 param idleTimeoutInMinutes int = 5
 
@@ -19,9 +28,6 @@ param publicIPAddressObjects array?
 
 @description('Optional. Specifies the properties of the Public IP Prefixes to create and be used by the NAT Gateway.')
 param publicIPPrefixObjects array?
-
-@description('Optional. A list of availability zones denoting the zone in which Nat Gateway should be deployed.')
-param zones array = []
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -93,7 +99,7 @@ module publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.2.1' = [
       skuName: 'Standard' // Must be standard
       skuTier: publicIPAddressObject.?skuTier
       tags: publicIPAddressObject.?tags ?? tags
-      zones: publicIPAddressObject.?zones
+      zones: publicIPAddressObject.?zones ?? (zone != 0 ? [ string(zone) ] : null)
       enableTelemetry: publicIPAddressObject.?enableTelemetry ?? enableTelemetry
       ddosSettings: publicIPAddressObject.?ddosSettings
       dnsSettings: publicIPAddressObject.?dnsSettings
@@ -103,7 +109,7 @@ module publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.2.1' = [
 ]
 
 module formattedPublicIpResourceIds 'modules/formatResourceId.bicep' = {
-  name: 'formattedPublicIpResourceIds'
+  name: '${uniqueString(deployment().name, location)}-formattedPublicIpResourceIds'
   params: {
     generatedResourceIds: [
       for (obj, index) in (publicIPAddressObjects ?? []): publicIPAddresses[index].outputs.resourceId
@@ -128,7 +134,7 @@ module publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix:0.1.0' = [
   }
 ]
 module formattedPublicIpPrefixResourceIds 'modules/formatResourceId.bicep' = {
-  name: 'formattedPublicIpPrefixResourceIds'
+  name: '${uniqueString(deployment().name, location)}-formattedPublicIpPrefixResourceIds'
   params: {
     generatedResourceIds: [
       for (obj, index) in (publicIPPrefixObjects ?? []): publicIPPrefixes[index].outputs.resourceId
@@ -151,7 +157,7 @@ resource natGateway 'Microsoft.Network/natGateways@2023-04-01' = {
     publicIpPrefixes: formattedPublicIpPrefixResourceIds.outputs.formattedResourceIds
     publicIpAddresses: formattedPublicIpResourceIds.outputs.formattedResourceIds
   }
-  zones: zones
+  zones: zone != 0 ? [ string(zone) ] : null
 }
 
 resource natGateway_lock 'Microsoft.Authorization/locks@2020-05-01' =
