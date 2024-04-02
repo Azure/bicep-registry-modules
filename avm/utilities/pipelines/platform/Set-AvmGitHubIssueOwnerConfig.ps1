@@ -34,7 +34,7 @@ function Set-AvmGitHubIssueOwnerConfig {
   )
 
   # Loading helper functions
-  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-AvmCsvData.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
 
   $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
 
