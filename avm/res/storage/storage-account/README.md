@@ -184,7 +184,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     location: '<location>'
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: 'Allow'
+      defaultAction: 'Deny'
     }
   }
 }
@@ -216,7 +216,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     "networkAcls": {
       "value": {
         "bypass": "AzureServices",
-        "defaultAction": "Allow"
+        "defaultAction": "Deny"
       }
     }
   }
