@@ -12,9 +12,9 @@ param automaticSnapshotPolicyEnabled bool = false
 @description('Optional. The blob service properties for change feed events. Indicates whether change feed event logging is enabled for the Blob service.')
 param changeFeedEnabled bool = false
 
-@minValue(0)
+@minValue(1)
 @maxValue(146000)
-@description('Optional. Indicates whether change feed event logging is enabled for the Blob service. Indicates the duration of changeFeed retention in days. A "0" value indicates an infinite retention of the change feed.')
+@description('Optional. Indicates whether change feed event logging is enabled for the Blob service. Indicates the duration of changeFeed retention in days. If left blank, it indicates an infinite retention of the change feed.')
 param changeFeedRetentionInDays int?
 
 @description('Optional. The blob service properties for container soft delete. Indicates whether DeleteRetentionPolicy is enabled.')
