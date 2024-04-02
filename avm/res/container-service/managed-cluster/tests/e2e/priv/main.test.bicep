@@ -47,94 +47,96 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    enablePrivateCluster: true
-    primaryAgentPoolProfile: [
-      {
-        availabilityZones: [
-          '3'
-        ]
-        count: 1
-        enableAutoScaling: true
-        maxCount: 3
-        maxPods: 30
-        minCount: 1
-        mode: 'System'
-        name: 'systempool'
-        osDiskSizeGB: 0
-        osType: 'Linux'
-        serviceCidr: ''
-        type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
-        vnetSubnetID: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
-      }
-    ]
-    agentPools: [
-      {
-        availabilityZones: [
-          '3'
-        ]
-        count: 2
-        enableAutoScaling: true
-        maxCount: 3
-        maxPods: 30
-        minCount: 1
-        minPods: 2
-        mode: 'User'
-        name: 'userpool1'
-        nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
-        osDiskSizeGB: 128
-        osType: 'Linux'
-        scaleSetEvictionPolicy: 'Delete'
-        scaleSetPriority: 'Regular'
-        type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
-        vnetSubnetID: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
-      }
-      {
-        availabilityZones: [
-          '3'
-        ]
-        count: 2
-        enableAutoScaling: true
-        maxCount: 3
-        maxPods: 30
-        minCount: 1
-        minPods: 2
-        mode: 'User'
-        name: 'userpool2'
-        nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
-        osDiskSizeGB: 128
-        osType: 'Linux'
-        scaleSetEvictionPolicy: 'Delete'
-        scaleSetPriority: 'Regular'
-        type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
-      }
-    ]
-    networkPlugin: 'azure'
-    skuTier: 'Standard'
-    dnsServiceIP: '10.10.200.10'
-    serviceCidr: '10.10.200.0/24'
-    privateDNSZone: nestedDependencies.outputs.privateDnsZoneResourceId
-    managedIdentities: {
-      userAssignedResourcesIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      enablePrivateCluster: true
+      primaryAgentPoolProfile: [
+        {
+          availabilityZones: [
+            '3'
+          ]
+          count: 1
+          enableAutoScaling: true
+          maxCount: 3
+          maxPods: 30
+          minCount: 1
+          mode: 'System'
+          name: 'systempool'
+          osDiskSizeGB: 0
+          osType: 'Linux'
+          serviceCidr: ''
+          type: 'VirtualMachineScaleSets'
+          vmSize: 'Standard_DS2_v2'
+          vnetSubnetID: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
+        }
       ]
+      agentPools: [
+        {
+          availabilityZones: [
+            '3'
+          ]
+          count: 2
+          enableAutoScaling: true
+          maxCount: 3
+          maxPods: 30
+          minCount: 1
+          minPods: 2
+          mode: 'User'
+          name: 'userpool1'
+          nodeLabels: {}
+          nodeTaints: [
+            'CriticalAddonsOnly=true:NoSchedule'
+          ]
+          osDiskSizeGB: 128
+          osType: 'Linux'
+          scaleSetEvictionPolicy: 'Delete'
+          scaleSetPriority: 'Regular'
+          type: 'VirtualMachineScaleSets'
+          vmSize: 'Standard_DS2_v2'
+          vnetSubnetID: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
+        }
+        {
+          availabilityZones: [
+            '3'
+          ]
+          count: 2
+          enableAutoScaling: true
+          maxCount: 3
+          maxPods: 30
+          minCount: 1
+          minPods: 2
+          mode: 'User'
+          name: 'userpool2'
+          nodeLabels: {}
+          nodeTaints: [
+            'CriticalAddonsOnly=true:NoSchedule'
+          ]
+          osDiskSizeGB: 128
+          osType: 'Linux'
+          scaleSetEvictionPolicy: 'Delete'
+          scaleSetPriority: 'Regular'
+          type: 'VirtualMachineScaleSets'
+          vmSize: 'Standard_DS2_v2'
+        }
+      ]
+      networkPlugin: 'azure'
+      skuTier: 'Standard'
+      dnsServiceIP: '10.10.200.10'
+      serviceCidr: '10.10.200.0/24'
+      privateDNSZone: nestedDependencies.outputs.privateDnsZoneResourceId
+      managedIdentities: {
+        userAssignedResourcesIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
     }
+    dependsOn: [
+      nestedDependencies
+    ]
   }
-  dependsOn: [
-    nestedDependencies
-  ]
-}]
+]

@@ -40,7 +40,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module budget 'br/public:avm/res/consumption/budget:<version>' = {
-  name: '${uniqueString(deployment().name)}-test-cbmin'
+  name: 'budgetDeployment'
   params: {
     // Required parameters
     amount: 500
@@ -100,7 +100,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module budget 'br/public:avm/res/consumption/budget:<version>' = {
-  name: '${uniqueString(deployment().name)}-test-cbmax'
+  name: 'budgetDeployment'
   params: {
     // Required parameters
     amount: 500
@@ -186,7 +186,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module budget 'br/public:avm/res/consumption/budget:<version>' = {
-  name: '${uniqueString(deployment().name)}-test-cbwaf'
+  name: 'budgetDeployment'
   params: {
     // Required parameters
     amount: 500
@@ -261,7 +261,7 @@ module budget 'br/public:avm/res/consumption/budget:<version>' = {
 | [`amount`](#parameter-amount) | int | The total amount of cost or usage to track with the budget. |
 | [`name`](#parameter-name) | string | The name of the budget. |
 | [`operator`](#parameter-operator) | string | The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`. |
-| [`thresholdType`](#parameter-thresholdtype) | string | The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecast`. |
+| [`thresholdType`](#parameter-thresholdtype) | string | The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`. |
 
 **Conditional parameters**
 
@@ -317,7 +317,7 @@ The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or
 
 ### Parameter: `thresholdType`
 
-The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecast`.
+The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.
 
 - Required: No
 - Type: string
@@ -326,7 +326,7 @@ The type of threshold to use for the budget. The threshold type can be either `A
   ```Bicep
   [
     'Actual'
-    'Forecast'
+    'Forecasted'
   ]
   ```
 

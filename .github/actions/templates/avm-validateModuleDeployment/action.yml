@@ -56,7 +56,7 @@ runs:
   using: "composite"
   steps:
     - name: Azure Login
-      uses: Azure/login@v1
+      uses: azure/login@v2
       with:
         creds: ${{ env.AZURE_CREDENTIALS }}
         enable-AzPSSession: true
@@ -65,7 +65,7 @@ runs:
     # ---------------------------
     - name: "Get Resource Location"
       id: get-resource-location
-      uses: azure/powershell@v1
+      uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -94,7 +94,7 @@ runs:
     # [Token replacement] task(s)
     # ---------------------------
     - name: "Replace tokens in template file"
-      uses: azure/powershell@v1
+      uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -160,7 +160,7 @@ runs:
     # [Deployment validation] task(s)
     # -------------------------------
     - name: "Validate template file"
-      uses: azure/powershell@v1
+      uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -212,7 +212,7 @@ runs:
     # ------------------------------
     - name: "Deploy template file"
       id: deploy_step
-      uses: azure/powershell@v1
+      uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -368,7 +368,7 @@ runs:
     # ----------------------------
     - name: "Remove deployed resources"
       if: ${{ (success() || failure()) && inputs.removeDeployment == 'true' && steps.deploy_step.outputs.deploymentNames != '' }}
-      uses: azure/powershell@v1
+      uses: azure/powershell@v2
       with:
         azPSVersion: "latest"
         inlineScript: |

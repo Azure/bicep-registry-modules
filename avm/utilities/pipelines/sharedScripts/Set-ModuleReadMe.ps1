@@ -542,7 +542,7 @@ function Set-DataCollectionSection {
         $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
         try {
             $rawResponse = Invoke-WebRequest -Uri $telemetryUrl
-            if (($rawResponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
+            if (($rawResponse.Headers['Content-Type'] | Out-String) -like '*text/plain*') {
                 $telemetryFileContent = $rawResponse.Content -split '\n'
             } else {
                 throw "Failed to telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
@@ -973,23 +973,54 @@ function ConvertTo-FormattedJSONParameterObject {
             $isLineWithReferenceInLineKey = ($line -split ':')[0].Trim() -like '*.*'
 
             $isLineWithStringValue = $lineValue -match '".+"' # e.g. "value"
-            $isLineWithFunction = $lineValue -match "^['|`"]{1}.*\$\{.+['|`"]{1}$|^['|`"]{0}[a-zA-Z\(]+\(.+" # e.g. (split(resourceGroupResources.outputs.recoveryServicesVaultResourceId, "/"))[4] or '${last(...)}' or last() or "test${environment()}"
+            $isLineWithStringNestedFunction = $lineValue -match "^['|`"]{1}.*\$\{.+['|`"]{1}$|^['|`"]{0}[a-zA-Z\(]+\(.+" # e.g. (split(resourceGroupResources.outputs.recoveryServicesVaultResourceId, "/"))[4] or '${last(...)}' or last() or "test${environment()}"
             $isLineWithPlainValue = $lineValue -match '^\w+$' # e.g. adminPassword: password
             $isLineWithPrimitiveValue = $lineValue -match '^\s*true|false|[0-9]+$' # e.g. isSecure: true
 
-            # Combined checks
-            # In case of an output reference like '"virtualWanId": resourceGroupResources.outputs.virtualWWANResourceId' we'll only show "<virtualWanId>" (but NOT e.g. 'reference': {})
-            $isLineWithObjectPropertyReference = -not $isLineWithEmptyObjectValue -and -not $isLineWithStringValue -and $isLineWithObjectPropertyReferenceValue
-            # In case of a parameter/variable reference like 'adminPassword: password' we'll only show "<adminPassword>" (but NOT e.g. enableMe: true)
-            $isLineWithParameterOrVariableReferenceValue = $isLineWithPlainValue -and -not $isLineWithPrimitiveValue
-            # In case of any contained line like ''${resourceGroupResources.outputs.managedIdentityResourceId}': {}' we'll only show "managedIdentityResourceId: {}"
-            $isLineWithObjectReferenceKeyAndEmptyObjectValue = $isLineWithEmptyObjectValue -and $isLineWithReferenceInLineKey
-            # In case of any contained function like '"backupVaultResourceGroup": (split(resourceGroupResources.outputs.recoveryServicesVaultResourceId, "/"))[4]' we'll only show "<backupVaultResourceGroup>"
+            # Special case: Multi-line function
+            $isLineWithMultilineFunction = $lineValue -match '[a-zA-Z]+\s*\([^\)]*\){0}\s*$' # e.g. roleDefinitionIdOrName: subscriptionResourceId( \n 'Microsoft.Authorization/roleDefinitions', \n 'acdd72a7-3385-48ef-bd42-f606fba81ae7' \n )
+            if ($isLineWithMultilineFunction) {
+                # Search leading indent so that we can use it to identify at which line the function ends
+                $indent = ([regex]::Match($paramInJSONFormatArray[$index], '^(\s+)')).Captures.Groups[1].Value.Length
 
-            if ($isLineWithObjectPropertyReference -or $isLineWithFunction -or $isLineWithParameterOrVariableReferenceValue) {
+                $functionStartIndex = $index
+                $functionEndIndex = $functionStartIndex
+                do {
+                    $functionEndIndex++
+                } while ($paramInJSONFormatArray[$functionEndIndex] -match "^\s{$($indent+1),}" -and $functionEndIndex -lt $paramInJSONFormatArray.Count)
+
+                if ($functionEndIndex -eq $paramInJSONFormatArray.Count) {
+                    throw "End index of a multi-line function block for test file [$CurrentFilePath] not found."
+                }
+
+                # Overwrite the first line with a default value (i.e., "property": "<property>")
                 $line = '{0}: "<{1}>"' -f ($line -split ':')[0], ([regex]::Match(($line -split ':')[0], '"(.+)"')).Captures.Groups[1].Value
-            } elseif ($isLineWithObjectReferenceKeyAndEmptyObjectValue) {
-                $line = '"<{0}>": {1}' -f (($line -split ':')[0] -split '\.')[-1].TrimEnd('}"'), $lineValue
+
+                $linesOfFunction = $functionEndIndex - $functionStartIndex
+
+                # Nullify all but first line
+                for ($functionIndex = 1; $functionIndex -le $linesOfFunction; $functionIndex++) {
+                    $functionLineIndex = $index + $functionIndex
+                    $paramInJSONFormatArray[$functionLineIndex] = $null
+                }
+
+                # Increase index to skip the function lines
+                $index += $indexToIncrease
+            } else {
+                # Combined checks
+                # In case of an output reference like '"virtualWanId": resourceGroupResources.outputs.virtualWWANResourceId' we'll only show "<virtualWanId>" (but NOT e.g. 'reference': {})
+                $isLineWithObjectPropertyReference = -not $isLineWithEmptyObjectValue -and -not $isLineWithStringValue -and $isLineWithObjectPropertyReferenceValue
+                # In case of a parameter/variable reference like 'adminPassword: password' we'll only show "<adminPassword>" (but NOT e.g. enableMe: true)
+                $isLineWithParameterOrVariableReferenceValue = $isLineWithPlainValue -and -not $isLineWithPrimitiveValue
+                # In case of any contained line like ''${resourceGroupResources.outputs.managedIdentityResourceId}': {}' we'll only show "managedIdentityResourceId: {}"
+                $isLineWithObjectReferenceKeyAndEmptyObjectValue = $isLineWithEmptyObjectValue -and $isLineWithReferenceInLineKey
+                # In case of any contained function like '"backupVaultResourceGroup": (split(resourceGroupResources.outputs.recoveryServicesVaultResourceId, "/"))[4]' we'll only show "<backupVaultResourceGroup>"
+
+                if ($isLineWithObjectPropertyReference -or $isLineWithStringNestedFunction -or $isLineWithParameterOrVariableReferenceValue) {
+                    $line = '{0}: "<{1}>"' -f ($line -split ':')[0], ([regex]::Match(($line -split ':')[0], '"(.+)"')).Captures.Groups[1].Value
+                } elseif ($isLineWithObjectReferenceKeyAndEmptyObjectValue) {
+                    $line = '"<{0}>": {1}' -f (($line -split ':')[0] -split '\.')[-1].TrimEnd('}"'), $lineValue
+                }
             }
         } else {
             if ($line -notlike '*"*"*' -and $line -like '*.*') {
@@ -1001,11 +1032,13 @@ function ConvertTo-FormattedJSONParameterObject {
             }
         }
 
-
         $paramInJSONFormatArray[$index] = $line
     }
 
-    # [2.6] Syntax: Add comma everywhere unless:
+    # [2.6] Remove empty lines
+    $paramInJSONFormatArray = $paramInJSONFormatArray | Where-Object { $_ }
+
+    # [2.7] Syntax: Add comma everywhere unless:
     # - the current line has an opening 'object: {' or 'array: [' character
     # - the line after the current line has a closing 'object: {' or 'array: [' character
     # - it's the last closing bracket
@@ -1016,7 +1049,7 @@ function ConvertTo-FormattedJSONParameterObject {
         $paramInJSONFormatArray[$index] = '{0},' -f $paramInJSONFormatArray[$index].Trim()
     }
 
-    # [2.7] Format the final JSON string to an object to enable processing
+    # [2.8] Format the final JSON string to an object to enable processing
     try {
         $paramInJsonFormatObject = $paramInJSONFormatArray | Out-String | ConvertFrom-Json -AsHashtable -Depth 99 -ErrorAction 'Stop'
     } catch {
@@ -1301,43 +1334,60 @@ function Set-UsageExamplesSection {
         $bicepTestEndIndex = $bicepTestStartIndex
         do {
             $bicepTestEndIndex++
-        } while ($rawContentArray[$bicepTestEndIndex] -notin @('}', '}]'))
+        } while ($rawContentArray[$bicepTestEndIndex] -notin @('}', '}]', ']') -and $bicepTestEndIndex -lt $rawContentArray.Count)
+
+        if ($bicepTestEndIndex -eq $rawContentArray.Count) {
+            throw "End index of test block for test file [$testFilePath] not found."
+        }
 
         $rawBicepExample = $rawContentArray[$bicepTestStartIndex..$bicepTestEndIndex]
 
-        if ($rawBicepExample[-1] -eq '}]') {
-            $rawBicepExample[-1] = '}'
-        }
-
-        # [2/6] Replace placeholders
-        $serviceShort = ([regex]::Match($rawContent, "(?m)^param serviceShort string = '(.+)'\s*$")).Captures.Groups[1].Value
-
-        $rawBicepExampleString = ($rawBicepExample | Out-String)
-        $rawBicepExampleString = $rawBicepExampleString -replace '\$\{serviceShort\}', $serviceShort
-        $rawBicepExampleString = $rawBicepExampleString -replace '\$\{namePrefix\}[-|\.|_]?', '' # Replacing with empty to not expose prefix and avoid potential deployment conflicts
-        $rawBicepExampleString = $rawBicepExampleString -replace '(?m):\s*location\s*$', ': ''<location>'''
-        $rawBicepExampleString = $rawBicepExampleString -replace '-\$\{iteration\}', ''
-
-        # [3/6] Format header, remove scope property & any empty line
-        $rawBicepExample = $rawBicepExampleString -split '\n'
-        $rawBicepExample[0] = "module $moduleNameCamelCase 'br/public:$($brLink):$($targetVersion)' = {"
-        $rawBicepExample = $rawBicepExample | Where-Object { $_ -notmatch 'scope: *' } | Where-Object { -not [String]::IsNullOrEmpty($_) }
-        # [4/6] Extract param block
-        $rawBicepExampleArray = $rawBicepExample -split '\n'
-        $moduleDeploymentPropertyIndent = ([regex]::Match($rawBicepExampleArray[1], '^(\s+).*')).Captures.Groups[1].Value.Length
-        $paramsStartIndex = ($rawBicepExampleArray | Select-String ("^[\s]{$moduleDeploymentPropertyIndent}params:[\s]*\{") | ForEach-Object { $_.LineNumber - 1 })[0] + 1
-        if ($rawBicepExampleArray[$paramsStartIndex].Trim() -ne '}') {
-            # Handle case where param block is empty
-            $paramsEndIndex = ($rawBicepExampleArray[($paramsStartIndex + 1)..($rawBicepExampleArray.Count)] | Select-String "^[\s]{$moduleDeploymentPropertyIndent}\}" | ForEach-Object { $_.LineNumber - 1 })[0] + $paramsStartIndex
-            $paramBlock = ($rawBicepExampleArray[$paramsStartIndex..$paramsEndIndex] | Out-String).TrimEnd()
+        if (-not ($rawBicepExample | Select-String ('\s+params:.*'))) {
+            # Handle case where params are not provided
+            $paramsBlockArray = @()
         } else {
-            $paramBlock = ''
-            $paramsEndIndex = $paramsStartIndex
+            # Extract params block out of the Bicep example
+            $paramsStartIndex = ($rawBicepExample | Select-String ('\s+params:.*') | ForEach-Object { $_.LineNumber - 1 })[0]
+            $paramsIndent = ($rawBicepExample[$paramsStartIndex] | Select-String '(\s+).*').Matches.Groups[1].Length
+
+
+            # Handle case where params are empty
+            if ($rawBicepExample[$paramsStartIndex] -match '^.*params:\s*\{\s*\}\s*$') {
+                $paramsBlockArray = @()
+            } else {
+                # Handle case where params are provided
+                $paramsEndIndex = $paramsStartIndex
+                do {
+                    $paramsEndIndex++
+                } while ($rawBicepExample[$paramsEndIndex] -notMatch "^\s{$paramsIndent}\}" -and
+                    $rawBicepExample[$paramsEndIndex] -notMatch "^\s{$paramsIndent}\}\]" -and
+                    $rawBicepExample[$paramsEndIndex] -notMatch "^\s{$paramsIndent}\]" -and
+                    $paramsEndIndex -lt $rawBicepExample.Count)
+
+                if ($paramsEndIndex -eq $rawBicepExample.Count) {
+                    throw "End index of 'params' block for test file [$testFilePath] not found."
+                }
+
+                $paramsBlock = $rawBicepExample[($paramsStartIndex + 1) .. ($paramsEndIndex - 1)]
+                $paramsBlockArray = $paramsBlock -replace "^\s{$paramsIndent}" # Remove excess leading spaces
+
+                # [2/6] Replace placeholders
+                $serviceShort = ([regex]::Match($rawContent, "(?m)^param serviceShort string = '(.+)'\s*$")).Captures.Groups[1].Value
+
+                $paramsBlockString = ($paramsBlockArray | Out-String)
+                $paramsBlockString = $paramsBlockString -replace '\$\{serviceShort\}', $serviceShort
+                $paramsBlockString = $paramsBlockString -replace '\$\{namePrefix\}[-|\.|_]?', '' # Replacing with empty to not expose prefix and avoid potential deployment conflicts
+                $paramsBlockString = $paramsBlockString -replace '(?m):\s*location\s*$', ': ''<location>'''
+
+                # [3/6] Format header, remove scope property & any empty line
+                $paramsBlockArray = $paramsBlockString -split '\n' | Where-Object { -not [String]::IsNullOrEmpty($_) }
+                $paramsBlockArray = $paramsBlockArray | ForEach-Object { "  $_" }
+            }
         }
 
         # [5/6] Convert Bicep parameter block to JSON parameter block to enable processing
         $conversionInputObject = @{
-            BicepParamBlock = $paramBlock
+            BicepParamBlock = ($paramsBlockArray | Out-String).TrimEnd()
             CurrentFilePath = $testFilePath
         }
         $paramsInJSONFormat = ConvertTo-FormattedJSONParameterObject @conversionInputObject
@@ -1354,26 +1404,14 @@ function Set-UsageExamplesSection {
         # --------------------- #
         if ($addBicep) {
 
-            if ([String]::IsNullOrEmpty($paramBlock)) {
-                # Handle case where param block is empty
-                $formattedBicepExample = $rawBicepExample[0..($paramsStartIndex - 1)] + $rawBicepExample[($paramsEndIndex)..($rawBicepExample.Count)]
-            } else {
-                $formattedBicepExample = $rawBicepExample[0..($paramsStartIndex - 1)] + ($bicepExample -split '\n') + $rawBicepExample[($paramsEndIndex + 1)..($rawBicepExample.Count)]
-            }
-
-            # Remove any dependsOn as it it test specific
-            if ($detected = ($formattedBicepExample | Select-String "^\s{$moduleDeploymentPropertyIndent}dependsOn:\s*\[\s*$" | ForEach-Object { $_.LineNumber - 1 })) {
-                $dependsOnStartIndex = $detected[0]
-
-                # Find out where the 'dependsOn' ends
-                $dependsOnEndIndex = $dependsOnStartIndex
-                do {
-                    $dependsOnEndIndex++
-                } while ($formattedBicepExample[$dependsOnEndIndex] -notmatch '^\s*\]\s*$')
-
-                # Cut the 'dependsOn' block out
-                $formattedBicepExample = $formattedBicepExample[0..($dependsOnStartIndex - 1)] + $formattedBicepExample[($dependsOnEndIndex + 1)..($formattedBicepExample.Count)]
-            }
+            $formattedBicepExample = @(
+                "module $moduleNameCamelCase 'br/public:$($brLink):$($targetVersion)' = {",
+                "  name: '$($moduleNameCamelCase)Deployment'"
+                '  params: {'
+            ) + $bicepExample +
+            @( '  }',
+                '}'
+            )
 
             # Build result
             $testFilesContent += @(
@@ -1687,7 +1725,7 @@ function Set-ModuleReadMe {
     . (Join-Path $PSScriptRoot 'helper' 'Get-SpecsAlignedResourceName.ps1')
     . (Join-Path $PSScriptRoot 'helper' 'ConvertTo-OrderedHashtable.ps1')
     . (Join-Path $PSScriptRoot 'Get-BRMRepositoryName.ps1')
-    . (Join-Path $PSScriptRoot  'helper' 'Get-CrossReferencedModuleList.ps1')
+    . (Join-Path $PSScriptRoot 'helper' 'Get-CrossReferencedModuleList.ps1')
 
     # Check template & make full path
     $TemplateFilePath = Resolve-Path -Path $TemplateFilePath -ErrorAction Stop

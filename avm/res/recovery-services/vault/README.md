@@ -56,7 +56,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rsvmin'
+  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'rsvmin001'
@@ -136,7 +136,7 @@ This instance deploys the module with disaster recovery enabled.
 
 ```bicep
 module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rsvdr'
+  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -314,7 +314,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rsvmax'
+  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'rsvmax001'
@@ -1108,7 +1108,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rsvwaf'
+  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'rsvwaf001'
@@ -2643,7 +2643,7 @@ Tags of the Recovery Service Vault resource.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |
