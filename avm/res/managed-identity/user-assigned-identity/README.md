@@ -105,6 +105,14 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
         name: 'test-fed-cred-miuaimax-001'
         subject: 'system:serviceaccount:default:workload-identity-sa'
       }
+      {
+        audiences: [
+          'api://AzureADTokenExchange'
+        ]
+        issuer: '<issuer>'
+        name: 'test-fed-cred-miuaimax-002'
+        subject: 'system:serviceaccount:default:workload-identity-sa'
+      }
     ]
     location: '<location>'
     lock: {
@@ -162,6 +170,14 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
           ],
           "issuer": "<issuer>",
           "name": "test-fed-cred-miuaimax-001",
+          "subject": "system:serviceaccount:default:workload-identity-sa"
+        },
+        {
+          "audiences": [
+            "api://AzureADTokenExchange"
+          ],
+          "issuer": "<issuer>",
+          "name": "test-fed-cred-miuaimax-002",
           "subject": "system:serviceaccount:default:workload-identity-sa"
         }
       ]
@@ -233,6 +249,14 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
         name: 'test-fed-cred-miuaiwaf-001'
         subject: 'system:serviceaccount:default:workload-identity-sa'
       }
+      {
+        audiences: [
+          'api://AzureADTokenExchange'
+        ]
+        issuer: '<issuer>'
+        name: 'test-fed-cred-miuaiwaf-002'
+        subject: 'system:serviceaccount:default:workload-identity-sa'
+      }
     ]
     location: '<location>'
     lock: {
@@ -273,6 +297,14 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
           ],
           "issuer": "<issuer>",
           "name": "test-fed-cred-miuaiwaf-001",
+          "subject": "system:serviceaccount:default:workload-identity-sa"
+        },
+        {
+          "audiences": [
+            "api://AzureADTokenExchange"
+          ],
+          "issuer": "<issuer>",
+          "name": "test-fed-cred-miuaiwaf-002",
           "subject": "system:serviceaccount:default:workload-identity-sa"
         }
       ]

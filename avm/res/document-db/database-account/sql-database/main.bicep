@@ -32,32 +32,40 @@ resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-04
     resource: {
       id: name
     }
-    options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' }) ? null : {
-      throughput: autoscaleSettingsMaxThroughput == null ? throughput : null
-      autoscaleSettings: autoscaleSettingsMaxThroughput != null ? {
-        maxThroughput: autoscaleSettingsMaxThroughput
-      } : null
-    }
+    options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
+      ? null
+      : {
+          throughput: autoscaleSettingsMaxThroughput == null ? throughput : null
+          autoscaleSettings: autoscaleSettingsMaxThroughput != null
+            ? {
+                maxThroughput: autoscaleSettingsMaxThroughput
+              }
+            : null
+        }
   }
 }
 
-module container 'container/main.bicep' = [for container in containers: {
-  name: '${uniqueString(deployment().name, sqlDatabase.name)}-sqldb-${container.name}'
-  params: {
-    databaseAccountName: databaseAccountName
-    sqlDatabaseName: name
-    name: container.name
-    analyticalStorageTtl: container.?analyticalStorageTtl
-    autoscaleSettingsMaxThroughput: container.?autoscaleSettingsMaxThroughput
-    conflictResolutionPolicy: container.?conflictResolutionPolicy
-    defaultTtl: container.?defaultTtl
-    indexingPolicy: container.?indexingPolicy
-    kind: container.?kind
-    paths: container.?paths
-    throughput: (throughput != null || autoscaleSettingsMaxThroughput != null) && container.?throughput == null ? -1 : container.?throughput
-    uniqueKeyPolicyKeys: container.?uniqueKeyPolicyKeys
+module container 'container/main.bicep' = [
+  for container in containers: {
+    name: '${uniqueString(deployment().name, sqlDatabase.name)}-sqldb-${container.name}'
+    params: {
+      databaseAccountName: databaseAccountName
+      sqlDatabaseName: name
+      name: container.name
+      analyticalStorageTtl: container.?analyticalStorageTtl
+      autoscaleSettingsMaxThroughput: container.?autoscaleSettingsMaxThroughput
+      conflictResolutionPolicy: container.?conflictResolutionPolicy
+      defaultTtl: container.?defaultTtl
+      indexingPolicy: container.?indexingPolicy
+      kind: container.?kind
+      paths: container.?paths
+      throughput: (throughput != null || autoscaleSettingsMaxThroughput != null) && container.?throughput == null
+        ? -1
+        : container.?throughput
+      uniqueKeyPolicyKeys: container.?uniqueKeyPolicyKeys
+    }
   }
-}]
+]
 
 @description('The name of the SQL database.')
 output name string = sqlDatabase.name
