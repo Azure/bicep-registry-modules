@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "14576085251402405445"
+      "templateHash": "11946438631767791951"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -376,7 +376,7 @@
         "Disabled"
       ],
       "metadata": {
-        "description": "Optional. The status of the schedule (i.e. Enabled, Disabled)"
+        "description": "Optional. The status of the schedule (i.e. Enabled, Disabled)."
       }
     },
     "autoShutdownTime": {

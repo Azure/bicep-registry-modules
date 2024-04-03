@@ -120,7 +120,7 @@ param backupVaultResourceGroup string = resourceGroup().name
 @description('Optional. Backup policy the VMs should be using for backup. If not provided, it will use the DefaultPolicy from the backup recovery service vault.')
 param backupPolicyName string = 'DefaultPolicy'
 
-@description('Optional. The status of the schedule (i.e. Enabled, Disabled)')
+@description('Optional. The status of the schedule (i.e. Enabled, Disabled).')
 @allowed([
   'Enabled'
   'Disabled'

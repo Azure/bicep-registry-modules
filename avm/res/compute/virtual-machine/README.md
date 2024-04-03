@@ -2955,7 +2955,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`autoShutdownNotificationLocale`](#parameter-autoshutdownnotificationlocale) | string | The locale to use when sending a notification (fallback for unsupported languages is EN). |
 | [`autoShutdownNotificationStatus`](#parameter-autoshutdownnotificationstatus) | string | If notifications are enabled for this schedule (i.e. Enabled, Disabled). |
 | [`autoShutdownNotificationTimeInMinutes`](#parameter-autoshutdownnotificationtimeinminutes) | int | Time in minutes before event at which notification will be sent. |
-| [`autoShutdownStatus`](#parameter-autoshutdownstatus) | string | The status of the schedule (i.e. Enabled, Disabled) |
+| [`autoShutdownStatus`](#parameter-autoshutdownstatus) | string | The status of the schedule (i.e. Enabled, Disabled). |
 | [`autoShutdownTime`](#parameter-autoshutdowntime) | string | The time of day the schedule will occur. |
 | [`autoShutdownTimeZone`](#parameter-autoshutdowntimezone) | string | The time zone id. |
 | [`autoShutdownWebhookUrl`](#parameter-autoshutdownwebhookurl) | string | The webhook URL to which the notification will be sent. |
@@ -3175,7 +3175,7 @@ Time in minutes before event at which notification will be sent.
 
 ### Parameter: `autoShutdownStatus`
 
-The status of the schedule (i.e. Enabled, Disabled)
+The status of the schedule (i.e. Enabled, Disabled).
 
 - Required: No
 - Type: string
