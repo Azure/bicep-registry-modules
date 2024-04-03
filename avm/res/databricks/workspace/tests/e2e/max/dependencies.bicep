@@ -117,7 +117,7 @@ resource amlPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 }
 
 resource storagePermissionsUMAI 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${storageAccount.id}-${location}-${managedIdentity.id}-Storage-Contributor-FORUserAssignedIdentity')
+  name: guid('msi-${storageAccount.id}-${location}-${managedIdentity.id}-UserAssignedIdentity-Contributor')
   scope: storageAccount
   properties: {
     principalId: managedIdentity.properties.principalId
