@@ -16,10 +16,15 @@ param publicIpPrefixResourceId string?
 param publicIPAllocationMethod string = 'Static'
 
 @description('Optional. A list of availability zones denoting the IP allocated for the resource needs to come from.')
-param zones array = [
-  '1'
-  '2'
-  '3'
+@allowed([
+  1
+  2
+  3
+])
+param zones int[] = [
+  1
+  2
+  3
 ]
 
 @description('Optional. IP address version.')
@@ -131,7 +136,7 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2023-09-01' = {
     name: skuName
     tier: skuTier
   }
-  zones: zones
+  zones: map(zones, zone => string(zone))
   properties: {
     ddosSettings: ddosSettings
     dnsSettings: dnsSettings
