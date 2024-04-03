@@ -59,8 +59,6 @@ var builtInRoleNames = {
   )
 }
 
-var formattedZones = [for zone in zones: string(zone)]
-
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
   if (enableTelemetry) {
     name: '46d3xbcp.res.network-publicipprefix.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -87,7 +85,7 @@ resource publicIpPrefix 'Microsoft.Network/publicIPPrefixes@2023-09-01' = {
   sku: {
     name: 'Standard'
   }
-  zones: formattedZones
+  zones: map(zones, zone => string(zone))
   properties: {
     customIPPrefix: !empty(customIPPrefix) ? customIPPrefix : null
     publicIPAddressVersion: 'IPv4'

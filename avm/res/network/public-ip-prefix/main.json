@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "1069181325136122423"
+      "templateHash": "11461243147494849566"
     },
     "name": "Public IP Prefixes",
     "description": "This module deploys a Public IP Prefix.",
@@ -182,13 +182,6 @@
     }
   },
   "variables": {
-    "copy": [
-      {
-        "name": "formattedZones",
-        "count": "[length(parameters('zones'))]",
-        "input": "[string(parameters('zones')[copyIndex('formattedZones')])]"
-      }
-    ],
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
@@ -228,7 +221,7 @@
       "sku": {
         "name": "Standard"
       },
-      "zones": "[variables('formattedZones')]",
+      "zones": "[map(parameters('zones'), lambda('zone', string(lambdaVariables('zone'))))]",
       "properties": {
         "customIPPrefix": "[if(not(empty(parameters('customIPPrefix'))), parameters('customIPPrefix'), null())]",
         "publicIPAddressVersion": "IPv4",
