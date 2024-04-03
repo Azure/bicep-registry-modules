@@ -87,7 +87,7 @@ resource publicIpPrefix 'Microsoft.Network/publicIPPrefixes@2023-09-01' = {
   sku: {
     name: 'Standard'
   }
-  zones: zoneStrings
+  zones: formattedZones
   properties: {
     customIPPrefix: !empty(customIPPrefix) ? customIPPrefix : null
     publicIPAddressVersion: 'IPv4'
