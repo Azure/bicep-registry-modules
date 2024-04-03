@@ -21,6 +21,7 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 | `Microsoft.Automanage/configurationProfileAssignments` | [2021-04-30-preview](https://learn.microsoft.com/en-us/azure/templates) |
 | `Microsoft.Compute/virtualMachines` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines) |
 | `Microsoft.Compute/virtualMachines/extensions` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions) |
+| `Microsoft.DevTestLab/schedules` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules) |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/networkInterfaces` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkInterfaces) |
@@ -1546,13 +1547,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     name: 'cvmwinmin'
     nicConfigurations: [
       {
-        customNicName: 'nic-test-01'
         ipConfigurations: [
           {
             name: 'ipconfig01'
             subnetResourceId: '<subnetResourceId>'
           }
         ]
+        nicSuffix: '-nic-01'
       }
     ]
     osDisk: {
@@ -1602,13 +1603,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "nicConfigurations": {
       "value": [
         {
-          "customNicName": "nic-test-01",
           "ipConfigurations": [
             {
               "name": "ipconfig01",
               "subnetResourceId": "<subnetResourceId>"
             }
-          ]
+          ],
+          "nicSuffix": "-nic-01"
         }
       ]
     },
@@ -2028,6 +2029,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     name: 'cvmwinmax'
     nicConfigurations: [
       {
+        customNicName: 'nic-test-01'
         deleteOption: 'Delete'
         diagnosticSettings: [
           {
@@ -2088,7 +2090,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             ]
           }
         ]
-        nicSuffix: '-nic-01'
         roleAssignments: [
           {
             principalId: '<principalId>'
@@ -2112,6 +2113,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     zone: 2
     // Non-required parameters
     adminPassword: '<adminPassword>'
+    autoShutdownNotificationEmail: 'test@contoso.com'
+    autoShutdownNotificationLocale: 'en'
+    autoShutdownNotificationStatus: 'Enabled'
+    autoShutdownNotificationTimeInMinutes: 30
+    autoShutdownStatus: 'Enabled'
+    autoShutdownTime: '19:00'
+    autoShutdownTimeZone: 'UTC'
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
     backupVaultResourceGroup: '<backupVaultResourceGroup>'
@@ -2306,6 +2314,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "nicConfigurations": {
       "value": [
         {
+          "customNicName": "nic-test-01",
           "deleteOption": "Delete",
           "diagnosticSettings": [
             {
@@ -2366,7 +2375,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               ]
             }
           ],
-          "nicSuffix": "-nic-01",
           "roleAssignments": [
             {
               "principalId": "<principalId>",
@@ -2400,6 +2408,27 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
+    },
+    "autoShutdownNotificationEmail": {
+      "value": "test@contoso.com"
+    },
+    "autoShutdownNotificationLocale": {
+      "value": "en"
+    },
+    "autoShutdownNotificationStatus": {
+      "value": "Enabled"
+    },
+    "autoShutdownNotificationTimeInMinutes": {
+      "value": 30
+    },
+    "autoShutdownStatus": {
+      "value": "Enabled"
+    },
+    "autoShutdownTime": {
+      "value": "19:00"
+    },
+    "autoShutdownTimeZone": {
+      "value": "UTC"
     },
     "backupPolicyName": {
       "value": "<backupPolicyName>"
@@ -2918,6 +2947,14 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`additionalUnattendContent`](#parameter-additionalunattendcontent) | array | Specifies additional XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. Contents are defined by setting name, component name, and the pass in which the content is applied. |
 | [`adminPassword`](#parameter-adminpassword) | securestring | When specifying a Windows Virtual Machine, this value should be passed. |
 | [`allowExtensionOperations`](#parameter-allowextensionoperations) | bool | Specifies whether extension operations should be allowed on the virtual machine. This may only be set to False when no extensions are present on the virtual machine. |
+| [`autoShutdownNotificationEmail`](#parameter-autoshutdownnotificationemail) | string | The email recipient to send notifications to (can be a list of semi-colon separated email addresses). |
+| [`autoShutdownNotificationLocale`](#parameter-autoshutdownnotificationlocale) | string | The locale to use when sending a notification (fallback for unsupported languages is EN). |
+| [`autoShutdownNotificationStatus`](#parameter-autoshutdownnotificationstatus) | string | If notifications are enabled for this schedule (i.e. Enabled, Disabled). |
+| [`autoShutdownNotificationTimeInMinutes`](#parameter-autoshutdownnotificationtimeinminutes) | int | Time in minutes before event at which notification will be sent. |
+| [`autoShutdownStatus`](#parameter-autoshutdownstatus) | string | The status of the schedule (i.e. Enabled, Disabled) |
+| [`autoShutdownTime`](#parameter-autoshutdowntime) | string | The time of day the schedule will occur. |
+| [`autoShutdownTimeZone`](#parameter-autoshutdowntimezone) | string | The time zone id. |
+| [`autoShutdownWebhookUrl`](#parameter-autoshutdownwebhookurl) | string | The webhook URL to which the notification will be sent. |
 | [`availabilitySetResourceId`](#parameter-availabilitysetresourceid) | string | Resource ID of an availability set. Cannot be used in combination with availability zone nor scale set. |
 | [`backupPolicyName`](#parameter-backuppolicyname) | string | Backup policy the VMs should be using for backup. If not provided, it will use the DefaultPolicy from the backup recovery service vault. |
 | [`backupVaultName`](#parameter-backupvaultname) | string | Recovery service vault name to add VMs to backup. |
@@ -3090,6 +3127,84 @@ Specifies whether extension operations should be allowed on the virtual machine.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `autoShutdownNotificationEmail`
+
+The email recipient to send notifications to (can be a list of semi-colon separated email addresses).
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `autoShutdownNotificationLocale`
+
+The locale to use when sending a notification (fallback for unsupported languages is EN).
+
+- Required: No
+- Type: string
+- Default: `'en'`
+
+### Parameter: `autoShutdownNotificationStatus`
+
+If notifications are enabled for this schedule (i.e. Enabled, Disabled).
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `autoShutdownNotificationTimeInMinutes`
+
+Time in minutes before event at which notification will be sent.
+
+- Required: No
+- Type: int
+- Default: `30`
+
+### Parameter: `autoShutdownStatus`
+
+The status of the schedule (i.e. Enabled, Disabled)
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `autoShutdownTime`
+
+The time of day the schedule will occur.
+
+- Required: No
+- Type: string
+- Default: `'19:00'`
+
+### Parameter: `autoShutdownTimeZone`
+
+The time zone id.
+
+- Required: No
+- Type: string
+- Default: `'UTC'`
+
+### Parameter: `autoShutdownWebhookUrl`
+
+The webhook URL to which the notification will be sent.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `availabilitySetResourceId`
 

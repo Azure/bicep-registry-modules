@@ -71,7 +71,7 @@ module testDeployment '../../../main.bicep' = [
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
             }
           ]
-          customNicName: 'nic-test-01'
+          nicSuffix: '-nic-01'
         }
       ]
       osDisk: {

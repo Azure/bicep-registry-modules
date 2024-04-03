@@ -134,7 +134,7 @@ module testDeployment '../../../main.bicep' = [
               ]
             }
           ]
-          nicSuffix: '-nic-01'
+          customNicName: 'nic-test-01'
           roleAssignments: [
             {
               roleDefinitionIdOrName: 'Reader'
@@ -197,6 +197,13 @@ module testDeployment '../../../main.bicep' = [
       enableAutomaticUpdates: true
       patchMode: 'AutomaticByPlatform'
       encryptionAtHost: false
+      autoShutdownStatus: 'Enabled'
+      autoShutdownTime: '19:00'
+      autoShutdownTimeZone: 'UTC'
+      autoShutdownNotificationStatus: 'Enabled'
+      autoShutdownNotificationEmail: 'test@contoso.com'
+      autoShutdownNotificationLocale: 'en'
+      autoShutdownNotificationTimeInMinutes: 30
       extensionAntiMalwareConfig: {
         enabled: true
         settings: {
