@@ -500,7 +500,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
   }
 ]
 
-resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
+resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
   name: name
   location: location
   identity: identity
