@@ -105,7 +105,7 @@ param availabilitySetResourceId string = ''
   2
   3
 ])
-param availabilityZone int
+param zone int
 
 // External resources
 @description('Required. Configures NICs and PIPs.')
@@ -457,7 +457,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
   location: location
   identity: identity
   tags: tags
-  zones: availabilityZone != 0 ? array(string(availabilityZone)) : null
+  zones: zone != 0 ? array(string(zone)) : null
   plan: !empty(plan) ? plan : null
   properties: {
     hardwareProfile: {

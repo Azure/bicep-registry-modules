@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "11337690191653715343"
+      "templateHash": "14808761723367752278"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -329,7 +329,7 @@
         "description": "Optional. Resource ID of an availability set. Cannot be used in combination with availability zone nor scale set."
       }
     },
-    "availabilityZone": {
+    "zone": {
       "type": "int",
       "allowedValues": [
         0,
@@ -734,7 +734,7 @@
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
       "tags": "[parameters('tags')]",
-      "zones": "[if(not(equals(parameters('availabilityZone'), 0)), array(string(parameters('availabilityZone'))), null())]",
+      "zones": "[if(not(equals(parameters('zone'), 0)), array(string(parameters('zone'))), null())]",
       "plan": "[if(not(empty(parameters('plan'))), parameters('plan'), null())]",
       "properties": {
         "hardwareProfile": {
@@ -800,7 +800,7 @@
                   "deleteOption": "[if(contains(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'deleteOption'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].deleteOption, 'Delete')]",
                   "primary": "[if(equals(copyIndex('networkInterfaces'), 0), true(), false())]"
                 },
-                "id": "[resourceId('Microsoft.Network/networkInterfaces', format('{0}{1}', parameters('name'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].nicSuffix))]"
+                "id": "[resourceId('Microsoft.Network/networkInterfaces', if(contains(parameters('nicConfigurations')[copyIndex('networkInterfaces')], 'customNicName'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].customNicName, format('{0}{1}', parameters('name'), parameters('nicConfigurations')[copyIndex('networkInterfaces')].nicSuffix)))]"
               }
             }
           ]
@@ -910,9 +910,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "networkInterfaceName": {
-            "value": "[format('{0}{1}', parameters('name'), parameters('nicConfigurations')[copyIndex()].nicSuffix)]"
-          },
+          "networkInterfaceName": "[if(contains(parameters('nicConfigurations')[copyIndex()], 'customNicName'), createObject('value', parameters('nicConfigurations')[copyIndex()].customNicName), createObject('value', format('{0}{1}', parameters('name'), parameters('nicConfigurations')[copyIndex()].nicSuffix)))]",
           "virtualMachineName": {
             "value": "[parameters('name')]"
           },
@@ -4436,8 +4434,8 @@
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionHostPoolRegistration'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionHostPoolRegistration').enableAutomaticUpgrade), createObject('value', false()))]",
           "settings": {
             "value": {
-              "modulesUrl": "[parameters('extensionHostPoolRegistration').hostPoolModulesUrl]",
-              "configurationFunction": "[coalesce(tryGet(parameters('extensionHostPoolRegistration'), 'configurationFunction'), 'Configuration.ps1\\AddSessionHost')]",
+              "modulesUrl": "[parameters('extensionHostPoolRegistration').modulesUrl]",
+              "configurationFunction": "[parameters('extensionHostPoolRegistration').configurationFunction]",
               "properties": {
                 "hostPoolName": "[parameters('extensionHostPoolRegistration').hostPoolName]",
                 "registrationInfoToken": "[parameters('extensionHostPoolRegistration').registrationInfoToken]",
