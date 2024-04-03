@@ -148,7 +148,7 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2023-09-01' = {
         }
       : null
     idleTimeoutInMinutes: idleTimeoutInMinutes
-    ipTags: []
+    ipTags: null // Note: Requires feature 'Microsoft.Network/AllowBringYourOwnPublicIpAddress' to be registered on the subscription
   }
 }
 
