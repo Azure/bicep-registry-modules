@@ -281,6 +281,18 @@ param enableAutomaticUpdates bool = true
 ])
 param patchMode string = ''
 
+@description('Optional. Enables customer to schedule patching without accidental upgrades.')
+param bypassPlatformSafetyChecksOnUserSchedule bool = true
+
+@description('Optional. Specifies the reboot setting for all AutomaticByPlatform patch installation operations.')
+@allowed([
+  'Always'
+  'IfRequired'
+  'Never'
+  'Unknown'
+])
+param rebootSetting string = 'IfRequired'
+
 @description('Optional. VM guest patching assessment mode. Set it to \'AutomaticByPlatform\' to enable automatically check for updates every 24 hours.')
 @allowed([
   'AutomaticByPlatform'
@@ -333,6 +345,10 @@ var windowsConfiguration = {
     ? {
         patchMode: patchMode
         assessmentMode: patchAssessmentMode
+        automaticByPlatformSettings: {
+          bypassPlatformSafetyChecksOnUserSchedule: bypassPlatformSafetyChecksOnUserSchedule
+          rebootSetting: rebootSetting
+        }
       }
     : null
   timeZone: empty(timeZone) ? null : timeZone

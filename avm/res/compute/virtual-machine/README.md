@@ -2258,6 +2258,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     patchMode: 'AutomaticByPlatform'
     proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
+    rebootSetting: 'IfRequired'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -2609,6 +2610,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "proximityPlacementGroupResourceId": {
       "value": "<proximityPlacementGroupResourceId>"
+    },
+    "rebootSetting": {
+      "value": "IfRequired"
     },
     "roleAssignments": {
       "value": [
@@ -2962,6 +2966,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`bootDiagnostics`](#parameter-bootdiagnostics) | bool | Whether boot diagnostics should be enabled on the Virtual Machine. Boot diagnostics will be enabled with a managed storage account if no bootDiagnosticsStorageAccountName value is provided. If bootDiagnostics and bootDiagnosticsStorageAccountName values are not provided, boot diagnostics will be disabled. |
 | [`bootDiagnosticStorageAccountName`](#parameter-bootdiagnosticstorageaccountname) | string | Custom storage account used to store boot diagnostic information. Boot diagnostics will be enabled with a custom storage account if a value is provided. |
 | [`bootDiagnosticStorageAccountUri`](#parameter-bootdiagnosticstorageaccounturi) | string | Storage account boot diagnostic base URI. |
+| [`bypassPlatformSafetyChecksOnUserSchedule`](#parameter-bypassplatformsafetychecksonuserschedule) | bool | Enables customer to schedule patching without accidental upgrades. |
 | [`certificatesToBeInstalled`](#parameter-certificatestobeinstalled) | array | Specifies set of certificates that should be installed onto the virtual machine. |
 | [`computerName`](#parameter-computername) | string | Can be used if the computer name needs to be different from the Azure VM resource name. If not used, the resource name will be used as computer name. |
 | [`customData`](#parameter-customdata) | string | Custom data associated to the VM, this value will be automatically converted into base64 to account for the expected VM format. |
@@ -3000,6 +3005,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`provisionVMAgent`](#parameter-provisionvmagent) | bool | Indicates whether virtual machine agent should be provisioned on the virtual machine. When this property is not specified in the request body, default behavior is to set it to true. This will ensure that VM Agent is installed on the VM so that extensions can be added to the VM later. |
 | [`proximityPlacementGroupResourceId`](#parameter-proximityplacementgroupresourceid) | string | Resource ID of a proximity placement group. |
 | [`publicKeys`](#parameter-publickeys) | array | The list of SSH public keys used to authenticate with linux based VMs. |
+| [`rebootSetting`](#parameter-rebootsetting) | string | Specifies the reboot setting for all AutomaticByPlatform patch installation operations. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sasTokenValidityLength`](#parameter-sastokenvaliditylength) | string | SAS token validity length to use to download files from storage accounts. Usage: 'PT8H' - valid for 8 hours; 'P5D' - valid for 5 days; 'P1Y' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours. |
 | [`secureBootEnabled`](#parameter-securebootenabled) | bool | Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings. |
@@ -3261,6 +3267,14 @@ Storage account boot diagnostic base URI.
 - Required: No
 - Type: string
 - Default: `[format('.blob.{0}/', environment().suffixes.storage)]`
+
+### Parameter: `bypassPlatformSafetyChecksOnUserSchedule`
+
+Enables customer to schedule patching without accidental upgrades.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `certificatesToBeInstalled`
 
@@ -3707,6 +3721,23 @@ The list of SSH public keys used to authenticate with linux based VMs.
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `rebootSetting`
+
+Specifies the reboot setting for all AutomaticByPlatform patch installation operations.
+
+- Required: No
+- Type: string
+- Default: `'IfRequired'`
+- Allowed:
+  ```Bicep
+  [
+    'Always'
+    'IfRequired'
+    'Never'
+    'Unknown'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 

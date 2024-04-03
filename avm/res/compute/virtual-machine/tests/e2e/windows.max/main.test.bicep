@@ -196,6 +196,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       enableAutomaticUpdates: true
       patchMode: 'AutomaticByPlatform'
+      rebootSetting: 'IfRequired'
       encryptionAtHost: false
       autoShutdownStatus: 'Enabled'
       autoShutdownTime: '19:00'
