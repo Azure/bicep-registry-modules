@@ -8,49 +8,49 @@ param keyVaultName string
 param storageAccountName string
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
-    name: keyVaultName
-    location: location
-    properties: {
-        sku: {
-            family: 'A'
-            name: 'standard'
-        }
-        tenantId: tenant().tenantId
-        enablePurgeProtection: true
-        softDeleteRetentionInDays: 7
-        enabledForTemplateDeployment: true
-        enabledForDiskEncryption: true
-        enabledForDeployment: true
-        enableRbacAuthorization: true
-        accessPolicies: []
+  name: keyVaultName
+  location: location
+  properties: {
+    sku: {
+      family: 'A'
+      name: 'standard'
     }
+    tenantId: tenant().tenantId
+    enablePurgeProtection: true
+    softDeleteRetentionInDays: 7
+    enabledForTemplateDeployment: true
+    enabledForDiskEncryption: true
+    enabledForDeployment: true
+    enableRbacAuthorization: true
+    accessPolicies: []
+  }
 
-    resource key 'keys@2022-07-01' = {
-        name: 'keyEncryptionKey'
-        properties: {
-            kty: 'RSA'
-        }
+  resource key 'keys@2022-07-01' = {
+    name: 'keyEncryptionKey'
+    properties: {
+      kty: 'RSA'
     }
+  }
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
-    name: storageAccountName
-    location: location
-    sku: {
-        name: 'Standard_LRS'
-    }
-    kind: 'StorageV2'
-    properties: {
-        isHnsEnabled: true
-    }
+  name: storageAccountName
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+  properties: {
+    isHnsEnabled: true
+  }
 
-    resource blobService 'blobServices@2022-09-01' = {
-        name: 'default'
+  resource blobService 'blobServices@2022-09-01' = {
+    name: 'default'
 
-        resource container 'containers@2022-09-01' = {
-            name: 'synapsews'
-        }
+    resource container 'containers@2022-09-01' = {
+      name: 'synapsews'
     }
+  }
 }
 
 @description('The resource ID of the created Key Vault.')

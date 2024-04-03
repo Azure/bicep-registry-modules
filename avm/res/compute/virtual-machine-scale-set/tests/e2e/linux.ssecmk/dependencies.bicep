@@ -89,7 +89,10 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: keyVault
   properties: {
     principalId: diskEncryptionSet.identity.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e147488a-f6f5-4113-8e2d-b22465e65bf6') // Key Vault Crypto Service Encryption User
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'e147488a-f6f5-4113-8e2d-b22465e65bf6'
+    ) // Key Vault Crypto Service Encryption User
     principalType: 'ServicePrincipal'
   }
 }
@@ -104,7 +107,10 @@ resource msiRGContrRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-
   scope: resourceGroup()
   properties: {
     principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c') // Contributor
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ) // Contributor
     principalType: 'ServicePrincipal'
   }
 }

@@ -21,14 +21,12 @@ param deliveryWithResourceIdentity object = {}
 param destination object
 
 @description('Optional. The event delivery schema for the event subscription.')
-@allowed(
-  [
-    'CloudEventSchemaV1_0'
-    'CustomInputSchema'
-    'EventGridSchema'
-    'EventGridEvent'
-  ]
-)
+@allowed([
+  'CloudEventSchemaV1_0'
+  'CustomInputSchema'
+  'EventGridSchema'
+  'EventGridEvent'
+])
 param eventDeliverySchema string = 'EventGridSchema'
 
 @description('Optional. The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ).')
@@ -43,11 +41,11 @@ param labels array = []
 @description('Optional. The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events.')
 param retryPolicy object = {}
 
-resource systemTopic 'Microsoft.EventGrid/systemTopics@2022-06-15' existing = {
+resource systemTopic 'Microsoft.EventGrid/systemTopics@2023-12-15-preview' existing = {
   name: systemTopicName
 }
 
-resource eventSubscription 'Microsoft.EventGrid/systemTopics/eventSubscriptions@2022-06-15' = {
+resource eventSubscription 'Microsoft.EventGrid/systemTopics/eventSubscriptions@2023-12-15-preview' = {
   name: name
   parent: systemTopic
   properties: {

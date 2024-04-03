@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "12506498029720805552"
+      "version": "0.26.54.24096",
+      "templateHash": "13701757307300485900"
     },
     "name": "Recovery Services Vault Replication Policies",
     "description": "This module deploys a Recovery Services Vault Replication Policy for Disaster Recovery scenario.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",

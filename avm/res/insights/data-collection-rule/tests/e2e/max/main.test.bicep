@@ -46,94 +46,99 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    dataCollectionEndpointId: nestedDependencies.outputs.dataCollectionEndpointResourceId
-    description: 'Collecting custom text logs without ingestion-time transformation.'
-    dataFlows: [
-      {
-        streams: [
-          'Custom-CustomTableBasic_CL'
-        ]
-        destinations: [
-          nestedDependencies.outputs.logAnalyticsWorkspaceName
-        ]
-        transformKql: 'source'
-        outputStream: 'Custom-CustomTableBasic_CL'
-      }
-    ]
-    dataSources: {
-      logFiles: [
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      dataCollectionEndpointId: nestedDependencies.outputs.dataCollectionEndpointResourceId
+      description: 'Collecting custom text logs without ingestion-time transformation.'
+      dataFlows: [
         {
-          name: 'CustomTableBasic_CL'
-          samplingFrequencyInSeconds: 60
           streams: [
             'Custom-CustomTableBasic_CL'
           ]
-          filePatterns: [
-            'C:\\TestLogsBasic\\TestLog*.log'
+          destinations: [
+            nestedDependencies.outputs.logAnalyticsWorkspaceName
           ]
-          format: 'text'
-          settings: {
-            text: {
-              recordStartTimestampFormat: 'ISO 8601'
+          transformKql: 'source'
+          outputStream: 'Custom-CustomTableBasic_CL'
+        }
+      ]
+      dataSources: {
+        logFiles: [
+          {
+            name: 'CustomTableBasic_CL'
+            samplingFrequencyInSeconds: 60
+            streams: [
+              'Custom-CustomTableBasic_CL'
+            ]
+            filePatterns: [
+              'C:\\TestLogsBasic\\TestLog*.log'
+            ]
+            format: 'text'
+            settings: {
+              text: {
+                recordStartTimestampFormat: 'ISO 8601'
+              }
             }
-          }
-        }
-      ]
-    }
-    destinations: {
-      logAnalytics: [
-        {
-          workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
-          name: nestedDependencies.outputs.logAnalyticsWorkspaceName
-        }
-      ]
-    }
-    streamDeclarations: {
-      'Custom-CustomTableBasic_CL': {
-        columns: [
-          {
-            name: 'TimeGenerated'
-            type: 'datetime'
-          }
-          {
-            name: 'RawData'
-            type: 'string'
           }
         ]
       }
-    }
-    kind: 'Windows'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+      destinations: {
+        logAnalytics: [
+          {
+            workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+            name: nestedDependencies.outputs.logAnalyticsWorkspaceName
+          }
+        ]
       }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+      streamDeclarations: {
+        'Custom-CustomTableBasic_CL': {
+          columns: [
+            {
+              name: 'TimeGenerated'
+              type: 'datetime'
+            }
+            {
+              name: 'RawData'
+              type: 'string'
+            }
+          ]
+        }
       }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      resourceType: 'Data Collection Rules'
       kind: 'Windows'
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        resourceType: 'Data Collection Rules'
+        kind: 'Windows'
+      }
     }
   }
-}]
+]

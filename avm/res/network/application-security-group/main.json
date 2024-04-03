@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "18328102101906578940"
+      "version": "0.26.54.24096",
+      "templateHash": "8902169234314141631"
     },
     "name": "Application Security Groups (ASG)",
     "description": "This module deploys an Application Security Group (ASG).",

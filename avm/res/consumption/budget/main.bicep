@@ -63,9 +63,9 @@ param actionGroups array?
 
 @allowed([
   'Actual'
-  'Forecast'
+  'Forecasted'
 ])
-@description('Required. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecast`.')
+@description('Required. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.')
 param thresholdType string = 'Actual'
 
 @description('Optional. The filter to use for restricting which resources are considered within the budget.')
@@ -80,36 +80,39 @@ param enableTelemetry bool = true
 @description('Optional. Location deployment metadata.')
 param location string = deployment().location
 
-var notificationsArray = [for threshold in thresholds: {
-  'Actual_GreaterThan_${threshold}_Percentage': {
-    enabled: true
-    operator: operator
-    threshold: threshold
-    contactEmails: contactEmails
-    contactRoles: contactRoles
-    contactGroups: actionGroups
-    thresholdType: thresholdType
+var notificationsArray = [
+  for threshold in thresholds: {
+    'Actual_GreaterThan_${threshold}_Percentage': {
+      enabled: true
+      operator: operator
+      threshold: threshold
+      contactEmails: contactEmails
+      contactRoles: contactRoles
+      contactGroups: actionGroups
+      thresholdType: thresholdType
+    }
   }
-}]
+]
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.consumption-budget.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  location: location
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.consumption-budget.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    location: location
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
 resource budget 'Microsoft.Consumption/budgets@2023-11-01' = {
   name: name
@@ -121,13 +124,15 @@ resource budget 'Microsoft.Consumption/budgets@2023-11-01' = {
       startDate: startDate
       endDate: endDate
     }
-    filter: filter ?? (!empty(resourceGroupFilter) ? {
-      dimensions: {
-        name: 'ResourceGroupName'
-        operator: 'In'
-        values: resourceGroupFilter
-      }
-    } : {})
+    filter: filter ?? (!empty(resourceGroupFilter)
+      ? {
+          dimensions: {
+            name: 'ResourceGroupName'
+            operator: 'In'
+            values: resourceGroupFilter
+          }
+        }
+      : {})
     notifications: json(replace(replace(replace(string(notificationsArray), '[{', '{'), '}]', '}'), '}},{', '},'))
   }
 }

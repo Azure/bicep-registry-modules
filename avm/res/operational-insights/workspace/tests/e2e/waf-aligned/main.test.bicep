@@ -60,155 +60,157 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    dailyQuotaGb: 10
-    dataSources: [
-      {
-        eventLogName: 'Application'
-        eventTypes: [
-          {
-            eventType: 'Error'
-          }
-          {
-            eventType: 'Warning'
-          }
-          {
-            eventType: 'Information'
-          }
-        ]
-        kind: 'WindowsEvent'
-        name: 'applicationEvent'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      dailyQuotaGb: 10
+      dataSources: [
+        {
+          eventLogName: 'Application'
+          eventTypes: [
+            {
+              eventType: 'Error'
+            }
+            {
+              eventType: 'Warning'
+            }
+            {
+              eventType: 'Information'
+            }
+          ]
+          kind: 'WindowsEvent'
+          name: 'applicationEvent'
+        }
+        {
+          counterName: '% Processor Time'
+          instanceName: '*'
+          intervalSeconds: 60
+          kind: 'WindowsPerformanceCounter'
+          name: 'windowsPerfCounter1'
+          objectName: 'Processor'
+        }
+        {
+          kind: 'IISLogs'
+          name: 'sampleIISLog1'
+          state: 'OnPremiseEnabled'
+        }
+        {
+          kind: 'LinuxSyslog'
+          name: 'sampleSyslog1'
+          syslogName: 'kern'
+          syslogSeverities: [
+            {
+              severity: 'emerg'
+            }
+            {
+              severity: 'alert'
+            }
+            {
+              severity: 'crit'
+            }
+            {
+              severity: 'err'
+            }
+            {
+              severity: 'warning'
+            }
+          ]
+        }
+        {
+          kind: 'LinuxSyslogCollection'
+          name: 'sampleSyslogCollection1'
+          state: 'Enabled'
+        }
+        {
+          instanceName: '*'
+          intervalSeconds: 10
+          kind: 'LinuxPerformanceObject'
+          name: 'sampleLinuxPerf1'
+          objectName: 'Logical Disk'
+          syslogSeverities: [
+            {
+              counterName: '% Used Inodes'
+            }
+            {
+              counterName: 'Free Megabytes'
+            }
+            {
+              counterName: '% Used Space'
+            }
+            {
+              counterName: 'Disk Transfers/sec'
+            }
+            {
+              counterName: 'Disk Reads/sec'
+            }
+            {
+              counterName: 'Disk Writes/sec'
+            }
+          ]
+        }
+        {
+          kind: 'LinuxPerformanceCollection'
+          name: 'sampleLinuxPerfCollection1'
+          state: 'Enabled'
+        }
+      ]
+      diagnosticSettings: [
+        {
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      gallerySolutions: [
+        {
+          name: 'AzureAutomation'
+          product: 'OMSGallery'
+          publisher: 'Microsoft'
+        }
+      ]
+      linkedServices: [
+        {
+          name: 'Automation'
+          resourceId: nestedDependencies.outputs.automationAccountResourceId
+        }
+      ]
+      linkedStorageAccounts: [
+        {
+          name: 'Query'
+          resourceId: nestedDependencies.outputs.storageAccountResourceId
+        }
+      ]
+      publicNetworkAccessForIngestion: 'Disabled'
+      publicNetworkAccessForQuery: 'Disabled'
+      storageInsightsConfigs: [
+        {
+          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+          tables: [
+            'LinuxsyslogVer2v0'
+            'WADETWEventTable'
+            'WADServiceFabric*EventTable'
+            'WADWindowsEventLogsTable'
+          ]
+        }
+      ]
+      useResourcePermissions: true
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-      {
-        counterName: '% Processor Time'
-        instanceName: '*'
-        intervalSeconds: 60
-        kind: 'WindowsPerformanceCounter'
-        name: 'windowsPerfCounter1'
-        objectName: 'Processor'
+      managedIdentities: {
+        systemAssigned: true
       }
-      {
-        kind: 'IISLogs'
-        name: 'sampleIISLog1'
-        state: 'OnPremiseEnabled'
-      }
-      {
-        kind: 'LinuxSyslog'
-        name: 'sampleSyslog1'
-        syslogName: 'kern'
-        syslogSeverities: [
-          {
-            severity: 'emerg'
-          }
-          {
-            severity: 'alert'
-          }
-          {
-            severity: 'crit'
-          }
-          {
-            severity: 'err'
-          }
-          {
-            severity: 'warning'
-          }
-        ]
-      }
-      {
-        kind: 'LinuxSyslogCollection'
-        name: 'sampleSyslogCollection1'
-        state: 'Enabled'
-      }
-      {
-        instanceName: '*'
-        intervalSeconds: 10
-        kind: 'LinuxPerformanceObject'
-        name: 'sampleLinuxPerf1'
-        objectName: 'Logical Disk'
-        syslogSeverities: [
-          {
-            counterName: '% Used Inodes'
-          }
-          {
-            counterName: 'Free Megabytes'
-          }
-          {
-            counterName: '% Used Space'
-          }
-          {
-            counterName: 'Disk Transfers/sec'
-          }
-          {
-            counterName: 'Disk Reads/sec'
-          }
-          {
-            counterName: 'Disk Writes/sec'
-          }
-        ]
-      }
-      {
-        kind: 'LinuxPerformanceCollection'
-        name: 'sampleLinuxPerfCollection1'
-        state: 'Enabled'
-      }
-    ]
-    diagnosticSettings: [
-      {
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    gallerySolutions: [
-      {
-        name: 'AzureAutomation'
-        product: 'OMSGallery'
-        publisher: 'Microsoft'
-      }
-    ]
-    linkedServices: [
-      {
-        name: 'Automation'
-        resourceId: nestedDependencies.outputs.automationAccountResourceId
-      }
-    ]
-    linkedStorageAccounts: [
-      {
-        name: 'Query'
-        resourceId: nestedDependencies.outputs.storageAccountResourceId
-      }
-    ]
-    publicNetworkAccessForIngestion: 'Disabled'
-    publicNetworkAccessForQuery: 'Disabled'
-    storageInsightsConfigs: [
-      {
-        storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-        tables: [
-          'LinuxsyslogVer2v0'
-          'WADETWEventTable'
-          'WADServiceFabric*EventTable'
-          'WADWindowsEventLogsTable'
-        ]
-      }
-    ]
-    useResourcePermissions: true
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
-    managedIdentities: {
-      systemAssigned: true
-    }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
+    ]
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
-}]
+]
