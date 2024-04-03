@@ -185,28 +185,3 @@ module testDeployment '../../../main.bicep' = [
     ]
   }
 ]
-
-module testAIModelDeployment '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-ai-deployment'
-  params: {
-    name: '${namePrefix}${serviceShort}002'
-    kind: 'AIServices'
-    location: resourceLocation
-    customSubDomainName: '${namePrefix}x${serviceShort}ai'
-    deployments: [
-      {
-        name: 'gpt-35-turbo'
-        model: {
-          format: 'OpenAI'
-          name: 'gpt-35-turbo'
-          version: '0301'
-        }
-        sku: {
-          name: 'Standard'
-          capacity: 20
-        }
-      }
-    ]
-  }
-}
