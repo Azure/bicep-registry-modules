@@ -24,12 +24,16 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
   name: databaseAccountName
 }
 
-var databaseOptions = contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' }) ? {} : {
-  autoscaleSettings: throughput == null ? {
-    maxThroughput: maxThroughput
-  } : null
-  throughput: throughput
-}
+var databaseOptions = contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
+  ? {}
+  : {
+      autoscaleSettings: throughput == null
+        ? {
+            maxThroughput: maxThroughput
+          }
+        : null
+      throughput: throughput
+    }
 
 resource gremlinDatabase 'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases@2023-04-15' = {
   name: name
@@ -43,16 +47,18 @@ resource gremlinDatabase 'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases
   }
 }
 
-module gremlinDatabase_gremlinGraphs 'graph/main.bicep' = [for graph in graphs: {
-  name: '${uniqueString(deployment().name, gremlinDatabase.name)}-gremlindb-${graph.name}'
-  params: {
-    name: graph.name
-    gremlinDatabaseName: name
-    databaseAccountName: databaseAccountName
-    indexingPolicy: contains(graph, 'indexingPolicy') ? graph.indexingPolicy : true
-    partitionKeyPaths: !empty(graph.partitionKeyPaths) ? graph.partitionKeyPaths : []
+module gremlinDatabase_gremlinGraphs 'graph/main.bicep' = [
+  for graph in graphs: {
+    name: '${uniqueString(deployment().name, gremlinDatabase.name)}-gremlindb-${graph.name}'
+    params: {
+      name: graph.name
+      gremlinDatabaseName: name
+      databaseAccountName: databaseAccountName
+      indexingPolicy: contains(graph, 'indexingPolicy') ? graph.indexingPolicy : true
+      partitionKeyPaths: !empty(graph.partitionKeyPaths) ? graph.partitionKeyPaths : []
+    }
   }
-}]
+]
 
 @description('The name of the Gremlin database.')
 output name string = gremlinDatabase.name
