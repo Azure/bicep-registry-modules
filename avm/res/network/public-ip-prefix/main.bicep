@@ -27,10 +27,15 @@ param tags object?
 param customIPPrefix object = {}
 
 @description('Optional. A list of availability zones denoting the IP allocated for the resource needs to come from.')
-param zones array = [
-  '1'
-  '2'
-  '3'
+@allowed([
+  1
+  2
+  3
+])
+param zones int[] = [
+  1
+  2
+  3
 ]
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -53,6 +58,8 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+var zoneStrings = [for zone in zones: string(zone)]
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
   if (enableTelemetry) {
@@ -80,7 +87,7 @@ resource publicIpPrefix 'Microsoft.Network/publicIPPrefixes@2023-09-01' = {
   sku: {
     name: 'Standard'
   }
-  zones: zones
+  zones: zoneStrings
   properties: {
     customIPPrefix: !empty(customIPPrefix) ? customIPPrefix : null
     publicIPAddressVersion: 'IPv4'

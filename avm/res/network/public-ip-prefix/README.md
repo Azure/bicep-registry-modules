@@ -128,8 +128,8 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
       Role: 'DeploymentValidation'
     }
     zones: [
-      '1'
-      '2'
+      1
+      2
     ]
   }
 }
@@ -192,8 +192,8 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
     },
     "zones": {
       "value": [
-        "1",
-        "2"
+        1,
+        2
       ]
     }
   }
@@ -468,9 +468,17 @@ A list of availability zones denoting the IP allocated for the resource needs to
 - Default:
   ```Bicep
   [
-    '1'
-    '2'
-    '3'
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
   ]
   ```
 
