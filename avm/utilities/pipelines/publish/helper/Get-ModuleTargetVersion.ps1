@@ -48,12 +48,11 @@ function Get-ModuleTargetVersion {
 
   if ($versionChange) {
     # If [version.json] file version property was updated, reset the patch/bug version back to 0
-    Write-Verbose "[version.json] file version property was updated. Resetting PATCH back to 0." -Verbose
+    Write-Verbose '[version.json] file version property was updated. Resetting PATCH back to 0.' -Verbose
     $patch = '0'
-  }
-  else {
+  } else {
     # Otherwise calculate the patch version
-    Write-Verbose "[version.json] file version property was not updated. Calculating new PATCH version." -Verbose
+    Write-Verbose '[version.json] file version property was not updated. Calculating new PATCH version.' -Verbose
     $patch = Get-ModuleTargetPatchVersion -ModuleFolderPath $ModuleFolderPath -MajMinVersion "$major.$minor"
   }
 

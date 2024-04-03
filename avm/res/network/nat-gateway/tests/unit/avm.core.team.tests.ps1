@@ -18,8 +18,7 @@ BeforeAll {
 
   if ($moduleFolderPaths.Count -gt 1) {
     $topLevelModuleTemplatePath = $moduleFolderPaths | Sort-Object | Select-Object -First 1
-  }
-  else {
+  } else {
     $topLevelModuleTemplatePath = $moduleFolderPaths
   }
 
@@ -31,7 +30,7 @@ Describe 'AVM Core Team Module Specific Tests' {
   Context 'WAF - Reliability Pillar - Parameter Tests' {
 
     It 'NAT Gateway Module Availability Zone Parameter Should Not Have A Default Value Set' {
-      $isRequired = Get-IsParameterRequired -TemplateFileContent $moduleJsonContentHashtable -Parameter $moduleJsonContentHashtable.parameters.zones
+      $isRequired = Get-IsParameterRequired -TemplateFileContent $moduleJsonContentHashtable -Parameter $moduleJsonContentHashtable.parameters.zone
       $isRequired | Should -Be $true
     }
 

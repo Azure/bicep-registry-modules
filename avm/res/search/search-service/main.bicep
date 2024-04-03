@@ -63,7 +63,7 @@ param publicNetworkAccess string = 'enabled'
 @description('Optional. The number of replicas in the search service. If specified, it must be a value between 1 and 12 inclusive for standard SKUs or between 1 and 3 inclusive for basic SKU.')
 @minValue(1)
 @maxValue(12)
-param replicaCount int = 1
+param replicaCount int = 3
 
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
@@ -243,6 +243,7 @@ resource searchService_roleAssignments 'Microsoft.Authorization/roleAssignments@
 module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-SearchService-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(searchService.id, '/'))}-${privateEndpoint.?service ?? 'searchService'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
@@ -441,6 +442,9 @@ type privateEndpointType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
+
+  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
+  resourceGroupName: string?
 }[]?
 
 type diagnosticSettingType = {
