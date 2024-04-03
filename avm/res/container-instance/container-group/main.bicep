@@ -303,6 +303,33 @@ type containerType = {
         @description('Optional. The memory limit in GB of this container instance. To specify a decimal value, use the json() function.')
         memoryInGB: int?
       }?
+
+      @description('Optional. The security context of the container instance.')
+      securityContext: {
+        @description('Optional. Whether privilege escalation is allowed for the container.')
+        allowPrivilegeEscalation: bool?
+
+        @description('Optional. The capabilities to add or drop for the container.')
+        capabilities: {
+          @description('Optional. The list of capabilities to add.')
+          add: string[]?
+
+          @description('Optional. The list of capabilities to drop.')
+          drop: string[]?
+        }?
+
+        @description('Optional. Whether the container is run in privileged mode.')
+        privileged: bool?
+
+        @description('Optional. The GID to run the container as.')
+        runAsGroup: int?
+
+        @description('Optional. The UID to run the container as.')
+        runAsUser: int?
+
+        @description('Optional. The seccomp profile to use for the container.')
+        seccompProfile: string?
+      }?
     }
 
     @description('Optional. The volume mounts within the container instance.')
