@@ -425,7 +425,9 @@ module vm_nic 'modules/nic-configuration.bicep' = [
   for (nicConfiguration, index) in nicConfigurations: {
     name: '${uniqueString(deployment().name, location)}-VM-Nic-${index}'
     params: {
-      networkInterfaceName: '${name}${nicConfiguration.nicSuffix}'
+      networkInterfaceName: contains(nicConfiguration, 'customNicName')
+        ? nicConfiguration.customNicName
+        : '${name}${nicConfiguration.nicSuffix}'
       virtualMachineName: name
       location: location
       enableIPForwarding: contains(nicConfiguration, 'enableIPForwarding')
@@ -528,7 +530,12 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
             primary: index == 0 ? true : false
           }
           #disable-next-line use-resource-id-functions // It's a reference from inside a loop which makes resolving it using a resource reference particulary difficult.
-          id: az.resourceId('Microsoft.Network/networkInterfaces', '${name}${nicConfiguration.nicSuffix}')
+          id: az.resourceId(
+            'Microsoft.Network/networkInterfaces',
+            contains(nicConfiguration, 'customNicName')
+              ? nicConfiguration.customNicName
+              : '${name}${nicConfiguration.nicSuffix}'
+          )
         }
       ]
     }

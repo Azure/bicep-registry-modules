@@ -1547,13 +1547,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     name: 'cvmwinmin'
     nicConfigurations: [
       {
+        customNicName: 'nic-test-01'
         ipConfigurations: [
           {
             name: 'ipconfig01'
             subnetResourceId: '<subnetResourceId>'
           }
         ]
-        nicSuffix: '-nic-01'
       }
     ]
     osDisk: {
@@ -1605,13 +1605,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "nicConfigurations": {
       "value": [
         {
+          "customNicName": "nic-test-01",
           "ipConfigurations": [
             {
               "name": "ipconfig01",
               "subnetResourceId": "<subnetResourceId>"
             }
-          ],
-          "nicSuffix": "-nic-01"
+          ]
         }
       ]
     },
