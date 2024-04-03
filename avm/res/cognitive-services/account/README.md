@@ -31,7 +31,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/cognitive-services/account:<version>`.
 
-- [Using deployments parameter set](#example-1-using-deployments-parameter-set)
+- [Using `deployments` in parameter set](#example-1-using-deployments-in-parameter-set)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using large parameter set](#example-3-using-large-parameter-set)
 - [As Speech Service](#example-4-as-speech-service)
@@ -39,9 +39,9 @@ The following section provides usage examples for the module, which were used to
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-6-using-customer-managed-keys-with-user-assigned-identity)
 - [WAF-aligned](#example-7-waf-aligned)
 
-### Example 1: _Using deployments parameter set_
+### Example 1: _Using `deployments` in parameter set_
 
-This instance deploys the module with ai model deployment feature.
+This instance deploys the module with the AI model deployment feature.
 
 
 <details>

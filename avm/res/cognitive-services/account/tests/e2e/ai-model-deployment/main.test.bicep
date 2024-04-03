@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using deployments parameter set'
-metadata description = 'This instance deploys the module with ai model deployment feature.'
+metadata name = 'Using `deployments` in parameter set'
+metadata description = 'This instance deploys the module with the AI model deployment feature.'
 
 // ========== //
 // Parameters //
