@@ -59,7 +59,7 @@ var builtInRoleNames = {
   )
 }
 
-var zoneStrings = [for zone in zones: string(zone)]
+var formattedZones = [for zone in zones: string(zone)]
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
   if (enableTelemetry) {
