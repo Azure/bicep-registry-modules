@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "13965119390464677478"
+      "templateHash": "1069181325136122423"
     },
     "name": "Public IP Prefixes",
     "description": "This module deploys a Public IP Prefix.",
@@ -184,9 +184,9 @@
   "variables": {
     "copy": [
       {
-        "name": "zoneStrings",
+        "name": "formattedZones",
         "count": "[length(parameters('zones'))]",
-        "input": "[string(parameters('zones')[copyIndex('zoneStrings')])]"
+        "input": "[string(parameters('zones')[copyIndex('formattedZones')])]"
       }
     ],
     "builtInRoleNames": {
@@ -228,7 +228,7 @@
       "sku": {
         "name": "Standard"
       },
-      "zones": "[variables('zoneStrings')]",
+      "zones": "[variables('formattedZones')]",
       "properties": {
         "customIPPrefix": "[if(not(empty(parameters('customIPPrefix'))), parameters('customIPPrefix'), null())]",
         "publicIPAddressVersion": "IPv4",
