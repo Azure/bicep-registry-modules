@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.25.53.49325",
-      "templateHash": "14808761723367752278"
+      "templateHash": "15717379503873649526"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -3223,9 +3223,14 @@
             "value": "Microsoft.Azure.Monitoring.DependencyAgent"
           },
           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'DependencyAgentWindows'), createObject('value', 'DependencyAgentLinux'))]",
-          "typeHandlerVersion": "[if(contains(parameters('extensionDependencyAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionDependencyAgentConfig').typeHandlerVersion), createObject('value', '9.5'))]",
+          "typeHandlerVersion": "[if(contains(parameters('extensionDependencyAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionDependencyAgentConfig').typeHandlerVersion), createObject('value', '9.10'))]",
           "autoUpgradeMinorVersion": "[if(contains(parameters('extensionDependencyAgentConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionDependencyAgentConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
           "enableAutomaticUpgrade": "[if(contains(parameters('extensionDependencyAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionDependencyAgentConfig').enableAutomaticUpgrade), createObject('value', true()))]",
+          "settings": {
+            "value": {
+              "enableAMA": true
+            }
+          },
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionDependencyAgentConfig'), 'tags'), parameters('tags'))]"
           }

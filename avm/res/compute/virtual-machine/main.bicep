@@ -728,13 +728,16 @@ module vm_dependencyAgentExtension 'extension/main.bicep' =
       type: osType == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
       typeHandlerVersion: contains(extensionDependencyAgentConfig, 'typeHandlerVersion')
         ? extensionDependencyAgentConfig.typeHandlerVersion
-        : '9.5'
+        : '9.10'
       autoUpgradeMinorVersion: contains(extensionDependencyAgentConfig, 'autoUpgradeMinorVersion')
         ? extensionDependencyAgentConfig.autoUpgradeMinorVersion
         : true
       enableAutomaticUpgrade: contains(extensionDependencyAgentConfig, 'enableAutomaticUpgrade')
         ? extensionDependencyAgentConfig.enableAutomaticUpgrade
         : true
+      settings: {
+        enableAMA: true
+      }
       tags: extensionDependencyAgentConfig.?tags ?? tags
     }
     dependsOn: [
