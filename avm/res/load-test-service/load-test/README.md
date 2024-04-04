@@ -30,8 +30,7 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
 - [Using Customer-Managed-Keys with System-Assigned identity](#example-3-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-4-using-customer-managed-keys-with-system-assigned-identity)
-- [WAF-aligned](#example-5-waf-aligned)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -191,80 +190,11 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
   name: 'loadTestDeployment'
   params: {
     // Required parameters
-    name: '<name>'
-    // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      systemAssigned: true
-    }
-    location: '<location>'
-    managedIdentities: {
-      systemAssigned: true
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "<name>"
-    },
-    // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "systemAssigned": true
-      }
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 4: _Using Customer-Managed-Keys with System-Assigned identity_
-
-This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
-  name: 'loadTestDeployment'
-  params: {
-    // Required parameters
     name: 'ltucmk001'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
-      systemAssigned: false
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
     location: '<location>'
@@ -298,7 +228,6 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
       "value": {
         "keyName": "<keyName>",
         "keyVaultResourceId": "<keyVaultResourceId>",
-        "systemAssigned": false,
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
@@ -319,7 +248,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -451,7 +380,6 @@ The customer managed key definition.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
-| [`systemAssigned`](#parameter-customermanagedkeysystemassigned) | bool | Enables system assigned managed identity on the resource. |
 | [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
@@ -474,13 +402,6 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
-
-### Parameter: `customerManagedKey.systemAssigned`
-
-Enables system assigned managed identity on the resource.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
 

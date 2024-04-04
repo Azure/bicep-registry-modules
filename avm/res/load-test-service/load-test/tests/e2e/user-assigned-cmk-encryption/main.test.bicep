@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module using Customer-Managed-
 param resourceGroupName string = 'dep-${namePrefix}-loadTestService.loadTest-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param resourceLocation string = 'swedencentral'
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ltucmk'
@@ -64,7 +64,6 @@ module testDeployment '../../../main.bicep' = {
       keyName: nestedDependencies.outputs.keyVaultKeyName
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-      systemAssigned: false
     }
   }
 }

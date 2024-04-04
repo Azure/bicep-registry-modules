@@ -134,9 +134,7 @@ resource loadTest 'Microsoft.LoadTestService/loadTests@2022-12-01' = {
     encryption: !empty(customerManagedKey)
       ? {
           identity: {
-            type: (customerManagedKey.?systemAssigned ?? false)
-              ? 'SystemAssigned'
-              : (!empty(customerManagedKey.?userAssignedIdentityResourceId) ? 'UserAssigned' : null)
+            type: 'UserAssigned'
             resourceId: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? cMKUserAssignedIdentity.id : null
           }
           keyUrl: !empty(customerManagedKey.?keyVersion ?? '')
@@ -222,9 +220,6 @@ type roleAssignmentType = {
 }[]?
 
 type customerManagedKeyType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-
   @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
   userAssignedIdentityResourceId: string?
 
