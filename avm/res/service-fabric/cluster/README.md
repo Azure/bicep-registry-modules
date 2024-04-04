@@ -44,7 +44,7 @@ This instance deploys the module with a certificate.
 
 ```bicep
 module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-sfccer'
+  name: 'clusterDeployment'
   params: {
     // Required parameters
     managementEndpoint: 'https://sfccer001.westeurope.cloudapp.azure.com:19080'
@@ -73,11 +73,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
       x509StoreName: 'My'
     }
     location: '<location>'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -132,13 +127,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -158,7 +146,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-sfcmin'
+  name: 'clusterDeployment'
   params: {
     // Required parameters
     managementEndpoint: 'https://sfcmin001.westeurope.cloudapp.azure.com:19080'
@@ -250,7 +238,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-sfcmax'
+  name: 'clusterDeployment'
   params: {
     // Required parameters
     managementEndpoint: 'https://sfcmax001.westeurope.cloudapp.azure.com:19080'
@@ -684,7 +672,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-sfcwaf'
+  name: 'clusterDeployment'
   params: {
     // Required parameters
     managementEndpoint: 'https://sfcwaf001.westeurope.cloudapp.azure.com:19080'
@@ -804,10 +792,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
       }
     ]
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     maxUnusedVersionsToKeep: 2
     notifications: [
       {
@@ -1007,12 +991,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "maxUnusedVersionsToKeep": {
       "value": 2
