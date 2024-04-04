@@ -1,5 +1,5 @@
 # This publishes the list of all public bicep modules to an index file that the Bicep vscode extension can read for intellisense using pwsh
-name: "avm.platform.publish-module-index-json"
+name: .Platform - Publish [moduleIndex.json]
 on:
   schedule:
     - cron: 45 11 * * * # Run daily at 3:45 AM PST
@@ -29,7 +29,9 @@ jobs:
       - name: Install Azure Powershell Modules
         shell: pwsh
         run: |
-          Install-Module -Name Az.Storage -Force
+          if(-not (Get-Module 'Az.Storage' -ListAvailable)) {
+            Install-Module -Name 'Az.Storage' -Force
+          }
 
       - name: Generate moduleIndex.json
         shell: pwsh
@@ -68,10 +70,21 @@ jobs:
             storageAccountName      = 'biceplivedatasaprod'
             storageAccountContainer = 'bicep-cdn-live-data-container'
             storageBlobName         = 'module-index'
-            storageBlobContentType  = @{"ContentType" = "application/json"}
+            storageBlobContentType  = @{"ContentType" = "application/json"
           }
+          Write-Verbose ('Uploading [moduleIndex.json] to blob storage account [{0}] in container [{1}] as blob [{2}]' -f $storageAccountInfo.storageAccountName, $storageAccountInfo.storageAccountContainer, $storageAccountInfo.storageBlobName) -Verbose
 
-          Write-Verbose "Uploading moduleIndex.json to blob storage account $storageAccountInfo.storageAccountName in container $storageAccountInfo.storageAccountContainer as blob $storageAccountInfo.storageBlobName" -Verbose
           $storageContext = New-AzStorageContext -StorageAccountName $storageAccountInfo.storageAccountName -UseConnectedAccount
+
+          $functionInput = @{
+              Context    = $storageContext
+              Container  = $storageAccountInfo.storageAccountContainer
+              Blob       = $storageAccountInfo.storageBlobName
+              File       = 'moduleIndex.json'
+              Properties = $storageAccountInfo.storageBlobContentType
+          }
+          Set-AzStorageBlobContent @functionInput -Force
+
+          Write-Verbose ('Upload of [{0}] complete.' -f $storageAccountInfo.storageBlobName) -Verbose
           Set-AzStorageBlobContent -Context $storageContext -Container $storageAccountInfo.storageAccountContainer -Blob $storageAccountInfo.storageBlobName -File 'moduleIndex.json' -Properties $storageAccountInfo.storageBlobContentType  -Force
           Write-Verbose "Uploaded moduleIndex.json to blob storage account $storageAccountInfo.storageAccountName in container $storageAccountInfo.storageAccountContainer as blob $storageAccountInfo.storageBlobName" -Verbose

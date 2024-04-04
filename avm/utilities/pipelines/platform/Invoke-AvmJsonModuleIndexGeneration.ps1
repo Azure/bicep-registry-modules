@@ -44,7 +44,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
   )
 
   ## Download the current published moduleIndex.json from the storage account if the $doNotMergeWithLastModuleIndexJsonFileVersion is set to $false
-  if ($doNotMergeWithLastModuleIndexJsonFileVersion -eq $false) {
+  if (-not $doNotMergeWithLastModuleIndexJsonFileVersion) {
     try {
       $lastModuleIndexJsonFilePath = $prefixForLastModuleIndexJsonFile + $moduleIndexJsonFilePath
 
