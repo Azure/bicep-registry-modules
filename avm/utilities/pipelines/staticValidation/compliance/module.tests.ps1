@@ -1151,10 +1151,9 @@ Describe 'Governance tests' {
 
     # Identify listed modules
     $startIndex = 0
-    while ($issueTemplateContent[$startIndex] -notmatch '^\s*- "Other, as defined below\.\.\."' -and $startIndex -ne $issueTemplateContent.Length) {
+    while ($issueTemplateContent[$startIndex] -notmatch '^\s*#?\s*\-\s+\"avm\/.+\"' -and $startIndex -ne $issueTemplateContent.Length) {
       $startIndex++
     }
-    $startIndex++ # Go one further than dummy value line
 
     $endIndex = $startIndex
     while ($issueTemplateContent[$endIndex] -match '.*- "avm\/.*' -and $endIndex -ne $issueTemplateContent.Length) {

@@ -36,38 +36,39 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    containers: [
-      {
-        name: '${namePrefix}-az-aci-x-001'
-        properties: {
-          image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
-          ports: [
-            {
-              port: 443
-              protocol: 'Tcp'
-            }
-          ]
-          resources: {
-            requests: {
-              cpu: 2
-              memoryInGB: 2
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      containers: [
+        {
+          name: '${namePrefix}-az-aci-x-001'
+          properties: {
+            image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+            ports: [
+              {
+                port: 443
+                protocol: 'Tcp'
+              }
+            ]
+            resources: {
+              requests: {
+                cpu: 2
+                memoryInGB: 2
+              }
             }
           }
         }
-      }
-    ]
-    ipAddressPorts: [
-      {
-        protocol: 'Tcp'
-        port: 443
-      }
-    ]
+      ]
+      ipAddressPorts: [
+        {
+          protocol: 'Tcp'
+          port: 443
+        }
+      ]
+    }
   }
-}
 ]

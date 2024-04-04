@@ -63,9 +63,9 @@ param actionGroups array?
 
 @allowed([
   'Actual'
-  'Forecast'
+  'Forecasted'
 ])
-@description('Required. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecast`.')
+@description('Required. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.')
 param thresholdType string = 'Actual'
 
 @description('Optional. The filter to use for restricting which resources are considered within the budget.')

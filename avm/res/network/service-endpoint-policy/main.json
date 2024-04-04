@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "3112739507714746521"
+      "templateHash": "4488964028824320271"
     },
     "name": "Service-Endpoint-Policy",
     "description": "This module deploys a Service Endpoint Policy.",
@@ -130,21 +130,21 @@
     },
     "serviceEndpointPolicyDefinitions": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. An Array of service endpoint policy definitions."
       }
     },
     "contextualServiceEndpointPolicies": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. An Array of contextual service endpoint policy."
       }
     },
     "serviceAlias": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The alias indicating if the policy belongs to a service."
       }
@@ -207,9 +207,9 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "serviceAlias": "[if(not(empty(parameters('serviceAlias'))), parameters('serviceAlias'), null())]",
-        "contextualServiceEndpointPolicies": "[if(not(empty(parameters('contextualServiceEndpointPolicies'))), parameters('contextualServiceEndpointPolicies'), null())]",
-        "serviceEndpointPolicyDefinitions": "[if(not(empty(parameters('serviceEndpointPolicyDefinitions'))), parameters('serviceEndpointPolicyDefinitions'), null())]"
+        "serviceAlias": "[parameters('serviceAlias')]",
+        "contextualServiceEndpointPolicies": "[parameters('contextualServiceEndpointPolicies')]",
+        "serviceEndpointPolicyDefinitions": "[parameters('serviceEndpointPolicyDefinitions')]"
       }
     },
     "serviceEndpointPolicy_lock": {
