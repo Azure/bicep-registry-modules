@@ -15,14 +15,14 @@ Invoke-AvmJsonModuleIndexGeneration.ps1 -storageAccountName '<STORAGE ACCOUNT NA
 This example will generate the moduleIndex.json file for the AVM modules and save it to the current directory and merge it with the last version of the moduleIndex.json file that was downloaded from the storage account.
 
 .NOTES
-The function requires Azure PowerShell Storage Module to be installed and the user to be logged in to Azure.
+The function requires Azure PowerShell Storage Module (Az.Storage) to be installed and the user to be logged in to Azure.
 #>
 
 function Invoke-AvmJsonModuleIndexGeneration {
   [CmdletBinding(SupportsShouldProcess)]
   param (
     [Parameter(Mandatory = $false)]
-    [string] $storageAccountName = 'stguksjtbrmindextest',
+    [string] $storageAccountName = 'biceplivedatasaprod',
 
     [Parameter(Mandatory = $false)]
     [string] $storageAccountContainer = 'bicep-cdn-live-data-container',

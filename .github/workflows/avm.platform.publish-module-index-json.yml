@@ -21,18 +21,24 @@ jobs:
       - name: Log in to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.JT_PUBLISH_CLIENT_ID }}
-          tenant-id: ${{ secrets.JT_PUBLISH_TENANT_ID }}
-          subscription-id: ${{ secrets.JT_PUBLISH_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.PUBLISH_CLIENT_ID }}
+          tenant-id: ${{ secrets.PUBLISH_TENANT_ID }}
+          subscription-id: ${{ secrets.PUBLISH_SUBSCRIPTION_ID }}
+          enable-AzPSSession: true
 
-      - name: Manage issues
+      - name: Install Azure Powershell Modules
+        shell: pwsh
+        run: |
+          Install-Module -Name Az.Storage -Force
+
+      - name: Generate moduleIndex.json
         shell: pwsh
         run: |
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Invoke-AvmJsonModuleIndexGeneration.ps1')
 
           $functionInput = @{
-            storageAccountName                           = 'stguksjtbrmindextest' #biceplivedatasaprod
+            storageAccountName                           = 'biceplivedatasaprod'
             storageAccountContainer                      = 'bicep-cdn-live-data-container'
             storageBlobName                              = 'module-index'
             moduleIndexJsonFilePath                      = 'moduleIndex.json'
@@ -44,7 +50,7 @@ jobs:
           Write-Verbose "Invoke task with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Invoke-AvmJsonModuleIndexGeneration @functionInput -Verbose
+          Invoke-AvmJsonModuleIndexGeneration @functionInput
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -59,12 +65,13 @@ jobs:
         shell: pwsh
         run: |
           $storageAccountInfo = @{
-            storageAccountName      = 'stguksjtbrmindextest' #biceplivedatasaprod
+            storageAccountName      = 'biceplivedatasaprod'
             storageAccountContainer = 'bicep-cdn-live-data-container'
             storageBlobName         = 'module-index'
+            storageBlobContentType  = @{"ContentType" = "application/json"}
           }
 
-          Write-Verbose "Uploading moduleIndex.json to blob storage account $storageAccountName in container $storageAccountContainer as blob $storageBlobName" -Verbose
+          Write-Verbose "Uploading moduleIndex.json to blob storage account $storageAccountInfo.storageAccountName in container $storageAccountInfo.storageAccountContainer as blob $storageAccountInfo.storageBlobName" -Verbose
           $storageContext = New-AzStorageContext -StorageAccountName $storageAccountInfo.storageAccountName -UseConnectedAccount
-          Set-AzStorageBlobContent -Context $storageContext -Container $storageAccountInfo.storageAccountContainer -Blob $storageAccountInfo.storageBlobName -File 'moduleIndex.json' -Force
-          Write-Verbose "Uploaded moduleIndex.json to blob storage account $storageAccountName in container $storageAccountContainer as blob $storageBlobName" -Verbose
+          Set-AzStorageBlobContent -Context $storageContext -Container $storageAccountInfo.storageAccountContainer -Blob $storageAccountInfo.storageBlobName -File 'moduleIndex.json' -Properties $storageAccountInfo.storageBlobContentType  -Force
+          Write-Verbose "Uploaded moduleIndex.json to blob storage account $storageAccountInfo.storageAccountName in container $storageAccountInfo.storageAccountContainer as blob $storageAccountInfo.storageBlobName" -Verbose
