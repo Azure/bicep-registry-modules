@@ -25,6 +25,11 @@ jobs:
           tenant-id: ${{ secrets.JT_PUBLISH_TENANT_ID }}
           subscription-id: ${{ secrets.JT_PUBLISH_SUBSCRIPTION_ID }}
 
+      - name: Install Azure Powershell Modules
+        shell: pwsh
+        run: |
+          Install-Module -Name Az.Storage -Force
+      
       - name: Manage issues
         shell: pwsh
         run: |
