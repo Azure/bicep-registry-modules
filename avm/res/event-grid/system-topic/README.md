@@ -17,8 +17,8 @@ This module deploys an Event Grid System Topic.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.EventGrid/systemTopics` | [2021-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2021-12-01/systemTopics) |
-| `Microsoft.EventGrid/systemTopics/eventSubscriptions` | [2022-06-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2022-06-15/systemTopics/eventSubscriptions) |
+| `Microsoft.EventGrid/systemTopics` | [2023-12-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/systemTopics) |
+| `Microsoft.EventGrid/systemTopics/eventSubscriptions` | [2023-12-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/systemTopics/eventSubscriptions) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 
 ## Usage examples
@@ -44,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-egstmin'
+  name: 'systemTopicDeployment'
   params: {
     // Required parameters
     name: 'egstmin001'
@@ -100,7 +100,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-egstmax'
+  name: 'systemTopicDeployment'
   params: {
     // Required parameters
     name: 'egstmax001'
@@ -300,7 +300,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-egstwaf'
+  name: 'systemTopicDeployment'
   params: {
     // Required parameters
     name: 'egstwaf001'

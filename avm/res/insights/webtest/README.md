@@ -47,7 +47,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module webtest 'br/public:avm/res/insights/webtest:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-iwtmin'
+  name: 'webtestDeployment'
   params: {
     // Required parameters
     appInsightResourceId: '<appInsightResourceId>'
@@ -113,7 +113,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module webtest 'br/public:avm/res/insights/webtest:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-iwtmax'
+  name: 'webtestDeployment'
   params: {
     // Required parameters
     appInsightResourceId: '<appInsightResourceId>'
@@ -253,7 +253,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module webtest 'br/public:avm/res/insights/webtest:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-iwtwaf'
+  name: 'webtestDeployment'
   params: {
     // Required parameters
     appInsightResourceId: '<appInsightResourceId>'

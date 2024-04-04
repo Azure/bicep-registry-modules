@@ -44,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cspkmin'
+  name: 'sshPublicKeyDeployment'
   params: {
     // Required parameters
     name: 'cspkmin001'
@@ -92,7 +92,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cspkmax'
+  name: 'sshPublicKeyDeployment'
   params: {
     // Required parameters
     name: 'sshkey-cspkmax001'
@@ -206,7 +206,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cspkwaf'
+  name: 'sshPublicKeyDeployment'
   params: {
     // Required parameters
     name: 'sshkey-cspkwaf001'

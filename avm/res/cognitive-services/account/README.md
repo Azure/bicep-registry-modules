@@ -48,7 +48,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-csamin'
+  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'SpeechServices'
@@ -100,7 +100,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-csamax'
+  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'Face'
@@ -388,7 +388,7 @@ This instance deploys the module as a Speech Service.
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-csaspeech'
+  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'SpeechServices'
@@ -502,7 +502,7 @@ This instance deploys the module using Customer-Managed-Keys using a System-Assi
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-csaecrs'
+  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'SpeechServices'
@@ -584,7 +584,7 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-csaencr'
+  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'SpeechServices'
@@ -672,7 +672,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-csawaf'
+  name: 'accountDeployment'
   params: {
     // Required parameters
     kind: 'Face'
@@ -1718,7 +1718,7 @@ The storage accounts for this resource.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |

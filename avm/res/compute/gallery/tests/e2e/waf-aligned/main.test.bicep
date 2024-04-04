@@ -36,31 +36,33 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    applications: [
-      {
-        name: '${namePrefix}-${serviceShort}-appd-001'
-        supportedOSType: 'Windows'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      applications: [
+        {
+          name: '${namePrefix}-${serviceShort}-appd-001'
+          supportedOSType: 'Windows'
+        }
+      ]
+      images: [
+        {
+          name: '${namePrefix}-az-imgd-ws-001'
+          offer: 'WindowsServer'
+          osType: 'Windows'
+          publisher: 'MicrosoftWindowsServer'
+          sku: '2022-datacenter-azure-edition'
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-    ]
-    images: [
-      {
-        name: '${namePrefix}-az-imgd-ws-001'
-        offer: 'WindowsServer'
-        osType: 'Windows'
-        publisher: 'MicrosoftWindowsServer'
-        sku: '2022-datacenter-azure-edition'
-      }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
-}]
+]

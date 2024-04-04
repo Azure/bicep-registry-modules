@@ -43,7 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module networkInterface 'br/public:avm/res/network/network-interface:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nnimin'
+  name: 'networkInterfaceDeployment'
   params: {
     // Required parameters
     ipConfigurations: [
@@ -105,7 +105,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module networkInterface 'br/public:avm/res/network/network-interface:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nnimax'
+  name: 'networkInterfaceDeployment'
   params: {
     // Required parameters
     ipConfigurations: [
@@ -281,7 +281,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module networkInterface 'br/public:avm/res/network/network-interface:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nniwaf'
+  name: 'networkInterfaceDeployment'
   params: {
     // Required parameters
     ipConfigurations: [

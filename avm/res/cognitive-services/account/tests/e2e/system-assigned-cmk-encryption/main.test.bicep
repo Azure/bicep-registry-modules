@@ -50,25 +50,27 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: nestedDependencies.outputs.cognitiveServiceName
-    kind: 'SpeechServices'
-    location: resourceLocation
-    customerManagedKey: {
-      keyName: nestedDependencies.outputs.keyVaultKeyName
-      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: nestedDependencies.outputs.cognitiveServiceName
+      kind: 'SpeechServices'
+      location: resourceLocation
+      customerManagedKey: {
+        keyName: nestedDependencies.outputs.keyVaultKeyName
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+      }
+      publicNetworkAccess: 'Enabled'
+      sku: 'S0'
+      managedIdentities: {
+        systemAssigned: true
+      }
+      restrictOutboundNetworkAccess: false
     }
-    publicNetworkAccess: 'Enabled'
-    sku: 'S0'
-    managedIdentities: {
-      systemAssigned: true
-    }
-    restrictOutboundNetworkAccess: false
+    dependsOn: [
+      nestedDependencies
+    ]
   }
-  dependsOn: [
-    nestedDependencies
-  ]
-}]
+]

@@ -46,7 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module topic 'br/public:avm/res/event-grid/topic:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-egtmin'
+  name: 'topicDeployment'
   params: {
     // Required parameters
     name: 'egtmin001'
@@ -94,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module topic 'br/public:avm/res/event-grid/topic:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-egtmax'
+  name: 'topicDeployment'
   params: {
     // Required parameters
     name: 'egtmax001'
@@ -356,7 +356,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module topic 'br/public:avm/res/event-grid/topic:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-egtwaf'
+  name: 'topicDeployment'
   params: {
     // Required parameters
     name: 'egtwaf001'
@@ -1262,7 +1262,7 @@ Tags of the resource.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |

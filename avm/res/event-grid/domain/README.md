@@ -46,7 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module domain 'br/public:avm/res/event-grid/domain:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-egdmin'
+  name: 'domainDeployment'
   params: {
     // Required parameters
     name: 'egdmin001'
@@ -94,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module domain 'br/public:avm/res/event-grid/domain:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-egdmax'
+  name: 'domainDeployment'
   params: {
     // Required parameters
     name: 'egdmax001'
@@ -292,7 +292,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module domain 'br/public:avm/res/event-grid/domain:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-egdwaf'
+  name: 'domainDeployment'
   params: {
     // Required parameters
     name: 'egdwaf001'
@@ -1175,7 +1175,7 @@ The topic names which are associated with the domain.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |

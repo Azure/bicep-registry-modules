@@ -1,0 +1,94 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "11981298053277690078"
+    },
+    "name": "Digital Twins Instance Event Grid Endpoints",
+    "description": "This module deploys a Digital Twins Instance Event Grid Endpoint.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "defaultValue": "EventGridEndpoint",
+      "metadata": {
+        "description": "Optional. The name of the Digital Twin Endpoint."
+      }
+    },
+    "digitalTwinInstanceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Digital Twin Instance resource. Required if the template is used in a standalone deployment."
+      }
+    },
+    "topicEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. EventGrid Topic Endpoint."
+      }
+    },
+    "eventGridDomainResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource ID of the Event Grid to get access keys from."
+      }
+    },
+    "deadLetterSecret": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Dead letter storage secret for key-based authentication. Will be obfuscated during read."
+      }
+    },
+    "deadLetterUri": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Dead letter storage URL for identity-based authentication."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DigitalTwins/digitalTwinsInstances/endpoints",
+      "apiVersion": "2023-01-31",
+      "name": "[format('{0}/{1}', parameters('digitalTwinInstanceName'), parameters('name'))]",
+      "properties": {
+        "endpointType": "EventGrid",
+        "authenticationType": "KeyBased",
+        "TopicEndpoint": "[parameters('topicEndpoint')]",
+        "accessKey1": "[listkeys(parameters('eventGridDomainResourceId'), '2022-06-15').key1]",
+        "accessKey2": "[listkeys(parameters('eventGridDomainResourceId'), '2022-06-15').key2]",
+        "deadLetterSecret": "[parameters('deadLetterSecret')]",
+        "deadLetterUri": "[parameters('deadLetterUri')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Endpoint."
+      },
+      "value": "[resourceId('Microsoft.DigitalTwins/digitalTwinsInstances/endpoints', parameters('digitalTwinInstanceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the resource was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Endpoint."
+      },
+      "value": "[parameters('name')]"
+    }
+  }
+}

@@ -95,12 +95,14 @@ param customDomainUseSubDomainName bool = false
 param dnsEndpointType string = ''
 
 @description('Optional. Blob service and containers to deploy.')
-param blobServices object = kind != 'FileStorage' ? {
-  containerDeleteRetentionPolicyEnabled: true
-  containerDeleteRetentionPolicyDays: 7
-  deleteRetentionPolicyEnabled: true
-  deleteRetentionPolicyDays: 6
-} : {}
+param blobServices object = kind != 'FileStorage'
+  ? {
+      containerDeleteRetentionPolicyEnabled: true
+      containerDeleteRetentionPolicyDays: 7
+      deleteRetentionPolicyEnabled: true
+      deleteRetentionPolicyDays: 6
+    }
+  : {}
 
 @description('Optional. File service and shares to deploy.')
 param fileServices object = {}
@@ -177,69 +179,144 @@ param sasExpirationPeriod string = ''
 var supportsBlobService = kind == 'BlockBlobStorage' || kind == 'BlobStorage' || kind == 'StorageV2' || kind == 'Storage'
 var supportsFileService = kind == 'FileStorage' || kind == 'StorageV2' || kind == 'Storage'
 
-var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
-  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-} : null
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Reader and Data Access': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'Storage Account Backup Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')
-  'Storage Account Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')
-  'Storage Account Key Operator Service Role': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')
-  'Storage Blob Data Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
-  'Storage Blob Data Owner': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')
-  'Storage Blob Data Reader': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')
-  'Storage Blob Delegator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'db58b8e5-c6ad-4a2a-8342-4190687cbf4a')
-  'Storage File Data SMB Share Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb')
-  'Storage File Data SMB Share Elevated Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a7264617-510b-434b-a828-9731dc254ea7')
-  'Storage File Data SMB Share Reader': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aba4ae5f-2193-4029-9191-0cb91df5e314')
-  'Storage Queue Data Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '974c5e8b-45b9-4653-ba55-5f855dd0fb88')
-  'Storage Queue Data Message Processor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8a0f0c08-91a1-4084-bc3d-661d67233fed')
-  'Storage Queue Data Message Sender': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a')
-  'Storage Queue Data Reader': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '19e7f393-937e-4f77-808e-94535e297925')
-  'Storage Table Data Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')
-  'Storage Table Data Reader': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76199698-9eea-4c19-bc75-cec21354c6b6')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Reader and Data Access': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'c12c1c16-33a1-487b-954d-41c89c60f349'
+  )
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'Storage Account Backup Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1'
+  )
+  'Storage Account Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '17d1049b-9a84-46fb-8f53-869881c3d3ab'
+  )
+  'Storage Account Key Operator Service Role': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '81a9662b-bebf-436f-a333-f67b29880f12'
+  )
+  'Storage Blob Data Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+  )
+  'Storage Blob Data Owner': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'
+  )
+  'Storage Blob Data Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
+  )
+  'Storage Blob Delegator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'db58b8e5-c6ad-4a2a-8342-4190687cbf4a'
+  )
+  'Storage File Data SMB Share Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb'
+  )
+  'Storage File Data SMB Share Elevated Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'a7264617-510b-434b-a828-9731dc254ea7'
+  )
+  'Storage File Data SMB Share Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'aba4ae5f-2193-4029-9191-0cb91df5e314'
+  )
+  'Storage Queue Data Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
+  )
+  'Storage Queue Data Message Processor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '8a0f0c08-91a1-4084-bc3d-661d67233fed'
+  )
+  'Storage Queue Data Message Sender': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
+  )
+  'Storage Queue Data Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '19e7f393-937e-4f77-808e-94535e297925'
+  )
+  'Storage Table Data Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3'
+  )
+  'Storage Table Data Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '76199698-9eea-4c19-bc75-cec21354c6b6'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.storage-storageaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.storage-storageaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-  scope: resourceGroup(split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2], split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4])
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
+  if (!empty(customerManagedKey.?keyVaultResourceId)) {
+    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+    scope: resourceGroup(
+      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+    resource cMKKey 'keys@2023-02-01' existing =
+      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+        name: customerManagedKey.?keyName ?? 'dummyKey'
+      }
   }
-}
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
-  scope: resourceGroup(split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2], split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4])
-}
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing =
+  if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+    name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+    scope: resourceGroup(
+      split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
+      split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    )
+  }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   name: name
@@ -261,15 +338,20 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     }
     dnsEndpointType: !empty(dnsEndpointType) ? dnsEndpointType : null
     isLocalUserEnabled: isLocalUserEnabled
-    encryption: union({
+    encryption: union(
+      {
         keySource: !empty(customerManagedKey) ? 'Microsoft.Keyvault' : 'Microsoft.Storage'
         services: {
-          blob: supportsBlobService ? {
-            enabled: true
-          } : null
-          file: supportsFileService ? {
-            enabled: true
-          } : null
+          blob: supportsBlobService
+            ? {
+                enabled: true
+              }
+            : null
+          file: supportsFileService
+            ? {
+                enabled: true
+              }
+            : null
           table: {
             enabled: true
           }
@@ -277,207 +359,255 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
             enabled: true
           }
         }
-        keyvaultproperties: !empty(customerManagedKey) ? {
-          keyname: customerManagedKey!.keyName
-          keyvaulturi: cMKKeyVault.properties.vaultUri
-          keyversion: !empty(customerManagedKey.?keyVersion ?? '') ? customerManagedKey!.keyVersion : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
-        } : null
+        keyvaultproperties: !empty(customerManagedKey)
+          ? {
+              keyname: customerManagedKey!.keyName
+              keyvaulturi: cMKKeyVault.properties.vaultUri
+              keyversion: !empty(customerManagedKey.?keyVersion ?? '')
+                ? customerManagedKey!.keyVersion
+                : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+            }
+          : null
         identity: {
-          userAssignedIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? cMKUserAssignedIdentity.id : null
+          userAssignedIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+            ? cMKUserAssignedIdentity.id
+            : null
         }
-      }, (requireInfrastructureEncryption ? {
-        requireInfrastructureEncryption: kind != 'Storage' ? requireInfrastructureEncryption : null
-      } : {}))
+      },
+      (requireInfrastructureEncryption
+        ? {
+            requireInfrastructureEncryption: kind != 'Storage' ? requireInfrastructureEncryption : null
+          }
+        : {})
+    )
     accessTier: (kind != 'Storage' && kind != 'BlockBlobStorage') ? accessTier : null
-    sasPolicy: !empty(sasExpirationPeriod) ? {
-      expirationAction: 'Log'
-      sasExpirationPeriod: sasExpirationPeriod
-    } : null
+    sasPolicy: !empty(sasExpirationPeriod)
+      ? {
+          expirationAction: 'Log'
+          sasExpirationPeriod: sasExpirationPeriod
+        }
+      : null
     supportsHttpsTrafficOnly: supportsHttpsTrafficOnly
     isHnsEnabled: enableHierarchicalNamespace ? enableHierarchicalNamespace : null
     isSftpEnabled: enableSftp
     isNfsV3Enabled: enableNfsV3 ? enableNfsV3 : any('')
     largeFileSharesState: (skuName == 'Standard_LRS') || (skuName == 'Standard_ZRS') ? largeFileSharesState : null
     minimumTlsVersion: minimumTlsVersion
-    networkAcls: !empty(networkAcls) ? {
-      resourceAccessRules: networkAcls.?resourceAccessRules
-      bypass: networkAcls.?bypass
-      defaultAction: networkAcls.?defaultAction
-      virtualNetworkRules: networkAcls.?virtualNetworkRules
-      ipRules: networkAcls.?ipRules
-    } : null
+    networkAcls: !empty(networkAcls)
+      ? {
+          resourceAccessRules: networkAcls.?resourceAccessRules
+          bypass: networkAcls.?bypass
+          defaultAction: networkAcls.?defaultAction
+          virtualNetworkRules: networkAcls.?virtualNetworkRules
+          ipRules: networkAcls.?ipRules
+        }
+      : null
     allowBlobPublicAccess: allowBlobPublicAccess
-    publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(privateEndpoints) && empty(networkAcls) ? 'Disabled' : null)
-    azureFilesIdentityBasedAuthentication: !empty(azureFilesIdentityBasedAuthentication) ? azureFilesIdentityBasedAuthentication : null
+    publicNetworkAccess: !empty(publicNetworkAccess)
+      ? any(publicNetworkAccess)
+      : (!empty(privateEndpoints) && empty(networkAcls) ? 'Disabled' : null)
+    azureFilesIdentityBasedAuthentication: !empty(azureFilesIdentityBasedAuthentication)
+      ? azureFilesIdentityBasedAuthentication
+      : null
   }
 }
 
-resource storageAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
-      category: group.category
-      enabled: group.?enabled ?? true
-      timeGrain: null
-    }]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
-  }
-  scope: storageAccount
-}]
-
-resource storageAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
-  }
-  scope: storageAccount
-}
-
-resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(storageAccount.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
-  }
-  scope: storageAccount
-}]
-
-module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-StorageAccount-PrivateEndpoint-${index}'
-  params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
-    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
-        properties: {
-          privateLinkServiceId: storageAccount.id
-          groupIds: [
-            privateEndpoint.service
-          ]
+resource storageAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
         }
-      }
-    ] : null
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
-        properties: {
-          privateLinkServiceId: storageAccount.id
-          groupIds: [
-            privateEndpoint.service
-          ]
-          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
-        }
-      }
-    ] : null
-    subnetResourceId: privateEndpoint.subnetResourceId
-    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
-    location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: privateEndpoint.?lock ?? lock
-    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
-    roleAssignments: privateEndpoint.?roleAssignments
-    tags: privateEndpoint.?tags ?? tags
-    customDnsConfigs: privateEndpoint.?customDnsConfigs
-    ipConfigurations: privateEndpoint.?ipConfigurations
-    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
-    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: storageAccount
   }
-}]
+]
+
+resource storageAccount_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: storageAccount
+  }
+
+resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(storageAccount.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: storageAccount
+  }
+]
+
+module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    name: '${uniqueString(deployment().name, location)}-StorageAccount-PrivateEndpoint-${index}'
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
+              properties: {
+                privateLinkServiceId: storageAccount.id
+                groupIds: [
+                  privateEndpoint.service
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
+              properties: {
+                privateLinkServiceId: storageAccount.id
+                groupIds: [
+                  privateEndpoint.service
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
+  }
+]
 
 // Lifecycle Policy
-module storageAccount_managementPolicies 'management-policy/main.bicep' = if (!empty(managementPolicyRules ?? [])) {
-  name: '${uniqueString(deployment().name, location)}-Storage-ManagementPolicies'
-  params: {
-    storageAccountName: storageAccount.name
-    rules: managementPolicyRules ?? []
+module storageAccount_managementPolicies 'management-policy/main.bicep' =
+  if (!empty(managementPolicyRules ?? [])) {
+    name: '${uniqueString(deployment().name, location)}-Storage-ManagementPolicies'
+    params: {
+      storageAccountName: storageAccount.name
+      rules: managementPolicyRules ?? []
+    }
+    dependsOn: [
+      storageAccount_blobServices // To ensure the lastAccessTimeTrackingPolicy is set first (if used in rule)
+    ]
   }
-  dependsOn: [
-    storageAccount_blobServices // To ensure the lastAccessTimeTrackingPolicy is set first (if used in rule)
-  ]
-}
 
 // SFTP user settings
-module storageAccount_localUsers 'local-user/main.bicep' = [for (localUser, index) in localUsers: {
-  name: '${uniqueString(deployment().name, location)}-Storage-LocalUsers-${index}'
-  params: {
-    storageAccountName: storageAccount.name
-    name: localUser.name
-    hasSshKey: localUser.hasSshKey
-    hasSshPassword: localUser.hasSshPassword
-    permissionScopes: localUser.permissionScopes
-    hasSharedKey: localUser.?hasSharedKey
-    homeDirectory: localUser.?homeDirectory
-    sshAuthorizedKeys: localUser.?sshAuthorizedKeys
+module storageAccount_localUsers 'local-user/main.bicep' = [
+  for (localUser, index) in localUsers: {
+    name: '${uniqueString(deployment().name, location)}-Storage-LocalUsers-${index}'
+    params: {
+      storageAccountName: storageAccount.name
+      name: localUser.name
+      hasSshKey: localUser.hasSshKey
+      hasSshPassword: localUser.hasSshPassword
+      permissionScopes: localUser.permissionScopes
+      hasSharedKey: localUser.?hasSharedKey
+      homeDirectory: localUser.?homeDirectory
+      sshAuthorizedKeys: localUser.?sshAuthorizedKeys
+    }
   }
-}]
+]
 
 // Containers
-module storageAccount_blobServices 'blob-service/main.bicep' = if (!empty(blobServices)) {
-  name: '${uniqueString(deployment().name, location)}-Storage-BlobServices'
-  params: {
-    storageAccountName: storageAccount.name
-    containers: blobServices.?containers
-    automaticSnapshotPolicyEnabled: blobServices.?automaticSnapshotPolicyEnabled
-    changeFeedEnabled: blobServices.?changeFeedEnabled
-    changeFeedRetentionInDays: blobServices.?changeFeedRetentionInDays
-    containerDeleteRetentionPolicyEnabled: blobServices.?containerDeleteRetentionPolicyEnabled
-    containerDeleteRetentionPolicyDays: blobServices.?containerDeleteRetentionPolicyDays
-    containerDeleteRetentionPolicyAllowPermanentDelete: blobServices.?containerDeleteRetentionPolicyAllowPermanentDelete
-    corsRules: blobServices.?corsRules
-    defaultServiceVersion: blobServices.?defaultServiceVersion
-    deleteRetentionPolicyAllowPermanentDelete: blobServices.?deleteRetentionPolicyAllowPermanentDelete
-    deleteRetentionPolicyEnabled: blobServices.?deleteRetentionPolicyEnabled
-    deleteRetentionPolicyDays: blobServices.?deleteRetentionPolicyDays
-    isVersioningEnabled: blobServices.?isVersioningEnabled
-    lastAccessTimeTrackingPolicyEnabled: blobServices.?lastAccessTimeTrackingPolicyEnabled
-    restorePolicyEnabled: blobServices.?restorePolicyEnabled
-    restorePolicyDays: blobServices.?restorePolicyDays
-    diagnosticSettings: blobServices.?diagnosticSettings
+module storageAccount_blobServices 'blob-service/main.bicep' =
+  if (!empty(blobServices)) {
+    name: '${uniqueString(deployment().name, location)}-Storage-BlobServices'
+    params: {
+      storageAccountName: storageAccount.name
+      containers: blobServices.?containers
+      automaticSnapshotPolicyEnabled: blobServices.?automaticSnapshotPolicyEnabled
+      changeFeedEnabled: blobServices.?changeFeedEnabled
+      changeFeedRetentionInDays: blobServices.?changeFeedRetentionInDays
+      containerDeleteRetentionPolicyEnabled: blobServices.?containerDeleteRetentionPolicyEnabled
+      containerDeleteRetentionPolicyDays: blobServices.?containerDeleteRetentionPolicyDays
+      containerDeleteRetentionPolicyAllowPermanentDelete: blobServices.?containerDeleteRetentionPolicyAllowPermanentDelete
+      corsRules: blobServices.?corsRules
+      defaultServiceVersion: blobServices.?defaultServiceVersion
+      deleteRetentionPolicyAllowPermanentDelete: blobServices.?deleteRetentionPolicyAllowPermanentDelete
+      deleteRetentionPolicyEnabled: blobServices.?deleteRetentionPolicyEnabled
+      deleteRetentionPolicyDays: blobServices.?deleteRetentionPolicyDays
+      isVersioningEnabled: blobServices.?isVersioningEnabled
+      lastAccessTimeTrackingPolicyEnabled: blobServices.?lastAccessTimeTrackingPolicyEnabled
+      restorePolicyEnabled: blobServices.?restorePolicyEnabled
+      restorePolicyDays: blobServices.?restorePolicyDays
+      diagnosticSettings: blobServices.?diagnosticSettings
+    }
   }
-}
 
 // File Shares
-module storageAccount_fileServices 'file-service/main.bicep' = if (!empty(fileServices)) {
-  name: '${uniqueString(deployment().name, location)}-Storage-FileServices'
-  params: {
-    storageAccountName: storageAccount.name
-    diagnosticSettings: fileServices.?diagnosticSettings
-    protocolSettings: fileServices.?protocolSettings
-    shareDeleteRetentionPolicy: fileServices.?shareDeleteRetentionPolicy
-    shares: fileServices.?shares
+module storageAccount_fileServices 'file-service/main.bicep' =
+  if (!empty(fileServices)) {
+    name: '${uniqueString(deployment().name, location)}-Storage-FileServices'
+    params: {
+      storageAccountName: storageAccount.name
+      diagnosticSettings: fileServices.?diagnosticSettings
+      protocolSettings: fileServices.?protocolSettings
+      shareDeleteRetentionPolicy: fileServices.?shareDeleteRetentionPolicy
+      shares: fileServices.?shares
+    }
   }
-}
 
 // Queue
-module storageAccount_queueServices 'queue-service/main.bicep' = if (!empty(queueServices)) {
-  name: '${uniqueString(deployment().name, location)}-Storage-QueueServices'
-  params: {
-    storageAccountName: storageAccount.name
-    diagnosticSettings: queueServices.?diagnosticSettings
-    queues: queueServices.?queues
+module storageAccount_queueServices 'queue-service/main.bicep' =
+  if (!empty(queueServices)) {
+    name: '${uniqueString(deployment().name, location)}-Storage-QueueServices'
+    params: {
+      storageAccountName: storageAccount.name
+      diagnosticSettings: queueServices.?diagnosticSettings
+      queues: queueServices.?queues
+    }
   }
-}
 
 // Table
-module storageAccount_tableServices 'table-service/main.bicep' = if (!empty(tableServices)) {
-  name: '${uniqueString(deployment().name, location)}-Storage-TableServices'
-  params: {
-    storageAccountName: storageAccount.name
-    diagnosticSettings: tableServices.?diagnosticSettings
-    tables: tableServices.?tables
+module storageAccount_tableServices 'table-service/main.bicep' =
+  if (!empty(tableServices)) {
+    name: '${uniqueString(deployment().name, location)}-Storage-TableServices'
+    params: {
+      storageAccountName: storageAccount.name
+      diagnosticSettings: tableServices.?diagnosticSettings
+      tables: tableServices.?tables
+    }
   }
-}
 
 @description('The resource ID of the deployed storage account.')
 output resourceId string = storageAccount.id
@@ -489,10 +619,12 @@ output name string = storageAccount.name
 output resourceGroupName string = resourceGroup().name
 
 @description('The primary blob endpoint reference if blob services are deployed.')
-output primaryBlobEndpoint string = !empty(blobServices) && contains(blobServices, 'containers') ? reference('Microsoft.Storage/storageAccounts/${storageAccount.name}', '2019-04-01').primaryEndpoints.blob : ''
+output primaryBlobEndpoint string = !empty(blobServices) && contains(blobServices, 'containers')
+  ? reference('Microsoft.Storage/storageAccounts/${storageAccount.name}', '2019-04-01').primaryEndpoints.blob
+  : ''
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) ? storageAccount.identity.?principalId : ''
+output systemAssignedMIPrincipalId string = storageAccount.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = storageAccount.location
@@ -551,7 +683,15 @@ type networkAclsType = {
   }[]?
 
   @description('Required. Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging,Metrics,AzureServices (For example, "Logging, Metrics"), or None to bypass none of those traffics.')
-  bypass: ('None' | 'AzureServices' | 'Logging' | 'Metrics' | 'AzureServices, Logging' | 'AzureServices, Metrics' | 'AzureServices, Logging, Metrics' | 'Logging, Metrics')
+  bypass: (
+    | 'None'
+    | 'AzureServices'
+    | 'Logging'
+    | 'Metrics'
+    | 'AzureServices, Logging'
+    | 'AzureServices, Metrics'
+    | 'AzureServices, Logging, Metrics'
+    | 'Logging, Metrics')
 
   @description('Optional. Sets the virtual network rules.')
   virtualNetworkRules: array?
@@ -561,7 +701,7 @@ type networkAclsType = {
 
   @description('Required. Specifies the default action of allow or deny when no other rules match.')
   defaultAction: ('Allow' | 'Deny')
-}
+}?
 
 type privateEndpointType = {
   @description('Optional. The name of the private endpoint.')

@@ -7,11 +7,9 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for submitting this AVM Module Issue!
+        Thank you for submitting this AVM Module Issue! To help us triage your issue, please provide the below details.
 
-        To help us triage your issue, please provide the below details.
-
-        > **NOTE**: If you'd like to propose a new AVM module, please follow the process described in the [AVM repo](https://aka.ms/AVM/ModuleProposal).
+        > **NOTE**: If you'd like to propose a new AVM module, please file an [AVM Module Proposal](https://aka.ms/AVM/ModuleProposal).
   - type: checkboxes
     id: existing-checks
     attributes:
@@ -26,6 +24,7 @@ body:
       label: Issue Type?
       description: How would you best describe this issue? Is this a...
       options:
+        - ""
         - "Feature Request"
         - "Bug"
         - "Security Bug"
@@ -38,7 +37,7 @@ body:
       label: Module Name
       description: Which existing AVM module is this issue related to?
       options:
-        - "Other, as defined below..."
+        - ""
         # - "avm/ptn/avd-lza/insights"
         # - "avm/ptn/avd-lza/management-plane"
         # - "avm/ptn/avd-lza/networking"
@@ -65,7 +64,7 @@ body:
         - "avm/res/compute/virtual-machine"
         - "avm/res/compute/virtual-machine-scale-set"
         - "avm/res/consumption/budget"
-        # - "avm/res/container-instance/container-group"
+        - "avm/res/container-instance/container-group"
         - "avm/res/container-registry/registry"
         - "avm/res/container-service/managed-cluster"
         - "avm/res/data-factory/factory"
@@ -80,7 +79,7 @@ body:
         - "avm/res/desktop-virtualization/workspace"
         # - "avm/res/dev-center/devcenter"
         - "avm/res/dev-test-lab/lab"
-        # - "avm/res/digital-twins/digital-twins-instance"
+        - "avm/res/digital-twins/digital-twins-instance"
         - "avm/res/document-db/database-account"
         - "avm/res/event-grid/domain"
         - "avm/res/event-grid/namespace"
@@ -88,7 +87,7 @@ body:
         - "avm/res/event-grid/topic"
         - "avm/res/event-hub/namespace"
         - "avm/res/health-bot/health-bot"
-        # - "avm/res/healthcare-apis/workspace"
+        - "avm/res/healthcare-apis/workspace"
         - "avm/res/insights/action-group"
         - "avm/res/insights/activity-log-alert"
         - "avm/res/insights/component"
@@ -111,7 +110,7 @@ body:
         - "avm/res/management/management-group"
         - "avm/res/net-app/net-app-account"
         # - "avm/res/network/application-gateway"
-        # - "avm/res/network/application-gateway-web-application-firewall-policy"
+        - "avm/res/network/application-gateway-web-application-firewall-policy"
         - "avm/res/network/application-security-group"
         - "avm/res/network/azure-firewall"
         - "avm/res/network/bastion-host"
@@ -139,7 +138,7 @@ body:
         - "avm/res/network/public-ip-address"
         - "avm/res/network/public-ip-prefix"
         - "avm/res/network/route-table"
-        # - "avm/res/network/service-endpoint-policy"
+        - "avm/res/network/service-endpoint-policy"
         - "avm/res/network/trafficmanagerprofile"
         - "avm/res/network/virtual-hub"
         - "avm/res/network/virtual-network"
@@ -152,8 +151,8 @@ body:
         # - "avm/res/policy-insights/remediation"
         - "avm/res/power-bi-dedicated/capacity"
         - "avm/res/purview/account"
-        # - "avm/res/recovery-services/vault"
-        # - "avm/res/relay/namespace"
+        - "avm/res/recovery-services/vault"
+        - "avm/res/relay/namespace"
         - "avm/res/resource-graph/query"
         - "avm/res/resources/deployment-script"
         - "avm/res/resources/resource-group"
@@ -169,22 +168,13 @@ body:
         - "avm/res/synapse/private-link-hub"
         - "avm/res/synapse/workspace"
         - "avm/res/virtual-machine-images/image-template"
-        # - "avm/res/web/connection"
-        # - "avm/res/web/hosting-environment"
+        - "avm/res/web/connection"
+        - "avm/res/web/hosting-environment"
         - "avm/res/web/serverfarm"
         - "avm/res/web/site"
         - "avm/res/web/static-site"
-
     validations:
       required: true
-  - type: input
-    id: module-name-other
-    attributes:
-      label: (Optional) Module Name if not listed above
-      description: Which existing AVM module is this issue related to (if not listed above)?
-      placeholder: avm/res/<resource provider>/<resource name>
-    validations:
-      required: false
   - type: input
     id: module-version
     attributes:

@@ -5,8 +5,8 @@ param location string = resourceGroup().location
 param managedIdentityName string
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
-    name: managedIdentityName
-    location: location
+  name: managedIdentityName
+  location: location
 }
 
 @description('The principal ID of the created Managed Identity.')

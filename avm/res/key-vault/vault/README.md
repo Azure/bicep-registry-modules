@@ -48,7 +48,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-kvvmin'
+  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'kvvmin002'
@@ -100,7 +100,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-kvvmax'
+  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'kvvmax002'
@@ -608,7 +608,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-kvvwaf'
+  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'kvvwaf002'
@@ -1773,7 +1773,7 @@ Resource tags.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |

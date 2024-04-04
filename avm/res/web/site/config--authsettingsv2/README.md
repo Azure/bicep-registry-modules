@@ -48,6 +48,7 @@ Type of site to deploy.
   ```Bicep
   [
     'app'
+    'app,linux'
     'functionapp'
     'functionapp,linux'
     'functionapp,workflowapp'

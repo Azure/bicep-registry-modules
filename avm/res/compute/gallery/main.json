@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "7407411978239812730"
+      "version": "0.26.54.24096",
+      "templateHash": "5329218260776835511"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -319,8 +319,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "1766982665283226409"
+              "version": "0.26.54.24096",
+              "templateHash": "3817884050778525461"
             },
             "name": "Compute Galleries Applications",
             "description": "This module deploys an Azure Compute Gallery Application.",
@@ -676,8 +676,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "3529471060432554863"
+              "version": "0.26.54.24096",
+              "templateHash": "15034895982698413313"
             },
             "name": "Compute Galleries Image Definitions",
             "description": "This module deploys an Azure Compute Gallery Image Definition.",

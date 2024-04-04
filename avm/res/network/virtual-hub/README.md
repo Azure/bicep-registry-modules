@@ -44,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvhmin'
+  name: 'virtualHubDeployment'
   params: {
     // Required parameters
     addressPrefix: '10.0.0.0/16'
@@ -100,7 +100,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvhmax'
+  name: 'virtualHubDeployment'
   params: {
     // Required parameters
     addressPrefix: '10.1.0.0/16'
@@ -234,7 +234,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvhwaf'
+  name: 'virtualHubDeployment'
   params: {
     // Required parameters
     addressPrefix: '10.1.0.0/16'

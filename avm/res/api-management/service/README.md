@@ -58,7 +58,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module service 'br/public:avm/res/api-management/service:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-apismin'
+  name: 'serviceDeployment'
   params: {
     // Required parameters
     name: 'apismin001'
@@ -114,7 +114,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module service 'br/public:avm/res/api-management/service:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-apismax'
+  name: 'serviceDeployment'
   params: {
     // Required parameters
     name: 'apismax001'
@@ -274,6 +274,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     subscriptions: [
       {
         name: 'testArmSubscriptionAllApis'
+        scope: '/apis'
       }
     ]
     tags: {
@@ -489,7 +490,8 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "subscriptions": {
       "value": [
         {
-          "name": "testArmSubscriptionAllApis"
+          "name": "testArmSubscriptionAllApis",
+          "scope": "/apis"
         }
       ]
     },
@@ -518,7 +520,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module service 'br/public:avm/res/api-management/service:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-apiswaf'
+  name: 'serviceDeployment'
   params: {
     // Required parameters
     name: 'apiswaf001'
@@ -667,6 +669,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     subscriptions: [
       {
         name: 'testArmSubscriptionAllApis'
+        scope: '/apis'
       }
     ]
     tags: {
@@ -869,7 +872,8 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "subscriptions": {
       "value": [
         {
-          "name": "testArmSubscriptionAllApis"
+          "name": "testArmSubscriptionAllApis",
+          "scope": "/apis"
         }
       ]
     },

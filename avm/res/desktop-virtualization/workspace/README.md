@@ -45,7 +45,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvwsmin'
+  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'dvwsmin002'
@@ -93,7 +93,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvwsmax'
+  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'dvwsmax001'
@@ -383,7 +383,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvwswaf'
+  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'dvwswaf002'
@@ -1105,7 +1105,7 @@ Tags of the resource.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |

@@ -58,135 +58,137 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // Test Execution //
 // ============== //
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    zoneRedundant: true
-    skuName: 'Standard'
-    skuCapacity: 2
-    authorizationRules: [
-      {
-        name: 'RootManageSharedAccessKey'
-        rights: [
-          'Listen'
-          'Manage'
-          'Send'
-        ]
-      }
-      {
-        name: 'SendListenAccess'
-        rights: [
-          'Listen'
-          'Send'
-        ]
-      }
-    ]
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    eventhubs: [
-      {
-        name: '${namePrefix}-az-evh-x-001'
-      }
-      {
-        name: '${namePrefix}-az-evh-x-002'
-        authorizationRules: [
-          {
-            name: 'RootManageSharedAccessKey'
-            rights: [
-              'Listen'
-              'Manage'
-              'Send'
-            ]
-          }
-          {
-            name: 'SendListenAccess'
-            rights: [
-              'Listen'
-              'Send'
-            ]
-          }
-        ]
-        captureDescriptionDestinationArchiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-        captureDescriptionDestinationBlobContainer: 'eventhub'
-        captureDescriptionDestinationName: 'EventHubArchive.AzureBlockBlob'
-        captureDescriptionDestinationStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-        captureDescriptionEnabled: true
-        captureDescriptionEncoding: 'Avro'
-        captureDescriptionIntervalInSeconds: 300
-        captureDescriptionSizeLimitInBytes: 314572800
-        captureDescriptionSkipEmptyArchives: true
-        consumergroups: [
-          {
-            name: 'custom'
-            userMetadata: 'customMetadata'
-          }
-        ]
-        messageRetentionInDays: 1
-        partitionCount: 2
-        status: 'Active'
-        retentionDescriptionCleanupPolicy: 'Delete'
-        retentionDescriptionRetentionTimeInHours: 3
-      }
-      {
-        name: '${namePrefix}-az-evh-x-003'
-        retentionDescriptionCleanupPolicy: 'Compact'
-        retentionDescriptionTombstoneRetentionTimeInHours: 24
-      }
-    ]
-    networkRuleSets: {
-      defaultAction: 'Deny'
-      ipRules: [
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      zoneRedundant: true
+      skuName: 'Standard'
+      skuCapacity: 2
+      authorizationRules: [
         {
-          action: 'Allow'
-          ipMask: '10.10.10.10'
+          name: 'RootManageSharedAccessKey'
+          rights: [
+            'Listen'
+            'Manage'
+            'Send'
+          ]
+        }
+        {
+          name: 'SendListenAccess'
+          rights: [
+            'Listen'
+            'Send'
+          ]
         }
       ]
-      trustedServiceAccessEnabled: false
-      virtualNetworkRules: [
+      diagnosticSettings: [
         {
-          ignoreMissingVnetServiceEndpoint: true
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      eventhubs: [
+        {
+          name: '${namePrefix}-az-evh-x-001'
+        }
+        {
+          name: '${namePrefix}-az-evh-x-002'
+          authorizationRules: [
+            {
+              name: 'RootManageSharedAccessKey'
+              rights: [
+                'Listen'
+                'Manage'
+                'Send'
+              ]
+            }
+            {
+              name: 'SendListenAccess'
+              rights: [
+                'Listen'
+                'Send'
+              ]
+            }
+          ]
+          captureDescriptionDestinationArchiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+          captureDescriptionDestinationBlobContainer: 'eventhub'
+          captureDescriptionDestinationName: 'EventHubArchive.AzureBlockBlob'
+          captureDescriptionDestinationStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+          captureDescriptionEnabled: true
+          captureDescriptionEncoding: 'Avro'
+          captureDescriptionIntervalInSeconds: 300
+          captureDescriptionSizeLimitInBytes: 314572800
+          captureDescriptionSkipEmptyArchives: true
+          consumergroups: [
+            {
+              name: 'custom'
+              userMetadata: 'customMetadata'
+            }
+          ]
+          messageRetentionInDays: 1
+          partitionCount: 2
+          status: 'Active'
+          retentionDescriptionCleanupPolicy: 'Delete'
+          retentionDescriptionRetentionTimeInHours: 3
+        }
+        {
+          name: '${namePrefix}-az-evh-x-003'
+          retentionDescriptionCleanupPolicy: 'Compact'
+          retentionDescriptionTombstoneRetentionTimeInHours: 24
+        }
+      ]
+      networkRuleSets: {
+        defaultAction: 'Deny'
+        ipRules: [
+          {
+            action: 'Allow'
+            ipMask: '10.10.10.10'
+          }
+        ]
+        trustedServiceAccessEnabled: false
+        virtualNetworkRules: [
+          {
+            ignoreMissingVnetServiceEndpoint: true
+            subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          }
+        ]
+      }
+      privateEndpoints: [
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
         }
       ]
-    }
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
+      kafkaEnabled: true
+      disableLocalAuth: true
+      isAutoInflateEnabled: true
+      minimumTlsVersion: '1.2'
+      maximumThroughputUnits: 4
+      publicNetworkAccess: 'Disabled'
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-    ]
-    kafkaEnabled: true
-    disableLocalAuth: true
-    isAutoInflateEnabled: true
-    minimumTlsVersion: '1.2'
-    maximumThroughputUnits: 4
-    publicNetworkAccess: 'Disabled'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
-}]
+]

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "2998974371512711861"
+      "version": "0.26.54.24096",
+      "templateHash": "10197969165198837306"
     },
     "name": "Proximity Placement Groups",
     "description": "This module deploys a Proximity Placement Group.",

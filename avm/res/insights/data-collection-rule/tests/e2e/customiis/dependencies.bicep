@@ -8,19 +8,19 @@ param dataCollectionEndpointName string
 param logAnalyticsWorkspaceName string
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
-    name: logAnalyticsWorkspaceName
-    location: location
+  name: logAnalyticsWorkspaceName
+  location: location
 }
 
 resource dataCollectionEndpoint 'Microsoft.Insights/dataCollectionEndpoints@2021-04-01' = {
-    kind: 'Windows'
-    location: location
-    name: dataCollectionEndpointName
-    properties: {
-        networkAcls: {
-            publicNetworkAccess: 'Enabled'
-        }
+  kind: 'Windows'
+  location: location
+  name: dataCollectionEndpointName
+  properties: {
+    networkAcls: {
+      publicNetworkAccess: 'Enabled'
     }
+  }
 }
 
 @description('The resource ID of the created Log Analytics Workspace.')

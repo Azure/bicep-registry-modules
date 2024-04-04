@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.insights.activity-log-alert.yml"
       - "avm/res/insights/activity-log-alert/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:

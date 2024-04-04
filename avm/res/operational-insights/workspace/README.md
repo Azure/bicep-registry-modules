@@ -52,7 +52,7 @@ This instance deploys the module with advanced features like custom tables and d
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-oiwadv'
+  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'oiwadv001'
@@ -666,7 +666,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-oiwmin'
+  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'oiwmin001'
@@ -714,7 +714,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-oiwmax'
+  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'oiwmax001'
@@ -1336,7 +1336,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-oiwwaf'
+  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'oiwwaf001'
@@ -2217,7 +2217,7 @@ Set to 'true' to use resource or workspace permissions and 'false' (or leave emp
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |

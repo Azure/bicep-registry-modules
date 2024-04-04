@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "7710672223855991692"
+      "version": "0.26.54.24096",
+      "templateHash": "8925128185589273318"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace.",
@@ -59,9 +59,8 @@
           },
           "service": {
             "type": "string",
-            "nullable": true,
             "metadata": {
-              "description": "Optional. The service (sub-) type to deploy the private endpoint for. For example \"vault\" or \"blob\"."
+              "description": "Required. The subresource to deploy the private endpoint for. For example \"blob\", \"table\", \"queue\" or \"file\"."
             }
           },
           "subnetResourceId": {
@@ -85,6 +84,21 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones."
+            }
+          },
+          "isManualConnection": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. If Manual Private Link Connection is required."
+            }
+          },
+          "manualConnectionRequestMessage": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 140,
+            "metadata": {
+              "description": "Optional. A message passed to the owner of the remote resource with the manual connection request."
             }
           },
           "customDnsConfigs": {
@@ -193,13 +207,6 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
-            }
-          },
-          "manualPrivateLinkServiceConnections": {
-            "type": "array",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Manual PrivateLink Service Connections."
             }
           },
           "enableTelemetry": {
@@ -814,7 +821,9 @@
     "workspace_privateEndpoints": {
       "copy": {
         "name": "workspace_privateEndpoints",
-        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -825,22 +834,11 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "privateLinkServiceConnections": {
-            "value": [
-              {
-                "name": "[parameters('name')]",
-                "properties": {
-                  "privateLinkServiceId": "[resourceId('Microsoft.Databricks/workspaces', parameters('name'))]",
-                  "groupIds": [
-                    "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'databricks_ui_api')]"
-                  ]
-                }
-              }
-            ]
-          },
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Databricks/workspaces', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'databricks_ui_api'), copyIndex()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Databricks/workspaces', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex()))]"
           },
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Databricks/workspaces', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Databricks/workspaces', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Databricks/workspaces', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Databricks/workspaces', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
@@ -865,9 +863,6 @@
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "manualPrivateLinkServiceConnections": {
-            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections')]"
-          },
           "customDnsConfigs": {
             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
           },
@@ -889,7 +884,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "5518855230364102370"
+              "templateHash": "2592884001616184297"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -1254,7 +1249,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.3.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1471,6 +1466,13 @@
                 "description": "The location the resource was deployed into."
               },
               "value": "[reference('privateEndpoint', '2023-04-01', 'full').location]"
+            },
+            "groupId": {
+              "type": "string",
+              "metadata": {
+                "description": "The group Id for the private endpoint Group."
+              },
+              "value": "[if(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties.groupIds[0], reference('privateEndpoint').privateLinkServiceConnections[0].properties.groupIds[0])]"
             }
           }
         }

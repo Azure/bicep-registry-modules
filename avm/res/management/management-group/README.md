@@ -45,7 +45,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module managementGroup 'br/public:avm/res/management/management-group:<version>' = {
-  name: '${uniqueString(deployment().name)}-test-mmgmin'
+  name: 'managementGroupDeployment'
   params: {
     // Required parameters
     name: 'mmgmin001'
@@ -93,7 +93,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module managementGroup 'br/public:avm/res/management/management-group:<version>' = {
-  name: '${uniqueString(deployment().name)}-test-mmgmax'
+  name: 'managementGroupDeployment'
   params: {
     // Required parameters
     name: 'mmgmax001'
@@ -149,7 +149,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module managementGroup 'br/public:avm/res/management/management-group:<version>' = {
-  name: '${uniqueString(deployment().name)}-test-mmgwaf'
+  name: 'managementGroupDeployment'
   params: {
     // Required parameters
     name: 'mmgwaf001'

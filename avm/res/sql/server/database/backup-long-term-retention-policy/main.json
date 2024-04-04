@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "17376471861428793697"
+      "version": "0.26.54.24096",
+      "templateHash": "13590495271621282724"
     },
     "name": "SQL Server Database Long Term Backup Retention Policies",
     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",

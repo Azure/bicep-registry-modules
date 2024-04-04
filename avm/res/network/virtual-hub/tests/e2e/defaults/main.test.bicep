@@ -17,7 +17,6 @@ param resourceLocation string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'nvhmin'
 
-
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -46,13 +45,15 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}-${serviceShort}'
-    addressPrefix: '10.0.0.0/16'
-    virtualWanId: nestedDependencies.outputs.virtualWWANResourceId
-    location: resourceLocation
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}-${serviceShort}'
+      addressPrefix: '10.0.0.0/16'
+      virtualWanId: nestedDependencies.outputs.virtualWWANResourceId
+      location: resourceLocation
+    }
   }
-}]
+]

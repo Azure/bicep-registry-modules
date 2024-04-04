@@ -47,7 +47,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module staticSite 'br/public:avm/res/web/static-site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wssmin'
+  name: 'staticSiteDeployment'
   params: {
     // Required parameters
     name: 'wssmin001'
@@ -95,7 +95,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module staticSite 'br/public:avm/res/web/static-site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wssmax'
+  name: 'staticSiteDeployment'
   params: {
     // Required parameters
     name: 'wssmax001'
@@ -299,7 +299,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module staticSite 'br/public:avm/res/web/static-site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsswaf'
+  name: 'staticSiteDeployment'
   params: {
     // Required parameters
     name: 'wsswaf001'
@@ -1119,7 +1119,7 @@ Template Options for the static site.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |

@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.automation.automation-account.yml"
       - "avm/res/automation/automation-account/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:

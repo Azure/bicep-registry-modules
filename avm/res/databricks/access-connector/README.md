@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module accessConnector 'br/public:avm/res/databricks/access-connector:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dacmin'
+  name: 'accessConnectorDeployment'
   params: {
     // Required parameters
     name: 'dacmin001'
@@ -90,7 +90,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module accessConnector 'br/public:avm/res/databricks/access-connector:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dacmax'
+  name: 'accessConnectorDeployment'
   params: {
     // Required parameters
     name: 'dacmax001'
@@ -210,7 +210,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module accessConnector 'br/public:avm/res/databricks/access-connector:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dacwaf'
+  name: 'accessConnectorDeployment'
   params: {
     // Required parameters
     name: 'dacwaf001'

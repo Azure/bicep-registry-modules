@@ -45,66 +45,71 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    extensionProperties: {
-      InGuestPatchMode: 'User'
-    }
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      extensionProperties: {
+        InGuestPatchMode: 'User'
       }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-    ]
-    maintenanceScope: 'InGuestPatch'
-    maintenanceWindow: {
-      duration: '03:00'
-      expirationDateTime: '9999-12-31 23:59:59'
-      recurEvery: 'Day'
-      startDateTime: '2022-12-31 13:00'
-      timeZone: 'W. Europe Standard Time'
-    }
-    namespace: '${serviceShort}ns'
-    visibility: 'Custom'
-    installPatches: {
-      linuxParameters: {
-        classificationsToInclude: null
-        packageNameMasksToExclude: null
-        packageNameMasksToInclude: null
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      maintenanceScope: 'InGuestPatch'
+      maintenanceWindow: {
+        duration: '03:00'
+        expirationDateTime: '9999-12-31 23:59:59'
+        recurEvery: 'Day'
+        startDateTime: '2022-12-31 13:00'
+        timeZone: 'W. Europe Standard Time'
       }
-      rebootSetting: 'IfRequired'
-      windowsParameters: {
-        classificationsToInclude: [
-          'Critical'
-          'Security'
-        ]
-        kbNumbersToExclude: null
-        kbNumbersToInclude: null
+      namespace: '${serviceShort}ns'
+      visibility: 'Custom'
+      installPatches: {
+        linuxParameters: {
+          classificationsToInclude: null
+          packageNameMasksToExclude: null
+          packageNameMasksToInclude: null
+        }
+        rebootSetting: 'IfRequired'
+        windowsParameters: {
+          classificationsToInclude: [
+            'Critical'
+            'Security'
+          ]
+          kbNumbersToExclude: null
+          kbNumbersToInclude: null
+        }
       }
     }
   }
-}]
+]

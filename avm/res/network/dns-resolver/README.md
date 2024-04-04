@@ -44,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ndrmin'
+  name: 'dnsResolverDeployment'
   params: {
     // Required parameters
     name: 'ndrmin001'
@@ -96,7 +96,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ndrmax'
+  name: 'dnsResolverDeployment'
   params: {
     // Required parameters
     name: 'ndrmax001'
@@ -234,7 +234,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ndrwaf'
+  name: 'dnsResolverDeployment'
   params: {
     // Required parameters
     name: 'ndrwaf001'
