@@ -70,7 +70,7 @@ var dataFactoryName = replace(
 )
 
 // The last segment of the telemetryId is used to identify this module
-//var telemetryId = '00f120b5-2007-6120-0000-40b000000000'
+var telemetryId = '00f120b5-2007-6120-0000-40b000000000'
 
 //==============================================================================
 // Resources
@@ -178,7 +178,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-/*resource defaultTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+resource defaultTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
   if (enableTelemetry) {
     name: 'pid-${telemetryId}-${uniqueString(deployment().name, location)}'
     properties: {
@@ -196,7 +196,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
       }
     }
   }
-*/
 
 //==============================================================================
 // Outputs

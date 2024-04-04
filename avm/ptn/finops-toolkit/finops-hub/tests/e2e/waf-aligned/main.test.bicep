@@ -54,6 +54,11 @@ module testDeployment '../../../main.bicep' = [
       exportContainer: 'exports'
       ingestionContainer: 'ingestion'
       exportScopes: []
+      tagsByResource: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
   }
 ]
