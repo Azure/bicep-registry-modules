@@ -47,7 +47,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
   name: 'loadTestDeployment'
   params: {
     // Required parameters
-    name: 'rdsmin001'
+    name: 'ltmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -68,7 +68,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "rdsmin001"
+      "value": "ltmin001"
     },
     // Non-required parameters
     "location": {
@@ -95,7 +95,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
   name: 'loadTestDeployment'
   params: {
     // Required parameters
-    name: 'rdsmax001'
+    name: 'ltmax001'
     // Non-required parameters
     loadTestDescription: 'This is a test load test to validate the module.'
     location: '<location>'
@@ -135,7 +135,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "rdsmax001"
+      "value": "ltmax001"
     },
     // Non-required parameters
     "loadTestDescription": {
@@ -259,7 +259,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
   name: 'loadTestDeployment'
   params: {
     // Required parameters
-    name: 'ltscmk001'
+    name: 'ltucmk001'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -291,7 +291,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ltscmk001"
+      "value": "ltucmk001"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -333,7 +333,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
   name: 'loadTestDeployment'
   params: {
     // Required parameters
-    name: 'rdswaf001'
+    name: 'ltwaf001'
     // Non-required parameters
     enableTelemetry: '<enableTelemetry>'
     loadTestDescription: 'This is a sample load test.'
@@ -367,7 +367,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "rdswaf001"
+      "value": "ltwaf001"
     },
     // Non-required parameters
     "enableTelemetry": {
