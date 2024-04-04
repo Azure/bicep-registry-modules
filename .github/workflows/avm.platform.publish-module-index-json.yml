@@ -50,7 +50,7 @@ jobs:
           Write-Verbose "Invoke task with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Invoke-AvmJsonModuleIndexGeneration @functionInput -Verbose
+          Invoke-AvmJsonModuleIndexGeneration @functionInput
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -71,7 +71,7 @@ jobs:
             storageBlobContentType  = @{"ContentType" = "application/json"}
           }
 
-          Write-Verbose "Uploading moduleIndex.json to blob storage account $storageAccountName in container $storageAccountContainer as blob $storageBlobName" -Verbose
+          Write-Verbose "Uploading moduleIndex.json to blob storage account $storageAccountInfo.storageAccountName in container $storageAccountInfo.storageAccountContainer as blob $storageAccountInfo.storageBlobName" -Verbose
           $storageContext = New-AzStorageContext -StorageAccountName $storageAccountInfo.storageAccountName -UseConnectedAccount
           Set-AzStorageBlobContent -Context $storageContext -Container $storageAccountInfo.storageAccountContainer -Blob $storageAccountInfo.storageBlobName -File 'moduleIndex.json' -Properties $storageAccountInfo.storageBlobContentType  -Force
-          Write-Verbose "Uploaded moduleIndex.json to blob storage account $storageAccountName in container $storageAccountContainer as blob $storageBlobName" -Verbose
+          Write-Verbose "Uploaded moduleIndex.json to blob storage account $storageAccountInfo.storageAccountName in container $storageAccountInfo.storageAccountContainer as blob $storageAccountInfo.storageBlobName" -Verbose
