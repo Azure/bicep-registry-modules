@@ -72,106 +72,110 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-        logCategoriesAndGroups: [
-          {
-            category: 'jobs'
-          }
-          {
-            category: 'notebook'
-
-          }
-        ]
-      }
-    ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
-    customerManagedKey: {
-      keyName: nestedDependencies.outputs.keyVaultKeyName
-      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-    }
-    customerManagedKeyManagedDisk: {
-      keyName: nestedDependencies.outputs.keyVaultDiskKeyName
-      keyVaultResourceId: nestedDependencies.outputs.keyVaultDiskResourceId
-      rotationToLatestKeyVersionEnabled: true
-    }
-    storageAccountName: 'sa${namePrefix}${serviceShort}001'
-    storageAccountSkuName: 'Standard_ZRS'
-    publicIpName: 'nat-gw-public-ip'
-    natGatewayName: 'nat-gateway'
-    prepareEncryption: true
-    requiredNsgRules: 'NoAzureDatabricksRules'
-    skuName: 'premium'
-    amlWorkspaceResourceId: nestedDependencies.outputs.machineLearningWorkspaceResourceId
-    customPrivateSubnetName: nestedDependencies.outputs.customPrivateSubnetName
-    customPublicSubnetName: nestedDependencies.outputs.customPublicSubnetName
-    publicNetworkAccess: 'Disabled'
-    disablePublicIp: true
-    loadBalancerResourceId: nestedDependencies.outputs.loadBalancerResourceId
-    loadBalancerBackendPoolName: nestedDependencies.outputs.loadBalancerBackendPoolName
-    customVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        service: 'databricks_ui_api'
-        subnetResourceId: nestedDependencies.outputs.primarySubnetResourceId
-        tags: {
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          logCategoriesAndGroups: [
+            {
+              category: 'jobs'
+            }
+            {
+              category: 'notebook'
+            }
+          ]
         }
+      ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.secondarySubnetResourceId
-        service: 'browser_authentication'
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
+      customerManagedKey: {
+        keyName: nestedDependencies.outputs.keyVaultKeyName
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+      }
+      customerManagedKeyManagedDisk: {
+        keyName: nestedDependencies.outputs.keyVaultDiskKeyName
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultDiskResourceId
+        rotationToLatestKeyVersionEnabled: true
+      }
+      storageAccountName: 'sa${namePrefix}${serviceShort}001'
+      storageAccountSkuName: 'Standard_ZRS'
+      publicIpName: 'nat-gw-public-ip'
+      natGatewayName: 'nat-gateway'
+      prepareEncryption: true
+      requiredNsgRules: 'NoAzureDatabricksRules'
+      skuName: 'premium'
+      amlWorkspaceResourceId: nestedDependencies.outputs.machineLearningWorkspaceResourceId
+      customPrivateSubnetName: nestedDependencies.outputs.customPrivateSubnetName
+      customPublicSubnetName: nestedDependencies.outputs.customPublicSubnetName
+      publicNetworkAccess: 'Disabled'
+      disablePublicIp: true
+      loadBalancerResourceId: nestedDependencies.outputs.loadBalancerResourceId
+      loadBalancerBackendPoolName: nestedDependencies.outputs.loadBalancerBackendPoolName
+      customVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
+      privateEndpoints: [
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          service: 'databricks_ui_api'
+          subnetResourceId: nestedDependencies.outputs.primarySubnetResourceId
+          tags: {
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
+        }
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          subnetResourceId: nestedDependencies.outputs.secondarySubnetResourceId
+          service: 'browser_authentication'
+        }
+      ]
+      managedResourceGroupResourceId: '${subscription().id}/resourceGroups/rg-${resourceGroupName}-managed'
+      requireInfrastructureEncryption: true
+      vnetAddressPrefix: '10.100'
+    }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
     ]
-    managedResourceGroupResourceId: '${subscription().id}/resourceGroups/rg-${resourceGroupName}-managed'
-    requireInfrastructureEncryption: true
-    vnetAddressPrefix: '10.100'
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
-}]
+]
