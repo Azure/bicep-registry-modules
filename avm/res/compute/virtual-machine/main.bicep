@@ -330,7 +330,7 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (extensionAadJoinConfig.enabled ? true : (managedIdentities.?systemAssigned ?? false))
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
         : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
@@ -453,7 +453,6 @@ module vm_nic 'modules/nic-configuration.bicep' = [
 resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
   name: name
   location: location
-  #disable-next-line BCP036
   identity: identity
   tags: tags
   zones: availabilityZone != 0 ? array(string(availabilityZone)) : null

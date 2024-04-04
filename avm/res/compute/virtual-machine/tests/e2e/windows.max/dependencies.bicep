@@ -40,14 +40,13 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         addressPrefix
       ]
     }
-    subnets: [
-      {
-        name: 'defaultSubnet'
-        properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 16, 0)
-        }
-      }
-    ]
+  }
+
+  resource subnet 'subnets' = {
+    name: 'defaultSubnet'
+    properties: {
+      addressPrefix: cidrSubnet(addressPrefix, 16, 0)
+    }
   }
 }
 
@@ -85,7 +84,7 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
       {
         name: 'privateIPConfig1'
         properties: {
-          subnet: virtualNetwork.properties.subnets[0]
+          subnet: virtualNetwork::subnet
         }
       }
     ]
