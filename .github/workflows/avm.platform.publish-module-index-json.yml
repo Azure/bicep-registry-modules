@@ -31,7 +31,7 @@ jobs:
         run: |
           Install-Module -Name Az.Storage -Force
 
-      - name: Manage issues
+      - name: Generate moduleIndex.json
         shell: pwsh
         run: |
           # Load used functions
@@ -68,9 +68,10 @@ jobs:
             storageAccountName      = 'stguksjtbrmindextest' #biceplivedatasaprod
             storageAccountContainer = 'bicep-cdn-live-data-container'
             storageBlobName         = 'module-index'
+            storageBlobContentType  = @{"ContentType" = "application/json"}
           }
 
           Write-Verbose "Uploading moduleIndex.json to blob storage account $storageAccountName in container $storageAccountContainer as blob $storageBlobName" -Verbose
           $storageContext = New-AzStorageContext -StorageAccountName $storageAccountInfo.storageAccountName -UseConnectedAccount
-          Set-AzStorageBlobContent -Context $storageContext -Container $storageAccountInfo.storageAccountContainer -Blob $storageAccountInfo.storageBlobName -File 'moduleIndex.json' -Force
+          Set-AzStorageBlobContent -Context $storageContext -Container $storageAccountInfo.storageAccountContainer -Blob $storageAccountInfo.storageBlobName -File 'moduleIndex.json' -Properties $storageAccountInfo.storageBlobContentType  -Force
           Write-Verbose "Uploaded moduleIndex.json to blob storage account $storageAccountName in container $storageAccountContainer as blob $storageBlobName" -Verbose
