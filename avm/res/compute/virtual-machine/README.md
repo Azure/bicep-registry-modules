@@ -35,18 +35,21 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/virtual-machine:<version>`.
 
-- [Atmg](#example-1-atmg)
-- [Linux.Defaults](#example-2-linuxdefaults)
-- [Linux.Max](#example-3-linuxmax)
-- [Waf-Aligned](#example-4-waf-aligned)
-- [Windows.Defaults](#example-5-windowsdefaults)
-- [Windows.Guestconfiguration](#example-6-windowsguestconfiguration)
-- [Windows.Hostpool](#example-7-windowshostpool)
-- [Windows.Max](#example-8-windowsmax)
-- [Windows.Nvidia](#example-9-windowsnvidia)
-- [Windows.Ssecmk](#example-10-windowsssecmk)
+- [Using automanage for the VM.](#example-1-using-automanage-for-the-vm)
+- [Using only defaults for Linux](#example-2-using-only-defaults-for-linux)
+- [Using large parameter set for Linux](#example-3-using-large-parameter-set-for-linux)
+- [WAF-aligned](#example-4-waf-aligned)
+- [Using only defaults for Windows](#example-5-using-only-defaults-for-windows)
+- [Using guest configuration for Windows](#example-6-using-guest-configuration-for-windows)
+- [Using a host pool to register the VM](#example-7-using-a-host-pool-to-register-the-vm)
+- [Using large parameter set for Windows](#example-8-using-large-parameter-set-for-windows)
+- [Deploy a VM with nVidia graphic card](#example-9-deploy-a-vm-with-nvidia-graphic-card)
+- [Using disk encryption set for the VM.](#example-10-using-disk-encryption-set-for-the-vm)
 
-### Example 1: _Atmg_
+### Example 1: _Using automanage for the VM._
+
+This instance deploys the module with registering to an automation account.
+
 
 <details>
 
@@ -86,7 +89,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     ]
     osDisk: {
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -160,7 +163,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "osDisk": {
       "value": {
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -197,7 +200,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 2: _Linux.Defaults_
+### Example 2: _Using only defaults for Linux_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -233,7 +239,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     osDisk: {
       caching: 'ReadWrite'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -302,7 +308,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "osDisk": {
       "value": {
         "caching": "ReadWrite",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -336,7 +342,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 3: _Linux.Max_
+### Example 3: _Using large parameter set for Linux_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -430,12 +439,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     osDisk: {
       caching: 'ReadOnly'
-      createOption: 'fromImage'
+      createOption: 'FromImage'
       deleteOption: 'Delete'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
+      name: 'osdisk01'
     }
     osType: 'Linux'
     vmSize: 'Standard_DS2_v2'
@@ -449,19 +459,21 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         caching: 'ReadWrite'
         createOption: 'Empty'
         deleteOption: 'Delete'
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
+        name: 'datadisk01'
       }
       {
         caching: 'ReadWrite'
         createOption: 'Empty'
         deleteOption: 'Delete'
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
+        name: 'datadisk02'
       }
     ]
     disablePasswordAuthentication: true
@@ -694,12 +706,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "osDisk": {
       "value": {
         "caching": "ReadOnly",
-        "createOption": "fromImage",
+        "createOption": "FromImage",
         "deleteOption": "Delete",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
-        }
+        },
+        "name": "osdisk01"
       }
     },
     "osType": {
@@ -727,19 +740,21 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "caching": "ReadWrite",
           "createOption": "Empty",
           "deleteOption": "Delete",
-          "diskSizeGB": "128",
+          "diskSizeGB": 128,
           "managedDisk": {
             "storageAccountType": "Premium_LRS"
-          }
+          },
+          "name": "datadisk01"
         },
         {
           "caching": "ReadWrite",
           "createOption": "Empty",
           "deleteOption": "Delete",
-          "diskSizeGB": "128",
+          "diskSizeGB": 128,
           "managedDisk": {
             "storageAccountType": "Premium_LRS"
-          }
+          },
+          "name": "datadisk02"
         }
       ]
     },
@@ -905,7 +920,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 4: _Waf-Aligned_
+### Example 4: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Well-Architected Framework for Windows.
+
 
 <details>
 
@@ -999,9 +1017,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     osDisk: {
       caching: 'ReadWrite'
-      createOption: 'fromImage'
+      createOption: 'FromImage'
       deleteOption: 'Delete'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -1019,7 +1037,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         caching: 'ReadOnly'
         createOption: 'Empty'
         deleteOption: 'Delete'
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
@@ -1028,7 +1046,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         caching: 'ReadOnly'
         createOption: 'Empty'
         deleteOption: 'Delete'
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
@@ -1280,9 +1298,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "osDisk": {
       "value": {
         "caching": "ReadWrite",
-        "createOption": "fromImage",
+        "createOption": "FromImage",
         "deleteOption": "Delete",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -1316,7 +1334,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "caching": "ReadOnly",
           "createOption": "Empty",
           "deleteOption": "Delete",
-          "diskSizeGB": "128",
+          "diskSizeGB": 128,
           "managedDisk": {
             "storageAccountType": "Premium_LRS"
           }
@@ -1325,7 +1343,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "caching": "ReadOnly",
           "createOption": "Empty",
           "deleteOption": "Delete",
-          "diskSizeGB": "128",
+          "diskSizeGB": 128,
           "managedDisk": {
             "storageAccountType": "Premium_LRS"
           }
@@ -1510,7 +1528,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 5: _Windows.Defaults_
+### Example 5: _Using only defaults for Windows_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -1543,7 +1564,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     osDisk: {
       caching: 'ReadWrite'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -1603,7 +1624,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "osDisk": {
       "value": {
         "caching": "ReadWrite",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -1629,7 +1650,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 6: _Windows.Guestconfiguration_
+### Example 6: _Using guest configuration for Windows_
+
+This instance deploys the module with the a guest configuration.
+
 
 <details>
 
@@ -1662,7 +1686,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     osDisk: {
       caching: 'ReadWrite'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -1751,7 +1775,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "osDisk": {
       "value": {
         "caching": "ReadWrite",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -1812,7 +1836,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 7: _Windows.Hostpool_
+### Example 7: _Using a host pool to register the VM_
+
+This instance deploys the module and registers it in a host pool.
+
 
 <details>
 
@@ -1845,7 +1872,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     osDisk: {
       caching: 'ReadWrite'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -1928,7 +1955,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "osDisk": {
       "value": {
         "caching": "ReadWrite",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -1983,7 +2010,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 8: _Windows.Max_
+### Example 8: _Using large parameter set for Windows_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -2077,12 +2107,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     osDisk: {
       caching: 'ReadWrite'
-      createOption: 'fromImage'
+      createOption: 'FromImage'
       deleteOption: 'Delete'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
+      name: 'osdisk01'
     }
     osType: 'Windows'
     vmSize: 'Standard_DS2_v2'
@@ -2097,19 +2128,23 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         caching: 'None'
         createOption: 'Empty'
         deleteOption: 'Delete'
-        diskSizeGB: '128'
+        diskSizeGB: 128
+        lun: 0
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
+        name: 'datadisk01'
       }
       {
         caching: 'None'
         createOption: 'Empty'
         deleteOption: 'Delete'
-        diskSizeGB: '128'
+        diskSizeGB: 128
+        lun: 1
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
+        name: 'datadisk02'
       }
     ]
     enableAutomaticUpdates: true
@@ -2359,12 +2394,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "osDisk": {
       "value": {
         "caching": "ReadWrite",
-        "createOption": "fromImage",
+        "createOption": "FromImage",
         "deleteOption": "Delete",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
-        }
+        },
+        "name": "osdisk01"
       }
     },
     "osType": {
@@ -2395,19 +2431,23 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "caching": "None",
           "createOption": "Empty",
           "deleteOption": "Delete",
-          "diskSizeGB": "128",
+          "diskSizeGB": 128,
+          "lun": 0,
           "managedDisk": {
             "storageAccountType": "Premium_LRS"
-          }
+          },
+          "name": "datadisk01"
         },
         {
           "caching": "None",
           "createOption": "Empty",
           "deleteOption": "Delete",
-          "diskSizeGB": "128",
+          "diskSizeGB": 128,
+          "lun": 1,
           "managedDisk": {
             "storageAccountType": "Premium_LRS"
-          }
+          },
+          "name": "datadisk02"
         }
       ]
     },
@@ -2590,7 +2630,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 9: _Windows.Nvidia_
+### Example 9: _Deploy a VM with nVidia graphic card_
+
+This instance deploys the module for a VM with dedicated nVidia graphic card.
+
 
 <details>
 
@@ -2623,7 +2666,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     osDisk: {
       caching: 'ReadWrite'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -2686,7 +2729,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "osDisk": {
       "value": {
         "caching": "ReadWrite",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -2717,7 +2760,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 10: _Windows.Ssecmk_
+### Example 10: _Using disk encryption set for the VM._
+
+This instance deploys the module with disk enryption set.
+
 
 <details>
 
@@ -2749,7 +2795,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     ]
     osDisk: {
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         diskEncryptionSet: {
           id: '<id>'
@@ -2763,7 +2809,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     adminPassword: '<adminPassword>'
     dataDisks: [
       {
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           diskEncryptionSet: {
             id: '<id>'
@@ -2822,7 +2868,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "osDisk": {
       "value": {
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "diskEncryptionSet": {
             "id": "<id>"
@@ -2844,7 +2890,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "dataDisks": {
       "value": [
         {
-          "diskSizeGB": "128",
+          "diskSizeGB": 128,
           "managedDisk": {
             "diskEncryptionSet": {
               "id": "<id>"
@@ -3285,7 +3331,6 @@ Specifies the data disks. For security reasons, it is recommended to specify Dis
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diskSizeGB`](#parameter-datadisksdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
-| [`lun`](#parameter-datadiskslun) | int | Specifies the logical unit number of the data disk. |
 | [`managedDisk`](#parameter-datadisksmanageddisk) | object | The managed disk parameters. |
 
 **Optional parameters**
@@ -3295,18 +3340,12 @@ Specifies the data disks. For security reasons, it is recommended to specify Dis
 | [`caching`](#parameter-datadiskscaching) | string | Specifies the caching requirements. |
 | [`createOption`](#parameter-datadiskscreateoption) | string | Specifies how the virtual machine should be created. |
 | [`deleteOption`](#parameter-datadisksdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. |
+| [`lun`](#parameter-datadiskslun) | int | Specifies the logical unit number of the data disk. |
 | [`name`](#parameter-datadisksname) | string | The disk name. |
 
 ### Parameter: `dataDisks.diskSizeGB`
 
 Specifies the size of an empty data disk in gigabytes.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `dataDisks.lun`
-
-Specifies the logical unit number of the data disk.
 
 - Required: Yes
 - Type: int
@@ -3412,6 +3451,13 @@ Specifies whether data disk should be deleted or detached upon VM deletion.
     'Detach'
   ]
   ```
+
+### Parameter: `dataDisks.lun`
+
+Specifies the logical unit number of the data disk.
+
+- Required: No
+- Type: int
 
 ### Parameter: `dataDisks.name`
 

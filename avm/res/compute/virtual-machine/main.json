@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "4147347883619089485"
+      "templateHash": "6543021771312740930"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -233,8 +233,9 @@
           },
           "lun": {
             "type": "int",
+            "nullable": true,
             "metadata": {
-              "description": "Required. Specifies the logical unit number of the data disk."
+              "description": "Optional. Specifies the logical unit number of the data disk."
             }
           },
           "diskSizeGB": {
@@ -944,29 +945,29 @@
               "name": "dataDisks",
               "count": "[length(coalesce(parameters('dataDisks'), createArray()))]",
               "input": {
-                "lun": "[copyIndex('dataDisks')]",
-                "name": "[coalesce(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].name, format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))]",
+                "lun": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'lun'), copyIndex('dataDisks'))]",
+                "name": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))]",
                 "diskSizeGB": "[coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].diskSizeGB]",
-                "createOption": "[coalesce(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].createOption, 'Empty')]",
-                "deleteOption": "[coalesce(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].deleteOption, 'Delete')]",
-                "caching": "[coalesce(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].caching, 'ReadOnly')]",
+                "createOption": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'createoption'), 'Empty')]",
+                "deleteOption": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'deleteOption'), 'Delete')]",
+                "caching": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'caching'), 'ReadOnly')]",
                 "managedDisk": {
                   "storageAccountType": "[coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk.storageAccountType]",
-                  "diskEncryptionSet": "[coalesce(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk.diskEncryptionSet, null())]"
+                  "diskEncryptionSet": "[coalesce(tryGet(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'managedDisk'), 'diskEncryptionSet'), null())]"
                 }
               }
             }
           ],
           "imageReference": "[parameters('imageReference')]",
           "osDisk": {
-            "name": "[coalesce(parameters('osDisk').name, format('{0}-disk-os-01', parameters('name')))]",
-            "createOption": "[coalesce(parameters('osDisk').createOption, 'FromImage')]",
-            "deleteOption": "[coalesce(parameters('osDisk').deleteOption, 'Delete')]",
+            "name": "[coalesce(tryGet(parameters('osDisk'), 'name'), format('{0}-disk-os-01', parameters('name')))]",
+            "createOption": "[coalesce(tryGet(parameters('osDisk'), 'createOption'), 'FromImage')]",
+            "deleteOption": "[coalesce(tryGet(parameters('osDisk'), 'deleteOption'), 'Delete')]",
             "diskSizeGB": "[parameters('osDisk').diskSizeGB]",
-            "caching": "[coalesce(parameters('osDisk').caching, 'ReadOnly')]",
+            "caching": "[coalesce(tryGet(parameters('osDisk'), 'caching'), 'ReadOnly')]",
             "managedDisk": {
               "storageAccountType": "[parameters('osDisk').managedDisk.storageAccountType]",
-              "diskEncryptionSet": "[coalesce(parameters('osDisk').managedDisk.diskEncryptionSet, null())]"
+              "diskEncryptionSet": "[coalesce(tryGet(parameters('osDisk').managedDisk, 'diskEncryptionSet'), null())]"
             }
           }
         },
