@@ -1,5 +1,5 @@
 # This publishes the list of all public bicep modules to an index file that the Bicep vscode extension can read for intellisense using pwsh
-name: Publish module index (pwsh)
+name: "avm.platform.publish-module-index-json"
 on:
   schedule:
     - cron: 45 11 * * * # Run daily at 3:45 AM PST
@@ -21,33 +21,39 @@ jobs:
       - name: Log in to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.PUBLISH_CLIENT_ID }}
-          tenant-id: ${{ secrets.PUBLISH_TENANT_ID }}
-          subscription-id: ${{ secrets.PUBLISH_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.JT_PUBLISH_CLIENT_ID }}
+          tenant-id: ${{ secrets.JT_PUBLISH_TENANT_ID }}
+          subscription-id: ${{ secrets.JT_PUBLISH_SUBSCRIPTION_ID }}
 
       - name: Manage issues
         shell: pwsh
         run: |
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Set-AvmGithubIssueForWorkflow.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Invoke-AvmJsonModuleIndexGeneration.ps1')
 
           $functionInput = @{
-            Repo              = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
-            LimitNumberOfRuns = 500
-            LimitInDays       = 2
-            IgnoreWorkflows   = @()
+            storageAccountName                           = 'stguksjtbrmindextest' #biceplivedatasaprod
+            storageAccountContainer                      = 'bicep-cdn-live-data-container'
+            storageBlobName                              = 'module-index'
+            moduleIndexJsonFilePath                      = 'moduleIndex.json'
+            prefixForLastModuleIndexJsonFile             = 'last-'
+            prefixForCurrentGeneratedModuleIndexJsonFile = 'generated-'
+            doNotMergeWithLastModuleIndexJsonFileVersion = $false
           }
 
           Write-Verbose "Invoke task with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Set-AvmGithubIssueForWorkflow @functionInput -Verbose # -WhatIf
+          Invoke-AvmJsonModuleIndexGeneration @functionInput -Verbose
 
-      - name: Upload artifact
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: moduleIndex.json
-          path: moduleIndex.json
+          name: publish-module-index-json-artifacts
+          path: |
+            moduleIndex.json
+            last-moduleIndex.json
+            generated-moduleIndex.json
 
       - name: Upload to blob storage
         shell: pwsh
@@ -56,7 +62,9 @@ jobs:
             storageAccountName      = 'stguksjtbrmindextest' #biceplivedatasaprod
             storageAccountContainer = 'bicep-cdn-live-data-container'
             storageBlobName         = 'module-index'
-            location                = 'uksouth'
           }
+
+          Write-Verbose "Uploading moduleIndex.json to blob storage account $storageAccountName in container $storageAccountContainer as blob $storageBlobName" -Verbose
           $storageContext = New-AzStorageContext -StorageAccountName $storageAccountInfo.storageAccountName -UseConnectedAccount
           Set-AzStorageBlobContent -Context $storageContext -Container $storageAccountInfo.storageAccountContainer -Blob $storageAccountInfo.storageBlobName -File 'moduleIndex.json' -Force
+          Write-Verbose "Uploaded moduleIndex.json to blob storage account $storageAccountName in container $storageAccountContainer as blob $storageBlobName" -Verbose
