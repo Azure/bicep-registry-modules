@@ -16,10 +16,15 @@ param publicIpPrefixResourceId string?
 param publicIPAllocationMethod string = 'Static'
 
 @description('Optional. A list of availability zones denoting the IP allocated for the resource needs to come from.')
-param zones array = [
-  '1'
-  '2'
-  '3'
+@allowed([
+  1
+  2
+  3
+])
+param zones int[] = [
+  1
+  2
+  3
 ]
 
 @description('Optional. IP address version.')
@@ -131,7 +136,7 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2023-09-01' = {
     name: skuName
     tier: skuTier
   }
-  zones: zones
+  zones: map(zones, zone => string(zone))
   properties: {
     ddosSettings: ddosSettings
     dnsSettings: dnsSettings
@@ -143,7 +148,7 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2023-09-01' = {
         }
       : null
     idleTimeoutInMinutes: idleTimeoutInMinutes
-    ipTags: []
+    ipTags: null // Note: Requires feature 'Microsoft.Network/AllowBringYourOwnPublicIpAddress' to be registered on the subscription
   }
 }
 
@@ -218,7 +223,7 @@ output name string = publicIpAddress.name
 output resourceId string = publicIpAddress.id
 
 @description('The public IP address of the public IP address resource.')
-output ipAddress string = contains(publicIpAddress.properties, 'ipAddress') ? publicIpAddress.properties.ipAddress : ''
+output ipAddress string = publicIpAddress.properties.?ipAddress ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = publicIpAddress.location
