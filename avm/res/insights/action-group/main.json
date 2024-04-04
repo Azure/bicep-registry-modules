@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "9236568032649497201"
+      "version": "0.25.53.49325",
+      "templateHash": "452819506402297284"
     },
     "name": "Action Groups",
     "description": "This module deploys an Action Group.",

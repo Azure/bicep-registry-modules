@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "576890491523219712"
+      "version": "0.25.53.49325",
+      "templateHash": "8352567375549268667"
     },
     "name": "Firewall Policies",
     "description": "This module deploys a Firewall Policy.",
@@ -136,7 +136,8 @@
       "defaultValue": "Standard",
       "allowedValues": [
         "Premium",
-        "Standard"
+        "Standard",
+        "Basic"
       ],
       "metadata": {
         "description": "Optional. Tier of Firewall Policy."
@@ -310,8 +311,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "7306629689940419640"
+              "version": "0.25.53.49325",
+              "templateHash": "17945865046689186214"
             },
             "name": "Firewall Policy Rule Collection Groups",
             "description": "This module deploys a Firewall Policy Rule Collection Group.",

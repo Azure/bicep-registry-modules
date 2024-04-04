@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module applicationSecurityGroup 'br/public:avm/res/network/application-security-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nasgmin'
+  name: 'applicationSecurityGroupDeployment'
   params: {
     // Required parameters
     name: 'nasgmin001'
@@ -90,7 +90,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module applicationSecurityGroup 'br/public:avm/res/network/application-security-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nasgmax'
+  name: 'applicationSecurityGroupDeployment'
   params: {
     // Required parameters
     name: 'nasgmax001'
@@ -196,7 +196,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module applicationSecurityGroup 'br/public:avm/res/network/application-security-group:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nasgwaf'
+  name: 'applicationSecurityGroupDeployment'
   params: {
     // Required parameters
     name: 'nasgwaf001'

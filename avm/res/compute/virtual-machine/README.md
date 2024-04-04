@@ -9,6 +9,7 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -34,11 +35,12 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/virtual-machine:<version>`.
 
 - [Using automanage for the VM.](#example-1-using-automanage-for-the-vm)
-- [Using only defaults](#example-2-using-only-defaults)
-- [WAF-aligned](#example-3-waf-aligned)
-- [Using only defaults](#example-4-using-only-defaults)
-- [Using large parameter set](#example-5-using-large-parameter-set)
-- [Using disk encryption set for the VM.](#example-6-using-disk-encryption-set-for-the-vm)
+- [Using only defaults for Linux](#example-2-using-only-defaults-for-linux)
+- [Using large parameter set for Linux](#example-3-using-large-parameter-set-for-linux)
+- [WAF-aligned](#example-4-waf-aligned)
+- [Using only defaults for Windows](#example-5-using-only-defaults-for-windows)
+- [Using large parameter set for Windows](#example-6-using-large-parameter-set-for-windows)
+- [Using disk encryption set for the VM.](#example-7-using-disk-encryption-set-for-the-vm)
 
 ### Example 1: _Using automanage for the VM._
 
@@ -51,7 +53,7 @@ This instance deploys the module with registering to an automation account.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmlinatmg'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
@@ -190,7 +192,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 2: _Using only defaults for Linux_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -201,7 +203,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmlinmin'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
@@ -328,9 +330,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _Using large parameter set for Linux_
 
-This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
+This instance deploys the module with most of its features enabled.
 
 
 <details>
@@ -339,7 +341,579 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmwinwaf'
+  name: 'virtualMachineDeployment'
+  params: {
+    // Required parameters
+    adminUsername: 'localAdministrator'
+    imageReference: {
+      offer: '0001-com-ubuntu-server-focal'
+      publisher: 'Canonical'
+      sku: '<sku>'
+      version: 'latest'
+    }
+    name: 'cvmlinmax'
+    nicConfigurations: [
+      {
+        deleteOption: 'Delete'
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        ipConfigurations: [
+          {
+            applicationSecurityGroups: [
+              {
+                id: '<id>'
+              }
+            ]
+            diagnosticSettings: [
+              {
+                eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+                eventHubName: '<eventHubName>'
+                metricCategories: [
+                  {
+                    category: 'AllMetrics'
+                  }
+                ]
+                name: 'customSetting'
+                storageAccountResourceId: '<storageAccountResourceId>'
+                workspaceResourceId: '<workspaceResourceId>'
+              }
+            ]
+            loadBalancerBackendAddressPools: [
+              {
+                id: '<id>'
+              }
+            ]
+            name: 'ipconfig01'
+            pipConfiguration: {
+              publicIpNameSuffix: '-pip-01'
+              roleAssignments: [
+                {
+                  principalId: '<principalId>'
+                  principalType: 'ServicePrincipal'
+                  roleDefinitionIdOrName: 'Reader'
+                }
+              ]
+            }
+            subnetResourceId: '<subnetResourceId>'
+            zones: [
+              '1'
+              '2'
+              '3'
+            ]
+          }
+        ]
+        nicSuffix: '-nic-01'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+      }
+    ]
+    osDisk: {
+      caching: 'ReadOnly'
+      createOption: 'fromImage'
+      deleteOption: 'Delete'
+      diskSizeGB: '128'
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    osType: 'Linux'
+    vmSize: 'Standard_DS2_v2'
+    // Non-required parameters
+    availabilityZone: 1
+    backupPolicyName: '<backupPolicyName>'
+    backupVaultName: '<backupVaultName>'
+    backupVaultResourceGroup: '<backupVaultResourceGroup>'
+    computerName: 'linvm1'
+    dataDisks: [
+      {
+        caching: 'ReadWrite'
+        createOption: 'Empty'
+        deleteOption: 'Delete'
+        diskSizeGB: '128'
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
+      }
+      {
+        caching: 'ReadWrite'
+        createOption: 'Empty'
+        deleteOption: 'Delete'
+        diskSizeGB: '128'
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
+      }
+    ]
+    disablePasswordAuthentication: true
+    enableAutomaticUpdates: true
+    encryptionAtHost: false
+    extensionAadJoinConfig: {
+      enabled: true
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionAzureDiskEncryptionConfig: {
+      enabled: true
+      settings: {
+        EncryptionOperation: 'EnableEncryption'
+        KekVaultResourceId: '<KekVaultResourceId>'
+        KeyEncryptionAlgorithm: 'RSA-OAEP'
+        KeyEncryptionKeyURL: '<KeyEncryptionKeyURL>'
+        KeyVaultResourceId: '<KeyVaultResourceId>'
+        KeyVaultURL: '<KeyVaultURL>'
+        ResizeOSDisk: 'false'
+        VolumeType: 'All'
+      }
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionCustomScriptConfig: {
+      enabled: true
+      fileData: [
+        {
+          storageAccountId: '<storageAccountId>'
+          uri: '<uri>'
+        }
+      ]
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionCustomScriptProtectedSetting: {
+      commandToExecute: '<commandToExecute>'
+    }
+    extensionDependencyAgentConfig: {
+      enabled: true
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionDSCConfig: {
+      enabled: false
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionMonitoringAgentConfig: {
+      enabled: true
+      monitoringWorkspaceResourceId: '<monitoringWorkspaceResourceId>'
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionNetworkWatcherAgentConfig: {
+      enabled: true
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    patchMode: 'AutomaticByPlatform'
+    publicKeys: [
+      {
+        keyData: '<keyData>'
+        path: '/home/localAdministrator/.ssh/authorized_keys'
+      }
+    ]
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminUsername": {
+      "value": "localAdministrator"
+    },
+    "imageReference": {
+      "value": {
+        "offer": "0001-com-ubuntu-server-focal",
+        "publisher": "Canonical",
+        "sku": "<sku>",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmlinmax"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "deleteOption": "Delete",
+          "diagnosticSettings": [
+            {
+              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+              "eventHubName": "<eventHubName>",
+              "metricCategories": [
+                {
+                  "category": "AllMetrics"
+                }
+              ],
+              "name": "customSetting",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ],
+          "ipConfigurations": [
+            {
+              "applicationSecurityGroups": [
+                {
+                  "id": "<id>"
+                }
+              ],
+              "diagnosticSettings": [
+                {
+                  "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+                  "eventHubName": "<eventHubName>",
+                  "metricCategories": [
+                    {
+                      "category": "AllMetrics"
+                    }
+                  ],
+                  "name": "customSetting",
+                  "storageAccountResourceId": "<storageAccountResourceId>",
+                  "workspaceResourceId": "<workspaceResourceId>"
+                }
+              ],
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "<id>"
+                }
+              ],
+              "name": "ipconfig01",
+              "pipConfiguration": {
+                "publicIpNameSuffix": "-pip-01",
+                "roleAssignments": [
+                  {
+                    "principalId": "<principalId>",
+                    "principalType": "ServicePrincipal",
+                    "roleDefinitionIdOrName": "Reader"
+                  }
+                ]
+              },
+              "subnetResourceId": "<subnetResourceId>",
+              "zones": [
+                "1",
+                "2",
+                "3"
+              ]
+            }
+          ],
+          "nicSuffix": "-nic-01",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Reader"
+            }
+          ]
+        }
+      ]
+    },
+    "osDisk": {
+      "value": {
+        "caching": "ReadOnly",
+        "createOption": "fromImage",
+        "deleteOption": "Delete",
+        "diskSizeGB": "128",
+        "managedDisk": {
+          "storageAccountType": "Premium_LRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Linux"
+    },
+    "vmSize": {
+      "value": "Standard_DS2_v2"
+    },
+    // Non-required parameters
+    "availabilityZone": {
+      "value": 1
+    },
+    "backupPolicyName": {
+      "value": "<backupPolicyName>"
+    },
+    "backupVaultName": {
+      "value": "<backupVaultName>"
+    },
+    "backupVaultResourceGroup": {
+      "value": "<backupVaultResourceGroup>"
+    },
+    "computerName": {
+      "value": "linvm1"
+    },
+    "dataDisks": {
+      "value": [
+        {
+          "caching": "ReadWrite",
+          "createOption": "Empty",
+          "deleteOption": "Delete",
+          "diskSizeGB": "128",
+          "managedDisk": {
+            "storageAccountType": "Premium_LRS"
+          }
+        },
+        {
+          "caching": "ReadWrite",
+          "createOption": "Empty",
+          "deleteOption": "Delete",
+          "diskSizeGB": "128",
+          "managedDisk": {
+            "storageAccountType": "Premium_LRS"
+          }
+        }
+      ]
+    },
+    "disablePasswordAuthentication": {
+      "value": true
+    },
+    "enableAutomaticUpdates": {
+      "value": true
+    },
+    "encryptionAtHost": {
+      "value": false
+    },
+    "extensionAadJoinConfig": {
+      "value": {
+        "enabled": true,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
+      }
+    },
+    "extensionAzureDiskEncryptionConfig": {
+      "value": {
+        "enabled": true,
+        "settings": {
+          "EncryptionOperation": "EnableEncryption",
+          "KekVaultResourceId": "<KekVaultResourceId>",
+          "KeyEncryptionAlgorithm": "RSA-OAEP",
+          "KeyEncryptionKeyURL": "<KeyEncryptionKeyURL>",
+          "KeyVaultResourceId": "<KeyVaultResourceId>",
+          "KeyVaultURL": "<KeyVaultURL>",
+          "ResizeOSDisk": "false",
+          "VolumeType": "All"
+        },
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
+      }
+    },
+    "extensionCustomScriptConfig": {
+      "value": {
+        "enabled": true,
+        "fileData": [
+          {
+            "storageAccountId": "<storageAccountId>",
+            "uri": "<uri>"
+          }
+        ],
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
+      }
+    },
+    "extensionCustomScriptProtectedSetting": {
+      "value": {
+        "commandToExecute": "<commandToExecute>"
+      }
+    },
+    "extensionDependencyAgentConfig": {
+      "value": {
+        "enabled": true,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
+      }
+    },
+    "extensionDSCConfig": {
+      "value": {
+        "enabled": false,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
+      }
+    },
+    "extensionMonitoringAgentConfig": {
+      "value": {
+        "enabled": true,
+        "monitoringWorkspaceResourceId": "<monitoringWorkspaceResourceId>",
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
+      }
+    },
+    "extensionNetworkWatcherAgentConfig": {
+      "value": {
+        "enabled": true,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "patchMode": {
+      "value": "AutomaticByPlatform"
+    },
+    "publicKeys": {
+      "value": [
+        {
+          "keyData": "<keyData>",
+          "path": "/home/localAdministrator/.ssh/authorized_keys"
+        }
+      ]
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Well-Architected Framework for Windows.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'VMAdmin'
@@ -936,7 +1510,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using only defaults_
+### Example 5: _Using only defaults for Windows_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -947,7 +1521,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmwinmin'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
@@ -1054,7 +1628,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 5: _Using large parameter set_
+### Example 6: _Using large parameter set for Windows_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1065,7 +1639,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmwinmax'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'VMAdmin'
@@ -1272,6 +1846,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     extensionMonitoringAgentConfig: {
       enabled: true
+      monitoringWorkspaceResourceId: '<monitoringWorkspaceResourceId>'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -1589,6 +2164,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionMonitoringAgentConfig": {
       "value": {
         "enabled": true,
+        "monitoringWorkspaceResourceId": "<monitoringWorkspaceResourceId>",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -1662,7 +2238,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 6: _Using disk encryption set for the VM._
+### Example 7: _Using disk encryption set for the VM._
 
 This instance deploys the module with disk enryption set.
 
@@ -1673,7 +2249,7 @@ This instance deploys the module with disk enryption set.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmwincmk'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'VMAdministrator'
@@ -2621,7 +3197,772 @@ Do not provide a value! This date value is used to generate a registration token
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/res/network/network-interface:0.2.2` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.2.1` | Remote reference |
+
+## Notes
+
+### Automanage considerations
+
+Enabling automanage triggers the creation of additional resources outside of the specific virtual machine deployment, such as:
+- an `Automanage-Automate-<timestamp>` in the same Virtual Machine Resource Group and linking to the log analytics workspace leveraged by Azure Security Center.
+- a `DefaultResourceGroup-<locationId>` resource group hosting a recovery services vault `DefaultBackupVault-<location>` where virtual machine backups are stored
+For further details on automanage please refer to [Automanage virtual machines](https://learn.microsoft.com/en-us/azure/automanage/automanage-virtual-machines).
+
+### Parameter Usage: `imageReference`
+
+#### Marketplace images
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"imageReference": {
+    "value": {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2022-datacenter-azure-edition",
+        "version": "latest"
+    }
+}
+```
+
+</details>
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+imageReference: {
+      publisher: 'MicrosoftWindowsServer'
+      offer: 'WindowsServer'
+      sku: '2022-datacenter-azure-edition'
+      version: 'latest'
+}
+```
+
+</details>
+<p>
+
+#### Custom images
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"imageReference": {
+    "value": {
+        "id": "/subscriptions/12345-6789-1011-1213-15161718/resourceGroups/rg-name/providers/Microsoft.Compute/images/imagename"
+    }
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+imageReference: {
+    id: '/subscriptions/12345-6789-1011-1213-15161718/resourceGroups/rg-name/providers/Microsoft.Compute/images/imagename'
+}
+```
+
+</details>
+<p>
+
+### Parameter Usage: `plan`
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"plan": {
+    "value": {
+        "name": "qvsa-25",
+        "product": "qualys-virtual-scanner",
+        "publisher": "qualysguard"
+    }
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+plan: {
+    name: 'qvsa-25'
+    product: 'qualys-virtual-scanner'
+    publisher: 'qualysguard'
+}
+```
+
+</details>
+<p>
+
+### Parameter Usage: `osDisk`
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"osDisk": {
+    "value": {
+        "createOption": "fromImage",
+        "deleteOption": "Delete", // Optional. Can be 'Delete' or 'Detach'
+        "diskSizeGB": "128",
+        "managedDisk": {
+            "storageAccountType": "Premium_LRS",
+             "diskEncryptionSet": { // Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.
+                        "id": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/diskEncryptionSets/<desName>"
+              }
+        }
+    }
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+osDisk: {
+    createOption: 'fromImage'
+    deleteOption: 'Delete' // Optional. Can be 'Delete' or 'Detach'
+    diskSizeGB: '128'
+    managedDisk: {
+        storageAccountType: 'Premium_LRS'
+        diskEncryptionSet: { // Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.
+            id: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/diskEncryptionSets/<desName>'
+        }
+    }
+}
+```
+
+</details>
+<p>
+
+### Parameter Usage: `dataDisks`
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"dataDisks": {
+    "value": [
+        {
+            "caching": "ReadOnly",
+            "createOption": "Empty",
+            "deleteOption": "Delete", // Optional. Can be 'Delete' or 'Detach'
+            "diskSizeGB": "256",
+            "managedDisk": {
+                "storageAccountType": "Premium_LRS",
+                "diskEncryptionSet": { // Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.
+                    "id": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/diskEncryptionSets/<desName>"
+                }
+            }
+        },
+        {
+            "caching": "ReadOnly",
+            "createOption": "Empty",
+            "diskSizeGB": "128",
+            "managedDisk": {
+                "storageAccountType": "Premium_LRS",
+                "diskEncryptionSet": { // Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.
+                    "id": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/diskEncryptionSets/<desName>"
+                }
+            }
+        }
+    ]
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+dataDisks: [
+    {
+        caching: 'ReadOnly'
+        createOption: 'Empty'
+        deleteOption: 'Delete' // Optional. Can be 'Delete' or 'Detach'
+        diskSizeGB: '256'
+        managedDisk: {
+            storageAccountType: 'Premium_LRS'
+            diskEncryptionSet: { // Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.
+                id: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/diskEncryptionSets/<desName>'
+            }
+        }
+    }
+    {
+        caching: 'ReadOnly'
+        createOption: 'Empty'
+        diskSizeGB: '128'
+        managedDisk: {
+            storageAccountType: 'Premium_LRS'
+            diskEncryptionSet: { // Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.
+                id: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/diskEncryptionSets/<desName>'
+            }
+        }
+    }
+]
+```
+
+</details>
+<p>
+
+### Parameter Usage: `nicConfigurations`
+
+Comments:
+- The field `nicSuffix` and `subnetResourceId` are mandatory.
+- If `enablePublicIP` is set to true, then `publicIpNameSuffix` is also mandatory.
+- Each IP config needs to have the mandatory field `name`.
+- If not disabled, `enableAcceleratedNetworking` is considered `true` by default and requires the VM to be deployed with a supported OS and VM size.
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"nicConfigurations": {
+  "value": [
+    {
+      "nicSuffix": "-nic-01",
+      "deleteOption": "Delete", // Optional. Can be 'Delete' or 'Detach'
+      "ipConfigurations": [
+        {
+          "name": "ipconfig1",
+          "subnetResourceId": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>",
+          "pipConfiguration": {
+            "publicIpNameSuffix": "-pip-01",
+            "roleAssignments": [
+              {
+                "roleDefinitionIdOrName": "Reader",
+                "principalIds": [
+                  "<principalId>"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "ipconfig2",
+          "subnetResourceId": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>",
+        }
+      ],
+      "nsgId": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/networkSecurityGroups/<nsgName>",
+      "roleAssignments": [
+        {
+          "roleDefinitionIdOrName": "Reader",
+          "principalIds": [
+            "<principalId>"
+          ]
+        }
+      ]
+    },
+    {
+      "nicSuffix": "-nic-02",
+      "ipConfigurations": [
+        {
+          "name": "ipconfig1",
+          "subnetResourceId": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>",
+          "pipConfiguration": {
+            "publicIpNameSuffix": "-pip-02"
+          }
+        },
+        {
+          "name": "ipconfig2",
+          "subnetResourceId": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>",
+          "privateIPAllocationMethod": "Static",
+          "privateIPAddress": "10.0.0.9"
+        }
+      ]
+    }
+  ]
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+nicConfigurations: {
+  value: [
+    {
+      nicSuffix: '-nic-01'
+      deleteOption: 'Delete' // Optional. Can be 'Delete' or 'Detach'
+      ipConfigurations: [
+        {
+          name: 'ipconfig1'
+          subnetResourceId: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>'
+          pipConfiguration: {
+            publicIpNameSuffix: '-pip-01'
+            roleAssignments: [
+              {
+                roleDefinitionIdOrName: 'Reader'
+                principalIds: [
+                  '<principalId>'
+                ]
+              }
+            ]
+          }
+        }
+        {
+          name: 'ipconfig2'
+          subnetResourceId: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>'
+        }
+      ]
+      nsgId: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/networkSecurityGroups/<nsgName>'
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Reader'
+          principalIds: [
+            '<principalId>'
+          ]
+        }
+      ]
+    }
+    {
+      nicSuffix: '-nic-02'
+      ipConfigurations: [
+        {
+          name: 'ipconfig1'
+          subnetResourceId: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>'
+          pipConfiguration: {
+            publicIpNameSuffix: '-pip-02'
+          }
+        }
+        {
+          name: 'ipconfig2'
+          subnetResourceId: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>'
+          privateIPAllocationMethod: 'Static'
+          privateIPAddress: '10.0.0.9'
+        }
+      ]
+    }
+  ]
+}
+```
+
+</details>
+<p>
+
+### Parameter Usage: `configurationProfileAssignments`
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"configurationProfileAssignments": {
+    "value": [
+        "/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction",
+        "/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest"
+    ]
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+configurationProfileAssignments: [
+    '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
+    '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest'
+]
+```
+
+</details>
+<p>
+
+### Parameter Usage: `extensionDomainJoinConfig`
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"extensionDomainJoinConfig": {
+  "value": {
+    "enabled": true,
+    "settings": {
+      "name": "contoso.com",
+      "user": "test.user@testcompany.com",
+      "ouPath": "OU=testOU; DC=contoso; DC=com",
+      "restart": true,
+      "options": 3
+    }
+  }
+},
+"extensionDomainJoinPassword": {
+  "reference": {
+    "keyVault": {
+      "id": "/subscriptions/<<subscriptionId>/resourceGroups/myRG/providers/Microsoft.KeyVault/vaults/myKvlt"
+    },
+    "secretName": "domainJoinUser02-Password"
+  }
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+extensionDomainJoinConfig: {
+    enabled: true
+    settings: {
+      name: 'contoso.com'
+      user: 'test.user@testcompany.com'
+      ouPath: 'OU=testOU; DC=contoso; DC=com'
+      restart: true
+      options: 3
+    }
+}
+resource kv1 'Microsoft.KeyVault/vaults@2019-09-01' existing = {
+  name: 'adp-#_namePrefix_#-az-kv-x-001'
+  scope: resourceGroup('[[subscriptionId]]','validation-rg')
+}
+extensionDomainJoinPassword: kv1.getSecret('domainJoinUser02-Password')
+```
+
+</details>
+<p>
+
+### Parameter Usage: `extensionAntiMalwareConfig`
+
+Only for OSType Windows
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"extensionAntiMalwareConfig": {
+  "value": {
+    "enabled": true,
+    "settings": {
+      "AntimalwareEnabled": true,
+      "Exclusions": {
+        "Extensions": ".log;.ldf",
+        "Paths": "D:\\IISlogs;D:\\DatabaseLogs",
+        "Processes": "mssence.svc"
+      },
+      "RealtimeProtectionEnabled": true,
+      "ScheduledScanSettings": {
+        "isEnabled": "true",
+        "scanType": "Quick",
+        "day": "7",
+        "time": "120"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+extensionAntiMalwareConfig: {
+    enabled: true
+    settings: {
+        AntimalwareEnabled: true
+        Exclusions: {
+            Extensions: '.log;.ldf'
+            Paths: 'D:\\IISlogs;D:\\DatabaseLogs'
+            Processes: 'mssence.svc'
+        }
+        RealtimeProtectionEnabled: true
+        ScheduledScanSettings: {
+            isEnabled: 'true'
+            scanType: 'Quick'
+            day: '7'
+            time: '120'
+        }
+    }
+}
+```
+
+</details>
+<p>
+
+### Parameter Usage: `extensionAzureDiskEncryptionConfig`
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"extensionAzureDiskEncryptionConfig": {
+  // Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys.
+  "value": {
+    "enabled": true,
+    "settings": {
+      "EncryptionOperation": "EnableEncryption",
+      "KeyVaultURL": "https://mykeyvault.vault.azure.net/",
+      "KeyVaultResourceId": "/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/adp-sxx-az-kv-x-001",
+      "KeyEncryptionKeyURL": "https://mykeyvault.vault.azure.net/keys/keyEncryptionKey/bc3bb46d95c64367975d722f473eeae5", // ID must be updated for new keys
+      "KekVaultResourceId": "/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/adp-sxx-az-kv-x-001",
+      "KeyEncryptionAlgorithm": "RSA-OAEP", //'RSA-OAEP'/'RSA-OAEP-256'/'RSA1_5'
+      "VolumeType": "All", //'OS'/'Data'/'All'
+      "ResizeOSDisk": "false"
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+extensionAzureDiskEncryptionConfig: {
+    // Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys.
+    enabled: true
+    settings: {
+        EncryptionOperation: 'EnableEncryption'
+        KeyVaultURL: 'https://mykeyvault.vault.azure.net/'
+        KeyVaultResourceId: '/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/adp-sxx-az-kv-x-001'
+        KeyEncryptionKeyURL: 'https://mykeyvault.vault.azure.net/keys/keyEncryptionKey/bc3bb46d95c64367975d722f473eeae5' // ID must be updated for new keys
+        KekVaultResourceId: '/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/adp-sxx-az-kv-x-001'
+        KeyEncryptionAlgorithm: 'RSA-OAEP' //'RSA-OAEP'/'RSA-OAEP-256'/'RSA1_5'
+        VolumeType: 'All' //'OS'/'Data'/'All'
+        ResizeOSDisk: 'false'
+    }
+}
+```
+
+</details>
+<p>
+
+### Parameter Usage: `extensionDSCConfig`
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"extensionDSCConfig": {
+  "value": {
+    {
+      "enabled": true,
+      "settings": {
+        "wmfVersion": "latest",
+        "configuration": {
+          "url": "http://validURLToConfigLocation",
+          "script": "ConfigurationScript.ps1",
+          "function": "ConfigurationFunction"
+        },
+        "configurationArguments": {
+          "argument1": "Value1",
+          "argument2": "Value2"
+        },
+        "configurationData": {
+          "url": "https://foo.psd1"
+        },
+        "privacy": {
+          "dataCollection": "enable"
+        },
+        "advancedOptions": {
+          "forcePullAndApply": false,
+          "downloadMappings": {
+            "specificDependencyKey": "https://myCustomDependencyLocation"
+          }
+        }
+      },
+      "protectedSettings": {
+        "configurationArguments": {
+          "mySecret": "MyPlaceholder"
+        },
+        "configurationUrlSasToken": "MyPlaceholder",
+        "configurationDataUrlSasToken": "MyPlaceholder"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+extensionDSCConfig: {
+    {
+      enabled: true
+      settings: {
+          wmfVersion: 'latest'
+          configuration: {
+            url: 'http://validURLToConfigLocation'
+            script: 'ConfigurationScript.ps1'
+            function: 'ConfigurationFunction'
+          }
+          configurationArguments: {
+            argument1: 'Value1'
+            argument2: 'Value2'
+          }
+          configurationData: {
+            url: 'https://foo.psd1'
+          }
+          privacy: {
+            dataCollection: 'enable'
+          }
+          advancedOptions: {
+            forcePullAndApply: false
+            downloadMappings: {
+              specificDependencyKey: 'https://myCustomDependencyLocation'
+            }
+          }
+        }
+        protectedSettings: {
+          configurationArguments: {
+            mySecret: 'MyPlaceholder'
+          }
+          configurationUrlSasToken: 'MyPlaceholder'
+          configurationDataUrlSasToken: 'MyPlaceholder'
+        }
+    }
+}
+```
+
+</details>
+<p>
+
+### Parameter Usage: `extensionCustomScriptConfig`
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"extensionCustomScriptConfig": {
+  "value": {
+    "enabled": true,
+    "fileData": [
+      //storage accounts with SAS token requirement
+      {
+        "uri": "https://mystorageaccount.blob.core.windows.net/avdscripts/File1.ps1",
+        "storageAccountId": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rgName/providers/Microsoft.Storage/storageAccounts/storageAccountName"
+      },
+      {
+        "uri": "https://mystorageaccount.blob.core.windows.net/avdscripts/File2.ps1",
+        "storageAccountId": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rgName/providers/Microsoft.Storage/storageAccounts/storageAccountName"
+      },
+      //storage account with public container (no SAS token is required) OR other public URL (not a storage account)
+      {
+        "uri": "https://github.com/myProject/File3.ps1",
+        "storageAccountId": ""
+      }
+    ],
+    "settings": {
+      "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File testscript.ps1"
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+extensionCustomScriptConfig: {
+    enabled: true
+    fileData: [
+      //storage accounts with SAS token requirement
+      {
+        uri: 'https://mystorageaccount.blob.core.windows.net/avdscripts/File1.ps1'
+        storageAccountId: '/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rgName/providers/Microsoft.Storage/storageAccounts/storageAccountName'
+      }
+      {
+        uri: 'https://mystorageaccount.blob.core.windows.net/avdscripts/File2.ps1'
+        storageAccountId: '/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rgName/providers/Microsoft.Storage/storageAccounts/storageAccountName'
+      }
+      //storage account with public container (no SAS token is required) OR other public URL (not a storage account)
+      {
+        uri: 'https://github.com/myProject/File3.ps1'
+        storageAccountId: ''
+      }
+    ]
+    settings: {
+      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File testscript.ps1'
+    }
+}
+```
+
+</details>
+<p>
+
+### Parameter Usage: `extensionCustomScriptProtectedSetting`
+
+This is used if you are going to use secrets or other sensitive information that you don't want to be visible in the deployment and logs.
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"extensionCustomScriptProtectedSetting": {
+  "value": [
+    {
+      "commandToExecute": "mycommandToRun -someParam MYSECRET"
+    }
+  ]
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+extensionCustomScriptProtectedSetting: [
+    {
+        commandToExecute: 'mycommandToRun -someParam MYSECRET'
+    }
+]
+```
+
+</details>
+<p>
 
 ## Data Collection
 
