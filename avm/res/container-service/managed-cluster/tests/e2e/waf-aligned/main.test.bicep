@@ -79,7 +79,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
-        minCount: 1
+        minCount: 3
         mode: 'System'
         name: 'systempool'
         osDiskSizeGB: 0
@@ -95,11 +95,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         availabilityZones: [
           '3'
         ]
-        count: 2
+        count: 3
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
-        minCount: 1
+        minCount: 3
         minPods: 2
         mode: 'User'
         name: 'userpool1'
@@ -120,11 +120,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         availabilityZones: [
           '3'
         ]
-        count: 2
+        count: 3
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
-        minCount: 1
+        minCount: 3
         minPods: 2
         mode: 'User'
         name: 'userpool2'

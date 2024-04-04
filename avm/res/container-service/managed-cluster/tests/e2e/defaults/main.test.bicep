@@ -44,10 +44,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     primaryAgentPoolProfile: [
       {
         name: 'systempool'
-        count: 1
+        count: 3
         vmSize: 'Standard_DS2_v2'
         mode: 'System'
       }
     ]
+    autoUpgradeProfileUpgradeChannel: 'stable'
   }
 }]
