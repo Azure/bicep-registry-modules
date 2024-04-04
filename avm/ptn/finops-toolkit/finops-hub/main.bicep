@@ -178,7 +178,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-/*resource defaultTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+resource defaultTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
   if (enableTelemetry) {
     name: 'pid-${telemetryId}-${uniqueString(deployment().name, location)}'
     properties: {
@@ -196,7 +196,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
       }
     }
   }
-*/
 
 //==============================================================================
 // Outputs
