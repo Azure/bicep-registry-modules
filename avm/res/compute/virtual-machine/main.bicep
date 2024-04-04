@@ -475,27 +475,27 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
     storageProfile: {
       imageReference: imageReference
       osDisk: {
-        name: osDisk.name ?? '${name}-disk-os-01'
-        createOption: osDisk.createOption ?? 'FromImage'
-        deleteOption: osDisk.deleteOption ?? 'Delete'
+        name: osDisk.?name ?? '${name}-disk-os-01'
+        createOption: osDisk.?createOption ?? 'FromImage'
+        deleteOption: osDisk.?deleteOption ?? 'Delete'
         diskSizeGB: osDisk.diskSizeGB
-        caching: osDisk.caching ?? 'ReadOnly'
+        caching: osDisk.?caching ?? 'ReadOnly'
         managedDisk: {
           storageAccountType: osDisk.managedDisk.storageAccountType
-          diskEncryptionSet: osDisk.managedDisk.diskEncryptionSet ?? null
+          diskEncryptionSet: osDisk.managedDisk.?diskEncryptionSet ?? null
         }
       }
       dataDisks: [
         for (dataDisk, index) in dataDisks ?? []: {
-          lun: dataDisk.lun ?? index
-          name: dataDisk.name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
+          lun: dataDisk.?lun ?? index
+          name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
           diskSizeGB: dataDisk.diskSizeGB
-          createOption: dataDisk.createOption ?? 'Empty'
-          deleteOption: dataDisk.deleteOption ?? 'Delete'
-          caching: dataDisk.caching ?? 'ReadOnly'
+          createOption: dataDisk.?createoption ?? 'Empty'
+          deleteOption: dataDisk.?deleteOption ?? 'Delete'
+          caching: dataDisk.?caching ?? 'ReadOnly'
           managedDisk: {
             storageAccountType: dataDisk.managedDisk.storageAccountType
-            diskEncryptionSet: dataDisk.managedDisk.diskEncryptionSet ?? null
+            diskEncryptionSet: dataDisk.?managedDisk.?diskEncryptionSet ?? null
           }
         }
       ]
