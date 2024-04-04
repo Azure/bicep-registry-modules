@@ -263,7 +263,7 @@ param autoScalerProfileSkipNodesWithSystemPods string = 'true'
   'stable'
 ])
 @description('Optional. Auto-upgrade channel on the AKS cluster.')
-param autoUpgradeProfileUpgradeChannel string?
+param autoUpgradeProfileUpgradeChannel string = 'stable'
 
 @description('Optional. Running in Kubenet is disabled by default due to the security related nature of AAD Pod Identity and the risks of IP spoofing.')
 param podIdentityProfileAllowNetworkPluginKubenet bool = false

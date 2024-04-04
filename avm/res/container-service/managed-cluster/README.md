@@ -569,7 +569,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     // Non-required parameters
-    autoUpgradeProfileUpgradeChannel: 'stable'
     location: '<location>'
     managedIdentities: {
       systemAssigned: true
@@ -605,9 +604,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       ]
     },
     // Non-required parameters
-    "autoUpgradeProfileUpgradeChannel": {
-      "value": "stable"
-    },
     "location": {
       "value": "<location>"
     },
@@ -1216,7 +1212,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         vmSize: 'Standard_DS2_v2'
       }
     ]
-    autoUpgradeProfileUpgradeChannel: 'stable'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1362,9 +1357,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "vmSize": "Standard_DS2_v2"
         }
       ]
-    },
-    "autoUpgradeProfileUpgradeChannel": {
-      "value": "stable"
     },
     "diagnosticSettings": {
       "value": [
@@ -2214,6 +2206,7 @@ Auto-upgrade channel on the AKS cluster.
 
 - Required: No
 - Type: string
+- Default: `'stable'`
 - Allowed:
   ```Bicep
   [

@@ -141,7 +141,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         vmSize: 'Standard_DS2_v2'
       }
     ]
-    autoUpgradeProfileUpgradeChannel: 'stable'
     networkPlugin: 'azure'
     networkPolicy: 'azure'
     skuTier: 'Standard'

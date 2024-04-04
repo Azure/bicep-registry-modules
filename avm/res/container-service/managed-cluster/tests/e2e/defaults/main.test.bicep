@@ -49,6 +49,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         mode: 'System'
       }
     ]
-    autoUpgradeProfileUpgradeChannel: 'stable'
   }
 }]
