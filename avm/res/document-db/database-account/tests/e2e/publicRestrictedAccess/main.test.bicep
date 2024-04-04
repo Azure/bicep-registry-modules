@@ -59,7 +59,7 @@ module testDeployment '../../../main.bicep' = {
     networkRestrictions: {
       publicNetworkAccess: 'Enabled'
       networkAclBypass: 'AzureServices'
-      ipRules: [ '79.0.0.0', '80.0.0.0' ]
+      ipRules: ['79.0.0.0', '80.0.0.0']
       virtualNetworkRules: [
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
