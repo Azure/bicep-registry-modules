@@ -36,30 +36,32 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    managementEndpoint: 'https://${namePrefix}${serviceShort}001.westeurope.cloudapp.azure.com:19080'
-    reliabilityLevel: 'None'
-    nodeTypes: [
-      {
-        applicationPorts: {
-          endPort: 30000
-          startPort: 20000
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      managementEndpoint: 'https://${namePrefix}${serviceShort}001.westeurope.cloudapp.azure.com:19080'
+      reliabilityLevel: 'None'
+      nodeTypes: [
+        {
+          applicationPorts: {
+            endPort: 30000
+            startPort: 20000
+          }
+          clientConnectionEndpointPort: 19000
+          durabilityLevel: 'Bronze'
+          ephemeralPorts: {
+            endPort: 65534
+            startPort: 49152
+          }
+          httpGatewayEndpointPort: 19080
+          isPrimary: true
+          name: 'Node01'
         }
-        clientConnectionEndpointPort: 19000
-        durabilityLevel: 'Bronze'
-        ephemeralPorts: {
-          endPort: 65534
-          startPort: 49152
-        }
-        httpGatewayEndpointPort: 19080
-        isPrimary: true
-        name: 'Node01'
-      }
-    ]
+      ]
+    }
   }
-}]
+]

@@ -134,98 +134,163 @@ param applicationTypes array = []
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var clientCertificateCommonNamesVar = [for clientCertificateCommonName in clientCertificateCommonNames: {
-  certificateCommonName: contains(clientCertificateCommonName, 'certificateCommonName') ? clientCertificateCommonName.certificateCommonName : null
-  certificateIssuerThumbprint: contains(clientCertificateCommonName, 'certificateIssuerThumbprint') ? clientCertificateCommonName.certificateIssuerThumbprint : null
-  isAdmin: contains(clientCertificateCommonName, 'isAdmin') ? clientCertificateCommonName.isAdmin : false
-}]
+var clientCertificateCommonNamesVar = [
+  for clientCertificateCommonName in clientCertificateCommonNames: {
+    certificateCommonName: contains(clientCertificateCommonName, 'certificateCommonName')
+      ? clientCertificateCommonName.certificateCommonName
+      : null
+    certificateIssuerThumbprint: contains(clientCertificateCommonName, 'certificateIssuerThumbprint')
+      ? clientCertificateCommonName.certificateIssuerThumbprint
+      : null
+    isAdmin: contains(clientCertificateCommonName, 'isAdmin') ? clientCertificateCommonName.isAdmin : false
+  }
+]
 
-var clientCertificateThumbprintsVar = [for clientCertificateThumbprint in clientCertificateThumbprints: {
-  certificateThumbprint: contains(clientCertificateThumbprint, 'certificateThumbprint') ? clientCertificateThumbprint.certificateThumbprint : null
-  isAdmin: contains(clientCertificateThumbprint, 'isAdmin') ? clientCertificateThumbprint.isAdmin : false
-}]
+var clientCertificateThumbprintsVar = [
+  for clientCertificateThumbprint in clientCertificateThumbprints: {
+    certificateThumbprint: contains(clientCertificateThumbprint, 'certificateThumbprint')
+      ? clientCertificateThumbprint.certificateThumbprint
+      : null
+    isAdmin: contains(clientCertificateThumbprint, 'isAdmin') ? clientCertificateThumbprint.isAdmin : false
+  }
+]
 
-var fabricSettingsVar = [for fabricSetting in fabricSettings: {
-  name: contains(fabricSetting, 'name') ? fabricSetting.name : null
-  parameters: contains(fabricSetting, 'parameters') ? fabricSetting.parameters : null
-}]
+var fabricSettingsVar = [
+  for fabricSetting in fabricSettings: {
+    name: contains(fabricSetting, 'name') ? fabricSetting.name : null
+    parameters: contains(fabricSetting, 'parameters') ? fabricSetting.parameters : null
+  }
+]
 
-var fnodeTypesVar = [for nodeType in nodeTypes: {
-  applicationPorts: contains(nodeType, 'applicationPorts') ? {
-    endPort: contains(nodeType.applicationPorts, 'endPort') ? nodeType.applicationPorts.endPort : null
-    startPort: contains(nodeType.applicationPorts, 'startPort') ? nodeType.applicationPorts.startPort : null
-  } : null
-  capacities: contains(nodeType, 'capacities') ? nodeType.capacities : null
-  clientConnectionEndpointPort: contains(nodeType, 'clientConnectionEndpointPort') ? nodeType.clientConnectionEndpointPort : null
-  durabilityLevel: contains(nodeType, 'durabilityLevel') ? nodeType.durabilityLevel : null
-  ephemeralPorts: contains(nodeType, 'ephemeralPorts') ? {
-    endPort: contains(nodeType.ephemeralPorts, 'endPort') ? nodeType.ephemeralPorts.endPort : null
-    startPort: contains(nodeType.ephemeralPorts, 'startPort') ? nodeType.ephemeralPorts.startPort : null
-  } : null
-  httpGatewayEndpointPort: contains(nodeType, 'httpGatewayEndpointPort') ? nodeType.httpGatewayEndpointPort : null
-  isPrimary: contains(nodeType, 'isPrimary') ? nodeType.isPrimary : null
-  isStateless: contains(nodeType, 'isStateless') ? nodeType.isStateless : null
-  multipleAvailabilityZones: contains(nodeType, 'multipleAvailabilityZones') ? nodeType.multipleAvailabilityZones : null
-  name: contains(nodeType, 'name') ? nodeType.name : 'Node00'
-  placementProperties: contains(nodeType, 'placementProperties') ? nodeType.placementProperties : null
-  reverseProxyEndpointPort: contains(nodeType, 'reverseProxyEndpointPort') ? nodeType.reverseProxyEndpointPort : null
-  vmInstanceCount: contains(nodeType, 'vmInstanceCount') ? nodeType.vmInstanceCount : 1
-}]
+var fnodeTypesVar = [
+  for nodeType in nodeTypes: {
+    applicationPorts: contains(nodeType, 'applicationPorts')
+      ? {
+          endPort: contains(nodeType.applicationPorts, 'endPort') ? nodeType.applicationPorts.endPort : null
+          startPort: contains(nodeType.applicationPorts, 'startPort') ? nodeType.applicationPorts.startPort : null
+        }
+      : null
+    capacities: contains(nodeType, 'capacities') ? nodeType.capacities : null
+    clientConnectionEndpointPort: contains(nodeType, 'clientConnectionEndpointPort')
+      ? nodeType.clientConnectionEndpointPort
+      : null
+    durabilityLevel: contains(nodeType, 'durabilityLevel') ? nodeType.durabilityLevel : null
+    ephemeralPorts: contains(nodeType, 'ephemeralPorts')
+      ? {
+          endPort: contains(nodeType.ephemeralPorts, 'endPort') ? nodeType.ephemeralPorts.endPort : null
+          startPort: contains(nodeType.ephemeralPorts, 'startPort') ? nodeType.ephemeralPorts.startPort : null
+        }
+      : null
+    httpGatewayEndpointPort: contains(nodeType, 'httpGatewayEndpointPort') ? nodeType.httpGatewayEndpointPort : null
+    isPrimary: contains(nodeType, 'isPrimary') ? nodeType.isPrimary : null
+    isStateless: contains(nodeType, 'isStateless') ? nodeType.isStateless : null
+    multipleAvailabilityZones: contains(nodeType, 'multipleAvailabilityZones')
+      ? nodeType.multipleAvailabilityZones
+      : null
+    name: contains(nodeType, 'name') ? nodeType.name : 'Node00'
+    placementProperties: contains(nodeType, 'placementProperties') ? nodeType.placementProperties : null
+    reverseProxyEndpointPort: contains(nodeType, 'reverseProxyEndpointPort') ? nodeType.reverseProxyEndpointPort : null
+    vmInstanceCount: contains(nodeType, 'vmInstanceCount') ? nodeType.vmInstanceCount : 1
+  }
+]
 
-var notificationsVar = [for notification in notifications: {
-  isEnabled: contains(notification, 'isEnabled') ? notification.isEnabled : false
-  notificationCategory: contains(notification, 'notificationCategory') ? notification.notificationCategory : 'WaveProgress'
-  notificationLevel: contains(notification, 'notificationLevel') ? notification.notificationLevel : 'All'
-  notificationTargets: contains(notification, 'notificationTargets') ? notification.notificationTargets : []
-}]
+var notificationsVar = [
+  for notification in notifications: {
+    isEnabled: contains(notification, 'isEnabled') ? notification.isEnabled : false
+    notificationCategory: contains(notification, 'notificationCategory')
+      ? notification.notificationCategory
+      : 'WaveProgress'
+    notificationLevel: contains(notification, 'notificationLevel') ? notification.notificationLevel : 'All'
+    notificationTargets: contains(notification, 'notificationTargets') ? notification.notificationTargets : []
+  }
+]
 
-var upgradeDescriptionVar = union({
+var upgradeDescriptionVar = union(
+  {
     deltaHealthPolicy: {
-      applicationDeltaHealthPolicies: contains(upgradeDescription, 'applicationDeltaHealthPolicies') ? upgradeDescription.applicationDeltaHealthPolicies : {}
-      maxPercentDeltaUnhealthyApplications: contains(upgradeDescription, 'maxPercentDeltaUnhealthyApplications') ? upgradeDescription.maxPercentDeltaUnhealthyApplications : 0
-      maxPercentDeltaUnhealthyNodes: contains(upgradeDescription, 'maxPercentDeltaUnhealthyNodes') ? upgradeDescription.maxPercentDeltaUnhealthyNodes : 0
-      maxPercentUpgradeDomainDeltaUnhealthyNodes: contains(upgradeDescription, 'maxPercentUpgradeDomainDeltaUnhealthyNodes') ? upgradeDescription.maxPercentUpgradeDomainDeltaUnhealthyNodes : 0
+      applicationDeltaHealthPolicies: contains(upgradeDescription, 'applicationDeltaHealthPolicies')
+        ? upgradeDescription.applicationDeltaHealthPolicies
+        : {}
+      maxPercentDeltaUnhealthyApplications: contains(upgradeDescription, 'maxPercentDeltaUnhealthyApplications')
+        ? upgradeDescription.maxPercentDeltaUnhealthyApplications
+        : 0
+      maxPercentDeltaUnhealthyNodes: contains(upgradeDescription, 'maxPercentDeltaUnhealthyNodes')
+        ? upgradeDescription.maxPercentDeltaUnhealthyNodes
+        : 0
+      maxPercentUpgradeDomainDeltaUnhealthyNodes: contains(
+          upgradeDescription,
+          'maxPercentUpgradeDomainDeltaUnhealthyNodes'
+        )
+        ? upgradeDescription.maxPercentUpgradeDomainDeltaUnhealthyNodes
+        : 0
     }
     forceRestart: contains(upgradeDescription, 'forceRestart') ? upgradeDescription.forceRestart : false
-    healthCheckRetryTimeout: contains(upgradeDescription, 'healthCheckRetryTimeout') ? upgradeDescription.healthCheckRetryTimeout : '00:45:00'
-    healthCheckStableDuration: contains(upgradeDescription, 'healthCheckStableDuration') ? upgradeDescription.healthCheckStableDuration : '00:01:00'
-    healthCheckWaitDuration: contains(upgradeDescription, 'healthCheckWaitDuration') ? upgradeDescription.healthCheckWaitDuration : '00:00:30'
-    upgradeDomainTimeout: contains(upgradeDescription, 'upgradeDomainTimeout') ? upgradeDescription.upgradeDomainTimeout : '02:00:00'
-    upgradeReplicaSetCheckTimeout: contains(upgradeDescription, 'upgradeReplicaSetCheckTimeout') ? upgradeDescription.upgradeReplicaSetCheckTimeout : '1.00:00:00'
+    healthCheckRetryTimeout: contains(upgradeDescription, 'healthCheckRetryTimeout')
+      ? upgradeDescription.healthCheckRetryTimeout
+      : '00:45:00'
+    healthCheckStableDuration: contains(upgradeDescription, 'healthCheckStableDuration')
+      ? upgradeDescription.healthCheckStableDuration
+      : '00:01:00'
+    healthCheckWaitDuration: contains(upgradeDescription, 'healthCheckWaitDuration')
+      ? upgradeDescription.healthCheckWaitDuration
+      : '00:00:30'
+    upgradeDomainTimeout: contains(upgradeDescription, 'upgradeDomainTimeout')
+      ? upgradeDescription.upgradeDomainTimeout
+      : '02:00:00'
+    upgradeReplicaSetCheckTimeout: contains(upgradeDescription, 'upgradeReplicaSetCheckTimeout')
+      ? upgradeDescription.upgradeReplicaSetCheckTimeout
+      : '1.00:00:00'
     upgradeTimeout: contains(upgradeDescription, 'upgradeTimeout') ? upgradeDescription.upgradeTimeout : '02:00:00'
-  }, contains(upgradeDescription, 'healthPolicy') ? {
-    healthPolicy: {
-      applicationHealthPolicies: contains(upgradeDescription.healthPolicy, 'applicationHealthPolicies') ? upgradeDescription.healthPolicy.applicationHealthPolicies : {}
-      maxPercentUnhealthyApplications: contains(upgradeDescription.healthPolicy, 'maxPercentUnhealthyApplications') ? upgradeDescription.healthPolicy.maxPercentUnhealthyApplications : 0
-      maxPercentUnhealthyNodes: contains(upgradeDescription.healthPolicy, 'maxPercentUnhealthyNodes') ? upgradeDescription.healthPolicy.maxPercentUnhealthyNodes : 0
-    }
-  } : {})
+  },
+  contains(upgradeDescription, 'healthPolicy')
+    ? {
+        healthPolicy: {
+          applicationHealthPolicies: contains(upgradeDescription.healthPolicy, 'applicationHealthPolicies')
+            ? upgradeDescription.healthPolicy.applicationHealthPolicies
+            : {}
+          maxPercentUnhealthyApplications: contains(upgradeDescription.healthPolicy, 'maxPercentUnhealthyApplications')
+            ? upgradeDescription.healthPolicy.maxPercentUnhealthyApplications
+            : 0
+          maxPercentUnhealthyNodes: contains(upgradeDescription.healthPolicy, 'maxPercentUnhealthyNodes')
+            ? upgradeDescription.healthPolicy.maxPercentUnhealthyNodes
+            : 0
+        }
+      }
+    : {}
+)
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.servicefabric-cluster.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.servicefabric-cluster.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
 // Service Fabric cluster resource
 resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
@@ -237,31 +302,57 @@ resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
     applicationTypeVersionsCleanupPolicy: {
       maxUnusedVersionsToKeep: maxUnusedVersionsToKeep
     }
-    azureActiveDirectory: !empty(azureActiveDirectory) ? {
-      clientApplication: contains(azureActiveDirectory, 'clientApplication') ? azureActiveDirectory.clientApplication : null
-      clusterApplication: contains(azureActiveDirectory, 'clusterApplication') ? azureActiveDirectory.clusterApplication : null
-      tenantId: contains(azureActiveDirectory, 'tenantId') ? azureActiveDirectory.tenantId : null
-    } : null
-    certificate: !empty(certificate) ? {
-      thumbprint: contains(certificate, 'thumbprint') ? certificate.thumbprint : null
-      thumbprintSecondary: contains(certificate, 'thumbprintSecondary') ? certificate.thumbprintSecondary : null
-      x509StoreName: contains(certificate, 'x509StoreName') ? certificate.x509StoreName : null
-    } : null
-    certificateCommonNames: !empty(certificateCommonNames) ? {
-      commonNames: contains(certificateCommonNames, 'commonNames') ? certificateCommonNames.commonNames : null
-      x509StoreName: contains(certificateCommonNames, 'certificateCommonNamesx509StoreName') ? certificateCommonNames.certificateCommonNamesx509StoreName : null
-    } : null
+    azureActiveDirectory: !empty(azureActiveDirectory)
+      ? {
+          clientApplication: contains(azureActiveDirectory, 'clientApplication')
+            ? azureActiveDirectory.clientApplication
+            : null
+          clusterApplication: contains(azureActiveDirectory, 'clusterApplication')
+            ? azureActiveDirectory.clusterApplication
+            : null
+          tenantId: contains(azureActiveDirectory, 'tenantId') ? azureActiveDirectory.tenantId : null
+        }
+      : null
+    certificate: !empty(certificate)
+      ? {
+          thumbprint: contains(certificate, 'thumbprint') ? certificate.thumbprint : null
+          thumbprintSecondary: contains(certificate, 'thumbprintSecondary') ? certificate.thumbprintSecondary : null
+          x509StoreName: contains(certificate, 'x509StoreName') ? certificate.x509StoreName : null
+        }
+      : null
+    certificateCommonNames: !empty(certificateCommonNames)
+      ? {
+          commonNames: contains(certificateCommonNames, 'commonNames') ? certificateCommonNames.commonNames : null
+          x509StoreName: contains(certificateCommonNames, 'certificateCommonNamesx509StoreName')
+            ? certificateCommonNames.certificateCommonNamesx509StoreName
+            : null
+        }
+      : null
     clientCertificateCommonNames: !empty(clientCertificateCommonNames) ? clientCertificateCommonNamesVar : null
     clientCertificateThumbprints: !empty(clientCertificateThumbprints) ? clientCertificateThumbprintsVar : null
     clusterCodeVersion: clusterCodeVersion
-    diagnosticsStorageAccountConfig: !empty(diagnosticsStorageAccountConfig) ? {
-      blobEndpoint: contains(diagnosticsStorageAccountConfig, 'blobEndpoint') ? diagnosticsStorageAccountConfig.blobEndpoint : null
-      protectedAccountKeyName: contains(diagnosticsStorageAccountConfig, 'protectedAccountKeyName') ? diagnosticsStorageAccountConfig.protectedAccountKeyName : null
-      protectedAccountKeyName2: contains(diagnosticsStorageAccountConfig, 'protectedAccountKeyName2') ? diagnosticsStorageAccountConfig.protectedAccountKeyName2 : null
-      queueEndpoint: contains(diagnosticsStorageAccountConfig, 'queueEndpoint') ? diagnosticsStorageAccountConfig.queueEndpoint : null
-      storageAccountName: contains(diagnosticsStorageAccountConfig, 'storageAccountName') ? diagnosticsStorageAccountConfig.storageAccountName : null
-      tableEndpoint: contains(diagnosticsStorageAccountConfig, 'tableEndpoint') ? diagnosticsStorageAccountConfig.tableEndpoint : null
-    } : null
+    diagnosticsStorageAccountConfig: !empty(diagnosticsStorageAccountConfig)
+      ? {
+          blobEndpoint: contains(diagnosticsStorageAccountConfig, 'blobEndpoint')
+            ? diagnosticsStorageAccountConfig.blobEndpoint
+            : null
+          protectedAccountKeyName: contains(diagnosticsStorageAccountConfig, 'protectedAccountKeyName')
+            ? diagnosticsStorageAccountConfig.protectedAccountKeyName
+            : null
+          protectedAccountKeyName2: contains(diagnosticsStorageAccountConfig, 'protectedAccountKeyName2')
+            ? diagnosticsStorageAccountConfig.protectedAccountKeyName2
+            : null
+          queueEndpoint: contains(diagnosticsStorageAccountConfig, 'queueEndpoint')
+            ? diagnosticsStorageAccountConfig.queueEndpoint
+            : null
+          storageAccountName: contains(diagnosticsStorageAccountConfig, 'storageAccountName')
+            ? diagnosticsStorageAccountConfig.storageAccountName
+            : null
+          tableEndpoint: contains(diagnosticsStorageAccountConfig, 'tableEndpoint')
+            ? diagnosticsStorageAccountConfig.tableEndpoint
+            : null
+        }
+      : null
     eventStoreServiceEnabled: eventStoreServiceEnabled
     fabricSettings: !empty(fabricSettings) ? fabricSettingsVar : null
     infrastructureServiceManager: infrastructureServiceManager
@@ -269,15 +360,27 @@ resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
     nodeTypes: !empty(nodeTypes) ? fnodeTypesVar : []
     notifications: !empty(notifications) ? notificationsVar : null
     reliabilityLevel: !empty(reliabilityLevel) ? reliabilityLevel : 'None'
-    reverseProxyCertificate: !empty(reverseProxyCertificate) ? {
-      thumbprint: contains(reverseProxyCertificate, 'thumbprint') ? reverseProxyCertificate.thumbprint : null
-      thumbprintSecondary: contains(reverseProxyCertificate, 'thumbprintSecondary') ? reverseProxyCertificate.thumbprintSecondary : null
-      x509StoreName: contains(reverseProxyCertificate, 'x509StoreName') ? reverseProxyCertificate.x509StoreName : null
-    } : null
-    reverseProxyCertificateCommonNames: !empty(reverseProxyCertificateCommonNames) ? {
-      commonNames: contains(reverseProxyCertificateCommonNames, 'commonNames') ? reverseProxyCertificateCommonNames.commonNames : null
-      x509StoreName: contains(reverseProxyCertificateCommonNames, 'x509StoreName') ? reverseProxyCertificateCommonNames.x509StoreName : null
-    } : null
+    reverseProxyCertificate: !empty(reverseProxyCertificate)
+      ? {
+          thumbprint: contains(reverseProxyCertificate, 'thumbprint') ? reverseProxyCertificate.thumbprint : null
+          thumbprintSecondary: contains(reverseProxyCertificate, 'thumbprintSecondary')
+            ? reverseProxyCertificate.thumbprintSecondary
+            : null
+          x509StoreName: contains(reverseProxyCertificate, 'x509StoreName')
+            ? reverseProxyCertificate.x509StoreName
+            : null
+        }
+      : null
+    reverseProxyCertificateCommonNames: !empty(reverseProxyCertificateCommonNames)
+      ? {
+          commonNames: contains(reverseProxyCertificateCommonNames, 'commonNames')
+            ? reverseProxyCertificateCommonNames.commonNames
+            : null
+          x509StoreName: contains(reverseProxyCertificateCommonNames, 'x509StoreName')
+            ? reverseProxyCertificateCommonNames.x509StoreName
+            : null
+        }
+      : null
     sfZonalUpgradeMode: !empty(sfZonalUpgradeMode) ? sfZonalUpgradeMode : null
     upgradeDescription: !empty(upgradeDescription) ? upgradeDescriptionVar : null
     upgradeMode: !empty(upgradeMode) ? upgradeMode : null
@@ -291,39 +394,50 @@ resource serviceFabricCluster 'Microsoft.ServiceFabric/clusters@2021-06-01' = {
 }
 
 // Service Fabric cluster resource lock
-resource serviceFabricCluster_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource serviceFabricCluster_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: serviceFabricCluster
   }
-  scope: serviceFabricCluster
-}
 
 // Service Fabric cluster RBAC assignment
-resource serviceFabricCluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(serviceFabricCluster.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+resource serviceFabricCluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(serviceFabricCluster.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: serviceFabricCluster
   }
-  scope: serviceFabricCluster
-}]
+]
 
 // Service Fabric cluster application types
-module serviceFabricCluster_applicationTypes 'application-type/main.bicep' = [for applicationType in applicationTypes: {
-  name: '${uniqueString(deployment().name, location)}-SFC-${applicationType.name}'
-  params: {
-    name: applicationType.name
-    serviceFabricClusterName: serviceFabricCluster.name
-    tags: applicationType.?tags ?? tags
+module serviceFabricCluster_applicationTypes 'application-type/main.bicep' = [
+  for applicationType in applicationTypes: {
+    name: '${uniqueString(deployment().name, location)}-SFC-${applicationType.name}'
+    params: {
+      name: applicationType.name
+      serviceFabricClusterName: serviceFabricCluster.name
+      tags: applicationType.?tags ?? tags
+    }
   }
-}]
+]
 
 @description('The Service Fabric Cluster name.')
 output name string = serviceFabricCluster.name
