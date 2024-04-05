@@ -126,6 +126,14 @@ param authorizedIPRanges array?
 @description('Optional. Whether to disable run command for the cluster or not.')
 param disableRunCommand bool = false
 
+@description('Optional. Allow or deny public network access for AKS.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  'SecuredByPerimeter'
+])
+param publicNetworkAccess string = 'Disabled'
+
 @description('Optional. Specifies whether to create the cluster as a private cluster or not.')
 param enablePrivateCluster bool = false
 
@@ -537,6 +545,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
         effectiveOutboundIPs: []
       } : null
     }
+    publicNetworkAccess: publicNetworkAccess
     aadProfile: {
       clientAppID: aadProfileClientAppID
       serverAppID: aadProfileServerAppID
