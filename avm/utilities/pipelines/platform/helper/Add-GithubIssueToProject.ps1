@@ -16,6 +16,9 @@ Mandatory. The URL of the GitHub issue, like 'https://github.com/Azure/bicep-reg
 
 .EXAMPLE
 Add-GithubIssueToProject -Repo 'Azure/bicep-registry-modules' -ProjectNumber 538 -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
+
+.NOTES
+Needs to run under a context with the permissions to read/write organization projects
 #>
 function Add-GithubIssueToProject {
   param (
