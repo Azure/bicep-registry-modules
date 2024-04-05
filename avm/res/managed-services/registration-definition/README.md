@@ -1,7 +1,7 @@
 # Registration Definitions `[Microsoft.ManagedServices/registrationDefinitions]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
+>
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
@@ -148,17 +148,17 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
     authorizations: [
       {
         principalId: '<principalId>'
-        principalIdDisplayName: 'ResourceModules-Reader'
+        principalIdDisplayName: 'Reader'
         roleDefinitionId: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
       }
       {
         principalId: '<principalId>'
-        principalIdDisplayName: 'ResourceModules-Contributor'
+        principalIdDisplayName: 'Contributor'
         roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
       }
       {
         principalId: '<principalId>'
-        principalIdDisplayName: 'ResourceModules-LHManagement'
+        principalIdDisplayName: 'LHManagement'
         roleDefinitionId: '91c1777a-f3dc-4fae-b103-61d183457e46'
       }
     ]
@@ -188,17 +188,17 @@ module registrationDefinition 'br/public:avm/res/managed-services/registration-d
       "value": [
         {
           "principalId": "<principalId>",
-          "principalIdDisplayName": "ResourceModules-Reader",
+          "principalIdDisplayName": "Reader",
           "roleDefinitionId": "acdd72a7-3385-48ef-bd42-f606fba81ae7"
         },
         {
           "principalId": "<principalId>",
-          "principalIdDisplayName": "ResourceModules-Contributor",
+          "principalIdDisplayName": "Contributor",
           "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         },
         {
           "principalId": "<principalId>",
-          "principalIdDisplayName": "ResourceModules-LHManagement",
+          "principalIdDisplayName": "LHManagement",
           "roleDefinitionId": "91c1777a-f3dc-4fae-b103-61d183457e46"
         }
       ]
