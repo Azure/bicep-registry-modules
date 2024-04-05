@@ -48,10 +48,10 @@ function Set-AvmGithubIssueForWorkflow {
   )
 
   # Loading helper functions
-  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-AvmCsvData.ps1')
-  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Add-GithubIssueToProject.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'helper' 'Add-GithubIssueToProject.ps1')
 
-  $issues = gh issue list --state open --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --json 'title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
+  $issues = gh issue list --state open --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --json 'title,url,body,comments,labels' --repo $Repo | ConvertFrom-Json -Depth 100
   $runs = gh run list --json 'url,workflowName,headBranch,startedAt' --limit $LimitNumberOfRuns --repo $Repo | ConvertFrom-Json -Depth 100
   $workflowRuns = @{}
   $issuesCreated = 0
@@ -98,13 +98,13 @@ function Set-AvmGithubIssueForWorkflow {
 > @Azure/avm-core-team-technical-bicep, the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run.
 "@
 
-          if ($workflowRun.workflowName -match "avm.(?:res|ptn)") {
+          if ($workflowRun.workflowName -match 'avm.(?:res|ptn)') {
             $moduleName = $workflowRun.workflowName.Replace('.', '/')
-            $moduleIndex = $moduleName.StartsWith("avm/res") ? "Bicep-Resource" : "Bicep-Pattern"
+            $moduleIndex = $moduleName.StartsWith('avm/res') ? 'Bicep-Resource' : 'Bicep-Pattern'
             # get CSV data
-            $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
+            $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName
 
-            if (($module.ModuleStatus -ne "Module Orphaned :eyes:") -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
+            if (($module.ModuleStatus -ne 'Module Orphaned :eyes:') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
               $ProjectNumber = 566 # Module owners
               $comment = @"
 > [!IMPORTANT]
@@ -136,20 +136,22 @@ function Set-AvmGithubIssueForWorkflow {
       } else {
         $issue = ($issues | Where-Object { $_.title -eq $issueName })[0]
 
-        if (-not $issue.body.Contains($failedrun)) {
-          if ($issue.comments.length -eq 0) {
-            if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Add comment')) {
-              gh issue comment $issue.url --body $failedrun --repo $Repo
-            }
-
-            $issuesCommented++
-          } else {
-            if (-not $issue.comments.body.Contains($failedrun)) {
-              if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Close')) {
+        if (-not $issue.labels.name.Contains('Status: Long Term :hourglass_flowing_sand:')) {
+          if (-not $issue.body.Contains($failedrun)) {
+            if ($issue.comments.length -eq 0) {
+              if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Add comment')) {
                 gh issue comment $issue.url --body $failedrun --repo $Repo
               }
 
               $issuesCommented++
+            } else {
+              if (-not $issue.comments.body.Contains($failedrun)) {
+                if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Close')) {
+                  gh issue comment $issue.url --body $failedrun --repo $Repo
+                }
+
+                $issuesCommented++
+              }
             }
           }
         }
