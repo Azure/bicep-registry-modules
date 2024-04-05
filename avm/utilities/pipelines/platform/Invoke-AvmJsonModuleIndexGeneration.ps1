@@ -179,27 +179,38 @@ function Invoke-AvmJsonModuleIndexGeneration {
     $lastModuleIndexData = $lastModuleIndexJsonFileContent | ConvertFrom-Json -Depth 10
     $currentGeneratedModuleIndexData = $currentGeneratedModuleIndexJsonFileContent | ConvertFrom-Json -Depth 10
 
-    $mergedModuleIndexData = ($lastModuleIndexData + $currentGeneratedModuleIndexData) | Group-Object -Property 'moduleName' | ForEach-Object {
-      $newTags = $_.Group.tags | Sort-Object -Unique
+    $initialMergeOfJsonFilesData = @{}
 
-      $newProperties = [ordered]@{}
-      $oldProperties = $_.Group.properties
-      $oldProperties.Keys | Sort-Object | ForEach-Object {
-        if ($newProperties.Keys -notContains $_) {
-          $newProperties[$_] = $oldProperties[0].Keys -contains $_ ? $oldProperties[0][$_] : $oldProperties[1][$_]
-        }
-      }
-
-      $_.Group | ForEach-Object {
-        $_.tags = $newTags
-        $_.properties = $newProperties
-      }
-
-      $_.Group | Select-Object -First 1
+    foreach ($module in $currentGeneratedModuleIndexData) {
+      $initialMergeOfJsonFilesData[$module.moduleName] = $module
     }
 
+    # Add modules from lastModuleIndexData to the initialMergeOfJsonFilesData hashtable, merging tags and properties if they exist in both files
+    foreach ($module in $lastModuleIndexData) {
+      if (-not $initialMergeOfJsonFilesData.ContainsKey($module.moduleName)) {
+        $initialMergeOfJsonFilesData[$module.moduleName] = $module
+      } else {
+        # If the module exists, merge the tags and properties
+        $mergedModule = $initialMergeOfJsonFilesData[$module.moduleName]
+        $mergedModule.tags = @(($mergedModule.tags + $module.tags) | Sort-Object | Get-Unique)
+
+        # Merge properties
+        foreach ($property in $module.properties.PSObject.Properties) {
+          if (-not $mergedModule.properties.PSObject.Properties.Name.Contains($property.Name)) {
+            $mergedModule.properties | Add-Member -NotePropertyName $property.Name -NotePropertyValue $property.Value
+          }
+        }
+      }
+    }
+
+    # Convert the mergedModuleIndexData hashtable to an array of values (i.e., the modules)
+    $mergedModuleIndexData = $initialMergeOfJsonFilesData.Values
+
+    # Sort the modules by their names
+    $sortedMergedModuleIndexData = $mergedModuleIndexData | Sort-Object moduleName
+
     Write-Verbose "Convert mergedModuleIndexData variable to JSON and save as 'moduleIndex.json'" -Verbose
-    $mergedModuleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $moduleIndexJsonFilePath
+    $sortedMergedModuleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $moduleIndexJsonFilePath
   }
   if ($doNotMergeWithLastModuleIndexJsonFileVersion -eq $true) {
     Write-Verbose "Convert currentGeneratedModuleIndexData variable to JSON and save as 'moduleIndex.json to overwrite it as `doNotMergeWithLastModuleIndexJsonFileVersion` was specified'" -Verbose
