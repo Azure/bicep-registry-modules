@@ -65,147 +65,149 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    adminUsername: 'scaleSetAdmin'
-    imageReference: {
-      publisher: 'Canonical'
-      offer: '0001-com-ubuntu-server-jammy'
-      sku: '22_04-lts-gen2'
-      version: 'latest'
-    }
-    osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
-      managedDisk: {
-        storageAccountType: 'Premium_LRS'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      adminUsername: 'scaleSetAdmin'
+      imageReference: {
+        publisher: 'Canonical'
+        offer: '0001-com-ubuntu-server-jammy'
+        sku: '22_04-lts-gen2'
+        version: 'latest'
       }
-    }
-    osType: 'Linux'
-    skuName: 'Standard_B12ms'
-    availabilityZones: [
-      '2'
-    ]
-    bootDiagnosticStorageAccountName: nestedDependencies.outputs.storageAccountName
-    dataDisks: [
-      {
-        caching: 'ReadOnly'
-        createOption: 'Empty'
-        diskSizeGB: '256'
-        managedDisk: {
-          storageAccountType: 'Premium_LRS'
-        }
-      }
-      {
-        caching: 'ReadOnly'
-        createOption: 'Empty'
+      osDisk: {
+        createOption: 'fromImage'
         diskSizeGB: '128'
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
       }
-    ]
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    disablePasswordAuthentication: true
-    encryptionAtHost: false
-    extensionCustomScriptConfig: {
-      enabled: true
-      fileData: [
+      osType: 'Linux'
+      skuName: 'Standard_B12ms'
+      availabilityZones: [
+        '2'
+      ]
+      bootDiagnosticStorageAccountName: nestedDependencies.outputs.storageAccountName
+      dataDisks: [
         {
-          storageAccountId: nestedDependencies.outputs.storageAccountResourceId
-          uri: nestedDependencies.outputs.storageAccountCSEFileUrl
+          caching: 'ReadOnly'
+          createOption: 'Empty'
+          diskSizeGB: '256'
+          managedDisk: {
+            storageAccountType: 'Premium_LRS'
+          }
+        }
+        {
+          caching: 'ReadOnly'
+          createOption: 'Empty'
+          diskSizeGB: '128'
+          managedDisk: {
+            storageAccountType: 'Premium_LRS'
+          }
         }
       ]
-      protectedSettings: {
-        commandToExecute: 'sudo apt-get update'
-      }
-    }
-    extensionDependencyAgentConfig: {
-      enabled: true
-    }
-    extensionAzureDiskEncryptionConfig: {
-      enabled: true
-      settings: {
-        EncryptionOperation: 'EnableEncryption'
-        KekVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        KeyEncryptionAlgorithm: 'RSA-OAEP'
-        KeyEncryptionKeyURL: nestedDependencies.outputs.keyVaultEncryptionKeyUrl
-        KeyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        KeyVaultURL: nestedDependencies.outputs.keyVaultUrl
-        ResizeOSDisk: 'false'
-        VolumeType: 'All'
-      }
-    }
-    extensionMonitoringAgentConfig: {
-      enabled: true
-    }
-    extensionNetworkWatcherAgentConfig: {
-      enabled: true
-    }
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig1'
-            properties: {
-              subnet: {
-                id: nestedDependencies.outputs.subnetResourceId
-              }
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
             }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      disablePasswordAuthentication: true
+      encryptionAtHost: false
+      extensionCustomScriptConfig: {
+        enabled: true
+        fileData: [
+          {
+            storageAccountId: nestedDependencies.outputs.storageAccountResourceId
+            uri: nestedDependencies.outputs.storageAccountCSEFileUrl
           }
         ]
-        nicSuffix: '-nic01'
+        protectedSettings: {
+          commandToExecute: 'sudo apt-get update'
+        }
       }
-    ]
-    publicKeys: [
-      {
-        keyData: nestedDependencies.outputs.SSHKeyPublicKey
-        path: '/home/scaleSetAdmin/.ssh/authorized_keys'
+      extensionDependencyAgentConfig: {
+        enabled: true
       }
-    ]
-    roleAssignments: [
-      {
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        roleDefinitionIdOrName: 'Reader'
-        principalType: 'ServicePrincipal'
+      extensionAzureDiskEncryptionConfig: {
+        enabled: true
+        settings: {
+          EncryptionOperation: 'EnableEncryption'
+          KekVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+          KeyEncryptionAlgorithm: 'RSA-OAEP'
+          KeyEncryptionKeyURL: nestedDependencies.outputs.keyVaultEncryptionKeyUrl
+          KeyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+          KeyVaultURL: nestedDependencies.outputs.keyVaultUrl
+          ResizeOSDisk: 'false'
+          VolumeType: 'All'
+        }
       }
-    ]
-    scaleSetFaultDomain: 1
-    skuCapacity: 1
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
+      extensionMonitoringAgentConfig: {
+        enabled: true
+      }
+      extensionNetworkWatcherAgentConfig: {
+        enabled: true
+      }
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      nicConfigurations: [
+        {
+          ipConfigurations: [
+            {
+              name: 'ipconfig1'
+              properties: {
+                subnet: {
+                  id: nestedDependencies.outputs.subnetResourceId
+                }
+              }
+            }
+          ]
+          nicSuffix: '-nic01'
+        }
       ]
-    }
-    upgradePolicyMode: 'Manual'
-    vmNamePrefix: 'vmsslinvm'
-    vmPriority: 'Regular'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
+      publicKeys: [
+        {
+          keyData: nestedDependencies.outputs.SSHKeyPublicKey
+          path: '/home/scaleSetAdmin/.ssh/authorized_keys'
+        }
+      ]
+      roleAssignments: [
+        {
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          roleDefinitionIdOrName: 'Reader'
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      scaleSetFaultDomain: 1
+      skuCapacity: 1
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      upgradePolicyMode: 'Manual'
+      vmNamePrefix: 'vmsslinvm'
+      vmPriority: 'Regular'
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
   }
-}]
+]

@@ -40,29 +40,36 @@ param secretName string = ''
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName
 
-  resource secrect 'secrets@2023-05-01' existing = if (!empty(secretName)) {
-    name: secretName
-  }
+  resource secrect 'secrets@2023-05-01' existing =
+    if (!empty(secretName)) {
+      name: secretName
+    }
 }
 
 resource customDomain 'Microsoft.Cdn/profiles/customDomains@2023-05-01' = {
   name: name
   parent: profile
   properties: {
-    azureDnsZone: !empty(azureDnsZoneResourceId) ? {
-      id: azureDnsZoneResourceId
-    } : null
+    azureDnsZone: !empty(azureDnsZoneResourceId)
+      ? {
+          id: azureDnsZoneResourceId
+        }
+      : null
     extendedProperties: !empty(extendedProperties) ? extendedProperties : null
     hostName: hostName
-    preValidatedCustomDomainResourceId: !empty(preValidatedCustomDomainResourceId) ? {
-      id: preValidatedCustomDomainResourceId
-    } : null
+    preValidatedCustomDomainResourceId: !empty(preValidatedCustomDomainResourceId)
+      ? {
+          id: preValidatedCustomDomainResourceId
+        }
+      : null
     tlsSettings: {
       certificateType: certificateType
       minimumTlsVersion: minimumTlsVersion
-      secret: !(empty(secretName)) ? {
-        id: profile::secrect.id
-      } : null
+      secret: !(empty(secretName))
+        ? {
+            id: profile::secrect.id
+          }
+        : null
     }
   }
 }

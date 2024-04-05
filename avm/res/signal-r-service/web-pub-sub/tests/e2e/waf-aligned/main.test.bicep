@@ -45,61 +45,63 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}-${serviceShort}-001'
-    location: resourceLocation
-    capacity: 2
-    clientCertEnabled: false
-    disableAadAuth: false
-    disableLocalAuth: true
-    networkAcls: {
-      defaultAction: 'Allow'
-      privateEndpoints: [
-        {
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}-${serviceShort}-001'
+      location: resourceLocation
+      capacity: 2
+      clientCertEnabled: false
+      disableAadAuth: false
+      disableLocalAuth: true
+      networkAcls: {
+        defaultAction: 'Allow'
+        privateEndpoints: [
+          {
+            allow: []
+            deny: [
+              'ServerConnection'
+              'Trace'
+            ]
+            name: 'pe-${namePrefix}-${serviceShort}-001'
+          }
+        ]
+        publicNetwork: {
           allow: []
           deny: [
-            'ServerConnection'
+            'RESTAPI'
             'Trace'
           ]
-          name: 'pe-${namePrefix}-${serviceShort}-001'
+        }
+      }
+      privateEndpoints: [
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          service: 'webpubsub'
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
         }
       ]
-      publicNetwork: {
-        allow: []
-        deny: [
-          'RESTAPI'
-          'Trace'
-        ]
+      resourceLogConfigurationsToEnable: [
+        'ConnectivityLogs'
+      ]
+      sku: 'Standard_S1'
+      managedIdentities: {
+        systemAssigned: true
       }
-    }
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        service: 'webpubsub'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-    ]
-    resourceLogConfigurationsToEnable: [
-      'ConnectivityLogs'
-    ]
-    sku: 'Standard_S1'
-    managedIdentities: {
-      systemAssigned: true
-    }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
-}]
+]

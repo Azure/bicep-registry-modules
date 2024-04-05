@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "16912543771400413342"
+      "version": "0.26.54.24096",
+      "templateHash": "11461243147494849566"
     },
     "name": "Public IP Prefixes",
     "description": "This module deploys a Public IP Prefix.",
@@ -154,6 +154,25 @@
         "description": "Optional. The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range."
       }
     },
+    "zones": {
+      "type": "array",
+      "items": {
+        "type": "int"
+      },
+      "defaultValue": [
+        1,
+        2,
+        3
+      ],
+      "allowedValues": [
+        1,
+        2,
+        3
+      ],
+      "metadata": {
+        "description": "Optional. A list of availability zones denoting the IP allocated for the resource needs to come from."
+      }
+    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -202,6 +221,7 @@
       "sku": {
         "name": "Standard"
       },
+      "zones": "[map(parameters('zones'), lambda('zone', string(lambdaVariables('zone'))))]",
       "properties": {
         "customIPPrefix": "[if(not(empty(parameters('customIPPrefix'))), parameters('customIPPrefix'), null())]",
         "publicIPAddressVersion": "IPv4",

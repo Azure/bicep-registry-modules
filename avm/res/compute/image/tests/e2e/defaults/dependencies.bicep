@@ -137,7 +137,7 @@ resource copyVhdDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-
     cleanupPreference: 'OnSuccess'
     forceUpdateTag: baseTime
   }
-  dependsOn: [ triggerImageDeploymentScript ]
+  dependsOn: [triggerImageDeploymentScript]
 }
 
 @description('The URI of the created VHD.')

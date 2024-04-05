@@ -45,43 +45,45 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    criterias: {
-      allOf: [
-        {
-          dimensions: [
-            {
-              name: 'Computer'
-              operator: 'Include'
-              values: [
-                '*'
-              ]
-            }
-            {
-              name: 'InstanceName'
-              operator: 'Include'
-              values: [
-                '*'
-              ]
-            }
-          ]
-          metricMeasureColumn: 'AggregatedValue'
-          operator: 'GreaterThan'
-          query: 'Perf | where ObjectName == "LogicalDisk" | where CounterName == "% Free Space" | where InstanceName <> "HarddiskVolume1" and InstanceName <> "_Total" | summarize AggregatedValue = min(CounterValue) by Computer, InstanceName, bin(TimeGenerated,5m)'
-          threshold: 0
-          timeAggregation: 'Average'
-        }
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      criterias: {
+        allOf: [
+          {
+            dimensions: [
+              {
+                name: 'Computer'
+                operator: 'Include'
+                values: [
+                  '*'
+                ]
+              }
+              {
+                name: 'InstanceName'
+                operator: 'Include'
+                values: [
+                  '*'
+                ]
+              }
+            ]
+            metricMeasureColumn: 'AggregatedValue'
+            operator: 'GreaterThan'
+            query: 'Perf | where ObjectName == "LogicalDisk" | where CounterName == "% Free Space" | where InstanceName <> "HarddiskVolume1" and InstanceName <> "_Total" | summarize AggregatedValue = min(CounterValue) by Computer, InstanceName, bin(TimeGenerated,5m)'
+            threshold: 0
+            timeAggregation: 'Average'
+          }
+        ]
+      }
+      evaluationFrequency: 'PT5M'
+      scopes: [
+        nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       ]
+      windowSize: 'PT5M'
     }
-    evaluationFrequency: 'PT5M'
-    scopes: [
-      nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
-    ]
-    windowSize: 'PT5M'
   }
-}]
+]
