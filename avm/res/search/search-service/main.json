@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "3319927828453224724"
+      "version": "0.26.54.24096",
+      "templateHash": "5665418243757666570"
     },
     "name": "Search Services",
     "description": "This module deploys a Search Service.",
@@ -295,6 +295,13 @@
             "metadata": {
               "description": "Optional. Enable/Disable usage telemetry for module."
             }
+          },
+          "resourceGroupName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
+            }
           }
         }
       },
@@ -527,7 +534,7 @@
     },
     "replicaCount": {
       "type": "int",
-      "defaultValue": 1,
+      "defaultValue": 3,
       "minValue": 1,
       "maxValue": 12,
       "metadata": {
@@ -731,6 +738,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-SearchService-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1424,8 +1432,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "7674026452917741601"
+              "version": "0.26.54.24096",
+              "templateHash": "4284041533987186633"
             },
             "name": "Search Services Private Link Resources",
             "description": "This module deploys a Search Service Private Link Resource.",

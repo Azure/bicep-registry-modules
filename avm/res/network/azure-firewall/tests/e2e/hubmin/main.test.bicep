@@ -46,17 +46,19 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    virtualHubId: nestedDependencies.outputs.virtualHubResourceId
-    hubIPAddresses: {
-      publicIPs: {
-        count: 1
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      virtualHubId: nestedDependencies.outputs.virtualHubResourceId
+      hubIPAddresses: {
+        publicIPs: {
+          count: 1
+        }
       }
     }
   }
-}]
+]

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "982830653292321499"
+      "templateHash": "1964184668152537300"
     },
     "name": "Digital Twins Instance EventHub Endpoint",
     "description": "This module deploys a Digital Twins Instance EventHub Endpoint.",
@@ -23,11 +23,8 @@
             "description": "Optional. Enables system assigned managed identity on the resource."
           }
         },
-        "userAssignedResourceIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
+        "userAssignedResourceId": {
+          "type": "string",
           "nullable": true,
           "metadata": {
             "description": "Optional. The resource ID(s) to assign to the resource."
@@ -107,13 +104,12 @@
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentitiesType",
       "metadata": {
-        "description": "Optional. The managed identity definition for this resource."
+        "description": "Optional. The managed identity definition for this resource.  Only one type of identity is supported: system-assigned or user-assigned, but not both."
       }
     }
   },
   "variables": {
-    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), ''))), 'UserAssigned', null())), 'userAssignedIdentity', tryGet(parameters('managedIdentities'), 'userAssignedResourceId')), null())]"
   },
   "resources": {
     "digitalTwinsInstance": {
@@ -167,7 +163,7 @@
     "systemAssignedMIPrincipalId": {
       "type": "string",
       "metadata": {
-        "description": "The principal ID of the system assigned identity."
+        "description": "The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API."
       },
       "value": "[coalesce(tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId'), '')]"
     }

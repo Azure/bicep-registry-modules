@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "12709667084412433453"
+      "version": "0.26.54.24096",
+      "templateHash": "4485935239460152406"
     },
     "name": "SignalR Service SignalR",
     "description": "This module deploys a SignalR Service SignalR.",

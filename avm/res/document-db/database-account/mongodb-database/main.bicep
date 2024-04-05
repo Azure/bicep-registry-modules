@@ -29,23 +29,27 @@ resource mongodbDatabase 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases
     resource: {
       id: name
     }
-    options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' }) ? null : {
-      throughput: throughput
-    }
+    options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
+      ? null
+      : {
+          throughput: throughput
+        }
   }
 }
 
-module mongodbDatabase_collections 'collection/main.bicep' = [for collection in collections: {
-  name: '${uniqueString(deployment().name, mongodbDatabase.name)}-collection-${collection.name}'
-  params: {
-    databaseAccountName: databaseAccountName
-    mongodbDatabaseName: name
-    name: collection.name
-    indexes: collection.indexes
-    shardKey: collection.shardKey
-    throughput: collection.?throughput
+module mongodbDatabase_collections 'collection/main.bicep' = [
+  for collection in collections: {
+    name: '${uniqueString(deployment().name, mongodbDatabase.name)}-collection-${collection.name}'
+    params: {
+      databaseAccountName: databaseAccountName
+      mongodbDatabaseName: name
+      name: collection.name
+      indexes: collection.indexes
+      shardKey: collection.shardKey
+      throughput: collection.?throughput
+    }
   }
-}]
+]
 
 @description('The name of the mongodb database.')
 output name string = mongodbDatabase.name

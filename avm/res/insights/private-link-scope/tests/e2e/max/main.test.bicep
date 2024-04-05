@@ -49,169 +49,174 @@ module nestedDependencies 'dependencies.bicep' = {
 var locationUpdated = toLower(replace(resourceLocation, ' ', ''))
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: 'global'
-    accessModeSettings: {
-      exclusions: [
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: 'global'
+      accessModeSettings: {
+        exclusions: [
+          {
+            ingestionAccessMode: 'PrivateOnly'
+            queryAccessMode: 'PrivateOnly'
+            privateEndpointConnectionName: 'thisisatest'
+          }
+        ]
+        ingestionAccessMode: 'Open'
+        queryAccessMode: 'Open'
+      }
+      scopedResources: [
         {
-          ingestionAccessMode: 'PrivateOnly'
-          queryAccessMode: 'PrivateOnly'
-          privateEndpointConnectionName: 'thisisatest'
+          name: 'scoped1'
+          linkedResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      ingestionAccessMode: 'Open'
-      queryAccessMode: 'Open'
-    }
-    scopedResources: [
-      {
-        name: 'scoped1'
-        linkedResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    privateEndpoints: [
-      {
-        name: 'pe-${namePrefix}'
-        customNetworkInterfaceName: 'nic-pe-${namePrefix}'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
+      privateEndpoints: [
+        {
+          name: 'pe-${namePrefix}'
+          customNetworkInterfaceName: 'nic-pe-${namePrefix}'
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'Reader'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
+          ipConfigurations: [
+            {
+              name: 'api'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'api'
+                privateIPAddress: '10.0.0.11'
+              }
+            }
+            {
+              name: 'globalinai'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'global.in.ai'
+                privateIPAddress: '10.0.0.12'
+              }
+            }
+            {
+              name: 'profiler'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'profiler'
+                privateIPAddress: '10.0.0.13'
+              }
+            }
+            {
+              name: 'live'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'live'
+                privateIPAddress: '10.0.0.14'
+              }
+            }
+            {
+              name: 'diagservicesquery'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'diagservicesquery'
+                privateIPAddress: '10.0.0.15'
+              }
+            }
+            {
+              name: 'snapshot'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'snapshot'
+                privateIPAddress: '10.0.0.16'
+              }
+            }
+            {
+              name: 'agentsolutionpackstore'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'agentsolutionpackstore'
+                privateIPAddress: '10.0.0.17'
+              }
+            }
+            {
+              name: 'dce-global'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'dce-global'
+                privateIPAddress: '10.0.0.18'
+              }
+            }
+            {
+              name: 'oms-${locationUpdated}'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'oms-${locationUpdated}'
+                privateIPAddress: '10.0.0.19'
+              }
+            }
+            {
+              name: 'ods-${locationUpdated}'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'ods-${locationUpdated}'
+                privateIPAddress: '10.0.0.20'
+              }
+            }
+            {
+              name: 'agent-${locationUpdated}'
+              properties: {
+                groupId: 'azuremonitor'
+                memberName: 'agent-${locationUpdated}'
+                privateIPAddress: '10.0.0.21'
+              }
+            }
+          ]
         }
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
-        ipConfigurations: [
-          {
-            name: 'api'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'api'
-              privateIPAddress: '10.0.0.11'
-            }
-          }
-          {
-            name: 'globalinai'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'global.in.ai'
-              privateIPAddress: '10.0.0.12'
-            }
-          }
-          {
-            name: 'profiler'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'profiler'
-              privateIPAddress: '10.0.0.13'
-            }
-          }
-          {
-            name: 'live'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'live'
-              privateIPAddress: '10.0.0.14'
-            }
-          }
-          {
-            name: 'diagservicesquery'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'diagservicesquery'
-              privateIPAddress: '10.0.0.15'
-            }
-          }
-          {
-            name: 'snapshot'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'snapshot'
-              privateIPAddress: '10.0.0.16'
-            }
-          }
-          {
-            name: 'agentsolutionpackstore'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'agentsolutionpackstore'
-              privateIPAddress: '10.0.0.17'
-            }
-          }
-          {
-            name: 'dce-global'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'dce-global'
-              privateIPAddress: '10.0.0.18'
-            }
-          }
-          {
-            name: 'oms-${locationUpdated}'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'oms-${locationUpdated}'
-              privateIPAddress: '10.0.0.19'
-            }
-          }
-          {
-            name: 'ods-${locationUpdated}'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'ods-${locationUpdated}'
-              privateIPAddress: '10.0.0.20'
-            }
-          }
-          {
-            name: 'agent-${locationUpdated}'
-            properties: {
-              groupId: 'azuremonitor'
-              memberName: 'agent-${locationUpdated}'
-              privateIPAddress: '10.0.0.21'
-            }
-          }
-        ]
+      ]
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-    ]
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
+    dependsOn: [
+      nestedDependencies
+    ]
   }
-  dependsOn: [
-    nestedDependencies
-  ]
-}]
+]

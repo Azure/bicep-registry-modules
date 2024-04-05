@@ -51,53 +51,55 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    subnetResourceId: nestedDependencies.outputs.subnetResourceId
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    privateDnsZoneResourceIds: [
-      nestedDependencies.outputs.privateDNSZoneResourceId
-    ]
-    ipConfigurations: [
-      {
-        name: 'myIPconfig'
-        properties: {
-          groupId: 'vault'
-          memberName: 'default'
-          privateIPAddress: '10.0.0.10'
-        }
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-    ]
-    customNetworkInterfaceName: '${namePrefix}${serviceShort}001nic'
-    applicationSecurityGroupResourceIds: [
-      nestedDependencies.outputs.applicationSecurityGroupResourceId
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
-    // Workaround for PSRule
-    privateDnsZoneGroupName: 'default'
-    customDnsConfigs: []
-    manualPrivateLinkServiceConnections: []
-    privateLinkServiceConnections: [
-      {
-        name: '${namePrefix}${serviceShort}001'
-        properties: {
-          privateLinkServiceId: nestedDependencies.outputs.keyVaultResourceId
-          groupIds: [
-            'vault'
-          ]
+      privateDnsZoneResourceIds: [
+        nestedDependencies.outputs.privateDNSZoneResourceId
+      ]
+      ipConfigurations: [
+        {
+          name: 'myIPconfig'
+          properties: {
+            groupId: 'vault'
+            memberName: 'default'
+            privateIPAddress: '10.0.0.10'
+          }
         }
+      ]
+      customNetworkInterfaceName: '${namePrefix}${serviceShort}001nic'
+      applicationSecurityGroupResourceIds: [
+        nestedDependencies.outputs.applicationSecurityGroupResourceId
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-    ]
+      // Workaround for PSRule
+      privateDnsZoneGroupName: 'default'
+      customDnsConfigs: []
+      manualPrivateLinkServiceConnections: []
+      privateLinkServiceConnections: [
+        {
+          name: '${namePrefix}${serviceShort}001'
+          properties: {
+            privateLinkServiceId: nestedDependencies.outputs.keyVaultResourceId
+            groupIds: [
+              'vault'
+            ]
+          }
+        }
+      ]
+    }
   }
-}]
+]
