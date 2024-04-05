@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "9615956004888490264"
+      "templateHash": "12101686609428052773"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -1079,7 +1079,7 @@
   "parameters": {
     "name": {
       "type": "string",
-      "maxLength": 50,
+      "maxLength": 260,
       "metadata": {
         "description": "Required. Name of the Service Bus Namespace."
       }
@@ -1455,7 +1455,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "17436716625562680995"
+              "templateHash": "15856701624247874001"
             },
             "name": "Service Bus Namespace Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Authorization Rule.",
@@ -1464,8 +1464,8 @@
           "parameters": {
             "namespaceName": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment."
               }
@@ -1559,7 +1559,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "5141733056602320076"
+              "templateHash": "3332271240583753856"
             },
             "name": "Service Bus Namespace Disaster Recovery Configs",
             "description": "This module deploys a Service Bus Namespace Disaster Recovery Config",
@@ -1568,8 +1568,8 @@
           "parameters": {
             "namespaceName": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment."
               }
@@ -1664,7 +1664,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "15192198614426327006"
+              "templateHash": "3812335497838251447"
             },
             "name": "Service Bus Namespace Migration Configuration",
             "description": "This module deploys a Service Bus Namespace Migration Configuration.",
@@ -1673,8 +1673,8 @@
           "parameters": {
             "namespaceName": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment."
               }
@@ -1769,7 +1769,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "4933314100479664510"
+              "templateHash": "7745744247225628529"
             },
             "name": "Service Bus Namespace Network Rule Sets",
             "description": "This module deploys a ServiceBus Namespace Network Rule Set.",
@@ -1778,8 +1778,8 @@
           "parameters": {
             "namespaceName": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Network Rule Set. Required if the template is used in a standalone deployment."
               }
@@ -1969,7 +1969,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "5679821968845040041"
+              "templateHash": "6465956085720113527"
             },
             "name": "Service Bus Namespace Queue",
             "description": "This module deploys a Service Bus Namespace Queue.",
@@ -2071,16 +2071,16 @@
           "parameters": {
             "namespaceName": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Required. Name of the Service Bus Queue."
               }
@@ -2535,7 +2535,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "2743713566937430307"
+              "templateHash": "10365585985239248264"
             },
             "name": "Service Bus Namespace Topic",
             "description": "This module deploys a Service Bus Namespace Topic.",
@@ -2782,16 +2782,16 @@
           "parameters": {
             "namespaceName": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Topic. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Required. Name of the Service Bus Topic."
               }

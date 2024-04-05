@@ -3,7 +3,7 @@ metadata description = 'This module deploys a Service Bus Namespace.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Service Bus Namespace.')
-@maxLength(50)
+@maxLength(260)
 param name string
 
 @description('Optional. Location for all resources.')
