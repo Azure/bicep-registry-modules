@@ -46,7 +46,6 @@ jobs:
             moduleIndexJsonFilePath                      = 'moduleIndex.json'
             prefixForLastModuleIndexJsonFile             = 'last-'
             prefixForCurrentGeneratedModuleIndexJsonFile = 'generated-'
-            doNotMergeWithLastModuleIndexJsonFileVersion = $false
           }
 
           Write-Verbose "Invoke task with" -Verbose
