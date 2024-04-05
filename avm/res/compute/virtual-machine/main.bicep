@@ -481,7 +481,9 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
         caching: osDisk.?caching ?? 'ReadOnly'
         managedDisk: {
           storageAccountType: osDisk.managedDisk.storageAccountType
-          diskEncryptionSet: osDisk.managedDisk.?diskEncryptionSet ?? null
+          diskEncryptionSet: {
+            id: osDisk.managedDisk.?diskEncryptionSetResourceId
+          }
         }
       }
       dataDisks: [
@@ -1084,10 +1086,7 @@ type osDiskType = {
       | 'UltraSSD_LRS'
 
     @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
-    diskEncryptionSet: {
-      @description('Required. The resource ID of the disk encryption set.')
-      id: string
-    }?
+    diskEncryptionSetResourceId: string?
   }
 }
 
@@ -1124,9 +1123,6 @@ type dataDisksType = {
       | 'UltraSSD_LRS'
 
     @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
-    diskEncryptionSet: {
-      @description('Required. The resource ID of the disk encryption set.')
-      id: string
-    }?
+    diskEncryptionSetResourceId: string?
   }
 }[]?

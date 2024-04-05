@@ -11,7 +11,7 @@ metadata description = 'This instance deploys the module for a VM with dedicated
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.') // required because Test-TemplateDeployment.ps1 requires the resourceLocation parameter, value must equal to tempLocation
+@description('Optional. The location to deploy resources to.')
 param resourceLocation string = 'eastus'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')

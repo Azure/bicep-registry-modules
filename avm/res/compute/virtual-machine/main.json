@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "15158782820959530921"
+      "templateHash": "7154731246886154039"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -197,16 +197,8 @@
                 "description": "Required. Specifies the storage account type for the managed disk."
               }
             },
-            "diskEncryptionSet": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The resource ID of the disk encryption set."
-                  }
-                }
-              },
+            "diskEncryptionSetResourceId": {
+              "type": "string",
               "nullable": true,
               "metadata": {
                 "description": "Optional. Specifies the customer managed disk encryption set resource id for the managed disk."
@@ -298,16 +290,8 @@
                   "description": "Required. Specifies the storage account type for the managed disk."
                 }
               },
-              "diskEncryptionSet": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The resource ID of the disk encryption set."
-                    }
-                  }
-                },
+              "diskEncryptionSetResourceId": {
+                "type": "string",
                 "nullable": true,
                 "metadata": {
                   "description": "Optional. Specifies the customer managed disk encryption set resource id for the managed disk."
@@ -967,7 +951,9 @@
             "caching": "[coalesce(tryGet(parameters('osDisk'), 'caching'), 'ReadOnly')]",
             "managedDisk": {
               "storageAccountType": "[parameters('osDisk').managedDisk.storageAccountType]",
-              "diskEncryptionSet": "[coalesce(tryGet(parameters('osDisk').managedDisk, 'diskEncryptionSet'), null())]"
+              "diskEncryptionSet": {
+                "id": "[tryGet(parameters('osDisk').managedDisk, 'diskEncryptionSetResourceId')]"
+              }
             }
           }
         },

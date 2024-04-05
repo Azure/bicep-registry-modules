@@ -3102,7 +3102,7 @@ The managed disk parameters.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`diskEncryptionSet`](#parameter-osdiskmanageddiskdiskencryptionset) | object | Specifies the customer managed disk encryption set resource id for the managed disk. |
+| [`diskEncryptionSetResourceId`](#parameter-osdiskmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
 
 ### Parameter: `osDisk.managedDisk.storageAccountType`
 
@@ -3123,24 +3123,11 @@ Specifies the storage account type for the managed disk.
   ]
   ```
 
-### Parameter: `osDisk.managedDisk.diskEncryptionSet`
+### Parameter: `osDisk.managedDisk.diskEncryptionSetResourceId`
 
 Specifies the customer managed disk encryption set resource id for the managed disk.
 
 - Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-osdiskmanageddiskdiskencryptionsetid) | string | The resource ID of the disk encryption set. |
-
-### Parameter: `osDisk.managedDisk.diskEncryptionSet.id`
-
-The resource ID of the disk encryption set.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `osDisk.caching`
@@ -3367,7 +3354,7 @@ The managed disk parameters.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`diskEncryptionSet`](#parameter-datadisksmanageddiskdiskencryptionset) | object | Specifies the customer managed disk encryption set resource id for the managed disk. |
+| [`diskEncryptionSetResourceId`](#parameter-datadisksmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
 
 ### Parameter: `dataDisks.managedDisk.storageAccountType`
 
@@ -3388,24 +3375,11 @@ Specifies the storage account type for the managed disk.
   ]
   ```
 
-### Parameter: `dataDisks.managedDisk.diskEncryptionSet`
+### Parameter: `dataDisks.managedDisk.diskEncryptionSetResourceId`
 
 Specifies the customer managed disk encryption set resource id for the managed disk.
 
 - Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-datadisksmanageddiskdiskencryptionsetid) | string | The resource ID of the disk encryption set. |
-
-### Parameter: `dataDisks.managedDisk.diskEncryptionSet.id`
-
-The resource ID of the disk encryption set.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `dataDisks.caching`
