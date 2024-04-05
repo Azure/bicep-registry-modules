@@ -44,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdmin'
+  name: 'diskDeployment'
   params: {
     // Required parameters
     name: 'cdmin001'
@@ -100,7 +100,7 @@ This instance deploys the module with an image reference.
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdimg'
+  name: 'diskDeployment'
   params: {
     // Required parameters
     name: 'cdimg001'
@@ -160,7 +160,7 @@ This instance deploys the module with a custom image that is imported from a VHD
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdimp'
+  name: 'diskDeployment'
   params: {
     // Required parameters
     name: 'cdimp001'
@@ -224,7 +224,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdmax'
+  name: 'diskDeployment'
   params: {
     // Required parameters
     name: 'cdmax001'
@@ -358,7 +358,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cdwaf'
+  name: 'diskDeployment'
   params: {
     // Required parameters
     name: 'cdwaf001'

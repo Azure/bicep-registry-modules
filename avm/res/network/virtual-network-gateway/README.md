@@ -48,7 +48,7 @@ This instance deploys the module with the AAD set of required parameters.
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvngavpn'
+  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     gatewayType: 'Vpn'
@@ -160,7 +160,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvgmin'
+  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     gatewayType: 'Vpn'
@@ -232,7 +232,7 @@ This instance deploys the module with the ExpressRoute set of required parameter
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvger'
+  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     gatewayType: 'ExpressRoute'
@@ -316,7 +316,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvgmax'
+  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     gatewayType: 'Vpn'
@@ -586,7 +586,7 @@ This instance deploys the module with the VPN set of required parameters.
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvgvpn'
+  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     gatewayType: 'Vpn'
@@ -698,7 +698,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvgmwaf'
+  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     gatewayType: 'Vpn'

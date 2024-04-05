@@ -44,7 +44,8 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-iplsmin'
+module privateLinkScope 'br/public:avm/res/insights/private-link-scope:<version>' = {
+  name: 'privateLinkScopeDeployment'
   params: {
     // Required parameters
     name: 'iplsmin001'
@@ -91,7 +92,8 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-iplsmax'
+module privateLinkScope 'br/public:avm/res/insights/private-link-scope:<version>' = {
+  name: 'privateLinkScopeDeployment'
   params: {
     // Required parameters
     name: 'iplsmax001'
@@ -460,7 +462,8 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-iplswaf'
+module privateLinkScope 'br/public:avm/res/insights/private-link-scope:<version>' = {
+  name: 'privateLinkScopeDeployment'
   params: {
     // Required parameters
     name: 'iplswaf001'

@@ -43,7 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ntmpmin'
+  name: 'trafficmanagerprofileDeployment'
   params: {
     // Required parameters
     name: 'ntmpmin001'
@@ -91,7 +91,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ntmpmax'
+  name: 'trafficmanagerprofileDeployment'
   params: {
     // Required parameters
     name: 'ntmpmax001'
@@ -231,7 +231,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ntmpwaf'
+  name: 'trafficmanagerprofileDeployment'
   params: {
     // Required parameters
     name: 'ntmpwaf001'

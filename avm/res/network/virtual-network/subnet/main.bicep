@@ -59,11 +59,20 @@ param roleAssignments roleAssignmentType
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  'Network Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')
+  'Network Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '4d97b98b-1d4f-4787-a291-c67834d212e7'
+  )
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' existing = {
@@ -75,19 +84,27 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = {
   parent: virtualNetwork
   properties: {
     addressPrefix: addressPrefix
-    networkSecurityGroup: !empty(networkSecurityGroupResourceId) ? {
-      id: networkSecurityGroupResourceId
-    } : null
-    routeTable: !empty(routeTableResourceId) ? {
-      id: routeTableResourceId
-    } : null
-    natGateway: !empty(natGatewayResourceId) ? {
-      id: natGatewayResourceId
-    } : null
+    networkSecurityGroup: !empty(networkSecurityGroupResourceId)
+      ? {
+          id: networkSecurityGroupResourceId
+        }
+      : null
+    routeTable: !empty(routeTableResourceId)
+      ? {
+          id: routeTableResourceId
+        }
+      : null
+    natGateway: !empty(natGatewayResourceId)
+      ? {
+          id: natGatewayResourceId
+        }
+      : null
     serviceEndpoints: serviceEndpoints
     delegations: delegations
     privateEndpointNetworkPolicies: !empty(privateEndpointNetworkPolicies) ? any(privateEndpointNetworkPolicies) : null
-    privateLinkServiceNetworkPolicies: !empty(privateLinkServiceNetworkPolicies) ? any(privateLinkServiceNetworkPolicies) : null
+    privateLinkServiceNetworkPolicies: !empty(privateLinkServiceNetworkPolicies)
+      ? any(privateLinkServiceNetworkPolicies)
+      : null
     addressPrefixes: addressPrefixes
     applicationGatewayIPConfigurations: applicationGatewayIPConfigurations
     ipAllocations: ipAllocations
@@ -95,19 +112,23 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = {
   }
 }
 
-resource subnet_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(subnet.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+resource subnet_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(subnet.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : roleAssignment.roleDefinitionIdOrName
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: subnet
   }
-  scope: subnet
-}]
+]
 
 @description('The resource group the virtual network peering was deployed into.')
 output resourceGroupName string = resourceGroup().name

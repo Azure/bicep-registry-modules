@@ -48,7 +48,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-kvvmin'
+  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'kvvmin002'
@@ -100,7 +100,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-kvvmax'
+  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'kvvmax002'
@@ -608,7 +608,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-kvvwaf'
+  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'kvvwaf002'

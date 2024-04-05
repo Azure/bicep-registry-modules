@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "5887508216739936022"
+      "version": "0.26.54.24096",
+      "templateHash": "16058746935194459972"
     },
     "name": "Recovery Services Vault Protection Container",
     "description": "This module deploys a Recovery Services Vault Protection Container.",
@@ -144,8 +144,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "15677187951825533891"
+              "version": "0.26.54.24096",
+              "templateHash": "5385249890312845255"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",

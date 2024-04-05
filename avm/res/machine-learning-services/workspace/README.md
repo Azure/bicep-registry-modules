@@ -1,7 +1,7 @@
 # Machine Learning Services Workspaces `[Microsoft.MachineLearningServices/workspaces]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
->
+> 
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
@@ -53,7 +53,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-mlswmin'
+  name: 'workspaceDeployment'
   params: {
     // Required parameters
     associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
@@ -117,7 +117,7 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-mlswecr'
+  name: 'workspaceDeployment'
   params: {
     // Required parameters
     associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
@@ -211,7 +211,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-mlswmax'
+  name: 'workspaceDeployment'
   params: {
     // Required parameters
     associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
@@ -495,7 +495,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-mlswwaf'
+  name: 'workspaceDeployment'
   params: {
     // Required parameters
     associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'

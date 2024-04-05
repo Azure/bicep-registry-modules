@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module privateLinkService 'br/public:avm/res/network/private-link-service:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nplsmin'
+  name: 'privateLinkServiceDeployment'
   params: {
     // Required parameters
     ipConfigurations: [
@@ -124,7 +124,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module privateLinkService 'br/public:avm/res/network/private-link-service:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nplsmax'
+  name: 'privateLinkServiceDeployment'
   params: {
     // Required parameters
     ipConfigurations: [
@@ -306,7 +306,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module privateLinkService 'br/public:avm/res/network/private-link-service:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nplswaf'
+  name: 'privateLinkServiceDeployment'
   params: {
     // Required parameters
     ipConfigurations: [

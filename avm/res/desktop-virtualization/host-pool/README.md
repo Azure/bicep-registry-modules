@@ -45,7 +45,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvhpmin'
+  name: 'hostPoolDeployment'
   params: {
     // Required parameters
     name: 'dvhpmin002'
@@ -93,7 +93,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvhpmax'
+  name: 'hostPoolDeployment'
   params: {
     // Required parameters
     name: 'dvhpmax001'
@@ -363,7 +363,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvhpwaf'
+  name: 'hostPoolDeployment'
   params: {
     // Required parameters
     name: 'dvhpwaf002'

@@ -46,7 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dwmin'
+  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'dwmin001'
@@ -94,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dwmax'
+  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'dwmax001'
@@ -372,7 +372,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dwwaf'
+  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'dwwaf001'

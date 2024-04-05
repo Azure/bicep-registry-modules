@@ -49,43 +49,45 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    adminUsername: 'localAdminUser'
-    adminPassword: password
-    imageReference: {
-      publisher: 'MicrosoftWindowsServer'
-      offer: 'WindowsServer'
-      sku: '2022-datacenter-azure-edition'
-      version: 'latest'
-    }
-    osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
-      managedDisk: {
-        storageAccountType: 'Premium_LRS'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      adminUsername: 'localAdminUser'
+      adminPassword: password
+      imageReference: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2022-datacenter-azure-edition'
+        version: 'latest'
       }
-    }
-    osType: 'Windows'
-    skuName: 'Standard_B12ms'
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig1'
-            properties: {
-              subnet: {
-                id: nestedDependencies.outputs.subnetResourceId
+      osDisk: {
+        createOption: 'fromImage'
+        diskSizeGB: '128'
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
+      }
+      osType: 'Windows'
+      skuName: 'Standard_B12ms'
+      nicConfigurations: [
+        {
+          ipConfigurations: [
+            {
+              name: 'ipconfig1'
+              properties: {
+                subnet: {
+                  id: nestedDependencies.outputs.subnetResourceId
+                }
               }
             }
-          }
-        ]
-        nicSuffix: '-nic01'
-      }
-    ]
+          ]
+          nicSuffix: '-nic01'
+        }
+      ]
+    }
   }
-}]
+]

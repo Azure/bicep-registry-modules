@@ -39,72 +39,74 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // ============== //
 var rsvName = '${namePrefix}${serviceShort}001'
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    enableTelemetry: enableDefaultTelemetry
-    name: rsvName
-    replicationFabrics: [
-      {
-        location: 'NorthEurope'
-        replicationContainers: [
-          {
-            name: 'ne-container1'
-            replicationContainerMappings: [
-              {
-                policyName: 'Default_values'
-                targetContainerName: 'pluto'
-                targetProtectionContainerId: '${resourceGroup.id}/providers/Microsoft.RecoveryServices/vaults/${rsvName}/replicationFabrics/NorthEurope/replicationProtectionContainers/ne-container2'
-              }
-            ]
-          }
-          {
-            name: 'ne-container2'
-            replicationContainerMappings: [
-              {
-                policyName: 'Default_values'
-                targetContainerFabricName: 'WE-2'
-                targetContainerName: 'we-container1'
-              }
-            ]
-          }
-        ]
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      enableTelemetry: enableDefaultTelemetry
+      name: rsvName
+      replicationFabrics: [
+        {
+          location: 'NorthEurope'
+          replicationContainers: [
+            {
+              name: 'ne-container1'
+              replicationContainerMappings: [
+                {
+                  policyName: 'Default_values'
+                  targetContainerName: 'pluto'
+                  targetProtectionContainerId: '${resourceGroup.id}/providers/Microsoft.RecoveryServices/vaults/${rsvName}/replicationFabrics/NorthEurope/replicationProtectionContainers/ne-container2'
+                }
+              ]
+            }
+            {
+              name: 'ne-container2'
+              replicationContainerMappings: [
+                {
+                  policyName: 'Default_values'
+                  targetContainerFabricName: 'WE-2'
+                  targetContainerName: 'we-container1'
+                }
+              ]
+            }
+          ]
+        }
+        {
+          location: 'WestEurope'
+          name: 'WE-2'
+          replicationContainers: [
+            {
+              name: 'we-container1'
+              replicationContainerMappings: [
+                {
+                  policyName: 'Default_values'
+                  targetContainerFabricName: 'NorthEurope'
+                  targetContainerName: 'ne-container2'
+                }
+              ]
+            }
+          ]
+        }
+      ]
+      replicationPolicies: [
+        {
+          name: 'Default_values'
+        }
+        {
+          appConsistentFrequencyInMinutes: 240
+          crashConsistentFrequencyInMinutes: 7
+          multiVmSyncStatus: 'Disable'
+          name: 'Custom_values'
+          recoveryPointHistory: 2880
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-      {
-        location: 'WestEurope'
-        name: 'WE-2'
-        replicationContainers: [
-          {
-            name: 'we-container1'
-            replicationContainerMappings: [
-              {
-                policyName: 'Default_values'
-                targetContainerFabricName: 'NorthEurope'
-                targetContainerName: 'ne-container2'
-              }
-            ]
-          }
-        ]
-      }
-    ]
-    replicationPolicies: [
-      {
-        name: 'Default_values'
-      }
-      {
-        appConsistentFrequencyInMinutes: 240
-        crashConsistentFrequencyInMinutes: 7
-        multiVmSyncStatus: 'Disable'
-        name: 'Custom_values'
-        recoveryPointHistory: 2880
-      }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
-}]
+]

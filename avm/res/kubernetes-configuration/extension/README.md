@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-kcemin'
+  name: 'extensionDeployment'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
@@ -106,7 +106,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-kcemax'
+  name: 'extensionDeployment'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
@@ -137,6 +137,7 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
           }
         }
         namespace: 'flux-system'
+        scope: 'cluster'
         suspend: false
       }
     ]
@@ -198,6 +199,7 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
             }
           },
           "namespace": "flux-system",
+          "scope": "cluster",
           "suspend": false
         }
       ]
@@ -232,7 +234,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-kcewaf'
+  name: 'extensionDeployment'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
@@ -263,6 +265,7 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
           }
         }
         namespace: 'flux-system'
+        scope: 'cluster'
         suspend: false
       }
     ]
@@ -324,6 +327,7 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
             }
           },
           "namespace": "flux-system",
+          "scope": "cluster",
           "suspend": false
         }
       ]

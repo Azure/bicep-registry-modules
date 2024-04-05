@@ -21,6 +21,7 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 | `Microsoft.Automanage/configurationProfileAssignments` | [2021-04-30-preview](https://learn.microsoft.com/en-us/azure/templates) |
 | `Microsoft.Compute/virtualMachines` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines) |
 | `Microsoft.Compute/virtualMachines/extensions` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions) |
+| `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/networkInterfaces` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkInterfaces) |
 | `Microsoft.Network/publicIPAddresses` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/publicIPAddresses) |
@@ -39,8 +40,11 @@ The following section provides usage examples for the module, which were used to
 - [Using large parameter set for Linux](#example-3-using-large-parameter-set-for-linux)
 - [WAF-aligned](#example-4-waf-aligned)
 - [Using only defaults for Windows](#example-5-using-only-defaults-for-windows)
-- [Using large parameter set for Windows](#example-6-using-large-parameter-set-for-windows)
-- [Using disk encryption set for the VM.](#example-7-using-disk-encryption-set-for-the-vm)
+- [Using guest configuration for Windows](#example-6-using-guest-configuration-for-windows)
+- [Using a host pool to register the VM](#example-7-using-a-host-pool-to-register-the-vm)
+- [Using large parameter set for Windows](#example-8-using-large-parameter-set-for-windows)
+- [Deploy a VM with nVidia graphic card](#example-9-deploy-a-vm-with-nvidia-graphic-card)
+- [Using disk encryption set for the VM.](#example-10-using-disk-encryption-set-for-the-vm)
 
 ### Example 1: _Using automanage for the VM._
 
@@ -53,10 +57,11 @@ This instance deploys the module with registering to an automation account.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmlinatmg'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
+    availabilityZone: 0
     imageReference: {
       offer: '0001-com-ubuntu-server-jammy'
       publisher: 'Canonical'
@@ -120,6 +125,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "localAdminUser"
+    },
+    "availabilityZone": {
+      "value": 0
     },
     "imageReference": {
       "value": {
@@ -203,10 +211,11 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmlinmin'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
+    availabilityZone: 0
     imageReference: {
       offer: '0001-com-ubuntu-server-jammy'
       publisher: 'Canonical'
@@ -265,6 +274,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "localAdminUser"
+    },
+    "availabilityZone": {
+      "value": 0
     },
     "imageReference": {
       "value": {
@@ -341,10 +353,11 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmlinmax'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'localAdministrator'
+    availabilityZone: 1
     imageReference: {
       offer: '0001-com-ubuntu-server-focal'
       publisher: 'Canonical'
@@ -436,7 +449,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     osType: 'Linux'
     vmSize: 'Standard_DS2_v2'
     // Non-required parameters
-    availabilityZone: 1
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
     backupVaultResourceGroup: '<backupVaultResourceGroup>'
@@ -600,6 +612,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdministrator"
     },
+    "availabilityZone": {
+      "value": 1
+    },
     "imageReference": {
       "value": {
         "offer": "0001-com-ubuntu-server-focal",
@@ -703,9 +718,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Standard_DS2_v2"
     },
     // Non-required parameters
-    "availabilityZone": {
-      "value": 1
-    },
     "backupPolicyName": {
       "value": "<backupPolicyName>"
     },
@@ -913,10 +925,11 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmwinwaf'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'VMAdmin'
+    availabilityZone: 2
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -1009,7 +1022,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     vmSize: 'Standard_DS2_v2'
     // Non-required parameters
     adminPassword: '<adminPassword>'
-    availabilityZone: 2
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
     backupVaultResourceGroup: '<backupVaultResourceGroup>'
@@ -1189,6 +1201,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "VMAdmin"
     },
+    "availabilityZone": {
+      "value": 2
+    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -1294,9 +1309,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
-    },
-    "availabilityZone": {
-      "value": 2
     },
     "backupPolicyName": {
       "value": "<backupPolicyName>"
@@ -1521,10 +1533,11 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmwinmin'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
+    availabilityZone: 0
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -1574,6 +1587,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "localAdminUser"
+    },
+    "availabilityZone": {
+      "value": 0
     },
     "imageReference": {
       "value": {
@@ -1628,7 +1644,367 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 6: _Using large parameter set for Windows_
+### Example 6: _Using guest configuration for Windows_
+
+This instance deploys the module with the a guest configuration.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
+  params: {
+    // Required parameters
+    adminUsername: 'localAdminUser'
+    availabilityZone: 0
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+      version: 'latest'
+    }
+    name: 'cvmwinguest'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig01'
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+        nicSuffix: '-nic-01'
+      }
+    ]
+    osDisk: {
+      caching: 'ReadWrite'
+      diskSizeGB: '128'
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    osType: 'Windows'
+    vmSize: 'Standard_DS2_v2'
+    // Non-required parameters
+    adminPassword: '<adminPassword>'
+    extensionGuestConfigurationExtension: {
+      enabled: true
+    }
+    guestConfiguration: {
+      assignmentType: 'ApplyAndMonitor'
+      configurationParameter: [
+        {
+          name: 'Minimum Password Length;ExpectedValue'
+          value: '16'
+        }
+        {
+          name: 'Minimum Password Length;RemediateValue'
+          value: '16'
+        }
+        {
+          name: 'Maximum Password Age;ExpectedValue'
+          value: '75'
+        }
+        {
+          name: 'Maximum Password Age;RemediateValue'
+          value: '75'
+        }
+      ]
+      name: 'AzureWindowsBaseline'
+      version: '1.*'
+    }
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminUsername": {
+      "value": "localAdminUser"
+    },
+    "availabilityZone": {
+      "value": 0
+    },
+    "imageReference": {
+      "value": {
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "sku": "2022-datacenter-azure-edition",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmwinguest"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig01",
+              "subnetResourceId": "<subnetResourceId>"
+            }
+          ],
+          "nicSuffix": "-nic-01"
+        }
+      ]
+    },
+    "osDisk": {
+      "value": {
+        "caching": "ReadWrite",
+        "diskSizeGB": "128",
+        "managedDisk": {
+          "storageAccountType": "Premium_LRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Windows"
+    },
+    "vmSize": {
+      "value": "Standard_DS2_v2"
+    },
+    // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "extensionGuestConfigurationExtension": {
+      "value": {
+        "enabled": true
+      }
+    },
+    "guestConfiguration": {
+      "value": {
+        "assignmentType": "ApplyAndMonitor",
+        "configurationParameter": [
+          {
+            "name": "Minimum Password Length;ExpectedValue",
+            "value": "16"
+          },
+          {
+            "name": "Minimum Password Length;RemediateValue",
+            "value": "16"
+          },
+          {
+            "name": "Maximum Password Age;ExpectedValue",
+            "value": "75"
+          },
+          {
+            "name": "Maximum Password Age;RemediateValue",
+            "value": "75"
+          }
+        ],
+        "name": "AzureWindowsBaseline",
+        "version": "1.*"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Using a host pool to register the VM_
+
+This instance deploys the module and registers it in a host pool.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
+  params: {
+    // Required parameters
+    adminUsername: 'localAdminUser'
+    availabilityZone: 0
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+      version: 'latest'
+    }
+    name: 'cvmwinhp'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig01'
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+        nicSuffix: '-nic-01'
+      }
+    ]
+    osDisk: {
+      caching: 'ReadWrite'
+      diskSizeGB: '128'
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    osType: 'Windows'
+    vmSize: 'Standard_DS2_v2'
+    // Non-required parameters
+    adminPassword: '<adminPassword>'
+    extensionAadJoinConfig: {
+      enabled: true
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    extensionHostPoolRegistration: {
+      configurationFunction: 'Configuration.ps1\\AddSessionHost'
+      enabled: true
+      hostPoolName: '<hostPoolName>'
+      modulesUrl: '<modulesUrl>'
+      registrationInfoToken: '<registrationInfoToken>'
+      tags: {
+        Environment: 'Non-Prod'
+        'hidden-title': 'This is visible in the resource name'
+        Role: 'DeploymentValidation'
+      }
+    }
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminUsername": {
+      "value": "localAdminUser"
+    },
+    "availabilityZone": {
+      "value": 0
+    },
+    "imageReference": {
+      "value": {
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "sku": "2022-datacenter-azure-edition",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmwinhp"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig01",
+              "subnetResourceId": "<subnetResourceId>"
+            }
+          ],
+          "nicSuffix": "-nic-01"
+        }
+      ]
+    },
+    "osDisk": {
+      "value": {
+        "caching": "ReadWrite",
+        "diskSizeGB": "128",
+        "managedDisk": {
+          "storageAccountType": "Premium_LRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Windows"
+    },
+    "vmSize": {
+      "value": "Standard_DS2_v2"
+    },
+    // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "extensionAadJoinConfig": {
+      "value": {
+        "enabled": true,
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
+      }
+    },
+    "extensionHostPoolRegistration": {
+      "value": {
+        "configurationFunction": "Configuration.ps1\\AddSessionHost",
+        "enabled": true,
+        "hostPoolName": "<hostPoolName>",
+        "modulesUrl": "<modulesUrl>",
+        "registrationInfoToken": "<registrationInfoToken>",
+        "tags": {
+          "Environment": "Non-Prod",
+          "hidden-title": "This is visible in the resource name",
+          "Role": "DeploymentValidation"
+        }
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 8: _Using large parameter set for Windows_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1639,10 +2015,11 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmwinmax'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'VMAdmin'
+    availabilityZone: 2
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -1735,7 +2112,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     vmSize: 'Standard_DS2_v2'
     // Non-required parameters
     adminPassword: '<adminPassword>'
-    availabilityZone: 2
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
     backupVaultResourceGroup: '<backupVaultResourceGroup>'
@@ -1916,6 +2292,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "VMAdmin"
     },
+    "availabilityZone": {
+      "value": 2
+    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -2021,9 +2400,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
-    },
-    "availabilityZone": {
-      "value": 2
     },
     "backupPolicyName": {
       "value": "<backupPolicyName>"
@@ -2238,7 +2614,137 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 7: _Using disk encryption set for the VM._
+### Example 9: _Deploy a VM with nVidia graphic card_
+
+This instance deploys the module for a VM with dedicated nVidia graphic card.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
+  params: {
+    // Required parameters
+    adminUsername: 'localAdminUser'
+    availabilityZone: 0
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+      version: 'latest'
+    }
+    name: 'cvmwinnvidia'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig01'
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+        nicSuffix: '-nic-01'
+      }
+    ]
+    osDisk: {
+      caching: 'ReadWrite'
+      diskSizeGB: '128'
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    osType: 'Windows'
+    vmSize: 'Standard_NV6ads_A10_v5'
+    // Non-required parameters
+    adminPassword: '<adminPassword>'
+    extensionNvidiaGpuDriverWindows: {
+      enabled: true
+    }
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminUsername": {
+      "value": "localAdminUser"
+    },
+    "availabilityZone": {
+      "value": 0
+    },
+    "imageReference": {
+      "value": {
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "sku": "2022-datacenter-azure-edition",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmwinnvidia"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig01",
+              "subnetResourceId": "<subnetResourceId>"
+            }
+          ],
+          "nicSuffix": "-nic-01"
+        }
+      ]
+    },
+    "osDisk": {
+      "value": {
+        "caching": "ReadWrite",
+        "diskSizeGB": "128",
+        "managedDisk": {
+          "storageAccountType": "Premium_LRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Windows"
+    },
+    "vmSize": {
+      "value": "Standard_NV6ads_A10_v5"
+    },
+    // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "extensionNvidiaGpuDriverWindows": {
+      "value": {
+        "enabled": true
+      }
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 10: _Using disk encryption set for the VM._
 
 This instance deploys the module with disk enryption set.
 
@@ -2249,10 +2755,11 @@ This instance deploys the module with disk enryption set.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cvmwincmk'
+  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     adminUsername: 'VMAdministrator'
+    availabilityZone: 0
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -2315,6 +2822,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "adminUsername": {
       "value": "VMAdministrator"
+    },
+    "availabilityZone": {
+      "value": 0
     },
     "imageReference": {
       "value": {
@@ -2392,6 +2902,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`adminUsername`](#parameter-adminusername) | securestring | Administrator username. |
+| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set. |
 | [`configurationProfile`](#parameter-configurationprofile) | string | The configuration profile of automanage. |
 | [`imageReference`](#parameter-imagereference) | object | OS image reference. In case of marketplace images, it's the combination of the publisher, offer, sku, version attributes. In case of custom images it's the resource ID of the custom image. |
 | [`name`](#parameter-name) | string | The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory. |
@@ -2408,7 +2919,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`adminPassword`](#parameter-adminpassword) | securestring | When specifying a Windows Virtual Machine, this value should be passed. |
 | [`allowExtensionOperations`](#parameter-allowextensionoperations) | bool | Specifies whether extension operations should be allowed on the virtual machine. This may only be set to False when no extensions are present on the virtual machine. |
 | [`availabilitySetResourceId`](#parameter-availabilitysetresourceid) | string | Resource ID of an availability set. Cannot be used in combination with availability zone nor scale set. |
-| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set. |
 | [`backupPolicyName`](#parameter-backuppolicyname) | string | Backup policy the VMs should be using for backup. If not provided, it will use the DefaultPolicy from the backup recovery service vault. |
 | [`backupVaultName`](#parameter-backupvaultname) | string | Recovery service vault name to add VMs to backup. |
 | [`backupVaultResourceGroup`](#parameter-backupvaultresourcegroup) | string | Resource group of the backup recovery service vault. If not provided the current resource group name is considered by default. |
@@ -2425,17 +2935,22 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`enableEvictionPolicy`](#parameter-enableevictionpolicy) | bool | Specifies the eviction policy for the low priority virtual machine. Will result in 'Deallocate' eviction policy. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionAtHost`](#parameter-encryptionathost) | bool | This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs. |
-| [`extensionAadJoinConfig`](#parameter-extensionaadjoinconfig) | object | The configuration for the [AAD Join] extension. Must at least contain the ["enabled": true] property to be executed. |
+| [`extensionAadJoinConfig`](#parameter-extensionaadjoinconfig) | object | The configuration for the [AAD Join] extension. Must at least contain the ["enabled": true] property to be executed. To enroll in Intune, add the setting mdmId: "0000000a-0000-0000-c000-000000000000". |
 | [`extensionAntiMalwareConfig`](#parameter-extensionantimalwareconfig) | object | The configuration for the [Anti Malware] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionAzureDiskEncryptionConfig`](#parameter-extensionazurediskencryptionconfig) | object | The configuration for the [Azure Disk Encryption] extension. Must at least contain the ["enabled": true] property to be executed. Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys. |
 | [`extensionCustomScriptConfig`](#parameter-extensioncustomscriptconfig) | object | The configuration for the [Custom Script] extension. Must at least contain the ["enabled": true] property to be executed. |
-| [`extensionCustomScriptProtectedSetting`](#parameter-extensioncustomscriptprotectedsetting) | secureObject | Any object that contains the extension specific protected settings. |
+| [`extensionCustomScriptProtectedSetting`](#parameter-extensioncustomscriptprotectedsetting) | secureObject | An object that contains the extension specific protected settings. |
 | [`extensionDependencyAgentConfig`](#parameter-extensiondependencyagentconfig) | object | The configuration for the [Dependency Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionDomainJoinConfig`](#parameter-extensiondomainjoinconfig) | object | The configuration for the [Domain Join] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionDomainJoinPassword`](#parameter-extensiondomainjoinpassword) | securestring | Required if name is specified. Password of the user specified in user parameter. |
 | [`extensionDSCConfig`](#parameter-extensiondscconfig) | object | The configuration for the [Desired State Configuration] extension. Must at least contain the ["enabled": true] property to be executed. |
+| [`extensionGuestConfigurationExtension`](#parameter-extensionguestconfigurationextension) | object | The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy. |
+| [`extensionGuestConfigurationExtensionProtectedSettings`](#parameter-extensionguestconfigurationextensionprotectedsettings) | secureObject | An object that contains the extension specific protected settings. |
+| [`extensionHostPoolRegistration`](#parameter-extensionhostpoolregistration) | object | The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy. |
 | [`extensionMonitoringAgentConfig`](#parameter-extensionmonitoringagentconfig) | object | The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionNetworkWatcherAgentConfig`](#parameter-extensionnetworkwatcheragentconfig) | object | The configuration for the [Network Watcher Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
+| [`extensionNvidiaGpuDriverWindows`](#parameter-extensionnvidiagpudriverwindows) | object | The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least contain the ["enabled": true] property to be executed. |
+| [`guestConfiguration`](#parameter-guestconfiguration) | object | The guest configuration for the virtual machine. Needs the Guest Configuration extension to be enabled. |
 | [`licenseType`](#parameter-licensetype) | string | Specifies that the image or disk that is being used was licensed on-premises. This element is only used for images that contain the Windows Server operating system. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -2470,6 +2985,22 @@ Administrator username.
 
 - Required: Yes
 - Type: securestring
+
+### Parameter: `availabilityZone`
+
+If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    0
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `configurationProfile`
 
@@ -2567,23 +3098,6 @@ Resource ID of an availability set. Cannot be used in combination with availabil
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `availabilityZone`
-
-If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.
-
-- Required: No
-- Type: int
-- Default: `0`
-- Allowed:
-  ```Bicep
-  [
-    0
-    1
-    2
-    3
-  ]
-  ```
 
 ### Parameter: `backupPolicyName`
 
@@ -2715,7 +3229,7 @@ This property can be used by user in the request to enable or disable the Host E
 
 ### Parameter: `extensionAadJoinConfig`
 
-The configuration for the [AAD Join] extension. Must at least contain the ["enabled": true] property to be executed.
+The configuration for the [AAD Join] extension. Must at least contain the ["enabled": true] property to be executed. To enroll in Intune, add the setting mdmId: "0000000a-0000-0000-c000-000000000000".
 
 - Required: No
 - Type: object
@@ -2768,7 +3282,7 @@ The configuration for the [Custom Script] extension. Must at least contain the [
 
 ### Parameter: `extensionCustomScriptProtectedSetting`
 
-Any object that contains the extension specific protected settings.
+An object that contains the extension specific protected settings.
 
 - Required: No
 - Type: secureObject
@@ -2821,6 +3335,40 @@ The configuration for the [Desired State Configuration] extension. Must at least
   }
   ```
 
+### Parameter: `extensionGuestConfigurationExtension`
+
+The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      enabled: false
+  }
+  ```
+
+### Parameter: `extensionGuestConfigurationExtensionProtectedSettings`
+
+An object that contains the extension specific protected settings.
+
+- Required: No
+- Type: secureObject
+- Default: `{}`
+
+### Parameter: `extensionHostPoolRegistration`
+
+The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      enabled: false
+  }
+  ```
+
 ### Parameter: `extensionMonitoringAgentConfig`
 
 The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed.
@@ -2846,6 +3394,27 @@ The configuration for the [Network Watcher Agent] extension. Must at least conta
       enabled: false
   }
   ```
+
+### Parameter: `extensionNvidiaGpuDriverWindows`
+
+The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least contain the ["enabled": true] property to be executed.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      enabled: false
+  }
+  ```
+
+### Parameter: `guestConfiguration`
+
+The guest configuration for the virtual machine. Needs the Guest Configuration extension to be enabled.
+
+- Required: No
+- Type: object
+- Default: `{}`
 
 ### Parameter: `licenseType`
 

@@ -41,7 +41,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-imamin'
+  name: 'metricAlertDeployment'
   params: {
     // Required parameters
     criterias: [
@@ -121,7 +121,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-imamax'
+  name: 'metricAlertDeployment'
   params: {
     // Required parameters
     criterias: [
@@ -265,7 +265,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-imawaf'
+  name: 'metricAlertDeployment'
   params: {
     // Required parameters
     criterias: [

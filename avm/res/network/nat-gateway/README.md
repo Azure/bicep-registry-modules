@@ -46,10 +46,11 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nngmin'
+  name: 'natGatewayDeployment'
   params: {
     // Required parameters
     name: 'nngmin001'
+    zone: 1
     // Non-required parameters
     location: '<location>'
   }
@@ -71,6 +72,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     // Required parameters
     "name": {
       "value": "nngmin001"
+    },
+    "zone": {
+      "value": 1
     },
     // Non-required parameters
     "location": {
@@ -94,10 +98,11 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nngmax'
+  name: 'natGatewayDeployment'
   params: {
     // Required parameters
     name: 'nngmax001'
+    zone: 1
     // Non-required parameters
     location: '<location>'
     lock: {
@@ -187,6 +192,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     // Required parameters
     "name": {
       "value": "nngmax001"
+    },
+    "zone": {
+      "value": 1
     },
     // Non-required parameters
     "location": {
@@ -286,10 +294,11 @@ This example shows how you can provide a Public IP Prefix to the module, while a
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nngcprx'
+  name: 'natGatewayDeployment'
   params: {
     // Required parameters
     name: 'nngcprx001'
+    zone: 0
     // Non-required parameters
     location: '<location>'
     publicIPPrefixObjects: [
@@ -320,6 +329,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     // Required parameters
     "name": {
       "value": "nngcprx001"
+    },
+    "zone": {
+      "value": 0
     },
     // Non-required parameters
     "location": {
@@ -354,10 +366,11 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nngwaf'
+  name: 'natGatewayDeployment'
   params: {
     // Required parameters
     name: 'nngwaf001'
+    zone: 1
     // Non-required parameters
     location: '<location>'
     lock: {
@@ -413,6 +426,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     // Required parameters
     "name": {
       "value": "nngwaf001"
+    },
+    "zone": {
+      "value": 1
     },
     // Non-required parameters
     "location": {
@@ -473,6 +489,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Azure Bastion resource. |
+| [`zone`](#parameter-zone) | int | A list of availability zones denoting the zone in which Nat Gateway should be deployed. |
 
 **Optional parameters**
 
@@ -488,7 +505,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 | [`publicIpResourceIds`](#parameter-publicipresourceids) | array | Existing Public IP Address resource IDs to use for the NAT Gateway. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags for the resource. |
-| [`zones`](#parameter-zones) | array | A list of availability zones denoting the zone in which Nat Gateway should be deployed. |
 
 ### Parameter: `name`
 
@@ -496,6 +512,22 @@ Name of the Azure Bastion resource.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `zone`
+
+A list of availability zones denoting the zone in which Nat Gateway should be deployed.
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    0
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `enableTelemetry`
 
@@ -682,14 +714,6 @@ Tags for the resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `zones`
-
-A list of availability zones denoting the zone in which Nat Gateway should be deployed.
-
-- Required: No
-- Type: array
-- Default: `[]`
 
 
 ## Outputs

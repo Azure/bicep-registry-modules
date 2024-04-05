@@ -28,7 +28,7 @@ function New-ModuleReleaseTag {
     [string] $TargetVersion
   )
 
-  $ModuleRelativeFolderPath = ("avm/{0}" -f ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]) -replace '\\', '/'
+  $ModuleRelativeFolderPath = ('avm/{0}' -f ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]) -replace '\\', '/'
 
   # 1 Build Tag
   $tagName = '{0}/{1}' -f $ModuleRelativeFolderPath, $TargetVersion
@@ -38,15 +38,15 @@ function New-ModuleReleaseTag {
   $wellFormattedTag = git check-ref-format --normalize $tagName
   if (-not $wellFormattedTag) {
     throw "Tag [$tagName] is not well formatted."
-    # TODO: Handle exception if tag not formatted correctly
   }
 
   # 3 Check tag not already existing
   $existingTag = git ls-remote --tags origin $tagName
   if ($existingTag) {
-    throw "Tag [$tagName] already exists"
-    # TODO: Handle exception if tag already existing
+    Write-Verbose "Tag [$tagName] already exists" -Verbose
+    return $tagName
   }
+
 
   # 3 Create local tag
   Write-Verbose "Creating release tag: [$tagName]" -Verbose
@@ -55,6 +55,10 @@ function New-ModuleReleaseTag {
   # 4 Publish release tag
   Write-Verbose "Publishing release tag: [$tagName]" -Verbose
   git push origin $tagName
+
+  if ($LASTEXITCODE -ne 0) {
+    throw 'Git Tag creation failed. Please review error log.'
+  }
 
   # 5 Return tag
   return $tagName

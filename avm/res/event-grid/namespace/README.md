@@ -54,7 +54,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-egnmin'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'egnmin001'
@@ -102,7 +102,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-egnmax'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'egnmax001'
@@ -508,7 +508,7 @@ This instance deploys the module as a MQTT Broker with routing to a topic within
 
 ```bicep
 module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-egnmqttct'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'egnmqttct001'
@@ -844,7 +844,7 @@ This instance deploys the module as a MQTT Broker with routing to a topic within
 
 ```bicep
 module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-egnmqttnt'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'egnmqttnt001'
@@ -1180,7 +1180,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-egnwaf'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'egnwaf001'

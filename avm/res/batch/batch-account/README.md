@@ -46,7 +46,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-bbamin'
+  name: 'batchAccountDeployment'
   params: {
     // Required parameters
     name: 'bbamin001'
@@ -98,7 +98,7 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-bbaencr'
+  name: 'batchAccountDeployment'
   params: {
     // Required parameters
     name: 'bbaencr001'
@@ -188,7 +188,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-bbamax'
+  name: 'batchAccountDeployment'
   params: {
     // Required parameters
     name: 'bbamax001'
@@ -504,7 +504,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-bbawaf'
+  name: 'batchAccountDeployment'
   params: {
     // Required parameters
     name: 'bbawaf001'

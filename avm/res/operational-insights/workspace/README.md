@@ -52,7 +52,7 @@ This instance deploys the module with advanced features like custom tables and d
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-oiwadv'
+  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'oiwadv001'
@@ -666,7 +666,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-oiwmin'
+  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'oiwmin001'
@@ -714,7 +714,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-oiwmax'
+  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'oiwmax001'
@@ -1336,7 +1336,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-oiwwaf'
+  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'oiwwaf001'

@@ -47,7 +47,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvnmin'
+  name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
     addressPrefixes: [
@@ -103,7 +103,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvnmax'
+  name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
     addressPrefixes: [
@@ -355,7 +355,7 @@ This instance deploys the module with both an inbound and outbound peering.
 
 ```bicep
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvnpeer'
+  name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
     addressPrefixes: [
@@ -483,7 +483,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nvnwaf'
+  name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
     addressPrefixes: [

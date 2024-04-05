@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoint:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-idcemin'
+  name: 'dataCollectionEndpointDeployment'
   params: {
     // Required parameters
     name: 'idcemin001'
@@ -90,7 +90,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoint:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-idcemax'
+  name: 'dataCollectionEndpointDeployment'
   params: {
     // Required parameters
     name: 'idcemax001'
@@ -204,7 +204,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoint:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-idcewaf'
+  name: 'dataCollectionEndpointDeployment'
   params: {
     // Required parameters
     name: 'idcewaf001'

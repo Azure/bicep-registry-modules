@@ -60,124 +60,129 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    primaryAgentPoolProfile: [
-      {
-        availabilityZones: [
-          '3'
-        ]
-        count: 1
-        enableAutoScaling: true
-        maxCount: 3
-        maxPods: 30
-        minCount: 1
-        mode: 'System'
-        name: 'systempool'
-        osDiskSizeGB: 0
-        osType: 'Linux'
-        serviceCidr: ''
-        type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
-      }
-    ]
-    agentPools: [
-      {
-        availabilityZones: [
-          '3'
-        ]
-        count: 2
-        enableAutoScaling: true
-        maxCount: 3
-        maxPods: 30
-        minCount: 1
-        minPods: 2
-        mode: 'User'
-        name: 'userpool1'
-        nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
-        osDiskSizeGB: 128
-        osType: 'Linux'
-        scaleSetEvictionPolicy: 'Delete'
-        scaleSetPriority: 'Regular'
-        type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
-      }
-      {
-        availabilityZones: [
-          '3'
-        ]
-        count: 2
-        enableAutoScaling: true
-        maxCount: 3
-        maxPods: 30
-        minCount: 1
-        minPods: 2
-        mode: 'User'
-        name: 'userpool2'
-        nodeLabels: {}
-        nodeTaints: [
-          'CriticalAddonsOnly=true:NoSchedule'
-        ]
-        osDiskSizeGB: 128
-        osType: 'Linux'
-        scaleSetEvictionPolicy: 'Delete'
-        scaleSetPriority: 'Regular'
-        type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS2_v2'
-      }
-    ]
-    networkPlugin: 'kubenet'
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    managedIdentities: {
-      userAssignedResourcesIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      primaryAgentPoolProfile: [
+        {
+          availabilityZones: [
+            '3'
+          ]
+          count: 1
+          enableAutoScaling: true
+          maxCount: 3
+          maxPods: 30
+          minCount: 1
+          mode: 'System'
+          name: 'systempool'
+          osDiskSizeGB: 0
+          osType: 'Linux'
+          serviceCidr: ''
+          type: 'VirtualMachineScaleSets'
+          vmSize: 'Standard_DS2_v2'
+        }
       ]
+      agentPools: [
+        {
+          availabilityZones: [
+            '3'
+          ]
+          count: 2
+          enableAutoScaling: true
+          maxCount: 3
+          maxPods: 30
+          minCount: 1
+          minPods: 2
+          mode: 'User'
+          name: 'userpool1'
+          nodeLabels: {}
+          nodeTaints: [
+            'CriticalAddonsOnly=true:NoSchedule'
+          ]
+          osDiskSizeGB: 128
+          osType: 'Linux'
+          scaleSetEvictionPolicy: 'Delete'
+          scaleSetPriority: 'Regular'
+          type: 'VirtualMachineScaleSets'
+          vmSize: 'Standard_DS2_v2'
+        }
+        {
+          availabilityZones: [
+            '3'
+          ]
+          count: 2
+          enableAutoScaling: true
+          maxCount: 3
+          maxPods: 30
+          minCount: 1
+          minPods: 2
+          mode: 'User'
+          name: 'userpool2'
+          nodeLabels: {}
+          nodeTaints: [
+            'CriticalAddonsOnly=true:NoSchedule'
+          ]
+          osDiskSizeGB: 128
+          osType: 'Linux'
+          scaleSetEvictionPolicy: 'Delete'
+          scaleSetPriority: 'Regular'
+          type: 'VirtualMachineScaleSets'
+          vmSize: 'Standard_DS2_v2'
+        }
+      ]
+      networkPlugin: 'kubenet'
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      managedIdentities: {
+        userAssignedResourcesIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
+    ]
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
-}]
+]
