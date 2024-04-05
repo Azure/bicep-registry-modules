@@ -32,8 +32,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using Private Endpoints](#example-3-using-private-endpoints)
-- [WAF-aligned](#example-4-waf-aligned)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -46,7 +45,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvhpmin'
+  name: 'hostPoolDeployment'
   params: {
     // Required parameters
     name: 'dvhpmin002'
@@ -94,7 +93,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvhpmax'
+  name: 'hostPoolDeployment'
   params: {
     // Required parameters
     name: 'dvhpmax001'
@@ -142,6 +141,12 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
     maxSessionLimit: 99999
     personalDesktopAssignmentType: 'Automatic'
     privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+      }
       {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
@@ -283,6 +288,12 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
             "<privateDNSZoneResourceId>"
           ],
           "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -341,77 +352,7 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
 </details>
 <p>
 
-### Example 3: _Using Private Endpoints_
-
-This instance deploys the module with Private Endpoints.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvhppe'
-  params: {
-    // Required parameters
-    name: 'dvhppe001'
-    // Non-required parameters
-    location: '<location>'
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        subnetResourceId: '<subnetResourceId>'
-      }
-    ]
-    publicNetworkAccess: 'Disabled'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "dvhppe001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "subnetResourceId": "<subnetResourceId>"
-        }
-      ]
-    },
-    "publicNetworkAccess": {
-      "value": "Disabled"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 4: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -422,7 +363,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-dvhpwaf'
+  name: 'hostPoolDeployment'
   params: {
     // Required parameters
     name: 'dvhpwaf002'
@@ -836,14 +777,15 @@ Configuration details for private endpoints.
 | [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the private endpoint. |
 | [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
+| [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
 | [`location`](#parameter-privateendpointslocation) | string | The location to deploy the private endpoint to. |
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
-| [`manualPrivateLinkServiceConnections`](#parameter-privateendpointsmanualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
+| [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
-| [`service`](#parameter-privateendpointsservice) | string | The service (sub-) type to deploy the private endpoint for. For example "connection". |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
 ### Parameter: `privateEndpoints.subnetResourceId`
@@ -959,6 +901,13 @@ A private IP address obtained from the private endpoint's subnet.
 - Required: Yes
 - Type: string
 
+### Parameter: `privateEndpoints.isManualConnection`
+
+If Manual Private Link Connection is required.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `privateEndpoints.location`
 
 The location to deploy the private endpoint to.
@@ -1002,12 +951,12 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.manualPrivateLinkServiceConnections`
+### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
-Manual PrivateLink Service Connections.
+A message passed to the owner of the remote resource with the manual connection request.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.name`
 
@@ -1121,7 +1070,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `privateEndpoints.service`
 
-The service (sub-) type to deploy the private endpoint for. For example "connection".
+The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".
 
 - Required: No
 - Type: string
@@ -1348,11 +1297,11 @@ Do not provide a value! This date value is used to generate a registration token
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm-res-network-privateendpoint:0.1.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.4.0` | Remote reference |
 
 ## Data Collection
 

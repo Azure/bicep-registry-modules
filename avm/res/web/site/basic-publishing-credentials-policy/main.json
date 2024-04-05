@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "2268330248918966432"
+      "version": "0.26.54.24096",
+      "templateHash": "12379291046700283915"
     },
     "name": "Web Site Basic Publishing Credentials Policies",
     "description": "This module deploys a Web Site Basic Publishing Credentials Policy.",

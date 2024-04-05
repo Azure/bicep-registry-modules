@@ -24,7 +24,7 @@ This module deploys a Synapse Workspaces Key.
 | :-- | :-- | :-- |
 | [`isActiveCMK`](#parameter-isactivecmk) | bool | Used to activate the workspace after a customer managed key is provided. |
 | [`keyVaultResourceId`](#parameter-keyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
-| [`name`](#parameter-name) | string | Encryption key name. |
+| [`name`](#parameter-name) | string | The name of the Synapse Workspaces Key. |
 
 **Conditional parameters**
 
@@ -48,7 +48,7 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 ### Parameter: `name`
 
-Encryption key name.
+The name of the Synapse Workspaces Key.
 
 - Required: Yes
 - Type: string

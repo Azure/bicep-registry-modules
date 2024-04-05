@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.public-ip-address.yml"
       - "avm/res/network/public-ip-address/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:

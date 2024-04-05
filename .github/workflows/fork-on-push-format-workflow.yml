@@ -31,7 +31,7 @@ jobs:
           token: ${{ secrets.WORKFLOW_PAT }} # A WORKFLOW_PAT must be used to re-trigger workflows after commit. This PAT must have the workflow scope. This is not generally recommended.
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "16"
 

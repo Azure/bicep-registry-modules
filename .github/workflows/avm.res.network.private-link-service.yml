@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.private-link-service.yml"
       - "avm/res/network/private-link-service/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:

@@ -97,30 +97,37 @@ param enableTelemetry bool = true
 @description('Optional. Rule collection groups.')
 param ruleCollectionGroups array?
 
-var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities) ? {
-  type: 'UserAssigned'
-  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-} : null
+var identity = !empty(managedIdentities)
+  ? {
+      type: 'UserAssigned'
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.network-firewallpolicy.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.network-firewallpolicy.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
 resource firewallPolicy 'Microsoft.Network/firewallPolicies@2023-04-01' = {
   name: name
@@ -128,37 +135,47 @@ resource firewallPolicy 'Microsoft.Network/firewallPolicies@2023-04-01' = {
   tags: tags
   identity: identity
   properties: {
-    basePolicy: !empty(basePolicyResourceId ?? '') ? {
-      id: basePolicyResourceId
-    } : null
-    dnsSettings: enableProxy ? {
-      enableProxy: enableProxy
-      servers: servers ?? []
-    } : null
-    insights: insightsIsEnabled ? {
-      isEnabled: insightsIsEnabled
-      logAnalyticsResources: {
-        defaultWorkspaceId: {
-          id: defaultWorkspaceId
+    basePolicy: !empty(basePolicyResourceId ?? '')
+      ? {
+          id: basePolicyResourceId
         }
-        workspaces: workspaces
-      }
-      retentionDays: retentionDays
-    } : null
-    intrusionDetection: (mode != 'Off') ? {
-      configuration: {
-        bypassTrafficSettings: bypassTrafficSettings
-        signatureOverrides: signatureOverrides
-      }
-      mode: mode
-    } : null
+      : null
+    dnsSettings: enableProxy
+      ? {
+          enableProxy: enableProxy
+          servers: servers ?? []
+        }
+      : null
+    insights: insightsIsEnabled
+      ? {
+          isEnabled: insightsIsEnabled
+          logAnalyticsResources: {
+            defaultWorkspaceId: {
+              id: defaultWorkspaceId
+            }
+            workspaces: workspaces
+          }
+          retentionDays: retentionDays
+        }
+      : null
+    intrusionDetection: (mode != 'Off')
+      ? {
+          configuration: {
+            bypassTrafficSettings: bypassTrafficSettings
+            signatureOverrides: signatureOverrides
+          }
+          mode: mode
+        }
+      : null
     sku: {
       tier: tier
     }
-    snat: !empty(privateRanges) ? {
-      autoLearnPrivateRanges: autoLearnPrivateRanges
-      privateRanges: privateRanges
-    } : null
+    snat: !empty(privateRanges)
+      ? {
+          autoLearnPrivateRanges: autoLearnPrivateRanges
+          privateRanges: privateRanges
+        }
+      : null
     sql: {
       allowSqlRedirect: allowSqlRedirect
     }
@@ -167,12 +184,14 @@ resource firewallPolicy 'Microsoft.Network/firewallPolicies@2023-04-01' = {
       fqdns: fqdns ?? []
       ipAddresses: ipAddresses ?? []
     }
-    transportSecurity: (!empty(keyVaultSecretId ?? []) || !empty(certificateName ?? '')) ? {
-      certificateAuthority: {
-        keyVaultSecretId: keyVaultSecretId
-        name: certificateName
-      }
-    } : null
+    transportSecurity: (!empty(keyVaultSecretId ?? []) || !empty(certificateName ?? ''))
+      ? {
+          certificateAuthority: {
+            keyVaultSecretId: keyVaultSecretId
+            name: certificateName
+          }
+        }
+      : null
   }
 }
 
@@ -181,15 +200,17 @@ resource firewallPolicy 'Microsoft.Network/firewallPolicies@2023-04-01' = {
 // because of concurrent access to the base policy.
 // The next line forces ARM to deploy them one after the other, so no race concition on the base policy will happen.
 @batchSize(1)
-module firewallPolicy_ruleCollectionGroups 'rule-collection-group/main.bicep' = [for (ruleCollectionGroup, index) in (ruleCollectionGroups ?? []): {
-  name: '${uniqueString(deployment().name, location)}-firewallPolicy_ruleCollectionGroups-${index}'
-  params: {
-    firewallPolicyName: firewallPolicy.name
-    name: ruleCollectionGroup.name
-    priority: ruleCollectionGroup.priority
-    ruleCollections: ruleCollectionGroup.ruleCollections
+module firewallPolicy_ruleCollectionGroups 'rule-collection-group/main.bicep' = [
+  for (ruleCollectionGroup, index) in (ruleCollectionGroups ?? []): {
+    name: '${uniqueString(deployment().name, location)}-firewallPolicy_ruleCollectionGroups-${index}'
+    params: {
+      firewallPolicyName: firewallPolicy.name
+      name: ruleCollectionGroup.name
+      priority: ruleCollectionGroup.priority
+      ruleCollections: ruleCollectionGroup.ruleCollections
+    }
   }
-}]
+]
 
 @description('The name of the deployed firewall policy.')
 output name string = firewallPolicy.name

@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.public-ip-prefix.yml"
       - "avm/res/network/public-ip-prefix/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:

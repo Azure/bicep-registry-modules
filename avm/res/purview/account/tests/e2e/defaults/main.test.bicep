@@ -19,6 +19,10 @@ param serviceShort string = 'pvamin'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+// Set to fixed location as the RP function returns unsupported locations
+// Right now (2024/03) the following locations are supported: eastus, eastus2, southcentralus, westcentralus, westus, westus2, westus3
+param enforcedLocation string = 'eastus'
+
 // =========== //
 // Deployments //
 // =========== //
@@ -35,11 +39,13 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  scope: resourceGroup
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    scope: resourceGroup
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: enforcedLocation
+    }
   }
-}]
+]

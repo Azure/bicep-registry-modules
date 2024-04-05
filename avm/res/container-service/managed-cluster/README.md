@@ -48,7 +48,7 @@ This instance deploys the module with Azure CNI network plugin .
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-csmaz'
+  name: 'managedClusterDeployment'
   params: {
     // Required parameters
     name: 'csmaz001'
@@ -168,6 +168,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             url: 'https://github.com/mspnp/aks-baseline'
           }
           namespace: 'flux-system'
+          scope: 'cluster'
         }
         {
           gitRepository: {
@@ -200,6 +201,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             }
           }
           namespace: 'flux-system-helm'
+          scope: 'cluster'
         }
       ]
       configurationSettings: {
@@ -422,7 +424,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
               "timeoutInSeconds": 180,
               "url": "https://github.com/mspnp/aks-baseline"
             },
-            "namespace": "flux-system"
+            "namespace": "flux-system",
+            "scope": "cluster"
           },
           {
             "gitRepository": {
@@ -454,7 +457,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
                 "validation": "none"
               }
             },
-            "namespace": "flux-system-helm"
+            "namespace": "flux-system-helm",
+            "scope": "cluster"
           }
         ],
         "configurationSettings": {
@@ -552,7 +556,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-csmin'
+  name: 'managedClusterDeployment'
   params: {
     // Required parameters
     name: 'csmin001'
@@ -626,7 +630,7 @@ This instance deploys the module with Kubenet network plugin .
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-csmkube'
+  name: 'managedClusterDeployment'
   params: {
     // Required parameters
     name: 'csmkube001'
@@ -906,7 +910,7 @@ This instance deploys the module with a private cluster instance.
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-csmpriv'
+  name: 'managedClusterDeployment'
   params: {
     // Required parameters
     name: 'csmpriv001'
@@ -1132,7 +1136,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cswaf'
+  name: 'managedClusterDeployment'
   params: {
     // Required parameters
     name: 'cswaf001'
@@ -1548,7 +1552,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`nodeResourceGroup`](#parameter-noderesourcegroup) | string | Name of the resource group containing agent pool nodes. |
 | [`omsAgentEnabled`](#parameter-omsagentenabled) | bool | Specifies whether the OMS agent is enabled. |
 | [`openServiceMeshEnabled`](#parameter-openservicemeshenabled) | bool | Specifies whether the openServiceMesh add-on is enabled or not. |
-| [`outboundType`](#parameter-outboundtype) | string | Specifies outbound (egress) routing method. - loadBalancer or userDefinedRouting. |
+| [`outboundType`](#parameter-outboundtype) | string | Specifies outbound (egress) routing method. |
 | [`podCidr`](#parameter-podcidr) | string | Specifies the CIDR notation IP range from which to assign pod IPs when kubenet is used. |
 | [`podIdentityProfileAllowNetworkPluginKubenet`](#parameter-podidentityprofileallownetworkpluginkubenet) | bool | Running in Kubenet is disabled by default due to the security related nature of AAD Pod Identity and the risks of IP spoofing. |
 | [`podIdentityProfileEnable`](#parameter-podidentityprofileenable) | bool | Whether the pod identity addon is enabled. |
@@ -2993,7 +2997,7 @@ Specifies whether the openServiceMesh add-on is enabled or not.
 
 ### Parameter: `outboundType`
 
-Specifies outbound (egress) routing method. - loadBalancer or userDefinedRouting.
+Specifies outbound (egress) routing method.
 
 - Required: No
 - Type: string
@@ -3002,6 +3006,8 @@ Specifies outbound (egress) routing method. - loadBalancer or userDefinedRouting
   ```Bicep
   [
     'loadBalancer'
+    'managedNATGateway'
+    'userAssignedNATGateway'
     'userDefinedRouting'
   ]
   ```
@@ -3221,7 +3227,7 @@ Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |

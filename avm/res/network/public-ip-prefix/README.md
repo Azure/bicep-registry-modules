@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-npipmin'
+  name: 'publicIpPrefixDeployment'
   params: {
     // Required parameters
     name: 'npipmin001'
@@ -94,7 +94,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-npipmax'
+  name: 'publicIpPrefixDeployment'
   params: {
     // Required parameters
     name: 'npipmax001'
@@ -127,6 +127,10 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    zones: [
+      1
+      2
+    ]
   }
 }
 ```
@@ -185,6 +189,12 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "zones": {
+      "value": [
+        1,
+        2
+      ]
     }
   }
 }
@@ -204,7 +214,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-npipwaf'
+  name: 'publicIpPrefixDeployment'
   params: {
     // Required parameters
     name: 'npipwaf001'
@@ -277,6 +287,7 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`zones`](#parameter-zones) | array | A list of availability zones denoting the IP allocated for the resource needs to come from. |
 
 ### Parameter: `name`
 
@@ -447,6 +458,29 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `zones`
+
+A list of availability zones denoting the IP allocated for the resource needs to come from.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 
 ## Outputs

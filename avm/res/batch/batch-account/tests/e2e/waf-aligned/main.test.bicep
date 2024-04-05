@@ -61,43 +61,50 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    storageAccountId: nestedDependencies.outputs.storageAccountResourceId
-    diagnosticSettings: [
-      {
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      storageAccountId: nestedDependencies.outputs.storageAccountResourceId
+      diagnosticSettings: [
+        {
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-    ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    poolAllocationMode: 'BatchService'
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      poolAllocationMode: 'BatchService'
+      privateEndpoints: [
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          service: 'batchAccount'
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        }
+      ]
+      storageAccessIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+      storageAuthenticationMode: 'BatchAccountManagedIdentity'
+      managedIdentities: {
+        systemAssigned: true
       }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
+    }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
     ]
-    storageAccessIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-    storageAuthenticationMode: 'BatchAccountManagedIdentity'
-    managedIdentities: {
-      systemAssigned: true
-    }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
   }
-}]
+]

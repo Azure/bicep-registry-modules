@@ -58,7 +58,7 @@ resource schedule 'Microsoft.Automation/automationAccounts/schedules@2022-08-08'
     expiryTime: !empty(expiryTime) ? expiryTime : null
     frequency: !empty(frequency) ? frequency : 'OneTime'
     interval: (interval != 0) ? interval : null
-    startTime: !empty(startTime) ? startTime : dateTimeAdd(baseTime, 'PT10M')
+    startTime: !empty(startTime) ? startTime : dateTimeAdd(baseTime, 'PT15M')
     timeZone: !empty(timeZone) ? timeZone : null
   }
 }

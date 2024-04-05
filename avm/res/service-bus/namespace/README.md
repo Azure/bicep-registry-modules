@@ -42,8 +42,7 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using encryption parameter set](#example-2-using-encryption-parameter-set)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [Using private endpoint parameter set](#example-4-using-private-endpoint-parameter-set)
-- [WAF-aligned](#example-5-waf-aligned)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -56,7 +55,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-sbnmin'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'sbnmin001'
@@ -112,7 +111,7 @@ This instance deploys the module with features enabled for CMK encryption.
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-sbnencr'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'sbnencr001'
@@ -196,7 +195,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-sbnmax'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'sbnmax001'
@@ -298,13 +297,18 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
-        service: 'namespace'
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
           'hidden-title': 'This is visible in the resource name'
           Role: 'DeploymentValidation'
         }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
       }
     ]
     publicNetworkAccess: 'Enabled'
@@ -525,13 +529,18 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
-          "service": "namespace",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           }
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -633,145 +642,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using private endpoint parameter set_
-
-This instance deploys the module with features enabled for private endpoint configrations.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-sbnpe'
-  params: {
-    // Required parameters
-    name: 'sbnpe001'
-    skuObject: {
-      name: 'Premium'
-    }
-    // Non-required parameters
-    location: '<location>'
-    privateEndpoints: [
-      {
-        customDnsConfigs: [
-          {
-            fqdn: 'abc.namespace.com'
-            ipAddresses: [
-              '10.0.0.10'
-            ]
-          }
-        ]
-        ipConfigurations: [
-          {
-            name: 'myIPconfig'
-            properties: {
-              groupId: 'namespace'
-              memberName: 'namespace'
-              privateIPAddress: '10.0.0.10'
-            }
-          }
-        ]
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
-      }
-    ]
-    publicNetworkAccess: 'Disabled'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "sbnpe001"
-    },
-    "skuObject": {
-      "value": {
-        "name": "Premium"
-      }
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "customDnsConfigs": [
-            {
-              "fqdn": "abc.namespace.com",
-              "ipAddresses": [
-                "10.0.0.10"
-              ]
-            }
-          ],
-          "ipConfigurations": [
-            {
-              "name": "myIPconfig",
-              "properties": {
-                "groupId": "namespace",
-                "memberName": "namespace",
-                "privateIPAddress": "10.0.0.10"
-              }
-            }
-          ],
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
-        }
-      ]
-    },
-    "publicNetworkAccess": {
-      "value": "Disabled"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 5: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -782,7 +653,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-sbnwaf'
+  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'sbnwaf001'
@@ -1769,14 +1640,15 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the private endpoint. |
 | [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
+| [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
 | [`location`](#parameter-privateendpointslocation) | string | The location to deploy the private endpoint to. |
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
-| [`manualPrivateLinkServiceConnections`](#parameter-privateendpointsmanualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
+| [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
+| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
-| [`service`](#parameter-privateendpointsservice) | string | The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
 ### Parameter: `privateEndpoints.subnetResourceId`
@@ -1892,6 +1764,13 @@ A private IP address obtained from the private endpoint's subnet.
 - Required: Yes
 - Type: string
 
+### Parameter: `privateEndpoints.isManualConnection`
+
+If Manual Private Link Connection is required.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `privateEndpoints.location`
 
 The location to deploy the private endpoint to.
@@ -1935,12 +1814,12 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.manualPrivateLinkServiceConnections`
+### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
-Manual PrivateLink Service Connections.
+A message passed to the owner of the remote resource with the manual connection request.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.name`
 
@@ -1951,7 +1830,7 @@ The name of the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroupName`
 
-The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.
+The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
 
 - Required: No
 - Type: string
@@ -2054,7 +1933,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `privateEndpoints.service`
 
-The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".
+The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".
 
 - Required: No
 - Type: string
@@ -3026,11 +2905,11 @@ Enabling this property creates a Premium Service Bus Namespace in regions suppor
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.3.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.4.0` | Remote reference |
 
 ## Data Collection
 

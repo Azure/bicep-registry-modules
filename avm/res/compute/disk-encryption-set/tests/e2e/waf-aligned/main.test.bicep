@@ -50,23 +50,28 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    keyName: nestedDependencies.outputs.keyName
-    keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-    managedIdentities: {
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      keyName: nestedDependencies.outputs.keyName
+      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+      managedIdentities: {
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
+    dependsOn: [
+      nestedDependencies
+    ]
   }
-}]
+]

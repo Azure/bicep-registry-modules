@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "17251933783218724711"
+      "version": "0.26.54.24096",
+      "templateHash": "1058820827217282473"
     },
     "name": "Web/Function Apps Slot Hybrid Connection Relay",
     "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay.",

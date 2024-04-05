@@ -43,7 +43,7 @@ This instance deploys the module with a base set of parameters. Note it does inc
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsfmin'
+  name: 'serverfarmDeployment'
   params: {
     // Required parameters
     name: 'wsfmin001'
@@ -107,7 +107,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsfmax'
+  name: 'serverfarmDeployment'
   params: {
     // Required parameters
     name: 'wsfmax001'
@@ -271,7 +271,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsfwaf'
+  name: 'serverfarmDeployment'
   params: {
     // Required parameters
     name: 'wsfwaf001'

@@ -62,70 +62,78 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      eventSubscriptions: [
+        {
+          name: '${namePrefix}${serviceShort}001'
+          expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+          filter: {
+            isSubjectCaseSensitive: false
+            enableAdvancedFilteringOnArrays: true
           }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    eventSubscriptions: [ {
-        name: '${namePrefix}${serviceShort}001'
-        expirationTimeUtc: '2099-01-01T11:00:21.715Z'
-        filter: {
-          isSubjectCaseSensitive: false
-          enableAdvancedFilteringOnArrays: true
-        }
-        retryPolicy: {
-          maxDeliveryAttempts: 10
-          eventTimeToLive: '120'
-        }
-        eventDeliverySchema: 'CloudEventSchemaV1_0'
-        destination: {
-          endpointType: 'StorageQueue'
-          properties: {
-            resourceId: nestedDependencies.outputs.storageAccountResourceId
-            queueMessageTimeToLiveInSeconds: 86400
-            queueName: nestedDependencies.outputs.queueName
+          retryPolicy: {
+            maxDeliveryAttempts: 10
+            eventTimeToLive: '120'
+          }
+          eventDeliverySchema: 'CloudEventSchemaV1_0'
+          destination: {
+            endpointType: 'StorageQueue'
+            properties: {
+              resourceId: nestedDependencies.outputs.storageAccountResourceId
+              queueMessageTimeToLiveInSeconds: 86400
+              queueName: nestedDependencies.outputs.queueName
+            }
           }
         }
-      } ]
-    inboundIpRules: []
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        service: 'topic'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
+      ]
+      inboundIpRules: []
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
+      privateEndpoints: [
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          service: 'topic'
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
+    ]
   }
-}]
+]

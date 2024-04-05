@@ -61,109 +61,146 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    storageAccountId: nestedDependencies.outputs.storageAccountResourceId
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    poolAllocationMode: 'BatchService'
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      storageAccountId: nestedDependencies.outputs.storageAccountResourceId
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Owner'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
+      ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      poolAllocationMode: 'BatchService'
+      privateEndpoints: [
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          service: 'batchAccount'
+          subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
           }
-          {
-            roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
-        ipConfigurations: [
-          {
-            name: 'myIPconfig'
-            properties: {
-              groupId: 'batchAccount'
-              memberName: 'batchAccount'
-              privateIPAddress: '10.0.0.10'
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'Owner'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
             }
+            {
+              roleDefinitionIdOrName: subscriptionResourceId(
+                'Microsoft.Authorization/roleDefinitions',
+                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+              )
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
+          ipConfigurations: [
+            {
+              name: 'myIPconfig'
+              properties: {
+                groupId: 'batchAccount'
+                memberName: 'batchAccount'
+                privateIPAddress: '10.0.16.10'
+              }
+            }
+          ]
+          customDnsConfigs: [
+            {
+              fqdn: 'abc.batch.com'
+              ipAddresses: [
+                '10.0.16.10'
+              ]
+            }
+          ]
+        }
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          service: 'batchAccount'
+          subnetResourceId: nestedDependencies.outputs.customSubnet2ResourceId
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
           }
-        ]
-        customDnsConfigs: [
-          {
-            fqdn: 'abc.batch.com'
-            ipAddresses: [
-              '10.0.0.10'
-            ]
+        }
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          service: 'nodeManagement'
+          subnetResourceId: nestedDependencies.outputs.customSubnet1ResourceId
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
           }
-        ]
+        }
+      ]
+      networkProfile: {
+        accountAccess: {
+          defaultAction: 'Deny'
+          allowedIpRules: [
+            '40.74.28.0/23'
+          ]
+        }
+        nodeManagementAccess: {
+          allowedIpRules: [
+            '40.74.28.0/23'
+          ]
+        }
       }
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      storageAccessIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+      storageAuthenticationMode: 'BatchAccountManagedIdentity'
+      managedIdentities: {
+        systemAssigned: true
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
+    }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
     ]
-    networkProfile: {
-      accountAccess: {
-        defaultAction: 'Deny'
-        allowedIpRules: [
-          '40.74.28.0/23'
-        ]
-      }
-      nodeManagementAccess: {
-        allowedIpRules: [
-          '40.74.28.0/23'
-        ]
-      }
-    }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    storageAccessIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-    storageAuthenticationMode: 'BatchAccountManagedIdentity'
-    managedIdentities: {
-      systemAssigned: true
-    }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
   }
-}]
+]

@@ -1,10 +1,5 @@
 # Maintenance Configurations `[Microsoft.Maintenance/maintenanceConfigurations]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a Maintenance Configuration.
 
 ## Navigation
@@ -47,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-mmcmin'
+  name: 'maintenanceConfigurationDeployment'
   params: {
     // Required parameters
     name: 'mmcmin001'
@@ -95,7 +90,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-mmcmax'
+  name: 'maintenanceConfigurationDeployment'
   params: {
     // Required parameters
     name: 'mmcmax001'
@@ -124,6 +119,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    maintenanceScope: 'InGuestPatch'
     maintenanceWindow: {
       duration: '03:00'
       expirationDateTime: '9999-12-31 23:59:59'
@@ -208,6 +204,9 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
         "name": "myCustomLockName"
       }
     },
+    "maintenanceScope": {
+      "value": "InGuestPatch"
+    },
     "maintenanceWindow": {
       "value": {
         "duration": "03:00",
@@ -267,7 +266,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-mmcwaf'
+  name: 'maintenanceConfigurationDeployment'
   params: {
     // Required parameters
     name: 'mmcwaf001'
@@ -292,6 +291,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
       }
     }
     location: '<location>'
+    maintenanceScope: 'InGuestPatch'
     maintenanceWindow: {
       duration: '03:00'
       expirationDateTime: '9999-12-31 23:59:59'
@@ -352,6 +352,9 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
     },
     "location": {
       "value": "<location>"
+    },
+    "maintenanceScope": {
+      "value": "InGuestPatch"
     },
     "maintenanceWindow": {
       "value": {

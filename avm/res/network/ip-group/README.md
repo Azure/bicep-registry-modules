@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nigmin'
+  name: 'ipGroupDeployment'
   params: {
     // Required parameters
     name: 'nigmin001'
@@ -90,7 +90,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nigmax'
+  name: 'ipGroupDeployment'
   params: {
     // Required parameters
     name: 'nigmax001'
@@ -206,7 +206,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nigwaf'
+  name: 'ipGroupDeployment'
   params: {
     // Required parameters
     name: 'nigwaf001'
@@ -272,14 +272,14 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the ipGroups. |
+| [`name`](#parameter-name) | string | The name of the IP Group. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`ipAddresses`](#parameter-ipaddresses) | array | IpAddresses/IpAddressPrefixes in the IpGroups resource. |
+| [`ipAddresses`](#parameter-ipaddresses) | array | IpAddresses/IpAddressPrefixes in the IP Group resource. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -287,7 +287,7 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
 
 ### Parameter: `name`
 
-The name of the ipGroups.
+The name of the IP Group.
 
 - Required: Yes
 - Type: string
@@ -302,7 +302,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `ipAddresses`
 
-IpAddresses/IpAddressPrefixes in the IpGroups resource.
+IpAddresses/IpAddressPrefixes in the IP Group resource.
 
 - Required: No
 - Type: array

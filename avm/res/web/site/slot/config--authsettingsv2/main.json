@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "17486786144236938726"
+      "version": "0.26.54.24096",
+      "templateHash": "1333776366661137381"
     },
     "name": "Site Slot Auth Settings V2 Config",
     "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -31,6 +31,7 @@
         "functionapp,linux",
         "functionapp,workflowapp",
         "functionapp,workflowapp,linux",
+        "app,linux",
         "app"
       ],
       "metadata": {

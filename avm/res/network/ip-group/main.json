@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "6351514954757717512"
+      "version": "0.26.54.24096",
+      "templateHash": "6270017838054314226"
     },
     "name": "IP Groups",
     "description": "This module deploys an IP Group.",
@@ -110,7 +110,7 @@
       "type": "string",
       "minLength": 1,
       "metadata": {
-        "description": "Required. The name of the ipGroups."
+        "description": "Required. The name of the IP Group."
       }
     },
     "location": {
@@ -124,7 +124,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. IpAddresses/IpAddressPrefixes in the IpGroups resource."
+        "description": "Optional. IpAddresses/IpAddressPrefixes in the IP Group resource."
       }
     },
     "lock": {

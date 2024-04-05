@@ -26,7 +26,7 @@ jobs:
         uses: ./.github/actions/templates/avm-setEnvironment
 
       - name: Log in to Azure
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           client-id: "${{ secrets.PUBLISH_CLIENT_ID }}"
           tenant-id: "${{ secrets.PUBLISH_TENANT_ID }}"
@@ -44,7 +44,7 @@ jobs:
 
       - name: "Publish tagged module to public bicep registry"
         id: publish_tag
-        uses: azure/powershell@v1
+        uses: azure/powershell@v2
         with:
           azPSVersion: "latest"
           inlineScript: |
@@ -71,7 +71,7 @@ jobs:
             Write-Output '::endgroup::'
 
       - name: "Validate publish"
-        uses: azure/powershell@v1
+        uses: azure/powershell@v2
         if: ${{ steps.publish_tag.outputs.version != '' && steps.publish_tag.outputs.publishedModuleName != '' }}
         with:
           azPSVersion: "latest"

@@ -214,8 +214,9 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
       $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e')
       foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
-        $pathExisting = Test-Path (Join-Path -Path $e2eTestFolderPath 'main.test.bicep')
-        $pathExisting | Should -Be $true
+        $filePath = Join-Path -Path $e2eTestFolderPath 'main.test.bicep'
+        $pathExisting = Test-Path $filePath
+        $pathExisting | Should -Be $true -Because "path [$filePath] is expected to exist."
       }
     }
   }
@@ -323,7 +324,7 @@ Describe 'Module tests' -Tag 'Module' {
       }
 
       $mdFormattedDiff = ($diffReponse -join '</br>') -replace '\|', '\|'
-      $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `Set-ModuleReadMe` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the script for this module''s template.' -f $mdFormattedDiff)
+      $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/avm/utilities/tools/Set-AVMModule.ps1` and more precisely the `/avm/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
     }
   }
 
@@ -348,7 +349,7 @@ Describe 'Module tests' -Tag 'Module' {
       }
     }
 
-    It '[<moduleFolderName>] Compiled ARM template should be latest.' -TestCases $armTemplateTestCases {
+    It '[<moduleFolderName>] The [main.json] ARM template should be based on the current [main.bicep] Bicep template.' -TestCases $armTemplateTestCases {
 
       param(
         [string] $moduleFolderName,
@@ -404,7 +405,7 @@ Describe 'Module tests' -Tag 'Module' {
       }
     }
 
-    Context "General" {
+    Context 'General' {
 
       It '[<moduleFolderName>] The template file should not be empty.' -TestCases $moduleFolderTestCases {
 
@@ -485,7 +486,7 @@ Describe 'Module tests' -Tag 'Module' {
       }
     }
 
-    Context "Parameters" {
+    Context 'Parameters' {
 
       It '[<moduleFolderName>] The Location should be defined as a parameter, with the default value of "[resourceGroup().Location]" or "global" for ResourceGroup deployment scope.' -TestCases $moduleFolderTestCases {
 
@@ -638,7 +639,7 @@ Describe 'Module tests' -Tag 'Module' {
             @{
               parameterName  = 'roleAssignments'
               udtName        = 'roleAssignmentType'
-              udtExpectedUrl = "$interfaceBase/diagnostic-settings/udt-schema"
+              udtExpectedUrl = "$interfaceBase/role-assignments/udt-schema"
               link           = "$interfaceBase/role-assignments"
             }
             @{
@@ -705,7 +706,7 @@ Describe 'Module tests' -Tag 'Module' {
 
               try {
                 $rawResponse = Invoke-WebRequest -Uri $expectedUdtUrl
-                if (($rawResponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
+                if (($rawResponse.Headers['Content-Type'] | Out-String) -like '*text/plain*') {
                   $expectedSchemaFull = $rawResponse.Content -split '\n'
                 } else {
                   throw "Failed to fetch schema from [$expectedUdtUrl]. Skipping schema check"
@@ -784,7 +785,7 @@ Describe 'Module tests' -Tag 'Module' {
       }
     }
 
-    Context "Variables" {
+    Context 'Variables' {
       It '[<moduleFolderName>] Variable names should be camel-cased (no dashes or underscores and must start with lower-case letter).' -TestCases $moduleFolderTestCases {
 
         param(
@@ -810,7 +811,7 @@ Describe 'Module tests' -Tag 'Module' {
       }
     }
 
-    Context "Resources" {
+    Context 'Resources' {
       It '[<moduleFolderName>] Telemetry deployment should be present in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
 
         param(
@@ -824,7 +825,7 @@ Describe 'Module tests' -Tag 'Module' {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
-        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like "*telemetry*" } # The AVM telemetry prefix
+        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' } # The AVM telemetry prefix
         $telemetryDeployment | Should -Not -BeNullOrEmpty -Because 'A telemetry resource with name prefix [46d3xbcp] should be present in the template'
       }
 
@@ -841,7 +842,7 @@ Describe 'Module tests' -Tag 'Module' {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
-        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like "*telemetry*" } # The AVM telemetry prefix
+        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' } # The AVM telemetry prefix
 
         if (-not $telemetryDeployment) {
           Set-ItResult -Skipped -Because 'Skipping this test as telemetry was not implemented in template'
@@ -864,7 +865,7 @@ Describe 'Module tests' -Tag 'Module' {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
-        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like "*telemetry*" } # The AVM telemetry prefix
+        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' } # The AVM telemetry prefix
 
         if (-not $telemetryDeployment) {
           Set-ItResult -Skipped -Because 'Skipping this test as telemetry was not implemented in template'
@@ -918,12 +919,12 @@ Describe 'Module tests' -Tag 'Module' {
         } else {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
-        $telemetryDeploymentName = ($templateResources | Where-Object { $_.condition -like "*telemetry*" }).name # The AVM telemetry prefix
+        $telemetryDeploymentName = ($templateResources | Where-Object { $_.condition -like '*telemetry*' }).name # The AVM telemetry prefix
         $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
       }
     }
 
-    Context "Output" {
+    Context 'Output' {
 
       It '[<moduleFolderName>] Output names should be camel-cased (no dashes or underscores and must start with lower-case letter).' -TestCases $moduleFolderTestCases {
 
@@ -943,7 +944,7 @@ Describe 'Module tests' -Tag 'Module' {
         $CamelCasingFlag | Should -Not -Contain $false
       }
 
-      It "[<moduleFolderName>] Output names description should start with a capital letter and contain text ending with a dot." -TestCases $moduleFolderTestCases {
+      It '[<moduleFolderName>] Output names description should start with a capital letter and contain text ending with a dot.' -TestCases $moduleFolderTestCases {
 
         param(
           [hashtable] $templateFileContent
@@ -1128,13 +1129,13 @@ Describe 'Governance tests' {
     $formattedEntry = $relativeModulePath -replace '\\', '\/'
     $moduleLine = $codeOwnersContent | Where-Object { $_ -match "^\s*\/$formattedEntry\/" }
 
-    $expectedEntry = "/{0}/ @Azure/{1}-module-owners-bicep @Azure/avm-core-team-technical-bicep" -f ($relativeModulePath -replace '\\', '/'), ($relativeModulePath -replace '-' -replace '[\\|\/]', '-')
+    $expectedEntry = '/{0}/ @Azure/{1}-module-owners-bicep @Azure/avm-core-team-technical-bicep' -f ($relativeModulePath -replace '\\', '/'), ($relativeModulePath -replace '-' -replace '[\\|\/]', '-')
 
     # Line should exist
     $moduleLine | Should -Not -BeNullOrEmpty -Because "the module should be listed in the [CODEOWNERS](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file) file as [/$expectedEntry]."
 
     # Line should be correct
-    $moduleLine | Should -Be $expectedEntry -Because "the module should match the expected format as documented [here](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file)."
+    $moduleLine | Should -Be $expectedEntry -Because 'the module should match the expected format as documented [here](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file).'
   }
 
 
@@ -1150,10 +1151,9 @@ Describe 'Governance tests' {
 
     # Identify listed modules
     $startIndex = 0
-    while ($issueTemplateContent[$startIndex] -notmatch '^\s*- "Other, as defined below\.\.\."' -and $startIndex -ne $issueTemplateContent.Length) {
+    while ($issueTemplateContent[$startIndex] -notmatch '^\s*#?\s*\-\s+\"avm\/.+\"' -and $startIndex -ne $issueTemplateContent.Length) {
       $startIndex++
     }
-    $startIndex++ # Go one further than dummy value line
 
     $endIndex = $startIndex
     while ($issueTemplateContent[$endIndex] -match '.*- "avm\/.*' -and $endIndex -ne $issueTemplateContent.Length) {
@@ -1278,13 +1278,13 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       ($testFileContent | Out-String) | Should -Match "param namePrefix string = '#_namePrefix_#'" -Because 'The test CI needs this value to ensure that deployed resources have unique names per fork.'
     }
 
-    It "[<moduleFolderName>] Bicep test deployment files should invoke test like [`module testDeployment '../.*main.bicep' = {`] for test case [<testName>]" -TestCases $deploymentTestFileTestCases {
+    It "[<moduleFolderName>] Bicep test deployment files should invoke test like [`module testDeployment '../.*main.bicep' = [ or {`] for test case [<testName>]" -TestCases $deploymentTestFileTestCases {
 
       param(
         [object[]] $testFileContent
       )
 
-      $testIndex = ($testFileContent | Select-String ("^module testDeployment '..\/.*main.bicep' = (\[for .+: )?{$") | ForEach-Object { $_.LineNumber - 1 })[0]
+      $testIndex = ($testFileContent | Select-String ("^module testDeployment '..\/.*main.bicep' = .*[\[|\{]$") | ForEach-Object { $_.LineNumber - 1 })[0]
 
       $testIndex -ne -1 | Should -Be $true -Because 'the module test invocation should be in the expected format to allow identification.'
     }

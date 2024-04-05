@@ -134,6 +134,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
+        service: 'databricks_ui_api'
         subnetResourceId: nestedDependencies.outputs.defaultSubnetResourceId
         tags: {
           Environment: 'Non-Prod'
@@ -145,4 +146,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     requireInfrastructureEncryption: true
     vnetAddressPrefix: '10.100'
   }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
 }]

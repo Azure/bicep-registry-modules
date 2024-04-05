@@ -60,23 +60,27 @@ var builtInRoleNames = {
   'Desktop Virtualization Workspace Reader': '/providers/Microsoft.Authorization/roleDefinitions/0fa44ee9-7a7d-466b-9bb2-2bf446b1204d'
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: take('46d3xbcp.res.desktopvirtualization-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}', 64)
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: take(
+      '46d3xbcp.res.desktopvirtualization-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
+      64
+    )
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
 resource workspace 'Microsoft.DesktopVirtualization/workspaces@2022-10-14-preview' = {
   name: name
@@ -90,70 +94,108 @@ resource workspace 'Microsoft.DesktopVirtualization/workspaces@2022-10-14-previe
   }
 }
 
-module workspace_privateEndpoints 'br/public:avm-res-network-privateendpoint:0.1.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-Workspace-PrivateEndpoint-${index}'
-  params: {
-    groupIds: [
-      privateEndpoint.service
-    ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.?service}-${index}'
-    serviceResourceId: workspace.id
-    subnetResourceId: privateEndpoint.subnetResourceId
-    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
-    lock: privateEndpoint.?lock ?? lock
-    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
-    roleAssignments: privateEndpoint.?roleAssignments
-    tags: privateEndpoint.?tags ?? tags
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
-    customDnsConfigs: privateEndpoint.?customDnsConfigs
-    ipConfigurations: privateEndpoint.?ipConfigurations
-    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
-    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Workspace-PrivateEndpoint-${index}'
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
+      privateLinkServiceConnections: [
+        {
+          name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
+          properties: {
+            privateLinkServiceId: workspace.id
+            groupIds: [
+              privateEndpoint.?service ?? 'connection'
+            ]
+          }
+        }
+      ]
+      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
+              properties: {
+                privateLinkServiceId: workspace.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'connection'
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
   }
-}]
+]
 
-resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: workspace
   }
-  scope: workspace
-}
 
-resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: workspace
   }
-  scope: workspace
-}]
+]
 
-resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    logs: diagnosticSetting.?logCategoriesAndGroups ?? [
-      {
-        categoryGroup: 'allLogs'
-        enabled: true
-      }
-    ]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      logs: diagnosticSetting.?logCategoriesAndGroups ?? [
+        {
+          categoryGroup: 'allLogs'
+          enabled: true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: workspace
   }
-  scope: workspace
-}]
+]
 
 @sys.description('The resource ID of the workspace.')
 output resourceId string = workspace.id
@@ -227,7 +269,6 @@ type roleAssignmentType = {
 }[]?
 
 type privateEndpointType = {
-
   @sys.description('Optional. The name of the private endpoint.')
   name: string?
 
@@ -245,6 +286,13 @@ type privateEndpointType = {
 
   @sys.description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
   privateDnsZoneResourceIds: string[]?
+
+  @sys.description('Optional. If Manual Private Link Connection is required.')
+  isManualConnection: bool?
+
+  @sys.description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
+  @maxLength(140)
+  manualConnectionRequestMessage: string?
 
   @sys.description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
@@ -287,9 +335,6 @@ type privateEndpointType = {
 
   @sys.description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
   tags: object?
-
-  @sys.description('Optional. Manual PrivateLink Service Connections.')
-  manualPrivateLinkServiceConnections: array?
 
   @sys.description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?

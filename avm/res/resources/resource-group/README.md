@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rrgmin'
+  name: 'resourceGroupDeployment'
   params: {
     // Required parameters
     name: 'avm-resources.resourcegroups-rrgmin-rg'
@@ -90,7 +90,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rrgmax'
+  name: 'resourceGroupDeployment'
   params: {
     // Required parameters
     name: 'avm-resources.resourcegroups-rrgmax-rg'
@@ -196,7 +196,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rrgwaf'
+  name: 'resourceGroupDeployment'
   params: {
     // Required parameters
     name: 'avm-resources.resourcegroups-rrgwaf-rg'

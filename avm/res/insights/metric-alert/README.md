@@ -1,10 +1,5 @@
 # Metric Alerts `[Microsoft.Insights/metricAlerts]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a Metric Alert.
 
 ## Navigation
@@ -46,7 +41,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-imamin'
+  name: 'metricAlertDeployment'
   params: {
     // Required parameters
     criterias: [
@@ -126,7 +121,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-imamax'
+  name: 'metricAlertDeployment'
   params: {
     // Required parameters
     criterias: [
@@ -270,7 +265,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-imawaf'
+  name: 'metricAlertDeployment'
   params: {
     // Required parameters
     criterias: [

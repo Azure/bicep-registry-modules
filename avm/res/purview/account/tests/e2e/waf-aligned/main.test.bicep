@@ -19,6 +19,10 @@ param serviceShort string = 'pvawaf'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+// Set to fixed location as the RP function returns unsupported locations
+// Right now (2024/03) the following locations are supported: eastus, eastus2, southcentralus, westcentralus, westus, westus2, westus3
+param enforcedLocation string = 'eastus'
+
 // =========== //
 // Deployments //
 // =========== //
@@ -36,7 +40,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    location: resourceLocation
+    location: enforcedLocation
   }
 }
 
@@ -50,8 +54,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
-    location: resourceLocation
-
+    location: enforcedLocation
   }
 }
 
@@ -60,71 +63,77 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  scope: resourceGroup
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    scope: resourceGroup
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: enforcedLocation
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
+      managedResourceGroupName: '${namePrefix}${serviceShort}001-managed-rg'
+      publicNetworkAccess: 'Disabled'
+      diagnosticSettings: [
+        {
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      accountPrivateEndpoints: [
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.purviewAccountPrivateDNSResourceId
+          ]
+          service: 'account'
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        }
+      ]
+      portalPrivateEndpoints: [
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.purviewPortalPrivateDNSResourceId
+          ]
+          service: 'portal'
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        }
+      ]
+      storageBlobPrivateEndpoints: [
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.storageBlobPrivateDNSResourceId
+          ]
+          service: 'blob'
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        }
+      ]
+      storageQueuePrivateEndpoints: [
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.storageQueuePrivateDNSResourceId
+          ]
+          service: 'queue'
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        }
+      ]
+      eventHubPrivateEndpoints: [
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.eventHubPrivateDNSResourceId
+          ]
+          service: 'namespace'
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        }
+      ]
     }
-    managedResourceGroupName: '${namePrefix}${serviceShort}001-managed-rg'
-    publicNetworkAccess: 'Disabled'
-    diagnosticSettings: [
-      {
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    accountPrivateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.purviewAccountPrivateDNSResourceId
-        ]
-        service: 'account'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-      }
-    ]
-    portalPrivateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.purviewPortalPrivateDNSResourceId
-        ]
-        service: 'portal'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-      }
-    ]
-    storageBlobPrivateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.storageBlobPrivateDNSResourceId
-        ]
-        service: 'blob'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-      }
-    ]
-    storageQueuePrivateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.storageQueuePrivateDNSResourceId
-        ]
-        service: 'queue'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-      }
-    ]
-    eventHubPrivateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.eventHubPrivateDNSResourceId
-        ]
-        service: 'namespace'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-      }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
     ]
   }
-}]
+]

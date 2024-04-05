@@ -45,15 +45,20 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    clusterName: nestedDependencies.outputs.clusterName
-    extensionType: 'microsoft.flux'
-    releaseNamespace: 'flux-system'
-    releaseTrain: 'Stable'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      clusterName: nestedDependencies.outputs.clusterName
+      extensionType: 'microsoft.flux'
+      releaseNamespace: 'flux-system'
+      releaseTrain: 'Stable'
+    }
+    dependsOn: [
+      nestedDependencies
+    ]
   }
-}]
+]

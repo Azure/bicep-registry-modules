@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "9561238160025481382"
+      "version": "0.26.54.24096",
+      "templateHash": "6536051249599059447"
     },
     "name": "Application Insights",
     "description": "This component deploys an Application Insights instance.",
@@ -478,8 +478,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "15515506165880058222"
+              "version": "0.26.54.24096",
+              "templateHash": "10843790724446601865"
             },
             "name": "Application Insights Linked Storage Account",
             "description": "This component deploys an Application Insights Linked Storage Account.",
@@ -581,6 +581,13 @@
         "description": "Application Insights Instrumentation key. A read-only value that applications can use to identify the destination for all telemetry sent to Azure Application Insights. This value will be supplied upon construction of each new Application Insights component."
       },
       "value": "[reference('appInsights').InstrumentationKey]"
+    },
+    "connectionString": {
+      "type": "string",
+      "metadata": {
+        "description": "Application Insights Connection String."
+      },
+      "value": "[reference('appInsights').ConnectionString]"
     }
   }
 }

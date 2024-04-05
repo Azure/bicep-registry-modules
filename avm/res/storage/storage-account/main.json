@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "9001266032995338880"
+      "version": "0.26.54.24096",
+      "templateHash": "13878793352750035767"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -132,9 +132,26 @@
       "properties": {
         "resourceAccessRules": {
           "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "tenantId": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The ID of the tenant in which the resource resides in."
+                }
+              },
+              "resourceId": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The resource ID of the target service. Can also contain a wildcard, if multiple services e.g. in a resource group should be included."
+                }
+              }
+            }
+          },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Sets the resource access rules."
+            "description": "Optional. Sets the resource access rules. Array entries must consist of \"tenantId\" and \"resourceId\" fields only."
           }
         },
         "bypass": {
@@ -225,6 +242,21 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones."
+            }
+          },
+          "isManualConnection": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Manual PrivateLink Service Connections."
+            }
+          },
+          "manualConnectionRequestMessage": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 140,
+            "metadata": {
+              "description": "Optional. A message passed to the owner of the remote resource with the manual connection request."
             }
           },
           "customDnsConfigs": {
@@ -333,13 +365,6 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
-            }
-          },
-          "manualPrivateLinkServiceConnections": {
-            "type": "array",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Manual PrivateLink Service Connections."
             }
           },
           "enableTelemetry": {
@@ -478,7 +503,7 @@
       "type": "string",
       "maxLength": 24,
       "metadata": {
-        "description": "Required. Name of the Storage Account."
+        "description": "Required. Name of the Storage Account. Must be lower-case."
       }
     },
     "location": {
@@ -795,7 +820,7 @@
     "supportsBlobService": "[or(or(or(equals(parameters('kind'), 'BlockBlobStorage'), equals(parameters('kind'), 'BlobStorage')), equals(parameters('kind'), 'StorageV2')), equals(parameters('kind'), 'Storage'))]",
     "supportsFileService": "[or(or(equals(parameters('kind'), 'FileStorage'), equals(parameters('kind'), 'StorageV2')), equals(parameters('kind'), 'Storage'))]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -903,7 +928,7 @@
         "isNfsV3Enabled": "[if(parameters('enableNfsV3'), parameters('enableNfsV3'), '')]",
         "largeFileSharesState": "[if(or(equals(parameters('skuName'), 'Standard_LRS'), equals(parameters('skuName'), 'Standard_ZRS')), parameters('largeFileSharesState'), null())]",
         "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
-        "networkAcls": "[if(not(empty(parameters('networkAcls'))), createObject('bypass', tryGet(parameters('networkAcls'), 'bypass'), 'defaultAction', tryGet(parameters('networkAcls'), 'defaultAction'), 'virtualNetworkRules', tryGet(parameters('networkAcls'), 'virtualNetworkRules'), 'ipRules', tryGet(parameters('networkAcls'), 'ipRules')), null())]",
+        "networkAcls": "[if(not(empty(parameters('networkAcls'))), createObject('resourceAccessRules', tryGet(parameters('networkAcls'), 'resourceAccessRules'), 'bypass', tryGet(parameters('networkAcls'), 'bypass'), 'defaultAction', tryGet(parameters('networkAcls'), 'defaultAction'), 'virtualNetworkRules', tryGet(parameters('networkAcls'), 'virtualNetworkRules'), 'ipRules', tryGet(parameters('networkAcls'), 'ipRules')), null())]",
         "allowBlobPublicAccess": "[parameters('allowBlobPublicAccess')]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkAcls'))), 'Disabled', null()))]",
         "azureFilesIdentityBasedAuthentication": "[if(not(empty(parameters('azureFilesIdentityBasedAuthentication'))), parameters('azureFilesIdentityBasedAuthentication'), null())]"
@@ -995,22 +1020,11 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "privateLinkServiceConnections": {
-            "value": [
-              {
-                "name": "[parameters('name')]",
-                "properties": {
-                  "privateLinkServiceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('name'))]",
-                  "groupIds": [
-                    "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service]"
-                  ]
-                }
-              }
-            ]
-          },
           "name": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex()))]"
           },
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Storage/storageAccounts', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Storage/storageAccounts', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
@@ -1035,9 +1049,6 @@
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "manualPrivateLinkServiceConnections": {
-            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections')]"
-          },
           "customDnsConfigs": {
             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
           },
@@ -1058,8 +1069,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "2821141217598568122"
+              "version": "0.24.24.22086",
+              "templateHash": "2592884001616184297"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -1108,7 +1119,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -1186,7 +1197,7 @@
                       "privateIPAddress": {
                         "type": "string",
                         "metadata": {
-                          "description": "Required. A private ip address obtained from the private endpoint's subnet."
+                          "description": "Required. A private IP address obtained from the private endpoint's subnet."
                         }
                       }
                     },
@@ -1289,7 +1300,7 @@
                   "fqdn": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. Fqdn that resolves to private endpoint ip address."
+                      "description": "Required. Fqdn that resolves to private endpoint IP address."
                     }
                   },
                   "ipAddresses": {
@@ -1298,7 +1309,7 @@
                       "type": "string"
                     },
                     "metadata": {
-                      "description": "Required. A list of private ip addresses of the private endpoint."
+                      "description": "Required. A list of private IP addresses of the private endpoint."
                     }
                   }
                 }
@@ -1424,7 +1435,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1529,8 +1540,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "18168683629401652671"
+                      "version": "0.24.24.22086",
+                      "templateHash": "9321937464667207030"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -1641,6 +1652,13 @@
                 "description": "The location the resource was deployed into."
               },
               "value": "[reference('privateEndpoint', '2023-04-01', 'full').location]"
+            },
+            "groupId": {
+              "type": "string",
+              "metadata": {
+                "description": "The group Id for the private endpoint Group."
+              },
+              "value": "[if(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties.groupIds[0], reference('privateEndpoint').privateLinkServiceConnections[0].properties.groupIds[0])]"
             }
           }
         }
@@ -1673,8 +1691,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "774635646248081518"
+              "version": "0.26.54.24096",
+              "templateHash": "14052382142427178929"
             },
             "name": "Storage Account Management Policies",
             "description": "This module deploys a Storage Account Management Policy.",
@@ -1783,8 +1801,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "17117452291389534361"
+              "version": "0.26.54.24096",
+              "templateHash": "3388645117303533667"
             },
             "name": "Storage Account Local Users",
             "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication.",
@@ -2001,8 +2019,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "4746835745355709536"
+              "version": "0.26.54.24096",
+              "templateHash": "12175020972967228537"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service.",
@@ -2399,8 +2417,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "11351273351916968732"
+                      "version": "0.26.54.24096",
+                      "templateHash": "3297137219061666309"
                     },
                     "name": "Storage Account Blob Containers",
                     "description": "This module deploys a Storage Account Blob Container.",
@@ -2668,8 +2686,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.25.53.49325",
-                              "templateHash": "10329548264889228160"
+                              "version": "0.26.54.24096",
+                              "templateHash": "2429139364933838439"
                             },
                             "name": "Storage Account Blob Container Immutability Policies",
                             "description": "This module deploys a Storage Account Blob Container Immutability Policy.",
@@ -2847,8 +2865,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "5288106279947156711"
+              "version": "0.26.54.24096",
+              "templateHash": "13860799899517512764"
             },
             "name": "Storage Account File Share Services",
             "description": "This module deploys a Storage Account File Share Service.",
@@ -3128,8 +3146,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "2026482374148202879"
+                      "version": "0.26.54.24096",
+                      "templateHash": "18405917853511220559"
                     },
                     "name": "Storage Account File Shares",
                     "description": "This module deploys a Storage Account File Share.",
@@ -3328,8 +3346,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.25.53.49325",
-                              "templateHash": "15595600813016932186"
+                              "version": "0.26.54.24096",
+                              "templateHash": "16221226236637657314"
                             }
                           },
                           "parameters": {
@@ -3597,8 +3615,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "14446905482734328346"
+              "version": "0.26.54.24096",
+              "templateHash": "13677013226831946461"
             },
             "name": "Storage Account Queue Services",
             "description": "This module deploys a Storage Account Queue Service.",
@@ -3842,8 +3860,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "12411465246702614738"
+                      "version": "0.26.54.24096",
+                      "templateHash": "17219066722763101567"
                     },
                     "name": "Storage Account Queues",
                     "description": "This module deploys a Storage Account Queue.",
@@ -4099,8 +4117,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "14471460242481977546"
+              "version": "0.26.54.24096",
+              "templateHash": "17373442840517371502"
             },
             "name": "Storage Account Table Services",
             "description": "This module deploys a Storage Account Table Service.",
@@ -4341,8 +4359,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "8824223095963877860"
+                      "version": "0.26.54.24096",
+                      "templateHash": "10226619499666007193"
                     },
                     "name": "Storage Account Table",
                     "description": "This module deploys a Storage Account Table.",
@@ -4593,7 +4611,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), tryGet(reference('storageAccount', '2022-09-01', 'full').identity, 'principalId'), '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('storageAccount', '2022-09-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",

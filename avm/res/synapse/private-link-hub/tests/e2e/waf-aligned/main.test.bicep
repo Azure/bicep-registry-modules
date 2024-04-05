@@ -46,30 +46,35 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        service: 'Web'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      privateEndpoints: [
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          service: 'Web'
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
         }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
+    dependsOn: [
+      nestedDependencies
+    ]
   }
-}]
+]

@@ -2,7 +2,7 @@ metadata name = 'Synapse Workspaces Keys'
 metadata description = 'This module deploys a Synapse Workspaces Key.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. Encryption key name.')
+@description('Required. The name of the Synapse Workspaces Key.')
 param name string
 
 @description('Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment.')

@@ -22,38 +22,42 @@ param serviceShort string = 'dddawaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+// Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
+var enforcedLocation = 'eastasia'
+
 // ============ //
 // Dependencies //
 // ============ //
 
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroupName
-  location: resourceLocation
-}
-
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-    location: resourceLocation
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    location: enforcedLocation
   }
 }
 
+// ============== //
+// General resources
+// ============== //
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: resourceGroupName
+  location: enforcedLocation
+}
+
+// ============ //
 // Diagnostics
-// ===========
+// ============ //
 module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceLocation
+    location: enforcedLocation
   }
 }
 
@@ -63,21 +67,15 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: resourceLocation
-      }
-      {
-        failoverPriority: 1
-        isZoneRedundant: false
-        locationName: nestedDependencies.outputs.pairedRegionName
-      }
-    ]
+    location: enforcedLocation
+    disableKeyBasedMetadataWriteAccess: true
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     diagnosticSettings: [
       {
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
@@ -86,42 +84,32 @@ module testDeployment '../../../main.bicep' = {
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
-    location: resourceLocation
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        service: 'Sql'
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
     sqlDatabases: [
       {
         containers: [
           {
-            kind: 'Hash'
             name: 'container-001'
-            indexingPolicy: {
-              automatic: true
-            }
+            kind: 'Hash'
             paths: [
-              '/myPartitionKey'
+              '/myPartitionKey1'
             ]
-            analyticalStorageTtl: 0
-            conflictResolutionPolicy: {
-              conflictResolutionPath: '/myCustomId'
-              mode: 'LastWriterWins'
-            }
-            defaultTtl: 1000
-            uniqueKeyPolicyKeys: [
-              {
-                paths: [
-                  '/firstName'
-                ]
-              }
-              {
-                paths: [
-                  '/lastName'
-                ]
-              }
-            ]
-            throughput: 600
           }
         ]
         name: '${namePrefix}-sql-${serviceShort}-001'
-        throughput: 1000
       }
     ]
     tags: {
@@ -130,4 +118,8 @@ module testDeployment '../../../main.bicep' = {
       Role: 'DeploymentValidation'
     }
   }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
 }

@@ -61,49 +61,55 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    ipConfigurations: [
-      {
-        applicationSecurityGroups: [
-          {
-            id: nestedDependencies.outputs.applicationSecurityGroupResourceId
-          }
-        ]
-        loadBalancerBackendAddressPools: [
-          {
-            id: nestedDependencies.outputs.loadBalancerBackendPoolResourceId
-          }
-        ]
-        name: 'ipconfig01'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      ipConfigurations: [
+        {
+          applicationSecurityGroups: [
+            {
+              id: nestedDependencies.outputs.applicationSecurityGroupResourceId
+            }
+          ]
+          loadBalancerBackendAddressPools: [
+            {
+              id: nestedDependencies.outputs.loadBalancerBackendPoolResourceId
+            }
+          ]
+          name: 'ipconfig01'
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        }
+        {
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          applicationSecurityGroups: [
+            {
+              id: nestedDependencies.outputs.applicationSecurityGroupResourceId
+            }
+          ]
+        }
+      ]
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-      {
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        applicationSecurityGroups: [
-          {
-            id: nestedDependencies.outputs.applicationSecurityGroupResourceId
-          }
-        ]
-      }
-    ]
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
+    ]
   }
-}]
+]

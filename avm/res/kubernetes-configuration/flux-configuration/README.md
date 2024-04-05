@@ -41,7 +41,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-kcfcmin'
+  name: 'fluxConfigurationDeployment'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
@@ -52,6 +52,7 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
     }
     name: 'kcfcmin001'
     namespace: 'flux-system'
+    scope: 'cluster'
     sourceKind: 'GitRepository'
     // Non-required parameters
     gitRepository: {
@@ -97,6 +98,9 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
     "namespace": {
       "value": "flux-system"
     },
+    "scope": {
+      "value": "cluster"
+    },
     "sourceKind": {
       "value": "GitRepository"
     },
@@ -133,7 +137,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-kcfcmax'
+  name: 'fluxConfigurationDeployment'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
@@ -155,6 +159,7 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
     }
     name: 'kcfcmax001'
     namespace: 'flux-system'
+    scope: 'cluster'
     sourceKind: 'GitRepository'
     // Non-required parameters
     gitRepository: {
@@ -211,6 +216,9 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
     "namespace": {
       "value": "flux-system"
     },
+    "scope": {
+      "value": "cluster"
+    },
     "sourceKind": {
       "value": "GitRepository"
     },
@@ -247,7 +255,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-kcfcwaf'
+  name: 'fluxConfigurationDeployment'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
@@ -263,6 +271,7 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
     }
     name: 'kcfcwaf001'
     namespace: 'flux-system'
+    scope: 'cluster'
     sourceKind: 'GitRepository'
     // Non-required parameters
     gitRepository: {
@@ -312,6 +321,9 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
     },
     "namespace": {
       "value": "flux-system"
+    },
+    "scope": {
+      "value": "cluster"
     },
     "sourceKind": {
       "value": "GitRepository"

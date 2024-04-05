@@ -46,69 +46,74 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    alertDescription: 'My sample Alert'
-    autoMitigate: false
-    criterias: {
-      allOf: [
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      alertDescription: 'My sample Alert'
+      autoMitigate: false
+      criterias: {
+        allOf: [
+          {
+            dimensions: [
+              {
+                name: 'Computer'
+                operator: 'Include'
+                values: [
+                  '*'
+                ]
+              }
+              {
+                name: 'InstanceName'
+                operator: 'Include'
+                values: [
+                  '*'
+                ]
+              }
+            ]
+            metricMeasureColumn: 'AggregatedValue'
+            operator: 'GreaterThan'
+            query: 'Perf | where ObjectName == "LogicalDisk" | where CounterName == "% Free Space" | where InstanceName <> "HarddiskVolume1" and InstanceName <> "_Total" | summarize AggregatedValue = min(CounterValue) by Computer, InstanceName, bin(TimeGenerated,5m)'
+            threshold: 0
+            timeAggregation: 'Average'
+          }
+        ]
+      }
+      evaluationFrequency: 'PT5M'
+      queryTimeRange: 'PT5M'
+      roleAssignments: [
         {
-          dimensions: [
-            {
-              name: 'Computer'
-              operator: 'Include'
-              values: [
-                '*'
-              ]
-            }
-            {
-              name: 'InstanceName'
-              operator: 'Include'
-              values: [
-                '*'
-              ]
-            }
-          ]
-          metricMeasureColumn: 'AggregatedValue'
-          operator: 'GreaterThan'
-          query: 'Perf | where ObjectName == "LogicalDisk" | where CounterName == "% Free Space" | where InstanceName <> "HarddiskVolume1" and InstanceName <> "_Total" | summarize AggregatedValue = min(CounterValue) by Computer, InstanceName, bin(TimeGenerated,5m)'
-          threshold: 0
-          timeAggregation: 'Average'
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
         }
       ]
-    }
-    evaluationFrequency: 'PT5M'
-    queryTimeRange: 'PT5M'
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+      scopes: [
+        nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+      ]
+      suppressForMinutes: 'PT5M'
+      windowSize: 'PT5M'
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    scopes: [
-      nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
-    ]
-    suppressForMinutes: 'PT5M'
-    windowSize: 'PT5M'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
-}]
+]

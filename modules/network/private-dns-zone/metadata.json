@@ -1,6 +1,0 @@
-{
-  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
-  "name": "Private DNS Zone",
-  "summary": "A bicep module for simplified deployment for Private DNS Zones and available configuration options.",
-  "owner": "schandnani"
-}

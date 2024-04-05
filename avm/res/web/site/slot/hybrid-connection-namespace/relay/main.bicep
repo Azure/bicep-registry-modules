@@ -31,7 +31,13 @@ resource hybridConnectionRelay 'Microsoft.Web/sites/slots/hybridConnectionNamesp
   name: '${appName}/${slotName}/${namespace.name}/${namespace::hybridConnection.name}'
   properties: {
     serviceBusNamespace: namespace.name
-    serviceBusSuffix: split(substring(namespace.properties.serviceBusEndpoint, indexOf(namespace.properties.serviceBusEndpoint, '.servicebus')), ':')[0]
+    serviceBusSuffix: split(
+      substring(
+        namespace.properties.serviceBusEndpoint,
+        indexOf(namespace.properties.serviceBusEndpoint, '.servicebus')
+      ),
+      ':'
+    )[0]
     relayName: namespace::hybridConnection.name
     relayArmUri: namespace::hybridConnection.id
     hostname: split(json(namespace::hybridConnection.properties.userMetadata)[0].value, ':')[0]

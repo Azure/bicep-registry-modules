@@ -89,6 +89,12 @@ module testDeployment '../../../main.bicep' = {
         ]
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
       }
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      }
     ]
     loadBalancerType: 'BreadthFirst'
     location: resourceLocation
@@ -127,7 +133,10 @@ module testDeployment '../../../main.bicep' = {
         principalType: 'ServicePrincipal'
       }
       {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+        roleDefinitionIdOrName: subscriptionResourceId(
+          'Microsoft.Authorization/roleDefinitions',
+          'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+        )
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }
@@ -153,4 +162,8 @@ module testDeployment '../../../main.bicep' = {
       ]
     }
   }
+  dependsOn: [
+    nestedDependencies
+    diagnosticDependencies
+  ]
 }

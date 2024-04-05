@@ -63,114 +63,123 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    associatedApplicationInsightsResourceId: nestedDependencies.outputs.applicationInsightsResourceId
-    associatedKeyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-    associatedStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-    sku: 'Premium'
-    computes: [
-      {
-        computeLocation: resourceLocation
-        computeType: 'AmlCompute'
-        description: 'Default CPU Cluster'
-        disableLocalAuth: false
-        location: resourceLocation
-        name: 'DefaultCPU'
-        properties: {
-          enableNodePublicIp: true
-          isolatedNetwork: false
-          osType: 'Linux'
-          remoteLoginPortPublicAccess: 'Disabled'
-          scaleSettings: {
-            maxNodeCount: 3
-            minNodeCount: 0
-            nodeIdleTimeBeforeScaleDown: 'PT5M'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      associatedApplicationInsightsResourceId: nestedDependencies.outputs.applicationInsightsResourceId
+      associatedKeyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+      associatedStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+      sku: 'Premium'
+      computes: [
+        {
+          computeLocation: resourceLocation
+          computeType: 'AmlCompute'
+          description: 'Default CPU Cluster'
+          disableLocalAuth: false
+          location: resourceLocation
+          name: 'DefaultCPU'
+          properties: {
+            enableNodePublicIp: true
+            isolatedNetwork: false
+            osType: 'Linux'
+            remoteLoginPortPublicAccess: 'Disabled'
+            scaleSettings: {
+              maxNodeCount: 3
+              minNodeCount: 0
+              nodeIdleTimeBeforeScaleDown: 'PT5M'
+            }
+            vmPriority: 'Dedicated'
+            vmSize: 'STANDARD_DS11_V2'
           }
-          vmPriority: 'Dedicated'
-          vmSize: 'STANDARD_DS11_V2'
+          sku: 'Basic'
+          managedIdentities: {
+            systemAssigned: false
+            userAssignedResourceIds: [
+              nestedDependencies.outputs.managedIdentityResourceId
+            ]
+          }
         }
-        sku: 'Basic'
-        managedIdentities: {
-          systemAssigned: false
-          userAssignedResourceIds: [
-            nestedDependencies.outputs.managedIdentityResourceId
+      ]
+      description: 'The cake is a lie.'
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      discoveryUrl: 'http://example.com'
+      imageBuildCompute: 'testcompute'
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      primaryUserAssignedIdentity: nestedDependencies.outputs.managedIdentityResourceId
+      privateEndpoints: [
+        {
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
+        }
+        {
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
           ]
         }
-      }
-    ]
-    description: 'The cake is a lie.'
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    discoveryUrl: 'http://example.com'
-    imageBuildCompute: 'testcompute'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    primaryUserAssignedIdentity: nestedDependencies.outputs.managedIdentityResourceId
-    privateEndpoints: [
-      {
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
-      }
-      {
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-      } 
-    ]
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    managedIdentities: {
-      systemAssigned: false
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
       ]
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      managedIdentities: {
+        systemAssigned: false
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
+    ]
   }
-}]
+]

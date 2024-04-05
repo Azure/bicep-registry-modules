@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module privateLinkService 'br/public:avm/res/network/private-link-service:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nplsmin'
+  name: 'privateLinkServiceDeployment'
   params: {
     // Required parameters
     ipConfigurations: [
@@ -124,7 +124,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module privateLinkService 'br/public:avm/res/network/private-link-service:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nplsmax'
+  name: 'privateLinkServiceDeployment'
   params: {
     // Required parameters
     ipConfigurations: [
@@ -306,7 +306,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module privateLinkService 'br/public:avm/res/network/private-link-service:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-nplswaf'
+  name: 'privateLinkServiceDeployment'
   params: {
     // Required parameters
     ipConfigurations: [
@@ -440,7 +440,7 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
 | :-- | :-- | :-- |
 | [`ipConfigurations`](#parameter-ipconfigurations) | array | An array of private link service IP configurations. At least one IP configuration is required on the private link service. |
 | [`loadBalancerFrontendIpConfigurations`](#parameter-loadbalancerfrontendipconfigurations) | array | An array of references to the load balancer IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. At least one load balancer frontend IP configuration is required on the private link service. |
-| [`name`](#parameter-name) | string | Name of the private link service to create. |
+| [`name`](#parameter-name) | string | The name of the private link service to create. |
 
 **Optional parameters**
 
@@ -473,7 +473,7 @@ An array of references to the load balancer IP configurations. The Private Link 
 
 ### Parameter: `name`
 
-Name of the private link service to create.
+The name of the private link service to create.
 
 - Required: Yes
 - Type: string

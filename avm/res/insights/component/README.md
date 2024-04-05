@@ -43,7 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module component 'br/public:avm/res/insights/component:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-icmin'
+  name: 'componentDeployment'
   params: {
     // Required parameters
     name: 'icmin001'
@@ -95,7 +95,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module component 'br/public:avm/res/insights/component:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-icmax'
+  name: 'componentDeployment'
   params: {
     // Required parameters
     name: 'icmax001'
@@ -241,7 +241,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module component 'br/public:avm/res/insights/component:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-icwaf'
+  name: 'componentDeployment'
   params: {
     // Required parameters
     name: 'icwaf001'
@@ -747,6 +747,7 @@ Tags of the resource.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `applicationId` | string | The application ID of the application insights component. |
+| `connectionString` | string | Application Insights Connection String. |
 | `instrumentationKey` | string | Application Insights Instrumentation key. A read-only value that applications can use to identify the destination for all telemetry sent to Azure Application Insights. This value will be supplied upon construction of each new Application Insights component. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the application insights component. |

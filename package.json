@@ -20,7 +20,7 @@
   "devDependencies": {
     "@actions/core": "^1.9.1",
     "@actions/github": "^5.0.0",
-    "axios": "^0.27.2",
+    "axios": "^0.28.0",
     "eslint": "^8.9.0",
     "eslint-config-prettier": "^8.3.0",
     "markdown-table": "^3.0.2",

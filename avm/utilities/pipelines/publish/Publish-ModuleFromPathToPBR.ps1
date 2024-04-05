@@ -50,7 +50,7 @@ function Publish-ModuleFromPathToPBR {
 
   # 1. Test if module qualifies for publishing
   if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath)) {
-    Write-Verbose "No changes detected. Skipping publishing" -Verbose
+    Write-Verbose 'No changes detected. Skipping publishing' -Verbose
     return
   }
 
@@ -61,10 +61,10 @@ function Publish-ModuleFromPathToPBR {
   $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
 
   # 4.Create release tag
-  $tagName = New-ModuleReleaseTag -ModuleFolderPath $moduleFolderPath -TargetVersion $targetVersion
+  $gitTagName = New-ModuleReleaseTag -ModuleFolderPath $moduleFolderPath -TargetVersion $targetVersion
 
   # 5. Get the documentation link
-  $documentationUri = Get-ModuleReadmeLink -TagName $tagName -ModuleFolderPath $moduleFolderPath
+  $documentationUri = Get-ModuleReadmeLink -TagName $gitTagName -ModuleFolderPath $moduleFolderPath
 
   # 6. Replace telemetry version value (in Bicep)
   $tokenConfiguration = @{
@@ -77,11 +77,11 @@ function Publish-ModuleFromPathToPBR {
   $null = Convert-TokensInFileList @tokenConfiguration
 
   # Double-check that tokens are correctly replaced
-  $templateContent = Get-Content -Path $moduleBicepFilePath
+  $templateContent = bicep build $moduleBicepFilePath --stdout
   $incorrectLines = @()
   for ($index = 0; $index -lt $templateContent.Count; $index++) {
-    if ($templateContent[$index] -match '-..--..-') {
-      $incorrectLines += ('You have the token [{0}] in line [{1}] of file [{2}]. Please seek advice from the AVM team.' -f $matches[0], ($index + 1), $moduleBicepFilePath)
+    if ($templateContent[$index] -match '\-\.\.-\-\.\.\-') {
+      $incorrectLines += ('You have the token [{0}] in line [{1}] of the compiled Bicep file [{2}]. Please seek advice from the AVM team.' -f $matches[0], ($index + 1), $moduleBicepFilePath)
     }
   }
   if ($incorrectLines) {
@@ -95,7 +95,7 @@ function Publish-ModuleFromPathToPBR {
 
   $publishInput = @(
     $moduleBicepFilePath
-    '--target', ("br:{0}/public/bicep/{1}:{2}" -f $plainPublicRegistryServer, $publishedModuleName, $targetVersion)
+    '--target', ('br:{0}/public/bicep/{1}:{2}' -f $plainPublicRegistryServer, $publishedModuleName, $targetVersion)
     '--documentationUri', $documentationUri
     '--with-source'
     '--force'
@@ -108,5 +108,6 @@ function Publish-ModuleFromPathToPBR {
   return @{
     version             = $targetVersion
     publishedModuleName = $publishedModuleName
+    gitTagName          = $gitTagName
   }
 }

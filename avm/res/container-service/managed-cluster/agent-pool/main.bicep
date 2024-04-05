@@ -156,9 +156,11 @@ resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2023-0
   properties: {
     availabilityZones: availabilityZones
     count: count
-    creationData: !empty(sourceResourceId) ? {
-      sourceResourceId: sourceResourceId
-    } : null
+    creationData: !empty(sourceResourceId)
+      ? {
+          sourceResourceId: sourceResourceId
+        }
+      : null
     enableAutoScaling: enableAutoScaling
     enableEncryptionAtHost: enableEncryptionAtHost
     enableFIPS: enableFIPS

@@ -10,6 +10,9 @@ param managedIdentityName string
 @description('Required. The name of the Server Farm to create.')
 param serverFarmName string
 
+@description('Required. The name of the Storage Account to create.')
+param storageAccountName string
+
 @description('Required. The name of the Relay Namespace to create.')
 param relayNamespaceName string
 
@@ -100,6 +103,18 @@ resource authorizationRule 'Microsoft.Relay/namespaces/hybridConnections/authori
   }
 }
 
+resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
+  name: storageAccountName
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+  properties: {
+    allowSharedKeyAccess: false
+  }
+}
+
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
@@ -117,3 +132,6 @@ output privateDNSZoneResourceId string = privateDNSZone.id
 
 @description('The resource ID of the created Hybrid Connection.')
 output hybridConnectionResourceId string = hybridConnection.id
+
+@description('The resource ID of the created Storage Account.')
+output storageAccountResourceId string = storageAccount.id

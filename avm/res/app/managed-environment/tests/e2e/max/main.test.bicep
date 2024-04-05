@@ -94,4 +94,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Env: 'test'
     }
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }]

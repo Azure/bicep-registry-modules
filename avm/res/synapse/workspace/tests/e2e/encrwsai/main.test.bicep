@@ -3,7 +3,6 @@ targetScope = 'subscription'
 metadata name = 'Using encryption with Customer-Managed-Key'
 metadata description = 'This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity to access the Customer-Managed-Key secret.'
 
-
 // ========== //
 // Parameters //
 // ========== //
@@ -51,19 +50,24 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    defaultDataLakeStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-    defaultDataLakeStorageFilesystem: nestedDependencies.outputs.storageContainerName
-    sqlAdministratorLogin: 'synwsadmin'
-    customerManagedKey: {
-      keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      defaultDataLakeStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+      defaultDataLakeStorageFilesystem: nestedDependencies.outputs.storageContainerName
+      sqlAdministratorLogin: 'synwsadmin'
+      customerManagedKey: {
+        keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+      }
+      encryptionActivateWorkspace: true
+      location: resourceLocation
     }
-    encryptionActivateWorkspace: true
-    location: resourceLocation
+    dependsOn: [
+      nestedDependencies
+    ]
   }
-}]
+]
