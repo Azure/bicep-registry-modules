@@ -51,7 +51,7 @@ function Set-AvmGithubIssueForWorkflow {
   . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
   . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'helper' 'Add-GithubIssueToProject.ps1')
 
-  $issues = gh issue list --state open --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --json 'title,url,body,comments,labels' --repo $Repo | ConvertFrom-Json -Depth 100
+  $issues = gh issue list --state open --limit 500 --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --json 'title,url,body,comments,labels' --repo $Repo | ConvertFrom-Json -Depth 100
   $runs = gh run list --json 'url,workflowName,headBranch,startedAt' --limit $LimitNumberOfRuns --repo $Repo | ConvertFrom-Json -Depth 100
   $workflowRuns = @{}
   $issuesCreated = 0
