@@ -20,6 +20,10 @@ param serviceShort string = 'cvmlinatmg'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+// Set to fixed location as the RP function returns unsupported locations (configurationProfileAssignments)
+// Right now (2024/04) the following locations are supported: centralus, eastus, eastus2, southcentralus, westus, westus2, westcentralus, northeurope, westeurope, canadacentral, japaneast, uksouth, australiasoutheast, australiaeast, southeastasia, westus3
+param enforcedLocation string = 'westeurope'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -33,9 +37,9 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
+    location: enforcedLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
@@ -56,9 +60,9 @@ module nestedDependencies 'dependencies.bicep' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
+      location: enforcedLocation
       name: '${namePrefix}${serviceShort}'
       adminUsername: 'localAdminUser'
       imageReference: {
