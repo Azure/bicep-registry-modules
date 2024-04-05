@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "2169153798099388966"
+      "templateHash": "16414745789092801684"
     },
     "name": "NAT Gateways",
     "description": "This module deploys a NAT Gateway.",
@@ -112,6 +112,18 @@
         "description": "Required. Name of the Azure Bastion resource."
       }
     },
+    "zone": {
+      "type": "int",
+      "allowedValues": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "metadata": {
+        "description": "Required. A list of availability zones denoting the zone in which Nat Gateway should be deployed."
+      }
+    },
     "idleTimeoutInMinutes": {
       "type": "int",
       "defaultValue": 5,
@@ -145,13 +157,6 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. Specifies the properties of the Public IP Prefixes to create and be used by the NAT Gateway."
-      }
-    },
-    "zones": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. A list of availability zones denoting the zone in which Nat Gateway should be deployed."
       }
     },
     "location": {
@@ -233,7 +238,7 @@
         "publicIpPrefixes": "[reference('formattedPublicIpPrefixResourceIds').outputs.formattedResourceIds.value]",
         "publicIpAddresses": "[reference('formattedPublicIpResourceIds').outputs.formattedResourceIds.value]"
       },
-      "zones": "[parameters('zones')]",
+      "zones": "[if(not(equals(parameters('zone'), 0)), createArray(string(parameters('zone'))), null())]",
       "dependsOn": [
         "formattedPublicIpPrefixResourceIds",
         "formattedPublicIpResourceIds"
@@ -321,7 +326,7 @@
             "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "zones": {
-            "value": "[tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'zones')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'zones'), if(not(equals(parameters('zone'), 0)), createArray(string(parameters('zone'))), null()))]"
           },
           "enableTelemetry": {
             "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
@@ -897,7 +902,7 @@
     "formattedPublicIpResourceIds": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "formattedPublicIpResourceIds",
+      "name": "[format('{0}-formattedPublicIpResourceIds', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1275,7 +1280,7 @@
     "formattedPublicIpPrefixResourceIds": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "formattedPublicIpPrefixResourceIds",
+      "name": "[format('{0}-formattedPublicIpPrefixResourceIds', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

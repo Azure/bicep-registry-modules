@@ -54,7 +54,7 @@
 /avm/res/event-grid/topic/ @Azure/avm-res-eventgrid-topic-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/event-hub/namespace/ @Azure/avm-res-eventhub-namespace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/health-bot/health-bot/ @Azure/avm-res-healthbot-healthbot-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/healthcare-apis/workspace/ @Azure/avm-res-healthcareapis-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/healthcare-apis/workspace/ @Azure/avm-res-healthcareapis-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/action-group/ @Azure/avm-res-insights-actiongroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/activity-log-alert/ @Azure/avm-res-insights-activitylogalert-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/component/ @Azure/avm-res-insights-component-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -77,7 +77,7 @@
 /avm/res/management/management-group/ @Azure/avm-res-management-managementgroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/net-app/net-app-account/ @Azure/avm-res-netapp-netappaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/network/application-gateway/ @Azure/avm-res-network-applicationgateway-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/network/application-gateway-web-application-firewall-policy/ @Azure/avm-res-network-applicationgatewaywebapplicationfirewallpolicy-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/network/application-gateway-web-application-firewall-policy/ @Azure/avm-res-network-applicationgatewaywebapplicationfirewallpolicy-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/application-security-group/ @Azure/avm-res-network-applicationsecuritygroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/azure-firewall/ @Azure/avm-res-network-azurefirewall-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/bastion-host/ @Azure/avm-res-network-bastionhost-module-owners-bicep @Azure/avm-core-team-technical-bicep
