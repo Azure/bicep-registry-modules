@@ -2045,6 +2045,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             workspaceResourceId: '<workspaceResourceId>'
           }
         ]
+        enableIPForwarding: true
         ipConfigurations: [
           {
             applicationSecurityGroups: [
@@ -2331,6 +2332,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               "workspaceResourceId": "<workspaceResourceId>"
             }
           ],
+          "enableIPForwarding": true,
           "ipConfigurations": [
             {
               "applicationSecurityGroups": [

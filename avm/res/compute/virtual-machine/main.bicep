@@ -478,9 +478,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
         : '${name}${nicConfiguration.nicSuffix}'
       virtualMachineName: name
       location: location
-      enableIPForwarding: contains(nicConfiguration, 'enableIPForwarding')
-        ? (!empty(nicConfiguration.enableIPForwarding) ? nicConfiguration.enableIPForwarding : false)
-        : false
+      enableIPForwarding: contains(nicConfiguration, 'enableIPForwarding') ? nicConfiguration.enableIPForwarding : false
       enableAcceleratedNetworking: contains(nicConfiguration, 'enableAcceleratedNetworking')
         ? nicConfiguration.enableAcceleratedNetworking
         : true

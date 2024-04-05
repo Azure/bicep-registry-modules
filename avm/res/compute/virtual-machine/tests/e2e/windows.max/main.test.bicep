@@ -135,6 +135,7 @@ module testDeployment '../../../main.bicep' = [
             }
           ]
           customNicName: 'nic-test-01'
+          enableIPForwarding: true
           roleAssignments: [
             {
               roleDefinitionIdOrName: 'Reader'
