@@ -73,9 +73,9 @@ jobs:
               storageBlobContentType  = @{'ContentType' = 'application/json'}
           }
           Write-Verbose ('Uploading [moduleIndex.json] to blob storage account [{0}] in container [{1}] as blob [{2}]' -f $storageAccountInfo.storageAccountName, $storageAccountInfo.storageAccountContainer, $storageAccountInfo.storageBlobName) -Verbose
-          
+
           $storageContext = New-AzStorageContext -StorageAccountName $storageAccountInfo.storageAccountName -UseConnectedAccount
-          
+
           $functionInput = @{
               Context    = $storageContext
               Container  = $storageAccountInfo.storageAccountContainer
@@ -84,5 +84,11 @@ jobs:
               Properties = $storageAccountInfo.storageBlobContentType
           }
           Set-AzStorageBlobContent @functionInput -Force
-          
+
           Write-Verbose ('Upload of [{0}] complete.' -f $storageAccountInfo.storageBlobName) -Verbose
+
+      - name: Check if any errors occurred during 'Generate moduleIndex.json'
+        if: ${{ env.anyErrorsOccurred == 'true' }}
+        shell: pwsh
+        run: |
+          throw "Errors occurred during 'Generate moduleIndex.json' step. Please check the logs of that step in the workflow."

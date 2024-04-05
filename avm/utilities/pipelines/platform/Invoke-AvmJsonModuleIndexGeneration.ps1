@@ -2,6 +2,27 @@
 .SYNOPSIS
 Creates the moduleIndex.json file for the AVM modules that is used by Visual Studio Code and other IDEs to provide the intellisense list of modules from the Bicep public registry.
 
+.PARAMETER storageAccountName
+The name of the Azure Storage Account where the moduleIndex.json file is stored. Default is 'biceplivedatasaprod'.
+
+.PARAMETER storageAccountContainer
+The name of the Azure Storage Account Blob Container where the moduleIndex.json file is stored.  Default is 'bicep-cdn-live-data-container'.
+
+.PARAMETER storageBlobName
+The name of the Azure Storage Account Blob where the moduleIndex.json file is stored. Default is 'module-index'.
+
+.PARAMETER moduleIndexJsonFilePath
+The file path to save the moduleIndex.json file to. Default is 'moduleIndex.json'.
+
+.PARAMETER prefixForLastModuleIndexJsonFile
+The prefix to add to the last version of the moduleIndex.json file that is downloaded from the storage account. Default is 'last-'.
+
+.PARAMETER prefixForCurrentGeneratedModuleIndexJsonFile
+The prefix to add to the current generated moduleIndex.json file. Default is 'generated-'.
+
+.PARAMETER doNotMergeWithLastModuleIndexJsonFileVersion
+If specified, the last version of the moduleIndex.json file that is downloaded from the storage account will not be merged with the current generated moduleIndex.json file.
+
 .DESCRIPTION
 Creates the moduleIndex.json file for the AVM modules that is used by Visual Studio Code and other IDEs to provide the intellisense list of modules from the Bicep public registry.
 
@@ -54,7 +75,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
 
       Get-AzStorageBlobContent -Blob $storageBlobName -Container $storageAccountContainer -Context $storageContext -Destination $lastModuleIndexJsonFilePath -Force | Out-Null
     } catch {
-      Write-Error "Unable to retrieve moduleIndex.json file from the Storage Account: $storageAccountName, Container: $storageAccountContainer, Blob: $storageBlobName. Error: $($_.Exception.Message)"
+      Write-Error "Unable to retrieve moduleIndex.json file from the Storage Account: $storageAccountName, Container: $storageAccountContainer, Blob: $storageBlobName. Error: $($_.Exception.Message)" -ErrorAction Stop
     }
 
     ## Check if the last version of the moduleIndex.json (last-moduleIndex.json) file exists and is not empty
@@ -74,6 +95,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
 
   Write-Verbose "Generating the current generated moduleIndex.json file and saving to: $currentGeneratedModuleIndexJsonFilePath ..." -Verbose
 
+  $anyErrorsOccurred = $false
   $moduleIndexData = @()
 
   foreach ($avmModuleRoot in @('avm/res', 'avm/ptn')) {
@@ -95,8 +117,9 @@ function Invoke-AvmJsonModuleIndexGeneration {
           try {
             $tagListResponse = Invoke-RestMethod -Uri $tagListUrl
           } catch {
-            Write-Output "Error occurred while accessing URL: $tagListUrl"
-            Write-Output "Error message: $($_.Exception.Message)"
+            $anyErrorsOccurred = $true
+            Write-Error "Error occurred while accessing URL: $tagListUrl"
+            Write-Error "Error message: $($_.Exception.Message)"
             continue
           }
           $tags = $tagListResponse.tags | Sort-Object
@@ -112,8 +135,9 @@ function Invoke-AvmJsonModuleIndexGeneration {
               $moduleMainJsonUriResponse = Invoke-RestMethod -Uri $moduleMainJsonUri
               $description = $moduleMainJsonUriResponse.metadata.description
             } catch {
-              Write-Output "Error occurred while accessing description for tag $tag via '$moduleMainJsonUri'"
-              Write-Output "Error message: $($_.Exception.Message)"
+              $anyErrorsOccurred = $true
+              Write-Error "Error occurred while accessing description for tag $tag via '$moduleMainJsonUri'"
+              Write-Error "Error message: $($_.Exception.Message)"
               continue
             }
 
@@ -129,6 +153,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
             properties = $properties
           }
         } catch {
+          $anyErrorsOccurred = $true
           Write-Error "Error message: $($_.Exception.Message)"
         }
       }
@@ -155,22 +180,22 @@ function Invoke-AvmJsonModuleIndexGeneration {
     $currentGeneratedModuleIndexData = $currentGeneratedModuleIndexJsonFileContent | ConvertFrom-Json -Depth 10
 
     $mergedModuleIndexData = ($lastModuleIndexData + $currentGeneratedModuleIndexData) | Group-Object -Property 'moduleName' | ForEach-Object {
-        $newTags = $_.Group.tags | Sort-Object -Unique
-    
-        $newProperties = [ordered]@{}
-        $oldProperties = $_.Group.properties
-        $oldProperties.Keys | Sort-Object | ForEach-Object {
-            if ($newProperties.Keys -notContains $_) {
-                $newProperties[$_] = $oldProperties[0].Keys -contains $_ ? $oldProperties[0][$_] : $oldProperties[1][$_]
-            }
+      $newTags = $_.Group.tags | Sort-Object -Unique
+
+      $newProperties = [ordered]@{}
+      $oldProperties = $_.Group.properties
+      $oldProperties.Keys | Sort-Object | ForEach-Object {
+        if ($newProperties.Keys -notContains $_) {
+          $newProperties[$_] = $oldProperties[0].Keys -contains $_ ? $oldProperties[0][$_] : $oldProperties[1][$_]
         }
-    
-        $_.Group | ForEach-Object {
-            $_.tags = $newTags
-            $_.properties = $newProperties
-        }
-        
-        $_.Group | Select-Object -First 1
+      }
+
+      $_.Group | ForEach-Object {
+        $_.tags = $newTags
+        $_.properties = $newProperties
+      }
+
+      $_.Group | Select-Object -First 1
     }
 
     Write-Verbose "Convert mergedModuleIndexData variable to JSON and save as 'moduleIndex.json'" -Verbose
@@ -180,5 +205,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
     Write-Verbose "Convert currentGeneratedModuleIndexData variable to JSON and save as 'moduleIndex.json to overwrite it as `doNotMergeWithLastModuleIndexJsonFileVersion` was specified'" -Verbose
     $moduleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $moduleIndexJsonFilePath -Force
   }
+
+  Write-Output ('{0}={1}' -f 'anyErrorsOccurred', $anyErrorsOccurred) >> $env:GITHUB_ENV
 
 }
