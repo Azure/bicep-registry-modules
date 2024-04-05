@@ -45,7 +45,7 @@ This instance deploys the module with an Azure CLI script.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdscli'
+  name: 'deploymentScriptDeployment'
   params: {
     // Required parameters
     kind: 'AzureCLI'
@@ -135,8 +135,6 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 ### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
-> **Note:** In this scenario, In this scenario, the `Storage File Data Privileged Contributor` role needs to be assigned to the user-assigned managed identity and the deployment principal needs to have permissions to list the storage account keys.
-
 
 
 <details>
@@ -145,7 +143,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdsmin'
+  name: 'deploymentScriptDeployment'
   params: {
     // Required parameters
     kind: 'AzurePowerShell'
@@ -221,7 +219,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdsmax'
+  name: 'deploymentScriptDeployment'
   params: {
     // Required parameters
     kind: 'AzureCLI'
@@ -403,7 +401,7 @@ This instance deploys the module with access to a private network.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdsnet'
+  name: 'deploymentScriptDeployment'
   params: {
     // Required parameters
     kind: 'AzureCLI'
@@ -503,7 +501,7 @@ This instance deploys the module with an Azure PowerShell script.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdsps'
+  name: 'deploymentScriptDeployment'
   params: {
     // Required parameters
     kind: 'AzurePowerShell'
@@ -587,7 +585,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rdswaf'
+  name: 'deploymentScriptDeployment'
   params: {
     // Required parameters
     kind: 'AzureCLI'
@@ -808,7 +806,6 @@ The environment variables to pass over to the script. The list is passed as an o
 
 - Required: No
 - Type: secureObject
-- Default: `{}`
 
 ### Parameter: `location`
 

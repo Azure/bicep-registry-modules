@@ -72,6 +72,125 @@ Permissions the identity has for keys, secrets and certificates.
 - Required: Yes
 - Type: object
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certificates`](#parameter-accesspoliciespermissionscertificates) | array | Permissions to certificates. |
+| [`keys`](#parameter-accesspoliciespermissionskeys) | array | Permissions to keys. |
+| [`secrets`](#parameter-accesspoliciespermissionssecrets) | array | Permissions to secrets. |
+| [`storage`](#parameter-accesspoliciespermissionsstorage) | array | Permissions to storage accounts. |
+
+### Parameter: `accessPolicies.permissions.certificates`
+
+Permissions to certificates.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'all'
+    'backup'
+    'create'
+    'delete'
+    'deleteissuers'
+    'get'
+    'getissuers'
+    'import'
+    'list'
+    'listissuers'
+    'managecontacts'
+    'manageissuers'
+    'purge'
+    'recover'
+    'restore'
+    'setissuers'
+    'update'
+  ]
+  ```
+
+### Parameter: `accessPolicies.permissions.keys`
+
+Permissions to keys.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'all'
+    'backup'
+    'create'
+    'decrypt'
+    'delete'
+    'encrypt'
+    'get'
+    'getrotationpolicy'
+    'import'
+    'list'
+    'purge'
+    'recover'
+    'release'
+    'restore'
+    'rotate'
+    'setrotationpolicy'
+    'sign'
+    'unwrapKey'
+    'update'
+    'verify'
+    'wrapKey'
+  ]
+  ```
+
+### Parameter: `accessPolicies.permissions.secrets`
+
+Permissions to secrets.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'all'
+    'backup'
+    'delete'
+    'get'
+    'list'
+    'purge'
+    'recover'
+    'restore'
+    'set'
+  ]
+  ```
+
+### Parameter: `accessPolicies.permissions.storage`
+
+Permissions to storage accounts.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'all'
+    'backup'
+    'delete'
+    'deletesas'
+    'get'
+    'getsas'
+    'list'
+    'listsas'
+    'purge'
+    'recover'
+    'regeneratekey'
+    'restore'
+    'set'
+    'setsas'
+    'update'
+  ]
+  ```
+
 ### Parameter: `accessPolicies.applicationId`
 
 Application ID of the client making request on behalf of a principal.

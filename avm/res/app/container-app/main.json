@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "14421664754265859300"
+      "version": "0.26.54.24096",
+      "templateHash": "2491578115600463169"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -146,7 +146,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Bool indicating if app exposes an external http endpoint."
+        "description": "Optional. Bool indicating if the App exposes an external HTTP endpoint."
       }
     },
     "ingressTransport": {
@@ -361,7 +361,7 @@
   "variables": {
     "secretList": "[if(not(empty(parameters('secrets'))), parameters('secrets').secureList, createArray())]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "ContainerApp Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ad2dd5fb-cd4b-4fd4-a9b6-4fed3630980b')]",
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -483,6 +483,13 @@
         "description": "The resource ID of the Container App."
       },
       "value": "[resourceId('Microsoft.App/containerApps', parameters('name'))]"
+    },
+    "fqdn": {
+      "type": "string",
+      "metadata": {
+        "description": "The configuration of ingress fqdn."
+      },
+      "value": "[reference('containerApp').configuration.ingress.fqdn]"
     },
     "resourceGroupName": {
       "type": "string",

@@ -14,6 +14,7 @@ param slotName string
   'functionapp,linux' // function app linux os
   'functionapp,workflowapp' // logic app workflow
   'functionapp,workflowapp,linux' // logic app docker container
+  'app,linux' // linux web app
   'app' // normal web app
 ])
 param kind string

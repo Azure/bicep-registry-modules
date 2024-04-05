@@ -1,10 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
-metadata description = '''
-This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-'''
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -50,29 +47,34 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    clusterName: nestedDependencies.outputs.clusterName
-    namespace: 'flux-system'
-    scope: 'cluster'
-    sourceKind: 'GitRepository'
-    gitRepository: {
-      repositoryRef: {
-        branch: 'main'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      clusterName: nestedDependencies.outputs.clusterName
+      namespace: 'flux-system'
+      scope: 'cluster'
+      sourceKind: 'GitRepository'
+      gitRepository: {
+        repositoryRef: {
+          branch: 'main'
+        }
+        sshKnownHosts: ''
+        syncIntervalInSeconds: 300
+        timeoutInSeconds: 180
+        url: 'https://github.com/mspnp/aks-baseline'
       }
-      sshKnownHosts: ''
-      syncIntervalInSeconds: 300
-      timeoutInSeconds: 180
-      url: 'https://github.com/mspnp/aks-baseline'
-    }
-    kustomizations: {
-      unified: {
-        path: './cluster-manifests'
+      kustomizations: {
+        unified: {
+          path: './cluster-manifests'
+        }
       }
     }
+    dependsOn: [
+      nestedDependencies
+    ]
   }
-}]
+]

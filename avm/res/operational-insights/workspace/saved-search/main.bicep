@@ -27,7 +27,7 @@ param functionAlias string = ''
 param functionParameters string = ''
 
 @description('Optional. The version number of the query language.')
-param version int = 2
+param version int?
 
 @description('Optional. The ETag of the saved search. To override an existing saved search, use "*" or specify the current Etag.')
 param etag string = '*'

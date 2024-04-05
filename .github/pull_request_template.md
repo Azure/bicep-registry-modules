@@ -1,32 +1,42 @@
 ## Description
 
-<!--Why this PR? What is changed? What is the effect? etc.-->
+<!--
+>Thank you for your contribution !
+> Please include a summary of the change and which issue is fixed.
+> Please also include the context.
+> List any dependencies that are required for this change.
 
-If you haven't already, read the full [contribution guide](https://github.com/Azure/bicep-registry-modules/blob/main/CONTRIBUTING.md). The guide may have changed since the last time you read it, so please double-check. Once you are done and ready to submit your PR, edit the PR description and run through the relevant checklist below.
+Fixes #123
+Fixes #456
+Closes #123
+Closes #456
+-->
 
-Enable GitHub Workflows in your fork to enable auto-generation of assets with our [GitHub Action](/.github/workflows/push-auto-generate.yml).
-To trigger GitHub Actions after auto-generation, [add a GitHub PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) as a secret in your forked repository called `PAT`.
+## Pipeline Reference
 
-## Adding a new module
+<!-- Insert your Pipeline Status Badge below -->
 
-<!--Run through the checklist if your PR adds a new module.-->
+| Pipeline |
+| -------- |
+|          |
 
-- [ ] A proposal has been submitted and approved.
-- [ ] I have included "Closes #{module_proposal_issue_number}" in the PR description.
-- [ ] I have run `brm validate` locally to verify the module files.
-- [ ] I have run deployment tests locally to ensure the module is deployable.
+## Type of Change
 
-## Updating an existing module
+<!-- Use the check-boxes [x] on the options that are relevant. -->
 
-<!--Run through the checklist if your PR updates an existing module.-->
+- [ ] Update to CI Environment or utlities (Non-module effecting changes)
+- [ ] Azure Verified Module updates:
+  - [ ] Bugfix containing backwards compatible bug fixes, and I have NOT bumped the MAJOR or MINOR version in `version.json`:
+    - [ ] Someone has opened a bug report issue, and I have included "Closes #{bug_report_issue_number}" in the PR description.
+    - [ ] The bug was found by the module author, and no one has opened an issue to report it yet.
+  - [ ] Feature update backwards compatible feature updates, and I have bumped the MINOR version in `version.json`.
+  - [ ] Breaking changes and I have bumped the MAJOR version in `version.json`.
+  - [ ] Update to documentation
 
-- [ ] This is a bug fix:
-  - [ ] Someone has opened a bug report issue, and I have included "Closes #{bug_report_issue_number}" in the PR description.
-  - [ ] The bug was found by the module author, and no one has opened an issue to report it yet.
-- [ ] I have run `brm validate` locally to verify the module files.
-- [ ] I have run deployment tests locally to ensure the module is deployable.
-- [ ] I have read the [Updating an existing module](https://github.com/Azure/bicep-registry-modules/blob/main/CONTRIBUTING.md#updating-an-existing-module) section in the contributing guide and updated the `version.json` file properly:
-  - [ ] The PR contains backwards compatible bug fixes, and I have NOT bumped the MAJOR or MINOR version in `version.json`.
-  - [ ] The PR contains backwards compatible feature updates, and I have bumped the MINOR version in `version.json`.
-  - [ ] The PR contains breaking changes, and I have bumped the MAJOR version in `version.json`.
-- [ ] I have updated the examples in README with the latest module version number.
+## Checklist
+
+- [ ] I'm sure there are no other open Pull Requests for the same update/change
+- [ ] I have run `Set-AVMModule` locally to generate the supporting module files.
+- [ ] My corresponding pipelines / checks run clean and green without any errors or warnings
+
+<!--  Please keep up to day with the contribution guide at https://aka.ms/avm/contribute/bicep -->

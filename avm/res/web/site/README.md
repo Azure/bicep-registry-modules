@@ -43,6 +43,8 @@ The following section provides usage examples for the module, which were used to
 - [WAF-aligned](#example-3-waf-aligned)
 - [Web App, using only defaults](#example-4-web-app-using-only-defaults)
 - [Web App, using large parameter set](#example-5-web-app-using-large-parameter-set)
+- [Web App, using only defaults](#example-6-web-app-using-only-defaults)
+- [Web App, using large parameter set](#example-7-web-app-using-large-parameter-set)
 
 ### Example 1: _Function App, using only defaults_
 
@@ -55,7 +57,7 @@ This instance deploys the module as Function App with the minimum set of require
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsfamin'
+  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'functionapp'
@@ -119,7 +121,7 @@ This instance deploys the module as Function App with most of its features enabl
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wsfamax'
+  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'functionapp'
@@ -249,6 +251,12 @@ module site 'br/public:avm/res/web/site:<version>' = {
           Role: 'DeploymentValidation'
         }
       }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+      }
     ]
     roleAssignments: [
       {
@@ -267,12 +275,12 @@ module site 'br/public:avm/res/web/site:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    setAzureWebJobsDashboard: true
     siteConfig: {
       alwaysOn: true
       use32BitWorkerProcess: false
     }
     storageAccountResourceId: '<storageAccountResourceId>'
+    storageAccountUseIdentityAuthentication: true
   }
 }
 ```
@@ -443,6 +451,12 @@ module site 'br/public:avm/res/web/site:<version>' = {
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           }
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -465,9 +479,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
         }
       ]
     },
-    "setAzureWebJobsDashboard": {
-      "value": true
-    },
     "siteConfig": {
       "value": {
         "alwaysOn": true,
@@ -476,6 +487,9 @@ module site 'br/public:avm/res/web/site:<version>' = {
     },
     "storageAccountResourceId": {
       "value": "<storageAccountResourceId>"
+    },
+    "storageAccountUseIdentityAuthentication": {
+      "value": true
     }
   }
 }
@@ -495,7 +509,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wswaf'
+  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app'
@@ -526,6 +540,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
     scmSiteAlsoStopped: true
     siteConfig: {
       alwaysOn: true
+      healthCheckPath: '/healthz'
       metadata: [
         {
           name: 'CURRENT_STACK'
@@ -600,6 +615,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "siteConfig": {
       "value": {
         "alwaysOn": true,
+        "healthCheckPath": "/healthz",
         "metadata": [
           {
             "name": "CURRENT_STACK",
@@ -635,7 +651,7 @@ This instance deploys the module as Web App with the minimum set of required par
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wswamin'
+  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app'
@@ -643,6 +659,10 @@ module site 'br/public:avm/res/web/site:<version>' = {
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
     location: '<location>'
+    siteConfig: {
+      alwaysOn: true
+      healthCheckPath: '/healthz'
+    }
   }
 }
 ```
@@ -672,6 +692,12 @@ module site 'br/public:avm/res/web/site:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "siteConfig": {
+      "value": {
+        "alwaysOn": true,
+        "healthCheckPath": "/healthz"
+      }
     }
   }
 }
@@ -691,7 +717,7 @@ This instance deploys the module as Web App with most of its features enabled.
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wswamax'
+  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app'
@@ -751,6 +777,12 @@ module site 'br/public:avm/res/web/site:<version>' = {
           'hidden-title': 'This is visible in the resource name'
           Role: 'DeploymentValidation'
         }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
       }
     ]
     publicNetworkAccess: 'Disabled'
@@ -849,6 +881,8 @@ module site 'br/public:avm/res/web/site:<version>' = {
             }
           ]
         }
+        storageAccountResourceId: '<storageAccountResourceId>'
+        storageAccountUseIdentityAuthentication: true
       }
       {
         basicPublishingCredentialsPolicies: [
@@ -860,8 +894,12 @@ module site 'br/public:avm/res/web/site:<version>' = {
           }
         ]
         name: 'slot2'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        storageAccountUseIdentityAuthentication: true
       }
     ]
+    storageAccountResourceId: '<storageAccountResourceId>'
+    storageAccountUseIdentityAuthentication: true
     vnetContentShareEnabled: true
     vnetImagePullEnabled: true
     vnetRouteAllEnabled: true
@@ -960,6 +998,12 @@ module site 'br/public:avm/res/web/site:<version>' = {
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           }
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -1067,7 +1111,9 @@ module site 'br/public:avm/res/web/site:<version>' = {
                 "value": "dotnetcore"
               }
             ]
-          }
+          },
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "storageAccountUseIdentityAuthentication": true
         },
         {
           "basicPublishingCredentialsPolicies": [
@@ -1078,9 +1124,519 @@ module site 'br/public:avm/res/web/site:<version>' = {
               "name": "scm"
             }
           ],
-          "name": "slot2"
+          "name": "slot2",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "storageAccountUseIdentityAuthentication": true
         }
       ]
+    },
+    "storageAccountResourceId": {
+      "value": "<storageAccountResourceId>"
+    },
+    "storageAccountUseIdentityAuthentication": {
+      "value": true
+    },
+    "vnetContentShareEnabled": {
+      "value": true
+    },
+    "vnetImagePullEnabled": {
+      "value": true
+    },
+    "vnetRouteAllEnabled": {
+      "value": true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 6: _Web App, using only defaults_
+
+This instance deploys the module as a Linux Web App with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
+  name: 'siteDeployment'
+  params: {
+    // Required parameters
+    kind: 'app,linux'
+    name: 'wswalmin001'
+    serverFarmResourceId: '<serverFarmResourceId>'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "app,linux"
+    },
+    "name": {
+      "value": "wswalmin001"
+    },
+    "serverFarmResourceId": {
+      "value": "<serverFarmResourceId>"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Web App, using large parameter set_
+
+This instance deploys the module asa Linux Web App with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module site 'br/public:avm/res/web/site:<version>' = {
+  name: 'siteDeployment'
+  params: {
+    // Required parameters
+    kind: 'app,linux'
+    name: 'wswalmax001'
+    serverFarmResourceId: '<serverFarmResourceId>'
+    // Non-required parameters
+    basicPublishingCredentialsPolicies: [
+      {
+        allow: false
+        name: 'ftp'
+      }
+      {
+        allow: false
+        name: 'scm'
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    httpsOnly: true
+    hybridConnectionRelays: [
+      {
+        resourceId: '<resourceId>'
+        sendKeyName: 'defaultSender'
+      }
+    ]
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    scmSiteAlsoStopped: true
+    siteConfig: {
+      alwaysOn: true
+      metadata: [
+        {
+          name: 'CURRENT_STACK'
+          value: 'dotnetcore'
+        }
+      ]
+    }
+    slots: [
+      {
+        basicPublishingCredentialsPolicies: [
+          {
+            allow: false
+            name: 'ftp'
+          }
+          {
+            allow: false
+            name: 'scm'
+          }
+        ]
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        hybridConnectionRelays: [
+          {
+            resourceId: '<resourceId>'
+            sendKeyName: 'defaultSender'
+          }
+        ]
+        name: 'slot1'
+        privateEndpoints: [
+          {
+            privateDnsZoneResourceIds: [
+              '<privateDNSZoneResourceId>'
+            ]
+            service: 'sites-slot1'
+            subnetResourceId: '<subnetResourceId>'
+            tags: {
+              Environment: 'Non-Prod'
+              'hidden-title': 'This is visible in the resource name'
+              Role: 'DeploymentValidation'
+            }
+          }
+        ]
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        siteConfig: {
+          alwaysOn: true
+          metadata: [
+            {
+              name: 'CURRENT_STACK'
+              value: 'dotnetcore'
+            }
+          ]
+        }
+        storageAccountResourceId: '<storageAccountResourceId>'
+        storageAccountUseIdentityAuthentication: true
+      }
+      {
+        basicPublishingCredentialsPolicies: [
+          {
+            name: 'ftp'
+          }
+          {
+            name: 'scm'
+          }
+        ]
+        name: 'slot2'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        storageAccountUseIdentityAuthentication: true
+      }
+    ]
+    storageAccountResourceId: '<storageAccountResourceId>'
+    storageAccountUseIdentityAuthentication: true
+    vnetContentShareEnabled: true
+    vnetImagePullEnabled: true
+    vnetRouteAllEnabled: true
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "app,linux"
+    },
+    "name": {
+      "value": "wswalmax001"
+    },
+    "serverFarmResourceId": {
+      "value": "<serverFarmResourceId>"
+    },
+    // Non-required parameters
+    "basicPublishingCredentialsPolicies": {
+      "value": [
+        {
+          "allow": false,
+          "name": "ftp"
+        },
+        {
+          "allow": false,
+          "name": "scm"
+        }
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "httpsOnly": {
+      "value": true
+    },
+    "hybridConnectionRelays": {
+      "value": [
+        {
+          "resourceId": "<resourceId>",
+          "sendKeyName": "defaultSender"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "scmSiteAlsoStopped": {
+      "value": true
+    },
+    "siteConfig": {
+      "value": {
+        "alwaysOn": true,
+        "metadata": [
+          {
+            "name": "CURRENT_STACK",
+            "value": "dotnetcore"
+          }
+        ]
+      }
+    },
+    "slots": {
+      "value": [
+        {
+          "basicPublishingCredentialsPolicies": [
+            {
+              "allow": false,
+              "name": "ftp"
+            },
+            {
+              "allow": false,
+              "name": "scm"
+            }
+          ],
+          "diagnosticSettings": [
+            {
+              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+              "eventHubName": "<eventHubName>",
+              "name": "customSetting",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ],
+          "hybridConnectionRelays": [
+            {
+              "resourceId": "<resourceId>",
+              "sendKeyName": "defaultSender"
+            }
+          ],
+          "name": "slot1",
+          "privateEndpoints": [
+            {
+              "privateDnsZoneResourceIds": [
+                "<privateDNSZoneResourceId>"
+              ],
+              "service": "sites-slot1",
+              "subnetResourceId": "<subnetResourceId>",
+              "tags": {
+                "Environment": "Non-Prod",
+                "hidden-title": "This is visible in the resource name",
+                "Role": "DeploymentValidation"
+              }
+            }
+          ],
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "siteConfig": {
+            "alwaysOn": true,
+            "metadata": [
+              {
+                "name": "CURRENT_STACK",
+                "value": "dotnetcore"
+              }
+            ]
+          },
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "storageAccountUseIdentityAuthentication": true
+        },
+        {
+          "basicPublishingCredentialsPolicies": [
+            {
+              "name": "ftp"
+            },
+            {
+              "name": "scm"
+            }
+          ],
+          "name": "slot2",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "storageAccountUseIdentityAuthentication": true
+        }
+      ]
+    },
+    "storageAccountResourceId": {
+      "value": "<storageAccountResourceId>"
+    },
+    "storageAccountUseIdentityAuthentication": {
+      "value": true
     },
     "vnetContentShareEnabled": {
       "value": true
@@ -1121,11 +1677,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
 | [`clientAffinityEnabled`](#parameter-clientaffinityenabled) | bool | If client affinity is enabled. |
 | [`clientCertEnabled`](#parameter-clientcertenabled) | bool | To enable client certificate authentication (TLS mutual authentication). |
 | [`clientCertExclusionPaths`](#parameter-clientcertexclusionpaths) | string | Client certificate authentication comma-separated exclusion paths. |
-| [`clientCertMode`](#parameter-clientcertmode) | string | This composes with ClientCertEnabled setting.
-- ClientCertEnabled=false means ClientCert is ignored.
-- ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.
-- ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.
- |
+| [`clientCertMode`](#parameter-clientcertmode) | string | This composes with ClientCertEnabled setting.<li>ClientCertEnabled=false means ClientCert is ignored.<li>ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.<li>ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.<p> |
 | [`cloningInfo`](#parameter-cloninginfo) | object | If specified during app creation, the app is cloned from a source app. |
 | [`containerSize`](#parameter-containersize) | int | Size of the function container. |
 | [`customDomainVerificationId`](#parameter-customdomainverificationid) | string | Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification. |
@@ -1146,11 +1698,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
 | [`redundancyMode`](#parameter-redundancymode) | string | Site redundancy mode. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`scmSiteAlsoStopped`](#parameter-scmsitealsostopped) | bool | Stop SCM (KUDU) site when the app is stopped. |
-| [`setAzureWebJobsDashboard`](#parameter-setazurewebjobsdashboard) | bool | For function apps. If true the app settings "AzureWebJobsDashboard" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons. |
 | [`siteConfig`](#parameter-siteconfig) | object | The site config object. |
 | [`slots`](#parameter-slots) | array | Configuration for deployment slots for an app. |
 | [`storageAccountRequired`](#parameter-storageaccountrequired) | bool | Checks if Customer provided storage account is required. |
 | [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions. |
+| [`storageAccountUseIdentityAuthentication`](#parameter-storageaccountuseidentityauthentication) | bool | If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualNetworkSubnetId`](#parameter-virtualnetworksubnetid) | string | Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}. |
 | [`vnetContentShareEnabled`](#parameter-vnetcontentshareenabled) | bool | To enable accessing content over virtual network. |
@@ -1167,6 +1719,7 @@ Type of site to deploy.
   ```Bicep
   [
     'app'
+    'app,linux'
     'functionapp'
     'functionapp,linux'
     'functionapp,workflowapp'
@@ -1248,11 +1801,7 @@ Client certificate authentication comma-separated exclusion paths.
 
 ### Parameter: `clientCertMode`
 
-This composes with ClientCertEnabled setting.
-- ClientCertEnabled=false means ClientCert is ignored.
-- ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.
-- ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.
-
+This composes with ClientCertEnabled setting.<li>ClientCertEnabled=false means ClientCert is ignored.<li>ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.<li>ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.<p>
 
 - Required: No
 - Type: string
@@ -1308,9 +1857,9 @@ The diagnostic settings of the service.
 | [`eventHubAuthorizationRuleResourceId`](#parameter-diagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
 | [`eventHubName`](#parameter-diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
+| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to '' to disable metric collection. |
+| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
 | [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
@@ -1345,10 +1894,39 @@ A string indicating whether the export to Log Analytics should use the default d
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
-The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
 
 - Required: No
 - Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-diagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -1359,10 +1937,36 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
-The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to '' to disable metric collection.
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-diagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -1532,14 +2136,15 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the private endpoint. |
 | [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
+| [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
 | [`location`](#parameter-privateendpointslocation) | string | The location to deploy the private endpoint to. |
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
-| [`manualPrivateLinkServiceConnections`](#parameter-privateendpointsmanualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
+| [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
+| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
-| [`service`](#parameter-privateendpointsservice) | string | The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
 ### Parameter: `privateEndpoints.subnetResourceId`
@@ -1563,6 +2168,27 @@ Custom DNS configurations.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
+| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+Fqdn that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
+
+A list of private IP addresses of the private endpoint.
+
+- Required: Yes
+- Type: array
+
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
 The custom name of the network interface attached to the private endpoint.
@@ -1583,6 +2209,63 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsipconfigurationsname) | string | The name of the resource that is unique within a resource group. |
+| [`properties`](#parameter-privateendpointsipconfigurationsproperties) | object | Properties of private endpoint IP configurations. |
+
+### Parameter: `privateEndpoints.ipConfigurations.name`
+
+The name of the resource that is unique within a resource group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties`
+
+Properties of private endpoint IP configurations.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
+
+The member name of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
+
+A private IP address obtained from the private endpoint's subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.isManualConnection`
+
+If Manual Private Link Connection is required.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `privateEndpoints.location`
 
@@ -1627,12 +2310,12 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.manualPrivateLinkServiceConnections`
+### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
-Manual PrivateLink Service Connections.
+A message passed to the owner of the remote resource with the manual connection request.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.name`
 
@@ -1643,7 +2326,7 @@ The name of the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroupName`
 
-The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.
+The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
 
 - Required: No
 - Type: string
@@ -1746,7 +2429,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `privateEndpoints.service`
 
-The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".
+The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".
 
 - Required: No
 - Type: string
@@ -1887,14 +2570,6 @@ Stop SCM (KUDU) site when the app is stopped.
 - Type: bool
 - Default: `False`
 
-### Parameter: `setAzureWebJobsDashboard`
-
-For function apps. If true the app settings "AzureWebJobsDashboard" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons.
-
-- Required: No
-- Type: bool
-- Default: `[if(contains(parameters('kind'), 'functionapp'), true(), false())]`
-
 ### Parameter: `siteConfig`
 
 The site config object.
@@ -1923,6 +2598,14 @@ Required if app of kind functionapp. Resource ID of the storage account to manag
 
 - Required: No
 - Type: string
+
+### Parameter: `storageAccountUseIdentityAuthentication`
+
+If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `tags`
 
@@ -1979,11 +2662,11 @@ Virtual Network Route All enabled. This causes all outbound traffic to have Virt
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.3.2` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.4.0` | Remote reference |
 
 ## Notes
 
@@ -2000,7 +2683,7 @@ For all other app settings key-value pairs use this object.
 "appSettingsKeyValuePairs": {
     "value": {
       "AzureFunctionsJobHost__logging__logLevel__default": "Trace",
-      "EASYAUTH_SECRET": "https://adp-[[namePrefix]]-az-kv-x-001.vault.azure.net/secrets/Modules-Test-SP-Password",
+      "EASYAUTH_SECRET": "https://adp-#_namePrefix_#-az-kv-x-001.vault.azure.net/secrets/Modules-Test-SP-Password",
       "FUNCTIONS_EXTENSION_VERSION": "~4",
       "FUNCTIONS_WORKER_RUNTIME": "dotnet"
     }
@@ -2016,7 +2699,7 @@ For all other app settings key-value pairs use this object.
 ```bicep
 appSettingsKeyValuePairs: {
   AzureFunctionsJobHost__logging__logLevel__default: 'Trace'
-  EASYAUTH_SECRET: 'https://adp-[[namePrefix]]-az-kv-x-001.vault.azure.net/secrets/Modules-Test-SP-Password'
+  EASYAUTH_SECRET: 'https://adp-#_namePrefix_#-az-kv-x-001.vault.azure.net/secrets/Modules-Test-SP-Password'
   FUNCTIONS_EXTENSION_VERSION: '~4'
   FUNCTIONS_WORKER_RUNTIME: 'dotnet'
 }

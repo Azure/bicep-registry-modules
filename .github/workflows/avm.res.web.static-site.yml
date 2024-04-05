@@ -20,7 +20,6 @@ on:
         description: "Remove deployed module"
         required: false
         default: true
-
   push:
     branches:
       - main
@@ -28,8 +27,9 @@ on:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.res.web.static-site.yml"
-      - "avm/res/web/serverfarm/**"
+      - "avm/res/web/static-site/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
@@ -72,6 +72,9 @@ jobs:
   ##############################
   call-workflow-passing-data:
     name: "Run"
+    permissions:
+      id-token: write # For OIDC
+      contents: write # For release tags
     needs:
       - job_initialize_pipeline
     uses: ./.github/workflows/avm.template.module.yml

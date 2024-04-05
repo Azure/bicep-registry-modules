@@ -1,0 +1,65 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "53495924931537880"
+    },
+    "name": "Recovery Services Vault Backup Policies",
+    "description": "This module deploys a Recovery Services Vault Backup Policy.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "recoveryVaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Azure Recovery Service Vault Backup Policy."
+      }
+    },
+    "properties": {
+      "type": "object",
+      "metadata": {
+        "description": "Required. Configuration of the Azure Recovery Service Vault Backup Policy."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.RecoveryServices/vaults/backupPolicies",
+      "apiVersion": "2023-01-01",
+      "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
+      "properties": "[parameters('properties')]"
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the backup policy."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the backup policy."
+      },
+      "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', parameters('recoveryVaultName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the backup policy was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

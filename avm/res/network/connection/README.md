@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module connection 'br/public:avm/res/network/connection:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ncmin'
+  name: 'connectionDeployment'
   params: {
     // Required parameters
     name: 'ncmin001'
@@ -114,7 +114,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module connection 'br/public:avm/res/network/connection:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ncmax'
+  name: 'connectionDeployment'
   params: {
     // Required parameters
     name: 'ncmax001'
@@ -220,7 +220,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module connection 'br/public:avm/res/network/connection:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ncwaf'
+  name: 'connectionDeployment'
   params: {
     // Required parameters
     name: 'ncwaf001'

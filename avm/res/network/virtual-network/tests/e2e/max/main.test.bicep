@@ -63,105 +63,111 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 
 var addressPrefix = '10.0.0.0/16'
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    addressPrefixes: [
-      addressPrefix
-    ]
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    dnsServers: [
-      '10.0.1.4'
-      '10.0.1.5'
-    ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Reader'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    flowTimeoutInMinutes: 20
-    subnets: [
-      {
-        addressPrefix: cidrSubnet(addressPrefix, 24, 0)
-        name: 'GatewaySubnet'
-      }
-      {
-        addressPrefix: cidrSubnet(addressPrefix, 24, 1)
-        name: '${namePrefix}-az-subnet-x-001'
-        networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
-        routeTableResourceId: nestedDependencies.outputs.routeTableResourceId
-        serviceEndpoints: [
-          {
-            service: 'Microsoft.Storage'
-          }
-          {
-            service: 'Microsoft.Sql'
-          }
-        ]
-      }
-      {
-        addressPrefix: cidrSubnet(addressPrefix, 24, 2)
-        delegations: [
-          {
-            name: 'netappDel'
-            properties: {
-              serviceName: 'Microsoft.Netapp/volumes'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      addressPrefixes: [
+        addressPrefix
+      ]
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
             }
-          }
-        ]
-        name: '${namePrefix}-az-subnet-x-002'
-        networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      dnsServers: [
+        '10.0.1.4'
+        '10.0.1.5'
+      ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-      {
-        addressPrefix: cidrSubnet(addressPrefix, 24, 3)
-        name: '${namePrefix}-az-subnet-x-003'
-        networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
-        privateEndpointNetworkPolicies: 'Disabled'
-        privateLinkServiceNetworkPolicies: 'Enabled'
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Reader'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      flowTimeoutInMinutes: 20
+      subnets: [
+        {
+          addressPrefix: cidrSubnet(addressPrefix, 24, 0)
+          name: 'GatewaySubnet'
+        }
+        {
+          addressPrefix: cidrSubnet(addressPrefix, 24, 1)
+          name: '${namePrefix}-az-subnet-x-001'
+          networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'Reader'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
+          routeTableResourceId: nestedDependencies.outputs.routeTableResourceId
+          serviceEndpoints: [
+            {
+              service: 'Microsoft.Storage'
+            }
+            {
+              service: 'Microsoft.Sql'
+            }
+          ]
+        }
+        {
+          addressPrefix: cidrSubnet(addressPrefix, 24, 2)
+          delegations: [
+            {
+              name: 'netappDel'
+              properties: {
+                serviceName: 'Microsoft.Netapp/volumes'
+              }
+            }
+          ]
+          name: '${namePrefix}-az-subnet-x-002'
+          networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
+        }
+        {
+          addressPrefix: cidrSubnet(addressPrefix, 24, 3)
+          name: '${namePrefix}-az-subnet-x-003'
+          networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
+          privateEndpointNetworkPolicies: 'Disabled'
+          privateLinkServiceNetworkPolicies: 'Enabled'
+        }
+        {
+          addressPrefix: cidrSubnet(addressPrefix, 24, 4)
+          name: 'AzureBastionSubnet'
+          networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupBastionResourceId
+        }
+        {
+          addressPrefix: cidrSubnet(addressPrefix, 24, 5)
+          name: 'AzureFirewallSubnet'
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-      {
-        addressPrefix: cidrSubnet(addressPrefix, 24, 4)
-        name: 'AzureBastionSubnet'
-        networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupBastionResourceId
-      }
-      {
-        addressPrefix: cidrSubnet(addressPrefix, 24, 5)
-        name: 'AzureFirewallSubnet'
-      }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
+    ]
   }
-}]
+]

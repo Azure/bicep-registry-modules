@@ -122,16 +122,25 @@ param backupLongTermRetentionPolicy object = {}
 
 // The SKU object must be built in a variable
 // The alternative, 'null' as default values, leads to non-terminating deployments
-var skuVar = union({
+var skuVar = union(
+  {
     name: skuName
     tier: skuTier
-  }, (skuCapacity != null) ? {
-    capacity: skuCapacity
-  } : !empty(skuFamily) ? {
-    family: skuFamily
-  } : !empty(skuSize) ? {
-    size: skuSize
-  } : {})
+  },
+  (skuCapacity != null)
+    ? {
+        capacity: skuCapacity
+      }
+    : !empty(skuFamily)
+        ? {
+            family: skuFamily
+          }
+        : !empty(skuSize)
+            ? {
+                size: skuSize
+              }
+            : {}
+)
 
 resource server 'Microsoft.Sql/servers@2022-05-01-preview' existing = {
   name: serverName
@@ -160,45 +169,54 @@ resource database 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
     createMode: createMode
     sourceDatabaseId: !empty(sourceDatabaseResourceId) ? sourceDatabaseResourceId : null
     sourceDatabaseDeletionDate: !empty(sourceDatabaseDeletionDate) ? sourceDatabaseDeletionDate : null
-    recoveryServicesRecoveryPointId: !empty(recoveryServicesRecoveryPointResourceId) ? recoveryServicesRecoveryPointResourceId : null
+    recoveryServicesRecoveryPointId: !empty(recoveryServicesRecoveryPointResourceId)
+      ? recoveryServicesRecoveryPointResourceId
+      : null
     restorePointInTime: !empty(restorePointInTime) ? restorePointInTime : null
   }
   sku: skuVar
 }
 
-resource database_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    metrics: diagnosticSetting.?metricCategories ?? [
-      {
-        category: 'AllMetrics'
-        timeGrain: null
-        enabled: true
-      }
-    ]
-    logs: diagnosticSetting.?logCategoriesAndGroups ?? [
-      {
-        categoryGroup: 'AllLogs'
-        enabled: true
-      }
-    ]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+resource database_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: database
   }
-  scope: database
-}]
+]
 
 module database_backupShortTermRetentionPolicy 'backup-short-term-retention-policy/main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-${name}-shBakRetPol'
   params: {
     serverName: serverName
     databaseName: database.name
-    diffBackupIntervalInHours: contains(backupShortTermRetentionPolicy, 'diffBackupIntervalInHours') ? backupShortTermRetentionPolicy.diffBackupIntervalInHours : 24
-    retentionDays: contains(backupShortTermRetentionPolicy, 'retentionDays') ? backupShortTermRetentionPolicy.retentionDays : 7
+    diffBackupIntervalInHours: contains(backupShortTermRetentionPolicy, 'diffBackupIntervalInHours')
+      ? backupShortTermRetentionPolicy.diffBackupIntervalInHours
+      : 24
+    retentionDays: contains(backupShortTermRetentionPolicy, 'retentionDays')
+      ? backupShortTermRetentionPolicy.retentionDays
+      : 7
   }
 }
 
@@ -207,9 +225,15 @@ module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy
   params: {
     serverName: serverName
     databaseName: database.name
-    weeklyRetention: contains(backupLongTermRetentionPolicy, 'weeklyRetention') ? backupLongTermRetentionPolicy.weeklyRetention : ''
-    monthlyRetention: contains(backupLongTermRetentionPolicy, 'monthlyRetention') ? backupLongTermRetentionPolicy.monthlyRetention : ''
-    yearlyRetention: contains(backupLongTermRetentionPolicy, 'yearlyRetention') ? backupLongTermRetentionPolicy.yearlyRetention : ''
+    weeklyRetention: contains(backupLongTermRetentionPolicy, 'weeklyRetention')
+      ? backupLongTermRetentionPolicy.weeklyRetention
+      : ''
+    monthlyRetention: contains(backupLongTermRetentionPolicy, 'monthlyRetention')
+      ? backupLongTermRetentionPolicy.monthlyRetention
+      : ''
+    yearlyRetention: contains(backupLongTermRetentionPolicy, 'yearlyRetention')
+      ? backupLongTermRetentionPolicy.yearlyRetention
+      : ''
     weekOfYear: contains(backupLongTermRetentionPolicy, 'weekOfYear') ? backupLongTermRetentionPolicy.weekOfYear : 1
   }
 }
@@ -234,19 +258,25 @@ type diagnosticSettingType = {
   @description('Optional. The name of diagnostic setting.')
   name: string?
 
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
+  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
   logCategoriesAndGroups: {
     @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
     category: string?
 
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to \'AllLogs\' to collect all logs.')
+    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
     categoryGroup: string?
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
   }[]?
 
-  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to \'\' to disable metric collection.')
+  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
   metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to \'AllMetrics\' to collect all metrics.')
+    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
     category: string
+
+    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
+    enabled: bool?
   }[]?
 
   @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "11930269426263350547"
+      "version": "0.26.54.24096",
+      "templateHash": "1498326047864414566"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -150,7 +150,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The service (sub-) type to deploy the private endpoint for. For example \"vault\" or \"blob\"."
+              "description": "Optional. The subresource to deploy the private endpoint for. For example \"vault\", \"mysqlServer\" or \"dataFactory\"."
             }
           },
           "subnetResourceId": {
@@ -174,6 +174,21 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones."
+            }
+          },
+          "isManualConnection": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. If Manual Private Link Connection is required."
+            }
+          },
+          "manualConnectionRequestMessage": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 140,
+            "metadata": {
+              "description": "Optional. A message passed to the owner of the remote resource with the manual connection request."
             }
           },
           "customDnsConfigs": {
@@ -282,13 +297,6 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
-            }
-          },
-          "manualPrivateLinkServiceConnections": {
-            "type": "array",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Manual PrivateLink Service Connections."
             }
           },
           "enableTelemetry": {
@@ -633,8 +641,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "6114696968407769405"
+              "version": "0.26.54.24096",
+              "templateHash": "17545579739827867089"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database.",
@@ -669,14 +677,21 @@
                           "type": "string",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs."
+                            "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                          }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
                     },
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+                      "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
                     }
                   },
                   "metricCategories": {
@@ -687,14 +702,21 @@
                         "category": {
                           "type": "string",
                           "metadata": {
-                            "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics."
+                            "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                          }
+                        },
+                        "enabled": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                           }
                         }
                       }
                     },
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to '' to disable metric collection."
+                      "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
                     }
                   },
                   "logAnalyticsDestinationType": {
@@ -1041,12 +1063,30 @@
               "scope": "[format('Microsoft.Sql/servers/{0}/databases/{1}', parameters('serverName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
+                "copy": [
+                  {
+                    "name": "metrics",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                    "input": {
+                      "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                      "timeGrain": null
+                    }
+                  },
+                  {
+                    "name": "logs",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                    "input": {
+                      "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+                      "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                    }
+                  }
+                ],
                 "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
                 "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
                 "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
                 "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
-                "metrics": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]",
-                "logs": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'AllLogs', 'enabled', true())))]",
                 "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
                 "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
               },
@@ -1079,8 +1119,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "4029220159811407510"
+                      "version": "0.26.54.24096",
+                      "templateHash": "11085405057722780022"
                     },
                     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
@@ -1181,8 +1221,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "7612753724930678316"
+                      "version": "0.26.54.24096",
+                      "templateHash": "13590495271621282724"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",
@@ -1359,8 +1399,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "10241504273376010600"
+              "version": "0.26.54.24096",
+              "templateHash": "16839451417800355426"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -1553,31 +1593,23 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-server-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-Server-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
-          "privateLinkServiceConnections": {
-            "value": [
-              {
-                "name": "[parameters('name')]",
-                "properties": {
-                  "privateLinkServiceId": "[resourceId('Microsoft.Sql/servers', parameters('name'))]",
-                  "groupIds": [
-                    "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'sqlServer')]"
-                  ]
-                }
-              }
-            ]
-          },
           "name": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Sql/servers', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'sqlServer'), copyIndex()))]"
           },
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Sql/servers', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'sqlServer'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Sql/servers', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'sqlServer')))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Sql/servers', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'sqlServer'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Sql/servers', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'sqlServer')), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
+          },
+          "enableTelemetry": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
           },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
@@ -1597,9 +1629,6 @@
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "manualPrivateLinkServiceConnections": {
-            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections')]"
-          },
           "customDnsConfigs": {
             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
           },
@@ -1611,9 +1640,6 @@
           },
           "customNetworkInterfaceName": {
             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customNetworkInterfaceName')]"
-          },
-          "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
           }
         },
         "template": {
@@ -1623,8 +1649,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "2821141217598568122"
+              "version": "0.24.24.22086",
+              "templateHash": "2592884001616184297"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -1673,7 +1699,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -1751,7 +1777,7 @@
                       "privateIPAddress": {
                         "type": "string",
                         "metadata": {
-                          "description": "Required. A private ip address obtained from the private endpoint's subnet."
+                          "description": "Required. A private IP address obtained from the private endpoint's subnet."
                         }
                       }
                     },
@@ -1854,7 +1880,7 @@
                   "fqdn": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. Fqdn that resolves to private endpoint ip address."
+                      "description": "Required. Fqdn that resolves to private endpoint IP address."
                     }
                   },
                   "ipAddresses": {
@@ -1863,7 +1889,7 @@
                       "type": "string"
                     },
                     "metadata": {
-                      "description": "Required. A list of private ip addresses of the private endpoint."
+                      "description": "Required. A list of private IP addresses of the private endpoint."
                     }
                   }
                 }
@@ -1989,7 +2015,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2094,8 +2120,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "18168683629401652671"
+                      "version": "0.24.24.22086",
+                      "templateHash": "9321937464667207030"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -2206,6 +2232,13 @@
                 "description": "The location the resource was deployed into."
               },
               "value": "[reference('privateEndpoint', '2023-04-01', 'full').location]"
+            },
+            "groupId": {
+              "type": "string",
+              "metadata": {
+                "description": "The group Id for the private endpoint Group."
+              },
+              "value": "[if(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties.groupIds[0], reference('privateEndpoint').privateLinkServiceConnections[0].properties.groupIds[0])]"
             }
           }
         }
@@ -2243,8 +2276,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "7960472599897035207"
+              "version": "0.26.54.24096",
+              "templateHash": "11554996903169567204"
             },
             "name": "Azure SQL Server Firewall Rule",
             "description": "This module deploys an Azure SQL Server Firewall Rule.",
@@ -2349,8 +2382,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "7937154721682653764"
+              "version": "0.26.54.24096",
+              "templateHash": "16468636891412424894"
             },
             "name": "Azure SQL Server Virtual Network Rules",
             "description": "This module deploys an Azure SQL Server Virtual Network Rule.",
@@ -2457,8 +2490,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "14698752458468288733"
+              "version": "0.26.54.24096",
+              "templateHash": "4552154846289317547"
             },
             "name": "Azure SQL Server Security Alert Policies",
             "description": "This module deploys an Azure SQL Server Security Alert Policy.",
@@ -2608,8 +2641,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "4829807745876642281"
+              "version": "0.26.54.24096",
+              "templateHash": "5720200901996028671"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
             "description": "This module deploys an Azure SQL Server Vulnerability Assessment.",
@@ -2711,8 +2744,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "10423099865647735549"
+                      "version": "0.26.54.24096",
+                      "templateHash": "13552747005956537738"
                     }
                   },
                   "parameters": {
@@ -2800,8 +2833,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "8275989665318380510"
+              "version": "0.26.54.24096",
+              "templateHash": "5370214401001222813"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key.",
@@ -2919,8 +2952,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "5640826446798212991"
+              "version": "0.26.54.24096",
+              "templateHash": "15754842645553898915"
             },
             "name": "Azure SQL Server Encryption Protector",
             "description": "This module deploys an Azure SQL Server Encryption Protector.",

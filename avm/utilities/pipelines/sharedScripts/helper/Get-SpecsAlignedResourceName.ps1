@@ -66,8 +66,7 @@ function Get-SpecsAlignedResourceName {
     try {
         $apiSpecs = Invoke-WebRequest -Uri $ApiSpecsFileUri
         $specs = ConvertFrom-Json $apiSpecs.Content -AsHashtable
-    }
-    catch {
+    } catch {
         Write-Warning "Failed to download API specs file from [$ApiSpecsFileUri]"
         $specs = @{}
     }
@@ -82,8 +81,7 @@ function Get-SpecsAlignedResourceName {
     if (-not $foundProviderNamespaceMatches) {
         $providerNamespace = "Microsoft.$rawProviderNamespace"
         Write-Warning "Failed to identify provider namespace [$rawProviderNamespace]. Falling back to [$providerNamespace]."
-    }
-    else {
+    } else {
         $providerNamespace = ($foundProviderNamespaceMatches.Count -eq 1) ? $foundProviderNamespaceMatches : $foundProviderNamespaceMatches[0]
     }
 
@@ -103,7 +101,7 @@ function Get-SpecsAlignedResourceName {
     if ($resourceType.count -gt 1) {
         switch ($rawResourceType) {
             'service/api/policy' {
-                # Setting explicitely as both [apimanagement/service/apis/policies] & [apimanagement/service/apis/policy] exist in the specs and the later seem to have been an initial incorrect publish (only one API version exists)
+                # Setting explicitly as both [apimanagement/service/apis/policies] & [apimanagement/service/apis/policy] exist in the specs and the later seem to have been an initial incorrect publish (only one API version exists)
                 $resourceType = 'service/apis/policies'
             }
             Default {
@@ -120,8 +118,7 @@ function Get-SpecsAlignedResourceName {
             # if we still don't find anything (because the resource type straight up does not exist, we fall back to itself as the default)
             Write-Warning "Resource type [$rawResourceType] does not exist in the API / is custom. Falling back to it as default."
             $resourceType = $rawResourceType
-        }
-        else {
+        } else {
             Write-Warning ('Failed to find exact match between core matched resource types and [{0}]. Fallback on [{1}].' -f $rawResourceType, (Split-Path $rawResourceType -Parent))
         }
     }

@@ -61,54 +61,63 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    vNetId: nestedDependencies.outputs.virtualNetworkResourceId
-    bastionSubnetPublicIpResourceId: nestedDependencies.outputs.publicIPResourceId
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
+      bastionSubnetPublicIpResourceId: nestedDependencies.outputs.publicIPResourceId
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      disableCopyPaste: true
+      enableFileCopy: false
+      enableIpConnect: false
+      enableShareableLink: false
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-    ]
-    disableCopyPaste: true
-    enableFileCopy: false
-    enableIpConnect: false
-    enableShareableLink: false
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      scaleUnits: 4
+      skuName: 'Standard'
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
     ]
-    scaleUnits: 4
-    skuName: 'Standard'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
   }
-}]
+]

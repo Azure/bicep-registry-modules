@@ -1,0 +1,73 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "15327912662565121564"
+    },
+    "name": "Event Hub Namespace Authorization Rule",
+    "description": "This module deploys an Event Hub Namespace Authorization Rule.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "namespaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent event hub namespace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the authorization rule."
+      }
+    },
+    "rights": {
+      "type": "array",
+      "defaultValue": [],
+      "allowedValues": [
+        "Listen",
+        "Manage",
+        "Send"
+      ],
+      "metadata": {
+        "description": "Optional. The rights associated with the rule."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.EventHub/namespaces/authorizationRules",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
+      "properties": {
+        "rights": "[parameters('rights')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the authorization rule."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the authorization rule."
+      },
+      "value": "[resourceId('Microsoft.EventHub/namespaces/authorizationRules', parameters('namespaceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the authorization rule was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

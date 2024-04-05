@@ -51,6 +51,9 @@ For example: 'Azure/ResourceModules'
 Optional. The branch the pipeline was triggered from. If provided it will be used to generate a URL to the exact line of the test.
 For example: 'users/carml/testBranch'
 
+.PARAMETER Title
+Optional. The title / header the exported markdown should have. For example: 'Post-deployment test validation summary'
+
 .EXAMPLE
 Set-PesterGitHubOutput -PesterTestResults @{...}
 
@@ -75,7 +78,10 @@ function Set-PesterGitHubOutput {
     [string] $GitHubRepository,
 
     [Parameter(Mandatory = $false)]
-    [string] $BranchName
+    [string] $BranchName,
+
+    [Parameter(Mandatory = $false)]
+    [string] $Title = 'Pester validation summary'
   )
 
   $passedTests = $PesterTestResults.Passed
@@ -94,7 +100,7 @@ function Set-PesterGitHubOutput {
 
   # Header
   $fileContent = [System.Collections.ArrayList]@(
-    '# Pester validation summary ',
+    "# $Title ",
     ''
   )
 
@@ -118,7 +124,6 @@ function Set-PesterGitHubOutput {
   )
 
   if ($failedTests.Count -gt 0) {
-    Write-Verbose 'Adding failed tests'
     $fileContent += [System.Collections.ArrayList]@(
       '| Name | Error | Source |',
       '| :-- | :-- | :-- |'

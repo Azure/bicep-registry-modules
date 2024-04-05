@@ -1,6 +1,6 @@
 {
   "name": "Ubuntu",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:0-18-bullseye",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20-bullseye",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -17,15 +17,26 @@
       ]
     }
   },
-  "postCreateCommand": "npm install -g prettier && dotnet tool install -g Azure.Bicep.RegistryModuleTool",
-  "postStartCommand": "az bicep install",
+  "postCreateCommand": "dotnet tool install -g Azure.Bicep.RegistryModuleTool",
+  "postStartCommand": "",
   "remoteEnv": {
     "PATH": "${containerEnv:PATH}:/home/node/.dotnet/tools:/home/node/.azure/bin"
   },
   "features": {
-    "azure-cli": "latest",
-    "dotnet": "7.0",
+    "ghcr.io/devcontainers/features/azure-cli:1": {
+      "version": "latest",
+      "installBicep": true
+    },
+    "ghcr.io/devcontainers/features/dotnet:2": {},
     "ghcr.io/devcontainers/features/node:1": {},
-    "ghcr.io/devcontainers/features/powershell:1": {}
+    "ghcr.io/devcontainers/features/powershell:1": {
+      "modules": ["Az.Accounts", "Az.Resources", "Az.KeyVault", "Pester"]
+    },
+    "ghcr.io/devcontainers-contrib/features/prettier:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    // act to run github actions locally
+    "ghcr.io/devcontainers-contrib/features/act-asdf:2": {},
+    // for act
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
   }
 }

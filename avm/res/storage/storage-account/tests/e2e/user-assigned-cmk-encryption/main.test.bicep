@@ -57,6 +57,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     location: resourceLocation
     name: '${namePrefix}${serviceShort}001'
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
     privateEndpoints: [
       {
         service: 'blob'
@@ -85,4 +89,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
     }
   }
+  dependsOn: [
+    nestedDependencies
+  ]
 }]

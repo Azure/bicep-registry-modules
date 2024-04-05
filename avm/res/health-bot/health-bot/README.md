@@ -47,10 +47,10 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-hbhbmin'
+  name: 'healthBotDeployment'
   params: {
     // Required parameters
-    name: 'hbhbmin001'
+    name: 'hbhbmin002'
     sku: 'F0'
     // Non-required parameters
     location: '<location>'
@@ -72,7 +72,7 @@ module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "hbhbmin001"
+      "value": "hbhbmin002"
     },
     "sku": {
       "value": "F0"
@@ -99,10 +99,10 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-hbhbmax'
+  name: 'healthBotDeployment'
   params: {
     // Required parameters
-    name: 'hbhbmax001'
+    name: 'hbhbmax002'
     sku: 'F0'
     // Non-required parameters
     location: '<location>'
@@ -155,7 +155,7 @@ module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "hbhbmax001"
+      "value": "hbhbmax002"
     },
     "sku": {
       "value": "F0"
@@ -221,10 +221,10 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-hbhbwaf'
+  name: 'healthBotDeployment'
   params: {
     // Required parameters
-    name: 'hbhbwaf001'
+    name: 'hbhbwaf002'
     sku: 'F0'
     // Non-required parameters
     location: '<location>'
@@ -255,7 +255,7 @@ module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "hbhbwaf001"
+      "value": "hbhbwaf002"
     },
     "sku": {
       "value": "F0"

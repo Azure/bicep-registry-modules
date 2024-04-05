@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "17973992796962490837"
+      "version": "0.26.54.24096",
+      "templateHash": "2471056179567249981"
     },
     "name": "Event Grid System Topic Event Subscriptions",
     "description": "This module deploys an Event Grid System Topic Event Subscription.",
@@ -96,7 +96,7 @@
   "resources": [
     {
       "type": "Microsoft.EventGrid/systemTopics/eventSubscriptions",
-      "apiVersion": "2022-06-15",
+      "apiVersion": "2023-12-15-preview",
       "name": "[format('{0}/{1}', parameters('systemTopicName'), parameters('name'))]",
       "properties": {
         "deadLetterDestination": "[if(not(empty(parameters('deadLetterDestination'))), parameters('deadLetterDestination'), null())]",
@@ -138,7 +138,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference(resourceId('Microsoft.EventGrid/systemTopics', parameters('systemTopicName')), '2022-06-15', 'full').location]"
+      "value": "[reference(resourceId('Microsoft.EventGrid/systemTopics', parameters('systemTopicName')), '2023-12-15-preview', 'full').location]"
     }
   }
 }

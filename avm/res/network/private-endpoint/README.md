@@ -35,8 +35,6 @@ The following section provides usage examples for the module, which were used to
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-
 
 
 <details>
@@ -45,7 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-npemin'
+  name: 'privateEndpointDeployment'
   params: {
     // Required parameters
     name: 'npemin001'
@@ -161,7 +159,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-npemax'
+  name: 'privateEndpointDeployment'
   params: {
     // Required parameters
     name: 'npemax001'
@@ -365,7 +363,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-npewaf'
+  name: 'privateEndpointDeployment'
   params: {
     // Required parameters
     name: 'npewaf001'
@@ -626,6 +624,35 @@ Properties of private endpoint IP configurations.
 - Required: Yes
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupId`](#parameter-ipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`memberName`](#parameter-ipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateIPAddress`](#parameter-ipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
+
+### Parameter: `ipConfigurations.properties.groupId`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipConfigurations.properties.memberName`
+
+The member name of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipConfigurations.properties.privateIPAddress`
+
+A private IP address obtained from the private endpoint's subnet.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `location`
 
 Location for all Resources.
@@ -698,6 +725,40 @@ Properties of private link service connection.
 - Required: Yes
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupIds`](#parameter-manualprivatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateLinkServiceId`](#parameter-manualprivatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`requestMessage`](#parameter-manualprivatelinkserviceconnectionspropertiesrequestmessage) | string | A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
+
+### Parameter: `manualPrivateLinkServiceConnections.properties.groupIds`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `manualPrivateLinkServiceConnections.properties.privateLinkServiceId`
+
+The resource id of private link service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `manualPrivateLinkServiceConnections.properties.requestMessage`
+
+A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `privateDnsZoneGroupName`
 
 The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
@@ -739,6 +800,40 @@ Properties of private link service connection.
 
 - Required: Yes
 - Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupIds`](#parameter-privatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateLinkServiceId`](#parameter-privatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`requestMessage`](#parameter-privatelinkserviceconnectionspropertiesrequestmessage) | string | A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
+
+### Parameter: `privateLinkServiceConnections.properties.groupIds`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `privateLinkServiceConnections.properties.privateLinkServiceId`
+
+The resource id of private link service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateLinkServiceConnections.properties.requestMessage`
+
+A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
+
+- Required: No
+- Type: string
 
 ### Parameter: `roleAssignments`
 
@@ -841,6 +936,7 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `groupId` | string | The group Id for the private endpoint Group. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the private endpoint. |
 | `resourceGroupName` | string | The resource group the private endpoint was deployed into. |

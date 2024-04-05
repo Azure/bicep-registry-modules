@@ -2,7 +2,7 @@ metadata name = 'Static Web Apps'
 metadata description = 'This module deploys a Static Web App.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. Name of the static site.')
+@description('Required. The name of the static site.')
 @minLength(1)
 @maxLength(40)
 param name string
@@ -11,7 +11,7 @@ param name string
   'Free'
   'Standard'
 ])
-@description('Optional. Type of static site to deploy.')
+@description('Optional. The service tier and name of the resource SKU.')
 param sku string = 'Free'
 
 @description('Optional. False if config file is locked for this static web app; otherwise, true.')
@@ -85,40 +85,61 @@ param functionAppSettings object = {}
 @description('Optional. The custom domains associated with this static site. The deployment will fail as long as the validation records are not present.')
 param customDomains array = []
 
-var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
-  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-} : null
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
-  'Web Plan Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2cc479cb-7b4d-49a8-b449-8c00fd0f0a4b')
-  'Website Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'de139f84-1756-47ae-9be6-808fbbe84772')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
+  'Web Plan Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '2cc479cb-7b4d-49a8-b449-8c00fd0f0a4b'
+  )
+  'Website Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'de139f84-1756-47ae-9be6-808fbbe84772'
+  )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.web-staticSite.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.web-staticSite.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
 resource staticSite 'Microsoft.Web/staticSites@2021-03-01' = {
   name: name
@@ -142,95 +163,132 @@ resource staticSite 'Microsoft.Web/staticSites@2021-03-01' = {
   }
 }
 
-module staticSite_linkedBackend 'linked-backend/main.bicep' = if (!empty(linkedBackend)) {
-  name: '${uniqueString(deployment().name, location)}-StaticSite-UserDefinedFunction'
-  params: {
-    staticSiteName: staticSite.name
-    backendResourceId: linkedBackend.resourceId
-    region: contains(linkedBackend, 'location') ? linkedBackend.location : location
+module staticSite_linkedBackend 'linked-backend/main.bicep' =
+  if (!empty(linkedBackend)) {
+    name: '${uniqueString(deployment().name, location)}-StaticSite-UserDefinedFunction'
+    params: {
+      staticSiteName: staticSite.name
+      backendResourceId: linkedBackend.resourceId
+      region: contains(linkedBackend, 'location') ? linkedBackend.location : location
+    }
   }
-}
 
-module staticSite_appSettings 'config/main.bicep' = if (!empty(appSettings)) {
-  name: '${uniqueString(deployment().name, location)}-StaticSite-appSettings'
-  params: {
-    kind: 'appsettings'
-    staticSiteName: staticSite.name
-    properties: appSettings
+module staticSite_appSettings 'config/main.bicep' =
+  if (!empty(appSettings)) {
+    name: '${uniqueString(deployment().name, location)}-StaticSite-appSettings'
+    params: {
+      kind: 'appsettings'
+      staticSiteName: staticSite.name
+      properties: appSettings
+    }
   }
-}
 
-module staticSite_functionAppSettings 'config/main.bicep' = if (!empty(functionAppSettings)) {
-  name: '${uniqueString(deployment().name, location)}-StaticSite-functionAppSettings'
-  params: {
-    kind: 'functionappsettings'
-    staticSiteName: staticSite.name
-    properties: functionAppSettings
+module staticSite_functionAppSettings 'config/main.bicep' =
+  if (!empty(functionAppSettings)) {
+    name: '${uniqueString(deployment().name, location)}-StaticSite-functionAppSettings'
+    params: {
+      kind: 'functionappsettings'
+      staticSiteName: staticSite.name
+      properties: functionAppSettings
+    }
   }
-}
 
-module staticSite_customDomains 'custom-domain/main.bicep' = [for (customDomain, index) in customDomains: {
-  name: '${uniqueString(deployment().name, location)}-StaticSite-customDomains-${index}'
-  params: {
-    name: customDomain
-    staticSiteName: staticSite.name
-    validationMethod: indexOf(customDomain, '.') == lastIndexOf(customDomain, '.') ? 'dns-txt-token' : 'cname-delegation'
+module staticSite_customDomains 'custom-domain/main.bicep' = [
+  for (customDomain, index) in customDomains: {
+    name: '${uniqueString(deployment().name, location)}-StaticSite-customDomains-${index}'
+    params: {
+      name: customDomain
+      staticSiteName: staticSite.name
+      validationMethod: indexOf(customDomain, '.') == lastIndexOf(customDomain, '.')
+        ? 'dns-txt-token'
+        : 'cname-delegation'
+    }
   }
-}]
+]
 
-resource staticSite_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource staticSite_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: staticSite
   }
-  scope: staticSite
-}
 
-resource staticSite_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(staticSite.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+resource staticSite_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(staticSite.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: staticSite
   }
-  scope: staticSite
-}]
+]
 
-module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-staticSite-PrivateEndpoint-${index}'
-  params: {
-    privateLinkServiceConnections: [
-      {
-        name: name
-        properties: {
-          privateLinkServiceId: staticSite.id
-          groupIds: [
-            privateEndpoint.?service ?? 'staticSites'
+module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    name: '${uniqueString(deployment().name, location)}-StaticSite-PrivateEndpoint-${index}'
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(staticSite.id, '/'))}-${privateEndpoint.?service ?? 'staticSites'}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(staticSite.id, '/'))}-${privateEndpoint.?service ?? 'staticSites'}-${index}'
+              properties: {
+                privateLinkServiceId: staticSite.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'staticSites'
+                ]
+              }
+            }
           ]
-        }
-      }
-    ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(staticSite.id, '/'))}-${privateEndpoint.?service ?? 'staticSites'}-${index}'
-    subnetResourceId: privateEndpoint.subnetResourceId
-    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
-    location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: privateEndpoint.?lock ?? lock
-    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
-    roleAssignments: privateEndpoint.?roleAssignments
-    tags: privateEndpoint.?tags ?? tags
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
-    customDnsConfigs: privateEndpoint.?customDnsConfigs
-    ipConfigurations: privateEndpoint.?ipConfigurations
-    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
-    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(staticSite.id, '/'))}-${privateEndpoint.?service ?? 'staticSites'}-${index}'
+              properties: {
+                privateLinkServiceId: staticSite.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'staticSites'
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
   }
-}]
+]
 
 @description('The name of the static site.')
 output name string = staticSite.name
@@ -300,24 +358,31 @@ type privateEndpointType = {
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
-  @description('Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".')
+  @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
   service: string?
 
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.')
+  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
   privateDnsZoneGroupName: string?
 
   @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
   privateDnsZoneResourceIds: string[]?
 
+  @description('Optional. If Manual Private Link Connection is required.')
+  isManualConnection: bool?
+
+  @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
+  @maxLength(140)
+  manualConnectionRequestMessage: string?
+
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint ip address.')
+    @description('Required. Fqdn that resolves to private endpoint IP address.')
     fqdn: string?
 
-    @description('Required. A list of private ip addresses of the private endpoint.')
+    @description('Required. A list of private IP addresses of the private endpoint.')
     ipAddresses: string[]
   }[]?
 
@@ -334,7 +399,7 @@ type privateEndpointType = {
       @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
       memberName: string
 
-      @description('Required. A private ip address obtained from the private endpoint\'s subnet.')
+      @description('Required. A private IP address obtained from the private endpoint\'s subnet.')
       privateIPAddress: string
     }
   }[]?
@@ -353,9 +418,6 @@ type privateEndpointType = {
 
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
   tags: object?
-
-  @description('Optional. Manual PrivateLink Service Connections.')
-  manualPrivateLinkServiceConnections: array?
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?

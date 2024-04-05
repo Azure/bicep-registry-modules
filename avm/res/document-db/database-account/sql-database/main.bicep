@@ -9,12 +9,12 @@ param databaseAccountName string
 param name string
 
 @description('Optional. Array of containers to deploy in the SQL database.')
-param containers array = []
+param containers object[] = []
 
-@description('Optional. Request units per second. Will be set to null if autoscaleSettingsMaxThroughput is used.')
-param throughput int = 400
+@description('Optional. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.')
+param throughput int?
 
-@description('Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to -1, then the property will be set to null and autoscale will be disabled.')
+@description('Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled.')
 param autoscaleSettingsMaxThroughput int?
 
 @description('Optional. Tags of the SQL database resource.')
@@ -32,32 +32,40 @@ resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-04
     resource: {
       id: name
     }
-    options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' }) ? null : {
-      throughput: autoscaleSettingsMaxThroughput == null ? throughput : null
-      autoscaleSettings: autoscaleSettingsMaxThroughput != null ? {
-        maxThroughput: autoscaleSettingsMaxThroughput
-      } : null
-    }
+    options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
+      ? null
+      : {
+          throughput: autoscaleSettingsMaxThroughput == null ? throughput : null
+          autoscaleSettings: autoscaleSettingsMaxThroughput != null
+            ? {
+                maxThroughput: autoscaleSettingsMaxThroughput
+              }
+            : null
+        }
   }
 }
 
-module container 'container/main.bicep' = [for container in containers: {
-  name: '${uniqueString(deployment().name, sqlDatabase.name)}-sqldb-${container.name}'
-  params: {
-    databaseAccountName: databaseAccountName
-    sqlDatabaseName: name
-    name: container.name
-    analyticalStorageTtl: contains(container, 'analyticalStorageTtl') ? container.analyticalStorageTtl : 0
-    autoscaleSettingsMaxThroughput: container.?autoscaleSettingsMaxThroughput
-    conflictResolutionPolicy: contains(container, 'conflictResolutionPolicy') ? container.conflictResolutionPolicy : {}
-    defaultTtl: container.?defaultTtl
-    indexingPolicy: contains(container, 'indexingPolicy') ? container.indexingPolicy : {}
-    kind: contains(container, 'kind') ? container.kind : 'Hash'
-    paths: contains(container, 'paths') ? container.paths : []
-    throughput: contains(container, 'throughput') ? container.throughput : 400
-    uniqueKeyPolicyKeys: contains(container, 'uniqueKeyPolicyKeys') ? container.uniqueKeyPolicyKeys : []
+module container 'container/main.bicep' = [
+  for container in containers: {
+    name: '${uniqueString(deployment().name, sqlDatabase.name)}-sqldb-${container.name}'
+    params: {
+      databaseAccountName: databaseAccountName
+      sqlDatabaseName: name
+      name: container.name
+      analyticalStorageTtl: container.?analyticalStorageTtl
+      autoscaleSettingsMaxThroughput: container.?autoscaleSettingsMaxThroughput
+      conflictResolutionPolicy: container.?conflictResolutionPolicy
+      defaultTtl: container.?defaultTtl
+      indexingPolicy: container.?indexingPolicy
+      kind: container.?kind
+      paths: container.?paths
+      throughput: (throughput != null || autoscaleSettingsMaxThroughput != null) && container.?throughput == null
+        ? -1
+        : container.?throughput
+      uniqueKeyPolicyKeys: container.?uniqueKeyPolicyKeys
+    }
   }
-}]
+]
 
 @description('The name of the SQL database.')
 output name string = sqlDatabase.name

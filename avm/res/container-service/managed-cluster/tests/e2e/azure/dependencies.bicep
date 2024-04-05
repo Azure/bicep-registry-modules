@@ -36,12 +36,15 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         addressPrefix
       ]
     }
-    subnets: map(range(0, 3), i => {
+    subnets: map(
+      range(0, 3),
+      i => {
         name: 'subnet-${i}'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 24, i)
         }
-      })
+      }
+    )
   }
 }
 
@@ -88,11 +91,27 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-11-01' = {
   }
 }
 
+resource keyPermissionsKeyVaultCryptoUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${keyVault.id}-${location}-${managedIdentity.id}-KeyVault-Crypto-User-RoleAssignment')
+  scope: keyVault
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '12338af0-0e69-4776-bea7-57ae8d297424'
+    ) // KeyVault-Crypto-User
+    principalType: 'ServicePrincipal'
+  }
+}
+
 resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2022-07-02' = {
   name: diskEncryptionSetName
   location: location
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
   }
   properties: {
     activeKey: {
@@ -103,26 +122,9 @@ resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2022-07-02' = {
     }
     encryptionType: 'EncryptionAtRestWithCustomerKey'
   }
-}
-
-resource keyPermissionsKeyVaultCryptoUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault.id}-${location}-${managedIdentity.id}-KeyVault-Crypto-User-RoleAssignment')
-  scope: keyVault
-  properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424') // KeyVault-Crypto-User
-    principalType: 'ServicePrincipal'
-  }
-}
-
-resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault.id}-${location}-${managedIdentity.id}-KeyVault-Key-Read-RoleAssignment')
-  scope: keyVault
-  properties: {
-    principalId: diskEncryptionSet.identity.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424') // Key Vault Crypto User
-    principalType: 'ServicePrincipal'
-  }
+  dependsOn: [
+    keyPermissionsKeyVaultCryptoUser
+  ]
 }
 
 resource proximityPlacementGroup 'Microsoft.Compute/proximityPlacementGroups@2022-03-01' = {
@@ -152,7 +154,10 @@ resource roleAssignmentKubeletIdentity 'Microsoft.Authorization/roleAssignments@
   scope: managedIdentityKubeletIdentity
   properties: {
     principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f1a07417-d97a-45cb-824c-7a7467783830') // Managed Identity Operator Role used for Kubelet identity.
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'f1a07417-d97a-45cb-824c-7a7467783830'
+    ) // Managed Identity Operator Role used for Kubelet identity.
     principalType: 'ServicePrincipal'
   }
 }

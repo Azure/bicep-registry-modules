@@ -1,0 +1,171 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "16761257324786961037"
+    },
+    "name": "Digital Twins Instance ServiceBus Endpoint",
+    "description": "This module deploys a Digital Twins Instance ServiceBus Endpoint.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "managedIdentitiesType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource."
+          }
+        }
+      },
+      "nullable": true
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "defaultValue": "ServiceBusEndpoint",
+      "metadata": {
+        "description": "Optional. The name of the Digital Twin Endpoint."
+      }
+    },
+    "digitalTwinInstanceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Digital Twin Instance resource. Required if the template is used in a standalone deployment."
+      }
+    },
+    "authenticationType": {
+      "type": "string",
+      "defaultValue": "IdentityBased",
+      "allowedValues": [
+        "IdentityBased",
+        "KeyBased"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is selected, the endpointUri and entityPath properties must be specified."
+      }
+    },
+    "deadLetterSecret": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Dead letter storage secret for key-based authentication. Will be obfuscated during read."
+      }
+    },
+    "deadLetterUri": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Dead letter storage URL for identity-based authentication."
+      }
+    },
+    "endpointUri": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The URL of the ServiceBus namespace for identity-based authentication. It must include the protocol 'sb://' (e.g. sb://xyz.servicebus.windows.net)."
+      }
+    },
+    "entityPath": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The ServiceBus Topic name for identity-based authentication."
+      }
+    },
+    "primaryConnectionString": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. PrimaryConnectionString of the endpoint for key-based authentication. Will be obfuscated during read. Required if the `authenticationType` is \"KeyBased\"."
+      }
+    },
+    "secondaryConnectionString": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. SecondaryConnectionString of the endpoint for key-based authentication. Will be obfuscated during read. Only used if the `authenticationType` is \"KeyBased\"."
+      }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentitiesType",
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both."
+      }
+    }
+  },
+  "variables": {
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), ''))), 'UserAssigned', null())), 'userAssignedIdentity', tryGet(parameters('managedIdentities'), 'userAssignedResourceId')), null())]"
+  },
+  "resources": {
+    "digitalTwinsInstance": {
+      "existing": true,
+      "type": "Microsoft.DigitalTwins/digitalTwinsInstances",
+      "apiVersion": "2023-01-31",
+      "name": "[parameters('digitalTwinInstanceName')]"
+    },
+    "endpoint": {
+      "type": "Microsoft.DigitalTwins/digitalTwinsInstances/endpoints",
+      "apiVersion": "2023-01-31",
+      "name": "[format('{0}/{1}', parameters('digitalTwinInstanceName'), parameters('name'))]",
+      "properties": {
+        "endpointType": "ServiceBus",
+        "authenticationType": "[parameters('authenticationType')]",
+        "deadLetterSecret": "[parameters('deadLetterSecret')]",
+        "deadLetterUri": "[parameters('deadLetterUri')]",
+        "endpointUri": "[parameters('endpointUri')]",
+        "entityPath": "[parameters('entityPath')]",
+        "primaryConnectionString": "[parameters('primaryConnectionString')]",
+        "secondaryConnectionString": "[parameters('secondaryConnectionString')]",
+        "identity": "[variables('identity')]"
+      },
+      "dependsOn": [
+        "digitalTwinsInstance"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Endpoint."
+      },
+      "value": "[resourceId('Microsoft.DigitalTwins/digitalTwinsInstances/endpoints', parameters('digitalTwinInstanceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the resource was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Endpoint."
+      },
+      "value": "[parameters('name')]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API."
+      },
+      "value": "[coalesce(tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId'), '')]"
+    }
+  }
+}

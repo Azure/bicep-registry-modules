@@ -72,6 +72,7 @@ runs:
           Run    = @{
             Container = New-PesterContainer -Path $testFiles -Data @{
               moduleFolderPaths = $moduleFolderPaths
+              RepoRootPath      = $env:GITHUB_WORKSPACE
             }
             PassThru  = $true
           }

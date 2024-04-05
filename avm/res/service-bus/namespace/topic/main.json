@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "2955596410149501936"
+      "version": "0.26.54.24096",
+      "templateHash": "2743713566937430307"
     },
     "name": "Service Bus Namespace Topic",
     "description": "This module deploys a Service Bus Namespace Topic.",
@@ -488,8 +488,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "6260032632906851888"
+              "version": "0.26.54.24096",
+              "templateHash": "8469884519860433031"
             },
             "name": "Service Bus Namespace Topic Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Topic Authorization Rule.",
@@ -638,8 +638,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "7004523533145561776"
+              "version": "0.26.54.24096",
+              "templateHash": "14842378053022621119"
             },
             "name": "Service Bus Namespace Topic Subscription",
             "description": "This module deploys a Service Bus Namespace Topic Subscription.",
@@ -788,7 +788,7 @@
                 "duplicateDetectionHistoryTimeWindow": "[parameters('duplicateDetectionHistoryTimeWindow')]",
                 "enableBatchedOperations": "[parameters('enableBatchedOperations')]",
                 "forwardDeadLetteredMessagesTo": "[parameters('forwardDeadLetteredMessagesTo')]",
-                "forwardTo": "[if(not(empty(parameters('forwardTo'))), parameters('forwardTo'), parameters('topicName'))]",
+                "forwardTo": "[if(not(empty(parameters('forwardTo'))), parameters('forwardTo'), null())]",
                 "isClientAffine": "[parameters('isClientAffine')]",
                 "lockDuration": "[parameters('lockDuration')]",
                 "maxDeliveryCount": "[parameters('maxDeliveryCount')]",

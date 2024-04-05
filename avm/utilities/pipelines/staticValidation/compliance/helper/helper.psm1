@@ -245,6 +245,9 @@ function Resolve-ReadMeParameterList {
       $identifier = Split-Path $parameter.'$ref' -Leaf
       $definition = $TemplateFileContent.definitions[$identifier]
       # $type = $definition['type']
+    } elseif ($parameter.Keys -contains 'items' -and $parameter.items.type -in @('object', 'array') -or $parameter.type -eq 'object') {
+      # Array has nested non-primitive type (array/object)
+      $definition = $parameter
     } else {
       $definition = $null
     }

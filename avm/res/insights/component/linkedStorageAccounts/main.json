@@ -1,0 +1,61 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "10843790724446601865"
+    },
+    "name": "Application Insights Linked Storage Account",
+    "description": "This component deploys an Application Insights Linked Storage Account.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "appInsightsName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Application Insights instance. Required if the template is used in a standalone deployment."
+      }
+    },
+    "storageAccountResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Linked storage account resource ID."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "microsoft.insights/components/linkedStorageAccounts",
+      "apiVersion": "2020-03-01-preview",
+      "name": "[format('{0}/{1}', parameters('appInsightsName'), 'ServiceProfiler')]",
+      "properties": {
+        "linkedStorageAccount": "[parameters('storageAccountResourceId')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Linked Storage Account."
+      },
+      "value": "ServiceProfiler"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Linked Storage Account."
+      },
+      "value": "[resourceId('microsoft.insights/components/linkedStorageAccounts', parameters('appInsightsName'), 'ServiceProfiler')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the agent pool was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

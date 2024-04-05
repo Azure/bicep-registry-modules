@@ -36,6 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
     location: resourceLocation
   }
 }
@@ -64,6 +65,10 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
+    disableIpMasking: false
+    disableLocalAuth: true
+    forceCustomerStorageForProfiler: true
+    linkedStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
     workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
     diagnosticSettings: [
       {
@@ -91,7 +96,10 @@ module testDeployment '../../../main.bicep' = {
         principalType: 'ServicePrincipal'
       }
       {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+        roleDefinitionIdOrName: subscriptionResourceId(
+          'Microsoft.Authorization/roleDefinitions',
+          'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+        )
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }

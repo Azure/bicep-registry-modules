@@ -5,6 +5,9 @@ Set the location for the resource deployment.
 .DESCRIPTION
 This script is used to set the location for the resource deployment.
 
+.PARAMETER AllowedRegionsList
+Optional. The list of regions to be considered for the selection.
+
 .PARAMETER ExcludedRegions
 Optional. The list of regions to be excluded from the selection.
 
@@ -29,6 +32,14 @@ function Get-AzAvailableResourceLocation {
     [Parameter(Mandatory = $false)]
     [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.parent.FullName,
 
+    [Parameter(Mandatory = $false)]
+    [array] $AllowedRegionsList = @(
+      'eastus',
+      'uksouth',
+      'northeurope',
+      'eastasia' # Including as Edge Region for services like static-site
+    ),
+
     [Parameter(Mandatory = $true)]
     [string] $ModuleRoot,
 
@@ -37,18 +48,18 @@ function Get-AzAvailableResourceLocation {
 
     [Parameter(Mandatory = $false)]
     [array] $ExcludedRegions = @(
-      "asiasoutheast",
-      "brazilsouth",
-      "eastus2",
-      "japaneast",
-      "koreacentral",
-      "qatercentral",
-      "southcentralus",
-      "switzerlandnorth",
-      "uaenorth",
-      "westeurope",
-      "westus2",
-      "westus2"
+      'asiasoutheast',
+      'brazilsouth',
+      'eastus2',
+      'japaneast',
+      'koreacentral',
+      'qatercentral',
+      'southcentralus',
+      'switzerlandnorth',
+      'uaenorth',
+      'westeurope',
+      'westus2',
+      'westus2'
     )
   )
 
@@ -71,27 +82,26 @@ function Get-AzAvailableResourceLocation {
   $ResourceRegionList = (Get-AzResourceProvider | Where-Object { $_.ProviderNamespace -eq $formattedResourceProvider }).ResourceTypes | Where-Object { $_.ResourceTypeName -eq $formattedServiceName } | Select-Object -ExpandProperty Locations
   Write-Verbose "Region list: $($resourceRegionList | ConvertTo-Json)"
 
-  if ($resourceRegionList -eq "global") {
-    Write-Verbose "Resource is global, default region [$GlobalResourceGroupLocation] will be used for resource group creation"
+  if ($resourceRegionList -eq 'global' -or $null -eq $resourceRegionList) {
+    Write-Verbose "Resource is global or does not have a location in the Resource Providers API, default region [$GlobalResourceGroupLocation] will be used for resource group creation"
     $location = $GlobalResourceGroupLocation # Set Location to resource group location. Globabl resources should have hardocded location in `main.bicep`
-  }
-  else {
+  } else {
 
     $locations = Get-AzLocation | Where-Object {
       $_.DisplayName -in $ResourceRegionList -and
       $_.Location -notin $ExcludedRegions -and
-      $_.PairedRegion -ne "{}" -and
-      $_.RegionCategory -eq "Recommended"
-    } |  Select-Object -ExpandProperty Location
+      $_.PairedRegion -ne '{}' -and
+      $_.RegionCategory -eq 'Recommended'
+    } | Select-Object -ExpandProperty Location
     Write-Verbose "Available Locations: $($locations | ConvertTo-Json)"
 
-
-    $index = Get-Random -Maximum ($locations.Count)
+    $filteredAllowedLocations = @($locations | Where-Object { $_ -in $AllowedRegionsList })
+    Write-Verbose "Filtered allowed locations: $($filteredAllowedLocations | ConvertTo-Json)"
+    $index = Get-Random -Maximum ($filteredAllowedLocations.Count)
     Write-Verbose "Generated random index [$index]"
-
-    $location = $locations[$index]
-
+    $location = $filteredAllowedLocations[$index]
   }
+
   Write-Verbose "Selected location [$location]" -Verbose
 
   return $location

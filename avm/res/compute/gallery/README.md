@@ -44,7 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cgmin'
+  name: 'galleryDeployment'
   params: {
     // Required parameters
     name: 'cgmin001'
@@ -92,7 +92,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cgmax'
+  name: 'galleryDeployment'
   params: {
     // Required parameters
     name: 'cgmax001'
@@ -132,6 +132,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
       }
       {
         hyperVGeneration: 'V2'
+        isAcceleratedNetworkSupported: false
         isHibernateSupported: true
         maxRecommendedMemory: 16
         maxRecommendedvCPUs: 8
@@ -272,6 +273,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         },
         {
           "hyperVGeneration": "V2",
+          "isAcceleratedNetworkSupported": false,
           "isHibernateSupported": true,
           "maxRecommendedMemory": 16,
           "maxRecommendedvCPUs": 8,
@@ -380,7 +382,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cgwaf'
+  name: 'galleryDeployment'
   params: {
     // Required parameters
     name: 'cgwaf001'

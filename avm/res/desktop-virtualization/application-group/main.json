@@ -1,0 +1,619 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "11461831707158104939"
+    },
+    "name": "Azure Virtual Desktop Application Group",
+    "description": "This module deploys an Azure Virtual Desktop Application Group.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "roleAssignmentType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "roleDefinitionIdOrName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+            }
+          },
+          "principalId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+            }
+          },
+          "principalType": {
+            "type": "string",
+            "allowedValues": [
+              "Device",
+              "ForeignGroup",
+              "Group",
+              "ServicePrincipal",
+              "User"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The principal type of the assigned principal ID."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The description of the role assignment."
+            }
+          },
+          "condition": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+            }
+          },
+          "conditionVersion": {
+            "type": "string",
+            "allowedValues": [
+              "2.0"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Version of the condition."
+            }
+          },
+          "delegatedManagedIdentityResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The Resource Id of the delegated managed identity resource."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "diagnosticSettingType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of diagnostic setting."
+            }
+          },
+          "logCategoriesAndGroups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                  }
+                },
+                "categoryGroup": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `AllLogs` to collect all logs."
+                  }
+                },
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+            }
+          },
+          "logAnalyticsDestinationType": {
+            "type": "string",
+            "allowedValues": [
+              "AzureDiagnostics",
+              "Dedicated"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+            }
+          },
+          "workspaceResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "storageAccountResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "eventHubAuthorizationRuleResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+            }
+          },
+          "eventHubName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "marketplacePartnerResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+            }
+          }
+        }
+      },
+      "nullable": true
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "metadata": {
+        "description": "Required. Name of the Application Group."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "applicationGroupType": {
+      "type": "string",
+      "allowedValues": [
+        "RemoteApp",
+        "Desktop"
+      ],
+      "metadata": {
+        "description": "Required. The type of the Application Group to be created. Allowed values: RemoteApp or Desktop."
+      }
+    },
+    "hostpoolName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Host Pool to be linked to this Application Group."
+      }
+    },
+    "friendlyName": {
+      "type": "string",
+      "defaultValue": "[parameters('name')]",
+      "metadata": {
+        "description": "Optional. The friendly name of the Application Group to be created."
+      }
+    },
+    "description": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Description of the application group."
+      }
+    },
+    "applications": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of applications to be created in the Application Group."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "roleAssignments": {
+      "$ref": "#/definitions/roleAssignmentType",
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "diagnosticSettings": {
+      "$ref": "#/definitions/diagnosticSettingType",
+      "metadata": {
+        "description": "Optional. The diagnostic settings of the service."
+      }
+    }
+  },
+  "variables": {
+    "builtInRoleNames": {
+      "Owner": "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
+      "Contributor": "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
+      "Reader": "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7",
+      "Role Based Access Control Administrator (Preview)": "/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168",
+      "User Access Administrator": "/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9",
+      "Application Group Contributor": "/providers/Microsoft.Authorization/roleDefinitions/ca6382a4-1721-4bcf-a114-ff0c70227b6b",
+      "Desktop Virtualization Application Group Contributor": "/providers/Microsoft.Authorization/roleDefinitions/86240b0e-9422-4c43-887b-b61143f32ba8",
+      "Desktop Virtualization Application Group Reader": "/providers/Microsoft.Authorization/roleDefinitions/aebf23d0-b568-4e86-b8f9-fe83a2c6ab55",
+      "Desktop Virtualization Contributor": "/providers/Microsoft.Authorization/roleDefinitions/082f0a83-3be5-4ba1-904c-961cca79b387",
+      "Desktop Virtualization Host Pool Contributor": "/providers/Microsoft.Authorization/roleDefinitions/e307426c-f9b6-4e81-87de-d99efb3c32bc",
+      "Desktop Virtualization Host Pool Reader": "/providers/Microsoft.Authorization/roleDefinitions/ceadfde2-b300-400a-ab7b-6143895aa822",
+      "Desktop Virtualization Power On Off Contributor": "/providers/Microsoft.Authorization/roleDefinitions/40c5ff49-9181-41f8-ae61-143b0e78555e",
+      "Desktop Virtualization Reader": "/providers/Microsoft.Authorization/roleDefinitions/49a72310-ab8d-41df-bbb0-79b649203868",
+      "Desktop Virtualization Session Host Operator": "/providers/Microsoft.Authorization/roleDefinitions/2ad6aaab-ead9-4eaa-8ac5-da422f562408",
+      "Desktop Virtualization User": "/providers/Microsoft.Authorization/roleDefinitions/1d18fff3-a72a-46b5-b4a9-0b38a3cd7e63",
+      "Desktop Virtualization User Session Operator": "/providers/Microsoft.Authorization/roleDefinitions/ea4bfff8-7fb4-485a-aadd-d4129a0ffaa6",
+      "Desktop Virtualization Virtual Machine Contributor": "/providers/Microsoft.Authorization/roleDefinitions/a959dbd1-f747-45e3-8ba6-dd80f235f97c",
+      "Desktop Virtualization Workspace Contributor": "/providers/Microsoft.Authorization/roleDefinitions/21efdde3-836f-432b-bf3d-3e8e734d4b2b",
+      "Desktop Virtualization Workspace Reader": "/providers/Microsoft.Authorization/roleDefinitions/0fa44ee9-7a7d-466b-9bb2-2bf446b1204d",
+      "Managed Application Contributor Role": "/providers/Microsoft.Authorization/roleDefinitions/641177b8-a67a-45b9-a033-47bc880bb21e",
+      "Managed Application Operator Role": "/providers/Microsoft.Authorization/roleDefinitions/c7393b34-138c-406f-901b-d8cf2b17e6ae",
+      "Managed Applications Reader": "/providers/Microsoft.Authorization/roleDefinitions/b9331d33-8a36-4f8c-b097-4f54124fdb44"
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.desktopvirtualization-appgroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "appGroup_hostpool": {
+      "existing": true,
+      "type": "Microsoft.DesktopVirtualization/hostPools",
+      "apiVersion": "2022-09-09",
+      "name": "[parameters('hostpoolName')]"
+    },
+    "appGroup": {
+      "type": "Microsoft.DesktopVirtualization/applicationGroups",
+      "apiVersion": "2023-09-05",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "hostPoolArmPath": "[resourceId('Microsoft.DesktopVirtualization/hostPools', parameters('hostpoolName'))]",
+        "friendlyName": "[parameters('friendlyName')]",
+        "description": "[parameters('description')]",
+        "applicationGroupType": "[parameters('applicationGroupType')]"
+      },
+      "dependsOn": [
+        "appGroup_hostpool"
+      ]
+    },
+    "appGroup_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.DesktopVirtualization/applicationGroups/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "appGroup"
+      ]
+    },
+    "appGroup_roleAssignments": {
+      "copy": {
+        "name": "appGroup_roleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.DesktopVirtualization/applicationGroups/{0}', parameters('name'))]",
+      "name": "[guid(resourceId('Microsoft.DesktopVirtualization/applicationGroups', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "properties": {
+        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "appGroup"
+      ]
+    },
+    "appGroup_diagnosticSettings": {
+      "copy": {
+        "name": "appGroup_diagnosticSettings",
+        "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
+      },
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[format('Microsoft.DesktopVirtualization/applicationGroups/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+      "properties": {
+        "copy": [
+          {
+            "name": "logs",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "input": {
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+            }
+          }
+        ],
+        "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+        "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+        "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+        "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+        "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+        "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+      },
+      "dependsOn": [
+        "appGroup"
+      ]
+    },
+    "appGroup_applications": {
+      "copy": {
+        "name": "appGroup_applications",
+        "count": "[length(parameters('applications'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-AppGroup-App-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('applications')[copyIndex()].name]"
+          },
+          "applicationGroupName": {
+            "value": "[parameters('name')]"
+          },
+          "description": "[if(contains(parameters('applications')[copyIndex()], 'description'), createObject('value', parameters('applications')[copyIndex()].description), createObject('value', ''))]",
+          "friendlyName": "[if(contains(parameters('applications')[copyIndex()], 'friendlyName'), createObject('value', parameters('applications')[copyIndex()].friendlyName), createObject('value', parameters('name')))]",
+          "filePath": {
+            "value": "[parameters('applications')[copyIndex()].filePath]"
+          },
+          "commandLineSetting": "[if(contains(parameters('applications')[copyIndex()], 'commandLineSetting'), createObject('value', parameters('applications')[copyIndex()].commandLineSetting), createObject('value', 'DoNotAllow'))]",
+          "commandLineArguments": "[if(contains(parameters('applications')[copyIndex()], 'commandLineArguments'), createObject('value', parameters('applications')[copyIndex()].commandLineArguments), createObject('value', ''))]",
+          "showInPortal": "[if(contains(parameters('applications')[copyIndex()], 'showInPortal'), createObject('value', parameters('applications')[copyIndex()].showInPortal), createObject('value', false()))]",
+          "iconPath": "[if(contains(parameters('applications')[copyIndex()], 'iconPath'), createObject('value', parameters('applications')[copyIndex()].iconPath), createObject('value', parameters('applications')[copyIndex()].filePath))]",
+          "iconIndex": "[if(contains(parameters('applications')[copyIndex()], 'iconIndex'), createObject('value', parameters('applications')[copyIndex()].iconIndex), createObject('value', 0))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.54.24096",
+              "templateHash": "11159515031632739969"
+            },
+            "name": "Azure Virtual Desktop Application Group Application",
+            "description": "This module deploys an Azure Virtual Desktop Application Group Application.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "applicationGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Application Group to create the application(s) in. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Application to be created in the Application Group."
+              }
+            },
+            "description": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Description of the Application."
+              }
+            },
+            "friendlyName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Friendly name of the Application."
+              }
+            },
+            "filePath": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies a path for the executable file for the Application."
+              }
+            },
+            "commandLineSetting": {
+              "type": "string",
+              "defaultValue": "DoNotAllow",
+              "allowedValues": [
+                "Allow",
+                "DoNotAllow",
+                "Require"
+              ],
+              "metadata": {
+                "description": "Optional. Specifies whether this published Application can be launched with command-line arguments provided by the client, command-line arguments specified at publish time, or no command-line arguments at all."
+              }
+            },
+            "commandLineArguments": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Command-Line Arguments for the Application."
+              }
+            },
+            "showInPortal": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Specifies whether to show the RemoteApp program in the RD Web Access server."
+              }
+            },
+            "iconPath": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Path to icon."
+              }
+            },
+            "iconIndex": {
+              "type": "int",
+              "defaultValue": 0,
+              "metadata": {
+                "description": "Optional. Index of the icon."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DesktopVirtualization/applicationGroups/applications",
+              "apiVersion": "2023-09-05",
+              "name": "[format('{0}/{1}', parameters('applicationGroupName'), parameters('name'))]",
+              "properties": {
+                "description": "[parameters('description')]",
+                "friendlyName": "[parameters('friendlyName')]",
+                "filePath": "[parameters('filePath')]",
+                "commandLineSetting": "[parameters('commandLineSetting')]",
+                "commandLineArguments": "[parameters('commandLineArguments')]",
+                "showInPortal": "[parameters('showInPortal')]",
+                "iconPath": "[parameters('iconPath')]",
+                "iconIndex": "[parameters('iconIndex')]"
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Application."
+              },
+              "value": "[resourceId('Microsoft.DesktopVirtualization/applicationGroups/applications', parameters('applicationGroupName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the Application was created in."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Application."
+              },
+              "value": "[parameters('name')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "appGroup"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the scaling plan."
+      },
+      "value": "[resourceId('Microsoft.DesktopVirtualization/applicationGroups', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the scaling plan was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the scaling plan."
+      },
+      "value": "[parameters('name')]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the scaling plan."
+      },
+      "value": "[reference('appGroup', '2023-09-05', 'full').location]"
+    }
+  }
+}

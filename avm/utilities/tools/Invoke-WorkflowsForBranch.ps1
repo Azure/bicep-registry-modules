@@ -175,6 +175,9 @@ Optional. The GitHub repository to run the workfows in.
 .PARAMETER WorkflowInputs
 Optional. The inputs to pass into the workflows. Defaults to only run static validation.
 
+.PARAMETER InvokeForDiff
+Optional. Trigger workflows only for those who's module files have changed (based on diff of branch to main)
+
 .EXAMPLE
 Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm.res.*' -WorkflowInputs @{ staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' }
 
@@ -204,6 +207,9 @@ function Invoke-WorkflowsForBranch {
         [string] $PipelineFilter = 'avm.res.*',
 
         [Parameter(Mandatory = $false)]
+        [switch] $InvokeForDiff,
+
+        [Parameter(Mandatory = $false)]
         [switch] $SkipPipelineBadges,
 
         [Parameter(Mandatory = $false)]
@@ -211,6 +217,9 @@ function Invoke-WorkflowsForBranch {
 
         [Parameter(Mandatory = $false)]
         [string] $RepositoryName = 'bicep-registry-modules',
+
+        [Parameter(Mandatory = $false)]
+        [string] $RepoRoot = (Get-Item $PSScriptRoot).Parent.Parent.FullName,
 
         [Parameter(Mandatory = $false)]
         [hashtable] $WorkflowInputs = @{
@@ -228,6 +237,31 @@ function Invoke-WorkflowsForBranch {
 
     Write-Verbose 'Fetching current GitHub workflows' -Verbose
     $workflows = Get-GitHubModuleWorkflowList @baseInputObject -Filter $PipelineFilter
+    Write-Verbose ('Fetched [{0}] workflows' -f $workflows.Count) -Verbose
+
+    if ($InvokeForDiff) {
+        # Load used function
+        . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-PipelineFileName.ps1')
+
+        # Get diff
+        $diff = git diff 'main' --name-only
+
+        # Identify pipeline names
+        $pipelineNames = [System.Collections.ArrayList]@()
+        $pipelineNames = $diff | ForEach-Object {
+            $folderPath = Split-Path $_ -Parent
+            $pipelineFileName = Get-PipelineFileName -ResourceIdentifier $folderPath
+            if ($pipelineFileName -match $PipelineFilter) {
+                $pipelineFileName
+            }
+        } | Select-Object -Unique
+
+        # Filter workflows
+        $workflows = $workflows | Where-Object { $pipelineNames -contains (Split-Path $_.path -Leaf) }
+
+        Write-Verbose ("As per 'diff', filtered workflows down to [{0}]" -f $workflows.Count)
+    }
+
 
     $gitHubWorkflowBadges = [System.Collections.ArrayList]@()
 

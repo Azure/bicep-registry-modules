@@ -14,7 +14,7 @@ This module deploys a Storage Account File Share.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Storage/storageAccounts/fileServices/shares` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/storageAccounts/fileServices/shares) |
+| `Microsoft.Storage/storageAccounts/fileServices/shares` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/fileServices/shares) |
 
 ## Parameters
 

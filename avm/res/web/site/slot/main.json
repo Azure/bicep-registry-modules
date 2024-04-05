@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "14287529092911845504"
+      "version": "0.26.54.24096",
+      "templateHash": "12157473410186645235"
     },
     "name": "Web/Function App Deployment Slots",
     "description": "This module deploys a Web or Function App Deployment Slot.",
@@ -150,7 +150,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The service (sub-) type to deploy the private endpoint for. For example \"vault\" or \"blob\"."
+              "description": "Optional. The subresource to deploy the private endpoint for. For example \"vault\", \"mysqlServer\" or \"dataFactory\"."
             }
           },
           "subnetResourceId": {
@@ -163,7 +163,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided."
+              "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
             }
           },
           "privateDnsZoneResourceIds": {
@@ -176,6 +176,21 @@
               "description": "Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones."
             }
           },
+          "isManualConnection": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. If Manual Private Link Connection is required."
+            }
+          },
+          "manualConnectionRequestMessage": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 140,
+            "metadata": {
+              "description": "Optional. A message passed to the owner of the remote resource with the manual connection request."
+            }
+          },
           "customDnsConfigs": {
             "type": "array",
             "items": {
@@ -185,7 +200,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint ip address."
+                    "description": "Required. Fqdn that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -194,7 +209,7 @@
                     "type": "string"
                   },
                   "metadata": {
-                    "description": "Required. A list of private ip addresses of the private endpoint."
+                    "description": "Required. A list of private IP addresses of the private endpoint."
                   }
                 }
               }
@@ -233,7 +248,7 @@
                     "privateIPAddress": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. A private ip address obtained from the private endpoint's subnet."
+                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
                       }
                     }
                   },
@@ -284,13 +299,6 @@
               "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
             }
           },
-          "manualPrivateLinkServiceConnections": {
-            "type": "array",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Manual PrivateLink Service Connections."
-            }
-          },
           "enableTelemetry": {
             "type": "bool",
             "nullable": true,
@@ -330,14 +338,21 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs."
+                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                  }
+                },
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                   }
                 }
               }
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
             }
           },
           "metricCategories": {
@@ -348,14 +363,21 @@
                 "category": {
                   "type": "string",
                   "metadata": {
-                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics."
+                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                  }
+                },
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                   }
                 }
               }
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
             }
           },
           "logAnalyticsDestinationType": {
@@ -436,6 +458,7 @@
         "functionapp,linux",
         "functionapp,workflowapp",
         "functionapp,workflowapp,linux",
+        "app,linux",
         "app"
       ],
       "metadata": {
@@ -511,18 +534,18 @@
         "description": "Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions."
       }
     },
+    "storageAccountUseIdentityAuthentication": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'."
+      }
+    },
     "appInsightResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
         "description": "Optional. Resource ID of the app insight to leverage for this resource."
-      }
-    },
-    "setAzureWebJobsDashboard": {
-      "type": "bool",
-      "defaultValue": "[if(contains(parameters('kind'), 'functionapp'), true(), false())]",
-      "metadata": {
-        "description": "Optional. For function apps. If true the app settings \"AzureWebJobsDashboard\" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons."
       }
     },
     "appSettingsKeyValuePairs": {
@@ -795,12 +818,30 @@
       "scope": "[format('Microsoft.Web/sites/{0}/slots/{1}', parameters('appName'), parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
+        "copy": [
+          {
+            "name": "metrics",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+            "input": {
+              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+              "timeGrain": null
+            }
+          },
+          {
+            "name": "logs",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "input": {
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+            }
+          }
+        ],
         "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
         "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
         "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
         "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
-        "metrics": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]",
-        "logs": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'AllLogs', 'enabled', true())))]",
         "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
         "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
       },
@@ -853,11 +894,11 @@
           "storageAccountResourceId": {
             "value": "[parameters('storageAccountResourceId')]"
           },
+          "storageAccountUseIdentityAuthentication": {
+            "value": "[parameters('storageAccountUseIdentityAuthentication')]"
+          },
           "appInsightResourceId": {
             "value": "[parameters('appInsightResourceId')]"
-          },
-          "setAzureWebJobsDashboard": {
-            "value": "[parameters('setAzureWebJobsDashboard')]"
           },
           "appSettingsKeyValuePairs": {
             "value": "[parameters('appSettingsKeyValuePairs')]"
@@ -870,8 +911,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "9605115891306784861"
+              "version": "0.26.54.24096",
+              "templateHash": "12764984503745572183"
             },
             "name": "Site Slot App Settings",
             "description": "This module deploys a Site Slot App Setting.",
@@ -897,6 +938,7 @@
                 "functionapp,linux",
                 "functionapp,workflowapp",
                 "functionapp,workflowapp,linux",
+                "app,linux",
                 "app"
               ],
               "metadata": {
@@ -910,18 +952,18 @@
                 "description": "Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions."
               }
             },
+            "storageAccountUseIdentityAuthentication": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'."
+              }
+            },
             "appInsightResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
                 "description": "Optional. Resource ID of the app insight to leverage for this resource."
-              }
-            },
-            "setAzureWebJobsDashboard": {
-              "type": "bool",
-              "defaultValue": "[if(contains(parameters('kind'), 'functionapp'), true(), false())]",
-              "metadata": {
-                "description": "Optional. For function apps. If true the app settings \"AzureWebJobsDashboard\" will be set. If false not. In case you use Application Insights it can make sense to not set it for performance reasons."
               }
             },
             "appSettingsKeyValuePairs": {
@@ -971,7 +1013,7 @@
               "apiVersion": "2022-09-01",
               "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), 'appsettings')]",
               "kind": "[parameters('kind')]",
-              "properties": "[union(coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(not(empty(parameters('storageAccountResourceId'))), union(createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value)), if(equals(parameters('setAzureWebJobsDashboard'), true()), createObject('AzureWebJobsDashboard', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value)), createObject())), createObject()), if(not(empty(parameters('appInsightResourceId'))), createObject('APPINSIGHTS_INSTRUMENTATIONKEY', reference('appInsight').InstrumentationKey, 'APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
+              "properties": "[union(coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-01-01').keys[0].value)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), union(createObject('AzureWebJobsStorage__accountName', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), createObject('AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob)), createObject())), if(not(empty(parameters('appInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
               "dependsOn": [
                 "appInsight",
                 "app::slot",
@@ -1039,8 +1081,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "7901002401130178704"
+              "version": "0.26.54.24096",
+              "templateHash": "1333776366661137381"
             },
             "name": "Site Slot Auth Settings V2 Config",
             "description": "This module deploys a Site Auth Settings V2 Configuration.",
@@ -1066,6 +1108,7 @@
                 "functionapp,linux",
                 "functionapp,workflowapp",
                 "functionapp,workflowapp,linux",
+                "app,linux",
                 "app"
               ],
               "metadata": {
@@ -1154,8 +1197,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "95340614388352354"
+              "version": "0.26.54.24096",
+              "templateHash": "2236066853450471067"
             },
             "name": "Web Site Slot Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy.",
@@ -1280,8 +1323,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "822472634155315347"
+              "version": "0.26.54.24096",
+              "templateHash": "1058820827217282473"
             },
             "name": "Web/Function Apps Slot Hybrid Connection Relay",
             "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay.",
@@ -1375,22 +1418,11 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "privateLinkServiceConnections": {
-            "value": [
-              {
-                "name": "[parameters('name')]",
-                "properties": {
-                  "privateLinkServiceId": "[resourceId('Microsoft.Web/sites', parameters('appName'))]",
-                  "groupIds": [
-                    "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), format('sites-{0}', parameters('name')))]"
-                  ]
-                }
-              }
-            ]
-          },
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}-{3}', last(split(resourceId('Microsoft.Web/sites', parameters('appName')), '/')), parameters('name'), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'sites'), copyIndex()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}-{3}', last(split(resourceId('Microsoft.Web/sites', parameters('appName')), '/')), parameters('name'), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), format('sites-{0}', parameters('name'))), copyIndex()))]"
           },
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Web/sites', parameters('appName')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), format('sites-{0}', parameters('name'))), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Web/sites', parameters('appName')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), format('sites-{0}', parameters('name')))))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Web/sites', parameters('appName')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), format('sites-{0}', parameters('name'))), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.Web/sites', parameters('appName')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), format('sites-{0}', parameters('name')))), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
@@ -1415,9 +1447,6 @@
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "manualPrivateLinkServiceConnections": {
-            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections')]"
-          },
           "customDnsConfigs": {
             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
           },
@@ -1438,8 +1467,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "2821141217598568122"
+              "version": "0.24.24.22086",
+              "templateHash": "2592884001616184297"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -1488,7 +1517,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -1804,7 +1833,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.3.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1909,8 +1938,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "18168683629401652671"
+                      "version": "0.24.24.22086",
+                      "templateHash": "9321937464667207030"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -2021,6 +2050,13 @@
                 "description": "The location the resource was deployed into."
               },
               "value": "[reference('privateEndpoint', '2023-04-01', 'full').location]"
+            },
+            "groupId": {
+              "type": "string",
+              "metadata": {
+                "description": "The group Id for the private endpoint Group."
+              },
+              "value": "[if(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties.groupIds[0], reference('privateEndpoint').privateLinkServiceConnections[0].properties.groupIds[0])]"
             }
           }
         }
@@ -2058,7 +2094,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('slot', '2022-09-01', 'full').identity, 'principalId')), reference('slot', '2022-09-01', 'full').identity.principalId, '')]"
+      "value": "[coalesce(tryGet(tryGet(reference('slot', '2022-09-01', 'full'), 'identity'), 'principalId'), '')]"
     },
     "location": {
       "type": "string",

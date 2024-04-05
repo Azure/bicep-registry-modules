@@ -1,10 +1,5 @@
 # Images `[Microsoft.Compute/images]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a Compute Image.
 
 ## Navigation
@@ -46,7 +41,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module image 'br/public:avm/res/compute/image:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cimin'
+  name: 'imageDeployment'
   params: {
     // Required parameters
     name: 'cimin001'
@@ -110,7 +105,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module image 'br/public:avm/res/compute/image:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-cimax'
+  name: 'imageDeployment'
   params: {
     // Required parameters
     name: 'cimax001'
@@ -242,7 +237,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module image 'br/public:avm/res/compute/image:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-ciwaf'
+  name: 'imageDeployment'
   params: {
     // Required parameters
     name: 'ciwaf001'

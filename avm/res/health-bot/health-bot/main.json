@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "7639602546717326275"
+      "version": "0.26.54.24096",
+      "templateHash": "13957265537042927127"
     },
     "name": "Azure Health Bots",
     "description": "This module deploys an Azure Health Bot.",

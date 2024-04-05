@@ -1,0 +1,2550 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "5884251970985873966"
+    },
+    "name": "Event Hub Namespaces",
+    "description": "This module deploys an Event Hub Namespace.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "managedIdentitiesType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "roleAssignmentType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "roleDefinitionIdOrName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+            }
+          },
+          "principalId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+            }
+          },
+          "principalType": {
+            "type": "string",
+            "allowedValues": [
+              "Device",
+              "ForeignGroup",
+              "Group",
+              "ServicePrincipal",
+              "User"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The principal type of the assigned principal ID."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The description of the role assignment."
+            }
+          },
+          "condition": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+            }
+          },
+          "conditionVersion": {
+            "type": "string",
+            "allowedValues": [
+              "2.0"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Version of the condition."
+            }
+          },
+          "delegatedManagedIdentityResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The Resource Id of the delegated managed identity resource."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "privateEndpointType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the private endpoint."
+            }
+          },
+          "location": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The location to deploy the private endpoint to."
+            }
+          },
+          "service": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The subresource to deploy the private endpoint for. For example \"vault\", \"mysqlServer\" or \"dataFactory\"."
+            }
+          },
+          "subnetResourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+            }
+          },
+          "privateDnsZoneGroupName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
+            }
+          },
+          "privateDnsZoneResourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones."
+            }
+          },
+          "isManualConnection": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. If Manual Private Link Connection is required."
+            }
+          },
+          "manualConnectionRequestMessage": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 140,
+            "metadata": {
+              "description": "Optional. A message passed to the owner of the remote resource with the manual connection request."
+            }
+          },
+          "customDnsConfigs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "fqdn": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                  }
+                },
+                "ipAddresses": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of private IP addresses of the private endpoint."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Custom DNS configurations."
+            }
+          },
+          "ipConfigurations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the resource that is unique within a resource group."
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "groupId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                      }
+                    },
+                    "memberName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
+                      }
+                    },
+                    "privateIPAddress": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Properties of private endpoint IP configurations."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
+            }
+          },
+          "applicationSecurityGroupResourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
+            }
+          },
+          "customNetworkInterfaceName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The custom name of the network interface attached to the private endpoint."
+            }
+          },
+          "lock": {
+            "$ref": "#/definitions/lockType",
+            "metadata": {
+              "description": "Optional. Specify the type of lock."
+            }
+          },
+          "roleAssignments": {
+            "$ref": "#/definitions/roleAssignmentType",
+            "metadata": {
+              "description": "Optional. Array of role assignments to create."
+            }
+          },
+          "tags": {
+            "type": "object",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
+            }
+          },
+          "enableTelemetry": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Enable/Disable usage telemetry for module."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "diagnosticSettingType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of diagnostic setting."
+            }
+          },
+          "logCategoriesAndGroups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                  }
+                },
+                "categoryGroup": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                  }
+                },
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+            }
+          },
+          "metricCategories": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                  }
+                },
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+            }
+          },
+          "logAnalyticsDestinationType": {
+            "type": "string",
+            "allowedValues": [
+              "AzureDiagnostics",
+              "Dedicated"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+            }
+          },
+          "workspaceResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "storageAccountResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "eventHubAuthorizationRuleResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+            }
+          },
+          "eventHubName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "marketplacePartnerResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "customerManagedKeyType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        },
+        "keyVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using 'latest'."
+          }
+        },
+        "userAssignedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
+          }
+        }
+      },
+      "nullable": true
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "maxLength": 50,
+      "metadata": {
+        "description": "Required. The name of the event hub namespace."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Basic",
+        "Standard",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "Optional. event hub plan SKU name."
+      }
+    },
+    "skuCapacity": {
+      "type": "int",
+      "defaultValue": 1,
+      "minValue": 1,
+      "maxValue": 20,
+      "metadata": {
+        "description": "Optional. The Event Hub's throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units."
+      }
+    },
+    "zoneRedundant": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Switch to make the Event Hub Namespace zone redundant."
+      }
+    },
+    "isAutoInflateEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Switch to enable the Auto Inflate feature of Event Hub. Auto Inflate is not supported in Premium SKU EventHub."
+      }
+    },
+    "maximumThroughputUnits": {
+      "type": "int",
+      "defaultValue": 1,
+      "minValue": 0,
+      "maxValue": 20,
+      "metadata": {
+        "description": "Optional. Upper limit of throughput units when AutoInflate is enabled, value should be within 0 to 20 throughput units."
+      }
+    },
+    "authorizationRules": {
+      "type": "array",
+      "defaultValue": [
+        {
+          "name": "RootManageSharedAccessKey",
+          "rights": [
+            "Listen",
+            "Manage",
+            "Send"
+          ]
+        }
+      ],
+      "metadata": {
+        "description": "Optional. Authorization Rules for the Event Hub namespace."
+      }
+    },
+    "disableLocalAuth": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. This property disables SAS authentication for the Event Hubs namespace."
+      }
+    },
+    "kafkaEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Value that indicates whether Kafka is enabled for Event Hubs Namespace."
+      }
+    },
+    "minimumTlsVersion": {
+      "type": "string",
+      "defaultValue": "1.2",
+      "allowedValues": [
+        "1.0",
+        "1.1",
+        "1.2"
+      ],
+      "metadata": {
+        "description": "Optional. The minimum TLS version for the cluster to support."
+      }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "",
+      "allowedValues": [
+        "",
+        "Disabled",
+        "Enabled",
+        "SecuredByPerimeter"
+      ],
+      "metadata": {
+        "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set."
+      }
+    },
+    "privateEndpoints": {
+      "$ref": "#/definitions/privateEndpointType",
+      "metadata": {
+        "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
+      }
+    },
+    "networkRuleSets": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Configure networking options. This object contains IPs/Subnets to allow or restrict access to private endpoints only. For security reasons, it is recommended to configure this object on the Namespace."
+      }
+    },
+    "diagnosticSettings": {
+      "$ref": "#/definitions/diagnosticSettingType",
+      "metadata": {
+        "description": "Optional. The diagnostic settings of the service."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentitiesType",
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource."
+      }
+    },
+    "customerManagedKey": {
+      "$ref": "#/definitions/customerManagedKeyType",
+      "metadata": {
+        "description": "Optional. The customer managed key definition."
+      }
+    },
+    "requireInfrastructureEncryption": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters."
+      }
+    },
+    "roleAssignments": {
+      "$ref": "#/definitions/roleAssignmentType",
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "eventhubs": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The event hubs to deploy into this namespace."
+      }
+    },
+    "disasterRecoveryConfig": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The disaster recovery config for this namespace."
+      }
+    }
+  },
+  "variables": {
+    "maximumThroughputUnitsVar": "[if(not(parameters('isAutoInflateEnabled')), 0, parameters('maximumThroughputUnits'))]",
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "builtInRoleNames": {
+      "Azure Event Hubs Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f526a384-b230-433a-b45c-95f59c4a2dec')]",
+      "Azure Event Hubs Data Receiver": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a638d3c7-ab3a-418d-83e6-5f17a39d4fde')]",
+      "Azure Event Hubs Data Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2b629674-e913-4c01-ae53-ef4638d8f975')]",
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+    }
+  },
+  "resources": {
+    "cMKKeyVault::cMKKey": {
+      "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults/keys",
+      "apiVersion": "2023-02-01",
+      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
+      "dependsOn": [
+        "cMKKeyVault"
+      ]
+    },
+    "cMKKeyVault": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2023-02-01",
+      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
+      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))]"
+    },
+    "cMKUserAssignedIdentity": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]]",
+      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))]"
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.eventhub-namespace.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "eventHubNamespace": {
+      "type": "Microsoft.EventHub/namespaces",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "identity": "[variables('identity')]",
+      "sku": {
+        "name": "[parameters('skuName')]",
+        "tier": "[parameters('skuName')]",
+        "capacity": "[parameters('skuCapacity')]"
+      },
+      "properties": {
+        "disableLocalAuth": "[parameters('disableLocalAuth')]",
+        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.KeyVault', 'keyVaultProperties', createArray(createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), 'requireInfrastructureEncryption', parameters('requireInfrastructureEncryption')), null())]",
+        "isAutoInflateEnabled": "[parameters('isAutoInflateEnabled')]",
+        "kafkaEnabled": "[parameters('kafkaEnabled')]",
+        "maximumThroughputUnits": "[variables('maximumThroughputUnitsVar')]",
+        "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
+        "publicNetworkAccess": "[if(contains(parameters('networkRuleSets'), 'publicNetworkAccess'), parameters('networkRuleSets').publicNetworkAccess, if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkRuleSets'))), 'Disabled', parameters('publicNetworkAccess')))]",
+        "zoneRedundant": "[parameters('zoneRedundant')]"
+      },
+      "dependsOn": [
+        "cMKKeyVault",
+        "cMKUserAssignedIdentity"
+      ]
+    },
+    "eventHubNamespace_roleAssignments": {
+      "copy": {
+        "name": "eventHubNamespace_roleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.EventHub/namespaces/{0}', parameters('name'))]",
+      "name": "[guid(resourceId('Microsoft.EventHub/namespaces', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "properties": {
+        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "eventHubNamespace"
+      ]
+    },
+    "eventHubNamespace_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.EventHub/namespaces/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "eventHubNamespace"
+      ]
+    },
+    "eventHubNamespace_diagnosticSettings": {
+      "copy": {
+        "name": "eventHubNamespace_diagnosticSettings",
+        "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
+      },
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[format('Microsoft.EventHub/namespaces/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+      "properties": {
+        "copy": [
+          {
+            "name": "metrics",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+            "input": {
+              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+              "timeGrain": null
+            }
+          },
+          {
+            "name": "logs",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "input": {
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+            }
+          }
+        ],
+        "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+        "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+        "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+        "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+        "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+        "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+      },
+      "dependsOn": [
+        "eventHubNamespace"
+      ]
+    },
+    "eventHubNamespace_authorizationRules": {
+      "copy": {
+        "name": "eventHubNamespace_authorizationRules",
+        "count": "[length(parameters('authorizationRules'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-EvhbNamespace-AuthRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "namespaceName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('authorizationRules')[copyIndex()].name]"
+          },
+          "rights": "[if(contains(parameters('authorizationRules')[copyIndex()], 'rights'), createObject('value', parameters('authorizationRules')[copyIndex()].rights), createObject('value', createArray()))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.54.24096",
+              "templateHash": "15327912662565121564"
+            },
+            "name": "Event Hub Namespace Authorization Rule",
+            "description": "This module deploys an Event Hub Namespace Authorization Rule.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "namespaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent event hub namespace. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the authorization rule."
+              }
+            },
+            "rights": {
+              "type": "array",
+              "defaultValue": [],
+              "allowedValues": [
+                "Listen",
+                "Manage",
+                "Send"
+              ],
+              "metadata": {
+                "description": "Optional. The rights associated with the rule."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.EventHub/namespaces/authorizationRules",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
+              "properties": {
+                "rights": "[parameters('rights')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the authorization rule."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the authorization rule."
+              },
+              "value": "[resourceId('Microsoft.EventHub/namespaces/authorizationRules', parameters('namespaceName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the authorization rule was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "eventHubNamespace"
+      ]
+    },
+    "eventHubNamespace_disasterRecoveryConfig": {
+      "condition": "[not(empty(parameters('disasterRecoveryConfig')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-EvhbNamespace-DisRecConfig', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "namespaceName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('disasterRecoveryConfig').name]"
+          },
+          "partnerNamespaceId": "[if(contains(parameters('disasterRecoveryConfig'), 'partnerNamespaceId'), createObject('value', parameters('disasterRecoveryConfig').partnerNamespaceId), createObject('value', ''))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.54.24096",
+              "templateHash": "11732013494690054024"
+            },
+            "name": "Event Hub Namespace Disaster Recovery Configs",
+            "description": "This module deploys an Event Hub Namespace Disaster Recovery Config.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "namespaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent event hub namespace. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the disaster recovery config."
+              }
+            },
+            "partnerNamespaceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Resource ID of the Primary/Secondary event hub namespace name, which is part of GEO DR pairing."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.EventHub/namespaces/disasterRecoveryConfigs",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
+              "properties": {
+                "partnerNamespace": "[parameters('partnerNamespaceId')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the disaster recovery config."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the disaster recovery config."
+              },
+              "value": "[resourceId('Microsoft.EventHub/namespaces/disasterRecoveryConfigs', parameters('namespaceName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the disaster recovery config was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "eventHubNamespace"
+      ]
+    },
+    "eventHubNamespace_eventhubs": {
+      "copy": {
+        "name": "eventHubNamespace_eventhubs",
+        "count": "[length(parameters('eventhubs'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-EvhbNamespace-EventHub-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "namespaceName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('eventhubs')[copyIndex()].name]"
+          },
+          "authorizationRules": "[if(contains(parameters('eventhubs')[copyIndex()], 'authorizationRules'), createObject('value', parameters('eventhubs')[copyIndex()].authorizationRules), createObject('value', createArray(createObject('name', 'RootManageSharedAccessKey', 'rights', createArray('Listen', 'Manage', 'Send')))))]",
+          "captureDescriptionDestinationArchiveNameFormat": "[if(contains(parameters('eventhubs')[copyIndex()], 'captureDescriptionDestinationArchiveNameFormat'), createObject('value', parameters('eventhubs')[copyIndex()].captureDescriptionDestinationArchiveNameFormat), createObject('value', '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'))]",
+          "captureDescriptionDestinationBlobContainer": "[if(contains(parameters('eventhubs')[copyIndex()], 'captureDescriptionDestinationBlobContainer'), createObject('value', parameters('eventhubs')[copyIndex()].captureDescriptionDestinationBlobContainer), createObject('value', ''))]",
+          "captureDescriptionDestinationName": "[if(contains(parameters('eventhubs')[copyIndex()], 'captureDescriptionDestinationName'), createObject('value', parameters('eventhubs')[copyIndex()].captureDescriptionDestinationName), createObject('value', 'EventHubArchive.AzureBlockBlob'))]",
+          "captureDescriptionDestinationStorageAccountResourceId": "[if(contains(parameters('eventhubs')[copyIndex()], 'captureDescriptionDestinationStorageAccountResourceId'), createObject('value', parameters('eventhubs')[copyIndex()].captureDescriptionDestinationStorageAccountResourceId), createObject('value', ''))]",
+          "captureDescriptionEnabled": "[if(contains(parameters('eventhubs')[copyIndex()], 'captureDescriptionEnabled'), createObject('value', parameters('eventhubs')[copyIndex()].captureDescriptionEnabled), createObject('value', false()))]",
+          "captureDescriptionEncoding": "[if(contains(parameters('eventhubs')[copyIndex()], 'captureDescriptionEncoding'), createObject('value', parameters('eventhubs')[copyIndex()].captureDescriptionEncoding), createObject('value', 'Avro'))]",
+          "captureDescriptionIntervalInSeconds": "[if(contains(parameters('eventhubs')[copyIndex()], 'captureDescriptionIntervalInSeconds'), createObject('value', parameters('eventhubs')[copyIndex()].captureDescriptionIntervalInSeconds), createObject('value', 300))]",
+          "captureDescriptionSizeLimitInBytes": "[if(contains(parameters('eventhubs')[copyIndex()], 'captureDescriptionSizeLimitInBytes'), createObject('value', parameters('eventhubs')[copyIndex()].captureDescriptionSizeLimitInBytes), createObject('value', 314572800))]",
+          "captureDescriptionSkipEmptyArchives": "[if(contains(parameters('eventhubs')[copyIndex()], 'captureDescriptionSkipEmptyArchives'), createObject('value', parameters('eventhubs')[copyIndex()].captureDescriptionSkipEmptyArchives), createObject('value', false()))]",
+          "consumergroups": "[if(contains(parameters('eventhubs')[copyIndex()], 'consumergroups'), createObject('value', parameters('eventhubs')[copyIndex()].consumergroups), createObject('value', createArray()))]",
+          "lock": {
+            "value": "[coalesce(tryGet(parameters('eventhubs')[copyIndex()], 'lock'), parameters('lock'))]"
+          },
+          "messageRetentionInDays": "[if(contains(parameters('eventhubs')[copyIndex()], 'messageRetentionInDays'), createObject('value', parameters('eventhubs')[copyIndex()].messageRetentionInDays), createObject('value', 1))]",
+          "partitionCount": "[if(contains(parameters('eventhubs')[copyIndex()], 'partitionCount'), createObject('value', parameters('eventhubs')[copyIndex()].partitionCount), createObject('value', 2))]",
+          "roleAssignments": "[if(contains(parameters('eventhubs')[copyIndex()], 'roleAssignments'), createObject('value', parameters('eventhubs')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
+          "status": "[if(contains(parameters('eventhubs')[copyIndex()], 'status'), createObject('value', parameters('eventhubs')[copyIndex()].status), createObject('value', 'Active'))]",
+          "retentionDescriptionCleanupPolicy": "[if(contains(parameters('eventhubs')[copyIndex()], 'retentionDescriptionCleanupPolicy'), createObject('value', parameters('eventhubs')[copyIndex()].retentionDescriptionCleanupPolicy), createObject('value', 'Delete'))]",
+          "retentionDescriptionRetentionTimeInHours": "[if(contains(parameters('eventhubs')[copyIndex()], 'retentionDescriptionRetentionTimeInHours'), createObject('value', parameters('eventhubs')[copyIndex()].retentionDescriptionRetentionTimeInHours), createObject('value', 1))]",
+          "retentionDescriptionTombstoneRetentionTimeInHours": "[if(contains(parameters('eventhubs')[copyIndex()], 'retentionDescriptionTombstoneRetentionTimeInHours'), createObject('value', parameters('eventhubs')[copyIndex()].retentionDescriptionTombstoneRetentionTimeInHours), createObject('value', 1))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.54.24096",
+              "templateHash": "14538170733088329405"
+            },
+            "name": "Event Hub Namespace Event Hubs",
+            "description": "This module deploys an Event Hub Namespace Event Hub.",
+            "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "roleAssignmentType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "roleDefinitionIdOrName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                    }
+                  },
+                  "principalId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                    }
+                  },
+                  "principalType": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Device",
+                      "ForeignGroup",
+                      "Group",
+                      "ServicePrincipal",
+                      "User"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The principal type of the assigned principal ID."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The description of the role assignment."
+                    }
+                  },
+                  "condition": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                    }
+                  },
+                  "conditionVersion": {
+                    "type": "string",
+                    "allowedValues": [
+                      "2.0"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Version of the condition."
+                    }
+                  },
+                  "delegatedManagedIdentityResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The Resource Id of the delegated managed identity resource."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            }
+          },
+          "parameters": {
+            "namespaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent event hub namespace. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the event hub."
+              }
+            },
+            "authorizationRules": {
+              "type": "array",
+              "defaultValue": [
+                {
+                  "name": "RootManageSharedAccessKey",
+                  "rights": [
+                    "Listen",
+                    "Manage",
+                    "Send"
+                  ]
+                }
+              ],
+              "metadata": {
+                "description": "Optional. Authorization Rules for the event hub."
+              }
+            },
+            "messageRetentionInDays": {
+              "type": "int",
+              "defaultValue": 1,
+              "minValue": 1,
+              "maxValue": 7,
+              "metadata": {
+                "description": "Optional. Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Will be automatically set to infinite retention if cleanup policy is set to \"Compact\"."
+              }
+            },
+            "partitionCount": {
+              "type": "int",
+              "defaultValue": 2,
+              "minValue": 1,
+              "maxValue": 32,
+              "metadata": {
+                "description": "Optional. Number of partitions created for the Event Hub, allowed values are from 1 to 32 partitions."
+              }
+            },
+            "status": {
+              "type": "string",
+              "defaultValue": "Active",
+              "allowedValues": [
+                "Active",
+                "Creating",
+                "Deleting",
+                "Disabled",
+                "ReceiveDisabled",
+                "Renaming",
+                "Restoring",
+                "SendDisabled",
+                "Unknown"
+              ],
+              "metadata": {
+                "description": "Optional. Enumerates the possible values for the status of the Event Hub."
+              }
+            },
+            "consumergroups": {
+              "type": "array",
+              "defaultValue": [
+                {
+                  "name": "$Default"
+                }
+              ],
+              "metadata": {
+                "description": "Optional. The consumer groups to create in this event hub instance."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "roleAssignments": {
+              "$ref": "#/definitions/roleAssignmentType",
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "captureDescriptionDestinationName": {
+              "type": "string",
+              "defaultValue": "EventHubArchive.AzureBlockBlob",
+              "metadata": {
+                "description": "Optional. Name for capture destination."
+              }
+            },
+            "captureDescriptionDestinationArchiveNameFormat": {
+              "type": "string",
+              "defaultValue": "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}",
+              "metadata": {
+                "description": "Optional. Blob naming convention for archive, e.g. {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}. Here all the parameters (Namespace,EventHub .. etc) are mandatory irrespective of order."
+              }
+            },
+            "captureDescriptionDestinationBlobContainer": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Blob container Name."
+              }
+            },
+            "captureDescriptionDestinationStorageAccountResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Resource ID of the storage account to be used to create the blobs."
+              }
+            },
+            "captureDescriptionEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. A value that indicates whether capture description is enabled."
+              }
+            },
+            "captureDescriptionEncoding": {
+              "type": "string",
+              "defaultValue": "Avro",
+              "allowedValues": [
+                "Avro",
+                "AvroDeflate"
+              ],
+              "metadata": {
+                "description": "Optional. Enumerates the possible values for the encoding format of capture description. Note: \"AvroDeflate\" will be deprecated in New API Version."
+              }
+            },
+            "captureDescriptionIntervalInSeconds": {
+              "type": "int",
+              "defaultValue": 300,
+              "minValue": 60,
+              "maxValue": 900,
+              "metadata": {
+                "description": "Optional. The time window allows you to set the frequency with which the capture to Azure Blobs will happen."
+              }
+            },
+            "captureDescriptionSizeLimitInBytes": {
+              "type": "int",
+              "defaultValue": 314572800,
+              "minValue": 10485760,
+              "maxValue": 524288000,
+              "metadata": {
+                "description": "Optional. The size window defines the amount of data built up in your Event Hub before an capture operation."
+              }
+            },
+            "captureDescriptionSkipEmptyArchives": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. A value that indicates whether to Skip Empty Archives."
+              }
+            },
+            "retentionDescriptionCleanupPolicy": {
+              "type": "string",
+              "defaultValue": "Delete",
+              "allowedValues": [
+                "Compact",
+                "Delete"
+              ],
+              "metadata": {
+                "description": "Optional. Retention cleanup policy. Enumerates the possible values for cleanup policy."
+              }
+            },
+            "retentionDescriptionRetentionTimeInHours": {
+              "type": "int",
+              "defaultValue": 1,
+              "minValue": 1,
+              "maxValue": 168,
+              "metadata": {
+                "description": "Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue."
+              }
+            },
+            "retentionDescriptionTombstoneRetentionTimeInHours": {
+              "type": "int",
+              "defaultValue": 1,
+              "minValue": 1,
+              "maxValue": 168,
+              "metadata": {
+                "description": "Optional. Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub."
+              }
+            }
+          },
+          "variables": {
+            "eventHubProperties": {
+              "messageRetentionInDays": "[parameters('messageRetentionInDays')]",
+              "partitionCount": "[parameters('partitionCount')]",
+              "status": "[parameters('status')]",
+              "retentionDescription": {
+                "cleanupPolicy": "[parameters('retentionDescriptionCleanupPolicy')]",
+                "retentionTimeInHours": "[if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Delete'), parameters('retentionDescriptionRetentionTimeInHours'), null())]",
+                "tombstoneRetentionTimeInHours": "[if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Compact'), parameters('retentionDescriptionTombstoneRetentionTimeInHours'), null())]"
+              }
+            },
+            "eventHubPropertiesCapture": {
+              "captureDescription": {
+                "destination": {
+                  "name": "[parameters('captureDescriptionDestinationName')]",
+                  "properties": {
+                    "archiveNameFormat": "[parameters('captureDescriptionDestinationArchiveNameFormat')]",
+                    "blobContainer": "[parameters('captureDescriptionDestinationBlobContainer')]",
+                    "storageAccountResourceId": "[parameters('captureDescriptionDestinationStorageAccountResourceId')]"
+                  }
+                },
+                "enabled": "[parameters('captureDescriptionEnabled')]",
+                "encoding": "[parameters('captureDescriptionEncoding')]",
+                "intervalInSeconds": "[parameters('captureDescriptionIntervalInSeconds')]",
+                "sizeLimitInBytes": "[parameters('captureDescriptionSizeLimitInBytes')]",
+                "skipEmptyArchives": "[parameters('captureDescriptionSkipEmptyArchives')]"
+              }
+            },
+            "builtInRoleNames": {
+              "Azure Event Hubs Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f526a384-b230-433a-b45c-95f59c4a2dec')]",
+              "Azure Event Hubs Data Receiver": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a638d3c7-ab3a-418d-83e6-5f17a39d4fde')]",
+              "Azure Event Hubs Data Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2b629674-e913-4c01-ae53-ef4638d8f975')]",
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": {
+            "namespace": {
+              "existing": true,
+              "type": "Microsoft.EventHub/namespaces",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[parameters('namespaceName')]"
+            },
+            "eventHub": {
+              "type": "Microsoft.EventHub/namespaces/eventhubs",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
+              "properties": "[if(parameters('captureDescriptionEnabled'), union(variables('eventHubProperties'), variables('eventHubPropertiesCapture')), variables('eventHubProperties'))]",
+              "dependsOn": [
+                "namespace"
+              ]
+            },
+            "eventHub_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.EventHub/namespaces/{0}/eventhubs/{1}', parameters('namespaceName'), parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "eventHub"
+              ]
+            },
+            "eventHub_roleAssignments": {
+              "copy": {
+                "name": "eventHub_roleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.EventHub/namespaces/{0}/eventhubs/{1}', parameters('namespaceName'), parameters('name'))]",
+              "name": "[guid(resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaceName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+              "properties": {
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "eventHub"
+              ]
+            },
+            "eventHub_consumergroups": {
+              "copy": {
+                "name": "eventHub_consumergroups",
+                "count": "[length(parameters('consumergroups'))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-ConsumerGroup-{1}', deployment().name, copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "namespaceName": {
+                    "value": "[parameters('namespaceName')]"
+                  },
+                  "eventHubName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "name": {
+                    "value": "[parameters('consumergroups')[copyIndex()].name]"
+                  },
+                  "userMetadata": "[if(contains(parameters('consumergroups')[copyIndex()], 'userMetadata'), createObject('value', parameters('consumergroups')[copyIndex()].userMetadata), createObject('value', ''))]"
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.26.54.24096",
+                      "templateHash": "7757490711276971084"
+                    },
+                    "name": "Event Hub Namespace Event Hub Consumer Groups",
+                    "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "namespaceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent event hub namespace. Required if the template is used in a standalone deployment.s."
+                      }
+                    },
+                    "eventHubName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent event hub namespace event hub. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the consumer group."
+                      }
+                    },
+                    "userMetadata": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. User Metadata is a placeholder to store user-defined string data with maximum length 1024. e.g. it can be used to store descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
+                      "apiVersion": "2022-10-01-preview",
+                      "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('eventHubName'), parameters('name'))]",
+                      "properties": {
+                        "userMetadata": "[if(not(empty(parameters('userMetadata'))), parameters('userMetadata'), null())]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the consumer group."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the consumer group."
+                      },
+                      "value": "[resourceId('Microsoft.EventHub/namespaces/eventhubs/consumergroups', parameters('namespaceName'), parameters('eventHubName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the consumer group was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "eventHub"
+              ]
+            },
+            "eventHub_authorizationRules": {
+              "copy": {
+                "name": "eventHub_authorizationRules",
+                "count": "[length(parameters('authorizationRules'))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-AuthRule-{1}', deployment().name, copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "namespaceName": {
+                    "value": "[parameters('namespaceName')]"
+                  },
+                  "eventHubName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "name": {
+                    "value": "[parameters('authorizationRules')[copyIndex()].name]"
+                  },
+                  "rights": "[if(contains(parameters('authorizationRules')[copyIndex()], 'rights'), createObject('value', parameters('authorizationRules')[copyIndex()].rights), createObject('value', createArray()))]"
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.26.54.24096",
+                      "templateHash": "15301134976738274567"
+                    },
+                    "name": "Event Hub Namespace Event Hub Authorization Rules",
+                    "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "namespaceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent event hub namespace. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "eventHubName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent event hub namespace event hub. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the authorization rule."
+                      }
+                    },
+                    "rights": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "allowedValues": [
+                        "Listen",
+                        "Manage",
+                        "Send"
+                      ],
+                      "metadata": {
+                        "description": "Optional. The rights associated with the rule."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.EventHub/namespaces/eventhubs/authorizationRules",
+                      "apiVersion": "2022-10-01-preview",
+                      "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('eventHubName'), parameters('name'))]",
+                      "properties": {
+                        "rights": "[parameters('rights')]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the authorization rule."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the authorization rule."
+                      },
+                      "value": "[resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('namespaceName'), parameters('eventHubName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the authorization rule was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "eventHub"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the event hub."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the event hub."
+              },
+              "value": "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaceName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the event hub was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "eventHubNamespace"
+      ]
+    },
+    "eventHubNamespace_networkRuleSet": {
+      "condition": "[or(not(empty(parameters('networkRuleSets'))), not(empty(parameters('privateEndpoints'))))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-EvhbNamespace-NetworkRuleSet', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "namespaceName": {
+            "value": "[parameters('name')]"
+          },
+          "publicNetworkAccess": "[if(contains(parameters('networkRuleSets'), 'publicNetworkAccess'), createObject('value', parameters('networkRuleSets').publicNetworkAccess), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkRuleSets'))), createObject('value', 'Disabled'), createObject('value', 'Enabled')))]",
+          "defaultAction": "[if(contains(parameters('networkRuleSets'), 'defaultAction'), createObject('value', parameters('networkRuleSets').defaultAction), createObject('value', 'Allow'))]",
+          "trustedServiceAccessEnabled": {
+            "value": "[tryGet(parameters('networkRuleSets'), 'trustedServiceAccessEnabled')]"
+          },
+          "ipRules": "[if(contains(parameters('networkRuleSets'), 'ipRules'), createObject('value', parameters('networkRuleSets').ipRules), createObject('value', createArray()))]",
+          "virtualNetworkRules": "[if(contains(parameters('networkRuleSets'), 'virtualNetworkRules'), createObject('value', parameters('networkRuleSets').virtualNetworkRules), createObject('value', createArray()))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.54.24096",
+              "templateHash": "3984181780336367181"
+            },
+            "name": "Event Hub Namespace Network Rule Sets",
+            "description": "This module deploys an Event Hub Namespace Network Rule Set.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "namespaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent event hub namespace. Required if the template is used in a standalone deployment."
+              }
+            },
+            "publicNetworkAccess": {
+              "type": "string",
+              "defaultValue": "Enabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. This determines if traffic is allowed over public network. Default is \"Enabled\". If set to \"Disabled\", traffic to this namespace will be restricted over Private Endpoints only and network rules will not be applied."
+              }
+            },
+            "defaultAction": {
+              "type": "string",
+              "defaultValue": "Allow",
+              "allowedValues": [
+                "Allow",
+                "Deny"
+              ],
+              "metadata": {
+                "description": "Optional. Default Action for Network Rule Set. Default is \"Allow\". It will not be set if publicNetworkAccess is \"Disabled\". Otherwise, it will be set to \"Deny\" if ipRules or virtualNetworkRules are being used."
+              }
+            },
+            "trustedServiceAccessEnabled": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Value that indicates whether Trusted Service Access is enabled or not."
+              }
+            },
+            "virtualNetworkRules": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. An array of subnet resource ID objects that this Event Hub Namespace is exposed to via Service Endpoints. You can enable the `ignoreMissingVnetServiceEndpoint` if you wish to add this virtual network to Event Hub Namespace but do not have an existing service endpoint. It will not be set if publicNetworkAccess is \"Disabled\". Otherwise, when used, defaultAction will be set to \"Deny\"."
+              }
+            },
+            "ipRules": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. An array of objects for the public IP ranges you want to allow via the Event Hub Namespace firewall. Supports IPv4 address or CIDR. It will not be set if publicNetworkAccess is \"Disabled\". Otherwise, when used, defaultAction will be set to \"Deny\"."
+              }
+            },
+            "networkRuleSetName": {
+              "type": "string",
+              "defaultValue": "default",
+              "metadata": {
+                "description": "Optional. The name of the network ruleset."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "networkRules",
+                "count": "[length(parameters('virtualNetworkRules'))]",
+                "input": {
+                  "ignoreMissingVnetServiceEndpoint": "[if(contains(parameters('virtualNetworkRules')[copyIndex('networkRules')], 'ignoreMissingVnetServiceEndpoint'), parameters('virtualNetworkRules')[copyIndex('networkRules')].ignoreMissingVnetServiceEndpoint, null())]",
+                  "subnet": "[if(contains(parameters('virtualNetworkRules')[copyIndex('networkRules')], 'subnetResourceId'), createObject('id', parameters('virtualNetworkRules')[copyIndex('networkRules')].subnetResourceId), null())]"
+                }
+              }
+            ]
+          },
+          "resources": [
+            {
+              "type": "Microsoft.EventHub/namespaces/networkRuleSets",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('networkRuleSetName'))]",
+              "properties": {
+                "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+                "defaultAction": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), null(), if(or(not(empty(parameters('ipRules'))), not(empty(parameters('virtualNetworkRules')))), 'Deny', parameters('defaultAction')))]",
+                "trustedServiceAccessEnabled": "[parameters('trustedServiceAccessEnabled')]",
+                "ipRules": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), null(), parameters('ipRules'))]",
+                "virtualNetworkRules": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), null(), variables('networkRules'))]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the network rule set."
+              },
+              "value": "[parameters('networkRuleSetName')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the network rule set."
+              },
+              "value": "[resourceId('Microsoft.EventHub/namespaces/networkRuleSets', parameters('namespaceName'), parameters('networkRuleSetName'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the network rule set was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "eventHubNamespace"
+      ]
+    },
+    "eventHubNamespace_privateEndpoints": {
+      "copy": {
+        "name": "eventHubNamespace_privateEndpoints",
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-EventHubNamespace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.EventHub/namespaces', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace'), copyIndex()))]"
+          },
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.EventHub/namespaces', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.EventHub/namespaces', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace')))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.EventHub/namespaces', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.EventHub/namespaces', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace')), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
+          "subnetResourceId": {
+            "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
+          },
+          "enableTelemetry": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+          },
+          "location": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
+          },
+          "lock": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
+          },
+          "privateDnsZoneGroupName": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroupName')]"
+          },
+          "privateDnsZoneResourceIds": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneResourceIds')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "customDnsConfigs": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
+          },
+          "ipConfigurations": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'ipConfigurations')]"
+          },
+          "applicationSecurityGroupResourceIds": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'applicationSecurityGroupResourceIds')]"
+          },
+          "customNetworkInterfaceName": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customNetworkInterfaceName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.24.24.22086",
+              "templateHash": "2592884001616184297"
+            },
+            "name": "Private Endpoints",
+            "description": "This module deploys a Private Endpoint.",
+            "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "roleAssignmentType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "roleDefinitionIdOrName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                    }
+                  },
+                  "principalId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                    }
+                  },
+                  "principalType": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Device",
+                      "ForeignGroup",
+                      "Group",
+                      "ServicePrincipal",
+                      "User"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The principal type of the assigned principal ID."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The description of the role assignment."
+                    }
+                  },
+                  "condition": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                    }
+                  },
+                  "conditionVersion": {
+                    "type": "string",
+                    "allowedValues": [
+                      "2.0"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Version of the condition."
+                    }
+                  },
+                  "delegatedManagedIdentityResourceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The Resource Id of the delegated managed identity resource."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "ipConfigurationsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the resource that is unique within a resource group."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "groupId": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "memberName": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "privateIPAddress": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. A private IP address obtained from the private endpoint's subnet."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of private endpoint IP configurations."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "manualPrivateLinkServiceConnectionsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the private link service connection."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "groupIds": {
+                        "type": "array",
+                        "metadata": {
+                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "privateLinkServiceId": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The resource id of private link service."
+                        }
+                      },
+                      "requestMessage": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of private link service connection."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "privateLinkServiceConnectionsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the private link service connection."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "groupIds": {
+                        "type": "array",
+                        "metadata": {
+                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "privateLinkServiceId": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The resource id of private link service."
+                        }
+                      },
+                      "requestMessage": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of private link service connection."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "customDnsConfigType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "fqdn": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Fqdn that resolves to private endpoint IP address."
+                    }
+                  },
+                  "ipAddresses": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "metadata": {
+                      "description": "Required. A list of private IP addresses of the private endpoint."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the private endpoint resource to create."
+              }
+            },
+            "subnetResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+              }
+            },
+            "applicationSecurityGroupResourceIds": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
+              }
+            },
+            "customNetworkInterfaceName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The custom name of the network interface attached to the private endpoint."
+              }
+            },
+            "ipConfigurations": {
+              "$ref": "#/definitions/ipConfigurationsType",
+              "metadata": {
+                "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
+              }
+            },
+            "privateDnsZoneGroupName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
+              }
+            },
+            "privateDnsZoneResourceIds": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all Resources."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "roleAssignments": {
+              "$ref": "#/definitions/roleAssignmentType",
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
+              }
+            },
+            "customDnsConfigs": {
+              "$ref": "#/definitions/customDnsConfigType",
+              "metadata": {
+                "description": "Optional. Custom DNS configurations."
+              }
+            },
+            "manualPrivateLinkServiceConnections": {
+              "$ref": "#/definitions/manualPrivateLinkServiceConnectionsType",
+              "metadata": {
+                "description": "Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
+              }
+            },
+            "privateLinkServiceConnections": {
+              "$ref": "#/definitions/privateLinkServiceConnectionsType",
+              "metadata": {
+                "description": "Optional. A grouping of information about the connection to the remote resource."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            }
+          },
+          "variables": {
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
+              "DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314')]",
+              "Domain Services Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'eeaeda52-9324-47f6-8069-5d5bade478b2')]",
+              "Domain Services Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '361898ef-9ed1-48c2-849c-a832951106bb')]",
+              "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
+            }
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2023-07-01",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "privateEndpoint": {
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2023-04-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "applicationSecurityGroups",
+                    "count": "[length(coalesce(parameters('applicationSecurityGroupResourceIds'), createArray()))]",
+                    "input": {
+                      "id": "[coalesce(parameters('applicationSecurityGroupResourceIds'), createArray())[copyIndex('applicationSecurityGroups')]]"
+                    }
+                  }
+                ],
+                "customDnsConfigs": "[coalesce(parameters('customDnsConfigs'), createArray())]",
+                "customNetworkInterfaceName": "[coalesce(parameters('customNetworkInterfaceName'), '')]",
+                "ipConfigurations": "[coalesce(parameters('ipConfigurations'), createArray())]",
+                "manualPrivateLinkServiceConnections": "[coalesce(parameters('manualPrivateLinkServiceConnections'), createArray())]",
+                "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
+                "subnet": {
+                  "id": "[parameters('subnetResourceId')]"
+                }
+              }
+            },
+            "privateEndpoint_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "privateEndpoint"
+              ]
+            },
+            "privateEndpoint_roleAssignments": {
+              "copy": {
+                "name": "privateEndpoint_roleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+              "name": "[guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+              "properties": {
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "privateEndpoint"
+              ]
+            },
+            "privateEndpoint_privateDnsZoneGroup": {
+              "condition": "[not(empty(parameters('privateDnsZoneResourceIds')))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-PrivateEndpoint-PrivateDnsZoneGroup', uniqueString(deployment().name))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[coalesce(parameters('privateDnsZoneGroupName'), 'default')]"
+                  },
+                  "privateDNSResourceIds": {
+                    "value": "[coalesce(parameters('privateDnsZoneResourceIds'), createArray())]"
+                  },
+                  "privateEndpointName": {
+                    "value": "[parameters('name')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.24.24.22086",
+                      "templateHash": "9321937464667207030"
+                    },
+                    "name": "Private Endpoint Private DNS Zone Groups",
+                    "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "privateEndpointName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent private endpoint. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "privateDNSResourceIds": {
+                      "type": "array",
+                      "minLength": 1,
+                      "maxLength": 5,
+                      "metadata": {
+                        "description": "Required. Array of private DNS zone resource IDs. A DNS zone group can support up to 5 DNS zones."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "default",
+                      "metadata": {
+                        "description": "Optional. The name of the private DNS zone group."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "copy": [
+                      {
+                        "name": "privateDnsZoneConfigs",
+                        "count": "[length(parameters('privateDNSResourceIds'))]",
+                        "input": {
+                          "name": "[last(split(parameters('privateDNSResourceIds')[copyIndex('privateDnsZoneConfigs')], '/'))]",
+                          "properties": {
+                            "privateDnsZoneId": "[parameters('privateDNSResourceIds')[copyIndex('privateDnsZoneConfigs')]]"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+                      "apiVersion": "2023-04-01",
+                      "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
+                      "properties": {
+                        "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigs')]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the private endpoint DNS zone group."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the private endpoint DNS zone group."
+                      },
+                      "value": "[resourceId('Microsoft.Network/privateEndpoints/privateDnsZoneGroups', parameters('privateEndpointName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the private endpoint DNS zone group was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "privateEndpoint"
+              ]
+            }
+          },
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the private endpoint was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the private endpoint."
+              },
+              "value": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the private endpoint."
+              },
+              "value": "[parameters('name')]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('privateEndpoint', '2023-04-01', 'full').location]"
+            },
+            "groupId": {
+              "type": "string",
+              "metadata": {
+                "description": "The group Id for the private endpoint Group."
+              },
+              "value": "[if(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties.groupIds[0], reference('privateEndpoint').privateLinkServiceConnections[0].properties.groupIds[0])]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "eventHubNamespace"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the eventspace."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the eventspace."
+      },
+      "value": "[resourceId('Microsoft.EventHub/namespaces', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group where the namespace is deployed."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[coalesce(tryGet(tryGet(reference('eventHubNamespace', '2022-10-01-preview', 'full'), 'identity'), 'principalId'), '')]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('eventHubNamespace', '2022-10-01-preview', 'full').location]"
+    },
+    "eventHubResourceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The Resources IDs of the EventHubs within this eventspace."
+      },
+      "copy": {
+        "count": "[length(range(0, length(coalesce(parameters('eventhubs'), createArray()))))]",
+        "input": "[reference(format('eventHubNamespace_eventhubs[{0}]', range(0, length(coalesce(parameters('eventhubs'), createArray())))[copyIndex()])).outputs.resourceId.value]"
+      }
+    }
+  }
+}

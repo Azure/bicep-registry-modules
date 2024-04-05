@@ -50,11 +50,13 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+    }
   }
-}]
+]

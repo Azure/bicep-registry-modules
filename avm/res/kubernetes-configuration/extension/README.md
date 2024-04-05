@@ -34,8 +34,6 @@ The following section provides usage examples for the module, which were used to
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-
 
 
 <details>
@@ -44,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-kcemin'
+  name: 'extensionDeployment'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
@@ -108,7 +106,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-kcemax'
+  name: 'extensionDeployment'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
@@ -139,6 +137,7 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
           }
         }
         namespace: 'flux-system'
+        scope: 'cluster'
         suspend: false
       }
     ]
@@ -200,6 +199,7 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
             }
           },
           "namespace": "flux-system",
+          "scope": "cluster",
           "suspend": false
         }
       ]
@@ -234,7 +234,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-kcewaf'
+  name: 'extensionDeployment'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
@@ -265,6 +265,7 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
           }
         }
         namespace: 'flux-system'
+        scope: 'cluster'
         suspend: false
       }
     ]
@@ -326,6 +327,7 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
             }
           },
           "namespace": "flux-system",
+          "scope": "cluster",
           "suspend": false
         }
       ]
@@ -471,7 +473,7 @@ Version of the extension for this extension, if it is "pinned" to a specific ver
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |

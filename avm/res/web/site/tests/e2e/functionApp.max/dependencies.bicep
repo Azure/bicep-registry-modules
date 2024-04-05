@@ -72,7 +72,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
     name: 'Standard_LRS'
   }
   kind: 'StorageV2'
-  properties: {}
+  properties: {
+    allowSharedKeyAccess: false
+  }
 }
 
 resource serverFarm 'Microsoft.Web/serverfarms@2022-03-01' = {
