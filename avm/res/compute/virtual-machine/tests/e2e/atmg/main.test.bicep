@@ -77,9 +77,9 @@ module testDeployment '../../../main.bicep' = [
                 publicIpNameSuffix: '-pip-01'
               }
               zones: [
-                '1'
-                '2'
-                '3'
+                1
+                2
+                3
               ]
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
             }

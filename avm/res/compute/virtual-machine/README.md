@@ -25,7 +25,7 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/networkInterfaces` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkInterfaces) |
-| `Microsoft.Network/publicIPAddresses` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/publicIPAddresses) |
+| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/publicIPAddresses) |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers/protectedItems) |
 
 ## Usage examples
@@ -79,9 +79,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             }
             subnetResourceId: '<subnetResourceId>'
             zones: [
-              '1'
-              '2'
-              '3'
+              1
+              2
+              3
             ]
           }
         ]
@@ -149,9 +149,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               },
               "subnetResourceId": "<subnetResourceId>",
               "zones": [
-                "1",
-                "2",
-                "3"
+                1,
+                2,
+                3
               ]
             }
           ],
@@ -421,9 +421,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             }
             subnetResourceId: '<subnetResourceId>'
             zones: [
-              '1'
-              '2'
-              '3'
+              1
+              2
+              3
             ]
           }
         ]
@@ -681,9 +681,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               },
               "subnetResourceId": "<subnetResourceId>",
               "zones": [
-                "1",
-                "2",
-                "3"
+                1,
+                2,
+                3
               ]
             }
           ],
@@ -993,9 +993,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             }
             subnetResourceId: '<subnetResourceId>'
             zones: [
-              '1'
-              '2'
-              '3'
+              1
+              2
+              3
             ]
           }
         ]
@@ -1270,9 +1270,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               },
               "subnetResourceId": "<subnetResourceId>",
               "zones": [
-                "1",
-                "2",
-                "3"
+                1,
+                2,
+                3
               ]
             }
           ],
@@ -2085,9 +2085,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             }
             subnetResourceId: '<subnetResourceId>'
             zones: [
-              '1'
-              '2'
-              '3'
+              1
+              2
+              3
             ]
           }
         ]
@@ -2372,9 +2372,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               },
               "subnetResourceId": "<subnetResourceId>",
               "zones": [
-                "1",
-                "2",
-                "3"
+                1,
+                2,
+                3
               ]
             }
           ],
@@ -3919,7 +3919,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/network-interface:0.2.2` | Remote reference |
-| `br/public:avm/res/network/public-ip-address:0.2.1` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.3.2` | Remote reference |
 
 ## Notes
 

@@ -113,9 +113,9 @@ module testDeployment '../../../main.bicep' = [
                 ]
               }
               zones: [
-                '1'
-                '2'
-                '3'
+                1
+                2
+                3
               ]
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
               diagnosticSettings: [
