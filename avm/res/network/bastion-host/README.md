@@ -85,9 +85,9 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
         Role: 'DeploymentValidation'
       }
       zones: [
-        '1'
-        '2'
-        '3'
+        1
+        2
+        3
       ]
     }
   }
@@ -151,9 +151,9 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
           "Role": "DeploymentValidation"
         },
         "zones": [
-          "1",
-          "2",
-          "3"
+          1,
+          2,
+          3
         ]
       }
     }
@@ -891,7 +891,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/public-ip-address:0.3.2` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.4.0` | Remote reference |
 
 ## Data Collection
 
