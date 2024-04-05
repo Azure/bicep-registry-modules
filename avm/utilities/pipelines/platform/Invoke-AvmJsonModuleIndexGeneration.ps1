@@ -192,7 +192,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
       } else {
         # If the module exists, merge the tags and properties
         $mergedModule = $initialMergeOfJsonFilesData[$module.moduleName]
-        $mergedModule.tags = @(($mergedModule.tags + $module.tags) | Sort-Object | Get-Unique)
+        $mergedModule.tags = @(($mergedModule.tags + $module.tags) | Sort-Object -Unique)
 
         # Merge properties
         foreach ($property in $module.properties.PSObject.Properties) {
