@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "12711184694701779710"
+      "templateHash": "18444173024159632746"
     },
     "name": "Dns Forwarding Rulesets",
     "description": "This template deploys an dns forwarding ruleset.",
@@ -485,7 +485,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "15095816376592886095"
+              "templateHash": "12626620280287268632"
             },
             "name": "Dns Forwarding Rulesets Virtual Network Links",
             "description": "This template deploys Virtual Network Link in a Dns Forwarding Ruleset.",
@@ -529,7 +529,7 @@
             "virtualNetworkLink": {
               "type": "Microsoft.Network/dnsForwardingRulesets/virtualNetworkLinks",
               "apiVersion": "2022-07-01",
-              "name": "[format('{0}/{1}', parameters('dnsForwardingRulesetName'), coalesce(parameters('name'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/')))))]",
+              "name": "[format('{0}/{1}', parameters('dnsForwardingRulesetName'), coalesce(parameters('name'), format('{0}-{1}-{2}-vnetlink', substring(uniqueString(subscription().id), 0, 8), substring(uniqueString(resourceGroup().id), 0, 8), last(split(parameters('virtualNetworkResourceId'), '/')))))]",
               "properties": {
                 "virtualNetwork": {
                   "id": "[parameters('virtualNetworkResourceId')]"
@@ -547,14 +547,14 @@
               "metadata": {
                 "description": "The name of the deployed virtual network link."
               },
-              "value": "[coalesce(parameters('name'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/'))))]"
+              "value": "[coalesce(parameters('name'), format('{0}-{1}-{2}-vnetlink', substring(uniqueString(subscription().id), 0, 8), substring(uniqueString(resourceGroup().id), 0, 8), last(split(parameters('virtualNetworkResourceId'), '/'))))]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the deployed virtual network link."
               },
-              "value": "[resourceId('Microsoft.Network/dnsForwardingRulesets/virtualNetworkLinks', parameters('dnsForwardingRulesetName'), coalesce(parameters('name'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/')))))]"
+              "value": "[resourceId('Microsoft.Network/dnsForwardingRulesets/virtualNetworkLinks', parameters('dnsForwardingRulesetName'), coalesce(parameters('name'), format('{0}-{1}-{2}-vnetlink', substring(uniqueString(subscription().id), 0, 8), substring(uniqueString(resourceGroup().id), 0, 8), last(split(parameters('virtualNetworkResourceId'), '/')))))]"
             },
             "resourceGroupName": {
               "type": "string",

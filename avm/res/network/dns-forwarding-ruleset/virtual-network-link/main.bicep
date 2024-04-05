@@ -19,7 +19,7 @@ resource dnsForwardingRuleset 'Microsoft.Network/dnsForwardingRulesets@2022-07-0
 }
 
 resource virtualNetworkLink 'Microsoft.Network/dnsForwardingRulesets/virtualNetworkLinks@2022-07-01' = {
-  name: name ?? '${last(split(virtualNetworkResourceId, '/'))}-vnetlink'
+  name: name ?? '${substring(uniqueString(subscription().id),0,8)}-${substring(uniqueString(resourceGroup().id),0,8)}-${last(split(virtualNetworkResourceId, '/'))}-vnetlink'
   parent: dnsForwardingRuleset
   properties: {
     virtualNetwork: {
