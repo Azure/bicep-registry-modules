@@ -31,30 +31,40 @@ param enableTelemetry bool = true
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  'Network Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')
+  'Network Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '4d97b98b-1d4f-4787-a291-c67834d212e7'
+  )
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.network-networksecuritygroup.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.network-networksecuritygroup.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
 resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
   name: name
@@ -62,92 +72,152 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-0
   tags: tags
   properties: {
     flushConnection: flushConnection
-    securityRules: [for securityRule in securityRules: {
-      name: securityRule.name
-      properties: {
-        protocol: securityRule.properties.protocol
-        access: securityRule.properties.access
-        priority: securityRule.properties.priority
-        direction: securityRule.properties.direction
-        description: contains(securityRule.properties, 'description') ? securityRule.properties.description : ''
-        sourcePortRange: contains(securityRule.properties, 'sourcePortRange') ? securityRule.properties.sourcePortRange : ''
-        sourcePortRanges: contains(securityRule.properties, 'sourcePortRanges') ? securityRule.properties.sourcePortRanges : []
-        destinationPortRange: contains(securityRule.properties, 'destinationPortRange') ? securityRule.properties.destinationPortRange : ''
-        destinationPortRanges: contains(securityRule.properties, 'destinationPortRanges') ? securityRule.properties.destinationPortRanges : []
-        sourceAddressPrefix: contains(securityRule.properties, 'sourceAddressPrefix') ? securityRule.properties.sourceAddressPrefix : ''
-        destinationAddressPrefix: contains(securityRule.properties, 'destinationAddressPrefix') ? securityRule.properties.destinationAddressPrefix : ''
-        sourceAddressPrefixes: contains(securityRule.properties, 'sourceAddressPrefixes') ? securityRule.properties.sourceAddressPrefixes : []
-        destinationAddressPrefixes: contains(securityRule.properties, 'destinationAddressPrefixes') ? securityRule.properties.destinationAddressPrefixes : []
-        sourceApplicationSecurityGroups: contains(securityRule.properties, 'sourceApplicationSecurityGroups') ? securityRule.properties.sourceApplicationSecurityGroups : []
-        destinationApplicationSecurityGroups: contains(securityRule.properties, 'destinationApplicationSecurityGroups') ? securityRule.properties.destinationApplicationSecurityGroups : []
+    securityRules: [
+      for securityRule in securityRules: {
+        name: securityRule.name
+        properties: {
+          protocol: securityRule.properties.protocol
+          access: securityRule.properties.access
+          priority: securityRule.properties.priority
+          direction: securityRule.properties.direction
+          description: contains(securityRule.properties, 'description') ? securityRule.properties.description : ''
+          sourcePortRange: contains(securityRule.properties, 'sourcePortRange')
+            ? securityRule.properties.sourcePortRange
+            : ''
+          sourcePortRanges: contains(securityRule.properties, 'sourcePortRanges')
+            ? securityRule.properties.sourcePortRanges
+            : []
+          destinationPortRange: contains(securityRule.properties, 'destinationPortRange')
+            ? securityRule.properties.destinationPortRange
+            : ''
+          destinationPortRanges: contains(securityRule.properties, 'destinationPortRanges')
+            ? securityRule.properties.destinationPortRanges
+            : []
+          sourceAddressPrefix: contains(securityRule.properties, 'sourceAddressPrefix')
+            ? securityRule.properties.sourceAddressPrefix
+            : ''
+          destinationAddressPrefix: contains(securityRule.properties, 'destinationAddressPrefix')
+            ? securityRule.properties.destinationAddressPrefix
+            : ''
+          sourceAddressPrefixes: contains(securityRule.properties, 'sourceAddressPrefixes')
+            ? securityRule.properties.sourceAddressPrefixes
+            : []
+          destinationAddressPrefixes: contains(securityRule.properties, 'destinationAddressPrefixes')
+            ? securityRule.properties.destinationAddressPrefixes
+            : []
+          sourceApplicationSecurityGroups: contains(securityRule.properties, 'sourceApplicationSecurityGroups')
+            ? securityRule.properties.sourceApplicationSecurityGroups
+            : []
+          destinationApplicationSecurityGroups: contains(
+              securityRule.properties,
+              'destinationApplicationSecurityGroups'
+            )
+            ? securityRule.properties.destinationApplicationSecurityGroups
+            : []
+        }
       }
-    }]
+    ]
   }
 }
 
-module networkSecurityGroup_securityRules 'security-rule/main.bicep' = [for (securityRule, index) in securityRules: {
-  name: '${uniqueString(deployment().name, location)}-NetworkSecurityGroup-SecurityRule-${index}'
-  params: {
-    name: securityRule.name
-    networkSecurityGroupName: networkSecurityGroup.name
-    protocol: securityRule.properties.protocol
-    access: securityRule.properties.access
-    priority: securityRule.properties.priority
-    direction: securityRule.properties.direction
-    description: contains(securityRule.properties, 'description') ? securityRule.properties.description : ''
-    sourcePortRange: contains(securityRule.properties, 'sourcePortRange') ? securityRule.properties.sourcePortRange : ''
-    sourcePortRanges: contains(securityRule.properties, 'sourcePortRanges') ? securityRule.properties.sourcePortRanges : []
-    destinationPortRange: contains(securityRule.properties, 'destinationPortRange') ? securityRule.properties.destinationPortRange : ''
-    destinationPortRanges: contains(securityRule.properties, 'destinationPortRanges') ? securityRule.properties.destinationPortRanges : []
-    sourceAddressPrefix: contains(securityRule.properties, 'sourceAddressPrefix') ? securityRule.properties.sourceAddressPrefix : ''
-    destinationAddressPrefix: contains(securityRule.properties, 'destinationAddressPrefix') ? securityRule.properties.destinationAddressPrefix : ''
-    sourceAddressPrefixes: contains(securityRule.properties, 'sourceAddressPrefixes') ? securityRule.properties.sourceAddressPrefixes : []
-    destinationAddressPrefixes: contains(securityRule.properties, 'destinationAddressPrefixes') ? securityRule.properties.destinationAddressPrefixes : []
-    sourceApplicationSecurityGroups: contains(securityRule.properties, 'sourceApplicationSecurityGroups') ? securityRule.properties.sourceApplicationSecurityGroups : []
-    destinationApplicationSecurityGroups: contains(securityRule.properties, 'destinationApplicationSecurityGroups') ? securityRule.properties.destinationApplicationSecurityGroups : []
+module networkSecurityGroup_securityRules 'security-rule/main.bicep' = [
+  for (securityRule, index) in securityRules: {
+    name: '${uniqueString(deployment().name, location)}-NetworkSecurityGroup-SecurityRule-${index}'
+    params: {
+      name: securityRule.name
+      networkSecurityGroupName: networkSecurityGroup.name
+      protocol: securityRule.properties.protocol
+      access: securityRule.properties.access
+      priority: securityRule.properties.priority
+      direction: securityRule.properties.direction
+      description: contains(securityRule.properties, 'description') ? securityRule.properties.description : ''
+      sourcePortRange: contains(securityRule.properties, 'sourcePortRange')
+        ? securityRule.properties.sourcePortRange
+        : ''
+      sourcePortRanges: contains(securityRule.properties, 'sourcePortRanges')
+        ? securityRule.properties.sourcePortRanges
+        : []
+      destinationPortRange: contains(securityRule.properties, 'destinationPortRange')
+        ? securityRule.properties.destinationPortRange
+        : ''
+      destinationPortRanges: contains(securityRule.properties, 'destinationPortRanges')
+        ? securityRule.properties.destinationPortRanges
+        : []
+      sourceAddressPrefix: contains(securityRule.properties, 'sourceAddressPrefix')
+        ? securityRule.properties.sourceAddressPrefix
+        : ''
+      destinationAddressPrefix: contains(securityRule.properties, 'destinationAddressPrefix')
+        ? securityRule.properties.destinationAddressPrefix
+        : ''
+      sourceAddressPrefixes: contains(securityRule.properties, 'sourceAddressPrefixes')
+        ? securityRule.properties.sourceAddressPrefixes
+        : []
+      destinationAddressPrefixes: contains(securityRule.properties, 'destinationAddressPrefixes')
+        ? securityRule.properties.destinationAddressPrefixes
+        : []
+      sourceApplicationSecurityGroups: contains(securityRule.properties, 'sourceApplicationSecurityGroups')
+        ? securityRule.properties.sourceApplicationSecurityGroups
+        : []
+      destinationApplicationSecurityGroups: contains(securityRule.properties, 'destinationApplicationSecurityGroups')
+        ? securityRule.properties.destinationApplicationSecurityGroups
+        : []
+    }
   }
-}]
+]
 
-resource networkSecurityGroup_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource networkSecurityGroup_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: networkSecurityGroup
   }
-  scope: networkSecurityGroup
-}
 
-resource networkSecurityGroup_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
-      categoryGroup: group.?categoryGroup
-      category: group.?category
-      enabled: group.?enabled ?? true
-    }]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+resource networkSecurityGroup_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: networkSecurityGroup
   }
-  scope: networkSecurityGroup
-}]
+]
 
-resource networkSecurityGroup_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(networkSecurityGroup.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+resource networkSecurityGroup_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(networkSecurityGroup.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: networkSecurityGroup
   }
-  scope: networkSecurityGroup
-}]
+]
 
 @description('The resource group the network security group was deployed into.')
 output resourceGroupName string = resourceGroup().name

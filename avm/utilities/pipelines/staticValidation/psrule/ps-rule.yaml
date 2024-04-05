@@ -35,8 +35,9 @@ input:
   pathIgnore:
     # Exclude all files.
     - "*"
-    # Only process test files.
-    - "!avm/**/*.test.bicep"
+    # Only process defaults and waf-aligned test files.
+    - "!avm/**/defaults/*.test.bicep"
+    - "!avm/**/waf-aligned/*.test.bicep"
 
 configuration:
   # Enable automatic expansion of Azure parameter files.

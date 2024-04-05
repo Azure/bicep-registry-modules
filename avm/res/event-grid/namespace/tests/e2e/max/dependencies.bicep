@@ -74,7 +74,10 @@ resource eventHubNamespaceRbacAssignment 'Microsoft.Authorization/roleAssignment
   name: guid(managedIdentity.id, 'evhrbacAssignment')
   scope: eventHubNamespace
   properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2b629674-e913-4c01-ae53-ef4638d8f975') // Azure Event Hubs Data Sender
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '2b629674-e913-4c01-ae53-ef4638d8f975'
+    ) // Azure Event Hubs Data Sender
     principalId: managedIdentity.properties.principalId
     principalType: 'ServicePrincipal'
   }

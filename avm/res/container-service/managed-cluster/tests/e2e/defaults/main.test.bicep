@@ -32,22 +32,24 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 }
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    managedIdentities: {
-      systemAssigned: true
-    }
-    primaryAgentPoolProfile: [
-      {
-        name: 'systempool'
-        count: 1
-        vmSize: 'Standard_DS2_v2'
-        mode: 'System'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      managedIdentities: {
+        systemAssigned: true
       }
-    ]
+      primaryAgentPoolProfile: [
+        {
+          name: 'systempool'
+          count: 1
+          vmSize: 'Standard_DS2_v2'
+          mode: 'System'
+        }
+      ]
+    }
   }
-}]
+]

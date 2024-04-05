@@ -36,79 +36,81 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    sku: 'Premium_AzureFrontDoor'
-    policySettings: {
-      mode: 'Prevention'
-      redirectUrl: 'http://www.bing.com'
-      customBlockResponseStatusCode: 200
-      customBlockResponseBody: 'PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg=='
-    }
-    customRules: {
-      rules: [
-        {
-          name: 'CustomRule1'
-          priority: 2
-          enabledState: 'Enabled'
-          action: 'Block'
-          ruleType: 'MatchRule'
-          rateLimitDurationInMinutes: 1
-          rateLimitThreshold: 10
-          matchConditions: [
-            {
-              matchVariable: 'RemoteAddr'
-              selector: null
-              operator: 'GeoMatch'
-              negateCondition: false
-              transforms: []
-              matchValue: [
-                'CH'
-              ]
-            }
-            {
-              matchVariable: 'RequestHeader'
-              selector: 'UserAgent'
-              operator: 'Contains'
-              negateCondition: false
-              transforms: []
-              matchValue: [
-                'windows'
-              ]
-            }
-            {
-              matchVariable: 'QueryString'
-              operator: 'Contains'
-              negateCondition: false
-              transforms: [
-                'UrlDecode'
-                'Lowercase'
-              ]
-              matchValue: [
-                '<?php'
-                '?>'
-              ]
-            }
-          ]
-        }
-      ]
-    }
-    managedRules: {
-      managedRuleSets: [
-        {
-          ruleSetType: 'Microsoft_BotManagerRuleSet'
-          ruleSetVersion: '1.0'
-        }
-      ]
-    }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      sku: 'Premium_AzureFrontDoor'
+      policySettings: {
+        mode: 'Prevention'
+        redirectUrl: 'http://www.bing.com'
+        customBlockResponseStatusCode: 200
+        customBlockResponseBody: 'PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg=='
+      }
+      customRules: {
+        rules: [
+          {
+            name: 'CustomRule1'
+            priority: 2
+            enabledState: 'Enabled'
+            action: 'Block'
+            ruleType: 'MatchRule'
+            rateLimitDurationInMinutes: 1
+            rateLimitThreshold: 10
+            matchConditions: [
+              {
+                matchVariable: 'RemoteAddr'
+                selector: null
+                operator: 'GeoMatch'
+                negateCondition: false
+                transforms: []
+                matchValue: [
+                  'CH'
+                ]
+              }
+              {
+                matchVariable: 'RequestHeader'
+                selector: 'UserAgent'
+                operator: 'Contains'
+                negateCondition: false
+                transforms: []
+                matchValue: [
+                  'windows'
+                ]
+              }
+              {
+                matchVariable: 'QueryString'
+                operator: 'Contains'
+                negateCondition: false
+                transforms: [
+                  'UrlDecode'
+                  'Lowercase'
+                ]
+                matchValue: [
+                  '<?php'
+                  '?>'
+                ]
+              }
+            ]
+          }
+        ]
+      }
+      managedRules: {
+        managedRuleSets: [
+          {
+            ruleSetType: 'Microsoft_BotManagerRuleSet'
+            ruleSetVersion: '1.0'
+          }
+        ]
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
   }
-}]
+]

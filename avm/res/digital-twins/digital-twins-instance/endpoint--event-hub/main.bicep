@@ -36,15 +36,17 @@ param entityPath string = ''
 @description('Optional. The URL of the EventHub namespace for identity-based authentication. It must include the protocol \'sb://\' (i.e. sb://xyz.servicebus.windows.net).')
 param endpointUri string = ''
 
-var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
-
-@description('Optional. The managed identity definition for this resource.')
+@description('Optional. The managed identity definition for this resource.  Only one type of identity is supported: system-assigned or user-assigned, but not both.')
 param managedIdentities managedIdentitiesType
 
-var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
-  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-} : null
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? 'SystemAssigned'
+        : (!empty(managedIdentities.?userAssignedResourceId ?? '') ? 'UserAssigned' : null)
+      userAssignedIdentity: managedIdentities.?userAssignedResourceId
+    }
+  : null
 
 resource digitalTwinsInstance 'Microsoft.DigitalTwins/digitalTwinsInstances@2023-01-31' existing = {
   name: digitalTwinInstanceName
@@ -75,7 +77,8 @@ output resourceGroupName string = resourceGroup().name
 @description('The name of the Endpoint.')
 output name string = endpoint.name
 
-@description('The principal ID of the system assigned identity.')
+@description('The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API.')
+#disable-next-line BCP187
 output systemAssignedMIPrincipalId string = endpoint.?identity.?principalId ?? ''
 
 // =============== //
@@ -87,5 +90,5 @@ type managedIdentitiesType = {
   systemAssigned: bool?
 
   @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]?
+  userAssignedResourceId: string?
 }?

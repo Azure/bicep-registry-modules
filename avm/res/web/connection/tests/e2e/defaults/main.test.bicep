@@ -36,15 +36,17 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    displayName: 'azuremonitorlogs'
-    name: 'azuremonitor'
-    location: resourceLocation
-    api: {
-      id: '${subscription().id}/providers/Microsoft.Web/locations/${resourceLocation}/managedApis/azuremonitorlogs'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      displayName: 'azuremonitorlogs'
+      name: 'azuremonitor'
+      location: resourceLocation
+      api: {
+        id: '${subscription().id}/providers/Microsoft.Web/locations/${resourceLocation}/managedApis/azuremonitorlogs'
+      }
     }
   }
-}]
+]
