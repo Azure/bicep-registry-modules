@@ -148,7 +148,6 @@ var zoneRedundantSkus = [
   'ErGw2AZ'
   'ErGw3AZ'
 ]
-var gatewayPipSku = contains(zoneRedundantSkus, skuName) ? 'Standard' : 'Basic'
 var gatewayPipAllocationMethod = contains(zoneRedundantSkus, skuName) ? 'Static' : 'Dynamic'
 
 var isActiveActiveValid = gatewayType != 'ExpressRoute' ? activeActive : false
@@ -224,7 +223,7 @@ var vpnClientConfiguration = !empty(clientRootCertData)
         {
           name: 'RootCert1'
           properties: {
-            PublicCertData: clientRootCertData
+            publicCertData: clientRootCertData
           }
         }
       ]
@@ -233,7 +232,7 @@ var vpnClientConfiguration = !empty(clientRootCertData)
             {
               name: 'RevokedCert1'
               properties: {
-                Thumbprint: clientRevokedCertThumbprint
+                thumbprint: clientRevokedCertThumbprint
               }
             }
           ]
@@ -311,7 +310,7 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.2.0' = [
       publicIPAllocationMethod: gatewayPipAllocationMethod
       publicIpPrefixResourceId: !empty(publicIPPrefixResourceId) ? publicIPPrefixResourceId : ''
       tags: tags
-      skuName: gatewayPipSku
+      skuName: 'Standard'
       zones: contains(zoneRedundantSkus, skuName) ? publicIpZones : []
       dnsSettings: {
         domainNameLabel: length(virtualGatewayPipNameVar) == length(domainNameLabel)
