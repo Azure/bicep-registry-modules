@@ -67,15 +67,15 @@ jobs:
         shell: pwsh
         run: |
           $storageAccountInfo = @{
-            storageAccountName      = 'biceplivedatasaprod'
-            storageAccountContainer = 'bicep-cdn-live-data-container'
-            storageBlobName         = 'module-index'
-            storageBlobContentType  = @{"ContentType" = "application/json"
+              storageAccountName      = 'biceplivedatasaprod'
+              storageAccountContainer = 'bicep-cdn-live-data-container'
+              storageBlobName         = 'module-index'
+              storageBlobContentType  = @{'ContentType' = 'application/json'}
           }
           Write-Verbose ('Uploading [moduleIndex.json] to blob storage account [{0}] in container [{1}] as blob [{2}]' -f $storageAccountInfo.storageAccountName, $storageAccountInfo.storageAccountContainer, $storageAccountInfo.storageBlobName) -Verbose
-
+          
           $storageContext = New-AzStorageContext -StorageAccountName $storageAccountInfo.storageAccountName -UseConnectedAccount
-
+          
           $functionInput = @{
               Context    = $storageContext
               Container  = $storageAccountInfo.storageAccountContainer
@@ -84,7 +84,5 @@ jobs:
               Properties = $storageAccountInfo.storageBlobContentType
           }
           Set-AzStorageBlobContent @functionInput -Force
-
+          
           Write-Verbose ('Upload of [{0}] complete.' -f $storageAccountInfo.storageBlobName) -Verbose
-          Set-AzStorageBlobContent -Context $storageContext -Container $storageAccountInfo.storageAccountContainer -Blob $storageAccountInfo.storageBlobName -File 'moduleIndex.json' -Properties $storageAccountInfo.storageBlobContentType  -Force
-          Write-Verbose "Uploaded moduleIndex.json to blob storage account $storageAccountInfo.storageAccountName in container $storageAccountInfo.storageAccountContainer as blob $storageAccountInfo.storageBlobName" -Verbose

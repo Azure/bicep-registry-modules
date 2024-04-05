@@ -7,10 +7,10 @@ Creates the moduleIndex.json file for the AVM modules that is used by Visual Stu
 
 Also has error handling to cope with a module not being published fully but will not prevent the script from completeing each time.
 
-The script uses a merging strategy with the previous version of moduleIndex.json to ensure that the file is always up to date with the latest modules but previous versions are not removed, this can be changed by setting the $doNotMergeWithLastModuleIndexJsonFileVersion parameter to $true.
+The script uses a merging strategy with the previous version of moduleIndex.json to ensure that the file is always up to date with the latest modules but previous versions are not removed, this can be changed by specifying the $doNotMergeWithLastModuleIndexJsonFileVersion parameter.
 
 .EXAMPLE
-Invoke-AvmJsonModuleIndexGeneration.ps1 -storageAccountName '<STORAGE ACCOUNT NAME>' -storageAccountContainer '<STORAGE ACCOUNT BLOB CONTAINER NAME>' -storageBlobName '<STORAGE ACCOUNT BLOB NAME>' -moduleIndexJsonFilePath 'moduleIndex.json' -prefixForLastModuleIndexJsonFile 'last-' -prefixForCurrentGeneratedModuleIndexJsonFile 'generated-' -doNotMergeWithLastModuleIndexJsonFileVersion $false
+Invoke-AvmJsonModuleIndexGeneration -storageAccountName '<STORAGE ACCOUNT NAME>' -storageAccountContainer '<STORAGE ACCOUNT BLOB CONTAINER NAME>' -storageBlobName '<STORAGE ACCOUNT BLOB NAME>' -moduleIndexJsonFilePath 'moduleIndex.json' -prefixForLastModuleIndexJsonFile 'last-' -prefixForCurrentGeneratedModuleIndexJsonFile 'generated-'
 
 This example will generate the moduleIndex.json file for the AVM modules and save it to the current directory and merge it with the last version of the moduleIndex.json file that was downloaded from the storage account.
 
@@ -40,7 +40,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
     [string] $prefixForCurrentGeneratedModuleIndexJsonFile = 'generated-',
 
     [Parameter(Mandatory = $false)]
-    [bool] $doNotMergeWithLastModuleIndexJsonFileVersion = $false
+    [switch] $doNotMergeWithLastModuleIndexJsonFileVersion
   )
 
   ## Download the current published moduleIndex.json from the storage account if the $doNotMergeWithLastModuleIndexJsonFileVersion is set to $false
@@ -118,15 +118,15 @@ function Invoke-AvmJsonModuleIndexGeneration {
             }
 
             $properties[$tag] = [ordered]@{
-              'description'      = $description
-              'documentationUri' = $documentationUri
+              description      = $description
+              documentationUri = $documentationUri
             }
           }
 
           $moduleIndexData += [ordered]@{
-            'moduleName' = $modulePath
-            'tags'       = @($tags)
-            'properties' = $properties
+            moduleName = $modulePath
+            tags       = @($tags)
+            properties = $properties
           }
         } catch {
           Write-Error "Error message: $($_.Exception.Message)"
@@ -143,9 +143,9 @@ function Invoke-AvmJsonModuleIndexGeneration {
   Write-Verbose "Convert moduleIndexData variable to JSON and save as 'generated-moduleIndex.json'" -Verbose
   $moduleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $currentGeneratedModuleIndexJsonFilePath
 
-  ## Merge the new moduleIndex.json file with the previous version if the $doNotMergeWithLastModuleIndexJsonFileVersion is set to $false
+  ## Merge the new moduleIndex.json file with the previous version if the $doNotMergeWithLastModuleIndexJsonFileVersion is not specified
 
-  if ($doNotMergeWithLastModuleIndexJsonFileVersion -eq $false) {
+  if (-not $doNotMergeWithLastModuleIndexJsonFileVersion) {
     Write-Verbose "Merging 'generated-moduleIndex.json' (new) file with 'last-moduleIndex.json' (previous) file..." -Verbose
 
     $lastModuleIndexJsonFileContent = Get-Content $lastModuleIndexJsonFilePath
@@ -154,15 +154,30 @@ function Invoke-AvmJsonModuleIndexGeneration {
     $lastModuleIndexData = $lastModuleIndexJsonFileContent | ConvertFrom-Json -Depth 10
     $currentGeneratedModuleIndexData = $currentGeneratedModuleIndexJsonFileContent | ConvertFrom-Json -Depth 10
 
-    $mergedModuleIndexData = $lastModuleIndexData + $currentGeneratedModuleIndexData | Group-Object -Property moduleName | ForEach-Object {
-      $_.Group | Sort-Object -Property @{Expression = { $_.tags -join ',' } } -Descending | Select-Object -First 1
-    } | Sort-Object -Property moduleName
+    $mergedModuleIndexData = ($lastModuleIndexData + $currentGeneratedModuleIndexData) | Group-Object -Property 'moduleName' | ForEach-Object {
+        $newTags = $_.Group.tags | Sort-Object -Unique
+    
+        $newProperties = [ordered]@{}
+        $oldProperties = $_.Group.properties
+        $oldProperties.Keys | Sort-Object | ForEach-Object {
+            if ($newProperties.Keys -notContains $_) {
+                $newProperties[$_] = $oldProperties[0].Keys -contains $_ ? $oldProperties[0][$_] : $oldProperties[1][$_]
+            }
+        }
+    
+        $_.Group | ForEach-Object {
+            $_.tags = $newTags
+            $_.properties = $newProperties
+        }
+        
+        $_.Group | Select-Object -First 1
+    }
 
     Write-Verbose "Convert mergedModuleIndexData variable to JSON and save as 'moduleIndex.json'" -Verbose
     $mergedModuleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $moduleIndexJsonFilePath
   }
   if ($doNotMergeWithLastModuleIndexJsonFileVersion -eq $true) {
-    Write-Verbose "Convert currentGeneratedModuleIndexData variable to JSON and save as 'moduleIndex.json to overwrite it as doNotMergeWithLastModuleIndexJsonFileVersion was set to true'" -Verbose
+    Write-Verbose "Convert currentGeneratedModuleIndexData variable to JSON and save as 'moduleIndex.json to overwrite it as `doNotMergeWithLastModuleIndexJsonFileVersion` was specified'" -Verbose
     $moduleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $moduleIndexJsonFilePath -Force
   }
 
