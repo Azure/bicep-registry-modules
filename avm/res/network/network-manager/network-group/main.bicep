@@ -25,7 +25,7 @@ resource networkGroup 'Microsoft.Network/networkManagers/networkGroups@2023-04-0
   name: name
   parent: networkManager
   properties: {
-    description: description
+    description: description ?? ''
   }
 }
 

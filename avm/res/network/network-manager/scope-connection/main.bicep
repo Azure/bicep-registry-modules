@@ -28,7 +28,7 @@ resource scopeConnection 'Microsoft.Network/networkManagers/scopeConnections@202
   name: name
   parent: networkManager
   properties: {
-    description: description
+    description: description ?? ''
     resourceId: resourceId
     tenantId: tenantId
   }

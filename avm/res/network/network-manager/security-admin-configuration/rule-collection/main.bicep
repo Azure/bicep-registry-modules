@@ -35,7 +35,7 @@ resource ruleCollection 'Microsoft.Network/networkManagers/securityAdminConfigur
   name: name
   parent: networkManager::securityAdminConfiguration
   properties: {
-    description: description
+    description: description ?? ''
     appliesToGroups: appliesToGroups
   }
 }
@@ -49,7 +49,7 @@ module securityAdminConfigurations_rules 'rule/main.bicep' = [
       ruleCollectionName: ruleCollection.name
       name: rule.name
       access: rule.access
-      description: rule.?description
+      description: rule.?description ?? ''
       destinationPortRanges: rule.?destinationPortRanges ?? []
       destinations: rule.?destinations ?? []
       direction: rule.direction

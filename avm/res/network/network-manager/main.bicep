@@ -110,7 +110,7 @@ module networkManager_networkGroups 'network-group/main.bicep' = [
     params: {
       name: networkGroup.name
       networkManagerName: networkManager.name
-      description: networkGroup.?description
+      description: networkGroup.?description ?? ''
       staticMembers: networkGroup.?staticMembers
     }
   }
@@ -122,7 +122,7 @@ module networkManager_connectivityConfigurations 'connectivity-configuration/mai
     params: {
       name: connectivityConfiguration.name
       networkManagerName: networkManager.name
-      description: connectivityConfiguration.?description
+      description: connectivityConfiguration.?description ?? ''
       appliesToGroups: connectivityConfiguration.?appliesToGroups ?? []
       connectivityTopology: connectivityConfiguration.connectivityTopology
       hubs: connectivityConfiguration.?hubs ?? []
@@ -139,7 +139,7 @@ module networkManager_scopeConnections 'scope-connection/main.bicep' = [
     params: {
       name: scopeConnection.name
       networkManagerName: networkManager.name
-      description: scopeConnection.?description
+      description: scopeConnection.?description ?? ''
       resourceId: scopeConnection.resourceId
       tenantId: scopeConnection.tenantId
     }
@@ -152,7 +152,7 @@ module networkManager_securityAdminConfigurations 'security-admin-configuration/
     params: {
       name: securityAdminConfiguration.name
       networkManagerName: networkManager.name
-      description: securityAdminConfiguration.?description
+      description: securityAdminConfiguration.?description ?? ''
       applyOnNetworkIntentPolicyBasedServices: securityAdminConfiguration.applyOnNetworkIntentPolicyBasedServices
       ruleCollections: securityAdminConfiguration.?ruleCollections ?? []
     }

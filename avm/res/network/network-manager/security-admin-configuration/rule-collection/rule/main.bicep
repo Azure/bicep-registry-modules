@@ -81,7 +81,7 @@ resource rule 'Microsoft.Network/networkManagers/securityAdminConfigurations/rul
   kind: 'Custom'
   properties: {
     access: access
-    description: description
+    description: description ?? ''
     destinationPortRanges: destinationPortRanges
     destinations: destinations
     direction: direction

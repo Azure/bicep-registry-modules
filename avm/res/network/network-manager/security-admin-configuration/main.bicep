@@ -28,7 +28,7 @@ resource securityAdminConfigurations 'Microsoft.Network/networkManagers/security
   name: name
   parent: networkManager
   properties: {
-    description: description
+    description: description ?? ''
     applyOnNetworkIntentPolicyBasedServices: applyOnNetworkIntentPolicyBasedServices
   }
 }
@@ -40,7 +40,7 @@ module securityAdminConfigurations_ruleCollections 'rule-collection/main.bicep' 
       networkManagerName: networkManager.name
       securityAdminConfigurationName: securityAdminConfigurations.name
       name: ruleCollection.name
-      description: ruleCollection.?description
+      description: ruleCollection.?description ?? ''
       appliesToGroups: ruleCollection.appliesToGroups
       rules: ruleCollection.?rules ?? []
     }

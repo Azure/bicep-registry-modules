@@ -117,6 +117,9 @@ module testDeployment '../../../main.bicep' = [
             }
           ]
         }
+        {
+          name: 'network-group-spokes-3'
+        }
       ]
       connectivityConfigurations: [
         {
