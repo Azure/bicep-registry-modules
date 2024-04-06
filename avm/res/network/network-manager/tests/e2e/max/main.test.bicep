@@ -151,7 +151,7 @@ module testDeployment '../../../main.bicep' = [
           name: 'scope-connection-test'
           description: 'description of the scope connection'
           resourceId: subscription().id
-          tenantid: tenant().tenantId
+          tenantId: tenant().tenantId
         }
       ]
       securityAdminConfigurations: [

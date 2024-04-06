@@ -12,7 +12,7 @@ param name string
 
 @maxLength(500)
 @sys.description('Optional. A description of the scope connection.')
-param description string = ''
+param description string?
 
 @sys.description('Required. Enter the subscription or management group resource ID that you want to add to this network manager\'s scope.')
 param resourceId string

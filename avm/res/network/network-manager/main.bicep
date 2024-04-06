@@ -24,19 +24,19 @@ param tags object?
 param description string = ''
 
 @sys.description('Required. Scope Access. String array containing any of "Connectivity", "SecurityAdmin". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs.')
-param networkManagerScopeAccesses array
+param networkManagerScopeAccesses networkManagerScopeAccessType
 
-@sys.description('Required. Scope of Network Manager. Contains a list of management groups or a list of subscriptions. This defines the boundary of network resources that this Network Manager instance can manage. If using Management Groups, ensure that the "Microsoft.Network" resource provider is registered for those Management Groups prior to deployment.')
-param networkManagerScopes object
+@sys.description('Required. Scope of Network Manager. Contains a list of management groups or a list of subscriptions. This defines the boundary of network resources that this Network Manager instance can manage. If using Management Groups, ensure that the "Microsoft.Network" resource provider is registered for those Management Groups prior to deployment. Must contain at least one management group or subscription.')
+param networkManagerScopes networkManagerScopesType
 
 @sys.description('Conditional. Network Groups and static members to create for the network manager. Required if using "connectivityConfigurations" or "securityAdminConfigurations" parameters. A network group is global container that includes a set of virtual network resources from any region. Then, configurations are applied to target the network group, which applies the configuration to all members of the group. The two types are group memberships are static and dynamic memberships. Static membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks, and is available as a child module, while dynamic membership is defined through Azure policy. See [How Azure Policy works with Network Groups](https://learn.microsoft.com/en-us/azure/virtual-network-manager/concept-azure-policy-integration) for more details.')
-param networkGroups array = []
+param networkGroups networkGroupType
 
 @sys.description('Optional. Connectivity Configurations to create for the network manager. Network manager must contain at least one network group in order to define connectivity configurations.')
-param connectivityConfigurations array = []
+param connectivityConfigurations connectivityConfigurationsType
 
 @sys.description('Optional. Scope Connections to create for the network manager. Allows network manager to manage resources from another tenant. Supports management groups or subscriptions from another tenant.')
-param scopeConnections array = []
+param scopeConnections scopeConnectionType
 
 @sys.description('Optional. Security Admin Configurations, Rule Collections and Rules to create for the network manager. Azure Virtual Network Manager provides two different types of configurations you can deploy across your virtual networks, one of them being a SecurityAdmin configuration. A security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. You then associate the rule collection with the network groups that you want to apply the security admin rules to.')
 param securityAdminConfigurations array = []
@@ -105,38 +105,38 @@ resource networkManager 'Microsoft.Network/networkManagers@2023-04-01' = {
 }
 
 module networkManager_networkGroups 'network-group/main.bicep' = [
-  for (networkGroup, index) in networkGroups: {
+  for (networkGroup, index) in networkGroups ?? []: {
     name: '${uniqueString(deployment().name, location)}-NetworkManager-NetworkGroups-${index}'
     params: {
       name: networkGroup.name
       networkManagerName: networkManager.name
-      description: contains(networkGroup, 'description') ? networkGroup.description : ''
-      staticMembers: contains(networkGroup, 'staticMembers') ? networkGroup.staticMembers : []
+      description: networkGroup.?description
+      staticMembers: networkGroup.staticMembers
     }
   }
 ]
 
 module networkManager_connectivityConfigurations 'connectivity-configuration/main.bicep' = [
-  for (connectivityConfiguration, index) in connectivityConfigurations: {
+  for (connectivityConfiguration, index) in connectivityConfigurations ?? []: {
     name: '${uniqueString(deployment().name, location)}-NetworkManager-ConnectivityConfigurations-${index}'
     params: {
       name: connectivityConfiguration.name
       networkManagerName: networkManager.name
-      description: contains(connectivityConfiguration, 'description') ? connectivityConfiguration.description : ''
-      appliesToGroups: connectivityConfiguration.appliesToGroups
+      description: connectivityConfiguration.?description
+      appliesToGroups: connectivityConfiguration.?appliesToGroups ?? []
       connectivityTopology: connectivityConfiguration.connectivityTopology
-      hubs: contains(connectivityConfiguration, 'hubs') ? connectivityConfiguration.hubs : []
-      deleteExistingPeering: contains(connectivityConfiguration, 'hubs') && (connectivityConfiguration.connectivityTopology == 'HubAndSpoke')
-        ? connectivityConfiguration.deleteExistingPeering
+      hubs: connectivityConfiguration.?hubs ?? []
+      deleteExistingPeering: connectivityConfiguration.?hubs && (connectivityConfiguration.connectivityTopology == 'HubAndSpoke')
+        ? connectivityConfiguration.?deleteExistingPeering
         : 'False'
-      isGlobal: contains(connectivityConfiguration, 'isGlobal') ? connectivityConfiguration.isGlobal : 'False'
+      isGlobal: connectivityConfiguration.?isGlobal ? connectivityConfiguration.isGlobal : 'False'
     }
     dependsOn: networkManager_networkGroups
   }
 ]
 
 module networkManager_scopeConnections 'scope-connection/main.bicep' = [
-  for (scopeConnection, index) in scopeConnections: {
+  for (scopeConnection, index) in scopeConnections ?? []: {
     name: '${uniqueString(deployment().name, location)}-NetworkManager-ScopeConnections-${index}'
     params: {
       name: scopeConnection.name
@@ -239,4 +239,86 @@ type roleAssignmentType = {
 
   @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
+}[]?
+
+type networkGroupType = {
+  @sys.description('Required. The name of the network group.')
+  name: string
+
+  @sys.description('Optional. A description of the network group.')
+  description: string?
+
+  @sys.description('Optional. Static Members to create for the network group. Contains virtual networks to add to the network group.')
+  staticMembers: {
+    @sys.description('Required. The name of the static member.')
+    name: string
+
+    @sys.description('Required. Resource ID of the virtual network.')
+    resourceId: string
+  }[]?
+}[]?
+
+type networkManagerScopeAccessType = ('Connectivity' | 'SecurityAdmin')[]
+
+type networkManagerScopesType = {
+  @sys.description('Optional. Management groups to assign to the network manager to manage.')
+  managementGroups: string[]?
+
+  @sys.description('Optional. Subscriptions to assign to the network manager to manage.')
+  subscriptions: string[]?
+}
+
+type scopeConnectionType = {
+  @sys.description('Required. The name of the scope connection.')
+  name: string
+
+  @sys.description('Optional. A description of the scope connection.')
+  description: string?
+
+  @sys.description('Required. Enter the subscription or management group resource ID that you want to add to this network manager\'s scope.')
+  resourceId: string
+
+  @sys.description('Required. Tenant ID of the subscription or management group that you want to manage.')
+  tenantId: string
+}[]?
+
+type connectivityConfigurationsType = {
+  @sys.description('Required. The name of the connectivity configuration.')
+  name: string
+
+  @sys.description('Optional. A description of the connectivity configuration.')
+  description: string?
+
+  @sys.description('Required. Network Groups for the configuration.')
+  appliesToGroups: {
+    @sys.description('Required. Group connectivity type.')
+    groupConnectivity: ('DirectlyConnected' | 'None')
+
+    @sys.description('Optional. Flag if global is supported.')
+    isGlobal: ('True' | 'False')?
+
+    @sys.description('Required. Network group Id.')
+    networkGroupId: string
+
+    @sys.description('Optional. Flag if use hub gateway.')
+    useHubGateway: ('True' | 'False')?
+  }[]
+
+  @sys.description('Required. The connectivity topology to apply the configuration to.')
+  connectivityTopology: ('HubAndSpoke' | 'Mesh')
+
+  @sys.description('Optional. The hubs to apply the configuration to.')
+  hubs: {
+    @sys.description('Required. Resource Id of the hub.')
+    resourceId: string
+
+    @sys.description('Required. Resource type of the hub.')
+    resourceType: 'Microsoft.Network/virtualNetworks'
+  }[]?
+
+  @sys.description('Optional. Delete existing peering connections.')
+  deleteExistingPeering: ('True' | 'False')?
+
+  @sys.description('Optional. Is global configuration.')
+  isGlobal: ('True' | 'False')?
 }[]?

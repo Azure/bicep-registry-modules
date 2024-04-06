@@ -12,10 +12,10 @@ param name string
 
 @maxLength(500)
 @sys.description('Optional. A description of the connectivity configuration.')
-param description string = ''
+param description string?
 
 @sys.description('Required. Network Groups for the configuration.')
-param appliesToGroups array = []
+param appliesToGroups appliesToGroupsType
 
 @allowed([
   'HubAndSpoke'
@@ -25,7 +25,7 @@ param appliesToGroups array = []
 param connectivityTopology string
 
 @sys.description('Conditional. List of hub items. This will create peerings between the specified hub and the virtual networks in the network group specified. Required if connectivityTopology is of type "HubAndSpoke".')
-param hubs array = []
+param hubs hubsType?
 
 @allowed([
   'True'
@@ -66,3 +66,29 @@ output resourceId string = connectivityConfiguration.id
 
 @sys.description('The resource group the connectivity configuration was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+type appliesToGroupsType = {
+  @sys.description('Required. Group connectivity type.')
+  groupConnectivity: ('DirectlyConnected' | 'None')
+
+  @sys.description('Optional. Flag if global is supported.')
+  isGlobal: ('True' | 'False')?
+
+  @sys.description('Required. Network group Id.')
+  networkGroupId: string
+
+  @sys.description('Optional. Flag if use hub gateway.')
+  useHubGateway: ('True' | 'False')?
+}[]
+
+type hubsType = {
+  @sys.description('Required. Resource Id of the hub.')
+  resourceId: string
+
+  @sys.description('Required. Resource type of the hub.')
+  resourceType: 'Microsoft.Network/virtualNetworks'
+}[]?
