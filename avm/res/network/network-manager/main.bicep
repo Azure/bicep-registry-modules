@@ -111,7 +111,7 @@ module networkManager_networkGroups 'network-group/main.bicep' = [
       name: networkGroup.name
       networkManagerName: networkManager.name
       description: networkGroup.?description
-      staticMembers: networkGroup.staticMembers
+      staticMembers: networkGroup.?staticMembers
     }
   }
 ]
@@ -126,10 +126,8 @@ module networkManager_connectivityConfigurations 'connectivity-configuration/mai
       appliesToGroups: connectivityConfiguration.?appliesToGroups ?? []
       connectivityTopology: connectivityConfiguration.connectivityTopology
       hubs: connectivityConfiguration.?hubs ?? []
-      deleteExistingPeering: connectivityConfiguration.?hubs && (connectivityConfiguration.connectivityTopology == 'HubAndSpoke')
-        ? connectivityConfiguration.?deleteExistingPeering
-        : 'False'
-      isGlobal: connectivityConfiguration.?isGlobal ? connectivityConfiguration.isGlobal : 'False'
+      deleteExistingPeering: connectivityConfiguration.?deleteExistingPeering
+      isGlobal: connectivityConfiguration.?isGlobal
     }
     dependsOn: networkManager_networkGroups
   }
@@ -156,7 +154,7 @@ module networkManager_securityAdminConfigurations 'security-admin-configuration/
       networkManagerName: networkManager.name
       description: securityAdminConfiguration.?description
       applyOnNetworkIntentPolicyBasedServices: securityAdminConfiguration.applyOnNetworkIntentPolicyBasedServices
-      ruleCollections: securityAdminConfiguration.?ruleCollections
+      ruleCollections: securityAdminConfiguration.?ruleCollections ?? []
     }
     dependsOn: networkManager_networkGroups
   }
