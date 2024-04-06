@@ -30,7 +30,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -258,7 +258,10 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -269,8 +272,10 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
   name: 'emailServiceDeployment'
   params: {
     // Required parameters
+    dataLocation: 'Germany'
     name: 'ceswaf001'
-    location: '<location>'
+    // Non-required parameters
+    location: 'global'
   }
 }
 ```
@@ -288,11 +293,15 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "dataLocation": {
+      "value": "Germany"
+    },
     "name": {
       "value": "ceswaf001"
     },
+    // Non-required parameters
     "location": {
-      "value": "<location>"
+      "value": "global"
     }
   }
 }
