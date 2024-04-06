@@ -17,6 +17,7 @@ This module deploys an Email Service Domain
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Communication/emailServices/domains` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/emailServices/domains) |
+| `Microsoft.Communication/emailServices/domains/senderUsernames` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/emailServices/domains/senderUsernames) |
 
 ## Parameters
 
@@ -40,6 +41,7 @@ This module deploys an Email Service Domain
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`senderUsernames`](#parameter-senderusernames) | array | The domains to deploy into this namespace. |
 | [`tags`](#parameter-tags) | object | Endpoint tags. |
 | [`userEngagementTracking`](#parameter-userengagementtracking) | string | Describes whether user engagement tracking is enabled or disabled. |
 
@@ -205,6 +207,13 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `senderUsernames`
+
+The domains to deploy into this namespace.
+
+- Required: No
+- Type: array
 
 ### Parameter: `tags`
 

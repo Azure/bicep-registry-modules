@@ -31,6 +31,9 @@ param domainManagement string = 'AzureManaged'
 @description('Optional. Describes whether user engagement tracking is enabled or disabled.')
 param userEngagementTracking string = 'Disabled'
 
+@description('Optional. The domains to deploy into this namespace.')
+param senderUsernames array?
+
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
@@ -69,6 +72,19 @@ resource domain 'Microsoft.Communication/emailServices/domains@2023-04-01' = {
     userEngagementTracking: userEngagementTracking
   }
 }
+
+module domain_senderUsernames 'sender-username/main.bicep' = [
+  for (senderUsername, index) in senderUsernames ?? []: {
+    name: '${uniqueString(deployment().name, location)}-domain-senderusername-${index}'
+    params: {
+      emailServiceName: emailService.name
+      domainName: domain.name
+      name: senderUsername.name
+      username: senderUsername.username
+      displayName: senderUsername.?displayName
+    }
+  }
+]
 
 resource domain_lock 'Microsoft.Authorization/locks@2020-05-01' =
   if (!empty(lock ?? {}) && lock.?kind != 'None') {

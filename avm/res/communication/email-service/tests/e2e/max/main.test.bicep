@@ -114,6 +114,18 @@ module testDeployment '../../../main.bicep' = [
               principalType: 'ServicePrincipal'
             }
           ]
+          senderUsernames: [
+            {
+              name: 'donotreply'
+              userName: 'DoNotReply'
+              displayName: 'Do Not Reply'
+            }
+            {
+              name: 'customerservice'
+              userName: 'CustomerService'
+              displayName: 'Customer Service'
+            }
+          ]
         }
       ]
     }

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "13787788706432354371"
+      "templateHash": "15607021669582489302"
     },
     "name": "Email Services Domains",
     "description": "This module deploys an Email Service Domain",
@@ -157,6 +157,13 @@
         "description": "Optional. Describes whether user engagement tracking is enabled or disabled."
       }
     },
+    "senderUsernames": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The domains to deploy into this namespace."
+      }
+    },
     "lock": {
       "$ref": "#/definitions/lockType",
       "metadata": {
@@ -234,6 +241,123 @@
       },
       "dependsOn": [
         "domain"
+      ]
+    },
+    "domain_senderUsernames": {
+      "copy": {
+        "name": "domain_senderUsernames",
+        "count": "[length(coalesce(parameters('senderUsernames'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-domain-senderusername-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "emailServiceName": {
+            "value": "[parameters('emailServiceName')]"
+          },
+          "domainName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('senderUsernames'), createArray())[copyIndex()].name]"
+          },
+          "username": {
+            "value": "[coalesce(parameters('senderUsernames'), createArray())[copyIndex()].username]"
+          },
+          "displayName": {
+            "value": "[tryGet(coalesce(parameters('senderUsernames'), createArray())[copyIndex()], 'displayName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.54.24096",
+              "templateHash": "17166679001728078734"
+            },
+            "name": "Sender Usernames",
+            "description": "This module deploys an Sender",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "emailServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent email service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "domainName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent domain. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the sender username resource to create."
+              }
+            },
+            "username": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. A sender username to be used when sending emails."
+              }
+            },
+            "displayName": {
+              "type": "string",
+              "defaultValue": "[parameters('username')]",
+              "metadata": {
+                "description": "Optional. The display name for the senderUsername."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Communication/emailServices/domains/senderUsernames",
+              "apiVersion": "2023-04-01",
+              "name": "[format('{0}/{1}/{2}', parameters('emailServiceName'), parameters('domainName'), parameters('name'))]",
+              "properties": {
+                "username": "[parameters('username')]",
+                "displayName": "[parameters('displayName')]"
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the sender username."
+              },
+              "value": "[resourceId('Microsoft.Communication/emailServices/domains/senderUsernames', parameters('emailServiceName'), parameters('domainName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the sender username."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the sender username was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "domain",
+        "emailService"
       ]
     }
   },

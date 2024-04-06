@@ -19,6 +19,7 @@ This module deploys an Email Service
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Communication/emailServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/emailServices) |
 | `Microsoft.Communication/emailServices/domains` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/emailServices/domains) |
+| `Microsoft.Communication/emailServices/domains/senderUsernames` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/emailServices/domains/senderUsernames) |
 
 ## Usage examples
 
@@ -126,6 +127,18 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
             roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
+        senderUsernames: [
+          {
+            displayName: 'Do Not Reply'
+            name: 'donotreply'
+            userName: 'DoNotReply'
+          }
+          {
+            displayName: 'Customer Service'
+            name: 'customerservice'
+            userName: 'CustomerService'
+          }
+        ]
         tags: {
           Role: 'DeploymentValidation'
         }
@@ -207,6 +220,18 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "senderUsernames": [
+            {
+              "displayName": "Do Not Reply",
+              "name": "donotreply",
+              "userName": "DoNotReply"
+            },
+            {
+              "displayName": "Customer Service",
+              "name": "customerservice",
+              "userName": "CustomerService"
             }
           ],
           "tags": {
