@@ -1,32 +1,41 @@
-metadata name = 'Email Services'
-metadata description = 'This module deploys an Email Service'
+metadata name = 'Email Services Domains'
+metadata description = 'This module deploys an Email Service Domain'
 metadata owner = 'Azure/module-maintainers'
 
+@description('Conditional. The name of the parent email service. Required if the template is used in a standalone deployment.')
+param emailServiceName string
+
 @minLength(1)
-@maxLength(63)
-@description('Required. Name of the Email Service to create.')
+@maxLength(253)
+@description('Required. Name of the domain to create.')
 param name string
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-@description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
-
 @description('Optional. Endpoint tags.')
 param tags object?
+
+@allowed([
+  'AzureManaged'
+  'CustomerManaged'
+  'CustomerManagedInExchangeOnline'
+])
+@description('Optional. Describes how the Domain resource is being managed.')
+param domainManagement string = 'AzureManaged'
+
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+@description('Optional. Describes whether user engagement tracking is enabled or disabled.')
+param userEngagementTracking string = 'Disabled'
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
-
-@description('Required. The location where the communication service stores its data at rest.')
-param dataLocation string
-
-@description('Optional. The domains to deploy into this namespace.')
-param domains array?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -46,51 +55,22 @@ var builtInRoleNames = {
 // Resources      //
 // ============== //
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.communication-emailservice.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
-        }
-      }
-    }
-  }
+resource emailService 'Microsoft.Communication/emailServices@2023-04-01' existing = {
+  name: emailServiceName
+}
 
-resource email 'Microsoft.Communication/emailServices@2023-04-01' = {
+resource domain 'Microsoft.Communication/emailServices/domains@2023-04-01' = {
   name: name
   location: location
   tags: tags
+  parent: emailService
   properties: {
-    dataLocation: dataLocation
+    domainManagement: domainManagement
+    userEngagementTracking: userEngagementTracking
   }
 }
 
-module email_domains 'domain/main.bicep' = [
-  for (domain, index) in (domains ?? []): {
-    name: '${uniqueString(deployment().name, location)}-email-domain-${index}'
-    params: {
-      emailServiceName: email.name
-      name: domain.name
-      location: location
-      domainManagement: domain.?domainManagement
-      userEngagementTracking: domain.?userEngagementTracking
-      roleAssignments: domain.?roleAssignments
-      lock: domain.?lock
-      tags: domain.?tags ?? tags
-    }
-  }
-]
-
-resource email_lock 'Microsoft.Authorization/locks@2020-05-01' =
+resource domain_lock 'Microsoft.Authorization/locks@2020-05-01' =
   if (!empty(lock ?? {}) && lock.?kind != 'None') {
     name: lock.?name ?? 'lock-${name}'
     properties: {
@@ -99,12 +79,12 @@ resource email_lock 'Microsoft.Authorization/locks@2020-05-01' =
         ? 'Cannot delete resource or child resources.'
         : 'Cannot delete or modify the resource or child resources.'
     }
-    scope: email
+    scope: domain
   }
 
-resource email_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+resource domain_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(email.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    name: guid(domain.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
     properties: {
       roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
         ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
@@ -118,7 +98,7 @@ resource email_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-
       conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
-    scope: email
+    scope: domain
   }
 ]
 
@@ -126,14 +106,14 @@ resource email_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-
 // Outputs      //
 // ============ //
 
-@description('The resource ID of the resource.')
-output resourceId string = email.id
+@description('The resource ID of the domain.')
+output resourceId string = domain.id
 
-@description('The name of the resource.')
-output name string = email.name
+@description('The name of the domain.')
+output name string = domain.name
 
-@description('The location the resource was deployed into.')
-output location string = email.location
+@description('The name of the resource group the domain was created in.')
+output resourceGroupName string = resourceGroup().name
 
 // ================ //
 // Definitions      //
