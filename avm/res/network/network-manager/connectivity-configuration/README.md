@@ -46,9 +46,71 @@ Connectivity configurations define hub-and-spoke or mesh topologies applied to o
 
 Network Groups for the configuration.
 
-- Required: No
+- Required: Yes
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupConnectivity`](#parameter-appliestogroupsgroupconnectivity) | string | Group connectivity type. |
+| [`networkGroupId`](#parameter-appliestogroupsnetworkgroupid) | string | Network group Id. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`isGlobal`](#parameter-appliestogroupsisglobal) | string | Flag if global is supported. |
+| [`useHubGateway`](#parameter-appliestogroupsusehubgateway) | string | Flag if use hub gateway. |
+
+### Parameter: `appliesToGroups.groupConnectivity`
+
+Group connectivity type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'DirectlyConnected'
+    'None'
+  ]
+  ```
+
+### Parameter: `appliesToGroups.networkGroupId`
+
+Network group Id.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `appliesToGroups.isGlobal`
+
+Flag if global is supported.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'False'
+    'True'
+  ]
+  ```
+
+### Parameter: `appliesToGroups.useHubGateway`
+
+Flag if use hub gateway.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'False'
+    'True'
+  ]
+  ```
 
 ### Parameter: `connectivityTopology`
 
@@ -77,7 +139,33 @@ List of hub items. This will create peerings between the specified hub and the v
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-hubsresourceid) | string | Resource Id of the hub. |
+| [`resourceType`](#parameter-hubsresourcetype) | string | Resource type of the hub. |
+
+### Parameter: `hubs.resourceId`
+
+Resource Id of the hub.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `hubs.resourceType`
+
+Resource type of the hub.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Microsoft.Network/virtualNetworks'
+  ]
+  ```
 
 ### Parameter: `networkManagerName`
 
@@ -107,7 +195,6 @@ A description of the connectivity configuration.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `isGlobal`
 
