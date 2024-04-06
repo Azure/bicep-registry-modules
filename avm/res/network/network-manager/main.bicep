@@ -287,7 +287,7 @@ type connectivityConfigurationsType = {
   @sys.description('Optional. A description of the connectivity configuration.')
   description: string?
 
-  @sys.description('Required. Network Groups for the configuration.')
+  @sys.description('Required. Network Groups for the configuration. A connectivity configuration must be associated to at least one network group.')
   appliesToGroups: {
     @sys.description('Required. Group connectivity type.')
     groupConnectivity: ('DirectlyConnected' | 'None')

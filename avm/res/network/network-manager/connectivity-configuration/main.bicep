@@ -14,7 +14,7 @@ param name string
 @sys.description('Optional. A description of the connectivity configuration.')
 param description string?
 
-@sys.description('Required. Network Groups for the configuration.')
+@sys.description('Required. Network Groups for the configuration. A connectivity configuration must be associated to at least one network group.')
 param appliesToGroups appliesToGroupsType
 
 @allowed([

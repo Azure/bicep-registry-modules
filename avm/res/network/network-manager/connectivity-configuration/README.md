@@ -23,7 +23,7 @@ Connectivity configurations define hub-and-spoke or mesh topologies applied to o
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`appliesToGroups`](#parameter-appliestogroups) | array | Network Groups for the configuration. |
+| [`appliesToGroups`](#parameter-appliestogroups) | array | Network Groups for the configuration. A connectivity configuration must be associated to at least one network group. |
 | [`connectivityTopology`](#parameter-connectivitytopology) | string | Connectivity topology type. "Mesh" IS CURRENTLY A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. |
 | [`name`](#parameter-name) | string | The name of the connectivity configuration. |
 
@@ -44,7 +44,7 @@ Connectivity configurations define hub-and-spoke or mesh topologies applied to o
 
 ### Parameter: `appliesToGroups`
 
-Network Groups for the configuration.
+Network Groups for the configuration. A connectivity configuration must be associated to at least one network group.
 
 - Required: Yes
 - Type: array

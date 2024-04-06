@@ -856,7 +856,7 @@ Connectivity Configurations to create for the network manager. Network manager m
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`appliesToGroups`](#parameter-connectivityconfigurationsappliestogroups) | array | Network Groups for the configuration. |
+| [`appliesToGroups`](#parameter-connectivityconfigurationsappliestogroups) | array | Network Groups for the configuration. A connectivity configuration must be associated to at least one network group. |
 | [`connectivityTopology`](#parameter-connectivityconfigurationsconnectivitytopology) | string | The connectivity topology to apply the configuration to. |
 | [`name`](#parameter-connectivityconfigurationsname) | string | The name of the connectivity configuration. |
 
@@ -871,7 +871,7 @@ Connectivity Configurations to create for the network manager. Network manager m
 
 ### Parameter: `connectivityConfigurations.appliesToGroups`
 
-Network Groups for the configuration.
+Network Groups for the configuration. A connectivity configuration must be associated to at least one network group.
 
 - Required: Yes
 - Type: array

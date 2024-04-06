@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "3591533683018632933"
+      "templateHash": "12110798285892983649"
     },
     "name": "Network Manager Connectivity Configurations",
     "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",
@@ -109,7 +109,7 @@
     "appliesToGroups": {
       "$ref": "#/definitions/appliesToGroupsType",
       "metadata": {
-        "description": "Required. Network Groups for the configuration."
+        "description": "Required. Network Groups for the configuration. A connectivity configuration must be associated to at least one network group."
       }
     },
     "connectivityTopology": {
