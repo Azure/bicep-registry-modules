@@ -39,6 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkHubName: 'dep-${namePrefix}-vnetHub-${serviceShort}'
     virtualNetworkSpoke1Name: 'dep-${namePrefix}-vnetSpoke1-${serviceShort}'
     virtualNetworkSpoke2Name: 'dep-${namePrefix}-vnetSpoke2-${serviceShort}'
+    virtualNetworkSpoke3Name: 'dep-${namePrefix}-vnetSpoke3-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -107,6 +108,15 @@ module testDeployment '../../../main.bicep' = [
             }
           ]
         }
+        {
+          name: 'network-group-spokes-2'
+          staticMembers: [
+            {
+              name: 'virtualNetworkSpoke3'
+              resourceId: nestedDependencies.outputs.virtualNetworkSpoke3Id
+            }
+          ]
+        }
       ]
       connectivityConfigurations: [
         {
@@ -131,7 +141,7 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
         {
-          name: 'MeshConnectivity'
+          name: 'MeshConnectivity-1'
           description: 'MeshConnectivity description'
           connectivityTopology: 'Mesh'
           deleteExistingPeering: 'True'
@@ -142,6 +152,16 @@ module testDeployment '../../../main.bicep' = [
               useHubGateway: 'False'
               groupConnectivity: 'None'
               isGlobal: 'False'
+            }
+          ]
+        }
+        {
+          name: 'MeshConnectivity-2'
+          connectivityTopology: 'Mesh'
+          appliesToGroups: [
+            {
+              networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-2'
+              groupConnectivity: 'DirectlyConnected'
             }
           ]
         }
@@ -156,7 +176,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       securityAdminConfigurations: [
         {
-          name: 'test-security-admin-config'
+          name: 'test-security-admin-config-1'
           description: 'description of the security admin config'
           applyOnNetworkIntentPolicyBasedServices: [
             'AllowRulesOnly'
@@ -201,16 +221,17 @@ module testDeployment '../../../main.bicep' = [
             }
             {
               name: 'test-rule-collection-2'
-              description: 'test-rule-collection-description'
               appliesToGroups: [
                 {
                   networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes'
+                }
+                {
+                  networkGroupId: '${networkManagerExpecetedResourceID}/networkGroups/network-group-spokes-2'
                 }
               ]
               rules: [
                 {
                   name: 'test-inbound-allow-rule-3'
-                  description: 'test-inbound-allow-rule-3-description'
                   access: 'Allow'
                   direction: 'Inbound'
                   destinationPortRanges: [
