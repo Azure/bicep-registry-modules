@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "3104486069121084869"
+      "templateHash": "17460919863549109480"
     },
     "name": "Email Services",
     "description": "This module deploys an Email Service",
@@ -111,7 +111,7 @@
       "minLength": 1,
       "maxLength": 63,
       "metadata": {
-        "description": "Required. Name of the Email Service to create."
+        "description": "Required. Name of the email service to create."
       }
     },
     "location": {
@@ -284,7 +284,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "6341510452780936582"
+              "templateHash": "13787788706432354371"
             },
             "name": "Email Services Domains",
             "description": "This module deploys an Email Service Domain",
@@ -516,19 +516,19 @@
             }
           },
           "outputs": {
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource ID of the domain."
-              },
-              "value": "[resourceId('Microsoft.Communication/emailServices/domains', parameters('emailServiceName'), parameters('name'))]"
-            },
             "name": {
               "type": "string",
               "metadata": {
                 "description": "The name of the domain."
               },
               "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the domain."
+              },
+              "value": "[resourceId('Microsoft.Communication/emailServices/domains', parameters('emailServiceName'), parameters('name'))]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -546,24 +546,31 @@
     }
   },
   "outputs": {
-    "resourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "The resource ID of the resource."
-      },
-      "value": "[resourceId('Microsoft.Communication/emailServices', parameters('name'))]"
-    },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the resource."
+        "description": "The name of the email service."
       },
       "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the email service."
+      },
+      "value": "[resourceId('Microsoft.Communication/emailServices', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the email service was deployed into."
+      },
+      "value": "[resourceGroup().name]"
     },
     "location": {
       "type": "string",
       "metadata": {
-        "description": "The location the resource was deployed into."
+        "description": "The location the email service was deployed into."
       },
       "value": "[reference('email', '2023-04-01', 'full').location]"
     }

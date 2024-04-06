@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "6341510452780936582"
+      "templateHash": "13787788706432354371"
     },
     "name": "Email Services Domains",
     "description": "This module deploys an Email Service Domain",
@@ -238,19 +238,19 @@
     }
   },
   "outputs": {
-    "resourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "The resource ID of the domain."
-      },
-      "value": "[resourceId('Microsoft.Communication/emailServices/domains', parameters('emailServiceName'), parameters('name'))]"
-    },
     "name": {
       "type": "string",
       "metadata": {
         "description": "The name of the domain."
       },
       "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the domain."
+      },
+      "value": "[resourceId('Microsoft.Communication/emailServices/domains', parameters('emailServiceName'), parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",

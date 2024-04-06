@@ -106,11 +106,11 @@ resource domain_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04
 // Outputs      //
 // ============ //
 
-@description('The resource ID of the domain.')
-output resourceId string = domain.id
-
 @description('The name of the domain.')
 output name string = domain.name
+
+@description('The resource ID of the domain.')
+output resourceId string = domain.id
 
 @description('The name of the resource group the domain was created in.')
 output resourceGroupName string = resourceGroup().name

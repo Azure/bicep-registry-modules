@@ -4,7 +4,7 @@ metadata owner = 'Azure/module-maintainers'
 
 @minLength(1)
 @maxLength(63)
-@description('Required. Name of the Email Service to create.')
+@description('Required. Name of the email service to create.')
 param name string
 
 @description('Optional. Location for all Resources.')
@@ -126,13 +126,16 @@ resource email_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-
 // Outputs      //
 // ============ //
 
-@description('The resource ID of the resource.')
-output resourceId string = email.id
-
-@description('The name of the resource.')
+@description('The name of the email service.')
 output name string = email.name
 
-@description('The location the resource was deployed into.')
+@description('The resource ID of the email service.')
+output resourceId string = email.id
+
+@description('The resource group the email service was deployed into.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The location the email service was deployed into.')
 output location string = email.location
 
 // ================ //

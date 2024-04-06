@@ -318,7 +318,7 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`dataLocation`](#parameter-datalocation) | string | The location where the communication service stores its data at rest. |
-| [`name`](#parameter-name) | string | Name of the Email Service to create. |
+| [`name`](#parameter-name) | string | Name of the email service to create. |
 
 **Optional parameters**
 
@@ -340,7 +340,7 @@ The location where the communication service stores its data at rest.
 
 ### Parameter: `name`
 
-Name of the Email Service to create.
+Name of the email service to create.
 
 - Required: Yes
 - Type: string
@@ -505,9 +505,10 @@ Endpoint tags.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the resource. |
-| `resourceId` | string | The resource ID of the resource. |
+| `location` | string | The location the email service was deployed into. |
+| `name` | string | The name of the email service. |
+| `resourceGroupName` | string | The resource group the email service was deployed into. |
+| `resourceId` | string | The resource ID of the email service. |
 
 ## Cross-referenced modules
 
