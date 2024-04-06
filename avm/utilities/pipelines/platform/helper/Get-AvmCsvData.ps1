@@ -1,12 +1,16 @@
 <#
 .SYNOPSIS
 Parses AVM module CSV file
+
 .DESCRIPTION
 Depending on the parameter, the correct CSV file will be parsed and returned a an object
+
 .PARAMETER ModuleIndex
 Mandatory. Type of CSV file, that should be parsed ('Bicep-Resource', 'Bicep-Pattern')
+
 .EXAMPLE
 Get-AvmCsvData -ModuleIndex 'Bicep-Resource'
+
 Parse the AVM Bicep modules
 #>
 Function Get-AvmCsvData {
