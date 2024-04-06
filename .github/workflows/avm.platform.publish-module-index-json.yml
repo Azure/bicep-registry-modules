@@ -51,7 +51,9 @@ jobs:
           Write-Verbose "Invoke task with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Invoke-AvmJsonModuleIndexGeneration @functionInput
+          if(-not (Invoke-AvmJsonModuleIndexGeneration @functionInput -Force) {
+            Write-Output ('{0}={1}' -f 'anyErrorsOccurred', $true) >> $env:GITHUB_ENV
+          }
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

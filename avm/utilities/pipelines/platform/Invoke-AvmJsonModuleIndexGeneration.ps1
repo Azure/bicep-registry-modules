@@ -217,6 +217,6 @@ function Invoke-AvmJsonModuleIndexGeneration {
     $moduleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $moduleIndexJsonFilePath -Force
   }
 
-  Write-Output ('{0}={1}' -f 'anyErrorsOccurred', $anyErrorsOccurred) >> $env:GITHUB_ENV
+  return ($anyErrorsOccurred ? $true : $false)
 
 }
