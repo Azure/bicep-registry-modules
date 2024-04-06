@@ -20,6 +20,9 @@ Optional. The name of the resource group the deployment was happening in. Releva
 .PARAMETER ManagementGroupId
 Optional. The ID of the management group to fetch deployments from. Relevant for management-group level deployments.
 
+.PARAMETER RemoveAllDepResources
+Optional. Specify to fetch and remove all resources in the current context that match the 'dep-' pattern
+
 .EXAMPLE
 Initialize-DeploymentRemoval -DeploymentName 'n-vw-t1-20211204T1812029146Z' -TemplateFilePath "$home/ResourceModules/modules/network/virtual-wan/main.bicep" -resourceGroupName 'test-virtualWan-rg'
 
@@ -47,7 +50,10 @@ function Initialize-DeploymentRemoval {
         [string] $SubscriptionId,
 
         [Parameter(Mandatory = $false)]
-        [string] $ManagementGroupId
+        [string] $ManagementGroupId,
+
+        [Parameter(Mandatory = $false)]
+        [switch] $RemoveAllDepResources
     )
 
     begin {
@@ -104,6 +110,12 @@ function Initialize-DeploymentRemoval {
         #         break
         #     }
         # }
+
+        if ($RemoveAllDepResources) {
+            $allResources = Get-AzResource
+            $filteredResources = $allResources | Where-Object { $_.ResourceId -like '*dep-*' }
+            $ResourceIds += $filteredResources | Sort-Object -Unique
+        }
 
         # Invoke removal
         $inputObject = @{
