@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.14.6.61914",
-      "templateHash": "16325947253055815761"
+      "version": "0.26.54.24096",
+      "templateHash": "15287276161565878069"
     },
     "name": "Policy Insights Remediations (Resource Group scope)",
     "description": "This module deploys a Policy Insights Remediation on a Resource Group scope.",
@@ -35,8 +35,8 @@
     "parallelDeployments": {
       "type": "int",
       "defaultValue": 10,
-      "maxValue": 30,
       "minValue": 1,
+      "maxValue": 30,
       "metadata": {
         "description": "Optional. Determines how many resources to remediate at any given time. Can be used to increase or reduce the pace of the remediation. Can be between 1-30. Higher values will cause the remediation to complete more quickly, but increase the risk of throttling. If not provided, the default parallel deployments value is used."
       }
@@ -44,8 +44,8 @@
     "resourceCount": {
       "type": "int",
       "defaultValue": 500,
-      "maxValue": 50000,
       "minValue": 1,
+      "maxValue": 50000,
       "metadata": {
         "description": "Optional. Determines the max number of resources that can be remediated by the remediation job. Can be between 1-50000. If not provided, the default resource count is used."
       }
@@ -105,31 +105,31 @@
   "outputs": {
     "name": {
       "type": "string",
-      "value": "[parameters('name')]",
       "metadata": {
         "description": "The name of the remediation."
-      }
+      },
+      "value": "[parameters('name')]"
     },
     "resourceId": {
       "type": "string",
-      "value": "[resourceId('Microsoft.PolicyInsights/remediations', parameters('name'))]",
       "metadata": {
         "description": "The resource ID of the remediation."
-      }
+      },
+      "value": "[resourceId('Microsoft.PolicyInsights/remediations', parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
-      "value": "[resourceGroup().name]",
       "metadata": {
         "description": "The resource group of the deployed remediation."
-      }
+      },
+      "value": "[resourceGroup().name]"
     },
     "location": {
       "type": "string",
-      "value": "[parameters('location')]",
       "metadata": {
         "description": "The location the resource was deployed into."
-      }
+      },
+      "value": "[parameters('location')]"
     }
   }
 }
