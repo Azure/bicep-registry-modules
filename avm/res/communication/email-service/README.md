@@ -47,7 +47,7 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
   name: 'emailServiceDeployment'
   params: {
     // Required parameters
-    dataLocation: 'Germany'
+    dataLocation: 'Europe'
     name: 'cesmin001'
     // Non-required parameters
     location: 'global'
@@ -69,7 +69,7 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
   "parameters": {
     // Required parameters
     "dataLocation": {
-      "value": "Germany"
+      "value": "Europe"
     },
     "name": {
       "value": "cesmin001"
@@ -99,7 +99,7 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
   name: 'emailServiceDeployment'
   params: {
     // Required parameters
-    dataLocation: 'Germany'
+    dataLocation: 'United States'
     name: 'cesmax001'
     // Non-required parameters
     domains: [
@@ -190,7 +190,7 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
   "parameters": {
     // Required parameters
     "dataLocation": {
-      "value": "Germany"
+      "value": "United States"
     },
     "name": {
       "value": "cesmax001"
@@ -301,6 +301,11 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
     name: 'ceswaf001'
     // Non-required parameters
     location: 'global'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -327,6 +332,13 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
     // Non-required parameters
     "location": {
       "value": "global"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }

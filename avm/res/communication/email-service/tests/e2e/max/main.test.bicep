@@ -52,7 +52,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: 'global'
-      dataLocation: 'Germany'
+      dataLocation: 'United States'
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
