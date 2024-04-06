@@ -6,10 +6,13 @@ Remove deployed resources based on their deploymentName(s)
 Remove deployed resources based on their deploymentName(s)
 
 .PARAMETER DeploymentName(s)
-Mandatory. The name(s) of the deployment(s)
+Optional. The name(s) of the deployment(s). Combined with resources provide via the resource Id(s).
+
+.PARAMETER ResourceId(s)
+Optional. The resource Id(s) of the resources to remove. Combined with resources found via the deployment name(s).
 
 .PARAMETER TemplateFilePath
-Mandatory. The path to the template used for the deployment. Used to determine the level/scope (e.g. subscription)
+Optional. The path to the template used for the deployment(s). Used to determine the level/scope (e.g. subscription). Required of deploymentName(s) are provided.
 
 .PARAMETER ResourceGroupName
 Optional. The name of the resource group the deployment was happening in. Relevant for resource-group level deployments.
@@ -26,18 +29,22 @@ function Initialize-DeploymentRemoval {
 
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
         [Alias('DeploymentName')]
-        [string[]] $DeploymentNames,
+        [string[]] $DeploymentNames = @(),
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
+        [Alias('ResourceId')]
+        [string[]] $ResourceIds = @(),
+
+        [Parameter(Mandatory = $false)]
         [string] $TemplateFilePath,
 
         [Parameter(Mandatory = $false)]
         [string] $ResourceGroupName,
 
         [Parameter(Mandatory = $false)]
-        [string] $subscriptionId,
+        [string] $SubscriptionId,
 
         [Parameter(Mandatory = $false)]
         [string] $ManagementGroupId
@@ -101,11 +108,15 @@ function Initialize-DeploymentRemoval {
         # Invoke removal
         $inputObject = @{
             DeploymentNames  = $DeploymentNames
-            TemplateFilePath = $templateFilePath
+            ResourceIds      = $ResourceIds
+            TemplateFilePath = $TemplateFilePath
             RemovalSequence  = $removalSequence
         }
-        if (-not [String]::IsNullOrEmpty($resourceGroupName)) {
-            $inputObject['resourceGroupName'] = $resourceGroupName
+        if (-not [String]::IsNullOrEmpty($TemplateFilePath)) {
+            $inputObject['TemplateFilePath'] = $TemplateFilePath
+        }
+        if (-not [String]::IsNullOrEmpty($ResourceGroupName)) {
+            $inputObject['ResourceGroupName'] = $ResourceGroupName
         }
         if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
             $inputObject['ManagementGroupId'] = $ManagementGroupId
