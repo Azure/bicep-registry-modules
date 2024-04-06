@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-If module list is not in sync with CSV file, an issue and a PR with the necessary changes is created
+If module list is not in sync with CSV file, an issue is created
 
 .DESCRIPTION
-CSV data for moules and pattern is loaded and compared with the list in the issue template. If they are not in sync, an issue and a PR with the necessary changes is created
+CSV data for moules and pattern is loaded and compared with the list in the issue template. If they are not in sync, an issue with the necessary changes is created
 
 .PARAMETER Repo
 Mandatory. The name of the respository to scan. Needs to have the structure "<owner>/<repositioryName>", like 'Azure/bicep-registry-modules/'
@@ -27,8 +27,8 @@ function Sync-AvmModulesList {
   )
 
   # Loading helper functions
-  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-AvmCsvData.ps1')
-  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Add-GithubIssueToProject.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'helper' 'Add-GithubIssueToProject.ps1')
 
   $workflowFilePath = Join-Path $RepoRoot '.github' 'ISSUE_TEMPLATE' 'avm_module_issue.yml'
 
