@@ -1,4 +1,4 @@
-﻿metadata name = 'Policy Insights Remediations (Resource Group scope)'
+metadata name = 'Policy Insights Remediations (Resource Group scope)'
 metadata description = 'This module deploys a Policy Insights Remediation on a Resource Group scope.'
 metadata owner = 'Azure/module-maintainers'
 
