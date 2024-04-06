@@ -1,4 +1,4 @@
-﻿metadata name = 'Policy Insights Remediations'
+metadata name = 'Policy Insights Remediations'
 metadata description = 'This module deploys a Policy Insights Remediation.'
 metadata owner = 'Azure/module-maintainers'
 
