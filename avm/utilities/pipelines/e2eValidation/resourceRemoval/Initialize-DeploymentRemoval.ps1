@@ -20,7 +20,7 @@ Optional. The name of the resource group the deployment was happening in. Releva
 .PARAMETER ManagementGroupId
 Optional. The ID of the management group to fetch deployments from. Relevant for management-group level deployments.
 
-.PARAMETER RemoveAllDepResources
+.PARAMETER PurgeTestResources
 Optional. Specify to fetch and remove all resources in the current context that match the 'dep-' pattern
 
 .EXAMPLE
@@ -53,7 +53,7 @@ function Initialize-DeploymentRemoval {
         [string] $ManagementGroupId,
 
         [Parameter(Mandatory = $false)]
-        [switch] $RemoveAllDepResources
+        [switch] $PurgeTestResources
     )
 
     begin {
@@ -122,10 +122,14 @@ function Initialize-DeploymentRemoval {
         #     }
         # }
 
-        if ($RemoveAllDepResources) {
-            $allResourceIds = (Get-AzResource).ResourceId
-            $filteredResourceIds = $allResourceIds | Where-Object { $_ -like '*dep-*' }
+        if ($PurgeTestResources) {
+            # Resources
+            $filteredResourceIds = (Get-AzResource).ResourceId | Where-Object { $_ -like '*dep-*' }
             $ResourceIds += ($filteredResourceIds | Sort-Object -Unique)
+
+            # Resource groups
+            $filteredResourceGroupIds = (Get-AzResourceGroup).ResourceId | Where-Object { $_ -like '*dep-*' }
+            $ResourceIds += ($filteredResourceGroupIds | Sort-Object -Unique)
         }
 
         # Invoke removal
