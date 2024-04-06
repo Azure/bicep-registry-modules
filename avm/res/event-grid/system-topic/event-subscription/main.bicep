@@ -45,7 +45,7 @@ resource systemTopic 'Microsoft.EventGrid/systemTopics@2023-12-15-preview' exist
   name: systemTopicName
 }
 
-resource eventSubscription 'Microsoft.EventGrid/systemTopics/eventSubscriptions@2022-06-15' = {
+resource eventSubscription 'Microsoft.EventGrid/systemTopics/eventSubscriptions@2023-12-15-preview' = {
   name: name
   parent: systemTopic
   properties: {

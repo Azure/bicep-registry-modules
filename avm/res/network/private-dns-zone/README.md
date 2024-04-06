@@ -750,7 +750,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
 | [`srv`](#parameter-srv) | array | Array of SRV records. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`txt`](#parameter-txt) | array | Array of TXT records. |
-| [`virtualNetworkLinks`](#parameter-virtualnetworklinks) | array | Array of custom objects describing vNet links of the DNS zone. Each object should contain properties 'vnetResourceId' and 'registrationEnabled'. The 'vnetResourceId' is a resource ID of a vNet to link, 'registrationEnabled' (bool) enables automatic DNS registration in the zone for the linked vNet. |
+| [`virtualNetworkLinks`](#parameter-virtualnetworklinks) | array | Array of custom objects describing vNet links of the DNS zone. Each object should contain properties 'virtualNetworkResourceId' and 'registrationEnabled'. The 'vnetResourceId' is a resource ID of a vNet to link, 'registrationEnabled' (bool) enables automatic DNS registration in the zone for the linked vNet. |
 
 ### Parameter: `name`
 
@@ -965,7 +965,7 @@ Array of TXT records.
 
 ### Parameter: `virtualNetworkLinks`
 
-Array of custom objects describing vNet links of the DNS zone. Each object should contain properties 'vnetResourceId' and 'registrationEnabled'. The 'vnetResourceId' is a resource ID of a vNet to link, 'registrationEnabled' (bool) enables automatic DNS registration in the zone for the linked vNet.
+Array of custom objects describing vNet links of the DNS zone. Each object should contain properties 'virtualNetworkResourceId' and 'registrationEnabled'. The 'vnetResourceId' is a resource ID of a vNet to link, 'registrationEnabled' (bool) enables automatic DNS registration in the zone for the linked vNet.
 
 - Required: No
 - Type: array
