@@ -96,10 +96,16 @@ function Initialize-DeploymentRemoval {
         )
 
         if ($DeploymentNames.Count -gt 0) {
-            Write-Verbose ('Handling resource removal with deployment names [{0}]' -f ($deploymentNames -join ', ')) -Verbose
+            Write-Verbose 'Handling resource removal with deployment names' -Verbose
+            foreach ($DeploymentName in $DeploymentNames) {
+                Write-Verbose "- $DeploymentName" -Verbose
+            }
         }
         if ($ResourceIds.Count -gt 0) {
-            Write-Verbose ('Handling resource removal with resource IDs [{0}]' -f ($deploymentNames -join ', ')) -Verbose
+            Write-Verbose 'Handling resource removal with resource Ids' -Verbose
+            foreach ($ResourceId in $ResourceIds) {
+                Write-Verbose "- $ResourceId" -Verbose
+            }        
         }
 
         ### CODE LOCATION: Add custom removal sequence here
