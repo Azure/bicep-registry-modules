@@ -186,7 +186,7 @@ module digitalTwinsInstance_privateEndpoints 'br/public:avm/res/network/private-
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(digitalTwinsInstance.id, '/'))}-${privateEndpoint.?service ?? 'API'}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(digitalTwinsInstance.id, '/'))}-${privateEndpoint.?service ?? 'API'}-${index}'
@@ -199,7 +199,7 @@ module digitalTwinsInstance_privateEndpoints 'br/public:avm/res/network/private-
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(digitalTwinsInstance.id, '/'))}-${privateEndpoint.?service ?? 'API'}-${index}'

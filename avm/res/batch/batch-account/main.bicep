@@ -260,7 +260,7 @@ module batchAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(batchAccount.id, '/'))}-${privateEndpoint.service}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(batchAccount.id, '/'))}-${privateEndpoint.service}-${index}'
@@ -273,7 +273,7 @@ module batchAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(batchAccount.id, '/'))}-${privateEndpoint.service}-${index}'

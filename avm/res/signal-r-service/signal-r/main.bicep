@@ -235,7 +235,7 @@ module signalR_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(signalR.id, '/'))}-${privateEndpoint.?service ?? 'signalr'}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(signalR.id, '/'))}-${privateEndpoint.?service ?? 'signalr'}-${index}'
@@ -248,7 +248,7 @@ module signalR_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(signalR.id, '/'))}-${privateEndpoint.?service ?? 'signalr'}-${index}'

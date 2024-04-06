@@ -103,7 +103,7 @@ module privateLinkHub_privateEndpoints 'br/public:avm/res/network/private-endpoi
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(privateLinkHub.id, '/'))}-${privateEndpoint.?service ?? 'web'}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(privateLinkHub.id, '/'))}-${privateEndpoint.?service ?? 'web'}-${index}'
@@ -116,7 +116,7 @@ module privateLinkHub_privateEndpoints 'br/public:avm/res/network/private-endpoi
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(privateLinkHub.id, '/'))}-${privateEndpoint.?service ?? 'web'}-${index}'

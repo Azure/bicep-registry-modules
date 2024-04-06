@@ -452,7 +452,7 @@ module automationAccount_privateEndpoints 'br/public:avm/res/network/private-end
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(automationAccount.id, '/'))}-${privateEndpoint.service}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(automationAccount.id, '/'))}-${privateEndpoint.service}-${index}'
@@ -465,7 +465,7 @@ module automationAccount_privateEndpoints 'br/public:avm/res/network/private-end
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(automationAccount.id, '/'))}-${privateEndpoint.service}-${index}'

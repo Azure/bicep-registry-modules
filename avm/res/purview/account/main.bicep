@@ -161,7 +161,7 @@ module account_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
@@ -174,7 +174,7 @@ module account_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
@@ -214,7 +214,7 @@ module portal_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'portal'}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'portal'}-${index}'
@@ -227,7 +227,7 @@ module portal_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'portal'}-${index}'
@@ -267,7 +267,7 @@ module blob_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' 
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'blob'}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'blob'}-${index}'
@@ -280,7 +280,7 @@ module blob_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' 
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'blob'}-${index}'
@@ -320,7 +320,7 @@ module queue_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'queue'}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'queue'}-${index}'
@@ -333,7 +333,7 @@ module queue_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1'
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'queue'}-${index}'
@@ -373,7 +373,7 @@ module eventHub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
@@ -386,7 +386,7 @@ module eventHub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'

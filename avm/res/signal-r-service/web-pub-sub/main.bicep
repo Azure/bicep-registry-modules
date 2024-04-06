@@ -184,7 +184,7 @@ module webPubSub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(webPubSub.id, '/'))}-${privateEndpoint.?service ?? 'webpubsub'}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(webPubSub.id, '/'))}-${privateEndpoint.?service ?? 'webpubsub'}-${index}'
@@ -197,7 +197,7 @@ module webPubSub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(webPubSub.id, '/'))}-${privateEndpoint.?service ?? 'webpubsub'}-${index}'

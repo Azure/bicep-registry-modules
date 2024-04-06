@@ -203,7 +203,7 @@ module domain_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0
           }
         }
       ]
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(domain.id, '/'))}-${privateEndpoint.?service ?? 'domain'}-${index}'
