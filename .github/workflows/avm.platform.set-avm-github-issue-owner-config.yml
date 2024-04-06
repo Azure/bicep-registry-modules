@@ -16,10 +16,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - env:
-          GH_TOKEN: ${{ github.token }}
-        name: "Run scripts"
+      - uses: tibdex/github-app-token@v2
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+      - name: "Run scripts"
         shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Set-AvmGitHubIssueOwnerConfig.ps1')
