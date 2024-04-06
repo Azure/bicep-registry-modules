@@ -95,7 +95,12 @@ function Initialize-DeploymentRemoval {
             'Microsoft.Resources/resourceGroups'
         )
 
-        Write-Verbose ('Handling resource removal with deployment names [{0}]' -f ($deploymentNames -join ', ')) -Verbose
+        if ($DeploymentNames.Count -gt 0) {
+            Write-Verbose ('Handling resource removal with deployment names [{0}]' -f ($deploymentNames -join ', ')) -Verbose
+        }
+        if ($ResourceIds.Count -gt 0) {
+            Write-Verbose ('Handling resource removal with resource IDs [{0}]' -f ($deploymentNames -join ', ')) -Verbose
+        }
 
         ### CODE LOCATION: Add custom removal sequence here
         ## Add custom module-specific removal sequence following the example below
