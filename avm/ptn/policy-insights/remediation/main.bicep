@@ -52,7 +52,7 @@ param resourceGroupName string = ''
 @sys.description('Optional. Location deployment metadata.')
 param location string = deployment().location
 
-@sys.description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 // ================ //

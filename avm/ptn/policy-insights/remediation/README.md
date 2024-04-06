@@ -43,7 +43,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
   name: 'remediationDeployment'
   params: {
     // Required parameters
-    name: 'pirsubdef001'
+    name: 'pirsubmin001'
     policyAssignmentId: '<policyAssignmentId>'
     // Non-required parameters
     filtersLocations: []
@@ -67,7 +67,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "pirsubdef001"
+      "value": "pirsubmin001"
     },
     "policyAssignmentId": {
       "value": "<policyAssignmentId>"
@@ -255,7 +255,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`failureThresholdPercentage`](#parameter-failurethresholdpercentage) | string | The remediation failure threshold settings. A number between 0.0 to 1.0 representing the percentage failure threshold. The remediation will fail if the percentage of failed remediation operations (i.e. failed deployments) exceeds this threshold. 0 means that the remediation will stop after the first failure. 1 means that the remediation will not stop even if all deployments fail. |
 | [`filtersLocations`](#parameter-filterslocations) | array | The filters that will be applied to determine which resources to remediate. |
 | [`location`](#parameter-location) | string | Location deployment metadata. |
@@ -283,7 +283,7 @@ The resource ID of the policy assignment that should be remediated.
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
