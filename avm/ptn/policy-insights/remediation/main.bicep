@@ -59,81 +59,95 @@ param enableTelemetry bool = true
 // Resources        //
 // ================ //
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: take('46d3xbcp.res.policyinsights-remediation/.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}', 64)
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.ptn.policyinsights-remediation.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
-module remediation_mg 'management-group/main.bicep' = if (empty(subscriptionId) && empty(resourceGroupName)) {
-  name: '${uniqueString(deployment().name, location)}-Remediation-MG-Module'
-  scope: managementGroup(managementGroupId)
-  params: {
-    name: name
-    location: location
-    policyAssignmentId: policyAssignmentId
-    policyDefinitionReferenceId: policyDefinitionReferenceId
-    filtersLocations: filtersLocations
-    resourceCount: resourceCount
-    resourceDiscoveryMode: resourceDiscoveryMode
-    parallelDeployments: parallelDeployments
-    failureThresholdPercentage: failureThresholdPercentage
+module remediation_mg 'management-group/main.bicep' =
+  if (empty(subscriptionId) && empty(resourceGroupName)) {
+    name: '${uniqueString(deployment().name, location)}-Remediation-MG-Module'
+    scope: managementGroup(managementGroupId)
+    params: {
+      name: name
+      location: location
+      policyAssignmentId: policyAssignmentId
+      policyDefinitionReferenceId: policyDefinitionReferenceId
+      filtersLocations: filtersLocations
+      resourceCount: resourceCount
+      resourceDiscoveryMode: resourceDiscoveryMode
+      parallelDeployments: parallelDeployments
+      failureThresholdPercentage: failureThresholdPercentage
+    }
   }
-}
 
-module remediation_sub 'subscription/main.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName)) {
-  name: '${uniqueString(deployment().name, location)}-Remediation-Sub-Module'
-  scope: subscription(subscriptionId)
-  params: {
-    name: name
-    location: location
-    policyAssignmentId: policyAssignmentId
-    policyDefinitionReferenceId: policyDefinitionReferenceId
-    filtersLocations: filtersLocations
-    resourceCount: resourceCount
-    resourceDiscoveryMode: resourceDiscoveryMode
-    parallelDeployments: parallelDeployments
-    failureThresholdPercentage: failureThresholdPercentage
+module remediation_sub 'subscription/main.bicep' =
+  if (!empty(subscriptionId) && empty(resourceGroupName)) {
+    name: '${uniqueString(deployment().name, location)}-Remediation-Sub-Module'
+    scope: subscription(subscriptionId)
+    params: {
+      name: name
+      location: location
+      policyAssignmentId: policyAssignmentId
+      policyDefinitionReferenceId: policyDefinitionReferenceId
+      filtersLocations: filtersLocations
+      resourceCount: resourceCount
+      resourceDiscoveryMode: resourceDiscoveryMode
+      parallelDeployments: parallelDeployments
+      failureThresholdPercentage: failureThresholdPercentage
+    }
   }
-}
 
-module remediation_rg 'resource-group/main.bicep' = if (!empty(resourceGroupName) && !empty(subscriptionId)) {
-  name: '${uniqueString(deployment().name, location)}-Remediation-RG-Module'
-  scope: resourceGroup(subscriptionId, resourceGroupName)
-  params: {
-    name: name
-    location: location
-    policyAssignmentId: policyAssignmentId
-    policyDefinitionReferenceId: policyDefinitionReferenceId
-    filtersLocations: filtersLocations
-    resourceCount: resourceCount
-    resourceDiscoveryMode: resourceDiscoveryMode
-    parallelDeployments: parallelDeployments
-    failureThresholdPercentage: failureThresholdPercentage
+module remediation_rg 'resource-group/main.bicep' =
+  if (!empty(resourceGroupName) && !empty(subscriptionId)) {
+    name: '${uniqueString(deployment().name, location)}-Remediation-RG-Module'
+    scope: resourceGroup(subscriptionId, resourceGroupName)
+    params: {
+      name: name
+      location: location
+      policyAssignmentId: policyAssignmentId
+      policyDefinitionReferenceId: policyDefinitionReferenceId
+      filtersLocations: filtersLocations
+      resourceCount: resourceCount
+      resourceDiscoveryMode: resourceDiscoveryMode
+      parallelDeployments: parallelDeployments
+      failureThresholdPercentage: failureThresholdPercentage
+    }
   }
-}
 
 // ================ //
 // Outputs          //
 // ================ //
 
 @sys.description('The name of the remediation.')
-output name string = empty(subscriptionId) && empty(resourceGroupName) ? remediation_mg.outputs.name : (!empty(subscriptionId) && empty(resourceGroupName) ? remediation_sub.outputs.name : remediation_rg.outputs.name)
+output name string = empty(subscriptionId) && empty(resourceGroupName)
+  ? remediation_mg.outputs.name
+  : (!empty(subscriptionId) && empty(resourceGroupName) ? remediation_sub.outputs.name : remediation_rg.outputs.name)
 
 @sys.description('The resource ID of the remediation.')
-output resourceId string = empty(subscriptionId) && empty(resourceGroupName) ? remediation_mg.outputs.resourceId : (!empty(subscriptionId) && empty(resourceGroupName) ? remediation_sub.outputs.resourceId : remediation_rg.outputs.resourceId)
+output resourceId string = empty(subscriptionId) && empty(resourceGroupName)
+  ? remediation_mg.outputs.resourceId
+  : (!empty(subscriptionId) && empty(resourceGroupName)
+      ? remediation_sub.outputs.resourceId
+      : remediation_rg.outputs.resourceId)
 
 @sys.description('The location the resource was deployed into.')
-output location string = empty(subscriptionId) && empty(resourceGroupName) ? remediation_mg.outputs.location : (!empty(subscriptionId) && empty(resourceGroupName) ? remediation_sub.outputs.location : remediation_rg.outputs.location)
+output location string = empty(subscriptionId) && empty(resourceGroupName)
+  ? remediation_mg.outputs.location
+  : (!empty(subscriptionId) && empty(resourceGroupName)
+      ? remediation_sub.outputs.location
+      : remediation_rg.outputs.location)

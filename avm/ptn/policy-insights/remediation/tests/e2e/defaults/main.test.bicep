@@ -11,10 +11,10 @@ metadata description = 'This instance deploys the module with the minimum set of
 param location string = deployment().location
 
 @sys.description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'pirsubdef'
+param serviceShort string = 'pirsubmin'
 
 @sys.description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = 'cntso'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
