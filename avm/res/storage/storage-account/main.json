@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "10746831956830329093"
+      "templateHash": "13878793352750035767"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -194,8 +194,7 @@
             "description": "Required. Specifies the default action of allow or deny when no other rules match."
           }
         }
-      },
-      "nullable": true
+      }
     },
     "privateEndpointType": {
       "type": "array",
@@ -373,13 +372,6 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. Enable/Disable usage telemetry for module."
-            }
-          },
-          "resourceGroupName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
             }
           }
         }
@@ -623,6 +615,10 @@
     },
     "networkAcls": {
       "$ref": "#/definitions/networkAclsType",
+      "defaultValue": {
+        "bypass": "AzureServices",
+        "defaultAction": "Deny"
+      },
       "metadata": {
         "description": "Required. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny."
       }
@@ -1018,7 +1014,6 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-StorageAccount-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

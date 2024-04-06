@@ -405,7 +405,6 @@ resource registry_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-
 module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-registry-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
       privateLinkServiceConnections: [
@@ -584,9 +583,6 @@ type privateEndpointType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
-
-  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
-  resourceGroupName: string?
 }[]?
 
 type diagnosticSettingType = {

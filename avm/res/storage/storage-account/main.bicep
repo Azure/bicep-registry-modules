@@ -69,7 +69,10 @@ param privateEndpoints privateEndpointType
 param managementPolicyRules array?
 
 @description('Required. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. If in use, bypass needs to be supplied. For security reasons, it is recommended to set the DefaultAction Deny.')
-param networkAcls networkAclsType
+param networkAcls networkAclsType = {
+  bypass: 'AzureServices'
+  defaultAction: 'Deny'
+}
 
 @description('Optional. A Boolean indicating whether or not the service applies a secondary layer of encryption with platform managed keys for data at rest. For security reasons, it is recommended to set it to true.')
 param requireInfrastructureEncryption bool = true
@@ -466,7 +469,6 @@ resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments
 module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-StorageAccount-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
       privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
@@ -771,9 +773,6 @@ type privateEndpointType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
-
-  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
-  resourceGroupName: string?
 }[]?
 
 type diagnosticSettingType = {

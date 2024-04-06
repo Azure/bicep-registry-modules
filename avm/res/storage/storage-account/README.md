@@ -181,11 +181,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     name: 'ssamin001'
     // Non-required parameters
     allowBlobPublicAccess: false
-    location: '<location>'
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Allow'
-    }
   }
 }
 ```
@@ -209,15 +204,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     // Non-required parameters
     "allowBlobPublicAccess": {
       "value": false
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "networkAcls": {
-      "value": {
-        "bypass": "AzureServices",
-        "defaultAction": "Allow"
-      }
     }
   }
 }
@@ -2066,6 +2052,13 @@ Networks ACLs, this value contains IPs to whitelist and/or Subnet information. I
 
 - Required: No
 - Type: object
+- Default:
+  ```Bicep
+  {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+  }
+  ```
 
 **Required parameters**
 
@@ -2642,7 +2635,6 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
@@ -2843,13 +2835,6 @@ The private DNS zone groups to associate the private endpoint with. A DNS zone g
 
 - Required: No
 - Type: array
-
-### Parameter: `privateEndpoints.resourceGroupName`
-
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
-
-- Required: No
-- Type: string
 
 ### Parameter: `privateEndpoints.roleAssignments`
 

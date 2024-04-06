@@ -345,7 +345,6 @@ resource slot_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-0
 module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-Slot-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(app.id, '/'))}-${name}-${privateEndpoint.?service ?? 'sites-${slot.name}'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
@@ -523,9 +522,6 @@ type privateEndpointType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
-
-  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
-  resourceGroupName: string?
 }[]?
 
 type diagnosticSettingType = {
