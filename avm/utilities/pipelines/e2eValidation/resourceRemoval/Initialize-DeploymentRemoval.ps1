@@ -105,7 +105,7 @@ function Initialize-DeploymentRemoval {
             Write-Verbose 'Handling resource removal with resource Ids' -Verbose
             foreach ($ResourceId in $ResourceIds) {
                 Write-Verbose "- $ResourceId" -Verbose
-            }        
+            }
         }
 
         ### CODE LOCATION: Add custom removal sequence here
@@ -123,9 +123,9 @@ function Initialize-DeploymentRemoval {
         # }
 
         if ($RemoveAllDepResources) {
-            $allResources = Get-AzResource
-            $filteredResources = $allResources | Where-Object { $_.ResourceId -like '*dep-*' }
-            $ResourceIds += $filteredResources | Sort-Object -Unique
+            $allResourceIds = (Get-AzResource).ResourceId
+            $filteredResourceIds = $allResourceIds | Where-Object { $_ -like '*dep-*' }
+            $ResourceIds += ($filteredResourceIds | Sort-Object -Unique)
         }
 
         # Invoke removal
