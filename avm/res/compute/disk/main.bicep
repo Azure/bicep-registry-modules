@@ -118,6 +118,9 @@ param publicNetworkAccess string = 'Disabled'
 @description('Optional. True if the image from which the OS disk is created supports accelerated networking.')
 param acceleratedNetwork bool = false
 
+@description('Optional. The Logical zone list for Disk.')
+param zones array = []
+
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
@@ -223,6 +226,7 @@ resource disk 'Microsoft.Compute/disks@2022-07-02' = {
         }
       : {}
   }
+  zones: zones
 }
 
 resource disk_lock 'Microsoft.Authorization/locks@2020-05-01' =
