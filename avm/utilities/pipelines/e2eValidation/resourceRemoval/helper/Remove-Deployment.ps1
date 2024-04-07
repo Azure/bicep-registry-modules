@@ -22,7 +22,7 @@ Optional. The name(s) of the deployment(s). Combined with resources provide via 
 Optional. The resource Id(s) of the resources to remove. Combined with resources found via the deployment name(s).
 
 .PARAMETER TemplateFilePath
-Optional. The path to the template used for the deployment(s). Used to determine the level/scope (e.g. subscription). Required of deploymentName(s) are provided.
+Optional. The path to the template used for the deployment(s). Used to determine the level/scope (e.g. subscription). Required if deploymentName(s) are provided.
 
 .PARAMETER RemovalSequence
 Optional. The order of resource types to apply for deletion
