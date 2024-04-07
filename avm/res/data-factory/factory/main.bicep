@@ -290,23 +290,25 @@ resource dataFactory_roleAssignments 'Microsoft.Authorization/roleAssignments@20
   }
 ]
 
-module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-dataFactory-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(dataFactory.id, '/'))}-${privateEndpoint.?service ?? 'dataFactory'}-${index}'
-      privateLinkServiceConnections: [
-        {
-          name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(dataFactory.id, '/'))}-${privateEndpoint.?service ?? 'dataFactory'}-${index}'
-          properties: {
-            privateLinkServiceId: dataFactory.id
-            groupIds: [
-              privateEndpoint.?service ?? 'dataFactory'
-            ]
-          }
-        }
-      ]
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(dataFactory.id, '/'))}-${privateEndpoint.?service ?? 'dataFactory'}-${index}'
+              properties: {
+                privateLinkServiceId: dataFactory.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'dataFactory'
+                ]
+              }
+            }
+          ]
+        : null
       manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
@@ -322,13 +324,13 @@ module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
       privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
       privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
       roleAssignments: privateEndpoint.?roleAssignments

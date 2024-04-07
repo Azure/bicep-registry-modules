@@ -250,23 +250,25 @@ resource redis_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-
   }
 ]
 
-module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-KeyVault-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-redis-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(redis.id, '/'))}-${privateEndpoint.?service ?? 'redisCache'}-${index}'
-      privateLinkServiceConnections: [
-        {
-          name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(redis.id, '/'))}-${privateEndpoint.?service ?? 'redisCache'}-${index}'
-          properties: {
-            privateLinkServiceId: redis.id
-            groupIds: [
-              privateEndpoint.?service ?? 'redisCache'
-            ]
-          }
-        }
-      ]
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(redis.id, '/'))}-${privateEndpoint.?service ?? 'redisCache'}-${index}'
+              properties: {
+                privateLinkServiceId: redis.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'redisCache'
+                ]
+              }
+            }
+          ]
+        : null
       manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {

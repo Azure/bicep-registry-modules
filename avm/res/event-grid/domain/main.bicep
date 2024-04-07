@@ -186,23 +186,25 @@ resource domain_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-0
   }
 ]
 
-module domain_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+module domain_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Domain-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-domain-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(domain.id, '/'))}-${privateEndpoint.?service ?? 'domain'}-${index}'
-      privateLinkServiceConnections: [
-        {
-          name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(domain.id, '/'))}-${privateEndpoint.?service ?? 'domain'}-${index}'
-          properties: {
-            privateLinkServiceId: domain.id
-            groupIds: [
-              privateEndpoint.?service ?? 'domain'
-            ]
-          }
-        }
-      ]
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(domain.id, '/'))}-${privateEndpoint.?service ?? 'domain'}-${index}'
+              properties: {
+                privateLinkServiceId: domain.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'domain'
+                ]
+              }
+            }
+          ]
+        : null
       manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
@@ -218,13 +220,13 @@ module domain_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
       privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
       privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
       roleAssignments: privateEndpoint.?roleAssignments

@@ -97,9 +97,9 @@ resource privateLinkHub_roleAssignments 'Microsoft.Authorization/roleAssignments
 ]
 
 // Private Endpoints
-module privateLinkHub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+module privateLinkHub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-PrivateLinkHub-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-privateLinkHub-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(privateLinkHub.id, '/'))}-${privateEndpoint.?service ?? 'web'}-${index}'
