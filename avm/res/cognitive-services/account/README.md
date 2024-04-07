@@ -66,8 +66,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
         name: 'gpt-35-turbo'
         sku: {
-          capacity: 20
-          name: 'Standard'
+          name: 'S0'
         }
       }
     ]
@@ -109,8 +108,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
           },
           "name": "gpt-35-turbo",
           "sku": {
-            "capacity": 20,
-            "name": "Standard"
+            "name": "S0"
           }
         }
       ]
@@ -1127,15 +1125,13 @@ The resource model definition representing SKU.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`capacity`](#parameter-deploymentsskucapacity) | int | The capacity of the resource model definition representing SKU. |
 | [`name`](#parameter-deploymentsskuname) | string | The name of the resource model definition representing SKU. |
 
-### Parameter: `deployments.sku.capacity`
+**Optional parameters**
 
-The capacity of the resource model definition representing SKU.
-
-- Required: Yes
-- Type: int
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`capacity`](#parameter-deploymentsskucapacity) | int | The capacity of the resource model definition representing SKU. |
 
 ### Parameter: `deployments.sku.name`
 
@@ -1143,6 +1139,13 @@ The name of the resource model definition representing SKU.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `deployments.sku.capacity`
+
+The capacity of the resource model definition representing SKU.
+
+- Required: No
+- Type: int
 
 ### Parameter: `diagnosticSettings`
 

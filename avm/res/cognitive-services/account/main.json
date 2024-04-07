@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "17451231951476927381"
+      "templateHash": "11396596615569634351"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",
@@ -511,8 +511,9 @@
               },
               "capacity": {
                 "type": "int",
+                "nullable": true,
                 "metadata": {
-                  "description": "Required. The capacity of the resource model definition representing SKU."
+                  "description": "Optional. The capacity of the resource model definition representing SKU."
                 }
               }
             },
@@ -879,7 +880,7 @@
         "model": "[coalesce(parameters('deployments'), createArray())[copyIndex()].model]",
         "raiPolicyName": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'raiPolicyName'), null())]"
       },
-      "sku": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'sku'), createObject('name', 'Standard', 'capacity', 20))]",
+      "sku": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'sku'), createObject('name', parameters('sku')))]",
       "dependsOn": [
         "cognitiveService"
       ]

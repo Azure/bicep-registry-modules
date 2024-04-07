@@ -352,8 +352,7 @@ resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/depl
       raiPolicyName: deployment.?raiPolicyName ?? null
     }
     sku: deployment.?sku ?? {
-      name: 'Standard'
-      capacity: 20
+      name: sku
     }
   }
 ]
@@ -681,8 +680,8 @@ type deploymentsType = {
     @description('Required. The name of the resource model definition representing SKU.')
     name: string
 
-    @description('Required. The capacity of the resource model definition representing SKU.')
-    capacity: int
+    @description('Optional. The capacity of the resource model definition representing SKU.')
+    capacity: int?
   }?
 
   @description('Optional. The name of RAI policy.')

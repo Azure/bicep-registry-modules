@@ -53,8 +53,7 @@ module testDeployment '../../../main.bicep' = [
             version: '0301'
           }
           sku: {
-            name: 'Standard'
-            capacity: 20
+            name: 'S0'
           }
         }
       ]
