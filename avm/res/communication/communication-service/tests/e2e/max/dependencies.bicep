@@ -16,7 +16,7 @@ resource emailService 'Microsoft.Communication/emailServices@2023-04-01' = {
   name: emailServiceName
   location: 'global'
   properties: {
-    dataLocation: 'UnitedStates'
+    dataLocation: 'Germany'
   }
 
   resource domain 'domains@2023-04-01' = {
