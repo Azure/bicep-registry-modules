@@ -66,6 +66,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
         name: 'gpt-35-turbo'
         sku: {
+          capacity: 10
           name: 'Standard'
         }
       }
@@ -108,6 +109,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
           },
           "name": "gpt-35-turbo",
           "sku": {
+            "capacity": 10,
             "name": "Standard"
           }
         }
