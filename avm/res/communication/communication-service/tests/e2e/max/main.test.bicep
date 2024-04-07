@@ -33,6 +33,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    emailServiceName: 'dep-${namePrefix}-email-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -64,6 +65,9 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: 'global'
       dataLocation: 'Germany'
+      linkedDomains: [
+        nestedDependencies.outputs.emailDomainResourceId
+      ]
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
