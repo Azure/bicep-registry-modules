@@ -162,13 +162,16 @@ resource namespace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
 // Outputs      //
 // ============ //
 
-@description('The resource ID of the resource.')
-output resourceId string = communicationService.id
-
-@description('The name of the resource.')
+@description('The name of the communication service.')
 output name string = communicationService.name
 
-@description('The location the resource was deployed into.')
+@description('The resource ID of the communication service.')
+output resourceId string = communicationService.id
+
+@description('The resource group the communication service was deployed into.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The location the communication service was deployed into.')
 output location string = communicationService.location
 
 @description('The principal ID of the system assigned identity.')

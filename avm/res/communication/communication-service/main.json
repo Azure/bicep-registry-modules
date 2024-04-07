@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "4018209696004613276"
+      "templateHash": "5875996178087031221"
     },
     "name": "Communication Services",
     "description": "This module deploys a Communication Service",
@@ -442,24 +442,31 @@
     }
   },
   "outputs": {
-    "resourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "The resource ID of the resource."
-      },
-      "value": "[resourceId('Microsoft.Communication/communicationServices', parameters('name'))]"
-    },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the resource."
+        "description": "The name of the communication service."
       },
       "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the communication service."
+      },
+      "value": "[resourceId('Microsoft.Communication/communicationServices', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the communication service was deployed into."
+      },
+      "value": "[resourceGroup().name]"
     },
     "location": {
       "type": "string",
       "metadata": {
-        "description": "The location the resource was deployed into."
+        "description": "The location the communication service was deployed into."
       },
       "value": "[reference('communicationService', '2023-04-01', 'full').location]"
     },

@@ -47,7 +47,7 @@ module communicationService 'br/public:avm/res/communication/communication-servi
   params: {
     // Required parameters
     dataLocation: 'Germany'
-    name: 'ccsdef001'
+    name: 'ccsmin001'
     // Non-required parameters
     location: 'global'
   }
@@ -71,7 +71,7 @@ module communicationService 'br/public:avm/res/communication/communication-servi
       "value": "Germany"
     },
     "name": {
-      "value": "ccsdef001"
+      "value": "ccsmin001"
     },
     // Non-required parameters
     "location": {
@@ -699,9 +699,10 @@ Resource tags.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the resource. |
-| `resourceId` | string | The resource ID of the resource. |
+| `location` | string | The location the communication service was deployed into. |
+| `name` | string | The name of the communication service. |
+| `resourceGroupName` | string | The resource group the communication service was deployed into. |
+| `resourceId` | string | The resource ID of the communication service. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
