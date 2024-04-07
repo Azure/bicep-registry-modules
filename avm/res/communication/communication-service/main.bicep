@@ -1,8 +1,10 @@
-metadata name = '<Add module name>'
-metadata description = '<Add description>'
+metadata name = 'Communication Services'
+metadata description = 'This module deploys a Communication Service'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. Name of the resource to create.')
+@minLength(1)
+@maxLength(63)
+@description('Required. Name of the communication service to create.')
 param name string
 
 @description('Optional. Location for all Resources.')
