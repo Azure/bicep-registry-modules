@@ -66,7 +66,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
         name: 'gpt-35-turbo'
         sku: {
-          name: 'S0'
+          name: 'Standard'
         }
       }
     ]
@@ -108,7 +108,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
           },
           "name": "gpt-35-turbo",
           "sku": {
-            "name": "S0"
+            "name": "Standard"
           }
         }
       ]
