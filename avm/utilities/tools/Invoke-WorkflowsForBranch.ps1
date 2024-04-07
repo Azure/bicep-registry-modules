@@ -237,7 +237,7 @@ function Invoke-WorkflowsForBranch {
 
     Write-Verbose 'Fetching current GitHub workflows' -Verbose
     $workflows = Get-GitHubModuleWorkflowList @baseInputObject -Filter $PipelineFilter
-    Write-Verbose ("Fetched [{0}] workflows" -f $workflows.Count) -Verbose
+    Write-Verbose ('Fetched [{0}] workflows' -f $workflows.Count) -Verbose
 
     if ($InvokeForDiff) {
         # Load used function

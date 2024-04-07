@@ -19,7 +19,7 @@ Set-ModuleFileAndFolderSetup -FullModuleFolderPath '<repoPath>\avm\res\storage\s
 Results into:
 - Added file [<repoPath>\avm\res\storage\storage-account\main.bicep]
 - Added file [<repoPath>\avm\res\storage\storage-account\version.json]
-- Added file [<repoPath>\avm\res\storage\storage-account\tests\e2e\default\main.test.bicep]
+- Added file [<repoPath>\avm\res\storage\storage-account\tests\e2e\defaults\main.test.bicep]
 - Added file [<repoPath>\avm\res\storage\storage-account\tests\e2e\waf-aligned\main.test.bicep]
 - Added file [<repoPath>\avm\res\storage\storage-account\blob-service\main.bicep]
 - Added file [<repoPath>\avm\res\storage\storage-account\blob-service\container\main.bicep]
@@ -30,7 +30,7 @@ Set-ModuleFileAndFolderSetup -FullModuleFolderPath '<repoPath>\avm\res\storage\s
 Results into:
 - Added file [<repoPath>\avm\res\storage\storage-account\main.bicep]
 - Added file [<repoPath>\avm\res\storage\storage-account\version.json]
-- Added file [<repoPath>\avm\res\storage\storage-account\tests\e2e\default\main.test.bicep]
+- Added file [<repoPath>\avm\res\storage\storage-account\tests\e2e\defaults\main.test.bicep]
 - Added file [<repoPath>\avm\res\storage\storage-account\tests\e2e\waf-aligned\main.test.bicep]
 
 #>
@@ -64,14 +64,14 @@ function Set-ModuleFileAndFolderSetup {
     # -------------
     $bicepFilePath = Join-Path $CurrentLevelFolderPath 'main.bicep'
     if (-not (Test-Path $bicepFilePath)) {
-        if ($PSCmdlet.ShouldProcess("File [$bicepFilePath]", "Add")) {
+        if ($PSCmdlet.ShouldProcess("File [$bicepFilePath]", 'Add')) {
             $null = New-Item -Path $bicepFilePath -ItemType 'File' -Force
         }
 
         $defaultTemplateSourceFilePath = Join-Path $PSScriptRoot 'src' ($isTopLevel ? 'src.main.bicep' : 'src.child.main.bicep')
         if (Test-Path $defaultTemplateSourceFilePath) {
             $defaultTemplateSourceFileContent = Get-Content -Path $defaultTemplateSourceFilePath
-            if ($PSCmdlet.ShouldProcess("content for file [$bicepFilePath]", "Set")) {
+            if ($PSCmdlet.ShouldProcess("content for file [$bicepFilePath]", 'Set')) {
                 $null = Set-Content -Path $bicepFilePath -Value $defaultTemplateSourceFileContent
             }
         }
@@ -88,28 +88,28 @@ function Set-ModuleFileAndFolderSetup {
         # ------------
         $versionFilePath = Join-Path $CurrentLevelFolderPath 'version.json'
         if (-not (Test-Path $versionFilePath)) {
-            if ($PSCmdlet.ShouldProcess("File [$versionFilePath]", "Add")) {
+            if ($PSCmdlet.ShouldProcess("File [$versionFilePath]", 'Add')) {
                 $null = New-Item -Path $versionFilePath -ItemType 'File' -Force
             }
 
             $versionSourceFilePath = Join-Path $PSScriptRoot 'src' 'src.version.json'
             if (Test-Path $versionSourceFilePath) {
                 $versionSourceFileContent = Get-Content -Path $versionSourceFilePath
-                if ($PSCmdlet.ShouldProcess("content for file [$versionFilePath]", "Set")) {
+                if ($PSCmdlet.ShouldProcess("content for file [$versionFilePath]", 'Set')) {
                     $null = Set-Content -Path $versionFilePath -Value $versionSourceFileContent
                 }
             }
             Write-Verbose "Added file [$versionFilePath]" -Verbose
         }
 
-        # Default test file
+        # Defaults test file
         # -----------------
         $testCasesPath = Join-Path $CurrentLevelFolderPath 'tests' 'e2e'
         $currentTestFolders = Get-ChildItem -Path $testCasesPath -Directory | ForEach-Object { $_.Name }
 
         if (($currentTestFolders -match '.*defaults').count -eq 0) {
-            $defaultTestFilePath = Join-Path $testCasesPath 'default' 'main.test.bicep'
-            if ($PSCmdlet.ShouldProcess("file [$defaultTestFilePath]", "Add")) {
+            $defaultTestFilePath = Join-Path $testCasesPath 'defaults' 'main.test.bicep'
+            if ($PSCmdlet.ShouldProcess("file [$defaultTestFilePath]", 'Add')) {
                 $null = New-Item -Path $defaultTestFilePath -ItemType 'File' -Force
             }
             $defaultTestTemplateSourceFilePath = Join-Path $PSScriptRoot 'src' 'src.main.test.bicep'
@@ -122,7 +122,7 @@ function Set-ModuleFileAndFolderSetup {
                 $suggestedResourceGroupName = $resourceTypeIdentifier -replace '[\/|\\]', '.' -replace '-' # e.g., network.privateendpoints
                 $defaultTestTemplateSourceFileContent = $defaultTestTemplateSourceFileContent -replace '<The test resource group name>', $suggestedResourceGroupName
 
-                if ($PSCmdlet.ShouldProcess("content for file [$defaultTestFilePath]", "Set")) {
+                if ($PSCmdlet.ShouldProcess("content for file [$defaultTestFilePath]", 'Set')) {
 
                     $null = Set-Content -Path $defaultTestFilePath -Value $defaultTestTemplateSourceFileContent
                 }
@@ -135,7 +135,7 @@ function Set-ModuleFileAndFolderSetup {
         # ---------------------
         if (($currentTestFolders -match '.*waf-aligned').count -eq 0) {
             $wafTestFilePath = Join-Path $testCasesPath 'waf-aligned' 'main.test.bicep'
-            if ($PSCmdlet.ShouldProcess("file [$wafTestFilePath]", "Add")) {
+            if ($PSCmdlet.ShouldProcess("file [$wafTestFilePath]", 'Add')) {
                 $null = New-Item -Path $wafTestFilePath -ItemType 'File' -Force
             }
 
@@ -149,7 +149,7 @@ function Set-ModuleFileAndFolderSetup {
                 $suggestedResourceGroupName = $resourceTypeIdentifier -replace '[\/|\\]', '.' -replace '-' # e.g., network.privateendpoints
                 $wafTestTemplateSourceFileContent = $wafTestTemplateSourceFileContent -replace '<The test resource group name>', $suggestedResourceGroupName
 
-                if ($PSCmdlet.ShouldProcess("content for file [$wafTestFilePath]", "Set")) {
+                if ($PSCmdlet.ShouldProcess("content for file [$wafTestFilePath]", 'Set')) {
                     $null = Set-Content -Path $wafTestFilePath -Value $wafTestTemplateSourceFileContent
                 }
             }

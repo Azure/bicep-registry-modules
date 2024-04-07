@@ -50,7 +50,7 @@ function Publish-ModuleFromPathToPBR {
 
   # 1. Test if module qualifies for publishing
   if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath)) {
-    Write-Verbose "No changes detected. Skipping publishing" -Verbose
+    Write-Verbose 'No changes detected. Skipping publishing' -Verbose
     return
   }
 
@@ -95,7 +95,7 @@ function Publish-ModuleFromPathToPBR {
 
   $publishInput = @(
     $moduleBicepFilePath
-    '--target', ("br:{0}/public/bicep/{1}:{2}" -f $plainPublicRegistryServer, $publishedModuleName, $targetVersion)
+    '--target', ('br:{0}/public/bicep/{1}:{2}' -f $plainPublicRegistryServer, $publishedModuleName, $targetVersion)
     '--documentationUri', $documentationUri
     '--with-source'
     '--force'

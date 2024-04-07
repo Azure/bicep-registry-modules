@@ -18,8 +18,7 @@ BeforeAll {
 
   if ($moduleFolderPaths.Count -gt 1) {
     $topLevelModuleTemplatePath = $moduleFolderPaths | Sort-Object | Select-Object -First 1
-  }
-  else {
+  } else {
     $topLevelModuleTemplatePath = $moduleFolderPaths
   }
 
