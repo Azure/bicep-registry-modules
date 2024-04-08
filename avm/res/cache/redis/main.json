@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "14239657026051186935"
+      "templateHash": "10854652653669697664"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache.",
@@ -528,7 +528,7 @@
     },
     "replicasPerMaster": {
       "type": "int",
-      "defaultValue": 1,
+      "defaultValue": 3,
       "minValue": 1,
       "metadata": {
         "description": "Optional. The number of replicas to be created per primary."
@@ -568,7 +568,7 @@
     },
     "skuName": {
       "type": "string",
-      "defaultValue": "Basic",
+      "defaultValue": "Premium",
       "allowedValues": [
         "Basic",
         "Premium",
@@ -608,7 +608,11 @@
     },
     "zones": {
       "type": "array",
-      "defaultValue": [],
+      "defaultValue": [
+        "1",
+        "2",
+        "3"
+      ],
       "metadata": {
         "description": "Optional. If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed."
       }

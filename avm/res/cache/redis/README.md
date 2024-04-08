@@ -1209,7 +1209,7 @@ The number of replicas to be created per primary.
 
 - Required: No
 - Type: int
-- Default: `1`
+- Default: `3`
 
 ### Parameter: `replicasPerPrimary`
 
@@ -1322,7 +1322,7 @@ The type of Redis cache to deploy.
 
 - Required: No
 - Type: string
-- Default: `'Basic'`
+- Default: `'Premium'`
 - Allowed:
   ```Bicep
   [
@@ -1377,7 +1377,14 @@ If the zoneRedundant parameter is true, replicas will be provisioned in the avai
 
 - Required: No
 - Type: array
-- Default: `[]`
+- Default:
+  ```Bicep
+  [
+    '1'
+    '2'
+    '3'
+  ]
+  ```
 
 
 ## Outputs
