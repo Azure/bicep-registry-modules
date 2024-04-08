@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "1111123288612338746"
+      "templateHash": "14520040074693749549"
     },
     "name": "Finops-hub",
     "description": "This module deploys a Finops hub from the Finops toolkit.",
@@ -95,6 +95,7 @@
     }
   },
   "variables": {
+    "$fxv#0": "0.3",
     "safeHubName": "[replace(replace(toLower(parameters('hubName')), '-', ''), '_', '')]",
     "storageAccountSuffix": "[variables('uniqueSuffix')]",
     "storageAccountName": "[format('{0}{1}', take(variables('safeHubName'), sub(24, length(variables('storageAccountSuffix')))), variables('storageAccountSuffix'))]",
@@ -103,7 +104,8 @@
     "uniqueSuffix": "[uniqueString(parameters('hubName'), resourceGroup().id)]",
     "dataFactoryPrefix": "[format('{0}-engine', replace(parameters('hubName'), '_', '-'))]",
     "dataFactorySuffix": "[format('-{0}', variables('uniqueSuffix'))]",
-    "dataFactoryName": "[replace(format('{0}{1}', take(variables('dataFactoryPrefix'), sub(63, length(variables('dataFactorySuffix')))), variables('dataFactorySuffix')), '--', '-')]"
+    "dataFactoryName": "[replace(format('{0}{1}', take(variables('dataFactoryPrefix'), sub(63, length(variables('dataFactorySuffix')))), variables('dataFactorySuffix')), '--', '-')]",
+    "telemetryId": "00f120b5-2007-6120-0000-40b000000000"
   },
   "resources": {
     "dataFactory": {
@@ -134,6 +136,26 @@
               "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
             }
           }
+        }
+      }
+    },
+    "defaultTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('pid-{0}-{1}', variables('telemetryId'), uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "FinOps toolkit",
+              "version": "[variables('$fxv#0')]"
+            }
+          },
+          "resources": []
         }
       }
     },

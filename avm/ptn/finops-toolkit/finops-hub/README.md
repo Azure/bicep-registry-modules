@@ -70,7 +70,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   name: 'finopsHubDeployment'
   params: {
     // Required parameters
-    hubName: 'finops-hub-ssamin'
+    hubName: 'finops-hub-finmin'
     // Non-required parameters
     location: '<location>'
   }
@@ -91,7 +91,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   "parameters": {
     // Required parameters
     "hubName": {
-      "value": "finops-hub-ssamin"
+      "value": "finops-hub-finmin"
     },
     // Non-required parameters
     "location": {
@@ -118,7 +118,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   name: 'finopsHubDeployment'
   params: {
     // Required parameters
-    hubName: 'finops-hub-ssamax'
+    hubName: 'finops-hub-finmax'
     // Non-required parameters
     configContainer: 'config'
     convertToParquet: true
@@ -150,7 +150,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   "parameters": {
     // Required parameters
     "hubName": {
-      "value": "finops-hub-ssamax"
+      "value": "finops-hub-finmax"
     },
     // Non-required parameters
     "configContainer": {
@@ -202,7 +202,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   name: 'finopsHubDeployment'
   params: {
     // Required parameters
-    hubName: 'finops-hub-ssawaf'
+    hubName: 'finops-hub-finwaf'
     // Non-required parameters
     configContainer: 'config'
     convertToParquet: true
@@ -212,6 +212,11 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
     location: '<location>'
     storageSku: 'Premium_ZRS'
     tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    tagsByResource: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
@@ -234,7 +239,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   "parameters": {
     // Required parameters
     "hubName": {
-      "value": "finops-hub-ssawaf"
+      "value": "finops-hub-finwaf"
     },
     // Non-required parameters
     "configContainer": {
@@ -259,6 +264,13 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
       "value": "Premium_ZRS"
     },
     "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "tagsByResource": {
       "value": {
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
