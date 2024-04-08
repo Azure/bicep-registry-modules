@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module with most of its featur
 param resourceGroupName string = 'NetworkWatcherRG' // Note, this is the default NetworkWatcher resource group. Do not change.
 
 @description('Optional. The location to deploy resources to.')
-param resourcelocation string = deployment().location
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'nnwmax'
@@ -20,9 +20,7 @@ param serviceShort string = 'nnwmax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-#disable-next-line no-hardcoded-location // Disabled as the default RG & location are created in always one location, but each test has to deploy into a different one
-var testLocation = 'australiaeast'
-var resourceGroupLocation  = 'westeurope'
+var resourceGroupLocation = resourceLocation == 'australiaeast' ? 'australiaeast' : 'eastus'
 
 // ============ //
 // Dependencies //
@@ -37,14 +35,14 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, testLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceGroupLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     firstNetworkSecurityGroupName: 'dep-${namePrefix}-nsg-1-${serviceShort}'
     secondNetworkSecurityGroupName: 'dep-${namePrefix}-nsg-2-${serviceShort}'
     virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    location: testLocation
+    location: resourceGroupLocation
   }
 }
 
@@ -52,13 +50,13 @@ module nestedDependencies 'dependencies.bicep' = {
 // ===========
 module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourcelocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, resourceGroupLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: testLocation
+    location: resourceGroupLocation
   }
 }
 
@@ -68,10 +66,10 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, testLocation)}-test-${serviceShort}-${iteration}'
+  name: '${uniqueString(deployment().name, resourceGroupLocation)}-test-${serviceShort}-${iteration}'
   params: {
-    name: 'NetworkWatcher_${testLocation}'
-    location: testLocation
+    name: 'NetworkWatcher_${resourceGroupLocation}'
+    location: resourceGroupLocation
     connectionMonitors: [
       {
         name: '${namePrefix}-${serviceShort}-cm-001'
