@@ -79,53 +79,80 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
-  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-} : null
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  'Data Factory Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '673868aa-7521-48a0-acc6-0f60742d39f5')
+  'Data Factory Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '673868aa-7521-48a0-acc6-0f60742d39f5'
+  )
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-  scope: resourceGroup(split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2], split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4])
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
+  if (!empty(customerManagedKey.?keyVaultResourceId)) {
+    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+    scope: resourceGroup(
+      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
+      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+    resource cMKKey 'keys@2023-02-01' existing =
+      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+        name: customerManagedKey.?keyName ?? 'dummyKey'
+      }
   }
-}
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
-  scope: resourceGroup(split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2], split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4])
-}
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing =
+  if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+    name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+    scope: resourceGroup(
+      split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
+      split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    )
+  }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.datafactory-factory.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.datafactory-factory.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
 resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
   name: name
@@ -133,141 +160,188 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
   tags: tags
   identity: identity
   properties: {
-    repoConfiguration: bool(gitConfigureLater) ? null : union({
-        type: gitRepoType
-        hostName: gitHostName
-        accountName: gitAccountName
-        repositoryName: gitRepositoryName
-        collaborationBranch: gitCollaborationBranch
-        rootFolder: gitRootFolder
-        disablePublish: gitDisablePublish
-      }, (gitRepoType == 'FactoryVSTSConfiguration' ? {
-        projectName: gitProjectName
-      } : {}), {})
+    repoConfiguration: bool(gitConfigureLater)
+      ? null
+      : union(
+          {
+            type: gitRepoType
+            hostName: gitHostName
+            accountName: gitAccountName
+            repositoryName: gitRepositoryName
+            collaborationBranch: gitCollaborationBranch
+            rootFolder: gitRootFolder
+            disablePublish: gitDisablePublish
+          },
+          (gitRepoType == 'FactoryVSTSConfiguration'
+            ? {
+                projectName: gitProjectName
+              }
+            : {}),
+          {}
+        )
     globalParameters: !empty(globalParameters) ? globalParameters : null
-    publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(privateEndpoints) ? 'Disabled' : null)
-    encryption: !empty(customerManagedKey) ? {
-      identity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? {
-        userAssignedIdentity: cMKUserAssignedIdentity.id
-      } : null
-      keyName: customerManagedKey!.keyName
-      keyVersion: !empty(customerManagedKey.?keyVersion ?? '') ? customerManagedKey!.keyVersion : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
-      vaultBaseUrl: cMKKeyVault.properties.vaultUri
-    } : null
-  }
-}
-
-module dataFactory_managedVirtualNetwork 'managed-virtual-network/main.bicep' = if (!empty(managedVirtualNetworkName)) {
-  name: '${uniqueString(deployment().name, location)}-DataFactory-ManagedVNet'
-  params: {
-    name: managedVirtualNetworkName
-    dataFactoryName: dataFactory.name
-    managedPrivateEndpoints: managedPrivateEndpoints
-  }
-}
-
-module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [for (integrationRuntime, index) in integrationRuntimes: {
-  name: '${uniqueString(deployment().name, location)}-DataFactory-IntegrationRuntime-${index}'
-  params: {
-    dataFactoryName: dataFactory.name
-    name: integrationRuntime.name
-    type: integrationRuntime.type
-    interagrationRuntimeCustomDescription: integrationRuntime.?interagrationRuntimeCustomDescription ?? 'Managed Integration Runtime created by avm-res-datafactory-factories'
-    managedVirtualNetworkName: contains(integrationRuntime, 'managedVirtualNetworkName') ? integrationRuntime.managedVirtualNetworkName : ''
-    typeProperties: contains(integrationRuntime, 'typeProperties') ? integrationRuntime.typeProperties : {}
-  }
-  dependsOn: [
-    dataFactory_managedVirtualNetwork
-  ]
-}]
-
-resource dataFactory_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
-  }
-  scope: dataFactory
-}
-
-resource dataFactory_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
-      category: group.category
-      enabled: group.?enabled ?? true
-      timeGrain: null
-    }]
-    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
-      categoryGroup: group.?categoryGroup
-      category: group.?category
-      enabled: group.?enabled ?? true
-    }]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
-  }
-  scope: dataFactory
-}]
-
-resource dataFactory_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(dataFactory.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
-  }
-  scope: dataFactory
-}]
-
-module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-dataFactory-PrivateEndpoint-${index}'
-  params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(dataFactory.id, '/'))}-${privateEndpoint.?service ?? 'dataFactory'}-${index}'
-    privateLinkServiceConnections: [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(dataFactory.id, '/'))}-${privateEndpoint.?service ?? 'dataFactory'}-${index}'
-        properties: {
-          privateLinkServiceId: dataFactory.id
-          groupIds: [
-            privateEndpoint.?service ?? 'dataFactory'
-          ]
+    publicNetworkAccess: !empty(publicNetworkAccess)
+      ? any(publicNetworkAccess)
+      : (!empty(privateEndpoints) ? 'Disabled' : null)
+    encryption: !empty(customerManagedKey)
+      ? {
+          identity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+            ? {
+                userAssignedIdentity: cMKUserAssignedIdentity.id
+              }
+            : null
+          keyName: customerManagedKey!.keyName
+          keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
+            ? customerManagedKey!.keyVersion
+            : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+          vaultBaseUrl: cMKKeyVault.properties.vaultUri
         }
-      }
+      : null
+  }
+}
+
+module dataFactory_managedVirtualNetwork 'managed-virtual-network/main.bicep' =
+  if (!empty(managedVirtualNetworkName)) {
+    name: '${uniqueString(deployment().name, location)}-DataFactory-ManagedVNet'
+    params: {
+      name: managedVirtualNetworkName
+      dataFactoryName: dataFactory.name
+      managedPrivateEndpoints: managedPrivateEndpoints
+    }
+  }
+
+module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [
+  for (integrationRuntime, index) in integrationRuntimes: {
+    name: '${uniqueString(deployment().name, location)}-DataFactory-IntegrationRuntime-${index}'
+    params: {
+      dataFactoryName: dataFactory.name
+      name: integrationRuntime.name
+      type: integrationRuntime.type
+      interagrationRuntimeCustomDescription: integrationRuntime.?interagrationRuntimeCustomDescription ?? 'Managed Integration Runtime created by avm-res-datafactory-factories'
+      managedVirtualNetworkName: contains(integrationRuntime, 'managedVirtualNetworkName')
+        ? integrationRuntime.managedVirtualNetworkName
+        : ''
+      typeProperties: contains(integrationRuntime, 'typeProperties') ? integrationRuntime.typeProperties : {}
+    }
+    dependsOn: [
+      dataFactory_managedVirtualNetwork
     ]
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(dataFactory.id, '/'))}-${privateEndpoint.?service ?? 'dataFactory'}-${index}'
-        properties: {
-          privateLinkServiceId: dataFactory.id
-          groupIds: [
-            privateEndpoint.?service ?? 'dataFactory'
-          ]
-          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
-        }
-      }
-    ] : null
-    subnetResourceId: privateEndpoint.subnetResourceId
-    location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: privateEndpoint.?lock ?? lock
-    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
-    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
-    roleAssignments: privateEndpoint.?roleAssignments
-    tags: privateEndpoint.?tags ?? tags
-    customDnsConfigs: privateEndpoint.?customDnsConfigs
-    ipConfigurations: privateEndpoint.?ipConfigurations
-    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
-    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
   }
-}]
+]
+
+resource dataFactory_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: dataFactory
+  }
+
+resource dataFactory_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: dataFactory
+  }
+]
+
+resource dataFactory_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(dataFactory.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: dataFactory
+  }
+]
+
+module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    name: '${uniqueString(deployment().name, location)}-dataFactory-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(dataFactory.id, '/'))}-${privateEndpoint.?service ?? 'dataFactory'}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(dataFactory.id, '/'))}-${privateEndpoint.?service ?? 'dataFactory'}-${index}'
+              properties: {
+                privateLinkServiceId: dataFactory.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'dataFactory'
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(dataFactory.id, '/'))}-${privateEndpoint.?service ?? 'dataFactory'}-${index}'
+              properties: {
+                privateLinkServiceId: dataFactory.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'dataFactory'
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
+  }
+]
 
 @description('The Name of the Azure Data Factory instance.')
 output name string = dataFactory.name
@@ -397,6 +471,9 @@ type privateEndpointType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
+
+  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
+  resourceGroupName: string?
 }[]?
 
 type diagnosticSettingType = {

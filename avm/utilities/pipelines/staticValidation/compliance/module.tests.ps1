@@ -324,7 +324,7 @@ Describe 'Module tests' -Tag 'Module' {
       }
 
       $mdFormattedDiff = ($diffReponse -join '</br>') -replace '\|', '\|'
-      $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `Set-ModuleReadMe` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the script for this module''s template.' -f $mdFormattedDiff)
+      $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/avm/utilities/tools/Set-AVMModule.ps1` and more precisely the `/avm/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
     }
   }
 
