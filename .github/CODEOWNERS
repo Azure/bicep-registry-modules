@@ -3,7 +3,6 @@
 /scripts/ @Azure/bicep-admins @Azure/avm-core-team-technical-bicep
 /avm/ @Azure/avm-core-team-technical-bicep
 /avm/utilities/ @Azure/avm-core-team-technical-bicep
-/avm/ptn/batch/batch-account-ptn/ @Azure/avm-res-batch-batchaccountptn-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/aad/domain-service/ @Azure/avm-res-aad-domainservice-module-owners-bicep
 /avm/res/analysis-services/server/ @Azure/avm-res-analysisservices-server-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/api-management/service/ @Azure/avm-res-apimanagement-service-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -145,6 +144,7 @@
 #/avm/ptn/avd-lza/management-plane/ @Azure/avm-ptn-avd-lza-managementplane-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/ptn/avd-lza/networking/ @Azure/avm-ptn-avd-lza-networking-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/ptn/avd-lza/session-hosts/ @Azure/avm-ptn-avd-lza-sessionhosts-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/ptn/batch/batch-account-ptn/ @Azure/avm-res-batch-batchaccountptn-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/ptn/security/security-center/ @Azure/avm-ptn-securitycenter-module-owners-bicep @Azure/avm-core-team-technical-bicep
 
 *avm.core.team.tests.ps1 @Azure/avm-core-team-technical-bicep
