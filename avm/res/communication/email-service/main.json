@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "2544645996965579630"
+      "templateHash": "6909323473215245684"
     },
     "name": "Email Services",
     "description": "This module deploys an Email Service",
@@ -700,6 +700,26 @@
         "description": "The location the email service was deployed into."
       },
       "value": "[reference('email', '2023-04-01', 'full').location]"
+    },
+    "domainResourceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The list of the email domain resource ids."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('domains'), createArray()))]",
+        "input": "[reference(format('email_domains[{0}]', copyIndex())).outputs.resourceId.value]"
+      }
+    },
+    "domainNamess": {
+      "type": "array",
+      "metadata": {
+        "description": "The list of the email domain names."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('domains'), createArray()))]",
+        "input": "[reference(format('email_domains[{0}]', copyIndex())).outputs.name.value]"
+      }
     }
   }
 }

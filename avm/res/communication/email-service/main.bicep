@@ -139,6 +139,12 @@ output resourceGroupName string = resourceGroup().name
 @description('The location the email service was deployed into.')
 output location string = email.location
 
+@description('The list of the email domain resource ids.')
+output domainResourceIds array = [for (domain, index) in (domains ?? []): email_domains[index].outputs.resourceId]
+
+@description('The list of the email domain names.')
+output domainNamess array = [for (domain, index) in (domains ?? []): email_domains[index].outputs.name]
+
 // ================ //
 // Definitions      //
 // ================ //
