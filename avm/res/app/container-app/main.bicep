@@ -244,6 +244,9 @@ resource containerApp_roleAssignments 'Microsoft.Authorization/roleAssignments@2
 @description('The resource ID of the Container App.')
 output resourceId string = containerApp.id
 
+@description('The configuration of ingress fqdn.')
+output fqdn string = containerApp.properties.configuration.ingress.fqdn
+
 @description('The name of the resource group the Container App was deployed into.')
 output resourceGroupName string = resourceGroup().name
 

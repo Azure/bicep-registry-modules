@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "18118452764225711784"
+      "templateHash": "2491578115600463169"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -483,6 +483,13 @@
         "description": "The resource ID of the Container App."
       },
       "value": "[resourceId('Microsoft.App/containerApps', parameters('name'))]"
+    },
+    "fqdn": {
+      "type": "string",
+      "metadata": {
+        "description": "The configuration of ingress fqdn."
+      },
+      "value": "[reference('containerApp').configuration.ingress.fqdn]"
     },
     "resourceGroupName": {
       "type": "string",
