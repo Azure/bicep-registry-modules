@@ -894,6 +894,7 @@ Workload profile name to pin for container app execution.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `fqdn` | string | The configuration of ingress fqdn. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the Container App. |
 | `resourceGroupName` | string | The name of the resource group the Container App was deployed into. |
