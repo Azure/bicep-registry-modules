@@ -45,53 +45,58 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    zones: [
-      '1'
-    ]
-    type: 'Standard'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      TagA: 'Would you kindly...'
-      TagB: 'Tags for sale'
-    }
-    colocationStatus: {
-      code: 'ColocationStatus/Aligned'
-      displayStatus: 'Aligned'
-      level: 'Info'
-      message: 'I\'m a default error message'
-    }
-    intent: {
-      vmSizes: [
-        'Standard_B1ms'
-        'Standard_B4ms'
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
       ]
+      zones: [
+        '1'
+      ]
+      type: 'Standard'
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        TagA: 'Would you kindly...'
+        TagB: 'Tags for sale'
+      }
+      colocationStatus: {
+        code: 'ColocationStatus/Aligned'
+        displayStatus: 'Aligned'
+        level: 'Info'
+        message: 'I\'m a default error message'
+      }
+      intent: {
+        vmSizes: [
+          'Standard_B1ms'
+          'Standard_B4ms'
+        ]
+      }
     }
   }
-}]
+]

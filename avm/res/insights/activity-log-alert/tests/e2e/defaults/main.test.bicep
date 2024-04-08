@@ -36,41 +36,43 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: 'global'
-    conditions: [
-      {
-        field: 'category'
-        equals: 'ServiceHealth'
-      }
-      {
-        anyOf: [
-          {
-            field: 'properties.incidentType'
-            equals: 'Incident'
-          }
-          {
-            field: 'properties.incidentType'
-            equals: 'Maintenance'
-          }
-        ]
-      }
-      {
-        field: 'properties.impactedServices[*].ServiceName'
-        containsAny: [
-          'Storage'
-        ]
-      }
-      {
-        field: 'properties.impactedServices[*].ImpactedRegions[*].RegionName'
-        containsAny: [
-          'West Europe'
-        ]
-      }
-    ]
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: 'global'
+      conditions: [
+        {
+          field: 'category'
+          equals: 'ServiceHealth'
+        }
+        {
+          anyOf: [
+            {
+              field: 'properties.incidentType'
+              equals: 'Incident'
+            }
+            {
+              field: 'properties.incidentType'
+              equals: 'Maintenance'
+            }
+          ]
+        }
+        {
+          field: 'properties.impactedServices[*].ServiceName'
+          containsAny: [
+            'Storage'
+          ]
+        }
+        {
+          field: 'properties.impactedServices[*].ImpactedRegions[*].RegionName'
+          containsAny: [
+            'West Europe'
+          ]
+        }
+      ]
+    }
   }
-}]
+]

@@ -31,9 +31,20 @@ param policyName string = ''
 @description('Optional. The name of the replication container mapping. If not provided, it will be automatically generated as `<source_container_name>-<target_container_name>`.')
 param name string = ''
 
-var policyResourceId = policyId != '' ? policyId : subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationPolicies', recoveryVaultName, policyName)
-var targetProtectionContainerResourceId = targetProtectionContainerId != '' ? targetProtectionContainerId : subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers', recoveryVaultName, targetContainerFabricName, targetContainerName)
-var mappingName = !empty(name) ? name : '${sourceProtectionContainerName}-${split(targetProtectionContainerResourceId, '/')[10]}'
+var policyResourceId = policyId != ''
+  ? policyId
+  : subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationPolicies', recoveryVaultName, policyName)
+var targetProtectionContainerResourceId = targetProtectionContainerId != ''
+  ? targetProtectionContainerId
+  : subscriptionResourceId(
+      'Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers',
+      recoveryVaultName,
+      targetContainerFabricName,
+      targetContainerName
+    )
+var mappingName = !empty(name)
+  ? name
+  : '${sourceProtectionContainerName}-${split(targetProtectionContainerResourceId, '/')[10]}'
 
 resource replicationContainer 'Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings@2022-10-01' = {
   name: '${recoveryVaultName}/${replicationFabricName}/${sourceProtectionContainerName}/${mappingName}'

@@ -17,14 +17,13 @@ param description string?
 param authenticationName string?
 
 @sys.allowed([
-    'DnsMatchesAuthenticationName'
-    'EmailMatchesAuthenticationName'
-    'IpMatchesAuthenticationName'
-    'SubjectMatchesAuthenticationName'
-    'ThumbprintMatch'
-    'UriMatchesAuthenticationName'
-  ]
-)
+  'DnsMatchesAuthenticationName'
+  'EmailMatchesAuthenticationName'
+  'IpMatchesAuthenticationName'
+  'SubjectMatchesAuthenticationName'
+  'ThumbprintMatch'
+  'UriMatchesAuthenticationName'
+])
 @sys.description('Optional. The validation scheme used to authenticate the client.')
 param clientCertificateAuthenticationValidationSchema string = 'SubjectMatchesAuthenticationName'
 
@@ -54,7 +53,9 @@ resource client 'Microsoft.EventGrid/namespaces/clients@2023-12-15-preview' = {
     attributes: attributes
     clientCertificateAuthentication: {
       validationScheme: clientCertificateAuthenticationValidationSchema
-      allowedThumbprints: clientCertificateAuthenticationValidationSchema == 'ThumbprintMatch' ? clientCertificateAuthenticationAllowedThumbprints : null
+      allowedThumbprints: clientCertificateAuthenticationValidationSchema == 'ThumbprintMatch'
+        ? clientCertificateAuthenticationAllowedThumbprints
+        : null
     }
     state: state
   }

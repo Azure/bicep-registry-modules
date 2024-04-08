@@ -47,43 +47,45 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    clusterName: nestedDependencies.outputs.clusterName
-    namespace: 'flux-system'
-    scope: 'cluster'
-    sourceKind: 'GitRepository'
-    gitRepository: {
-      repositoryRef: {
-        branch: 'main'
-      }
-      sshKnownHosts: ''
-      syncIntervalInSeconds: 300
-      timeoutInSeconds: 180
-      url: 'https://github.com/mspnp/aks-baseline'
-    }
-    kustomizations: {
-      unified: {
-        dependsOn: []
-        force: false
-        path: './cluster-manifests'
-        prune: true
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      clusterName: nestedDependencies.outputs.clusterName
+      namespace: 'flux-system'
+      scope: 'cluster'
+      sourceKind: 'GitRepository'
+      gitRepository: {
+        repositoryRef: {
+          branch: 'main'
+        }
+        sshKnownHosts: ''
         syncIntervalInSeconds: 300
-        timeoutInSeconds: 300
-        postBuild: {
-          substitute: {
-            TEST_VAR1: 'foo'
-            TEST_VAR2: 'bar'
+        timeoutInSeconds: 180
+        url: 'https://github.com/mspnp/aks-baseline'
+      }
+      kustomizations: {
+        unified: {
+          dependsOn: []
+          force: false
+          path: './cluster-manifests'
+          prune: true
+          syncIntervalInSeconds: 300
+          timeoutInSeconds: 300
+          postBuild: {
+            substitute: {
+              TEST_VAR1: 'foo'
+              TEST_VAR2: 'bar'
+            }
           }
         }
       }
     }
+    dependsOn: [
+      nestedDependencies
+    ]
   }
-  dependsOn: [
-    nestedDependencies
-  ]
-}]
+]

@@ -70,13 +70,23 @@ resource dataSource 'Microsoft.OperationalInsights/workspaces/dataSources@2020-0
     linkedResourceId: !empty(kind) && kind == 'AzureActivityLog' ? linkedResourceId : null
     eventLogName: !empty(kind) && kind == 'WindowsEvent' ? eventLogName : null
     eventTypes: !empty(kind) && kind == 'WindowsEvent' ? eventTypes : null
-    objectName: !empty(kind) && (kind == 'WindowsPerformanceCounter' || kind == 'LinuxPerformanceObject') ? objectName : null
-    instanceName: !empty(kind) && (kind == 'WindowsPerformanceCounter' || kind == 'LinuxPerformanceObject') ? instanceName : null
-    intervalSeconds: !empty(kind) && (kind == 'WindowsPerformanceCounter' || kind == 'LinuxPerformanceObject') ? intervalSeconds : null
+    objectName: !empty(kind) && (kind == 'WindowsPerformanceCounter' || kind == 'LinuxPerformanceObject')
+      ? objectName
+      : null
+    instanceName: !empty(kind) && (kind == 'WindowsPerformanceCounter' || kind == 'LinuxPerformanceObject')
+      ? instanceName
+      : null
+    intervalSeconds: !empty(kind) && (kind == 'WindowsPerformanceCounter' || kind == 'LinuxPerformanceObject')
+      ? intervalSeconds
+      : null
     counterName: !empty(kind) && kind == 'WindowsPerformanceCounter' ? counterName : null
-    state: !empty(kind) && (kind == 'IISLogs' || kind == 'LinuxSyslogCollection' || kind == 'LinuxPerformanceCollection') ? state : null
+    state: !empty(kind) && (kind == 'IISLogs' || kind == 'LinuxSyslogCollection' || kind == 'LinuxPerformanceCollection')
+      ? state
+      : null
     syslogName: !empty(kind) && kind == 'LinuxSyslog' ? syslogName : null
-    syslogSeverities: !empty(kind) && (kind == 'LinuxSyslog' || kind == 'LinuxPerformanceObject') ? syslogSeverities : null
+    syslogSeverities: !empty(kind) && (kind == 'LinuxSyslog' || kind == 'LinuxPerformanceObject')
+      ? syslogSeverities
+      : null
     performanceCounters: !empty(kind) && kind == 'LinuxPerformanceObject' ? performanceCounters : null
   }
 }

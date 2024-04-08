@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "15929978987009174743"
+      "version": "0.26.54.24096",
+      "templateHash": "14637032224635942457"
     },
     "name": "VPN Sites",
     "description": "This module deploys a VPN Site.",

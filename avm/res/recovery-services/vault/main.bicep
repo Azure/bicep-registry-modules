@@ -63,44 +63,77 @@ param securitySettings object = {}
 ])
 param publicNetworkAccess string = 'Disabled'
 
-var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
-  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-} : null
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 var builtInRoleNames = {
-  'Backup Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')
-  'Backup Operator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')
-  'Backup Reader': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a795c7a0-d4a2-40c1-ae25-d81f01202912')
+  'Backup Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '5e467623-bb1f-42f4-a55d-6e525e11384b'
+  )
+  'Backup Operator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '00c29273-979b-4161-815c-10b084fb9324'
+  )
+  'Backup Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'a795c7a0-d4a2-40c1-ae25-d81f01202912'
+  )
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'Site Recovery Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6670b86e-a3f7-4917-ac9b-5d6ab1be4567')
-  'Site Recovery Operator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '494ae006-db33-4328-bf46-533a6560a3ca')
-  'Site Recovery Reader': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'dbaa88c4-0c30-4179-9fb3-46319faa6149')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'Site Recovery Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '6670b86e-a3f7-4917-ac9b-5d6ab1be4567'
+  )
+  'Site Recovery Operator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '494ae006-db33-4328-bf46-533a6560a3ca'
+  )
+  'Site Recovery Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'dbaa88c4-0c30-4179-9fb3-46319faa6149'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.recoveryservices-vault.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.recoveryservices-vault.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
 resource rsv 'Microsoft.RecoveryServices/vaults@2023-01-01' = {
   name: name
@@ -118,176 +151,233 @@ resource rsv 'Microsoft.RecoveryServices/vaults@2023-01-01' = {
   }
 }
 
-module rsv_replicationFabrics 'replication-fabric/main.bicep' = [for (replicationFabric, index) in replicationFabrics: {
-  name: '${uniqueString(deployment().name, location)}-RSV-Fabric-${index}'
-  params: {
-    recoveryVaultName: rsv.name
-    name: contains(replicationFabric, 'name') ? replicationFabric.name : replicationFabric.location
-    location: replicationFabric.location
-    replicationContainers: contains(replicationFabric, 'replicationContainers') ? replicationFabric.replicationContainers : []
+module rsv_replicationFabrics 'replication-fabric/main.bicep' = [
+  for (replicationFabric, index) in replicationFabrics: {
+    name: '${uniqueString(deployment().name, location)}-RSV-Fabric-${index}'
+    params: {
+      recoveryVaultName: rsv.name
+      name: contains(replicationFabric, 'name') ? replicationFabric.name : replicationFabric.location
+      location: replicationFabric.location
+      replicationContainers: contains(replicationFabric, 'replicationContainers')
+        ? replicationFabric.replicationContainers
+        : []
+    }
+    dependsOn: [
+      rsv_replicationPolicies
+    ]
   }
-  dependsOn: [
-    rsv_replicationPolicies
-  ]
-}]
+]
 
-module rsv_replicationPolicies 'replication-policy/main.bicep' = [for (replicationPolicy, index) in replicationPolicies: {
-  name: '${uniqueString(deployment().name, location)}-RSV-Policy-${index}'
-  params: {
-    name: replicationPolicy.name
-    recoveryVaultName: rsv.name
-    appConsistentFrequencyInMinutes: contains(replicationPolicy, 'appConsistentFrequencyInMinutes') ? replicationPolicy.appConsistentFrequencyInMinutes : 60
-    crashConsistentFrequencyInMinutes: contains(replicationPolicy, 'crashConsistentFrequencyInMinutes') ? replicationPolicy.crashConsistentFrequencyInMinutes : 5
-    multiVmSyncStatus: contains(replicationPolicy, 'multiVmSyncStatus') ? replicationPolicy.multiVmSyncStatus : 'Enable'
-    recoveryPointHistory: contains(replicationPolicy, 'recoveryPointHistory') ? replicationPolicy.recoveryPointHistory : 1440
+module rsv_replicationPolicies 'replication-policy/main.bicep' = [
+  for (replicationPolicy, index) in replicationPolicies: {
+    name: '${uniqueString(deployment().name, location)}-RSV-Policy-${index}'
+    params: {
+      name: replicationPolicy.name
+      recoveryVaultName: rsv.name
+      appConsistentFrequencyInMinutes: contains(replicationPolicy, 'appConsistentFrequencyInMinutes')
+        ? replicationPolicy.appConsistentFrequencyInMinutes
+        : 60
+      crashConsistentFrequencyInMinutes: contains(replicationPolicy, 'crashConsistentFrequencyInMinutes')
+        ? replicationPolicy.crashConsistentFrequencyInMinutes
+        : 5
+      multiVmSyncStatus: contains(replicationPolicy, 'multiVmSyncStatus')
+        ? replicationPolicy.multiVmSyncStatus
+        : 'Enable'
+      recoveryPointHistory: contains(replicationPolicy, 'recoveryPointHistory')
+        ? replicationPolicy.recoveryPointHistory
+        : 1440
+    }
   }
-}]
+]
 
-module rsv_backupStorageConfiguration 'backup-storage-config/main.bicep' = if (!empty(backupStorageConfig)) {
-  name: '${uniqueString(deployment().name, location)}-RSV-BackupStorageConfig'
-  params: {
-    recoveryVaultName: rsv.name
-    storageModelType: backupStorageConfig.storageModelType
-    crossRegionRestoreFlag: backupStorageConfig.crossRegionRestoreFlag
+module rsv_backupStorageConfiguration 'backup-storage-config/main.bicep' =
+  if (!empty(backupStorageConfig)) {
+    name: '${uniqueString(deployment().name, location)}-RSV-BackupStorageConfig'
+    params: {
+      recoveryVaultName: rsv.name
+      storageModelType: backupStorageConfig.storageModelType
+      crossRegionRestoreFlag: backupStorageConfig.crossRegionRestoreFlag
+    }
   }
-}
 
-module rsv_backupFabric_protectionContainers 'backup-fabric/protection-container/main.bicep' = [for (protectionContainer, index) in protectionContainers: {
-  name: '${uniqueString(deployment().name, location)}-RSV-ProtectionContainers-${index}'
-  params: {
-    recoveryVaultName: rsv.name
-    name: protectionContainer.name
-    sourceResourceId: protectionContainer.?sourceResourceId
-    friendlyName: protectionContainer.?friendlyName
-    backupManagementType: protectionContainer.?backupManagementType
-    containerType: protectionContainer.?containerType
-    protectedItems: contains(protectionContainer, 'protectedItems') ? protectionContainer.protectedItems : []
-    location: location
+module rsv_backupFabric_protectionContainers 'backup-fabric/protection-container/main.bicep' = [
+  for (protectionContainer, index) in protectionContainers: {
+    name: '${uniqueString(deployment().name, location)}-RSV-ProtectionContainers-${index}'
+    params: {
+      recoveryVaultName: rsv.name
+      name: protectionContainer.name
+      sourceResourceId: protectionContainer.?sourceResourceId
+      friendlyName: protectionContainer.?friendlyName
+      backupManagementType: protectionContainer.?backupManagementType
+      containerType: protectionContainer.?containerType
+      protectedItems: contains(protectionContainer, 'protectedItems') ? protectionContainer.protectedItems : []
+      location: location
+    }
   }
-}]
+]
 
-module rsv_backupPolicies 'backup-policy/main.bicep' = [for (backupPolicy, index) in backupPolicies: {
-  name: '${uniqueString(deployment().name, location)}-RSV-BackupPolicy-${index}'
-  params: {
-    recoveryVaultName: rsv.name
-    name: backupPolicy.name
-    properties: backupPolicy.properties
+module rsv_backupPolicies 'backup-policy/main.bicep' = [
+  for (backupPolicy, index) in backupPolicies: {
+    name: '${uniqueString(deployment().name, location)}-RSV-BackupPolicy-${index}'
+    params: {
+      recoveryVaultName: rsv.name
+      name: backupPolicy.name
+      properties: backupPolicy.properties
+    }
   }
-}]
+]
 
-module rsv_backupConfig 'backup-config/main.bicep' = if (!empty(backupConfig)) {
-  name: '${uniqueString(deployment().name, location)}-RSV-BackupConfig'
-  params: {
-    recoveryVaultName: rsv.name
-    name: contains(backupConfig, 'name') ? backupConfig.name : 'vaultconfig'
-    enhancedSecurityState: contains(backupConfig, 'enhancedSecurityState') ? backupConfig.enhancedSecurityState : 'Enabled'
-    resourceGuardOperationRequests: contains(backupConfig, 'resourceGuardOperationRequests') ? backupConfig.resourceGuardOperationRequests : []
-    softDeleteFeatureState: contains(backupConfig, 'softDeleteFeatureState') ? backupConfig.softDeleteFeatureState : 'Enabled'
-    storageModelType: contains(backupConfig, 'storageModelType') ? backupConfig.storageModelType : 'GeoRedundant'
-    storageType: contains(backupConfig, 'storageType') ? backupConfig.storageType : 'GeoRedundant'
-    storageTypeState: contains(backupConfig, 'storageTypeState') ? backupConfig.storageTypeState : 'Locked'
-    isSoftDeleteFeatureStateEditable: contains(backupConfig, 'isSoftDeleteFeatureStateEditable') ? backupConfig.isSoftDeleteFeatureStateEditable : true
+module rsv_backupConfig 'backup-config/main.bicep' =
+  if (!empty(backupConfig)) {
+    name: '${uniqueString(deployment().name, location)}-RSV-BackupConfig'
+    params: {
+      recoveryVaultName: rsv.name
+      name: contains(backupConfig, 'name') ? backupConfig.name : 'vaultconfig'
+      enhancedSecurityState: contains(backupConfig, 'enhancedSecurityState')
+        ? backupConfig.enhancedSecurityState
+        : 'Enabled'
+      resourceGuardOperationRequests: contains(backupConfig, 'resourceGuardOperationRequests')
+        ? backupConfig.resourceGuardOperationRequests
+        : []
+      softDeleteFeatureState: contains(backupConfig, 'softDeleteFeatureState')
+        ? backupConfig.softDeleteFeatureState
+        : 'Enabled'
+      storageModelType: contains(backupConfig, 'storageModelType') ? backupConfig.storageModelType : 'GeoRedundant'
+      storageType: contains(backupConfig, 'storageType') ? backupConfig.storageType : 'GeoRedundant'
+      storageTypeState: contains(backupConfig, 'storageTypeState') ? backupConfig.storageTypeState : 'Locked'
+      isSoftDeleteFeatureStateEditable: contains(backupConfig, 'isSoftDeleteFeatureStateEditable')
+        ? backupConfig.isSoftDeleteFeatureStateEditable
+        : true
+    }
   }
-}
 
-module rsv_replicationAlertSettings 'replication-alert-setting/main.bicep' = if (!empty(replicationAlertSettings)) {
-  name: '${uniqueString(deployment().name, location)}-RSV-replicationAlertSettings'
-  params: {
-    name: 'defaultAlertSetting'
-    recoveryVaultName: rsv.name
-    customEmailAddresses: contains(replicationAlertSettings, 'customEmailAddresses') ? replicationAlertSettings.customEmailAddresses : []
-    locale: contains(replicationAlertSettings, 'locale') ? replicationAlertSettings.locale : ''
-    sendToOwners: contains(replicationAlertSettings, 'sendToOwners') ? replicationAlertSettings.sendToOwners : 'Send'
+module rsv_replicationAlertSettings 'replication-alert-setting/main.bicep' =
+  if (!empty(replicationAlertSettings)) {
+    name: '${uniqueString(deployment().name, location)}-RSV-replicationAlertSettings'
+    params: {
+      name: 'defaultAlertSetting'
+      recoveryVaultName: rsv.name
+      customEmailAddresses: contains(replicationAlertSettings, 'customEmailAddresses')
+        ? replicationAlertSettings.customEmailAddresses
+        : []
+      locale: contains(replicationAlertSettings, 'locale') ? replicationAlertSettings.locale : ''
+      sendToOwners: contains(replicationAlertSettings, 'sendToOwners') ? replicationAlertSettings.sendToOwners : 'Send'
+    }
   }
-}
 
-resource rsv_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource rsv_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: rsv
   }
-  scope: rsv
-}
 
-resource rsv_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
-      category: group.category
-      enabled: group.?enabled ?? true
-      timeGrain: null
-    }]
-    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
-      categoryGroup: group.?categoryGroup
-      category: group.?category
-      enabled: group.?enabled ?? true
-    }]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
-  }
-  scope: rsv
-}]
-
-module rsv_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-RSV-PrivateEndpoint-${index}'
-  params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(rsv.id, '/'))}-${privateEndpoint.?service ?? 'AzureSiteRecovery'}-${index}'
-    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(rsv.id, '/'))}-${privateEndpoint.?service ?? 'AzureSiteRecovery'}-${index}'
-        properties: {
-          privateLinkServiceId: rsv.id
-          groupIds: [
-            privateEndpoint.?service ?? 'AzureSiteRecovery'
-          ]
+resource rsv_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
         }
-      }
-    ] : null
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(rsv.id, '/'))}-${privateEndpoint.?service ?? 'AzureSiteRecovery'}-${index}'
-        properties: {
-          privateLinkServiceId: rsv.id
-          groupIds: [
-            privateEndpoint.?service ?? 'AzureSiteRecovery'
-          ]
-          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
         }
-      }
-    ] : null
-    subnetResourceId: privateEndpoint.subnetResourceId
-    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
-    location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: privateEndpoint.?lock ?? lock
-    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
-    roleAssignments: privateEndpoint.?roleAssignments
-    tags: privateEndpoint.?tags ?? tags
-    customDnsConfigs: privateEndpoint.?customDnsConfigs
-    ipConfigurations: privateEndpoint.?ipConfigurations
-    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
-    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: rsv
   }
-}]
+]
 
-resource rsv_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(rsv.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+module rsv_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    name: '${uniqueString(deployment().name, location)}-rsv-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(rsv.id, '/'))}-${privateEndpoint.?service ?? 'AzureSiteRecovery'}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(rsv.id, '/'))}-${privateEndpoint.?service ?? 'AzureSiteRecovery'}-${index}'
+              properties: {
+                privateLinkServiceId: rsv.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'AzureSiteRecovery'
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(rsv.id, '/'))}-${privateEndpoint.?service ?? 'AzureSiteRecovery'}-${index}'
+              properties: {
+                privateLinkServiceId: rsv.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'AzureSiteRecovery'
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
   }
-  scope: rsv
-}]
+]
+
+resource rsv_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(rsv.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: rsv
+  }
+]
 
 @description('The resource ID of the recovery services vault.')
 output resourceId string = rsv.id
@@ -417,6 +507,9 @@ type privateEndpointType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
+
+  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
+  resourceGroupName: string?
 }[]?
 
 type diagnosticSettingType = {

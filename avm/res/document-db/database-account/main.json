@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "8733005894926174924"
+      "version": "0.26.54.24096",
+      "templateHash": "4437379960992955499"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -304,6 +304,13 @@
             "metadata": {
               "description": "Optional. Enable/Disable usage telemetry for module."
             }
+          },
+          "resourceGroupName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
+            }
           }
         }
       },
@@ -429,7 +436,7 @@
       },
       "nullable": true
     },
-    "failoverLocations": {
+    "failoverLocationsType": {
       "type": "object",
       "properties": {
         "failoverPriority": {
@@ -440,8 +447,9 @@
         },
         "isZoneRedundant": {
           "type": "bool",
+          "nullable": true,
           "metadata": {
-            "description": "Required. Flag to indicate whether or not this region is an AvailabilityZone region"
+            "description": "Optional. Default to true. Flag to indicate whether or not this region is an AvailabilityZone region"
           }
         },
         "locationName": {
@@ -452,7 +460,7 @@
         }
       }
     },
-    "sqlDatabase": {
+    "sqlDatabaseType": {
       "type": "object",
       "properties": {
         "name": {
@@ -478,7 +486,129 @@
         "containers": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/sqlDatabaseContainer"
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of the container."
+                }
+              },
+              "paths": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minLength": 1,
+                "maxLength": 3,
+                "metadata": {
+                  "description": "Required. List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1."
+                }
+              },
+              "analyticalStorageTtl": {
+                "type": "int",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store."
+                }
+              },
+              "autoscaleSettingsMaxThroughput": {
+                "type": "int",
+                "nullable": true,
+                "maxValue": 1000000,
+                "metadata": {
+                  "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled."
+                }
+              },
+              "conflictResolutionPolicy": {
+                "type": "object",
+                "properties": {
+                  "conflictResolutionPath": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Required if mode=LastWriterWins. The conflict resolution path in the case of LastWriterWins mode."
+                    }
+                  },
+                  "conflictResolutionProcedure": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Required if mode=Custom. The procedure to resolve conflicts in the case of custom mode."
+                    }
+                  },
+                  "mode": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Custom",
+                      "LastWriterWins"
+                    ],
+                    "metadata": {
+                      "description": "Required. Indicates the conflict resolution mode."
+                    }
+                  }
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions."
+                }
+              },
+              "defaultTtl": {
+                "type": "int",
+                "nullable": true,
+                "minValue": -1,
+                "maxValue": 2147483647,
+                "metadata": {
+                  "description": "Optional. Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to \"-1\", it is equal to infinity, and items don't expire by default."
+                }
+              },
+              "indexingPolicy": {
+                "type": "object",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Indexing policy of the container."
+                }
+              },
+              "kind": {
+                "type": "string",
+                "allowedValues": [
+                  "Hash",
+                  "MultiHash"
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Default to Hash. Indicates the kind of algorithm used for partitioning."
+                }
+              },
+              "throughput": {
+                "type": "int",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used."
+                }
+              },
+              "uniqueKeyPolicyKeys": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "paths": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "metadata": {
+                        "description": "List of paths must be unique for each document in the Azure Cosmos DB service"
+                      }
+                    }
+                  }
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service."
+                }
+              }
+            }
           },
           "nullable": true,
           "metadata": {
@@ -487,128 +617,129 @@
         }
       }
     },
-    "sqlDatabaseContainer": {
+    "secretsKeyVaultType": {
       "type": "object",
       "properties": {
-        "name": {
+        "keyVaultName": {
           "type": "string",
           "metadata": {
-            "description": "Required. Name of the container."
+            "description": "Required. The key vault name where to store the keys and connection strings generated by the modules."
           }
         },
-        "paths": {
+        "resourceGroupName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default to the resource group where this account is. The resource group name where the key vault is."
+          }
+        },
+        "primaryWriteKeySecretName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default to Primary-Write-Key. The primary write key secret name to create."
+          }
+        },
+        "primaryReadOnlyKeySecretName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default to Primary-Readonly-Key. The primary readonly key secret name to create."
+          }
+        },
+        "primaryWriteConnectionStringSecretName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default to Primary-Write-ConnectionString. The primary write connection string secret name to create."
+          }
+        },
+        "primaryReadonlyConnectionStringSecretName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default to Primary-Readonly-ConnectionString. The primary readonly connection string secret name to create."
+          }
+        },
+        "secondaryWriteKeySecretName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default to Secondary-Write-Key. The primary write key secret name to create."
+          }
+        },
+        "secondaryReadonlyKeySecretName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default to Secondary-Readonly-Key. The primary readonly key secret name to create."
+          }
+        },
+        "secondaryWriteConnectionStringSecretName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default to Secondary-Write-ConnectionString. The primary write connection string secret name to create."
+          }
+        },
+        "secondaryReadonlyConnectionStringSecretName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default to Secondary-Readonly-ConnectionString. The primary readonly connection string secret name to create."
+          }
+        }
+      }
+    },
+    "networkRestrictionsType": {
+      "type": "object",
+      "properties": {
+        "ipRules": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "minLength": 1,
-          "maxLength": 3,
           "metadata": {
-            "description": "Required. List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1."
+            "description": "Optional. Default to []. A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: \"23.40.210.245\" or \"23.40.210.0/8\"."
           }
         },
-        "analyticalStorageTtl": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store."
-          }
-        },
-        "autoscaleSettingsMaxThroughput": {
-          "type": "int",
-          "nullable": true,
-          "maxValue": 1000000,
-          "metadata": {
-            "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled."
-          }
-        },
-        "conflictResolutionPolicy": {
-          "type": "object",
-          "properties": {
-            "conflictResolutionPath": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Required if mode=LastWriterWins. The conflict resolution path in the case of LastWriterWins mode."
-              }
-            },
-            "conflictResolutionProcedure": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Required if mode=Custom. The procedure to resolve conflicts in the case of custom mode."
-              }
-            },
-            "mode": {
-              "type": "string",
-              "allowedValues": [
-                "Custom",
-                "LastWriterWins"
-              ],
-              "metadata": {
-                "description": "Required. Indicates the conflict resolution mode."
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions."
-          }
-        },
-        "defaultTtl": {
-          "type": "int",
-          "nullable": true,
-          "minValue": -1,
-          "maxValue": 2147483647,
-          "metadata": {
-            "description": "Optional. Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to \"-1\", it is equal to infinity, and items don't expire by default."
-          }
-        },
-        "indexingPolicy": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Indexing policy of the container."
-          }
-        },
-        "kind": {
+        "networkAclBypass": {
           "type": "string",
           "allowedValues": [
-            "Hash",
-            "MultiHash",
-            "Range"
+            "AzureServices",
+            "None"
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Default to Hash. Indicates the kind of algorithm used for partitioning."
+            "description": "Optional. Default to AzureServices. Specifies the network ACL bypass for Azure services."
           }
         },
-        "throughput": {
-          "type": "int",
+        "publicNetworkAccess": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used."
+            "description": "Optional. Default to Enabled. Whether requests from Public Network are allowed."
           }
         },
-        "uniqueKeyPolicyKeys": {
+        "virtualNetworkRules": {
           "type": "array",
           "items": {
             "type": "object",
             "properties": {
-              "paths": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
+              "subnetResourceId": {
+                "type": "string",
                 "metadata": {
-                  "description": "List of paths must be unique for each document in the Azure Cosmos DB service"
+                  "description": "Required. Resource ID of a subnet."
                 }
               }
             }
           },
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service."
+            "description": "Optional. Default to []. List of Virtual Network ACL rules configured for the Cosmos DB account.."
           }
         }
       }
@@ -654,10 +785,11 @@
     "locations": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/failoverLocations"
+        "$ref": "#/definitions/failoverLocationsType"
       },
+      "defaultValue": [],
       "metadata": {
-        "description": "Required. Locations enabled for the Cosmos DB account."
+        "description": "Optional. Default to the location where the account is deployed. Locations enabled for the Cosmos DB account."
       }
     },
     "defaultConsistencyLevel": {
@@ -702,6 +834,20 @@
         "description": "Optional. Default to false. Flag to indicate whether Free Tier is enabled."
       }
     },
+    "enableMultipleWriteLocations": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled."
+      }
+    },
+    "disableKeyBasedMetadataWriteAccess": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Default to false. Disable write operations on metadata resources (databases, containers, throughput) via account keys."
+      }
+    },
     "maxStalenessPrefix": {
       "type": "int",
       "defaultValue": 100000,
@@ -736,7 +882,7 @@
     "sqlDatabases": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/sqlDatabase"
+        "$ref": "#/definitions/sqlDatabaseType"
       },
       "defaultValue": [],
       "metadata": {
@@ -808,7 +954,7 @@
         "Continuous"
       ],
       "metadata": {
-        "description": "Optional. Default to Continuous. Describes the mode of backups."
+        "description": "Optional. Default to Continuous. Describes the mode of backups. Periodic backup must be used if multiple write locations are used."
       }
     },
     "backupPolicyContinuousTier": {
@@ -857,6 +1003,20 @@
       "metadata": {
         "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
       }
+    },
+    "secretsKeyVault": {
+      "$ref": "#/definitions/secretsKeyVaultType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Key vault reference and secret settings to add the connection strings and keys generated by the cosmosdb account."
+      }
+    },
+    "networkRestrictions": {
+      "$ref": "#/definitions/networkRestrictionsType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The network configuration of this module."
+      }
     }
   },
   "variables": {
@@ -866,8 +1026,8 @@
         "count": "[length(parameters('locations'))]",
         "input": {
           "failoverPriority": "[parameters('locations')[copyIndex('databaseAccount_locations')].failoverPriority]",
-          "isZoneRedundant": "[parameters('locations')[copyIndex('databaseAccount_locations')].isZoneRedundant]",
-          "locationName": "[parameters('locations')[copyIndex('databaseAccount_locations')].locationName]"
+          "locationName": "[parameters('locations')[copyIndex('databaseAccount_locations')].locationName]",
+          "isZoneRedundant": "[coalesce(tryGet(parameters('locations')[copyIndex('databaseAccount_locations')], 'isZoneRedundant'), true())]"
         }
       },
       {
@@ -875,6 +1035,21 @@
         "count": "[length(parameters('capabilitiesToAdd'))]",
         "input": {
           "name": "[parameters('capabilitiesToAdd')[copyIndex('capabilities')]]"
+        }
+      },
+      {
+        "name": "ipRules",
+        "count": "[length(coalesce(tryGet(parameters('networkRestrictions'), 'ipRules'), createArray()))]",
+        "input": {
+          "ipAddressOrRange": "[coalesce(tryGet(parameters('networkRestrictions'), 'ipRules'), createArray())[copyIndex('ipRules')]]"
+        }
+      },
+      {
+        "name": "virtualNetworkRules",
+        "count": "[length(coalesce(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules'), createArray()))]",
+        "input": {
+          "id": "[coalesce(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules'), createArray())[copyIndex('virtualNetworkRules')].subnetResourceId]",
+          "ignoreMissingVnetServiceEndpoint": false
         }
       }
     ],
@@ -899,9 +1074,16 @@
         "defaultConsistencyLevel": "Strong"
       }
     },
-    "kind": "[if(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('gremlinDatabases')))), 'GlobalDocumentDB', if(not(empty(parameters('mongodbDatabases'))), 'MongoDB', 'Parse'))]",
+    "defaultFailoverLocation": [
+      {
+        "failoverPriority": 0,
+        "locationName": "[parameters('location')]",
+        "isZoneRedundant": true
+      }
+    ],
+    "kind": "[if(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('gremlinDatabases')))), 'GlobalDocumentDB', if(not(empty(parameters('mongodbDatabases'))), 'MongoDB', 'GlobalDocumentDB'))]",
     "backupPolicy": "[if(equals(parameters('backupPolicyType'), 'Continuous'), createObject('type', parameters('backupPolicyType'), 'continuousModeProperties', createObject('tier', parameters('backupPolicyContinuousTier'))), createObject('type', parameters('backupPolicyType'), 'periodicModeProperties', createObject('backupIntervalInMinutes', parameters('backupIntervalInMinutes'), 'backupRetentionIntervalInHours', parameters('backupRetentionIntervalInHours'), 'backupStorageRedundancy', parameters('backupStorageRedundancy'))))]",
-    "databaseAccount_properties": "[union(createObject('databaseAccountOfferType', parameters('databaseAccountOfferType')), if(or(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('mongodbDatabases')))), not(empty(parameters('gremlinDatabases')))), createObject('consistencyPolicy', variables('consistencyPolicy')[parameters('defaultConsistencyLevel')], 'locations', variables('databaseAccount_locations'), 'capabilities', variables('capabilities'), 'enableFreeTier', parameters('enableFreeTier'), 'backupPolicy', variables('backupPolicy'), 'enableAutomaticFailover', parameters('automaticFailover'), 'enableAnalyticalStorage', parameters('enableAnalyticalStorage')), createObject()), if(not(empty(parameters('sqlDatabases'))), createObject('disableLocalAuth', parameters('disableLocalAuth')), createObject()), if(not(empty(parameters('mongodbDatabases'))), createObject('apiProperties', createObject('serverVersion', parameters('serverVersion'))), createObject()))]",
+    "databaseAccount_properties": "[union(createObject('databaseAccountOfferType', parameters('databaseAccountOfferType')), if(or(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('mongodbDatabases')))), not(empty(parameters('gremlinDatabases')))), createObject('consistencyPolicy', variables('consistencyPolicy')[parameters('defaultConsistencyLevel')], 'enableMultipleWriteLocations', parameters('enableMultipleWriteLocations'), 'locations', if(empty(variables('databaseAccount_locations')), variables('defaultFailoverLocation'), variables('databaseAccount_locations')), 'ipRules', variables('ipRules'), 'virtualNetworkRules', variables('virtualNetworkRules'), 'networkAclBypass', coalesce(tryGet(parameters('networkRestrictions'), 'networkAclBypass'), 'AzureServices'), 'publicNetworkAccess', coalesce(tryGet(parameters('networkRestrictions'), 'publicNetworkAccess'), 'Enabled'), 'isVirtualNetworkFilterEnabled', or(not(empty(variables('ipRules'))), not(empty(variables('virtualNetworkRules')))), 'capabilities', variables('capabilities'), 'enableFreeTier', parameters('enableFreeTier'), 'backupPolicy', variables('backupPolicy'), 'enableAutomaticFailover', parameters('automaticFailover'), 'enableAnalyticalStorage', parameters('enableAnalyticalStorage')), createObject()), if(not(empty(parameters('sqlDatabases'))), createObject('disableLocalAuth', parameters('disableLocalAuth'), 'disableKeyBasedMetadataWriteAccess', parameters('disableKeyBasedMetadataWriteAccess')), createObject()), if(not(empty(parameters('mongodbDatabases'))), createObject('apiProperties', createObject('serverVersion', parameters('serverVersion'))), createObject()))]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Cosmos DB Account Reader Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fbdf93bf-df7d-467e-a4d2-9458aa1360c8')]",
@@ -1060,8 +1242,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "1307928694299767068"
+              "version": "0.26.54.24096",
+              "templateHash": "3826907101153138616"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account.",
@@ -1190,8 +1372,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "8159752253553558916"
+                      "version": "0.26.54.24096",
+                      "templateHash": "11250469246171251281"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
@@ -1299,6 +1481,16 @@
                       }
                     }
                   },
+                  "variables": {
+                    "copy": [
+                      {
+                        "name": "partitionKeyPaths",
+                        "count": "[length(parameters('paths'))]",
+                        "input": "[if(startsWith(parameters('paths')[copyIndex('partitionKeyPaths')], '/'), parameters('paths')[copyIndex('partitionKeyPaths')], format('/{0}', parameters('paths')[copyIndex('partitionKeyPaths')]))]"
+                      }
+                    ],
+                    "containerResourceParams": "[union(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'defaultTtl', parameters('defaultTtl'), 'id', parameters('name'), 'indexingPolicy', if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null()), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, 1)), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()))]"
+                  },
                   "resources": {
                     "databaseAccount::sqlDatabase": {
                       "existing": true,
@@ -1321,25 +1513,7 @@
                       "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('sqlDatabaseName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
-                        "resource": {
-                          "analyticalStorageTtl": "[parameters('analyticalStorageTtl')]",
-                          "conflictResolutionPolicy": "[parameters('conflictResolutionPolicy')]",
-                          "defaultTtl": "[parameters('defaultTtl')]",
-                          "id": "[parameters('name')]",
-                          "indexingPolicy": "[if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null())]",
-                          "partitionKey": {
-                            "copy": [
-                              {
-                                "name": "paths",
-                                "count": "[length(parameters('paths'))]",
-                                "input": "[if(startsWith(parameters('paths')[copyIndex('paths')], '/'), parameters('paths')[copyIndex('paths')], format('/{0}', parameters('paths')[copyIndex('paths')]))]"
-                              }
-                            ],
-                            "kind": "[parameters('kind')]",
-                            "version": "[if(equals(parameters('kind'), 'MultiHash'), 2, 1)]"
-                          },
-                          "uniqueKeyPolicy": "[if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())]"
-                        },
+                        "resource": "[variables('containerResourceParams')]",
                         "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(and(equals(parameters('autoscaleSettingsMaxThroughput'), null()), not(equals(parameters('throughput'), -1))), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), null())), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
                       },
                       "dependsOn": [
@@ -1441,8 +1615,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "5538920636867167805"
+              "version": "0.26.54.24096",
+              "templateHash": "7706794569430424680"
             },
             "name": "DocumentDB Database Account MongoDB Databases",
             "description": "This module deploys a MongoDB Database within a CosmosDB Account.",
@@ -1544,8 +1718,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "12727124123085683569"
+                      "version": "0.26.54.24096",
+                      "templateHash": "1989910090472113779"
                     },
                     "name": "DocumentDB Database Account MongoDB Database Collections",
                     "description": "This module deploys a MongoDB Database Collection.",
@@ -1700,8 +1874,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "5227237801347888732"
+              "version": "0.26.54.24096",
+              "templateHash": "13414524346849431368"
             },
             "name": "DocumentDB Database Account Gremlin Databases",
             "description": "This module deploys a Gremlin Database within a CosmosDB Account.",
@@ -1804,8 +1978,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "4078462189838201163"
+                      "version": "0.26.54.24096",
+                      "templateHash": "2823004405398378621"
                     },
                     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
                     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph.",
@@ -1954,6 +2128,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-databaseAccount-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1963,8 +2138,8 @@
           "name": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex()))]"
           },
-          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service))))), createObject('value', null()))]",
-          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), 'groupIds', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
@@ -2009,8 +2184,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "2592884001616184297"
+              "version": "0.25.53.49325",
+              "templateHash": "4120048060064073955"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -2375,7 +2550,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2480,8 +2655,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "9321937464667207030"
+                      "version": "0.25.53.49325",
+                      "templateHash": "11244630631275470040"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -2599,6 +2774,122 @@
                 "description": "The group Id for the private endpoint Group."
               },
               "value": "[if(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties.groupIds[0], reference('privateEndpoint').privateLinkServiceConnections[0].properties.groupIds[0])]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "databaseAccount"
+      ]
+    },
+    "keyVault": {
+      "condition": "[not(equals(parameters('secretsKeyVault'), null()))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
+      "resourceGroup": "[coalesce(tryGet(parameters('secretsKeyVault'), 'resourceGroupName'), resourceGroup().name)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyVaultName": {
+            "value": "[parameters('secretsKeyVault').keyVaultName]"
+          },
+          "keySecrets": {
+            "value": [
+              {
+                "secretName": "[coalesce(tryGet(parameters('secretsKeyVault'), 'primaryWriteKeySecretName'), 'Primary-Write-Key')]",
+                "secretValue": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').primaryMasterKey]"
+              },
+              {
+                "secretName": "[coalesce(tryGet(parameters('secretsKeyVault'), 'primaryReadOnlyKeySecretName'), 'Primary-Readonly-Key')]",
+                "secretValue": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').primaryReadonlyMasterKey]"
+              },
+              {
+                "secretName": "[coalesce(tryGet(parameters('secretsKeyVault'), 'primaryWriteConnectionStringSecretName'), 'Primary-Write-ConnectionString')]",
+                "secretValue": "[listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[0].connectionString]"
+              },
+              {
+                "secretName": "[coalesce(tryGet(parameters('secretsKeyVault'), 'primaryReadonlyConnectionStringSecretName'), 'Primary-Readonly-ConnectionString')]",
+                "secretValue": "[listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[2].connectionString]"
+              },
+              {
+                "secretName": "[coalesce(tryGet(parameters('secretsKeyVault'), 'secondaryWriteKeySecretName'), 'Secondary-Write-Key')]",
+                "secretValue": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').secondaryMasterKey]"
+              },
+              {
+                "secretName": "[coalesce(tryGet(parameters('secretsKeyVault'), 'secondaryReadonlyKeySecretName'), 'Secondary-Readonly-Key')]",
+                "secretValue": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').secondaryReadonlyMasterKey]"
+              },
+              {
+                "secretName": "[coalesce(tryGet(parameters('secretsKeyVault'), 'secondaryWriteConnectionStringSecretName'), 'Secondary-Write-ConnectionString')]",
+                "secretValue": "[listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[1].connectionString]"
+              },
+              {
+                "secretName": "[coalesce(tryGet(parameters('secretsKeyVault'), 'secondaryReadonlyConnectionStringSecretName'), 'Secondary-Readonly-ConnectionString')]",
+                "secretValue": "[listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[3].connectionString]"
+              }
+            ]
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.26.54.24096",
+              "templateHash": "3376784638805058420"
+            }
+          },
+          "definitions": {
+            "keySecret": {
+              "type": "object",
+              "properties": {
+                "secretName": {
+                  "type": "string"
+                },
+                "secretValue": {
+                  "type": "securestring"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "keyVaultName": {
+              "type": "string"
+            },
+            "keySecrets": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/keySecret"
+              }
+            }
+          },
+          "resources": {
+            "kv": {
+              "existing": true,
+              "type": "Microsoft.KeyVault/vaults",
+              "apiVersion": "2022-07-01",
+              "name": "[parameters('keyVaultName')]"
+            },
+            "keySecretsSecrets": {
+              "copy": {
+                "name": "keySecretsSecrets",
+                "count": "[length(parameters('keySecrets'))]"
+              },
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('keySecrets')[copyIndex()].secretName)]",
+              "properties": {
+                "value": "[parameters('keySecrets')[copyIndex()].secretValue]"
+              },
+              "dependsOn": [
+                "kv"
+              ]
             }
           }
         }
