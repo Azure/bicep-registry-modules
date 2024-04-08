@@ -77,6 +77,10 @@ function Set-AvmGitHubIssueOwnerConfig {
 "@
     }
 
+    # add issue to project
+    $ProjectNumber = 566 # AVM - Module Issues
+    Add-GithubIssueToProject -Repo $Repo -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
+
     if ($PSCmdlet.ShouldProcess("class label to issue [$($issue.title)]", 'Add')) {
       gh issue edit $issue.url --add-label ($moduleIndex -eq 'Bicep-Resource' ? 'Class: Resource Module :package:' : 'Class: Pattern Module :package:') --repo $Repo
     }
