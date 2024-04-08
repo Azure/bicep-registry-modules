@@ -208,21 +208,10 @@ var notificationsVar = [
 var upgradeDescriptionVar = union(
   {
     deltaHealthPolicy: {
-      applicationDeltaHealthPolicies: contains(upgradeDescription, 'applicationDeltaHealthPolicies')
-        ? upgradeDescription.applicationDeltaHealthPolicies
-        : {}
-      maxPercentDeltaUnhealthyApplications: contains(upgradeDescription, 'maxPercentDeltaUnhealthyApplications')
-        ? upgradeDescription.maxPercentDeltaUnhealthyApplications
-        : 0
-      maxPercentDeltaUnhealthyNodes: contains(upgradeDescription, 'maxPercentDeltaUnhealthyNodes')
-        ? upgradeDescription.maxPercentDeltaUnhealthyNodes
-        : 0
-      maxPercentUpgradeDomainDeltaUnhealthyNodes: contains(
-          upgradeDescription,
-          'maxPercentUpgradeDomainDeltaUnhealthyNodes'
-        )
-        ? upgradeDescription.maxPercentUpgradeDomainDeltaUnhealthyNodes
-        : 0
+      applicationDeltaHealthPolicies: upgradeDescription.?applicationDeltaHealthPolicies ?? {}
+      maxPercentDeltaUnhealthyApplications: upgradeDescription.?maxPercentDeltaUnhealthyApplications ?? 0
+      maxPercentDeltaUnhealthyNodes: upgradeDescription.?maxPercentDeltaUnhealthyNodes ?? 0
+      maxPercentUpgradeDomainDeltaUnhealthyNodes: upgradeDescription.?maxPercentUpgradeDomainDeltaUnhealthyNodes ?? 0
     }
     forceRestart: contains(upgradeDescription, 'forceRestart') ? upgradeDescription.forceRestart : false
     healthCheckRetryTimeout: contains(upgradeDescription, 'healthCheckRetryTimeout')
