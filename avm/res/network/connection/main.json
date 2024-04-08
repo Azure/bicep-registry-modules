@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "16775998299537501869"
+      "version": "0.26.54.24096",
+      "templateHash": "17255378550715069548"
     },
     "name": "Virtual Network Gateway Connections",
     "description": "This module deploys a Virtual Network Gateway Connection.",

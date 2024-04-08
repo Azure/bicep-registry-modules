@@ -20,7 +20,7 @@ param description string = ''
   'AllowRulesOnly'
 ])
 @sys.description('Required. Enum list of network intent policy based services.')
-param applyOnNetworkIntentPolicyBasedServices array = [ 'None' ]
+param applyOnNetworkIntentPolicyBasedServices array = ['None']
 
 @sys.description('Optional. A security admin configuration contains a set of rule collections that are applied to network groups. Each rule collection contains one or more security admin rules.')
 param ruleCollections array = []
@@ -38,16 +38,18 @@ resource securityAdminConfigurations 'Microsoft.Network/networkManagers/security
   }
 }
 
-module securityAdminConfigurations_ruleCollections 'rule-collection/main.bicep' = [for (ruleCollection, index) in ruleCollections: {
-  name: '${uniqueString(deployment().name)}-SecurityAdminConfigurations-RuleCollections-${index}'
-  params: {
-    networkManagerName: networkManager.name
-    securityAdminConfigurationName: securityAdminConfigurations.name
-    name: ruleCollection.name
-    appliesToGroups: ruleCollection.appliesToGroups
-    rules: contains(ruleCollection, 'rules') ? ruleCollection.rules : []
+module securityAdminConfigurations_ruleCollections 'rule-collection/main.bicep' = [
+  for (ruleCollection, index) in ruleCollections: {
+    name: '${uniqueString(deployment().name)}-SecurityAdminConfigurations-RuleCollections-${index}'
+    params: {
+      networkManagerName: networkManager.name
+      securityAdminConfigurationName: securityAdminConfigurations.name
+      name: ruleCollection.name
+      appliesToGroups: ruleCollection.appliesToGroups
+      rules: contains(ruleCollection, 'rules') ? ruleCollection.rules : []
+    }
   }
-}]
+]
 
 @sys.description('The name of the deployed security admin configuration.')
 output name string = securityAdminConfigurations.name

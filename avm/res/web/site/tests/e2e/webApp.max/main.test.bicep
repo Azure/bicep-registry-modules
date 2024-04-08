@@ -63,196 +63,203 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // Test Execution //
 // ============== //
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    kind: 'app'
-    serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    httpsOnly: true
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    slots: [
-      {
-        name: 'slot1'
-        diagnosticSettings: [
-          {
-            name: 'customSetting'
-            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-          }
-        ]
-        privateEndpoints: [
-          {
-            subnetResourceId: nestedDependencies.outputs.subnetResourceId
-            privateDnsZoneResourceIds: [
-              nestedDependencies.outputs.privateDNSZoneResourceId
-            ]
-            tags: {
-              'hidden-title': 'This is visible in the resource name'
-              Environment: 'Non-Prod'
-              Role: 'DeploymentValidation'
-            }
-            service: 'sites-slot1'
-          }
-        ]
-        basicPublishingCredentialsPolicies: [
-          {
-            name: 'ftp'
-            allow: false
-          }
-          {
-            name: 'scm'
-            allow: false
-          }
-        ]
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Owner'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-          {
-            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-          {
-            roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
-        siteConfig: {
-          alwaysOn: true
-          metadata: [
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      kind: 'app'
+      serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
             {
-              name: 'CURRENT_STACK'
-              value: 'dotnetcore'
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      httpsOnly: true
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      slots: [
+        {
+          name: 'slot1'
+          diagnosticSettings: [
+            {
+              name: 'customSetting'
+              eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+              eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+              storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+              workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            }
+          ]
+          privateEndpoints: [
+            {
+              subnetResourceId: nestedDependencies.outputs.subnetResourceId
+              privateDnsZoneResourceIds: [
+                nestedDependencies.outputs.privateDNSZoneResourceId
+              ]
+              tags: {
+                'hidden-title': 'This is visible in the resource name'
+                Environment: 'Non-Prod'
+                Role: 'DeploymentValidation'
+              }
+              service: 'sites-slot1'
+            }
+          ]
+          basicPublishingCredentialsPolicies: [
+            {
+              name: 'ftp'
+              allow: false
+            }
+            {
+              name: 'scm'
+              allow: false
+            }
+          ]
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'Owner'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: subscriptionResourceId(
+                'Microsoft.Authorization/roleDefinitions',
+                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+              )
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
+          siteConfig: {
+            alwaysOn: true
+            metadata: [
+              {
+                name: 'CURRENT_STACK'
+                value: 'dotnetcore'
+              }
+            ]
+          }
+          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountUseIdentityAuthentication: true
+          hybridConnectionRelays: [
+            {
+              resourceId: nestedDependencies.outputs.hybridConnectionResourceId
+              sendKeyName: 'defaultSender'
             }
           ]
         }
-        storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-        storageAccountUseIdentityAuthentication: true
-        hybridConnectionRelays: [
-          {
-            resourceId: nestedDependencies.outputs.hybridConnectionResourceId
-            sendKeyName: 'defaultSender'
-          }
-        ]
-      }
-      {
-        name: 'slot2'
-        basicPublishingCredentialsPolicies: [
-          {
-            name: 'ftp'
-          }
-          {
-            name: 'scm'
-          }
-        ]
-        storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-        storageAccountUseIdentityAuthentication: true
-      }
-    ]
-    privateEndpoints: [
-      {
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
-      }
-      {
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-      }
-    ]
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    siteConfig: {
-      alwaysOn: true
-      metadata: [
         {
-          name: 'CURRENT_STACK'
-          value: 'dotnetcore'
+          name: 'slot2'
+          basicPublishingCredentialsPolicies: [
+            {
+              name: 'ftp'
+            }
+            {
+              name: 'scm'
+            }
+          ]
+          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountUseIdentityAuthentication: true
         }
       ]
-    }
-    storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-    storageAccountUseIdentityAuthentication: true
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
+      privateEndpoints: [
+        {
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
+        }
+        {
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+        }
       ]
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      siteConfig: {
+        alwaysOn: true
+        metadata: [
+          {
+            name: 'CURRENT_STACK'
+            value: 'dotnetcore'
+          }
+        ]
+      }
+      storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+      storageAccountUseIdentityAuthentication: true
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      basicPublishingCredentialsPolicies: [
+        {
+          name: 'ftp'
+          allow: false
+        }
+        {
+          name: 'scm'
+          allow: false
+        }
+      ]
+      hybridConnectionRelays: [
+        {
+          resourceId: nestedDependencies.outputs.hybridConnectionResourceId
+          sendKeyName: 'defaultSender'
+        }
+      ]
+      scmSiteAlsoStopped: true
+      vnetContentShareEnabled: true
+      vnetImagePullEnabled: true
+      vnetRouteAllEnabled: true
+      publicNetworkAccess: 'Disabled'
     }
-    basicPublishingCredentialsPolicies: [
-      {
-        name: 'ftp'
-        allow: false
-      }
-      {
-        name: 'scm'
-        allow: false
-      }
-
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
     ]
-    hybridConnectionRelays: [
-      {
-        resourceId: nestedDependencies.outputs.hybridConnectionResourceId
-        sendKeyName: 'defaultSender'
-      }
-    ]
-    scmSiteAlsoStopped: true
-    vnetContentShareEnabled: true
-    vnetImagePullEnabled: true
-    vnetRouteAllEnabled: true
-    publicNetworkAccess: 'Disabled'
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
-}]
+]

@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "16868761662321894920"
+      "version": "0.26.54.24096",
+      "templateHash": "3569964888966454016"
     },
     "name": "Network Manager Connectivity Configurations",
     "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups.",

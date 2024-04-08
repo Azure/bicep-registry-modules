@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-digitaltwins.digitaltwinsins
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dtdtimax'
+param serviceShort string = 'dtdmax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -38,10 +38,10 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    eventHubName: 'dt-${uniqueString(serviceShort)}-evh-01'
-    eventHubNamespaceName: 'dt-${uniqueString(serviceShort)}-evhns-01'
-    serviceBusName: 'dt-${uniqueString(serviceShort)}-sb-01'
-    eventGridDomainName: 'dt-${uniqueString(serviceShort)}-evg-01'
+    eventHubName: 'dt-${serviceShort}-evh-01'
+    eventHubNamespaceName: 'dt-${serviceShort}-evhns-01'
+    serviceBusName: 'dt-${serviceShort}-sb-01'
+    eventGridDomainName: 'dt-${serviceShort}-evg-01'
   }
 }
 
@@ -53,8 +53,8 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${uniqueString(serviceShort)}-evh-01'
-    eventHubNamespaceName: 'dep-${uniqueString(serviceShort)}-evh-01'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
     location: resourceLocation
   }
 }
@@ -64,89 +64,110 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    eventHubEndpoint: {
-      authenticationType: 'IdentityBased'
-      endpointUri: 'sb://${nestedDependencies.outputs.eventhubNamespaceName}.servicebus.windows.net/'
-      entityPath: nestedDependencies.outputs.eventhubName
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
       managedIdentities: {
-        userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
       }
-    }
-    serviceBusEndpoint: {
-      authenticationType: 'IdentityBased'
-      endpointUri: 'sb://${nestedDependencies.outputs.serviceBusName}.servicebus.windows.net/'
-      entityPath: nestedDependencies.outputs.serviceBusTopicName
-      managedIdentities: {
-        userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
-      }
-    }
-    eventGridEndpoint: {
-      eventGridDomainId: nestedDependencies.outputs.eventGridDomainResourceId
-      topicEndpoint: nestedDependencies.outputs.eventGridEndpoint
-    }
-    name: '${namePrefix}${serviceShort}001'
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
+      eventHubEndpoints: [
+        {
+          authenticationType: 'IdentityBased'
+          endpointUri: 'sb://${nestedDependencies.outputs.eventhubNamespaceName}.servicebus.windows.net/'
+          entityPath: nestedDependencies.outputs.eventhubName
+          managedIdentities: {
+            userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
           }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      serviceBusEndpoints: [
+        {
+          name: 'ServiceBusPrimary'
+          authenticationType: 'IdentityBased'
+          endpointUri: 'sb://${nestedDependencies.outputs.serviceBusName}.servicebus.windows.net/'
+          entityPath: nestedDependencies.outputs.serviceBusTopicName
+          managedIdentities: {
+            userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+          }
+        }
+        {
+          name: 'ServiceBusSeconday'
+          authenticationType: 'IdentityBased'
+          endpointUri: 'sb://${nestedDependencies.outputs.serviceBusName}.servicebus.windows.net/'
+          entityPath: nestedDependencies.outputs.serviceBusTopicName
+          managedIdentities: {
+            systemAssigned: true
+          }
+        }
+      ]
+      eventGridEndpoints: [
+        {
+          eventGridDomainId: nestedDependencies.outputs.eventGridDomainResourceId
+          topicEndpoint: nestedDependencies.outputs.eventGridEndpoint
+        }
+      ]
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-    ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+      privateEndpoints: [
+        {
+          privateDnsZoneResourceIds: [
+            nestedDependencies.outputs.privateDNSZoneResourceId
+          ]
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        }
+      ]
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-      }
+    dependsOn: [
+      nestedDependencies
+      diagnosticDependencies
     ]
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
-}]
+]

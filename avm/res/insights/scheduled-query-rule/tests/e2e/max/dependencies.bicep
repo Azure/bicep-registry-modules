@@ -8,13 +8,13 @@ param managedIdentityName string
 param logAnalyticsWorkspaceName string
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-    name: managedIdentityName
-    location: location
+  name: managedIdentityName
+  location: location
 }
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
-    name: logAnalyticsWorkspaceName
-    location: location
+  name: logAnalyticsWorkspaceName
+  location: location
 }
 
 @description('The principal ID of the created Managed Identity.')

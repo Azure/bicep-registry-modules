@@ -45,11 +45,9 @@ function Set-PSRuleGitHubOutput {
         Write-Warning ('Input File [{0}] not found' -f $inputFilePath)
         return ''
     } else {
-
         $results = Import-Csv -Path $inputFilePath
-
-        $passedRules += $results | Where-Object { $_.Outcome -EQ 'Pass' } | Sort-Object -Property 'RuleName' -Unique
-        $failedRules += $results | Where-Object { $_.Outcome -EQ 'Fail' } | Sort-Object -Property 'RuleName' -Unique
+        $passedRules += $results | Where-Object { $_.Outcome -EQ 'Pass' } | Sort-Object -Property 'TargetName', 'RuleName' -Unique
+        $failedRules += $results | Where-Object { $_.Outcome -EQ 'Fail' } | Sort-Object -Property 'TargetName', 'RuleName' -Unique
 
         ######################
         # Set output content #
@@ -92,7 +90,7 @@ function Set-PSRuleGitHubOutput {
             foreach ($content in $failedRules ) {
                 # Shorten the target name for deployment resoure type
                 if ($content.TargetType -eq 'Microsoft.Resources/deployments') {
-                    $content.TargetName = $content.TargetName.replace('/home/runner/work/ResourceModules/ResourceModules/modules/', '')
+                    $content.TargetName = $content.TargetName.replace('/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/', '')
                 }
 
                 # Build hyperlinks to PSRule documentation for the rules
@@ -131,7 +129,7 @@ function Set-PSRuleGitHubOutput {
             foreach ($content in $passedRules ) {
                 # Shorten the target name for deployment resoure type
                 if ($content.TargetType -eq 'Microsoft.Resources/deployments') {
-                    $content.TargetName = $content.TargetName.replace('/home/runner/work/ResourceModules/ResourceModules/modules/', '')
+                    $content.TargetName = $content.TargetName.replace('/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/', '')
                 }
 
                 # Build hyperlinks to PSRule documentation for the rules

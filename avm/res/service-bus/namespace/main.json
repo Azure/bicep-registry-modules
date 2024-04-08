@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "11816477645345189868"
+      "version": "0.26.54.24096",
+      "templateHash": "12101686609428052773"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -304,6 +304,13 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. Enable/Disable usage telemetry for module."
+            }
+          },
+          "resourceGroupName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
             }
           }
         }
@@ -1079,7 +1086,7 @@
   "parameters": {
     "name": {
       "type": "string",
-      "maxLength": 50,
+      "maxLength": 260,
       "metadata": {
         "description": "Required. Name of the Service Bus Namespace."
       }
@@ -1454,8 +1461,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "2305438159110957656"
+              "version": "0.26.54.24096",
+              "templateHash": "15856701624247874001"
             },
             "name": "Service Bus Namespace Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Authorization Rule.",
@@ -1464,8 +1471,8 @@
           "parameters": {
             "namespaceName": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment."
               }
@@ -1558,8 +1565,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "4852834945333619424"
+              "version": "0.26.54.24096",
+              "templateHash": "3332271240583753856"
             },
             "name": "Service Bus Namespace Disaster Recovery Configs",
             "description": "This module deploys a Service Bus Namespace Disaster Recovery Config",
@@ -1568,8 +1575,8 @@
           "parameters": {
             "namespaceName": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment."
               }
@@ -1663,8 +1670,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "7096240042982673427"
+              "version": "0.26.54.24096",
+              "templateHash": "3812335497838251447"
             },
             "name": "Service Bus Namespace Migration Configuration",
             "description": "This module deploys a Service Bus Namespace Migration Configuration.",
@@ -1673,8 +1680,8 @@
           "parameters": {
             "namespaceName": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment."
               }
@@ -1768,8 +1775,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "12312948750335282178"
+              "version": "0.26.54.24096",
+              "templateHash": "7745744247225628529"
             },
             "name": "Service Bus Namespace Network Rule Sets",
             "description": "This module deploys a ServiceBus Namespace Network Rule Set.",
@@ -1778,8 +1785,8 @@
           "parameters": {
             "namespaceName": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Network Rule Set. Required if the template is used in a standalone deployment."
               }
@@ -1968,8 +1975,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "1862386755569893710"
+              "version": "0.26.54.24096",
+              "templateHash": "6465956085720113527"
             },
             "name": "Service Bus Namespace Queue",
             "description": "This module deploys a Service Bus Namespace Queue.",
@@ -2071,16 +2078,16 @@
           "parameters": {
             "namespaceName": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Required. Name of the Service Bus Queue."
               }
@@ -2353,8 +2360,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "11143403540623996438"
+                      "version": "0.26.54.24096",
+                      "templateHash": "11000394867797752922"
                     },
                     "name": "Service Bus Namespace Queue Authorization Rules",
                     "description": "This module deploys a Service Bus Namespace Queue Authorization Rule.",
@@ -2534,8 +2541,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "13105717209289706682"
+              "version": "0.26.54.24096",
+              "templateHash": "10365585985239248264"
             },
             "name": "Service Bus Namespace Topic",
             "description": "This module deploys a Service Bus Namespace Topic.",
@@ -2782,16 +2789,16 @@
           "parameters": {
             "namespaceName": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Topic. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 50,
+              "minLength": 1,
+              "maxLength": 260,
               "metadata": {
                 "description": "Required. Name of the Service Bus Topic."
               }
@@ -3017,8 +3024,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "7067820889223773244"
+                      "version": "0.26.54.24096",
+                      "templateHash": "8469884519860433031"
                     },
                     "name": "Service Bus Namespace Topic Authorization Rules",
                     "description": "This module deploys a Service Bus Namespace Topic Authorization Rule.",
@@ -3167,8 +3174,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.25.53.49325",
-                      "templateHash": "10626633836251297018"
+                      "version": "0.26.54.24096",
+                      "templateHash": "14842378053022621119"
                     },
                     "name": "Service Bus Namespace Topic Subscription",
                     "description": "This module deploys a Service Bus Namespace Topic Subscription.",
@@ -3393,7 +3400,8 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-ServiceBusNamespace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-serviceBusNamespace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3403,8 +3411,8 @@
           "name": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.ServiceBus/namespaces', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace'), copyIndex()))]"
           },
-          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.ServiceBus/namespaces', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.ServiceBus/namespaces', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace')))))), createObject('value', null()))]",
-          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.ServiceBus/namespaces', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.ServiceBus/namespaces', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace')), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.ServiceBus/namespaces', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.ServiceBus/namespaces', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace')))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.ServiceBus/namespaces', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.ServiceBus/namespaces', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace')), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
@@ -3449,8 +3457,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "2592884001616184297"
+              "version": "0.25.53.49325",
+              "templateHash": "4120048060064073955"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -3815,7 +3823,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3920,8 +3928,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "9321937464667207030"
+                      "version": "0.25.53.49325",
+                      "templateHash": "11244630631275470040"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",

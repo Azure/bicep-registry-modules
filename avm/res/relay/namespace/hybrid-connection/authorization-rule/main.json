@@ -1,0 +1,79 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.26.54.24096",
+      "templateHash": "5255934595416171239"
+    },
+    "name": "Hybrid Connection Authorization Rules",
+    "description": "This module deploys a Hybrid Connection Authorization Rule.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the authorization rule."
+      }
+    },
+    "namespaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Relay Namespace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "hybridConnectionName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Relay Namespace Hybrid Connection. Required if the template is used in a standalone deployment."
+      }
+    },
+    "rights": {
+      "type": "array",
+      "defaultValue": [],
+      "allowedValues": [
+        "Listen",
+        "Manage",
+        "Send"
+      ],
+      "metadata": {
+        "description": "Optional. The rights associated with the rule."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Relay/namespaces/hybridConnections/authorizationRules",
+      "apiVersion": "2021-11-01",
+      "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('hybridConnectionName'), parameters('name'))]",
+      "properties": {
+        "rights": "[parameters('rights')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the authorization rule."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Resource ID of the authorization rule."
+      },
+      "value": "[resourceId('Microsoft.Relay/namespaces/hybridConnections/authorizationRules', parameters('namespaceName'), parameters('hybridConnectionName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the authorization rule was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
