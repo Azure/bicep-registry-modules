@@ -144,23 +144,26 @@ resource privateLinkScope_lock 'Microsoft.Authorization/locks@2020-05-01' =
     scope: privateLinkScope
   }
 
-module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-PrivateLinkScope-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-privateLinkScope-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(privateLinkScope.id, '/'))}-${privateEndpoint.?service ?? 'azuremonitor'}-${index}'
-      privateLinkServiceConnections: [
-        {
-          name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(privateLinkScope.id, '/'))}-${privateEndpoint.?service ?? 'azuremonitor'}-${index}'
-          properties: {
-            privateLinkServiceId: privateLinkScope.id
-            groupIds: [
-              privateEndpoint.?service ?? 'azuremonitor'
-            ]
-          }
-        }
-      ]
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(privateLinkScope.id, '/'))}-${privateEndpoint.?service ?? 'azuremonitor'}-${index}'
+              properties: {
+                privateLinkServiceId: privateLinkScope.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'azuremonitor'
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(privateLinkScope.id, '/'))}-${privateEndpoint.?service ?? 'azuremonitor'}-${index}'
@@ -175,13 +178,13 @@ module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endp
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
       privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
       privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
       roleAssignments: privateEndpoint.?roleAssignments
@@ -331,6 +334,9 @@ type privateEndpointType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
+
+  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
+  resourceGroupName: string?
 }[]?
 
 type scopedResourceType = {

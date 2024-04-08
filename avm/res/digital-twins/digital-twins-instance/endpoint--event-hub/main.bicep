@@ -39,10 +39,14 @@ param endpointUri string = ''
 @description('Optional. The managed identity definition for this resource.  Only one type of identity is supported: system-assigned or user-assigned, but not both.')
 param managedIdentities managedIdentitiesType
 
-var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? 'SystemAssigned' : (!empty(managedIdentities.?userAssignedResourceId ?? '') ? 'UserAssigned' : null)
-  userAssignedIdentity: managedIdentities.?userAssignedResourceId
-} : null
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? 'SystemAssigned'
+        : (!empty(managedIdentities.?userAssignedResourceId ?? '') ? 'UserAssigned' : null)
+      userAssignedIdentity: managedIdentities.?userAssignedResourceId
+    }
+  : null
 
 resource digitalTwinsInstance 'Microsoft.DigitalTwins/digitalTwinsInstances@2023-01-31' existing = {
   name: digitalTwinInstanceName

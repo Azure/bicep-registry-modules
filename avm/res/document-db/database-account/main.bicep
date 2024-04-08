@@ -143,12 +143,20 @@ param secretsKeyVault secretsKeyVaultType?
 @description('Optional. The network configuration of this module.')
 param networkRestrictions networkRestrictionsType?
 
-var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
-  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-} : null
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 var consistencyPolicy = {
   Eventual: {
@@ -170,107 +178,154 @@ var consistencyPolicy = {
   }
 }
 
-var defaultFailoverLocation = [ {
+var defaultFailoverLocation = [
+  {
     failoverPriority: 0
     locationName: location
     isZoneRedundant: true
-  } ]
-
-var databaseAccount_locations = [for failoverLocation in locations: {
-  failoverPriority: failoverLocation.failoverPriority
-  locationName: failoverLocation.locationName
-  isZoneRedundant: failoverLocation.?isZoneRedundant ?? true
-}]
-
-var kind = !empty(sqlDatabases) || !empty(gremlinDatabases) ? 'GlobalDocumentDB' : (!empty(mongodbDatabases) ? 'MongoDB' : 'GlobalDocumentDB')
-
-var capabilities = [for capability in capabilitiesToAdd: {
-  name: capability
-}]
-
-var backupPolicy = backupPolicyType == 'Continuous' ? {
-  type: backupPolicyType
-  continuousModeProperties: {
-    tier: backupPolicyContinuousTier
   }
-} : {
-  type: backupPolicyType
-  periodicModeProperties: {
-    backupIntervalInMinutes: backupIntervalInMinutes
-    backupRetentionIntervalInHours: backupRetentionIntervalInHours
-    backupStorageRedundancy: backupStorageRedundancy
+]
+
+var databaseAccount_locations = [
+  for failoverLocation in locations: {
+    failoverPriority: failoverLocation.failoverPriority
+    locationName: failoverLocation.locationName
+    isZoneRedundant: failoverLocation.?isZoneRedundant ?? true
   }
-}
+]
 
-var ipRules = [for i in (networkRestrictions.?ipRules ?? []): {
-  ipAddressOrRange: i
-}]
+var kind = !empty(sqlDatabases) || !empty(gremlinDatabases)
+  ? 'GlobalDocumentDB'
+  : (!empty(mongodbDatabases) ? 'MongoDB' : 'GlobalDocumentDB')
 
-var virtualNetworkRules = [for vnet in (networkRestrictions.?virtualNetworkRules ?? []): {
-  id: vnet.subnetResourceId
-  ignoreMissingVnetServiceEndpoint: false
-}]
+var capabilities = [
+  for capability in capabilitiesToAdd: {
+    name: capability
+  }
+]
 
-var databaseAccount_properties = union({
-    databaseAccountOfferType: databaseAccountOfferType
-  }, ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases)) ? {
-    // Common properties
-    consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
-    enableMultipleWriteLocations: enableMultipleWriteLocations
-    locations: empty(databaseAccount_locations) ? defaultFailoverLocation : databaseAccount_locations
-
-    ipRules: ipRules
-    virtualNetworkRules: virtualNetworkRules
-    networkAclBypass: networkRestrictions.?networkAclBypass ?? 'AzureServices'
-    publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Enabled'
-    isVirtualNetworkFilterEnabled: !empty(ipRules) || !empty(virtualNetworkRules)
-
-    capabilities: capabilities
-    enableFreeTier: enableFreeTier
-    backupPolicy: backupPolicy
-    enableAutomaticFailover: automaticFailover
-    enableAnalyticalStorage: enableAnalyticalStorage
-  } : {}), (!empty(sqlDatabases) ? {
-    // SQLDB properties
-    disableLocalAuth: disableLocalAuth
-    disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
-  } : {}), (!empty(mongodbDatabases) ? {
-    // MongoDb properties
-    apiProperties: {
-      serverVersion: serverVersion
+var backupPolicy = backupPolicyType == 'Continuous'
+  ? {
+      type: backupPolicyType
+      continuousModeProperties: {
+        tier: backupPolicyContinuousTier
+      }
     }
-  } : {}))
+  : {
+      type: backupPolicyType
+      periodicModeProperties: {
+        backupIntervalInMinutes: backupIntervalInMinutes
+        backupRetentionIntervalInHours: backupRetentionIntervalInHours
+        backupStorageRedundancy: backupStorageRedundancy
+      }
+    }
+
+var ipRules = [
+  for i in (networkRestrictions.?ipRules ?? []): {
+    ipAddressOrRange: i
+  }
+]
+
+var virtualNetworkRules = [
+  for vnet in (networkRestrictions.?virtualNetworkRules ?? []): {
+    id: vnet.subnetResourceId
+    ignoreMissingVnetServiceEndpoint: false
+  }
+]
+
+var databaseAccount_properties = union(
+  {
+    databaseAccountOfferType: databaseAccountOfferType
+  },
+  ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases))
+    ? {
+        // Common properties
+        consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
+        enableMultipleWriteLocations: enableMultipleWriteLocations
+        locations: empty(databaseAccount_locations) ? defaultFailoverLocation : databaseAccount_locations
+
+        ipRules: ipRules
+        virtualNetworkRules: virtualNetworkRules
+        networkAclBypass: networkRestrictions.?networkAclBypass ?? 'AzureServices'
+        publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Enabled'
+        isVirtualNetworkFilterEnabled: !empty(ipRules) || !empty(virtualNetworkRules)
+
+        capabilities: capabilities
+        enableFreeTier: enableFreeTier
+        backupPolicy: backupPolicy
+        enableAutomaticFailover: automaticFailover
+        enableAnalyticalStorage: enableAnalyticalStorage
+      }
+    : {}),
+  (!empty(sqlDatabases)
+    ? {
+        // SQLDB properties
+        disableLocalAuth: disableLocalAuth
+        disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
+      }
+    : {}),
+  (!empty(mongodbDatabases)
+    ? {
+        // MongoDb properties
+        apiProperties: {
+          serverVersion: serverVersion
+        }
+      }
+    : {})
+)
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  'Cosmos DB Account Reader Role': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fbdf93bf-df7d-467e-a4d2-9458aa1360c8')
-  'Cosmos DB Operator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '230815da-be43-4aae-9cb4-875f7bd000aa')
-  CosmosBackupOperator: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'db7b14f2-5adf-42da-9f96-f2ee17bab5cb')
-  CosmosRestoreOperator: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5432c526-bc82-444a-b7ba-57c5b0b5b34f')
-  'DocumentDB Account Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5bd9cd88-fe45-4216-938b-f97437e15450')
+  'Cosmos DB Account Reader Role': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'fbdf93bf-df7d-467e-a4d2-9458aa1360c8'
+  )
+  'Cosmos DB Operator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '230815da-be43-4aae-9cb4-875f7bd000aa'
+  )
+  CosmosBackupOperator: subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'db7b14f2-5adf-42da-9f96-f2ee17bab5cb'
+  )
+  CosmosRestoreOperator: subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '5432c526-bc82-444a-b7ba-57c5b0b5b34f'
+  )
+  'DocumentDB Account Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '5bd9cd88-fe45-4216-938b-f97437e15450'
+  )
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.documentdb-databaseaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: '46d3xbcp.res.documentdb-databaseaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   name: name
@@ -281,170 +336,203 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   properties: databaseAccount_properties
 }
 
-resource databaseAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource databaseAccount_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: databaseAccount
   }
-  scope: databaseAccount
-}
 
-resource databaseAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
-      category: group.category
-      enabled: group.?enabled ?? true
-      timeGrain: null
-    }]
-    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
-      categoryGroup: group.?categoryGroup
-      category: group.?category
-      enabled: group.?enabled ?? true
-    }]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
-  }
-  scope: databaseAccount
-}]
-
-resource databaseAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(databaseAccount.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
-  }
-  scope: databaseAccount
-}]
-
-module databaseAccount_sqlDatabases 'sql-database/main.bicep' = [for sqlDatabase in sqlDatabases: {
-  name: '${uniqueString(deployment().name, location)}-sqldb-${sqlDatabase.name}'
-  params: {
-    name: sqlDatabase.name
-    containers: sqlDatabase.?containers
-    throughput: sqlDatabase.?throughput
-    databaseAccountName: databaseAccount.name
-    autoscaleSettingsMaxThroughput: sqlDatabase.?autoscaleSettingsMaxThroughput
-  }
-}]
-
-module databaseAccount_mongodbDatabases 'mongodb-database/main.bicep' = [for mongodbDatabase in mongodbDatabases: {
-  name: '${uniqueString(deployment().name, location)}-mongodb-${mongodbDatabase.name}'
-  params: {
-    databaseAccountName: databaseAccount.name
-    name: mongodbDatabase.name
-    tags: mongodbDatabase.?tags ?? tags
-    collections: contains(mongodbDatabase, 'collections') ? mongodbDatabase.collections : []
-    throughput: mongodbDatabase.?throughput
-  }
-}]
-
-module databaseAccount_gremlinDatabases 'gremlin-database/main.bicep' = [for gremlinDatabase in gremlinDatabases: {
-  name: '${uniqueString(deployment().name, location)}-gremlin-${gremlinDatabase.name}'
-  params: {
-    databaseAccountName: databaseAccount.name
-    name: gremlinDatabase.name
-    tags: gremlinDatabase.?tags ?? tags
-    graphs: contains(gremlinDatabase, 'graphs') ? gremlinDatabase.graphs : []
-    maxThroughput: contains(gremlinDatabase, 'maxThroughput') ? gremlinDatabase.maxThroughput : 4000
-    throughput: gremlinDatabase.?throughput
-  }
-}]
-
-module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-databaseAccount-PrivateEndpoint-${index}'
-  params: {
-    name: privateEndpoint.?name ?? 'pep-${last(split(databaseAccount.id, '/'))}-${privateEndpoint.service}-${index}'
-    privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(databaseAccount.id, '/'))}-${privateEndpoint.service}-${index}'
-        properties: {
-          privateLinkServiceId: databaseAccount.id
-          groupIds: [
-            privateEndpoint.service
-          ]
+resource databaseAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
         }
-      }
-    ] : null
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true ? [
-      {
-        name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(databaseAccount.id, '/'))}-${privateEndpoint.service}-${index}'
-        properties: {
-          privateLinkServiceId: databaseAccount.id
-          groupIds: [
-            privateEndpoint.service
-          ]
-          requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
         }
-      }
-    ] : null
-    subnetResourceId: privateEndpoint.subnetResourceId
-    enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
-    location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: privateEndpoint.?lock ?? lock
-    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
-    roleAssignments: privateEndpoint.?roleAssignments
-    tags: privateEndpoint.?tags ?? tags
-    customDnsConfigs: privateEndpoint.?customDnsConfigs
-    ipConfigurations: privateEndpoint.?ipConfigurations
-    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
-    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: databaseAccount
   }
-}]
+]
 
-module keyVault 'modules/secrets-key-vault.bicep' = if (secretsKeyVault != null) {
-  name: '${uniqueString(deployment().name, location)}-secrets-kv'
-  scope: resourceGroup(secretsKeyVault.?resourceGroupName ?? resourceGroup().name)
-  params: {
-    keyVaultName: secretsKeyVault!.keyVaultName
-
-    keySecrets: [
-      {
-        secretName: secretsKeyVault.?primaryWriteKeySecretName ?? 'Primary-Write-Key'
-        secretValue: databaseAccount.listKeys().primaryMasterKey
-      }
-      {
-        secretName: secretsKeyVault.?primaryReadOnlyKeySecretName ?? 'Primary-Readonly-Key'
-        secretValue: databaseAccount.listKeys().primaryReadonlyMasterKey
-      }
-      {
-        secretName: secretsKeyVault.?primaryWriteConnectionStringSecretName ?? 'Primary-Write-ConnectionString'
-        secretValue: databaseAccount.listConnectionStrings().connectionStrings[0].connectionString
-      }
-      {
-        secretName: secretsKeyVault.?primaryReadonlyConnectionStringSecretName ?? 'Primary-Readonly-ConnectionString'
-        secretValue: databaseAccount.listConnectionStrings().connectionStrings[2].connectionString
-      }
-      {
-        secretName: secretsKeyVault.?secondaryWriteKeySecretName ?? 'Secondary-Write-Key'
-        secretValue: databaseAccount.listKeys().secondaryMasterKey
-      }
-      {
-        secretName: secretsKeyVault.?secondaryReadonlyKeySecretName ?? 'Secondary-Readonly-Key'
-        secretValue: databaseAccount.listKeys().secondaryReadonlyMasterKey
-      }
-      {
-        secretName: secretsKeyVault.?secondaryWriteConnectionStringSecretName ?? 'Secondary-Write-ConnectionString'
-        secretValue: databaseAccount.listConnectionStrings().connectionStrings[1].connectionString
-      }
-      {
-        secretName: secretsKeyVault.?secondaryReadonlyConnectionStringSecretName ?? 'Secondary-Readonly-ConnectionString'
-        secretValue: databaseAccount.listConnectionStrings().connectionStrings[3].connectionString
-      }
-    ]
+resource databaseAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(databaseAccount.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: databaseAccount
   }
-}
+]
+
+module databaseAccount_sqlDatabases 'sql-database/main.bicep' = [
+  for sqlDatabase in sqlDatabases: {
+    name: '${uniqueString(deployment().name, location)}-sqldb-${sqlDatabase.name}'
+    params: {
+      name: sqlDatabase.name
+      containers: sqlDatabase.?containers
+      throughput: sqlDatabase.?throughput
+      databaseAccountName: databaseAccount.name
+      autoscaleSettingsMaxThroughput: sqlDatabase.?autoscaleSettingsMaxThroughput
+    }
+  }
+]
+
+module databaseAccount_mongodbDatabases 'mongodb-database/main.bicep' = [
+  for mongodbDatabase in mongodbDatabases: {
+    name: '${uniqueString(deployment().name, location)}-mongodb-${mongodbDatabase.name}'
+    params: {
+      databaseAccountName: databaseAccount.name
+      name: mongodbDatabase.name
+      tags: mongodbDatabase.?tags ?? tags
+      collections: contains(mongodbDatabase, 'collections') ? mongodbDatabase.collections : []
+      throughput: mongodbDatabase.?throughput
+    }
+  }
+]
+
+module databaseAccount_gremlinDatabases 'gremlin-database/main.bicep' = [
+  for gremlinDatabase in gremlinDatabases: {
+    name: '${uniqueString(deployment().name, location)}-gremlin-${gremlinDatabase.name}'
+    params: {
+      databaseAccountName: databaseAccount.name
+      name: gremlinDatabase.name
+      tags: gremlinDatabase.?tags ?? tags
+      graphs: contains(gremlinDatabase, 'graphs') ? gremlinDatabase.graphs : []
+      maxThroughput: contains(gremlinDatabase, 'maxThroughput') ? gremlinDatabase.maxThroughput : 4000
+      throughput: gremlinDatabase.?throughput
+    }
+  }
+]
+
+module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    name: '${uniqueString(deployment().name, location)}-databaseAccount-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(databaseAccount.id, '/'))}-${privateEndpoint.service}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(databaseAccount.id, '/'))}-${privateEndpoint.service}-${index}'
+              properties: {
+                privateLinkServiceId: databaseAccount.id
+                groupIds: [
+                  privateEndpoint.service
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(databaseAccount.id, '/'))}-${privateEndpoint.service}-${index}'
+              properties: {
+                privateLinkServiceId: databaseAccount.id
+                groupIds: [
+                  privateEndpoint.service
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
+  }
+]
+
+module keyVault 'modules/secrets-key-vault.bicep' =
+  if (secretsKeyVault != null) {
+    name: '${uniqueString(deployment().name, location)}-secrets-kv'
+    scope: resourceGroup(secretsKeyVault.?resourceGroupName ?? resourceGroup().name)
+    params: {
+      keyVaultName: secretsKeyVault!.keyVaultName
+
+      keySecrets: [
+        {
+          secretName: secretsKeyVault.?primaryWriteKeySecretName ?? 'Primary-Write-Key'
+          secretValue: databaseAccount.listKeys().primaryMasterKey
+        }
+        {
+          secretName: secretsKeyVault.?primaryReadOnlyKeySecretName ?? 'Primary-Readonly-Key'
+          secretValue: databaseAccount.listKeys().primaryReadonlyMasterKey
+        }
+        {
+          secretName: secretsKeyVault.?primaryWriteConnectionStringSecretName ?? 'Primary-Write-ConnectionString'
+          secretValue: databaseAccount.listConnectionStrings().connectionStrings[0].connectionString
+        }
+        {
+          secretName: secretsKeyVault.?primaryReadonlyConnectionStringSecretName ?? 'Primary-Readonly-ConnectionString'
+          secretValue: databaseAccount.listConnectionStrings().connectionStrings[2].connectionString
+        }
+        {
+          secretName: secretsKeyVault.?secondaryWriteKeySecretName ?? 'Secondary-Write-Key'
+          secretValue: databaseAccount.listKeys().secondaryMasterKey
+        }
+        {
+          secretName: secretsKeyVault.?secondaryReadonlyKeySecretName ?? 'Secondary-Readonly-Key'
+          secretValue: databaseAccount.listKeys().secondaryReadonlyMasterKey
+        }
+        {
+          secretName: secretsKeyVault.?secondaryWriteConnectionStringSecretName ?? 'Secondary-Write-ConnectionString'
+          secretValue: databaseAccount.listConnectionStrings().connectionStrings[1].connectionString
+        }
+        {
+          secretName: secretsKeyVault.?secondaryReadonlyConnectionStringSecretName ?? 'Secondary-Readonly-ConnectionString'
+          secretValue: databaseAccount.listConnectionStrings().connectionStrings[3].connectionString
+        }
+      ]
+    }
+  }
 
 @description('The name of the database account.')
 output name string = databaseAccount.name
@@ -574,6 +662,9 @@ type privateEndpointType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
+
+  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
+  resourceGroupName: string?
 }[]?
 
 type diagnosticSettingType = {
