@@ -1,4 +1,4 @@
-name: "avm.res.network.nat-gateways"
+name: "avm.res.network.nat-gateway"
 
 on:
   schedule:
