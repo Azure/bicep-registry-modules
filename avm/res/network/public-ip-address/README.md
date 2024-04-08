@@ -140,9 +140,9 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
       Role: 'DeploymentValidation'
     }
     zones: [
-      '1'
-      '2'
-      '3'
+      1
+      2
+      3
     ]
   }
 }
@@ -234,9 +234,9 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
     },
     "zones": {
       "value": [
-        "1",
-        "2",
-        "3"
+        1,
+        2,
+        3
       ]
     }
   }
@@ -306,9 +306,9 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
       Role: 'DeploymentValidation'
     }
     zones: [
-      '1'
-      '2'
-      '3'
+      1
+      2
+      3
     ]
   }
 }
@@ -400,9 +400,9 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
     },
     "zones": {
       "value": [
-        "1",
-        "2",
-        "3"
+        1,
+        2,
+        3
       ]
     }
   }
@@ -932,9 +932,17 @@ A list of availability zones denoting the IP allocated for the resource needs to
 - Default:
   ```Bicep
   [
-    '1'
-    '2'
-    '3'
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
   ]
   ```
 

@@ -327,7 +327,7 @@ Describe 'Module tests' -Tag 'Module' {
       }
 
       $mdFormattedDiff = ($diffReponse -join '</br>') -replace '\|', '\|'
-      $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `Set-ModuleReadMe` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the script for this module''s template.' -f $mdFormattedDiff)
+      $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/avm/utilities/tools/Set-AVMModule.ps1` and more precisely the `/avm/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
     }
   }
 
@@ -1158,12 +1158,18 @@ Describe 'Governance tests' {
   #   }
   #   $startIndex++ # Go one further than dummy value line
 
-  #   $endIndex = $startIndex
-  #   while ($issueTemplateContent[$endIndex] -match '.*- "avm\/.*' -and $endIndex -ne $issueTemplateContent.Length) {
-  #     $endIndex++
-  #   }
-  #   $endIndex-- # Go one back to last module line
-
+  # ## start merge conflict
+  # #   $endIndex = $startIndex
+  # #   while ($issueTemplateContent[$endIndex] -match '.*- "avm\/.*' -and $endIndex -ne $issueTemplateContent.Length) {
+  # #     $endIndex++
+  # #   }
+  # #   $endIndex-- # Go one back to last module line
+  #   # # Identify listed modules
+  #   # $startIndex = 0
+  #   # while ($issueTemplateContent[$startIndex] -notmatch '^\s*#?\s*\-\s+\"avm\/.+\"' -and $startIndex -ne $issueTemplateContent.Length) {
+  #   #   $startIndex++
+  #   # }
+  # ## end merge conflict
   #   $listedModules = $issueTemplateContent[$startIndex..$endIndex] | ForEach-Object { $_ -replace '.*- "(avm\/.*)".*', '$1' }
 
   #   # Should exist
