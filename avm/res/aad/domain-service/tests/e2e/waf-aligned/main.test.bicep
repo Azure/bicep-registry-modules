@@ -17,36 +17,8 @@ param resourceLocation string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'aaddswaf'
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableTelemetry bool = false
-
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
-
-var varDiagSettings = [
-  {
-    name: 'customSetting'
-    eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-    eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-    storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-    workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-  }
-]
-var varLock = {
-  kind: 'None'
-  name: 'myCustomLockName'
-}
-var varReplicaSets = [
-  {
-    location: 'NorthEurope'
-    subnetId: nestedDependencies.outputs.subnetResourceId
-  }
-]
-var varTags = {
-  'hidden-title': 'This is visible in the resource name'
-  Environment: 'Non-Prod'
-  Role: 'DeploymentValidation'
-}
 
 // ============ //
 // Dependencies //
@@ -101,20 +73,41 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-init'
   params: {
-    enableTelemetry: enableTelemetry
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
     domainName: '${namePrefix}.onmicrosoft.com'
     additionalRecipients: ['${namePrefix}@noreply.github.com']
-    diagnosticSettings: varDiagSettings
-    lock: varLock
+    diagnosticSettings: [
+      {
+        name: 'customSetting'
+        metricCategories: []
+        logCategoriesAndGroups: []
+        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+      }
+    ]
+    lock: {
+      kind: 'None'
+      name: 'myCustomLockName'
+    }
     ldaps: 'Enabled'
     externalAccess: 'Enabled'
     pfxCertificate: keyVault.getSecret(nestedDependencies.outputs.certSecretName)
     pfxCertificatePassword: keyVault.getSecret(nestedDependencies.outputs.certPWSecretName)
-    replicaSets: varReplicaSets
+    replicaSets: [
+      {
+        location: 'NorthEurope'
+        subnetId: nestedDependencies.outputs.subnetResourceId
+      }
+    ]
     sku: 'Standard'
-    tags: varTags
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 
@@ -136,19 +129,40 @@ module testDeploymentIdem '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-idem'
   params: {
-    enableTelemetry: enableTelemetry
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
     domainName: '${namePrefix}.onmicrosoft.com'
     additionalRecipients: ['${namePrefix}@noreply.github.com']
-    diagnosticSettings: varDiagSettings
-    lock: varLock
+    diagnosticSettings: [
+      {
+        name: 'customSetting'
+        metricCategories: []
+        logCategoriesAndGroups: []
+        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+      }
+    ]
+    lock: {
+      kind: 'None'
+      name: 'myCustomLockName'
+    }
     ldaps: 'Enabled'
     externalAccess: 'Enabled'
     pfxCertificate: keyVault.getSecret(nestedDependencies.outputs.certSecretName)
     pfxCertificatePassword: keyVault.getSecret(nestedDependencies.outputs.certPWSecretName)
-    replicaSets: varReplicaSets
+    replicaSets: [
+      {
+        location: 'NorthEurope'
+        subnetId: nestedDependencies.outputs.subnetResourceId
+      }
+    ]
     sku: 'Standard'
-    tags: varTags
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
   }
 }
