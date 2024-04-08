@@ -541,7 +541,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 | [`redisConfiguration`](#parameter-redisconfiguration) | object | All Redis Settings. Few possible keys: rdb-backup-enabled,rdb-storage-connection-string,rdb-backup-frequency,maxmemory-delta,maxmemory-policy,notify-keyspace-events,maxmemory-samples,slowlog-log-slower-than,slowlog-max-len,list-max-ziplist-entries,list-max-ziplist-value,hash-max-ziplist-entries,hash-max-ziplist-value,set-max-intset-entries,zset-max-ziplist-entries,zset-max-ziplist-value etc. |
 | [`redisVersion`](#parameter-redisversion) | string | Redis version. Only major version will be used in PUT/PATCH request with current valid values: (4, 6). |
 | [`replicasPerMaster`](#parameter-replicaspermaster) | int | The number of replicas to be created per primary. |
-| [`replicasPerPrimary`](#parameter-replicasperprimary) | int | The number of replicas to be created per primary. |
+| [`replicasPerPrimary`](#parameter-replicasperprimary) | int | The number of replicas to be created per primary. Needs to be the same as replicasPerMaster for a Premium Cluster Cache. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`shardCount`](#parameter-shardcount) | int | The number of shards to be created on a Premium Cluster Cache. |
 | [`skuName`](#parameter-skuname) | string | The type of Redis cache to deploy. |
@@ -1213,11 +1213,11 @@ The number of replicas to be created per primary.
 
 ### Parameter: `replicasPerPrimary`
 
-The number of replicas to be created per primary.
+The number of replicas to be created per primary. Needs to be the same as replicasPerMaster for a Premium Cluster Cache.
 
 - Required: No
 - Type: int
-- Default: `1`
+- Default: `3`
 
 ### Parameter: `roleAssignments`
 

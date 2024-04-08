@@ -54,8 +54,8 @@ param redisVersion string = '6'
 param replicasPerMaster int = 3
 
 @minValue(1)
-@description('Optional. The number of replicas to be created per primary.')
-param replicasPerPrimary int = 1
+@description('Optional. The number of replicas to be created per primary. Needs to be the same as replicasPerMaster for a Premium Cluster Cache.')
+param replicasPerPrimary int = 3
 
 @minValue(1)
 @description('Optional. The number of shards to be created on a Premium Cluster Cache.')
