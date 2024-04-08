@@ -130,7 +130,10 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: keyVault
   properties: {
     principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483') // Key Vault Administrator
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '00482a5a-887f-4fb3-b363-3b7fe8e74483'
+    ) // Key Vault Administrator
     principalType: 'ServicePrincipal'
   }
 }
@@ -154,7 +157,7 @@ resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01'
 }
 
 @description('The resource ID of the created Virtual Network Subnet.')
-output subnetResourceId string = '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${virtualNetwork.name}/subnets/${virtualNetwork.properties.subnets[1].name}'
+output subnetResourceId string = virtualNetwork.properties.subnets[1].id
 
 @description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id
