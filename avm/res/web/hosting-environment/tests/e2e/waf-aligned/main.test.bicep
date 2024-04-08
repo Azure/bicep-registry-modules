@@ -60,49 +60,50 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // Test Execution //
 // ============== //
 
-
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceGroup.location
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      resourceType: 'App Service Environment'
-      hostingEnvironmentName: '${namePrefix}${serviceShort}001'
-    }
-    subnetResourceId: nestedDependencies.outputs.subnetResourceId
-    internalLoadBalancingMode: 'Web, Publishing'
-    clusterSettings: [
-      {
-        name: 'DisableTls1.0'
-        value: '1'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceGroup.location
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        resourceType: 'App Service Environment'
+        hostingEnvironmentName: '${namePrefix}${serviceShort}001'
       }
-    ]
-    allowNewPrivateEndpointConnections: true
-    ftpEnabled: true
-    inboundIpAddressOverride: '10.0.0.10'
-    remoteDebugEnabled: true
-    upgradePreference: 'Late'
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
+      subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      internalLoadBalancingMode: 'Web, Publishing'
+      clusterSettings: [
+        {
+          name: 'DisableTls1.0'
+          value: '1'
+        }
       ]
+      allowNewPrivateEndpointConnections: true
+      ftpEnabled: true
+      inboundIpAddressOverride: '10.0.0.10'
+      remoteDebugEnabled: true
+      upgradePreference: 'Late'
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      customDnsSuffix: 'internal.contoso.com'
+      customDnsSuffixCertificateUrl: nestedDependencies.outputs.certificateSecretUrl
+      customDnsSuffixKeyVaultReferenceIdentity: nestedDependencies.outputs.managedIdentityResourceId
     }
-    customDnsSuffix: 'internal.contoso.com'
-    customDnsSuffixCertificateUrl: nestedDependencies.outputs.certificateSecretUrl
-    customDnsSuffixKeyVaultReferenceIdentity: nestedDependencies.outputs.managedIdentityResourceId
   }
-}]
+]

@@ -3,7 +3,7 @@ metadata description = 'This module deploys a Service Bus Namespace.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Service Bus Namespace.')
-@maxLength(50)
+@maxLength(260)
 param name string
 
 @description('Optional. Location for all resources.')
@@ -361,12 +361,13 @@ resource serviceBusNamespace_diagnosticSettings 'Microsoft.Insights/diagnosticSe
   }
 ]
 
-module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-ServiceBusNamespace-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-serviceBusNamespace-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
@@ -379,7 +380,7 @@ module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-e
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
@@ -561,6 +562,9 @@ type privateEndpointType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
+
+  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
+  resourceGroupName: string?
 }[]?
 
 type diagnosticSettingType = {
