@@ -239,9 +239,9 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   name: 'diskDeployment'
   params: {
     // Required parameters
-    availabilityZone: 1
+    availabilityZone: 2
     name: 'cdmax001'
-    sku: 'UltraSSD_LRS'
+    sku: 'Premium_LRS'
     // Non-required parameters
     diskIOPSReadWrite: 500
     diskMBpsReadWrite: 60
@@ -294,13 +294,13 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   "parameters": {
     // Required parameters
     "availabilityZone": {
-      "value": 1
+      "value": 2
     },
     "name": {
       "value": "cdmax001"
     },
     "sku": {
-      "value": "UltraSSD_LRS"
+      "value": "Premium_LRS"
     },
     // Non-required parameters
     "diskIOPSReadWrite": {
@@ -377,9 +377,9 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   name: 'diskDeployment'
   params: {
     // Required parameters
-    availabilityZone: 1
+    availabilityZone: 2
     name: 'cdwaf001'
-    sku: 'UltraSSD_LRS'
+    sku: 'Premium_LRS'
     // Non-required parameters
     diskIOPSReadWrite: 500
     diskMBpsReadWrite: 60
@@ -415,13 +415,13 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   "parameters": {
     // Required parameters
     "availabilityZone": {
-      "value": 1
+      "value": 2
     },
     "name": {
       "value": "cdwaf001"
     },
     "sku": {
-      "value": "UltraSSD_LRS"
+      "value": "Premium_LRS"
     },
     // Non-required parameters
     "diskIOPSReadWrite": {
