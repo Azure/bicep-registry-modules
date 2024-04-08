@@ -398,6 +398,8 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       }
     ]
     redisVersion: '6'
+    replicasPerMaster: 3
+    replicasPerPrimary: 3
     shardCount: 1
     skuName: 'Premium'
     tags: {
@@ -408,6 +410,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     zones: [
       1
       2
+      3
     ]
   }
 }
@@ -487,6 +490,12 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     "redisVersion": {
       "value": "6"
     },
+    "replicasPerMaster": {
+      "value": 3
+    },
+    "replicasPerPrimary": {
+      "value": 3
+    },
     "shardCount": {
       "value": 1
     },
@@ -505,7 +514,8 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     "zones": {
       "value": [
         1,
-        2
+        2,
+        3
       ]
     }
   }
@@ -1380,9 +1390,9 @@ If the zoneRedundant parameter is true, replicas will be provisioned in the avai
 - Default:
   ```Bicep
   [
-    '1'
-    '2'
-    '3'
+    1
+    2
+    3
   ]
   ```
 
