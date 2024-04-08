@@ -54,165 +54,167 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
-    publisherName: '${namePrefix}-az-amorg-x-001'
-    customProperties: {
-      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10': 'False'
-      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11': 'False'
-      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Ssl30': 'False'
-      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10': 'False'
-      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11': 'False'
-      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30': 'False'
-      'Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2': 'True'
-      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168': 'False'
-      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA': 'False'
-      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA': 'False'
-      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA256': 'False'
-      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA': 'False'
-      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA256': 'False'
-      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA': 'False'
-      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_GCM_SHA256': 'False'
-    }
-    minApiVersion: '2021-08-01'
-    apis: [
-      {
-        apiVersionSet: {
-          name: 'echo-version-set'
-          properties: {
-            description: 'An echo API version set'
-            displayName: 'Echo version set'
-            versioningScheme: 'Segment'
-          }
-        }
-        displayName: 'Echo API'
-        description: 'An echo API service'
-        name: 'echo-api'
-        path: 'echo'
-        serviceUrl: 'https://echoapi.cloudapp.net/api'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
+      publisherName: '${namePrefix}-az-amorg-x-001'
+      customProperties: {
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Ssl30': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2': 'True'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA256': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA256': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_GCM_SHA256': 'False'
       }
-    ]
-    authorizationServers: {
-      secureList: [
+      minApiVersion: '2021-08-01'
+      apis: [
         {
-          authorizationEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/authorize'
-          clientId: 'apimClientid'
-          clientSecret: customSecret
-          clientRegistrationEndpoint: 'https://localhost'
-          grantTypes: [
-            'authorizationCode'
-          ]
-          name: 'AuthServer1'
-          tokenEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/token'
+          apiVersionSet: {
+            name: 'echo-version-set'
+            properties: {
+              description: 'An echo API version set'
+              displayName: 'Echo version set'
+              versioningScheme: 'Segment'
+            }
+          }
+          displayName: 'Echo API'
+          description: 'An echo API service'
+          name: 'echo-api'
+          path: 'echo'
+          serviceUrl: 'https://echoapi.cloudapp.net/api'
         }
       ]
-    }
-    backends: [
-      {
-        name: 'backend'
-        tls: {
-          validateCertificateChain: false
-          validateCertificateName: false
-        }
-        url: 'https://echoapi.cloudapp.net/api'
-      }
-    ]
-    caches: [
-      {
-        connectionString: 'connectionstringtest'
-        name: 'westeurope'
-        useFromLocation: 'westeurope'
-      }
-    ]
-    diagnosticSettings: [
-      {
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    identityProviders: [
-      {
-        name: 'aad'
-        clientId: 'apimClientid'
-        clientSecret: customSecret
-        authority: split(environment().authentication.loginEndpoint, '/')[2]
-        signinTenant: 'mytenant.onmicrosoft.com'
-        allowedTenants: [
-          'mytenant.onmicrosoft.com'
+      authorizationServers: {
+        secureList: [
+          {
+            authorizationEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/authorize'
+            clientId: 'apimClientid'
+            clientSecret: customSecret
+            clientRegistrationEndpoint: 'https://localhost'
+            grantTypes: [
+              'authorizationCode'
+            ]
+            name: 'AuthServer1'
+            tokenEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/token'
+          }
         ]
       }
-    ]
-    namedValues: [
-      {
-        displayName: 'apimkey'
-        name: 'apimkey'
-        secret: true
-      }
-    ]
-    policies: [
-      {
-        format: 'xml'
-        value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
-      }
-    ]
-    portalsettings: [
-      {
-        name: 'signin'
-        properties: {
-          enabled: false
+      backends: [
+        {
+          name: 'backend'
+          tls: {
+            validateCertificateChain: false
+            validateCertificateName: false
+          }
+          url: 'https://echoapi.cloudapp.net/api'
         }
-      }
-      {
-        name: 'signup'
-        properties: {
-          enabled: false
-          termsOfService: {
-            consentRequired: false
+      ]
+      caches: [
+        {
+          connectionString: 'connectionstringtest'
+          name: 'westeurope'
+          useFromLocation: 'westeurope'
+        }
+      ]
+      diagnosticSettings: [
+        {
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      identityProviders: [
+        {
+          name: 'aad'
+          clientId: 'apimClientid'
+          clientSecret: customSecret
+          authority: split(environment().authentication.loginEndpoint, '/')[2]
+          signinTenant: 'mytenant.onmicrosoft.com'
+          allowedTenants: [
+            'mytenant.onmicrosoft.com'
+          ]
+        }
+      ]
+      namedValues: [
+        {
+          displayName: 'apimkey'
+          name: 'apimkey'
+          secret: true
+        }
+      ]
+      policies: [
+        {
+          format: 'xml'
+          value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
+        }
+      ]
+      portalsettings: [
+        {
+          name: 'signin'
+          properties: {
             enabled: false
           }
         }
-      }
-    ]
-    products: [
-      {
-        apis: [
-          {
-            name: 'echo-api'
+        {
+          name: 'signup'
+          properties: {
+            enabled: false
+            termsOfService: {
+              consentRequired: false
+              enabled: false
+            }
           }
-        ]
-        approvalRequired: true
-        groups: [
-          {
-            name: 'developers'
-          }
-        ]
-        name: 'Starter'
-        subscriptionRequired: true
-        displayName: 'Echo API'
-        description: 'This is an echo API'
-        terms: 'By accessing or using the services provided by Echo API through Azure API Management, you agree to be bound by these Terms of Use. These terms may be updated from time to time, and your continued use of the services constitutes acceptance of any changes.'
+        }
+      ]
+      products: [
+        {
+          apis: [
+            {
+              name: 'echo-api'
+            }
+          ]
+          approvalRequired: true
+          groups: [
+            {
+              name: 'developers'
+            }
+          ]
+          name: 'Starter'
+          subscriptionRequired: true
+          displayName: 'Echo API'
+          description: 'This is an echo API'
+          terms: 'By accessing or using the services provided by Echo API through Azure API Management, you agree to be bound by these Terms of Use. These terms may be updated from time to time, and your continued use of the services constitutes acceptance of any changes.'
+        }
+      ]
+      subscriptions: [
+        {
+          name: 'testArmSubscriptionAllApis'
+          scope: '/apis'
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-    ]
-    subscriptions: [
-      {
-        name: 'testArmSubscriptionAllApis'
-        scope: '/apis'
-      }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
+    dependsOn: [
+      diagnosticDependencies
+    ]
   }
-  dependsOn: [
-    diagnosticDependencies
-  ]
-}]
+]
