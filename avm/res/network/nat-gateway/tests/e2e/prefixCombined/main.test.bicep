@@ -43,6 +43,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
+      zone: 0
       publicIPPrefixObjects: [
         {
           name: '${namePrefix}${serviceShort}001-pippre'
