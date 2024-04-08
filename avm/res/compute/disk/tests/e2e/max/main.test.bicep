@@ -52,7 +52,6 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}-${serviceShort}001'
       location: resourceLocation
       sku: 'UltraSSD_LRS'
-      edgeZone: 'EdgeZone'
       availabilityZone: 1
       diskIOPSReadWrite: 500
       diskMBpsReadWrite: 60

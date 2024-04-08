@@ -246,7 +246,6 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
     diskIOPSReadWrite: 500
     diskMBpsReadWrite: 60
     diskSizeGB: 128
-    edgeZone: 'EdgeZone'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -312,9 +311,6 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
     },
     "diskSizeGB": {
       "value": 128
-    },
-    "edgeZone": {
-      "value": "EdgeZone"
     },
     "location": {
       "value": "<location>"
