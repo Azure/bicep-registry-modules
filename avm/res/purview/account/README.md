@@ -667,6 +667,7 @@ Configuration details for Purview Account private endpoints. For security reason
 | [`name`](#parameter-accountprivateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-accountprivateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-accountprivateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`resourceGroupName`](#parameter-accountprivateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-accountprivateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-accountprivateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-accountprivateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
@@ -861,6 +862,13 @@ The private DNS zone groups to associate the private endpoint with. A DNS zone g
 
 - Required: No
 - Type: array
+
+### Parameter: `accountPrivateEndpoints.resourceGroupName`
+
+Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+
+- Required: No
+- Type: string
 
 ### Parameter: `accountPrivateEndpoints.roleAssignments`
 
@@ -1148,6 +1156,7 @@ Configuration details for Purview Managed Event Hub namespace private endpoints.
 | [`name`](#parameter-eventhubprivateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-eventhubprivateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-eventhubprivateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`resourceGroupName`](#parameter-eventhubprivateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-eventhubprivateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-eventhubprivateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-eventhubprivateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
@@ -1342,6 +1351,13 @@ The private DNS zone groups to associate the private endpoint with. A DNS zone g
 
 - Required: No
 - Type: array
+
+### Parameter: `eventHubPrivateEndpoints.resourceGroupName`
+
+Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+
+- Required: No
+- Type: string
 
 ### Parameter: `eventHubPrivateEndpoints.roleAssignments`
 
@@ -1547,6 +1563,7 @@ Configuration details for Purview Portal private endpoints. For security reasons
 | [`name`](#parameter-portalprivateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-portalprivateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-portalprivateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`resourceGroupName`](#parameter-portalprivateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-portalprivateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-portalprivateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-portalprivateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
@@ -1741,6 +1758,13 @@ The private DNS zone groups to associate the private endpoint with. A DNS zone g
 
 - Required: No
 - Type: array
+
+### Parameter: `portalPrivateEndpoints.resourceGroupName`
+
+Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+
+- Required: No
+- Type: string
 
 ### Parameter: `portalPrivateEndpoints.roleAssignments`
 
@@ -1979,6 +2003,7 @@ Configuration details for Purview Managed Storage Account blob private endpoints
 | [`name`](#parameter-storageblobprivateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-storageblobprivateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-storageblobprivateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`resourceGroupName`](#parameter-storageblobprivateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-storageblobprivateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-storageblobprivateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-storageblobprivateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
@@ -2174,6 +2199,13 @@ The private DNS zone groups to associate the private endpoint with. A DNS zone g
 - Required: No
 - Type: array
 
+### Parameter: `storageBlobPrivateEndpoints.resourceGroupName`
+
+Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+
+- Required: No
+- Type: string
+
 ### Parameter: `storageBlobPrivateEndpoints.roleAssignments`
 
 Array of role assignments to create.
@@ -2306,6 +2338,7 @@ Configuration details for Purview Managed Storage Account queue private endpoint
 | [`name`](#parameter-storagequeueprivateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-storagequeueprivateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-storagequeueprivateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`resourceGroupName`](#parameter-storagequeueprivateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-storagequeueprivateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-storagequeueprivateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-storagequeueprivateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
@@ -2500,6 +2533,13 @@ The private DNS zone groups to associate the private endpoint with. A DNS zone g
 
 - Required: No
 - Type: array
+
+### Parameter: `storageQueuePrivateEndpoints.resourceGroupName`
+
+Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+
+- Required: No
+- Type: string
 
 ### Parameter: `storageQueuePrivateEndpoints.roleAssignments`
 

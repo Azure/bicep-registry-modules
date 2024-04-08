@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "11299369930230398843"
+      "templateHash": "1650798617817777444"
     },
     "name": "Public IP Addresses",
     "description": "This module deploys a Public IP Address.",
@@ -318,10 +318,18 @@
     },
     "zones": {
       "type": "array",
+      "items": {
+        "type": "int"
+      },
       "defaultValue": [
-        "1",
-        "2",
-        "3"
+        1,
+        2,
+        3
+      ],
+      "allowedValues": [
+        1,
+        2,
+        3
       ],
       "metadata": {
         "description": "Optional. A list of availability zones denoting the IP allocated for the resource needs to come from."
@@ -466,7 +474,7 @@
         "name": "[parameters('skuName')]",
         "tier": "[parameters('skuTier')]"
       },
-      "zones": "[parameters('zones')]",
+      "zones": "[map(parameters('zones'), lambda('zone', string(lambdaVariables('zone'))))]",
       "properties": {
         "ddosSettings": "[parameters('ddosSettings')]",
         "dnsSettings": "[parameters('dnsSettings')]",
@@ -474,7 +482,7 @@
         "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",
         "publicIPPrefix": "[if(not(empty(parameters('publicIpPrefixResourceId'))), createObject('id', parameters('publicIpPrefixResourceId')), null())]",
         "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
-        "ipTags": []
+        "ipTags": null
       }
     },
     "publicIpAddress_lock": {
@@ -582,7 +590,7 @@
       "metadata": {
         "description": "The public IP address of the public IP address resource."
       },
-      "value": "[if(contains(reference('publicIpAddress'), 'ipAddress'), reference('publicIpAddress').ipAddress, '')]"
+      "value": "[coalesce(tryGet(reference('publicIpAddress'), 'ipAddress'), '')]"
     },
     "location": {
       "type": "string",
