@@ -125,7 +125,7 @@ param publicNetworkAccess string = 'Disabled'
 @description('Optional. True if the image from which the OS disk is created supports accelerated networking.')
 param acceleratedNetwork bool = false
 
-@description('Required. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.')
+@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used.')
 @allowed([
   0
   1

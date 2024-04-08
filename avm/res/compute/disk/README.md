@@ -472,7 +472,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set. |
+| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used. |
 | [`name`](#parameter-name) | string | The name of the disk that is being created. |
 | [`sku`](#parameter-sku) | string | The disks sku name. Can be . |
 
@@ -515,7 +515,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 
 ### Parameter: `availabilityZone`
 
-If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used.
 
 - Required: Yes
 - Type: int

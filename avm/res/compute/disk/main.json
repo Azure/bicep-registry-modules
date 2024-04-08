@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "18095665899905834654"
+      "templateHash": "13557505070746246600"
     },
     "name": "Compute Disks",
     "description": "This module deploys a Compute Disk",
@@ -336,7 +336,7 @@
         3
       ],
       "metadata": {
-        "description": "Required. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set."
+        "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used."
       }
     },
     "lock": {
