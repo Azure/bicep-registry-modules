@@ -294,9 +294,11 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
             }
           }
         ]
+        name: 'myPrivateEndpoint'
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
+        privateLinkServiceConnectionName: 'customLinkName'
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -526,9 +528,11 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
               }
             }
           ],
+          "name": "myPrivateEndpoint",
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
+          "privateLinkServiceConnectionName": "customLinkName",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
