@@ -58,7 +58,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
     name: 'sqlmimin'
-    subnetId: '<subnetId>'
+    subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     location: '<location>'
   }
@@ -87,8 +87,8 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     "name": {
       "value": "sqlmimin"
     },
-    "subnetId": {
-      "value": "<subnetId>"
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
     },
     // Non-required parameters
     "location": {
@@ -118,7 +118,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
     name: 'sqlmimax'
-    subnetId: '<subnetId>'
+    subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     collation: 'SQL_Latin1_General_CP1_CI_AS'
     databases: [
@@ -251,8 +251,8 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     "name": {
       "value": "sqlmimax"
     },
-    "subnetId": {
-      "value": "<subnetId>"
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
     },
     "collation": {
       "value": "SQL_Latin1_General_CP1_CI_AS"
@@ -430,7 +430,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
     name: 'sqlmivln'
-    subnetId: '<subnetId>'
+    subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     location: '<location>'
     managedIdentities: {
@@ -484,8 +484,8 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     "name": {
       "value": "sqlmivln"
     },
-    "subnetId": {
-      "value": "<subnetId>"
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
     },
     // Non-required parameters
     "location": {
@@ -546,7 +546,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
     name: 'sqlmiwaf'
-    subnetId: '<subnetId>'
+    subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     collation: 'SQL_Latin1_General_CP1_CI_AS'
     databases: [
@@ -662,8 +662,8 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     "name": {
       "value": "sqlmiwaf"
     },
-    "subnetId": {
-      "value": "<subnetId>"
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
     },
     "collation": {
       "value": "SQL_Latin1_General_CP1_CI_AS"
@@ -815,7 +815,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
 | [`administratorLogin`](#parameter-administratorlogin) | string | The username used to establish jumpbox VMs. |
 | [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | The password given to the admin user. |
 | [`name`](#parameter-name) | string | The name of the SQL managed instance. |
-| [`subnetId`](#parameter-subnetid) | string | The fully qualified resource ID of the subnet on which the SQL managed instance will be placed. |
+| [`subnetResourceId`](#parameter-subnetresourceid) | string | The fully qualified resource ID of the subnet on which the SQL managed instance will be placed. |
 
 **Conditional parameters**
 
@@ -881,7 +881,7 @@ The name of the SQL managed instance.
 - Required: Yes
 - Type: string
 
-### Parameter: `subnetId`
+### Parameter: `subnetResourceId`
 
 The fully qualified resource ID of the subnet on which the SQL managed instance will be placed.
 

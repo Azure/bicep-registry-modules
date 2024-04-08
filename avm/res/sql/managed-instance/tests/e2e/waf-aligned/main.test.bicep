@@ -79,7 +79,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     name: '${namePrefix}-${serviceShort}'
     administratorLogin: 'adminUserName'
     administratorLoginPassword: password
-    subnetId: nestedDependencies.outputs.subnetResourceId
+    subnetResourceId: nestedDependencies.outputs.subnetResourceId
     collation: 'SQL_Latin1_General_CP1_CI_AS'
     databases: [
       {

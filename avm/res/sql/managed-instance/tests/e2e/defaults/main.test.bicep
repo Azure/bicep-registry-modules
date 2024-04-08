@@ -59,6 +59,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     location: resourceLocation
     administratorLogin: 'adminUserName'
     administratorLoginPassword: password
-    subnetId: nestedDependencies.outputs.subnetResourceId
+    subnetResourceId: nestedDependencies.outputs.subnetResourceId
   }
 }]
