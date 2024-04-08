@@ -1119,77 +1119,70 @@ Describe 'Governance tests' {
     }
   }
 
-  # It '[<moduleFolderName>] Owning team should be specified correctly in CODEWONERS file.' -TestCases $governanceTestCases {
+  It '[<moduleFolderName>] Owning team should be specified correctly in CODEWONERS file.' -TestCases $governanceTestCases {
 
-  #   param(
-  #     [string] $relativeModulePath,
-  #     [string] $repoRootPath
-  #   )
+    param(
+      [string] $relativeModulePath,
+      [string] $repoRootPath
+    )
 
-  #   $codeownersFilePath = Join-Path $repoRootPath '.github' 'CODEOWNERS'
-  #   $codeOwnersContent = Get-Content $codeownersFilePath
+    $codeownersFilePath = Join-Path $repoRootPath '.github' 'CODEOWNERS'
+    $codeOwnersContent = Get-Content $codeownersFilePath
 
-  #   $formattedEntry = $relativeModulePath -replace '\\', '\/'
-  #   $moduleLine = $codeOwnersContent | Where-Object { $_ -match "^\s*\/$formattedEntry\/" }
+    $formattedEntry = $relativeModulePath -replace '\\', '\/'
+    $moduleLine = $codeOwnersContent | Where-Object { $_ -match "^\s*\/$formattedEntry\/" }
 
-  #   $expectedEntry = '/{0}/ @Azure/{1}-module-owners-bicep @Azure/avm-core-team-technical-bicep' -f ($relativeModulePath -replace '\\', '/'), ($relativeModulePath -replace '-' -replace '[\\|\/]', '-')
+    $expectedEntry = '/{0}/ @Azure/{1}-module-owners-bicep @Azure/avm-core-team-technical-bicep' -f ($relativeModulePath -replace '\\', '/'), ($relativeModulePath -replace '-' -replace '[\\|\/]', '-')
 
-  #   # Line should exist
-  #   $moduleLine | Should -Not -BeNullOrEmpty -Because "the module should be listed in the [CODEOWNERS](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file) file as [/$expectedEntry]."
+    # Line should exist
+    $moduleLine | Should -Not -BeNullOrEmpty -Because "the module should be listed in the [CODEOWNERS](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file) file as [/$expectedEntry]."
 
-  #   # Line should be correct
-  #   $moduleLine | Should -Be $expectedEntry -Because 'the module should match the expected format as documented [here](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file).'
-  # }
+    # Line should be correct
+    $moduleLine | Should -Be $expectedEntry -Because 'the module should match the expected format as documented [here](https://azure.github.io/Azure-Verified-Modules/specs/shared/#codeowners-file).'
+  }
 
-  # It '[<moduleFolderName>] Module identifier should be listed in issue template in the correct alphabetical position.' -TestCases $governanceTestCases {
+  It '[<moduleFolderName>] Module identifier should be listed in issue template in the correct alphabetical position.' -TestCases $governanceTestCases {
 
-  #   param(
-  #     [string] $relativeModulePath,
-  #     [string] $repoRootPath
-  #   )
+    param(
+      [string] $relativeModulePath,
+      [string] $repoRootPath
+    )
 
-  #   $issueTemplatePath = Join-Path $repoRootPath '.github' 'ISSUE_TEMPLATE' 'avm_module_issue.yml'
-  #   $issueTemplateContent = Get-Content $issueTemplatePath
+    $issueTemplatePath = Join-Path $repoRootPath '.github' 'ISSUE_TEMPLATE' 'avm_module_issue.yml'
+    $issueTemplateContent = Get-Content $issueTemplatePath
 
-  #   # Identify listed modules
-  #   $startIndex = 0
-  #   while ($issueTemplateContent[$startIndex] -notmatch '^\s*- "Other, as defined below\.\.\."' -and $startIndex -ne $issueTemplateContent.Length) {
-  #     $startIndex++
-  #   }
-  #   $startIndex++ # Go one further than dummy value line
+    # Identify listed modules
+    $startIndex = 0
+    while ($issueTemplateContent[$startIndex] -notmatch '^\s*#?\s*\-\s+\"avm\/.+\"' -and $startIndex -ne $issueTemplateContent.Length) {
+      $startIndex++
+    }
 
-  # ## start merge conflict
-  # #   $endIndex = $startIndex
-  # #   while ($issueTemplateContent[$endIndex] -match '.*- "avm\/.*' -and $endIndex -ne $issueTemplateContent.Length) {
-  # #     $endIndex++
-  # #   }
-  # #   $endIndex-- # Go one back to last module line
-  #   # # Identify listed modules
-  #   # $startIndex = 0
-  #   # while ($issueTemplateContent[$startIndex] -notmatch '^\s*#?\s*\-\s+\"avm\/.+\"' -and $startIndex -ne $issueTemplateContent.Length) {
-  #   #   $startIndex++
-  #   # }
-  # ## end merge conflict
-  #   $listedModules = $issueTemplateContent[$startIndex..$endIndex] | ForEach-Object { $_ -replace '.*- "(avm\/.*)".*', '$1' }
+    $endIndex = $startIndex
+    while ($issueTemplateContent[$endIndex] -match '.*- "avm\/.*' -and $endIndex -ne $issueTemplateContent.Length) {
+      $endIndex++
+    }
+    $endIndex-- # Go one back to last module line
 
-  #   # Should exist
-  #   $listedModules | Should -Contain ($relativeModulePath -replace '\\', '/') -Because 'the module should be listed in the issue template in the correct alphabetical position ([ref](https://azure.github.io/Azure-Verified-Modules/specs/bicep/#id-bcpnfr15---category-contributionsupport---avm-module-issue-template-file)).'
+    $listedModules = $issueTemplateContent[$startIndex..$endIndex] | ForEach-Object { $_ -replace '.*- "(avm\/.*)".*', '$1' }
 
-  #   # Should not be commented
-  #   $entry = $issueTemplateContent | Where-Object { $_ -match ('.*- "{0}".*' -f $relativeModulePath -replace '\\', '\/') }
-  #   $entry.Trim() | Should -Not -Match '^\s*#.*' -Because 'the module should not be commented out in the issue template.'
+    # Should exist
+    $listedModules | Should -Contain ($relativeModulePath -replace '\\', '/') -Because 'the module should be listed in the issue template in the correct alphabetical position ([ref](https://azure.github.io/Azure-Verified-Modules/specs/bicep/#id-bcpnfr15---category-contributionsupport---avm-module-issue-template-file)).'
 
-  #   # Should be at correct location
-  #   $incorrectLines = @()
-  #   foreach ($finding in (Compare-Object $listedModules ($listedModules | Sort-Object) -SyncWindow 0)) {
-  #     if ($finding.SideIndicator -eq '<=') {
-  #       $incorrectLines += $finding.InputObject
-  #     }
-  #   }
-  #   $incorrectLines = $incorrectLines | Sort-Object -Unique
+    # Should not be commented
+    $entry = $issueTemplateContent | Where-Object { $_ -match ('.*- "{0}".*' -f $relativeModulePath -replace '\\', '\/') }
+    $entry.Trim() | Should -Not -Match '^\s*#.*' -Because 'the module should not be commented out in the issue template.'
 
-  #   $incorrectLines.Count | Should -Be 0 -Because ('the number of modules that are not in the correct alphabetical order in the issue template should be zero ([ref](https://azure.github.io/Azure-Verified-Modules/specs/bicep/#id-bcpnfr15---category-contributionsupport---avm-module-issue-template-file)).</br>However, the following incorrectly located lines were found:</br><pre>{0}</pre>' -f ($incorrectLines -join '</br>'))
-  # }
+    # Should be at correct location
+    $incorrectLines = @()
+    foreach ($finding in (Compare-Object $listedModules ($listedModules | Sort-Object) -SyncWindow 0)) {
+      if ($finding.SideIndicator -eq '<=') {
+        $incorrectLines += $finding.InputObject
+      }
+    }
+    $incorrectLines = $incorrectLines | Sort-Object -Unique
+
+    $incorrectLines.Count | Should -Be 0 -Because ('the number of modules that are not in the correct alphabetical order in the issue template should be zero ([ref](https://azure.github.io/Azure-Verified-Modules/specs/bicep/#id-bcpnfr15---category-contributionsupport---avm-module-issue-template-file)).</br>However, the following incorrectly located lines were found:</br><pre>{0}</pre>' -f ($incorrectLines -join '</br>'))
+  }
 }
 
 Describe 'Test file tests' -Tag 'TestTemplate' {
