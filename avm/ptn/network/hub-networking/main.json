@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "15424340638554697033"
+      "templateHash": "14929151869273546879"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.",
@@ -620,14 +620,19 @@
   "variables": {
     "copy": [
       {
+        "name": "hubVirtualNetworkNames",
+        "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]",
+        "input": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex('hubVirtualNetworkNames')].value.name]"
+      },
+      {
         "name": "hubVirtualNetworkPeerings",
         "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]",
         "input": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex('hubVirtualNetworkPeerings')].value.peeringSettings, createArray())]"
       },
       {
-        "name": "hubVirtualNetworkNames",
+        "name": "hubVirtualNetworkRoutes",
         "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]",
-        "input": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex('hubVirtualNetworkNames')].value.name]"
+        "input": "[coalesce(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex('hubVirtualNetworkRoutes')].value.routes, createArray())]"
       }
     ]
   },
@@ -691,10 +696,51 @@
         }
       },
       "dependsOn": [
+        "hubVirtualNetwork",
         "[format('hubVirtualNetworkPeer_local[{0}]', copyIndex())]",
         "[format('hubVirtualNetworkPeer_local[{0}]', copyIndex())]",
         "[format('hubVirtualNetworkPeer_remote[{0}]', copyIndex())]",
         "[format('hubVirtualNetworkPeer_remote[{0}]', copyIndex())]"
+      ]
+    },
+    "hubRoute": {
+      "copy": {
+        "name": "hubRoute",
+        "count": "[length(coalesce(flatten(variables('hubVirtualNetworkPeerings')), createArray()))]"
+      },
+      "type": "Microsoft.Network/routeTables/routes",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/{1}-to-{2}-route', items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.name, items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.name, flatten(variables('hubVirtualNetworkPeerings'))[copyIndex()].remoteVirtualNetworkName)]",
+      "properties": {
+        "addressPrefix": "[reference(format('hubVirtualNetworkPeer_remote[{0}]', copyIndex())).addressSpace.addressPrefixes[0]]",
+        "nextHopType": "VirtualAppliance",
+        "nextHopIpAddress": "[reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.privateIp.value]"
+      },
+      "dependsOn": [
+        "[format('hubAzureFirewall[{0}]', copyIndex())]",
+        "[format('hubVirtualNetworkPeer_local[{0}]', copyIndex())]",
+        "[format('hubVirtualNetworkPeer_local[{0}]', copyIndex())]",
+        "[format('hubVirtualNetworkPeer_remote[{0}]', copyIndex())]",
+        "[format('hubVirtualNetworkPeer_remote[{0}]', copyIndex())]",
+        "hubVirtualNetworkPeering"
+      ]
+    },
+    "hubAzureFirewallSubnetAssociation": {
+      "copy": {
+        "name": "hubAzureFirewallSubnetAssociation",
+        "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]"
+      },
+      "condition": "[and(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableAzureFirewall, items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enablePeering)]",
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "apiVersion": "2023-09-01",
+      "name": "[format('{0}/AzureFirewallSubnet', items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.name)]",
+      "properties": {
+        "routeTable": {
+          "id": "[reference(format('hubRouteTable[{0}]', copyIndex())).outputs.resourceId.value]"
+        }
+      },
+      "dependsOn": [
+        "hubRouteTable"
       ]
     },
     "hubVirtualNetwork": {
@@ -2251,7 +2297,10 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "hubVirtualNetwork"
+      ]
     },
     "hubBastion": {
       "copy": {
@@ -3380,7 +3429,7 @@
         }
       },
       "dependsOn": [
-        "[format('hubVirtualNetwork[{0}]', copyIndex())]"
+        "hubVirtualNetwork"
       ]
     },
     "hubAzureFirewall": {
@@ -5251,7 +5300,7 @@
         }
       },
       "dependsOn": [
-        "[format('hubVirtualNetwork[{0}]', copyIndex())]"
+        "hubVirtualNetwork"
       ]
     }
   },

@@ -56,193 +56,193 @@ var addressPrefix2 = '10.1.0.0/16'
 
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
-for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    // You parameters go here
-    location: resourceLocation
-    hubVirtualNetworks: {
-      hub1: {
-        name: 'hub1'
-        addressPrefixes: array(addressPrefix)
-        azureFirewallSettings: {
-          hubIpAddresses: {}
-          virtualHub: ''
-          additionalPublicIpConfigurations: []
-          applicationRuleCollections: []
-          azureSkuTier: 'Standard'
-          diagnosticSettings: []
-          enableTelemetry: true
-          firewallPolicyId: ''
-          location: 'westus'
-          lock: {}
-          managementIPAddressObject: {}
-          managementIPResourceID: ''
-          natRuleCollections: []
-          networkRuleCollections: []
-          publicIPAddressObject: {
-            name: 'hub1PublicIp'
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      // You parameters go here
+      location: resourceLocation
+      hubVirtualNetworks: {
+        hub1: {
+          name: 'hub1'
+          addressPrefixes: array(addressPrefix)
+          azureFirewallSettings: {
+            hubIpAddresses: {}
+            virtualHub: ''
+            additionalPublicIpConfigurations: []
+            applicationRuleCollections: []
+            azureSkuTier: 'Standard'
+            diagnosticSettings: []
+            enableTelemetry: true
+            firewallPolicyId: ''
+            location: 'westus'
+            lock: {}
+            managementIPAddressObject: {}
+            managementIPResourceID: ''
+            natRuleCollections: []
+            networkRuleCollections: []
+            publicIPAddressObject: {
+              name: 'hub1PublicIp'
+            }
+            publicIPResourceID: ''
+            roleAssignments: []
+            tags: {}
+            threatIntelMode: 'Alert'
+            zones: []
           }
-          publicIPResourceID: ''
-          roleAssignments: []
-          tags: {}
-          threatIntelMode: 'Alert'
-          zones: []
-        }
-        bastionHost: {
-          disableCopyPaste: true
-          enableFileCopy: false
-          enableIpConnect: false
-          enableShareableLink: false
-          scaleUnits: 2
-          skuName: 'Standard'
-        }
-        ddosProtectionPlanResourceId: ''
-        dnsServers: [ '10.0.1.4', '10.0.1.5' ]
-        diagnosticSettings: [
-          {
-            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-            metricCategories: [
-              {
-                category: 'AllMetrics'
-              }
-            ]
-            name: 'customSetting'
-            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          bastionHost: {
+            disableCopyPaste: true
+            enableFileCopy: false
+            enableIpConnect: false
+            enableShareableLink: false
+            scaleUnits: 2
+            skuName: 'Standard'
           }
-        ]
-        enableAzureFirewall: true
-        enableBastion: true
-        enablePeering: false
-        enableTelemetry: true
-        flowTimeoutInMinutes: 30
-        location: 'westus'
-        lock: {
-          kind: 'CanNotDelete'
-          name: 'hub1Lock'
-        }
-        peeringSettings: [
-          {
-            allowForwardedTraffic: true
-            allowGatewayTransit: false
-            allowVirtualNetworkAccess: true
-            useRemoteGateways: false
-            remoteVirtualNetworkName: 'hub2'
-          }
-        ]
-        roleAssignments: []
-        routes: []
-        subnets: [
-          {
-            name: 'GatewaySubnet'
-            addressPrefix: cidrSubnet(addressPrefix, 26, 0)
-          }
-          {
-            name: 'AzureFirewallSubnet'
-            addressPrefix: cidrSubnet(addressPrefix, 26, 1)
-          }
-          {
-            name: 'AzureBastionSubnet'
-            addressPrefix: cidrSubnet(addressPrefix, 26, 2)
-          }
-        ]
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
-        vnetEncryption: false
-        vnetEncryptionEnforcement: 'AllowUnencrypted'
-      }
-      hub2: {
-        name: 'hub2'
-        addressPrefixes: array(addressPrefix2)
-        azureFirewallSettings: {
-          hubIpAddresses: {}
-          virtualHub: ''
-          additionalPublicIpConfigurations: []
-          applicationRuleCollections: []
-          azureSkuTier: 'Standard'
-          diagnosticSettings: []
-          enableTelemetry: true
-          firewallPolicyId: ''
-          location: 'westus2'
-          lock: {}
-          managementIPAddressObject: {}
-          managementIPResourceID: ''
-          natRuleCollections: []
-          networkRuleCollections: []
-          publicIPAddressObject: {
-            name: 'hub2PublicIp'
-          }
-          publicIPResourceID: ''
-          roleAssignments: []
-          tags: {}
-          threatIntelMode: 'Alert'
-          zones: [
-            '1'
-            '2'
-            '3'
+          ddosProtectionPlanResourceId: ''
+          dnsServers: ['10.0.1.4', '10.0.1.5']
+          diagnosticSettings: [
+            {
+              eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+              eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+              metricCategories: [
+                {
+                  category: 'AllMetrics'
+                }
+              ]
+              name: 'customSetting'
+              storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+              workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            }
           ]
-        }
-        bastionHost: {
-          disableCopyPaste: true
-          enableFileCopy: false
-          enableIpConnect: false
-          enableShareableLink: false
-          scaleUnits: 2
-          skuName: 'Standard'
-        }
-        ddosProtectionPlanResourceId: ''
-        dnsServers: []
-        diagnosticSettings: []
-        enableAzureFirewall: true
-        enableBastion: true
-        enablePeering: false
-        enableTelemetry: false
-        flowTimeoutInMinutes: 10
-        location: 'westus2'
-        lock: {
-          kind: 'CanNotDelete'
-          name: 'hub2Lock'
-        }
-        peeringSettings: [
-          {
-            allowForwardedTraffic: true
-            allowGatewayTransit: false
-            allowVirtualNetworkAccess: true
-            useRemoteGateways: false
-            remoteVirtualNetworkName: 'hub1'
+          enableAzureFirewall: true
+          enableBastion: true
+          enablePeering: false
+          enableTelemetry: true
+          flowTimeoutInMinutes: 30
+          location: 'westus'
+          lock: {
+            kind: 'CanNotDelete'
+            name: 'hub1Lock'
           }
-        ]
-        roleAssignments: []
-        routes: []
-        subnets: [
-          {
-            name: 'GatewaySubnet'
-            addressPrefix: cidrSubnet(addressPrefix2, 26, 0)
+          peeringSettings: [
+            {
+              allowForwardedTraffic: true
+              allowGatewayTransit: false
+              allowVirtualNetworkAccess: true
+              useRemoteGateways: false
+              remoteVirtualNetworkName: 'hub2'
+            }
+          ]
+          roleAssignments: []
+          routes: []
+          subnets: [
+            {
+              name: 'GatewaySubnet'
+              addressPrefix: cidrSubnet(addressPrefix, 26, 0)
+            }
+            {
+              name: 'AzureFirewallSubnet'
+              addressPrefix: cidrSubnet(addressPrefix, 26, 1)
+            }
+            {
+              name: 'AzureBastionSubnet'
+              addressPrefix: cidrSubnet(addressPrefix, 26, 2)
+            }
+          ]
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
           }
-          {
-            name: 'AzureFirewallSubnet'
-            addressPrefix: cidrSubnet(addressPrefix2, 26, 1)
-          }
-          {
-            name: 'AzureBastionSubnet'
-            addressPrefix: cidrSubnet(addressPrefix2, 26, 2)
-          }
-        ]
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
+          vnetEncryption: false
+          vnetEncryptionEnforcement: 'AllowUnencrypted'
         }
-        vnetEncryption: false
-        vnetEncryptionEnforcement: 'AllowUnencrypted'
+        hub2: {
+          name: 'hub2'
+          addressPrefixes: array(addressPrefix2)
+          azureFirewallSettings: {
+            hubIpAddresses: {}
+            virtualHub: ''
+            additionalPublicIpConfigurations: []
+            applicationRuleCollections: []
+            azureSkuTier: 'Standard'
+            diagnosticSettings: []
+            enableTelemetry: true
+            firewallPolicyId: ''
+            location: 'westus2'
+            lock: {}
+            managementIPAddressObject: {}
+            managementIPResourceID: ''
+            natRuleCollections: []
+            networkRuleCollections: []
+            publicIPAddressObject: {
+              name: 'hub2PublicIp'
+            }
+            publicIPResourceID: ''
+            roleAssignments: []
+            tags: {}
+            threatIntelMode: 'Alert'
+            zones: [
+              '1'
+              '2'
+              '3'
+            ]
+          }
+          bastionHost: {
+            disableCopyPaste: true
+            enableFileCopy: false
+            enableIpConnect: false
+            enableShareableLink: false
+            scaleUnits: 2
+            skuName: 'Standard'
+          }
+          ddosProtectionPlanResourceId: ''
+          dnsServers: []
+          diagnosticSettings: []
+          enableAzureFirewall: true
+          enableBastion: true
+          enablePeering: false
+          enableTelemetry: false
+          flowTimeoutInMinutes: 10
+          location: 'westus2'
+          lock: {
+            kind: 'CanNotDelete'
+            name: 'hub2Lock'
+          }
+          peeringSettings: [
+            {
+              allowForwardedTraffic: true
+              allowGatewayTransit: false
+              allowVirtualNetworkAccess: true
+              useRemoteGateways: false
+              remoteVirtualNetworkName: 'hub1'
+            }
+          ]
+          roleAssignments: []
+          routes: []
+          subnets: [
+            {
+              name: 'GatewaySubnet'
+              addressPrefix: cidrSubnet(addressPrefix2, 26, 0)
+            }
+            {
+              name: 'AzureFirewallSubnet'
+              addressPrefix: cidrSubnet(addressPrefix2, 26, 1)
+            }
+            {
+              name: 'AzureBastionSubnet'
+              addressPrefix: cidrSubnet(addressPrefix2, 26, 2)
+            }
+          ]
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
+          vnetEncryption: false
+          vnetEncryptionEnforcement: 'AllowUnencrypted'
+        }
       }
     }
   }
-}
 ]
