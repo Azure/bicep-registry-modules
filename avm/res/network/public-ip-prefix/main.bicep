@@ -26,6 +26,18 @@ param tags object?
 @description('Optional. The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range.')
 param customIPPrefix object = {}
 
+@description('Optional. A list of availability zones denoting the IP allocated for the resource needs to come from.')
+@allowed([
+  1
+  2
+  3
+])
+param zones int[] = [
+  1
+  2
+  3
+]
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -73,6 +85,7 @@ resource publicIpPrefix 'Microsoft.Network/publicIPPrefixes@2023-09-01' = {
   sku: {
     name: 'Standard'
   }
+  zones: map(zones, zone => string(zone))
   properties: {
     customIPPrefix: !empty(customIPPrefix) ? customIPPrefix : null
     publicIPAddressVersion: 'IPv4'
