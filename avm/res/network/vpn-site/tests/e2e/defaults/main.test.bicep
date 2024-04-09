@@ -45,19 +45,21 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}-${serviceShort}'
-    virtualWanId: nestedDependencies.outputs.virtualWWANResourceId
-    addressPrefixes: [
-      '10.0.0.0/16'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}-${serviceShort}'
+      virtualWanId: nestedDependencies.outputs.virtualWWANResourceId
+      addressPrefixes: [
+        '10.0.0.0/16'
+      ]
+      ipAddress: '1.2.3.4'
+    }
+    dependsOn: [
+      nestedDependencies
     ]
-    ipAddress: '1.2.3.4'
   }
-  dependsOn: [
-    nestedDependencies
-  ]
-}]
+]

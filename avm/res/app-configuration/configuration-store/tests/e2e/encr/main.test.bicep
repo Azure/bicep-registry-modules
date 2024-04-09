@@ -50,40 +50,42 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    createMode: 'Default'
-    disableLocalAuth: false
-    enablePurgeProtection: false
-    keyValues: [
-      {
-        contentType: 'contentType'
-        name: 'keyName'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      createMode: 'Default'
+      disableLocalAuth: false
+      enablePurgeProtection: false
+      keyValues: [
+        {
+          contentType: 'contentType'
+          name: 'keyName'
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'Reader'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
 
-            principalType: 'ServicePrincipal'
-          }
-        ]
-        value: 'valueName'
-      }
-    ]
-    softDeleteRetentionInDays: 1
-    managedIdentities: {
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
+              principalType: 'ServicePrincipal'
+            }
+          ]
+          value: 'valueName'
+        }
       ]
-    }
-    customerManagedKey: {
-      keyName: nestedDependencies.outputs.keyName
-      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+      softDeleteRetentionInDays: 1
+      managedIdentities: {
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      customerManagedKey: {
+        keyName: nestedDependencies.outputs.keyName
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+        userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+      }
     }
   }
-}]
+]

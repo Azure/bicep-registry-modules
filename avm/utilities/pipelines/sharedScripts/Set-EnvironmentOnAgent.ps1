@@ -170,7 +170,7 @@ function Set-EnvironmentOnAgent {
     Write-Verbose 'Preinstalled Bicep CLI version:' -Verbose
     bicep --version
 
-    Write-Verbose ("Install latest Bicep CLI") -Verbose
+    Write-Verbose ('Install latest Bicep CLI') -Verbose
     # Fetch the latest Bicep CLI binary
     curl -Lo bicep 'https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64'
     # Mark it as executable

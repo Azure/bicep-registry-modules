@@ -53,22 +53,36 @@ resource endpoint 'Microsoft.Cdn/profiles/endpoints@2021-06-01' existing = {
 resource origin 'Microsoft.Cdn/profiles/endpoints/origins@2021-06-01' = {
   parent: endpoint
   name: name
-  properties: union({
+  properties: union(
+    {
       hostName: hostName
       httpPort: httpPort
       enabled: enabled
       httpsPort: httpsPort
-    }, ((priority > 0 || weight > 0) ? {
-      priority: priority
-      weight: weight
-    } : {}), (!empty(privateLinkAlias) && !empty(privateLinkLocation) ? {
-      privateLinkAlias: privateLinkAlias
-      privateLinkLocation: privateLinkLocation
-    } : {}), (!empty(privateLinkResourceId) ? {
-      privateLinkResourceId: privateLinkResourceId
-    } : {}), (!empty(originHostHeader) ? {
-      originHostHeader: originHostHeader
-    } : {}))
+    },
+    ((priority > 0 || weight > 0)
+      ? {
+          priority: priority
+          weight: weight
+        }
+      : {}),
+    (!empty(privateLinkAlias) && !empty(privateLinkLocation)
+      ? {
+          privateLinkAlias: privateLinkAlias
+          privateLinkLocation: privateLinkLocation
+        }
+      : {}),
+    (!empty(privateLinkResourceId)
+      ? {
+          privateLinkResourceId: privateLinkResourceId
+        }
+      : {}),
+    (!empty(originHostHeader)
+      ? {
+          originHostHeader: originHostHeader
+        }
+      : {})
+  )
 }
 
 @description('The name of the endpoint.')

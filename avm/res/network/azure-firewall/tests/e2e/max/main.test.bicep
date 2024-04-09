@@ -61,139 +61,144 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}${serviceShort}001'
-    virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
-    applicationRuleCollections: [
-      {
-        name: 'allow-app-rules'
-        properties: {
-          action: {
-            type: 'allow'
-          }
-          priority: 100
-          rules: [
-            {
-              fqdnTags: [
-                'AppServiceEnvironment'
-                'WindowsUpdate'
-              ]
-              name: 'allow-ase-tags'
-              protocols: [
-                {
-                  port: '80'
-                  protocolType: 'HTTP'
-                }
-                {
-                  port: '443'
-                  protocolType: 'HTTPS'
-                }
-              ]
-              sourceAddresses: [
-                '*'
-              ]
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}${serviceShort}001'
+      virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
+      applicationRuleCollections: [
+        {
+          name: 'allow-app-rules'
+          properties: {
+            action: {
+              type: 'allow'
             }
+            priority: 100
+            rules: [
+              {
+                fqdnTags: [
+                  'AppServiceEnvironment'
+                  'WindowsUpdate'
+                ]
+                name: 'allow-ase-tags'
+                protocols: [
+                  {
+                    port: '80'
+                    protocolType: 'HTTP'
+                  }
+                  {
+                    port: '443'
+                    protocolType: 'HTTPS'
+                  }
+                ]
+                sourceAddresses: [
+                  '*'
+                ]
+              }
+              {
+                name: 'allow-ase-management'
+                protocols: [
+                  {
+                    port: '80'
+                    protocolType: 'HTTP'
+                  }
+                  {
+                    port: '443'
+                    protocolType: 'HTTPS'
+                  }
+                ]
+                sourceAddresses: [
+                  '*'
+                ]
+                targetFqdns: [
+                  'bing.com'
+                ]
+              }
+            ]
+          }
+        }
+      ]
+      publicIPResourceID: nestedDependencies.outputs.publicIPResourceId
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
             {
-              name: 'allow-ase-management'
-              protocols: [
-                {
-                  port: '80'
-                  protocolType: 'HTTP'
-                }
-                {
-                  port: '443'
-                  protocolType: 'HTTPS'
-                }
-              ]
-              sourceAddresses: [
-                '*'
-              ]
-              targetFqdns: [
-                'bing.com'
-              ]
+              category: 'AllMetrics'
             }
           ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
+      ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-    ]
-    publicIPResourceID: nestedDependencies.outputs.publicIPResourceId
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    networkRuleCollections: [
-      {
-        name: 'allow-network-rules'
-        properties: {
-          action: {
-            type: 'allow'
-          }
-          priority: 100
-          rules: [
-            {
-              destinationAddresses: [
-                '*'
-              ]
-              destinationPorts: [
-                '12000'
-                '123'
-              ]
-              name: 'allow-ntp'
-              protocols: [
-                'Any'
-              ]
-              sourceAddresses: [
-                '*'
-              ]
+      networkRuleCollections: [
+        {
+          name: 'allow-network-rules'
+          properties: {
+            action: {
+              type: 'allow'
             }
-          ]
+            priority: 100
+            rules: [
+              {
+                destinationAddresses: [
+                  '*'
+                ]
+                destinationPorts: [
+                  '12000'
+                  '123'
+                ]
+                name: 'allow-ntp'
+                protocols: [
+                  'Any'
+                ]
+                sourceAddresses: [
+                  '*'
+                ]
+              }
+            ]
+          }
         }
+      ]
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      zones: [
+        '1'
+        '2'
+        '3'
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-    ]
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    zones: [
-      '1'
-      '2'
-      '3'
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
-}]
+]

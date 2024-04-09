@@ -148,16 +148,17 @@ var zoneRedundantSkus = [
   'ErGw2AZ'
   'ErGw3AZ'
 ]
-var gatewayPipSku = contains(zoneRedundantSkus, skuName) ? 'Standard' : 'Basic'
 var gatewayPipAllocationMethod = contains(zoneRedundantSkus, skuName) ? 'Static' : 'Dynamic'
 
 var isActiveActiveValid = gatewayType != 'ExpressRoute' ? activeActive : false
-var virtualGatewayPipNameVar = isActiveActiveValid ? [
-  gatewayPipName
-  activeGatewayPipName
-] : [
-  gatewayPipName
-]
+var virtualGatewayPipNameVar = isActiveActiveValid
+  ? [
+      gatewayPipName
+      activeGatewayPipName
+    ]
+  : [
+      gatewayPipName
+    ]
 
 var vpnTypeVar = gatewayType != 'ExpressRoute' ? vpnType : 'PolicyBased'
 
@@ -167,132 +168,159 @@ var bgpSettings = {
 }
 
 // Potential configurations (active-active vs active-passive)
-var ipConfiguration = isActiveActiveValid ? [
-  {
-    properties: {
-      privateIPAllocationMethod: 'Dynamic'
-      subnet: {
-        id: '${vNetResourceId}/subnets/GatewaySubnet'
+var ipConfiguration = isActiveActiveValid
+  ? [
+      {
+        properties: {
+          privateIPAllocationMethod: 'Dynamic'
+          subnet: {
+            id: '${vNetResourceId}/subnets/GatewaySubnet'
+          }
+          publicIPAddress: {
+            id: az.resourceId('Microsoft.Network/publicIPAddresses', gatewayPipName)
+          }
+        }
+        name: 'vNetGatewayConfig1'
       }
-      publicIPAddress: {
-        id: az.resourceId('Microsoft.Network/publicIPAddresses', gatewayPipName)
+      {
+        properties: {
+          privateIPAllocationMethod: 'Dynamic'
+          subnet: {
+            id: '${vNetResourceId}/subnets/GatewaySubnet'
+          }
+          publicIPAddress: {
+            id: isActiveActiveValid
+              ? az.resourceId('Microsoft.Network/publicIPAddresses', activeGatewayPipName)
+              : az.resourceId('Microsoft.Network/publicIPAddresses', gatewayPipName)
+          }
+        }
+        name: 'vNetGatewayConfig2'
       }
-    }
-    name: 'vNetGatewayConfig1'
-  }
-  {
-    properties: {
-      privateIPAllocationMethod: 'Dynamic'
-      subnet: {
-        id: '${vNetResourceId}/subnets/GatewaySubnet'
+    ]
+  : [
+      {
+        properties: {
+          privateIPAllocationMethod: 'Dynamic'
+          subnet: {
+            id: '${vNetResourceId}/subnets/GatewaySubnet'
+          }
+          publicIPAddress: {
+            id: az.resourceId('Microsoft.Network/publicIPAddresses', gatewayPipName)
+          }
+        }
+        name: 'vNetGatewayConfig1'
       }
-      publicIPAddress: {
-        id: isActiveActiveValid ? az.resourceId('Microsoft.Network/publicIPAddresses', activeGatewayPipName) : az.resourceId('Microsoft.Network/publicIPAddresses', gatewayPipName)
-      }
-    }
-    name: 'vNetGatewayConfig2'
-  }
-] : [
-  {
-    properties: {
-      privateIPAllocationMethod: 'Dynamic'
-      subnet: {
-        id: '${vNetResourceId}/subnets/GatewaySubnet'
-      }
-      publicIPAddress: {
-        id: az.resourceId('Microsoft.Network/publicIPAddresses', gatewayPipName)
-      }
-    }
-    name: 'vNetGatewayConfig1'
-  }
-]
+    ]
 
-var vpnClientConfiguration = !empty(clientRootCertData) ? {
-  vpnClientAddressPool: {
-    addressPrefixes: [
-      vpnClientAddressPoolPrefix
-    ]
-  }
-  vpnClientRootCertificates: [
-    {
-      name: 'RootCert1'
-      properties: {
-        PublicCertData: clientRootCertData
+var vpnClientConfiguration = !empty(clientRootCertData)
+  ? {
+      vpnClientAddressPool: {
+        addressPrefixes: [
+          vpnClientAddressPoolPrefix
+        ]
       }
+      vpnClientRootCertificates: [
+        {
+          name: 'RootCert1'
+          properties: {
+            publicCertData: clientRootCertData
+          }
+        }
+      ]
+      vpnClientRevokedCertificates: !empty(clientRevokedCertThumbprint)
+        ? [
+            {
+              name: 'RevokedCert1'
+              properties: {
+                thumbprint: clientRevokedCertThumbprint
+              }
+            }
+          ]
+        : null
     }
-  ]
-  vpnClientRevokedCertificates: !empty(clientRevokedCertThumbprint) ? [
-    {
-      name: 'RevokedCert1'
-      properties: {
-        Thumbprint: clientRevokedCertThumbprint
-      }
-    }
-  ] : null
-} : !empty(vpnClientAadConfiguration) ? {
-  vpnClientAddressPool: {
-    addressPrefixes: [
-      vpnClientAddressPoolPrefix
-    ]
-  }
-  aadTenant: vpnClientAadConfiguration.aadTenant
-  aadAudience: vpnClientAadConfiguration.aadAudience
-  aadIssuer: vpnClientAadConfiguration.aadIssuer
-  vpnAuthenticationTypes: vpnClientAadConfiguration.vpnAuthenticationTypes
-  vpnClientProtocols: vpnClientAadConfiguration.vpnClientProtocols
-} : null
+  : !empty(vpnClientAadConfiguration)
+      ? {
+          vpnClientAddressPool: {
+            addressPrefixes: [
+              vpnClientAddressPoolPrefix
+            ]
+          }
+          aadTenant: vpnClientAadConfiguration.aadTenant
+          aadAudience: vpnClientAadConfiguration.aadAudience
+          aadIssuer: vpnClientAadConfiguration.aadIssuer
+          vpnAuthenticationTypes: vpnClientAadConfiguration.vpnAuthenticationTypes
+          vpnClientProtocols: vpnClientAadConfiguration.vpnClientProtocols
+        }
+      : null
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  'Network Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')
+  'Network Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '4d97b98b-1d4f-4787-a291-c67834d212e7'
+  )
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
-  'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
 }
 
 // ================//
 // Deployments     //
 // ================//
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: take('46d3xbcp.res.network-virtualnetworkgateway.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}', 64)
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+  if (enableTelemetry) {
+    name: take(
+      '46d3xbcp.res.network-virtualnetworkgateway.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
+      64
+    )
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+        outputs: {
+          telemetry: {
+            type: 'String'
+            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+          }
         }
       }
     }
   }
-}
 
 // Public IPs
 @batchSize(1)
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.2.0' = [for (virtualGatewayPublicIpName, index) in virtualGatewayPipNameVar: {
-  name: virtualGatewayPublicIpName
-  params: {
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.2.0' = [
+  for (virtualGatewayPublicIpName, index) in virtualGatewayPipNameVar: {
     name: virtualGatewayPublicIpName
-    diagnosticSettings: publicIpDiagnosticSettings
-    location: location
-    lock: lock
-    publicIPAllocationMethod: gatewayPipAllocationMethod
-    publicIpPrefixResourceId: !empty(publicIPPrefixResourceId) ? publicIPPrefixResourceId : ''
-    tags: tags
-    skuName: gatewayPipSku
-    zones: contains(zoneRedundantSkus, skuName) ? publicIpZones : []
-    dnsSettings: {
-      domainNameLabel: length(virtualGatewayPipNameVar) == length(domainNameLabel) ? domainNameLabel[index] : virtualGatewayPublicIpName
-      domainNameLabelScope: ''
+    params: {
+      name: virtualGatewayPublicIpName
+      diagnosticSettings: publicIpDiagnosticSettings
+      location: location
+      lock: lock
+      publicIPAllocationMethod: gatewayPipAllocationMethod
+      publicIpPrefixResourceId: !empty(publicIPPrefixResourceId) ? publicIPPrefixResourceId : ''
+      tags: tags
+      skuName: 'Standard'
+      zones: contains(zoneRedundantSkus, skuName) ? publicIpZones : []
+      dnsSettings: {
+        domainNameLabel: length(virtualGatewayPipNameVar) == length(domainNameLabel)
+          ? domainNameLabel[index]
+          : virtualGatewayPublicIpName
+        domainNameLabelScope: ''
+      }
     }
   }
-}]
+]
 
 // VNET Gateway
 // ============
@@ -312,9 +340,11 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2023-04
     enablePrivateIpAddress: enablePrivateIpAddress
     enableBgpRouteTranslationForNat: enableBgpRouteTranslationForNat
     gatewayType: gatewayType
-    gatewayDefaultSite: !empty(gatewayDefaultSiteLocalNetworkGatewayId) ? {
-      id: gatewayDefaultSiteLocalNetworkGatewayId
-    } : null
+    gatewayDefaultSite: !empty(gatewayDefaultSiteLocalNetworkGatewayId)
+      ? {
+          id: gatewayDefaultSiteLocalNetworkGatewayId
+        }
+      : null
     sku: {
       name: skuName
       tier: skuName
@@ -328,64 +358,81 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2023-04
   ]
 }
 
-module virtualNetworkGateway_natRules 'nat-rule/main.bicep' = [for (natRule, index) in natRules: {
-  name: '${deployment().name}-NATRule-${index}'
-  params: {
-    name: natRule.name
-    virtualNetworkGatewayName: virtualNetworkGateway.name
-    externalMappings: contains(natRule, 'externalMappings') ? natRule.externalMappings : []
-    internalMappings: contains(natRule, 'internalMappings') ? natRule.internalMappings : []
-    ipConfigurationId: contains(natRule, 'ipConfigurationId') ? natRule.ipConfigurationId : ''
-    mode: contains(natRule, 'mode') ? natRule.mode : ''
-    type: contains(natRule, 'type') ? natRule.type : ''
+module virtualNetworkGateway_natRules 'nat-rule/main.bicep' = [
+  for (natRule, index) in natRules: {
+    name: '${deployment().name}-NATRule-${index}'
+    params: {
+      name: natRule.name
+      virtualNetworkGatewayName: virtualNetworkGateway.name
+      externalMappings: contains(natRule, 'externalMappings') ? natRule.externalMappings : []
+      internalMappings: contains(natRule, 'internalMappings') ? natRule.internalMappings : []
+      ipConfigurationId: contains(natRule, 'ipConfigurationId') ? natRule.ipConfigurationId : ''
+      mode: contains(natRule, 'mode') ? natRule.mode : ''
+      type: contains(natRule, 'type') ? natRule.type : ''
+    }
   }
-}]
+]
 
-resource virtualNetworkGateway_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+resource virtualNetworkGateway_lock 'Microsoft.Authorization/locks@2020-05-01' =
+  if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${name}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
+    }
+    scope: virtualNetworkGateway
   }
-  scope: virtualNetworkGateway
-}
 
-resource virtualNetworkGateway_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-  properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId
-    workspaceId: diagnosticSetting.?workspaceResourceId
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-    eventHubName: diagnosticSetting.?eventHubName
-    metrics: [for group in (diagnosticSetting.?metricCategories ?? [ { category: 'AllMetrics' } ]): {
-      category: group.category
-      enabled: group.?enabled ?? true
-      timeGrain: null
-    }]
-    logs: [for group in (diagnosticSetting.?logCategoriesAndGroups ?? [ { categoryGroup: 'allLogs' } ]): {
-      categoryGroup: group.?categoryGroup
-      category: group.?category
-      enabled: group.?enabled ?? true
-    }]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+resource virtualNetworkGateway_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: virtualNetworkGateway
   }
-  scope: virtualNetworkGateway
-}]
+]
 
-resource virtualNetworkGateway_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(virtualNetworkGateway.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-  properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-    principalId: roleAssignment.principalId
-    description: roleAssignment.?description
-    principalType: roleAssignment.?principalType
-    condition: roleAssignment.?condition
-    conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+resource virtualNetworkGateway_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (roleAssignments ?? []): {
+    name: guid(virtualNetworkGateway.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+    properties: {
+      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+            ? roleAssignment.roleDefinitionIdOrName
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: virtualNetworkGateway
   }
-  scope: virtualNetworkGateway
-}]
+]
 
 // ================//
 // Outputs         //

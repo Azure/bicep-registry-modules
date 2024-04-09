@@ -23,7 +23,7 @@ param serviceShort string = 'dddawaf'
 param namePrefix string = '#_namePrefix_#'
 
 // Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
-var enforcedLocation = 'eastus'
+var enforcedLocation = 'eastasia'
 
 // ============ //
 // Dependencies //
@@ -33,9 +33,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     location: enforcedLocation
   }
 }
@@ -72,18 +70,12 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: enforcedLocation
-      }
-      {
-        failoverPriority: 1
-        isZoneRedundant: false
-        locationName: nestedDependencies.outputs.pairedRegionName
-      }
-    ]
+    location: enforcedLocation
+    disableKeyBasedMetadataWriteAccess: true
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     diagnosticSettings: [
       {
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
@@ -92,7 +84,6 @@ module testDeployment '../../../main.bicep' = {
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
-    location: enforcedLocation
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -111,37 +102,14 @@ module testDeployment '../../../main.bicep' = {
       {
         containers: [
           {
-            kind: 'Hash'
             name: 'container-001'
-            indexingPolicy: {
-              automatic: true
-            }
+            kind: 'Hash'
             paths: [
-              '/myPartitionKey'
+              '/myPartitionKey1'
             ]
-            analyticalStorageTtl: 0
-            conflictResolutionPolicy: {
-              conflictResolutionPath: '/myCustomId'
-              mode: 'LastWriterWins'
-            }
-            defaultTtl: 1000
-            uniqueKeyPolicyKeys: [
-              {
-                paths: [
-                  '/firstName'
-                ]
-              }
-              {
-                paths: [
-                  '/lastName'
-                ]
-              }
-            ]
-            throughput: 600
           }
         ]
         name: '${namePrefix}-sql-${serviceShort}-001'
-        throughput: 1000
       }
     ]
     tags: {
