@@ -24,8 +24,8 @@ remote/managing tenant.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ManagedServices/registrationAssignments` | [2019-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedServices/2019-09-01/registrationAssignments) |
-| `Microsoft.ManagedServices/registrationDefinitions` | [2019-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedServices/2019-09-01/registrationDefinitions) |
+| `Microsoft.ManagedServices/registrationAssignments` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedServices/2022-10-01/registrationAssignments) |
+| `Microsoft.ManagedServices/registrationDefinitions` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedServices/2022-10-01/registrationDefinitions) |
 
 ## Usage examples
 

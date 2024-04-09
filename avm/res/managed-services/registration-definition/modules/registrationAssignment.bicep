@@ -8,7 +8,7 @@ param registrationDefinitionId string
 @description('Required. The ID of the registration assignment.')
 param registrationAssignmentId string
 
-resource registrationAssignment 'Microsoft.ManagedServices/registrationAssignments@2019-09-01' = {
+resource registrationAssignment 'Microsoft.ManagedServices/registrationAssignments@2022-10-01' = {
   name: registrationAssignmentId
   properties: {
     registrationDefinitionId: registrationDefinitionId

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "4029136734594681421"
+      "templateHash": "6463515287315068662"
     },
     "name": "Registration Definitions",
     "description": "This module deploys a `Registration Definition` and a `Registration Assignment` (often referred to as 'Lighthouse' or 'resource delegation')\non subscription or resource group scopes. This type of delegation is very similar to role assignments but here the principal that is\nassigned a role is in a remote/managing Azure Active Directory tenant. The templates are run towards the tenant where\nthe Azure resources you want to delegate access to are, providing 'authorizations' (aka. access delegation) to principals in a\nremote/managing tenant.",
@@ -84,7 +84,7 @@
     },
     {
       "type": "Microsoft.ManagedServices/registrationDefinitions",
-      "apiVersion": "2019-09-01",
+      "apiVersion": "2022-10-01",
       "name": "[variables('registrationId')]",
       "properties": {
         "registrationDefinitionName": "[parameters('name')]",
@@ -96,7 +96,7 @@
     {
       "condition": "[empty(parameters('resourceGroupName'))]",
       "type": "Microsoft.ManagedServices/registrationAssignments",
-      "apiVersion": "2019-09-01",
+      "apiVersion": "2022-10-01",
       "name": "[variables('registrationId')]",
       "properties": {
         "registrationDefinitionId": "[subscriptionResourceId('Microsoft.ManagedServices/registrationDefinitions', variables('registrationId'))]"
@@ -131,7 +131,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "10227443006008877531"
+              "templateHash": "7280269401410794495"
             },
             "name": "Registration Assignment",
             "description": "Create a registration assignment.",
@@ -154,7 +154,7 @@
           "resources": [
             {
               "type": "Microsoft.ManagedServices/registrationAssignments",
-              "apiVersion": "2019-09-01",
+              "apiVersion": "2022-10-01",
               "name": "[parameters('registrationAssignmentId')]",
               "properties": {
                 "registrationDefinitionId": "[parameters('registrationDefinitionId')]"
