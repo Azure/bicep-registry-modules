@@ -30,128 +30,139 @@ Remove the deployment 'n-vw-t1-20211204T1812029146Z' from resource group 'test-v
 #>
 function Initialize-DeploymentRemoval {
 
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory = $false)]
-        [Alias('DeploymentName')]
-        [string[]] $DeploymentNames = @(),
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $false)]
+    [Alias('DeploymentName')]
+    [string[]] $DeploymentNames = @(),
 
-        [Parameter(Mandatory = $false)]
-        [Alias('ResourceId')]
-        [string[]] $ResourceIds = @(),
+    [Parameter(Mandatory = $false)]
+    [Alias('ResourceId')]
+    [string[]] $ResourceIds = @(),
 
-        [Parameter(Mandatory = $false)]
-        [string] $TemplateFilePath,
+    [Parameter(Mandatory = $false)]
+    [string] $TemplateFilePath,
 
-        [Parameter(Mandatory = $false)]
-        [string] $ResourceGroupName,
+    [Parameter(Mandatory = $false)]
+    [string] $ResourceGroupName,
 
-        [Parameter(Mandatory = $false)]
-        [string] $SubscriptionId,
+    [Parameter(Mandatory = $false)]
+    [string] $SubscriptionId,
 
-        [Parameter(Mandatory = $false)]
-        [string] $ManagementGroupId,
+    [Parameter(Mandatory = $false)]
+    [string] $ManagementGroupId,
 
-        [Parameter(Mandatory = $false)]
-        [switch] $PurgeTestResources
+    [Parameter(Mandatory = $false)]
+    [switch] $PurgeTestResources
+  )
+
+  begin {
+    Write-Debug ('{0} entered' -f $MyInvocation.MyCommand)
+    # Load functions
+    . (Join-Path $PSScriptRoot 'helper' 'Remove-Deployment.ps1')
+  }
+
+  process {
+
+    if (-not [String]::IsNullOrEmpty($subscriptionId)) {
+      Write-Verbose ('Setting context to subscription [{0}]' -f $subscriptionId)
+      $null = Set-AzContext -Subscription $subscriptionId
+    }
+
+    # The initial sequence is a general order-recommendation
+    $removalSequence = @(
+      'Microsoft.Authorization/locks',
+      'Microsoft.Authorization/roleAssignments',
+      'Microsoft.Insights/diagnosticSettings',
+      'Microsoft.Network/privateEndpoints/privateDnsZoneGroups',
+      'Microsoft.Network/privateEndpoints',
+      'Microsoft.Network/azureFirewalls',
+      'Microsoft.Network/virtualHubs',
+      'Microsoft.Network/virtualWans',
+      'Microsoft.OperationsManagement/solutions',
+      'Microsoft.OperationalInsights/workspaces/linkedServices',
+      'Microsoft.OperationalInsights/workspaces',
+      'Microsoft.KeyVault/vaults',
+      'Microsoft.Authorization/policyExemptions',
+      'Microsoft.Authorization/policyAssignments',
+      'Microsoft.Authorization/policySetDefinitions',
+      'Microsoft.Authorization/policyDefinitions'
+      'Microsoft.Sql/managedInstances',
+      'Microsoft.MachineLearningServices/workspaces',
+      'Microsoft.Compute/virtualMachines',
+      'Microsoft.VirtualMachineImages/imageTemplates', # Must be removed before their MSI
+      'Microsoft.ManagedIdentity/userAssignedIdentities',
+      'Microsoft.Resources/resourceGroups'
     )
 
-    begin {
-        Write-Debug ('{0} entered' -f $MyInvocation.MyCommand)
-        # Load functions
-        . (Join-Path $PSScriptRoot 'helper' 'Remove-Deployment.ps1')
+    if ($DeploymentNames.Count -gt 0) {
+      Write-Verbose 'Handling resource removal with deployment names' -Verbose
+      foreach ($DeploymentName in $DeploymentNames) {
+        Write-Verbose "- $DeploymentName" -Verbose
+      }
+    }
+    if ($ResourceIds.Count -gt 0) {
+      Write-Verbose 'Handling resource removal with resource Ids' -Verbose
+      foreach ($ResourceId in $ResourceIds) {
+        Write-Verbose "- $ResourceId" -Verbose
+      }
     }
 
-    process {
+    ### CODE LOCATION: Add custom removal sequence here
+    ## Add custom module-specific removal sequence following the example below
+    # $moduleName = Split-Path (Split-Path (Split-Path $templateFilePath -Parent) -Parent) -LeafBase
+    # switch ($moduleName) {
+    #     '<moduleName01>' {                # For example: 'virtualWans', 'automationAccounts'
+    #         $removalSequence += @(
+    #             '<resourceType01>',       # For example: 'Microsoft.Network/vpnSites', 'Microsoft.OperationalInsights/workspaces/linkedServices'
+    #             '<resourceType02>',
+    #             '<resourceType03>'
+    #         )
+    #         break
+    #     }
+    # }
 
-        if (-not [String]::IsNullOrEmpty($subscriptionId)) {
-            Write-Verbose ('Setting context to subscription [{0}]' -f $subscriptionId)
-            $null = Set-AzContext -Subscription $subscriptionId
-        }
-
-        # The initial sequence is a general order-recommendation
-        $removalSequence = @(
-            'Microsoft.Authorization/locks',
-            'Microsoft.Authorization/roleAssignments',
-            'Microsoft.Insights/diagnosticSettings',
-            'Microsoft.Network/privateEndpoints/privateDnsZoneGroups',
-            'Microsoft.Network/privateEndpoints',
-            'Microsoft.Network/azureFirewalls',
-            'Microsoft.Network/virtualHubs',
-            'Microsoft.Network/virtualWans',
-            'Microsoft.OperationsManagement/solutions',
-            'Microsoft.OperationalInsights/workspaces/linkedServices',
-            'Microsoft.OperationalInsights/workspaces',
-            'Microsoft.KeyVault/vaults',
-            'Microsoft.Authorization/policyExemptions',
-            'Microsoft.Authorization/policyAssignments',
-            'Microsoft.Authorization/policySetDefinitions',
-            'Microsoft.Authorization/policyDefinitions'
-            'Microsoft.Sql/managedInstances',
-            'Microsoft.MachineLearningServices/workspaces',
-            'Microsoft.Compute/virtualMachines',
-            'Microsoft.VirtualMachineImages/imageTemplates', # Must be removed before their MSI
-            'Microsoft.ManagedIdentity/userAssignedIdentities',
-            'Microsoft.Resources/resourceGroups'
+    $moduleName = Split-Path (Split-Path (Split-Path $templateFilePath -Parent) -Parent) -LeafBase
+    switch ($moduleName) {
+      'sub-vending' {
+        $removalSequence += @(
+          'Microsoft.Network virtualNetworks/virtualNetworkPeerings'
+          'Microsoft.Network virtualHubs/hubVirtualNetworkConnections'
         )
-
-        if ($DeploymentNames.Count -gt 0) {
-            Write-Verbose 'Handling resource removal with deployment names' -Verbose
-            foreach ($DeploymentName in $DeploymentNames) {
-                Write-Verbose "- $DeploymentName" -Verbose
-            }
-        }
-        if ($ResourceIds.Count -gt 0) {
-            Write-Verbose 'Handling resource removal with resource Ids' -Verbose
-            foreach ($ResourceId in $ResourceIds) {
-                Write-Verbose "- $ResourceId" -Verbose
-            }
-        }
-
-        ### CODE LOCATION: Add custom removal sequence here
-        ## Add custom module-specific removal sequence following the example below
-        # $moduleName = Split-Path (Split-Path (Split-Path $templateFilePath -Parent) -Parent) -LeafBase
-        # switch ($moduleName) {
-        #     '<moduleName01>' {                # For example: 'virtualWans', 'automationAccounts'
-        #         $removalSequence += @(
-        #             '<resourceType01>',       # For example: 'Microsoft.Network/vpnSites', 'Microsoft.OperationalInsights/workspaces/linkedServices'
-        #             '<resourceType02>',
-        #             '<resourceType03>'
-        #         )
-        #         break
-        #     }
-        # }
-
-        if ($PurgeTestResources) {
-            # Resources
-            $filteredResourceIds = (Get-AzResource).ResourceId | Where-Object { $_ -like '*dep-*' }
-            $ResourceIds += ($filteredResourceIds | Sort-Object -Unique)
-
-            # Resource groups
-            $filteredResourceGroupIds = (Get-AzResourceGroup).ResourceId | Where-Object { $_ -like '*dep-*' }
-            $ResourceIds += ($filteredResourceGroupIds | Sort-Object -Unique)
-        }
-
-        # Invoke removal
-        $inputObject = @{
-            DeploymentNames  = $DeploymentNames
-            ResourceIds      = $ResourceIds
-            TemplateFilePath = $TemplateFilePath
-            RemovalSequence  = $removalSequence
-        }
-        if (-not [String]::IsNullOrEmpty($TemplateFilePath)) {
-            $inputObject['TemplateFilePath'] = $TemplateFilePath
-        }
-        if (-not [String]::IsNullOrEmpty($ResourceGroupName)) {
-            $inputObject['ResourceGroupName'] = $ResourceGroupName
-        }
-        if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
-            $inputObject['ManagementGroupId'] = $ManagementGroupId
-        }
-        Remove-Deployment @inputObject
+        break
+      }
     }
 
-    end {
-        Write-Debug ('{0} exited' -f $MyInvocation.MyCommand)
+    if ($PurgeTestResources) {
+      # Resources
+      $filteredResourceIds = (Get-AzResource).ResourceId | Where-Object { $_ -like '*dep-*' }
+      $ResourceIds += ($filteredResourceIds | Sort-Object -Unique)
+
+      # Resource groups
+      $filteredResourceGroupIds = (Get-AzResourceGroup).ResourceId | Where-Object { $_ -like '*dep-*' }
+      $ResourceIds += ($filteredResourceGroupIds | Sort-Object -Unique)
     }
+
+    # Invoke removal
+    $inputObject = @{
+      DeploymentNames  = $DeploymentNames
+      ResourceIds      = $ResourceIds
+      TemplateFilePath = $TemplateFilePath
+      RemovalSequence  = $removalSequence
+    }
+    if (-not [String]::IsNullOrEmpty($TemplateFilePath)) {
+      $inputObject['TemplateFilePath'] = $TemplateFilePath
+    }
+    if (-not [String]::IsNullOrEmpty($ResourceGroupName)) {
+      $inputObject['ResourceGroupName'] = $ResourceGroupName
+    }
+    if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
+      $inputObject['ManagementGroupId'] = $ManagementGroupId
+    }
+    Remove-Deployment @inputObject
+  }
+
+  end {
+    Write-Debug ('{0} exited' -f $MyInvocation.MyCommand)
+  }
 }
