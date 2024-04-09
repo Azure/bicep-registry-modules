@@ -106,6 +106,7 @@ module dnsForwardingRuleset_virtualNetworkLinks 'virtual-network-link/main.bicep
   for (vnetId, index) in (vNetLinks ?? []): {
     name: '${uniqueString(deployment().name, location)}-virtualNetworkLink-${index}'
     params: {
+      name: '${last(split(vnetId, '/'))}-vnetlink-${index}'
       dnsForwardingRulesetName: dnsForwardingRuleset.name
       virtualNetworkResourceId: !empty(vNetLinks) ? vnetId : null
     }

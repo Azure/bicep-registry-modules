@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "18444173024159632746"
+      "templateHash": "15289865803972230097"
     },
     "name": "Dns Forwarding Rulesets",
     "description": "This template deploys an dns forwarding ruleset.",
@@ -472,6 +472,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "name": {
+            "value": "[format('{0}-vnetlink-{1}', last(split(coalesce(parameters('vNetLinks'), createArray())[copyIndex()], '/')), copyIndex())]"
+          },
           "dnsForwardingRulesetName": {
             "value": "[parameters('name')]"
           },
