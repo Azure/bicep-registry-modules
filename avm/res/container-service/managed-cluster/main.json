@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "1556415774507310743"
+      "templateHash": "4896491646814133286"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -912,6 +912,18 @@
         "description": "Optional. Whether to disable run command for the cluster or not."
       }
     },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled",
+        "SecuredByPerimeter"
+      ],
+      "metadata": {
+        "description": "Optional. Allow or deny public network access for AKS."
+      }
+    },
     "enablePrivateCluster": {
       "type": "bool",
       "defaultValue": false,
@@ -1179,7 +1191,7 @@
     },
     "autoUpgradeProfileUpgradeChannel": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "stable",
       "allowedValues": [
         "node-image",
         "none",
@@ -1563,6 +1575,7 @@
           "loadBalancerSku": "[parameters('loadBalancerSku')]",
           "loadBalancerProfile": "[if(not(equals(parameters('managedOutboundIPCount'), 0)), createObject('managedOutboundIPs', createObject('count', parameters('managedOutboundIPCount')), 'effectiveOutboundIPs', createArray()), null())]"
         },
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "aadProfile": {
           "clientAppID": "[parameters('aadProfileClientAppID')]",
           "serverAppID": "[parameters('aadProfileServerAppID')]",
