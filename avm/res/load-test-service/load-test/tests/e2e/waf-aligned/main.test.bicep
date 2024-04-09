@@ -45,9 +45,6 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
     enableTelemetry: enableTelemetry
-    lock: {
-      kind: 'None'
-    }
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
