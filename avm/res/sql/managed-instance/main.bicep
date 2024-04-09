@@ -71,9 +71,6 @@ param collation string = 'SQL_Latin1_General_CP1_CI_AS'
 ])
 param proxyOverride string = 'Proxy'
 
-//@description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
-//param privateEndpoints privateEndpointType
-
 @description('Optional. Whether or not the public data endpoint is enabled.')
 param publicDataEndpointEnabled bool = false
 
