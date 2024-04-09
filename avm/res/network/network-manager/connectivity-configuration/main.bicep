@@ -25,7 +25,7 @@ param appliesToGroups appliesToGroupsType
 param connectivityTopology string
 
 @sys.description('Conditional. List of hub items. This will create peerings between the specified hub and the virtual networks in the network group specified. Required if connectivityTopology is of type "HubAndSpoke".')
-param hubs hubsType?
+param hubs hubsType
 
 @allowed([
   'True'
