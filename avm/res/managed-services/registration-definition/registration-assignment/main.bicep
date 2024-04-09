@@ -2,10 +2,10 @@ metadata name = 'Registration Assignment'
 metadata description = 'Create a registration assignment.'
 metadata category = 'Managed Services'
 
-@description('The ID of the registration definition.')
+@description('Required. The ID of the registration definition.')
 param registrationDefinitionId string
 
-@description('The ID of the registration assignment.')
+@description('Required. The ID of the registration assignment.')
 param registrationAssignmentId string
 
 resource registrationAssignment 'Microsoft.ManagedServices/registrationAssignments@2019-09-01' = {
