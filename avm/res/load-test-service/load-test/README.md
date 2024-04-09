@@ -29,7 +29,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-3-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
 - [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -176,9 +176,9 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 3: _Using Customer-Managed-Keys with User-Assigned identity_
 
-This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
 
 <details>
@@ -267,12 +267,6 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
     enableTelemetry: '<enableTelemetry>'
     loadTestDescription: 'This is a sample load test.'
     location: '<location>'
-    lock: {
-      kind: 'None'
-    }
-    managedIdentities: {
-      systemAssigned: true
-    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -307,16 +301,6 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "None"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
     },
     "tags": {
       "value": {
