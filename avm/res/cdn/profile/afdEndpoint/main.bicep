@@ -48,25 +48,27 @@ resource afdEndpoint 'Microsoft.Cdn/profiles/afdEndpoints@2023-05-01' = {
   }
 }
 
-module afdEndpoint_routes 'route/main.bicep' = [for route in (routes ?? []): {
-  name: '${uniqueString(deployment().name, route.name)}-Profile-AfdEndpoint-Route'
-  params: {
-    name: route.name
-    profileName: profile.name
-    afdEndpointName: afdEndpoint.name
-    cacheConfiguration: route.?cacheConfiguration
-    customDomainName: route.?customDomainName
-    enabledState: route.?enabledState
-    forwardingProtocol: route.?forwardingProtocol
-    httpsRedirect: route.?httpsRedirect
-    linkToDefaultDomain: route.?linkToDefaultDomain
-    originGroupName: route.?originGroupName
-    originPath: route.?originPath
-    patternsToMatch: route.?patternsToMatch
-    ruleSets: route.?ruleSets
-    supportedProtocols: route.?supportedProtocols
+module afdEndpoint_routes 'route/main.bicep' = [
+  for route in (routes ?? []): {
+    name: '${uniqueString(deployment().name, route.name)}-Profile-AfdEndpoint-Route'
+    params: {
+      name: route.name
+      profileName: profile.name
+      afdEndpointName: afdEndpoint.name
+      cacheConfiguration: route.?cacheConfiguration
+      customDomainName: route.?customDomainName
+      enabledState: route.?enabledState
+      forwardingProtocol: route.?forwardingProtocol
+      httpsRedirect: route.?httpsRedirect
+      linkToDefaultDomain: route.?linkToDefaultDomain
+      originGroupName: route.?originGroupName
+      originPath: route.?originPath
+      patternsToMatch: route.?patternsToMatch
+      ruleSets: route.?ruleSets
+      supportedProtocols: route.?supportedProtocols
+    }
   }
-}]
+]
 
 @description('The name of the AFD Endpoint.')
 output name string = afdEndpoint.name

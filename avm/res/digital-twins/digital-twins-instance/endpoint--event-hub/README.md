@@ -35,7 +35,7 @@ This module deploys a Digital Twins Instance EventHub Endpoint.
 | [`deadLetterUri`](#parameter-deadletteruri) | string | Dead letter storage URL for identity-based authentication. |
 | [`endpointUri`](#parameter-endpointuri) | string | The URL of the EventHub namespace for identity-based authentication. It must include the protocol 'sb://' (i.e. sb://xyz.servicebus.windows.net). |
 | [`entityPath`](#parameter-entitypath) | string | The EventHub name in the EventHub namespace for identity-based authentication. |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource.  Only one type of identity is supported: system-assigned or user-assigned, but not both. |
 | [`name`](#parameter-name) | string | The name of the Digital Twin Endpoint. |
 
 ### Parameter: `connectionStringPrimaryKey`
@@ -110,7 +110,7 @@ The EventHub name in the EventHub namespace for identity-based authentication.
 
 ### Parameter: `managedIdentities`
 
-The managed identity definition for this resource.
+The managed identity definition for this resource.  Only one type of identity is supported: system-assigned or user-assigned, but not both.
 
 - Required: No
 - Type: object
@@ -120,7 +120,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceId`](#parameter-managedidentitiesuserassignedresourceid) | string | The resource ID(s) to assign to the resource. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -129,12 +129,12 @@ Enables system assigned managed identity on the resource.
 - Required: No
 - Type: bool
 
-### Parameter: `managedIdentities.userAssignedResourceIds`
+### Parameter: `managedIdentities.userAssignedResourceId`
 
 The resource ID(s) to assign to the resource.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `name`
 
@@ -152,7 +152,7 @@ The name of the Digital Twin Endpoint.
 | `name` | string | The name of the Endpoint. |
 | `resourceGroupName` | string | The name of the resource group the resource was created in. |
 | `resourceId` | string | The resource ID of the Endpoint. |
-| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API. |
 
 ## Cross-referenced modules
 

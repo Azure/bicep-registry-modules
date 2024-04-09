@@ -29,15 +29,17 @@ resource networkGroup 'Microsoft.Network/networkManagers/networkGroups@2023-04-0
   }
 }
 
-module networkGroup_staticMembers 'static-member/main.bicep' = [for (staticMember, index) in staticMembers: {
-  name: '${uniqueString(deployment().name)}-NetworkGroup-StaticMembers-${index}'
-  params: {
-    networkManagerName: networkManager.name
-    networkGroupName: networkGroup.name
-    name: staticMember.name
-    resourceId: staticMember.resourceId
+module networkGroup_staticMembers 'static-member/main.bicep' = [
+  for (staticMember, index) in staticMembers: {
+    name: '${uniqueString(deployment().name)}-NetworkGroup-StaticMembers-${index}'
+    params: {
+      networkManagerName: networkManager.name
+      networkGroupName: networkGroup.name
+      name: staticMember.name
+      resourceId: staticMember.resourceId
+    }
   }
-}]
+]
 
 @sys.description('The name of the deployed network group.')
 output name string = networkGroup.name

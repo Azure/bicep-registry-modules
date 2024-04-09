@@ -664,7 +664,6 @@ module site 'br/public:avm/res/web/site:<version>' = {
       healthCheckPath: '/healthz'
     }
   }
-
 }
 ```
 
@@ -1164,7 +1163,7 @@ This instance deploys the module as a Linux Web App with the minimum set of requ
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wswalmin'
+  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app,linux'
@@ -1220,7 +1219,7 @@ This instance deploys the module asa Linux Web App with most of its features ena
 
 ```bicep
 module site 'br/public:avm/res/web/site:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-wswalmax'
+  name: 'siteDeployment'
   params: {
     // Required parameters
     kind: 'app,linux'

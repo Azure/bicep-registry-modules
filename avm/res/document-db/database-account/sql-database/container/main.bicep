@@ -51,6 +51,32 @@ param uniqueKeyPolicyKeys array = []
 ])
 param kind string = 'Hash'
 
+var partitionKeyPaths = [for path in paths: startsWith(path, '/') ? path : '/${path}']
+
+var containerResourceParams = union(
+  {
+    conflictResolutionPolicy: conflictResolutionPolicy
+    defaultTtl: defaultTtl
+    id: name
+    indexingPolicy: !empty(indexingPolicy) ? indexingPolicy : null
+    partitionKey: {
+      paths: partitionKeyPaths
+      kind: kind
+      version: kind == 'MultiHash' ? 2 : 1
+    }
+    uniqueKeyPolicy: !empty(uniqueKeyPolicyKeys)
+      ? {
+          uniqueKeys: uniqueKeyPolicyKeys
+        }
+      : null
+  },
+  analyticalStorageTtl != 0
+    ? {
+        analyticalStorageTtl: analyticalStorageTtl // please note that this property is not idempotent
+      }
+    : {}
+)
+
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: databaseAccountName
 
@@ -64,27 +90,17 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
   parent: databaseAccount::sqlDatabase
   tags: tags
   properties: {
-    resource: {
-      analyticalStorageTtl: analyticalStorageTtl // please note that this property is not idempotent
-      conflictResolutionPolicy: conflictResolutionPolicy
-      defaultTtl: defaultTtl
-      id: name
-      indexingPolicy: !empty(indexingPolicy) ? indexingPolicy : null
-      partitionKey: {
-        paths: [for path in paths: startsWith(path, '/') ? path : '/${path}']
-        kind: kind
-        version: kind == 'MultiHash' ? 2 : 1
-      }
-      uniqueKeyPolicy: !empty(uniqueKeyPolicyKeys) ? {
-        uniqueKeys: uniqueKeyPolicyKeys
-      } : null
-    }
-    options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' }) ? null : {
-      throughput: autoscaleSettingsMaxThroughput == null && throughput != -1 ? throughput : null
-      autoscaleSettings: autoscaleSettingsMaxThroughput != null ? {
-        maxThroughput: autoscaleSettingsMaxThroughput
-      } : null
-    }
+    resource: containerResourceParams
+    options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
+      ? null
+      : {
+          throughput: autoscaleSettingsMaxThroughput == null && throughput != -1 ? throughput : null
+          autoscaleSettings: autoscaleSettingsMaxThroughput != null
+            ? {
+                maxThroughput: autoscaleSettingsMaxThroughput
+              }
+            : null
+        }
   }
 }
 

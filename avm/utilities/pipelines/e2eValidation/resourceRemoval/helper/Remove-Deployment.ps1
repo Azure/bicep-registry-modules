@@ -15,11 +15,14 @@ Optional. The resource group of the resource to remove
 .PARAMETER ManagementGroupId
 Optional. The ID of the management group to fetch deployments from. Relevant for management-group level deployments.
 
-.PARAMETER DeploymentNames
-Optional. The deployment names to use for the removal
+.PARAMETER DeploymentName(s)
+Optional. The name(s) of the deployment(s). Combined with resources provide via the resource Id(s).
+
+.PARAMETER ResourceId(s)
+Optional. The resource Id(s) of the resources to remove. Combined with resources found via the deployment name(s).
 
 .PARAMETER TemplateFilePath
-Mandatory. The path to the deployment file
+Optional. The path to the template used for the deployment(s). Used to determine the level/scope (e.g. subscription). Required if deploymentName(s) are provided.
 
 .PARAMETER RemovalSequence
 Optional. The order of resource types to apply for deletion
@@ -39,10 +42,13 @@ function Remove-Deployment {
         [Parameter(Mandatory = $false)]
         [string] $ManagementGroupId,
 
-        [Parameter(Mandatory = $true)]
-        [string[]] $DeploymentNames,
+        [Parameter(Mandatory = $false)]
+        [string[]] $DeploymentNames = @(),
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
+        [string[]] $ResourceIds = @(),
+
+        [Parameter(Mandatory = $false)]
         [string] $TemplateFilePath,
 
         [Parameter(Mandatory = $false)]
@@ -63,36 +69,39 @@ function Remove-Deployment {
     process {
         $azContext = Get-AzContext
 
-        # Prepare data
-        # ============
-        $deploymentScope = Get-ScopeOfTemplateFile -TemplateFilePath $TemplateFilePath
+        $deployedTargetResources = $ResourceIds
 
-        # Fundamental checks
-        if ($deploymentScope -eq 'resourcegroup' -and -not (Get-AzResourceGroup -Name $ResourceGroupName -ErrorAction 'SilentlyContinue')) {
-            Write-Verbose "Resource group [$ResourceGroupName] does not exist (anymore). Skipping removal of its contained resources" -Verbose
-            return
-        }
+        if ($DeploymentNames.Count -gt 0) {
+            # Prepare data
+            # ============
+            $deploymentScope = Get-ScopeOfTemplateFile -TemplateFilePath $TemplateFilePath
 
-        # Fetch deployments
-        # =================
-        $deployedTargetResources = @()
-
-        foreach ($deploymentName in $DeploymentNames) {
-            $deploymentsInputObject = @{
-                Name  = $deploymentName
-                Scope = $deploymentScope
+            # Fundamental checks
+            if ($deploymentScope -eq 'resourcegroup' -and -not (Get-AzResourceGroup -Name $ResourceGroupName -ErrorAction 'SilentlyContinue')) {
+                Write-Verbose "Resource group [$ResourceGroupName] does not exist (anymore). Skipping removal of its contained resources" -Verbose
+                return
             }
-            if (-not [String]::IsNullOrEmpty($ResourceGroupName)) {
-                $deploymentsInputObject['resourceGroupName'] = $ResourceGroupName
-            }
-            if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
-                $deploymentsInputObject['ManagementGroupId'] = $ManagementGroupId
-            }
-            $deployedTargetResources += Get-DeploymentTargetResourceList @deploymentsInputObject
-        }
 
-        if ($deployedTargetResources.Count -eq 0) {
-            throw 'No deployment target resources found.'
+            # Fetch deployments
+            # =================
+
+            foreach ($deploymentName in $DeploymentNames) {
+                $deploymentsInputObject = @{
+                    Name  = $deploymentName
+                    Scope = $deploymentScope
+                }
+                if (-not [String]::IsNullOrEmpty($ResourceGroupName)) {
+                    $deploymentsInputObject['resourceGroupName'] = $ResourceGroupName
+                }
+                if (-not [String]::IsNullOrEmpty($ManagementGroupId)) {
+                    $deploymentsInputObject['ManagementGroupId'] = $ManagementGroupId
+                }
+                $deployedTargetResources += Get-DeploymentTargetResourceList @deploymentsInputObject
+            }
+
+            if ($deployedTargetResources.Count -eq 0) {
+                throw 'No deployment target resources found.'
+            }
         }
 
         [array] $deployedTargetResources = $deployedTargetResources | Select-Object -Unique
@@ -152,8 +161,7 @@ function Remove-Deployment {
             if ($PSCmdlet.ShouldProcess(('[{0}] resources' -f (($resourcesToRemove -is [array]) ? $resourcesToRemove.Count : 1)), 'Remove')) {
                 Remove-ResourceList -ResourcesToRemove $resourcesToRemove
             }
-        }
-        else {
+        } else {
             Write-Verbose 'Found [0] resources to remove'
         }
     }

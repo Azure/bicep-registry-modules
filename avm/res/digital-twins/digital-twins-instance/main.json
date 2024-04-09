@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "5068998297960417598"
+      "templateHash": "592119492280088110"
     },
     "name": "Digital Twins Instances",
     "description": "This module deploys an Azure Digital Twins Instance.",
@@ -473,23 +473,23 @@
         "description": "Optional. The managed identity definition for this resource."
       }
     },
-    "eventHubEndpoint": {
-      "type": "object",
-      "defaultValue": {},
+    "eventHubEndpoints": {
+      "type": "array",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Event Hub Endpoint."
       }
     },
-    "eventGridEndpoint": {
-      "type": "object",
-      "defaultValue": {},
+    "eventGridEndpoints": {
+      "type": "array",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Event Grid Endpoint."
       }
     },
-    "serviceBusEndpoint": {
-      "type": "object",
-      "defaultValue": {},
+    "serviceBusEndpoints": {
+      "type": "array",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Service Bus Endpoint."
       }
@@ -654,11 +654,14 @@
         "digitalTwinsInstance"
       ]
     },
-    "digitalTwinsInstance_eventHubEndpoint": {
-      "condition": "[not(empty(parameters('eventHubEndpoint')))]",
+    "digitalTwinsInstance_eventHubEndpoints": {
+      "copy": {
+        "name": "digitalTwinsInstance_eventHubEndpoints",
+        "count": "[length(coalesce(parameters('eventHubEndpoints'), createArray()))]"
+      },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-DigitalTwinsInstance-Endpoints-EventHub', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-DigitalTwinsInstance-Endpoints-EventHub-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -668,15 +671,15 @@
           "digitalTwinInstanceName": {
             "value": "[parameters('name')]"
           },
-          "name": "[if(contains(parameters('eventHubEndpoint'), 'name'), createObject('value', parameters('eventHubEndpoint').name), createObject('value', 'EventHubEndpoint'))]",
-          "authenticationType": "[if(contains(parameters('eventHubEndpoint'), 'authenticationType'), createObject('value', parameters('eventHubEndpoint').authenticationType), createObject('value', 'KeyBased'))]",
-          "connectionStringPrimaryKey": "[if(contains(parameters('eventHubEndpoint'), 'connectionStringPrimaryKey'), createObject('value', parameters('eventHubEndpoint').connectionStringPrimaryKey), createObject('value', ''))]",
-          "connectionStringSecondaryKey": "[if(contains(parameters('eventHubEndpoint'), 'connectionStringSecondaryKey'), createObject('value', parameters('eventHubEndpoint').connectionStringSecondaryKey), createObject('value', ''))]",
-          "deadLetterSecret": "[if(contains(parameters('eventHubEndpoint'), 'deadLetterSecret'), createObject('value', parameters('eventHubEndpoint').deadLetterSecret), createObject('value', ''))]",
-          "deadLetterUri": "[if(contains(parameters('eventHubEndpoint'), 'deadLetterUri'), createObject('value', parameters('eventHubEndpoint').deadLetterUri), createObject('value', ''))]",
-          "endpointUri": "[if(contains(parameters('eventHubEndpoint'), 'endpointUri'), createObject('value', parameters('eventHubEndpoint').endpointUri), createObject('value', ''))]",
-          "entityPath": "[if(contains(parameters('eventHubEndpoint'), 'entityPath'), createObject('value', parameters('eventHubEndpoint').entityPath), createObject('value', ''))]",
-          "managedIdentities": "[if(contains(parameters('eventHubEndpoint'), 'managedIdentities'), createObject('value', parameters('eventHubEndpoint').managedIdentities), createObject('value', createObject()))]"
+          "name": "[if(contains(coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()], 'name'), createObject('value', coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()].name), createObject('value', 'EventHubEndpoint'))]",
+          "authenticationType": "[if(contains(coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()], 'authenticationType'), createObject('value', coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()].authenticationType), createObject('value', 'KeyBased'))]",
+          "connectionStringPrimaryKey": "[if(contains(coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()], 'connectionStringPrimaryKey'), createObject('value', coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()].connectionStringPrimaryKey), createObject('value', ''))]",
+          "connectionStringSecondaryKey": "[if(contains(coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()], 'connectionStringSecondaryKey'), createObject('value', coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()].connectionStringSecondaryKey), createObject('value', ''))]",
+          "deadLetterSecret": "[if(contains(coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()], 'deadLetterSecret'), createObject('value', coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()].deadLetterSecret), createObject('value', ''))]",
+          "deadLetterUri": "[if(contains(coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()], 'deadLetterUri'), createObject('value', coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()].deadLetterUri), createObject('value', ''))]",
+          "endpointUri": "[if(contains(coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()], 'endpointUri'), createObject('value', coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()].endpointUri), createObject('value', ''))]",
+          "entityPath": "[if(contains(coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()], 'entityPath'), createObject('value', coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()].entityPath), createObject('value', ''))]",
+          "managedIdentities": "[if(contains(coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()], 'managedIdentities'), createObject('value', coalesce(parameters('eventHubEndpoints'), createArray())[copyIndex()].managedIdentities), createObject('value', createObject()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -686,7 +689,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "982830653292321499"
+              "templateHash": "1964184668152537300"
             },
             "name": "Digital Twins Instance EventHub Endpoint",
             "description": "This module deploys a Digital Twins Instance EventHub Endpoint.",
@@ -703,11 +706,8 @@
                     "description": "Optional. Enables system assigned managed identity on the resource."
                   }
                 },
-                "userAssignedResourceIds": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
+                "userAssignedResourceId": {
+                  "type": "string",
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. The resource ID(s) to assign to the resource."
@@ -787,13 +787,12 @@
             "managedIdentities": {
               "$ref": "#/definitions/managedIdentitiesType",
               "metadata": {
-                "description": "Optional. The managed identity definition for this resource."
+                "description": "Optional. The managed identity definition for this resource.  Only one type of identity is supported: system-assigned or user-assigned, but not both."
               }
             }
           },
           "variables": {
-            "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), ''))), 'UserAssigned', null())), 'userAssignedIdentity', tryGet(parameters('managedIdentities'), 'userAssignedResourceId')), null())]"
           },
           "resources": {
             "digitalTwinsInstance": {
@@ -847,7 +846,7 @@
             "systemAssignedMIPrincipalId": {
               "type": "string",
               "metadata": {
-                "description": "The principal ID of the system assigned identity."
+                "description": "The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API."
               },
               "value": "[coalesce(tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId'), '')]"
             }
@@ -858,11 +857,14 @@
         "digitalTwinsInstance"
       ]
     },
-    "digitalTwinsInstance_eventGridEndpoint": {
-      "condition": "[not(empty(parameters('eventGridEndpoint')))]",
+    "digitalTwinsInstance_eventGridEndpoints": {
+      "copy": {
+        "name": "digitalTwinsInstance_eventGridEndpoints",
+        "count": "[length(coalesce(parameters('eventGridEndpoints'), createArray()))]"
+      },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-DigitalTwinsInstance-Endpoints-EventGrid', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-DigitalTwinsInstance-Endpoints-EventGrid-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -872,11 +874,11 @@
           "digitalTwinInstanceName": {
             "value": "[parameters('name')]"
           },
-          "name": "[if(contains(parameters('eventGridEndpoint'), 'name'), createObject('value', parameters('eventGridEndpoint').name), createObject('value', 'EventGridEndpoint'))]",
-          "topicEndpoint": "[if(contains(parameters('eventGridEndpoint'), 'topicEndpoint'), createObject('value', parameters('eventGridEndpoint').topicEndpoint), createObject('value', ''))]",
-          "deadLetterSecret": "[if(contains(parameters('eventGridEndpoint'), 'deadLetterSecret'), createObject('value', parameters('eventGridEndpoint').deadLetterSecret), createObject('value', ''))]",
-          "deadLetterUri": "[if(contains(parameters('eventGridEndpoint'), 'deadLetterUri'), createObject('value', parameters('eventGridEndpoint').deadLetterUri), createObject('value', ''))]",
-          "eventGridDomainResourceId": "[if(contains(parameters('eventGridEndpoint'), 'eventGridDomainId'), createObject('value', parameters('eventGridEndpoint').eventGridDomainId), createObject('value', ''))]"
+          "name": "[if(contains(coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()], 'name'), createObject('value', coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()].name), createObject('value', 'EventGridEndpoint'))]",
+          "topicEndpoint": "[if(contains(coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()], 'topicEndpoint'), createObject('value', coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()].topicEndpoint), createObject('value', ''))]",
+          "deadLetterSecret": "[if(contains(coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()], 'deadLetterSecret'), createObject('value', coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()].deadLetterSecret), createObject('value', ''))]",
+          "deadLetterUri": "[if(contains(coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()], 'deadLetterUri'), createObject('value', coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()].deadLetterUri), createObject('value', ''))]",
+          "eventGridDomainResourceId": "[if(contains(coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()], 'eventGridDomainId'), createObject('value', coalesce(parameters('eventGridEndpoints'), createArray())[copyIndex()].eventGridDomainId), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -977,11 +979,14 @@
         "digitalTwinsInstance"
       ]
     },
-    "digitalTwinsInstance_serviceBusEndpoint": {
-      "condition": "[not(empty(parameters('serviceBusEndpoint')))]",
+    "digitalTwinsInstance_serviceBusEndpoints": {
+      "copy": {
+        "name": "digitalTwinsInstance_serviceBusEndpoints",
+        "count": "[length(coalesce(parameters('serviceBusEndpoints'), createArray()))]"
+      },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-DigitalTwinsInstance-Endpoints-ServiceBus', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-DigitalTwinsInstance-Endpoints-ServiceBus-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -991,15 +996,15 @@
           "digitalTwinInstanceName": {
             "value": "[parameters('name')]"
           },
-          "name": "[if(contains(parameters('serviceBusEndpoint'), 'name'), createObject('value', parameters('serviceBusEndpoint').name), createObject('value', 'ServiceBusEndpoint'))]",
-          "authenticationType": "[if(contains(parameters('serviceBusEndpoint'), 'authenticationType'), createObject('value', parameters('serviceBusEndpoint').authenticationType), createObject('value', ''))]",
-          "deadLetterSecret": "[if(contains(parameters('serviceBusEndpoint'), 'deadLetterSecret'), createObject('value', parameters('serviceBusEndpoint').deadLetterSecret), createObject('value', ''))]",
-          "deadLetterUri": "[if(contains(parameters('serviceBusEndpoint'), 'deadLetterUri'), createObject('value', parameters('serviceBusEndpoint').deadLetterUri), createObject('value', ''))]",
-          "endpointUri": "[if(contains(parameters('serviceBusEndpoint'), 'endpointUri'), createObject('value', parameters('serviceBusEndpoint').endpointUri), createObject('value', ''))]",
-          "entityPath": "[if(contains(parameters('serviceBusEndpoint'), 'entityPath'), createObject('value', parameters('serviceBusEndpoint').entityPath), createObject('value', ''))]",
-          "primaryConnectionString": "[if(contains(parameters('serviceBusEndpoint'), 'primaryConnectionString'), createObject('value', parameters('serviceBusEndpoint').primaryConnectionString), createObject('value', ''))]",
-          "secondaryConnectionString": "[if(contains(parameters('serviceBusEndpoint'), 'secondaryConnectionString'), createObject('value', parameters('serviceBusEndpoint').secondaryConnectionString), createObject('value', ''))]",
-          "managedIdentities": "[if(contains(parameters('serviceBusEndpoint'), 'managedIdentities'), createObject('value', parameters('serviceBusEndpoint').managedIdentities), createObject('value', createObject()))]"
+          "name": "[if(contains(coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()], 'name'), createObject('value', coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()].name), createObject('value', 'ServiceBusEndpoint'))]",
+          "authenticationType": "[if(contains(coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()], 'authenticationType'), createObject('value', coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()].authenticationType), createObject('value', ''))]",
+          "deadLetterSecret": "[if(contains(coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()], 'deadLetterSecret'), createObject('value', coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()].deadLetterSecret), createObject('value', ''))]",
+          "deadLetterUri": "[if(contains(coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()], 'deadLetterUri'), createObject('value', coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()].deadLetterUri), createObject('value', ''))]",
+          "endpointUri": "[if(contains(coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()], 'endpointUri'), createObject('value', coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()].endpointUri), createObject('value', ''))]",
+          "entityPath": "[if(contains(coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()], 'entityPath'), createObject('value', coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()].entityPath), createObject('value', ''))]",
+          "primaryConnectionString": "[if(contains(coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()], 'primaryConnectionString'), createObject('value', coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()].primaryConnectionString), createObject('value', ''))]",
+          "secondaryConnectionString": "[if(contains(coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()], 'secondaryConnectionString'), createObject('value', coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()].secondaryConnectionString), createObject('value', ''))]",
+          "managedIdentities": "[if(contains(coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()], 'managedIdentities'), createObject('value', coalesce(parameters('serviceBusEndpoints'), createArray())[copyIndex()].managedIdentities), createObject('value', createObject()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1009,7 +1014,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "18420338400061008774"
+              "templateHash": "16761257324786961037"
             },
             "name": "Digital Twins Instance ServiceBus Endpoint",
             "description": "This module deploys a Digital Twins Instance ServiceBus Endpoint.",
@@ -1026,11 +1031,8 @@
                     "description": "Optional. Enables system assigned managed identity on the resource."
                   }
                 },
-                "userAssignedResourceIds": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
+                "userAssignedResourceId": {
+                  "type": "string",
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. The resource ID(s) to assign to the resource."
@@ -1110,13 +1112,12 @@
             "managedIdentities": {
               "$ref": "#/definitions/managedIdentitiesType",
               "metadata": {
-                "description": "Optional. The managed identity definition for this resource."
+                "description": "Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both."
               }
             }
           },
           "variables": {
-            "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'), ''))), 'UserAssigned', null())), 'userAssignedIdentity', tryGet(parameters('managedIdentities'), 'userAssignedResourceId')), null())]"
           },
           "resources": {
             "digitalTwinsInstance": {
@@ -1170,7 +1171,7 @@
             "systemAssignedMIPrincipalId": {
               "type": "string",
               "metadata": {
-                "description": "The principal ID of the system assigned identity."
+                "description": "The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API."
               },
               "value": "[coalesce(tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId'), '')]"
             }
@@ -1188,7 +1189,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-DigitalTwinsInstance-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-digitalTwinsInstance-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1199,8 +1200,8 @@
           "name": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.DigitalTwins/digitalTwinsInstances', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'API'), copyIndex()))]"
           },
-          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.DigitalTwins/digitalTwinsInstances', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'API'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.DigitalTwins/digitalTwinsInstances', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'API')))))), createObject('value', null()))]",
-          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.DigitalTwins/digitalTwinsInstances', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'API'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.DigitalTwins/digitalTwinsInstances', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'API')), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.DigitalTwins/digitalTwinsInstances', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'API'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.DigitalTwins/digitalTwinsInstances', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'API')))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.DigitalTwins/digitalTwinsInstances', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'API'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.DigitalTwins/digitalTwinsInstances', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'API')), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
@@ -1245,8 +1246,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "2592884001616184297"
+              "version": "0.25.53.49325",
+              "templateHash": "4120048060064073955"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -1611,7 +1612,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1716,8 +1717,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "9321937464667207030"
+                      "version": "0.25.53.49325",
+                      "templateHash": "11244630631275470040"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",

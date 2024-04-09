@@ -56,7 +56,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rsvmin'
+  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'rsvmin001'
@@ -136,7 +136,7 @@ This instance deploys the module with disaster recovery enabled.
 
 ```bicep
 module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rsvdr'
+  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -314,7 +314,7 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rsvmax'
+  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'rsvmax001'
@@ -1108,7 +1108,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-rsvwaf'
+  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'rsvwaf001'
@@ -2181,6 +2181,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
@@ -2375,6 +2376,13 @@ The private DNS zone groups to associate the private endpoint with. A DNS zone g
 
 - Required: No
 - Type: array
+
+### Parameter: `privateEndpoints.resourceGroupName`
+
+Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -2643,11 +2651,11 @@ Tags of the Recovery Service Vault resource.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
 
 ## Data Collection
 

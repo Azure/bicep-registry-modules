@@ -68,9 +68,11 @@ resource vpnConnection 'Microsoft.Network/vpnGateways/vpnConnections@2023-04-01'
     enableInternetSecurity: enableInternetSecurity
     enableRateLimiting: enableRateLimiting
     ipsecPolicies: ipsecPolicies
-    remoteVpnSite: !empty(remoteVpnSiteResourceId) ? {
-      id: remoteVpnSiteResourceId
-    } : null
+    remoteVpnSite: !empty(remoteVpnSiteResourceId)
+      ? {
+          id: remoteVpnSiteResourceId
+        }
+      : null
     routingConfiguration: routingConfiguration
     routingWeight: routingWeight
     sharedKey: sharedKey
