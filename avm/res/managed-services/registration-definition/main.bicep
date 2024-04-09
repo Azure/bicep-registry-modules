@@ -67,7 +67,7 @@ resource registrationAssignment_sub 'Microsoft.ManagedServices/registrationAssig
   }
 }
 
-module registrationAssignment_rg 'registration-assignment/main.bicep' = if (!empty(resourceGroupName)) {
+module registrationAssignment_rg 'modules/registrationAssignment.bicep' = if (!empty(resourceGroupName)) {
   name: '${uniqueString(deployment().name)}-RegDef-RegAssignment'
   scope: resourceGroup(resourceGroupName)
   params: {
