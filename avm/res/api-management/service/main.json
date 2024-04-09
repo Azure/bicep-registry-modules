@@ -381,6 +381,7 @@
       "type": "int",
       "defaultValue": 1,
       "allowedValues": [
+        0,
         1,
         2
       ],
