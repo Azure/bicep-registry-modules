@@ -50,7 +50,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-resource registrationDefinition 'Microsoft.ManagedServices/registrationDefinitions@2019-09-01' = {
+resource registrationDefinition 'Microsoft.ManagedServices/registrationDefinitions@2022-10-01' = {
   name: registrationId
   properties: {
     registrationDefinitionName: name
@@ -60,7 +60,7 @@ resource registrationDefinition 'Microsoft.ManagedServices/registrationDefinitio
   }
 }
 
-resource registrationAssignment_sub 'Microsoft.ManagedServices/registrationAssignments@2019-09-01' = if (empty(resourceGroupName)) {
+resource registrationAssignment_sub 'Microsoft.ManagedServices/registrationAssignments@2022-10-01' = if (empty(resourceGroupName)) {
   name: registrationId
   properties: {
     registrationDefinitionId: registrationDefinition.id
