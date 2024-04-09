@@ -53,9 +53,6 @@ module testDeployment '../../../main.bicep' = {
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    managedIdentities: {
-      systemAssigned: true
-    }
     loadTestDescription: 'This is a sample load test.'
   }
 }
