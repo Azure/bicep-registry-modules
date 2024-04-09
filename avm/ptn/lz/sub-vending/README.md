@@ -77,7 +77,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     deploymentScriptName: 'ds-ssamin'
     deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
     deploymentScriptResourceGroupName: '<deploymentScriptResourceGroupName>'
-    deploymentScriptStorageAccountName: 'stgdsssamin'
+    deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
     deploymentScriptVirtualNetworkName: '<deploymentScriptVirtualNetworkName>'
     resourceProviders: {
       'Microsoft.AVS': [
@@ -91,7 +91,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     roleAssignments: [
       {
         definition: 'Reader'
-        principalId: '7eca0dca-6701-46f1-b7b6-8b424dab50b3'
+        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
         relativeScope: ''
       }
     ]
@@ -140,7 +140,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": "<deploymentScriptResourceGroupName>"
     },
     "deploymentScriptStorageAccountName": {
-      "value": "stgdsssamin"
+      "value": "<deploymentScriptStorageAccountName>"
     },
     "deploymentScriptVirtualNetworkName": {
       "value": "<deploymentScriptVirtualNetworkName>"
@@ -162,7 +162,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": [
         {
           "definition": "Reader",
-          "principalId": "7eca0dca-6701-46f1-b7b6-8b424dab50b3",
+          "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
           "relativeScope": ""
         }
       ]
@@ -225,7 +225,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     deploymentScriptName: 'ds-ssahs'
     deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
     deploymentScriptResourceGroupName: '<deploymentScriptResourceGroupName>'
-    deploymentScriptStorageAccountName: 'stgdsssahs'
+    deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
     deploymentScriptVirtualNetworkName: '<deploymentScriptVirtualNetworkName>'
     hubNetworkResourceId: '<hubNetworkResourceId>'
     resourceProviders: {
@@ -240,7 +240,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     roleAssignments: [
       {
         definition: 'Network Contributor'
-        principalId: '7eca0dca-6701-46f1-b7b6-8b424dab50b3'
+        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
         relativeScope: '<relativeScope>'
       }
     ]
@@ -297,7 +297,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": "<deploymentScriptResourceGroupName>"
     },
     "deploymentScriptStorageAccountName": {
-      "value": "stgdsssahs"
+      "value": "<deploymentScriptStorageAccountName>"
     },
     "deploymentScriptVirtualNetworkName": {
       "value": "<deploymentScriptVirtualNetworkName>"
@@ -322,7 +322,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": [
         {
           "definition": "Network Contributor",
-          "principalId": "7eca0dca-6701-46f1-b7b6-8b424dab50b3",
+          "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
           "relativeScope": "<relativeScope>"
         }
       ]
@@ -405,7 +405,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     deploymentScriptName: 'ds-ssawan'
     deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
     deploymentScriptResourceGroupName: '<deploymentScriptResourceGroupName>'
-    deploymentScriptStorageAccountName: 'stgdsssawan'
+    deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
     deploymentScriptVirtualNetworkName: '<deploymentScriptVirtualNetworkName>'
     hubNetworkResourceId: '<hubNetworkResourceId>'
     resourceProviders: {}
@@ -413,7 +413,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     roleAssignments: [
       {
         definition: 'Network Contributor'
-        principalId: '7eca0dca-6701-46f1-b7b6-8b424dab50b3'
+        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
         relativeScope: '<relativeScope>'
       }
     ]
@@ -469,7 +469,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": "<deploymentScriptResourceGroupName>"
     },
     "deploymentScriptStorageAccountName": {
-      "value": "stgdsssawan"
+      "value": "<deploymentScriptStorageAccountName>"
     },
     "deploymentScriptVirtualNetworkName": {
       "value": "<deploymentScriptVirtualNetworkName>"
@@ -487,7 +487,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": [
         {
           "definition": "Network Contributor",
-          "principalId": "7eca0dca-6701-46f1-b7b6-8b424dab50b3",
+          "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
           "relativeScope": "<relativeScope>"
         }
       ]
@@ -644,7 +644,7 @@ The name of the storage account for the deployment script.
 
 - Required: No
 - Type: string
-- Default: `[format('stglzds{0}', deployment().location)]`
+- Default: `[format('stgds{0}', substring(uniqueString(deployment().name, parameters('virtualNetworkLocation')), 0, 4))]`
 
 ### Parameter: `deploymentScriptVirtualNetworkName`
 

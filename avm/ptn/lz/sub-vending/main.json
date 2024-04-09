@@ -5,12 +5,12 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "4503984201104970674"
+      "templateHash": "7657318811942338644"
     },
     "name": "Key Vaults",
     "description": "This module deploys a subscription to accelerate deployment of landing zones.",
     "owner": "Azure/module-maintainers",
-    "details": "These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)\r\n\r\nThis is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.\r\n\r\n> For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)"
+    "details": "These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)\n\nThis is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.\n\n> For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)"
   },
   "parameters": {
     "subscriptionAliasEnabled": {
@@ -18,7 +18,7 @@
       "defaultValue": true,
       "metadata": {
         "example": true,
-        "description": "Optional. Whether to create a new Subscription using the Subscription Alias resource. If `false`, supply an existing Subscription's ID in the parameter named `existingSubscriptionId` instead to deploy resources to an existing Subscription.\r\n\r\n- Type: Boolean.\r\n"
+        "description": "Optional. Whether to create a new Subscription using the Subscription Alias resource. If `false`, supply an existing Subscription's ID in the parameter named `existingSubscriptionId` instead to deploy resources to an existing Subscription.\n\n- Type: Boolean.\n"
       }
     },
     "subscriptionDisplayName": {
@@ -26,7 +26,7 @@
       "defaultValue": "",
       "metadata": {
         "example": "sub-bicep-lz-vending-example-001",
-        "description": "Optional. The name of the subscription alias. The string must be comprised of a-z, A-Z, 0-9, - and _. The maximum length is 63 characters.\r\n\r\nThe string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.\r\n\r\n> The value for this parameter and the parameter named `subscriptionAliasName` are usually set to the same value for simplicity. But they can be different if required for a reason.\r\n\r\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**\r\n\r\n- Type: String\r\n- Default value: `''` *(empty string)*.\r\n"
+        "description": "Optional. The name of the subscription alias. The string must be comprised of a-z, A-Z, 0-9, - and _. The maximum length is 63 characters.\n\nThe string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.\n\n> The value for this parameter and the parameter named `subscriptionAliasName` are usually set to the same value for simplicity. But they can be different if required for a reason.\n\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**\n\n- Type: String\n- Default value: `''` *(empty string)*.\n"
       },
       "maxLength": 63
     },
@@ -35,7 +35,7 @@
       "defaultValue": "",
       "metadata": {
         "example": "sub-bicep-lz-vending-example-001",
-        "description": "Optional. The name of the Subscription Alias, that will be created by this module.\r\n\r\nThe string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.\r\n\r\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**\r\n\r\n- Type: String\r\n- Default value: `''` *(empty string)*.\r\n"
+        "description": "Optional. The name of the Subscription Alias, that will be created by this module.\n\nThe string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.\n\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**\n\n- Type: String\n- Default value: `''` *(empty string)*.\n"
       },
       "maxLength": 63
     },
@@ -44,7 +44,7 @@
       "defaultValue": "",
       "metadata": {
         "example": "providers/Microsoft.Billing/billingAccounts/1234567/enrollmentAccounts/123456",
-        "description": "Optional. The Billing Scope for the new Subscription alias, that will be created by this module.\r\n\r\nA valid Billing Scope starts with `/providers/Microsoft.Billing/billingAccounts/` and is case sensitive.\r\n\r\n> See below [example in parameter file](#parameter-file) for an example\r\n\r\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**\r\n\r\n- Type: String\r\n- Default value: `''` *(empty string)*.\r\n"
+        "description": "Optional. The Billing Scope for the new Subscription alias, that will be created by this module.\n\nA valid Billing Scope starts with `/providers/Microsoft.Billing/billingAccounts/` and is case sensitive.\n\n> See below [example in parameter file](#parameter-file) for an example\n\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**\n\n- Type: String\n- Default value: `''` *(empty string)*.\n"
       }
     },
     "subscriptionWorkload": {
@@ -56,7 +56,7 @@
       ],
       "metadata": {
         "example": "Production",
-        "description": "Optional. The workload type can be either `Production` or `DevTest` and is case sensitive.\r\n\r\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**\r\n\r\n- Type: String.\r\n"
+        "description": "Optional. The workload type can be either `Production` or `DevTest` and is case sensitive.\n\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**\n\n- Type: String.\n"
       }
     },
     "subscriptionTenantId": {
@@ -64,7 +64,7 @@
       "defaultValue": "",
       "metadata": {
         "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-        "description": "Optional. The Azure Active Directory Tenant ID (GUID) to which the Subscription should be attached to.\r\n\r\n> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants).**\r\n\r\n- Type: String\r\n- Default value: `''` *(empty string)*.\r\n"
+        "description": "Optional. The Azure Active Directory Tenant ID (GUID) to which the Subscription should be attached to.\n\n> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants).**\n\n- Type: String\n- Default value: `''` *(empty string)*.\n"
       },
       "maxLength": 36
     },
@@ -73,7 +73,7 @@
       "defaultValue": "",
       "metadata": {
         "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-        "description": "Optional. The Azure Active Directory principals object ID (GUID) to whom should be the Subscription Owner.\r\n\r\n> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants).**\r\n\r\n- Type: String\r\n- Default value: `''` *(empty string)*.\r\n"
+        "description": "Optional. The Azure Active Directory principals object ID (GUID) to whom should be the Subscription Owner.\n\n> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants).**\n\n- Type: String\n- Default value: `''` *(empty string)*.\n"
       },
       "maxLength": 36
     },
@@ -82,7 +82,7 @@
       "defaultValue": "",
       "metadata": {
         "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-        "description": "Optional. An existing subscription ID. Use this when you do not want the module to create a new subscription. But do want to manage the management group membership. A subscription ID should be provided in the example format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`.\r\n\r\n- Type: String\r\n- Default value: `''` *(empty string)*.\r\n"
+        "description": "Optional. An existing subscription ID. Use this when you do not want the module to create a new subscription. But do want to manage the management group membership. A subscription ID should be provided in the example format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`.\n\n- Type: String\n- Default value: `''` *(empty string)*.\n"
       },
       "maxLength": 36
     },
@@ -91,7 +91,7 @@
       "defaultValue": true,
       "metadata": {
         "example": true,
-        "description": "Optional. Whether to move the Subscription to the specified Management Group supplied in the parameter `subscriptionManagementGroupId`.\r\n\r\n- Type: Boolean.\r\n"
+        "description": "Optional. Whether to move the Subscription to the specified Management Group supplied in the parameter `subscriptionManagementGroupId`.\n\n- Type: Boolean.\n"
       }
     },
     "subscriptionManagementGroupId": {
@@ -99,7 +99,7 @@
       "defaultValue": "",
       "metadata": {
         "example": "alz-landingzones-corp",
-        "description": "Optional. The destination Management Group ID for the new Subscription that will be created by this module (or the existing one provided in the parameter `existingSubscriptionId`).\r\n\r\n**IMPORTANT:** Do not supply the display name of the Management Group. The Management Group ID forms part of the Azure Resource ID. e.g., `/providers/Microsoft.Management/managementGroups/{managementGroupId}`.\r\n\r\n> See below [example in parameter file](#parameter-file) for an example\r\n\r\n- Type: String\r\n- Default value: `''` *(empty string)*.\r\n"
+        "description": "Optional. The destination Management Group ID for the new Subscription that will be created by this module (or the existing one provided in the parameter `existingSubscriptionId`).\n\n**IMPORTANT:** Do not supply the display name of the Management Group. The Management Group ID forms part of the Azure Resource ID. e.g., `/providers/Microsoft.Management/managementGroups/{managementGroupId}`.\n\n> See below [example in parameter file](#parameter-file) for an example\n\n- Type: String\n- Default value: `''` *(empty string)*.\n"
       }
     },
     "subscriptionTags": {
@@ -110,7 +110,7 @@
           "tagKey1": "value",
           "tag-key-2": "value"
         },
-        "description": "Optional. An object of Tag key & value pairs to be appended to a Subscription.\r\n\r\n> **NOTE:** Tags will only be overwritten if existing tag exists with same key as provided in this parameter; values provided here win.\r\n\r\n- Type: `{}` Object\r\n- Default value: `{}` *(empty object)*.\r\n"
+        "description": "Optional. An object of Tag key & value pairs to be appended to a Subscription.\n\n> **NOTE:** Tags will only be overwritten if existing tag exists with same key as provided in this parameter; values provided here win.\n\n- Type: `{}` Object\n- Default value: `{}` *(empty object)*.\n"
       }
     },
     "virtualNetworkEnabled": {
@@ -118,7 +118,7 @@
       "defaultValue": false,
       "metadata": {
         "example": true,
-        "description": "Optional. Whether to create a Virtual Network or not.\r\n\r\nIf set to `true` ensure you also provide values for the following parameters at a minimum:\r\n\r\n- `virtualNetworkResourceGroupName`\r\n- `virtualNetworkResourceGroupLockEnabled`\r\n- `virtualNetworkLocation`\r\n- `virtualNetworkName`\r\n- `virtualNetworkAddressSpace`\r\n\r\n> Other parameters may need to be set based on other parameters that you enable that are listed above. Check each parameters documentation for further information.\r\n\r\n- Type: Boolean.\r\n"
+        "description": "Optional. Whether to create a Virtual Network or not.\n\nIf set to `true` ensure you also provide values for the following parameters at a minimum:\n\n- `virtualNetworkResourceGroupName`\n- `virtualNetworkResourceGroupLockEnabled`\n- `virtualNetworkLocation`\n- `virtualNetworkName`\n- `virtualNetworkAddressSpace`\n\n> Other parameters may need to be set based on other parameters that you enable that are listed above. Check each parameters documentation for further information.\n\n- Type: Boolean.\n"
       }
     },
     "virtualNetworkResourceGroupName": {
@@ -126,7 +126,7 @@
       "defaultValue": "",
       "metadata": {
         "example": "rg-networking-001",
-        "description": "Optional. The name of the Resource Group to create the Virtual Network in that is created by this module.\r\n\r\n- Type: String\r\n- Default value: `''` *(empty string)*.\r\n"
+        "description": "Optional. The name of the Resource Group to create the Virtual Network in that is created by this module.\n\n- Type: String\n- Default value: `''` *(empty string)*.\n"
       },
       "maxLength": 90
     },
@@ -138,7 +138,7 @@
           "tagKey1": "value",
           "tag-key-2": "value"
         },
-        "description": "Optional. An object of Tag key & value pairs to be appended to the Resource Group that the Virtual Network is created in.\r\n\r\n> **NOTE:** Tags will only be overwritten if existing tag exists with same key as provided in this parameter; values provided here win.\r\n\r\n- Type: `{}` Object\r\n- Default value: `{}` *(empty object)*.\r\n"
+        "description": "Optional. An object of Tag key & value pairs to be appended to the Resource Group that the Virtual Network is created in.\n\n> **NOTE:** Tags will only be overwritten if existing tag exists with same key as provided in this parameter; values provided here win.\n\n- Type: `{}` Object\n- Default value: `{}` *(empty object)*.\n"
       }
     },
     "virtualNetworkResourceGroupLockEnabled": {
@@ -146,7 +146,7 @@
       "defaultValue": true,
       "metadata": {
         "example": true,
-        "description": "Optional. Enables the deployment of a `CanNotDelete` resource locks to the Virtual Networks Resource Group that is created by this module.\r\n\r\n- Type: Boolean.\r\n"
+        "description": "Optional. Enables the deployment of a `CanNotDelete` resource locks to the Virtual Networks Resource Group that is created by this module.\n\n- Type: Boolean.\n"
       }
     },
     "virtualNetworkLocation": {
@@ -154,7 +154,7 @@
       "defaultValue": "[deployment().location]",
       "metadata": {
         "example": "uksouth",
-        "description": "Optional. The location of the virtual network. Use region shortnames e.g. `uksouth`, `eastus`, etc. Defaults to the region where the ARM/Bicep deployment is targeted to unless overridden.\r\n\r\n- Type: String.\r\n"
+        "description": "Optional. The location of the virtual network. Use region shortnames e.g. `uksouth`, `eastus`, etc. Defaults to the region where the ARM/Bicep deployment is targeted to unless overridden.\n\n- Type: String.\n"
       }
     },
     "virtualNetworkName": {
@@ -162,7 +162,7 @@
       "defaultValue": "",
       "metadata": {
         "example": "vnet-example-001",
-        "description": "Optional. The name of the virtual network. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length.\r\n\r\n- Type: String\r\n- Default value: `''` *(empty string)*.\r\n"
+        "description": "Optional. The name of the virtual network. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length.\n\n- Type: String\n- Default value: `''` *(empty string)*.\n"
       },
       "maxLength": 64
     },
@@ -174,7 +174,7 @@
           "tagKey1": "value",
           "tag-key-2": "value"
         },
-        "description": "Optional. An object of tag key/value pairs to be set on the Virtual Network that is created.\r\n\r\n> **NOTE:** Tags will be overwritten on resource if any exist already.\r\n\r\n- Type: `{}` Object\r\n- Default value: `{}` *(empty object)*.\r\n"
+        "description": "Optional. An object of tag key/value pairs to be set on the Virtual Network that is created.\n\n> **NOTE:** Tags will be overwritten on resource if any exist already.\n\n- Type: `{}` Object\n- Default value: `{}` *(empty object)*.\n"
       }
     },
     "virtualNetworkAddressSpace": {
@@ -184,7 +184,7 @@
         "example": [
           "10.0.0.0/16"
         ],
-        "description": "Optional. The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `[\"10.0.0.0/16\",\"172.16.0.0/12\"]`\r\n\r\n- Type: `[]` Array\r\n- Default value: `[]` *(empty array)*.\r\n"
+        "description": "Optional. The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `[\"10.0.0.0/16\",\"172.16.0.0/12\"]`\n\n- Type: `[]` Array\n- Default value: `[]` *(empty array)*.\n"
       }
     },
     "virtualNetworkDnsServers": {
@@ -195,7 +195,7 @@
           "10.4.1.4",
           "10.2.1.5"
         ],
-        "description": "Optional. The custom DNS servers to use on the Virtual Network, e.g. `[\"10.4.1.4\", \"10.2.1.5\"]`. If left empty (default) then Azure DNS will be used for the Virtual Network.\r\n\r\n- Type: `[]` Array\r\n- Default value: `[]` *(empty array)*.\r\n"
+        "description": "Optional. The custom DNS servers to use on the Virtual Network, e.g. `[\"10.4.1.4\", \"10.2.1.5\"]`. If left empty (default) then Azure DNS will be used for the Virtual Network.\n\n- Type: `[]` Array\n- Default value: `[]` *(empty array)*.\n"
       }
     },
     "virtualNetworkDdosPlanId": {
@@ -203,7 +203,7 @@
       "defaultValue": "",
       "metadata": {
         "example": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/ddosProtectionPlans/xxxxxxxxxx",
-        "description": "Optional. The resource ID of an existing DDoS Network Protection Plan that you wish to link to this Virtual Network.\r\n\r\n**Example Expected Values:**\r\n- `''` (empty string)\r\n- DDoS Netowrk Protection Plan Resource ID: `/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/ddosProtectionPlans/xxxxxxxxxx`\r\n\r\n- Type: String\r\n- Default value: `''` *(empty string)*.\r\n"
+        "description": "Optional. The resource ID of an existing DDoS Network Protection Plan that you wish to link to this Virtual Network.\n\n**Example Expected Values:**\n- `''` (empty string)\n- DDoS Netowrk Protection Plan Resource ID: `/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/ddosProtectionPlans/xxxxxxxxxx`\n\n- Type: String\n- Default value: `''` *(empty string)*.\n"
       }
     },
     "virtualNetworkPeeringEnabled": {
@@ -211,7 +211,7 @@
       "defaultValue": false,
       "metadata": {
         "example": true,
-        "description": "Optional. Whether to enable peering/connection with the supplied hub Virtual Network or Virtual WAN Virtual Hub.\r\n\r\n- Type: Boolean.\r\n"
+        "description": "Optional. Whether to enable peering/connection with the supplied hub Virtual Network or Virtual WAN Virtual Hub.\n\n- Type: Boolean.\n"
       }
     },
     "hubNetworkResourceId": {
@@ -219,7 +219,7 @@
       "defaultValue": "",
       "metadata": {
         "example": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualNetworks/xxxxxxxxxx",
-        "description": "Optional. The resource ID of the Virtual Network or Virtual WAN Hub in the hub to which the created Virtual Network, by this module, will be peered/connected to via Virtual Network Peering or a Virtual WAN Virtual Hub Connection.\r\n\r\n**Example Expected Values:**\r\n- `''` (empty string)\r\n- Hub Virtual Network Resource ID: `/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualNetworks/xxxxxxxxxx`\r\n- Virtual WAN Virtual Hub Resource ID: `/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualHubs/xxxxxxxxxx`\r\n\r\n- Type: String\r\n- Default value: `''` *(empty string)*.\r\n"
+        "description": "Optional. The resource ID of the Virtual Network or Virtual WAN Hub in the hub to which the created Virtual Network, by this module, will be peered/connected to via Virtual Network Peering or a Virtual WAN Virtual Hub Connection.\n\n**Example Expected Values:**\n- `''` (empty string)\n- Hub Virtual Network Resource ID: `/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualNetworks/xxxxxxxxxx`\n- Virtual WAN Virtual Hub Resource ID: `/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualHubs/xxxxxxxxxx`\n\n- Type: String\n- Default value: `''` *(empty string)*.\n"
       }
     },
     "virtualNetworkUseRemoteGateways": {
@@ -227,7 +227,7 @@
       "defaultValue": true,
       "metadata": {
         "example": true,
-        "description": "Optional. Enables the use of remote gateways in the specified hub virtual network.\r\n\r\n> **IMPORTANT:** If no gateways exist in the hub virtual network, set this to `false`, otherwise peering will fail to create.\r\n\r\n- Type: Boolean.\r\n"
+        "description": "Optional. Enables the use of remote gateways in the specified hub virtual network.\n\n> **IMPORTANT:** If no gateways exist in the hub virtual network, set this to `false`, otherwise peering will fail to create.\n\n- Type: Boolean.\n"
       }
     },
     "virtualNetworkVwanEnableInternetSecurity": {
@@ -235,7 +235,7 @@
       "defaultValue": true,
       "metadata": {
         "example": true,
-        "description": "Optional. Enables the ability for the Virtual WAN Hub Connection to learn the default route 0.0.0.0/0 from the Hub.\r\n\r\n- Type: Boolean.\r\n"
+        "description": "Optional. Enables the ability for the Virtual WAN Hub Connection to learn the default route 0.0.0.0/0 from the Hub.\n\n- Type: Boolean.\n"
       }
     },
     "virtualNetworkVwanAssociatedRouteTableResourceId": {
@@ -243,7 +243,7 @@
       "defaultValue": "",
       "metadata": {
         "example": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualHubs/xxxxxxxxx/hubRouteTables/xxxxxxxxx",
-        "description": "Optional. The resource ID of the virtual hub route table to associate to the virtual hub connection (this virtual network). If left blank/empty the `defaultRouteTable` will be associated.\r\n\r\n- Type: String\r\n- Default value: `''` *(empty string)* = Which means if the parameter `virtualNetworkPeeringEnabled` is `true` and also the parameter `hubNetworkResourceId` is not empty then the `defaultRouteTable` will be associated of the provided Virtual Hub in the parameter `hubNetworkResourceId`.\r\n    - e.g. `/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualHubs/xxxxxxxxx/hubRouteTables/defaultRouteTable`.\r\n"
+        "description": "Optional. The resource ID of the virtual hub route table to associate to the virtual hub connection (this virtual network). If left blank/empty the `defaultRouteTable` will be associated.\n\n- Type: String\n- Default value: `''` *(empty string)* = Which means if the parameter `virtualNetworkPeeringEnabled` is `true` and also the parameter `hubNetworkResourceId` is not empty then the `defaultRouteTable` will be associated of the provided Virtual Hub in the parameter `hubNetworkResourceId`.\n    - e.g. `/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualHubs/xxxxxxxxx/hubRouteTables/defaultRouteTable`.\n"
       }
     },
     "virtualNetworkVwanPropagatedRouteTablesResourceIds": {
@@ -258,7 +258,7 @@
             "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualHubs/xxxxxxxxx/hubRouteTables/xxxxxxxxx"
           }
         ],
-        "description": "Optional. An array of of objects of virtual hub route table resource IDs to propagate routes to. If left blank/empty the `defaultRouteTable` will be propagated to only.\r\n\r\nEach object must contain the following `key`:\r\n- `id` = The Resource ID of the Virtual WAN Virtual Hub Route Table IDs you wish to propagate too\r\n\r\n> See below [example in parameter file](#parameter-file)\r\n\r\n> **IMPORTANT:** If you provide any Route Tables in this array of objects you must ensure you include also the `defaultRouteTable` Resource ID as an object in the array as it is not added by default when a value is provided for this parameter.\r\n\r\n- Type: `[]` Array\r\n- Default value: `[]` *(empty array)*.\r\n"
+        "description": "Optional. An array of of objects of virtual hub route table resource IDs to propagate routes to. If left blank/empty the `defaultRouteTable` will be propagated to only.\n\nEach object must contain the following `key`:\n- `id` = The Resource ID of the Virtual WAN Virtual Hub Route Table IDs you wish to propagate too\n\n> See below [example in parameter file](#parameter-file)\n\n> **IMPORTANT:** If you provide any Route Tables in this array of objects you must ensure you include also the `defaultRouteTable` Resource ID as an object in the array as it is not added by default when a value is provided for this parameter.\n\n- Type: `[]` Array\n- Default value: `[]` *(empty array)*.\n"
       }
     },
     "virtualNetworkVwanPropagatedLabels": {
@@ -269,7 +269,7 @@
           "default",
           "anotherLabel"
         ],
-        "description": "Optional. An array of virtual hub route table labels to propagate routes to. If left blank/empty the default label will be propagated to only.\r\n\r\n- Type: `[]` Array\r\n- Default value: `[]` *(empty array)*.\r\n"
+        "description": "Optional. An array of virtual hub route table labels to propagate routes to. If left blank/empty the default label will be propagated to only.\n\n- Type: `[]` Array\n- Default value: `[]` *(empty array)*.\n"
       }
     },
     "vHubRoutingIntentEnabled": {
@@ -277,7 +277,7 @@
       "defaultValue": false,
       "metadata": {
         "example": false,
-        "description": "Optional. Indicates whether routing intent is enabled on the Virtual Hub within the Virtual WAN.\r\n\r\n- Type: Boolean.\r\n"
+        "description": "Optional. Indicates whether routing intent is enabled on the Virtual Hub within the Virtual WAN.\n\n- Type: Boolean.\n"
       }
     },
     "roleAssignmentEnabled": {
@@ -285,7 +285,7 @@
       "defaultValue": false,
       "metadata": {
         "example": true,
-        "description": "Optional. Whether to create role assignments or not. If true, supply the array of role assignment objects in the parameter called `roleAssignments`.\r\n\r\n- Type: Boolean.\r\n"
+        "description": "Optional. Whether to create role assignments or not. If true, supply the array of role assignment objects in the parameter called `roleAssignments`.\n\n- Type: Boolean.\n"
       }
     },
     "roleAssignments": {
@@ -314,7 +314,7 @@
             "relativeScope": "/resourceGroups/rsg-networking-001"
           }
         ],
-        "description": "Optional. Supply an array of objects containing the details of the role assignments to create.\r\n\r\nEach object must contain the following `keys`:\r\n- `principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.\r\n- `definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:\r\n  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Network Contributor, Role Based Access Control Administrator (Preview), User Access Administrator, Security Admin). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.\r\n  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition\r\n    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`\r\n  - You can provide the RBAC role Id of a Built-in RBAC Role Definition\r\n    - e.g. `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`\r\n- `relativeScope` = 2 options can be provided for input value:\r\n    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope\r\n    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group\r\n\r\n> See below [example in parameter file](#parameter-file) of various combinations\r\n\r\n- Type: `[]` Array\r\n- Default value: `[]` *(empty array)*.\r\n"
+        "description": "Optional. Supply an array of objects containing the details of the role assignments to create.\n\nEach object must contain the following `keys`:\n- `principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.\n- `definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:\n  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Network Contributor, Role Based Access Control Administrator (Preview), User Access Administrator, Security Admin). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.\n  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition\n    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`\n  - You can provide the RBAC role Id of a Built-in RBAC Role Definition\n    - e.g. `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`\n- `relativeScope` = 2 options can be provided for input value:\n    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope\n    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group\n\n> See below [example in parameter file](#parameter-file) of various combinations\n\n- Type: `[]` Array\n- Default value: `[]` *(empty array)*.\n"
       }
     },
     "enableTelemetry": {
@@ -369,7 +369,7 @@
     },
     "deploymentScriptStorageAccountName": {
       "type": "string",
-      "defaultValue": "[format('stglzds{0}', deployment().location)]",
+      "defaultValue": "[format('stgds{0}', substring(uniqueString(deployment().name, parameters('virtualNetworkLocation')), 0, 4))]",
       "metadata": {
         "description": "Optional. The name of the storage account for the deployment script."
       }
@@ -457,7 +457,7 @@
           ],
           "Microsoft.Storage": []
         },
-        "description": "Optional. An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.\r\n\r\n- Type: `{}` Object\r\n- Default value: `{\r\n  'Microsoft.ApiManagement'             : []\r\n    'Microsoft.AppPlatform'             : []\r\n    'Microsoft.Authorization'           : []\r\n    'Microsoft.Automation'              : []\r\n    'Microsoft.AVS'                     : []\r\n    'Microsoft.Blueprint'               : []\r\n    'Microsoft.BotService'              : []\r\n    'Microsoft.Cache'                   : []\r\n    'Microsoft.Cdn'                     : []\r\n    'Microsoft.CognitiveServices'       : []\r\n    'Microsoft.Compute'                 : []\r\n    'Microsoft.ContainerInstance'       : []\r\n    'Microsoft.ContainerRegistry'       : []\r\n    'Microsoft.ContainerService'        : []\r\n    'Microsoft.CostManagement'          : []\r\n    'Microsoft.CustomProviders'         : []\r\n    'Microsoft.Databricks'              : []\r\n    'Microsoft.DataLakeAnalytics'       : []\r\n    'Microsoft.DataLakeStore'           : []\r\n    'Microsoft.DataMigration'           : []\r\n    'Microsoft.DataProtection'          : []\r\n    'Microsoft.DBforMariaDB'            : []\r\n    'Microsoft.DBforMySQL'              : []\r\n    'Microsoft.DBforPostgreSQL'         : []\r\n    'Microsoft.DesktopVirtualization'   : []\r\n    'Microsoft.Devices'                 : []\r\n    'Microsoft.DevTestLab'              : []\r\n    'Microsoft.DocumentDB'              : []\r\n    'Microsoft.EventGrid'               : []\r\n    'Microsoft.EventHub'                : []\r\n    'Microsoft.HDInsight'               : []\r\n    'Microsoft.HealthcareApis'          : []\r\n    'Microsoft.GuestConfiguration'      : []\r\n    'Microsoft.KeyVault'                : []\r\n    'Microsoft.Kusto'                   : []\r\n    'microsoft.insights'                : []\r\n    'Microsoft.Logic'                   : []\r\n    'Microsoft.MachineLearningServices' : []\r\n    'Microsoft.Maintenance'             : []\r\n    'Microsoft.ManagedIdentity'         : []\r\n    'Microsoft.ManagedServices'         : []\r\n    'Microsoft.Management'              : []\r\n    'Microsoft.Maps'                    : []\r\n    'Microsoft.MarketplaceOrdering'     : []\r\n    'Microsoft.Media'                   : []\r\n    'Microsoft.MixedReality'            : []\r\n    'Microsoft.Network'                 : []\r\n    'Microsoft.NotificationHubs'        : []\r\n    'Microsoft.OperationalInsights'     : []\r\n    'Microsoft.OperationsManagement'    : []\r\n    'Microsoft.PolicyInsights'          : []\r\n    'Microsoft.PowerBIDedicated'        : []\r\n    'Microsoft.Relay'                   : []\r\n    'Microsoft.RecoveryServices'        : []\r\n    'Microsoft.Resources'               : []\r\n    'Microsoft.Search'                  : []\r\n    'Microsoft.Security'                : []\r\n    'Microsoft.SecurityInsights'        : []\r\n    'Microsoft.ServiceBus'              : []\r\n    'Microsoft.ServiceFabric'           : []\r\n    'Microsoft.Sql'                     : []\r\n    'Microsoft.Storage'                 : []\r\n    'Microsoft.StreamAnalytics'         : []\r\n    'Microsoft.TimeSeriesInsights'      : []\r\n    'Microsoft.Web'                     : []\r\n}`.\r\n"
+        "description": "Optional. An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.\n\n- Type: `{}` Object\n- Default value: `{\n  'Microsoft.ApiManagement'             : []\n    'Microsoft.AppPlatform'             : []\n    'Microsoft.Authorization'           : []\n    'Microsoft.Automation'              : []\n    'Microsoft.AVS'                     : []\n    'Microsoft.Blueprint'               : []\n    'Microsoft.BotService'              : []\n    'Microsoft.Cache'                   : []\n    'Microsoft.Cdn'                     : []\n    'Microsoft.CognitiveServices'       : []\n    'Microsoft.Compute'                 : []\n    'Microsoft.ContainerInstance'       : []\n    'Microsoft.ContainerRegistry'       : []\n    'Microsoft.ContainerService'        : []\n    'Microsoft.CostManagement'          : []\n    'Microsoft.CustomProviders'         : []\n    'Microsoft.Databricks'              : []\n    'Microsoft.DataLakeAnalytics'       : []\n    'Microsoft.DataLakeStore'           : []\n    'Microsoft.DataMigration'           : []\n    'Microsoft.DataProtection'          : []\n    'Microsoft.DBforMariaDB'            : []\n    'Microsoft.DBforMySQL'              : []\n    'Microsoft.DBforPostgreSQL'         : []\n    'Microsoft.DesktopVirtualization'   : []\n    'Microsoft.Devices'                 : []\n    'Microsoft.DevTestLab'              : []\n    'Microsoft.DocumentDB'              : []\n    'Microsoft.EventGrid'               : []\n    'Microsoft.EventHub'                : []\n    'Microsoft.HDInsight'               : []\n    'Microsoft.HealthcareApis'          : []\n    'Microsoft.GuestConfiguration'      : []\n    'Microsoft.KeyVault'                : []\n    'Microsoft.Kusto'                   : []\n    'microsoft.insights'                : []\n    'Microsoft.Logic'                   : []\n    'Microsoft.MachineLearningServices' : []\n    'Microsoft.Maintenance'             : []\n    'Microsoft.ManagedIdentity'         : []\n    'Microsoft.ManagedServices'         : []\n    'Microsoft.Management'              : []\n    'Microsoft.Maps'                    : []\n    'Microsoft.MarketplaceOrdering'     : []\n    'Microsoft.Media'                   : []\n    'Microsoft.MixedReality'            : []\n    'Microsoft.Network'                 : []\n    'Microsoft.NotificationHubs'        : []\n    'Microsoft.OperationalInsights'     : []\n    'Microsoft.OperationsManagement'    : []\n    'Microsoft.PolicyInsights'          : []\n    'Microsoft.PowerBIDedicated'        : []\n    'Microsoft.Relay'                   : []\n    'Microsoft.RecoveryServices'        : []\n    'Microsoft.Resources'               : []\n    'Microsoft.Search'                  : []\n    'Microsoft.Security'                : []\n    'Microsoft.SecurityInsights'        : []\n    'Microsoft.ServiceBus'              : []\n    'Microsoft.ServiceFabric'           : []\n    'Microsoft.Sql'                     : []\n    'Microsoft.Storage'                 : []\n    'Microsoft.StreamAnalytics'         : []\n    'Microsoft.TimeSeriesInsights'      : []\n    'Microsoft.Web'                     : []\n}`.\n"
       }
     }
   },
@@ -732,7 +732,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.54.24096",
-              "templateHash": "17492480939833436471"
+              "templateHash": "8792098562569877950"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -8257,7 +8257,7 @@
                     "value": "StorageV2"
                   },
                   "skuName": {
-                    "value": "Standard_LRS"
+                    "value": "Standard_ZRS"
                   },
                   "networkAcls": {
                     "value": {
