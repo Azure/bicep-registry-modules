@@ -1212,6 +1212,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         vmSize: 'Standard_DS2_v2'
       }
     ]
+    autoUpgradeProfileUpgradeChannel: 'stable'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1357,6 +1358,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "vmSize": "Standard_DS2_v2"
         }
       ]
+    },
+    "autoUpgradeProfileUpgradeChannel": {
+      "value": "stable"
     },
     "diagnosticSettings": {
       "value": [
