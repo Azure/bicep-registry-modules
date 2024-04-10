@@ -1,4 +1,6 @@
 targetScope = 'subscription'
+metadata name = 'Role Assignments (Subscription scope)'
+metadata description = 'This module deploys a Role Assignment at a Subscription scope using minimal parameters.'
 
 // ========== //
 // Parameters //

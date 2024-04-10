@@ -1,5 +1,10 @@
 # Role Assignments (All scopes) `[Microsoft.Authorization/roleAssignments]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.
 
 ## Navigation
@@ -25,14 +30,17 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/authorization/role-assignment:<version>`.
 
-- [Mg.Common](#example-1-mgcommon)
-- [Mg.Min](#example-2-mgmin)
-- [Rg.Common](#example-3-rgcommon)
-- [Rg.Min](#example-4-rgmin)
-- [Sub.Common](#example-5-subcommon)
-- [Sub.Min](#example-6-submin)
+- [Role Assignments (Management Group scope)](#example-1-role-assignments-management-group-scope)
+- [Role Assignments (Management Group scope)](#example-2-role-assignments-management-group-scope)
+- [Role Assignments (Resource Group)](#example-3-role-assignments-resource-group)
+- [Role Assignments (Resource Group)](#example-4-role-assignments-resource-group)
+- [Role Assignments (Subscription scope)](#example-5-role-assignments-subscription-scope)
+- [Role Assignments (Subscription scope)](#example-6-role-assignments-subscription-scope)
 
-### Example 1: _Mg.Common_
+### Example 1: _Role Assignments (Management Group scope)_
+
+This module deploys a Role Assignment at a Management Group scope using common parameters.
+
 
 <details>
 
@@ -89,7 +97,10 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 2: _Mg.Min_
+### Example 2: _Role Assignments (Management Group scope)_
+
+This module deploys a Role Assignment at a Management Group scope using minimal parameters.
+
 
 <details>
 
@@ -138,7 +149,10 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 3: _Rg.Common_
+### Example 3: _Role Assignments (Resource Group)_
+
+This module deploys a Role Assignment at a Resource Group scope using common parameters.
+
 
 <details>
 
@@ -199,7 +213,10 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 4: _Rg.Min_
+### Example 4: _Role Assignments (Resource Group)_
+
+This module deploys a Role Assignment at a Resource Group scope using minimal parameters.
+
 
 <details>
 
@@ -256,7 +273,10 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 5: _Sub.Common_
+### Example 5: _Role Assignments (Subscription scope)_
+
+This module deploys a Role Assignment at a Subscription scope using common parameters.
+
 
 <details>
 
@@ -313,7 +333,10 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 6: _Sub.Min_
+### Example 6: _Role Assignments (Subscription scope)_
+
+This module deploys a Role Assignment at a Subscription scope using minimal parameters.
+
 
 <details>
 
@@ -384,7 +407,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 | [`conditionVersion`](#parameter-conditionversion) | string | Version of the condition. Currently accepted value is "2.0". |
 | [`delegatedManagedIdentityResourceId`](#parameter-delegatedmanagedidentityresourceid) | string | ID of the delegated managed identity resource. |
 | [`description`](#parameter-description) | string | The description of the role assignment. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location deployment metadata. |
 | [`managementGroupId`](#parameter-managementgroupid) | string | Group ID of the Management Group to assign the RBAC role to. If not provided, will use the current scope for deployment. |
 | [`principalType`](#parameter-principaltype) | string | The principal type of the assigned principal ID. |
@@ -445,7 +468,7 @@ The description of the role assignment.
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool

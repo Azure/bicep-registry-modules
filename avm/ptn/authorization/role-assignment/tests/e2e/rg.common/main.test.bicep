@@ -1,4 +1,6 @@
 targetScope = 'subscription'
+metadata name = 'Role Assignments (Resource Group)'
+metadata description = 'This module deploys a Role Assignment at a Resource Group scope using common parameters.'
 
 // ========== //
 // Parameters //
