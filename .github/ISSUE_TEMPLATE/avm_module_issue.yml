@@ -159,7 +159,7 @@ body:
         # - "avm/res/resources/tags"
         - "avm/res/search/search-service"
         - "avm/res/service-bus/namespace"
-        # - "avm/res/service-fabric/cluster"
+        - "avm/res/service-fabric/cluster"
         - "avm/res/signal-r-service/signal-r"
         - "avm/res/signal-r-service/web-pub-sub"
         # - "avm/res/sql/managed-instance"
