@@ -5,8 +5,8 @@ metadata owner = 'Azure/module-maintainers'
 @description('Conditional. The name of the parent DNS Fowarding Rule Set. Required if the template is used in a standalone deployment.')
 param dnsForwardingRulesetName string
 
-@description('Optional. The name of the virtual network link.')
-param name string?
+@description('Required. The name of the virtual network link.')
+param name string
 
 @description('Required. Link to another virtual network resource ID.')
 param virtualNetworkResourceId string
@@ -19,7 +19,7 @@ resource dnsForwardingRuleset 'Microsoft.Network/dnsForwardingRulesets@2022-07-0
 }
 
 resource virtualNetworkLink 'Microsoft.Network/dnsForwardingRulesets/virtualNetworkLinks@2022-07-01' = {
-  name: name ?? '${substring(uniqueString(subscription().id),0,8)}-${substring(uniqueString(resourceGroup().id),0,8)}-${last(split(virtualNetworkResourceId, '/'))}-vnetlink'
+  name: name ?? '${last(split(virtualNetworkResourceId, '/'))}-vnetlink'
   parent: dnsForwardingRuleset
   properties: {
     virtualNetwork: {
