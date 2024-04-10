@@ -14,7 +14,7 @@ param resourceGroupName string = 'NetworkWatcherRG' // Note, this is the default
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
-@description('Optional. The location of the resource group to deploy resources to.') // Note, we set the location of the NetworkWatcherRG to avoid conflicts with already existing NetworkWatcherRG in westeurope
+@description('Optional. The location of the resource group to deploy resources to.') // Note, we set the location of the NetworkWatcherRG to avoid conflicts with the already existing NetworkWatcherRG
 param resourceGroupLocation string = 'uksouth'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
