@@ -14,13 +14,15 @@ param resourceGroupName string = 'NetworkWatcherRG' // Note, this is the default
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
+@description('Optional. The location of the resource group to deploy resources to.') // Note, we set the location of the NetworkWatcherRG to avoid conflicts with already existing NetworkWatcherRG in westeurope
+param resourceGroupLocation string = 'uksouth'
+
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'nnwmin'
 
+#disable-next-line no-unused-params
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
-
-var resourceGroupLocation = 'westeurope'
 
 // ============ //
 // Dependencies //
