@@ -309,12 +309,7 @@ param additionalUnattendContent array = []
 @description('Optional. Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. - WinRMConfiguration object.')
 param winRM array = []
 
-@description('Required. The configuration profile of automanage.')
-@allowed([
-  '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
-  '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest'
-  ''
-])
+@description('Optional. The configuration profile of automanage. Either \'/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction\', \'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest\' or the resource Id of custom profile.')
 param configurationProfile string = ''
 
 var publicKeysFormatted = [

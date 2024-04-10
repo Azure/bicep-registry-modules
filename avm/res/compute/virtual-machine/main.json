@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "2943688867779455356"
+      "templateHash": "15250414045917680238"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -723,13 +723,8 @@
     "configurationProfile": {
       "type": "string",
       "defaultValue": "",
-      "allowedValues": [
-        "/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction",
-        "/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest",
-        ""
-      ],
       "metadata": {
-        "description": "Required. The configuration profile of automanage."
+        "description": "Optional. The configuration profile of automanage. Either '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction', 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest' or the resource Id of custom profile."
       }
     }
   },

@@ -2937,7 +2937,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`adminUsername`](#parameter-adminusername) | securestring | Administrator username. |
-| [`configurationProfile`](#parameter-configurationprofile) | string | The configuration profile of automanage. |
 | [`imageReference`](#parameter-imagereference) | object | OS image reference. In case of marketplace images, it's the combination of the publisher, offer, sku, version attributes. In case of custom images it's the resource ID of the custom image. |
 | [`name`](#parameter-name) | string | The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory. |
 | [`nicConfigurations`](#parameter-nicconfigurations) | array | Configures NICs and PIPs. |
@@ -2971,6 +2970,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`bypassPlatformSafetyChecksOnUserSchedule`](#parameter-bypassplatformsafetychecksonuserschedule) | bool | Enables customer to schedule patching without accidental upgrades. |
 | [`certificatesToBeInstalled`](#parameter-certificatestobeinstalled) | array | Specifies set of certificates that should be installed onto the virtual machine. |
 | [`computerName`](#parameter-computername) | string | Can be used if the computer name needs to be different from the Azure VM resource name. If not used, the resource name will be used as computer name. |
+| [`configurationProfile`](#parameter-configurationprofile) | string | The configuration profile of automanage. Either '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction', 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest' or the resource Id of custom profile. |
 | [`customData`](#parameter-customdata) | string | Custom data associated to the VM, this value will be automatically converted into base64 to account for the expected VM format. |
 | [`dataDisks`](#parameter-datadisks) | array | Specifies the data disks. For security reasons, it is recommended to specify DiskEncryptionSet into the dataDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs. |
 | [`dedicatedHostId`](#parameter-dedicatedhostid) | string | Specifies resource ID about the dedicated host that the virtual machine resides in. |
@@ -3030,22 +3030,6 @@ Administrator username.
 
 - Required: Yes
 - Type: securestring
-
-### Parameter: `configurationProfile`
-
-The configuration profile of automanage.
-
-- Required: No
-- Type: string
-- Default: `''`
-- Allowed:
-  ```Bicep
-  [
-    ''
-    '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest'
-    '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
-  ]
-  ```
 
 ### Parameter: `imageReference`
 
@@ -3293,6 +3277,14 @@ Can be used if the computer name needs to be different from the Azure VM resourc
 - Required: No
 - Type: string
 - Default: `[parameters('name')]`
+
+### Parameter: `configurationProfile`
+
+The configuration profile of automanage. Either '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction', 'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest' or the resource Id of custom profile.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `customData`
 
