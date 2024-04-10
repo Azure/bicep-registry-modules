@@ -111,7 +111,7 @@ resource tagContributorRoleDefinition 'Microsoft.Authorization/roleDefinitions@2
 }
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(subscription().id, tagContributorRoleDefinition.id)
+  name: guid(subscription().id, tagContributorRoleDefinition.id, serviceShort)
   properties: {
     principalId: policySetAssignment.identity.principalId
     principalType: 'ServicePrincipal'
