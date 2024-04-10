@@ -119,7 +119,11 @@ module waitForDeployment 'main.wait.bicep' = {
     serviceShort: serviceShort
     resourceLocation: resourceLocation
     waitTimeInSeconds: '3000' // 50 min
-    tags: varTags
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 
