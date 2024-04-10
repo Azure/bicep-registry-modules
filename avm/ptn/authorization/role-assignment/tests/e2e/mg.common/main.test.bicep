@@ -11,7 +11,7 @@ metadata description = 'This module deploys a Role Assignment at a Management Gr
 param resourceGroupName string = 'dep-${namePrefix}-authorization.roleassignments-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param location string = deployment().location
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'aramgcom'
@@ -26,11 +26,11 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 module nestedDependencies 'interim.dependencies.bicep' = {
   scope: subscription('[[subscriptionId]]')
-  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     resourceGroupName: resourceGroupName
-    location: location
+    location: resourceLocation
   }
 }
 
