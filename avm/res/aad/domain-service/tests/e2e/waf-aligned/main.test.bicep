@@ -80,8 +80,16 @@ module testDeployment '../../../main.bicep' = {
     diagnosticSettings: [
       {
         name: 'customSetting'
-        metricCategories: []
-        logCategoriesAndGroups: []
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        logCategoriesAndGroups: [
+          {
+            category: 'AllLogs'
+          }
+        ]
         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
@@ -140,8 +148,16 @@ module testDeploymentIdem '../../../main.bicep' = {
     diagnosticSettings: [
       {
         name: 'customSetting'
-        metricCategories: []
-        logCategoriesAndGroups: []
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        logCategoriesAndGroups: [
+          {
+            category: 'AllLogs'
+          }
+        ]
         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
