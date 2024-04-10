@@ -3,7 +3,7 @@ metadata description = 'This module deploys an Azure Active Directory Domain Ser
 metadata owner = 'Azure/module-maintainers'
 
 @minLength(1)
-@maxLength(19) // 15 characters for domain name + 4 characters for suffix
+@maxLength(19) // 15 characters for domain name + 4 characters for the suffix
 @description('Optional. The name of the AADDS resource. Defaults to the domain name specific to the Azure ADDS service. The prefix of your specified domain name (such as dscontoso in the dscontoso.com domain name) must contain 15 or fewer characters.')
 param name string = domainName
 
