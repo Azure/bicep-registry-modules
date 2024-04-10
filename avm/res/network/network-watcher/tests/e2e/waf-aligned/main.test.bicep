@@ -20,7 +20,7 @@ param serviceShort string = 'nnwwaf'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-var resourceGroupLocation = resourceLocation == 'westeurope' ? 'westeurope' : 'westeurope'
+var resourceGroupLocation = 'westeurope'
 
 // ============ //
 // Dependencies //
@@ -42,7 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
     secondNetworkSecurityGroupName: 'dep-${namePrefix}-nsg-2-${serviceShort}'
     virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    location: resourceGroupLocation
+    location: resourceLocation
   }
 }
 
@@ -56,7 +56,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceGroupLocation
+    location: resourceLocation
   }
 }
 
@@ -67,10 +67,10 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceGroupLocation)}-test-${serviceShort}-${iteration}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
-    name: 'NetworkWatcher_${resourceGroupLocation}'
-    location: resourceGroupLocation
+    name: 'NetworkWatcher_${resourceLocation}'
+    location: resourceLocation
     connectionMonitors: [
       {
         name: '${namePrefix}-${serviceShort}-cm-001'

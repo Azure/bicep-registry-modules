@@ -20,7 +20,7 @@ param serviceShort string = 'nnwmin'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-var resourceGroupLocation = resourceLocation == 'westeurope' ? 'westeurope' : 'westeurope'
+var resourceGroupLocation = 'westeurope'
 
 // ============ //
 // Dependencies //
@@ -40,9 +40,9 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceGroupLocation)}-test-${serviceShort}-${iteration}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
     // Note: This value is not required and only set to enable testing
-    location: resourceGroupLocation
+    location: resourceLocation
   }
 }]
