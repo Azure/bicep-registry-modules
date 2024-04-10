@@ -8,7 +8,7 @@ metadata description = 'This instance deploys the module with the minimum set of
 // ========== //
 
 @sys.description('Optional. The location to deploy resources to.')
-param location string = deployment().location
+param resourceLocation string = deployment().location
 
 @sys.description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'pirsubwaf'
@@ -95,7 +95,7 @@ resource policySet 'Microsoft.Authorization/policySetDefinitions@2021-06-01' = {
 
 resource policySetAssignment 'Microsoft.Authorization/policyAssignments@2021-06-01' = {
   name: 'dep-${namePrefix}-psa-${serviceShort}'
-  location: location
+  location: resourceLocation
   identity: {
     type: 'SystemAssigned'
   }
@@ -127,7 +127,7 @@ module testDeployment '../../../subscription/main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: location
+    location: resourceLocation
     policyAssignmentId: policySetAssignment.id
     policyDefinitionReferenceId: policySet.properties.policyDefinitions[0].policyDefinitionReferenceId
     filtersLocations: []
