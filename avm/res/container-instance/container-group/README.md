@@ -1021,6 +1021,7 @@ The resource requirements of the container instance.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`limits`](#parameter-containerspropertiesresourceslimits) | object | The resource limits of this container instance. |
+| [`securityContext`](#parameter-containerspropertiesresourcessecuritycontext) | object | The security context of the container instance. |
 
 ### Parameter: `containers.properties.resources.requests`
 
@@ -1161,6 +1162,87 @@ The memory limit in GB of this container instance. To specify a decimal value, u
 
 - Required: No
 - Type: int
+
+### Parameter: `containers.properties.resources.securityContext`
+
+The security context of the container instance.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowPrivilegeEscalation`](#parameter-containerspropertiesresourcessecuritycontextallowprivilegeescalation) | bool | Whether privilege escalation is allowed for the container. |
+| [`capabilities`](#parameter-containerspropertiesresourcessecuritycontextcapabilities) | object | The capabilities to add or drop for the container. |
+| [`privileged`](#parameter-containerspropertiesresourcessecuritycontextprivileged) | bool | Whether the container is run in privileged mode. |
+| [`runAsGroup`](#parameter-containerspropertiesresourcessecuritycontextrunasgroup) | int | The GID to run the container as. |
+| [`runAsUser`](#parameter-containerspropertiesresourcessecuritycontextrunasuser) | int | The UID to run the container as. |
+| [`seccompProfile`](#parameter-containerspropertiesresourcessecuritycontextseccompprofile) | string | The seccomp profile to use for the container. |
+
+### Parameter: `containers.properties.resources.securityContext.allowPrivilegeEscalation`
+
+Whether privilege escalation is allowed for the container.
+
+- Required: No
+- Type: bool
+
+### Parameter: `containers.properties.resources.securityContext.capabilities`
+
+The capabilities to add or drop for the container.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`add`](#parameter-containerspropertiesresourcessecuritycontextcapabilitiesadd) | array | The list of capabilities to add. |
+| [`drop`](#parameter-containerspropertiesresourcessecuritycontextcapabilitiesdrop) | array | The list of capabilities to drop. |
+
+### Parameter: `containers.properties.resources.securityContext.capabilities.add`
+
+The list of capabilities to add.
+
+- Required: No
+- Type: array
+
+### Parameter: `containers.properties.resources.securityContext.capabilities.drop`
+
+The list of capabilities to drop.
+
+- Required: No
+- Type: array
+
+### Parameter: `containers.properties.resources.securityContext.privileged`
+
+Whether the container is run in privileged mode.
+
+- Required: No
+- Type: bool
+
+### Parameter: `containers.properties.resources.securityContext.runAsGroup`
+
+The GID to run the container as.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.properties.resources.securityContext.runAsUser`
+
+The UID to run the container as.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.properties.resources.securityContext.seccompProfile`
+
+The seccomp profile to use for the container.
+
+- Required: No
+- Type: string
 
 ### Parameter: `containers.properties.command`
 
