@@ -622,7 +622,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
   ]
 }
 
-resource vm_configurationProfileAssignment 'Microsoft.Automanage/configurationProfileAssignments@2021-04-30-preview' =
+resource vm_configurationProfileAssignment 'Microsoft.Automanage/configurationProfileAssignments@2022-05-04' =
   if (!empty(configurationProfile)) {
     name: 'default'
     properties: {

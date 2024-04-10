@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "18064078960145066207"
+      "templateHash": "2943688867779455356"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -910,7 +910,7 @@
     "vm_configurationProfileAssignment": {
       "condition": "[not(empty(parameters('configurationProfile')))]",
       "type": "Microsoft.Automanage/configurationProfileAssignments",
-      "apiVersion": "2021-04-30-preview",
+      "apiVersion": "2022-05-04",
       "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
       "name": "default",
       "properties": {
