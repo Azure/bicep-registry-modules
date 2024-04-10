@@ -34,8 +34,13 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceGroupLocation
 }
 
+resource resourceGroupDependencies 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: 'dep-${namePrefix}-network.networkwatcher-${serviceShort}-rg'
+  location: resourceLocation
+}
+
 module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
+  scope: resourceGroupDependencies
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
@@ -50,7 +55,7 @@ module nestedDependencies 'dependencies.bicep' = {
 // Diagnostics
 // ===========
 module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
-  scope: resourceGroup
+  scope: resourceGroupDependencies
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
