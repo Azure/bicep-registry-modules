@@ -52,7 +52,7 @@ jobs:
   job_psrule_test: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "PSRule [${{ matrix.testCases.name }}]"
     runs-on: ubuntu-latest
-    if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
+    if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
     strategy:
       fail-fast: false
       matrix:
@@ -74,7 +74,7 @@ jobs:
   job_psrule_test_waf_reliability: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "PSRule - WAF Reliability [${{ matrix.testCases.name }}]"
     runs-on: ubuntu-latest
-    if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
+    if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
     strategy:
       fail-fast: false
       matrix:
@@ -101,7 +101,9 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       !cancelled() &&
-      (fromJson(inputs.workflowInput)).deploymentValidation == 'true' && needs.job_module_static_validation.result != 'failure' && needs.job_psrule_test_waf_reliability.result != 'failure'
+      (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
+      needs.job_module_static_validation.result != 'failure' &&
+      needs.job_psrule_test_waf_reliability.result != 'failure'
     needs:
       - job_module_static_validation
       - job_psrule_test_waf_reliability
@@ -136,8 +138,13 @@ jobs:
   job_publish_module: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Publishing"
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && success()
+    # Note: Below always() required in condition due to psrule jobs being skipped for ptn modules not having defaults or waf-aligned folders
+    if: github.ref == 'refs/heads/main' &&
+      always() &&
+      needs.job_module_static_validation.result == 'success' &&
+      needs.job_module_deploy_validation.result == 'success'
     needs:
+      - job_module_static_validation
       - job_module_deploy_validation
     steps:
       - name: "Checkout"
