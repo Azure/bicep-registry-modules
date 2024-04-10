@@ -1,4 +1,4 @@
-name: "avm.res.network.nat-gateway"
+name: "avm.res.aad.domain-service"
 
 on:
   schedule:
@@ -26,15 +26,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.network.nat-gateway.yml"
-      - "avm/res/network/nat-gateway/**"
+      - ".github/workflows/avm.res.aad.domain-service.yml"
+      - "avm/res/aad/domain-service/**"
       - "avm/utilities/pipelines/**"
-      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/network/nat-gateway"
-  workflowPath: ".github/workflows/avm.res.network.nat-gateway.yml"
+  modulePath: "avm/res/aad/domain-service"
+  workflowPath: ".github/workflows/avm.res.aad.domain-service.yml"
 
 concurrency:
   group: ${{ github.workflow }}
