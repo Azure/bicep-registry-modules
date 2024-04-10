@@ -1160,7 +1160,6 @@ Describe 'Governance tests' {
     while ($issueTemplateContent[$startIndex] -notmatch '^\s*#?\s*\-\s+\"avm\/.+\"' -and $startIndex -ne $issueTemplateContent.Length) {
       $startIndex++
     }
-    $startIndex++ # Go one further than dummy value line
 
     $endIndex = $startIndex
     while ($issueTemplateContent[$endIndex] -match '.*- "avm\/.*' -and $endIndex -ne $issueTemplateContent.Length) {
