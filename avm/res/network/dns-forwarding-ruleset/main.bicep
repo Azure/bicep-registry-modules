@@ -25,7 +25,7 @@ param dnsForwardingRulesetOutboundEndpointResourceIds array
 param forwardingRules forwardingRuleType?
 
 @description('Optional. Array of virtual network links.')
-param vNetLinks array?
+param virtualNetworkLinks virtualNetworkLinkType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -103,12 +103,12 @@ module dnsForwardingRuleset_forwardingRule 'forwarding-rule/main.bicep' = [
 ]
 
 module dnsForwardingRuleset_virtualNetworkLinks 'virtual-network-link/main.bicep' = [
-  for (vnetId, index) in (vNetLinks ?? []): {
+  for (virtualNetworkLink, index) in (virtualNetworkLinks ?? []): {
     name: '${uniqueString(deployment().name, location)}-virtualNetworkLink-${index}'
     params: {
-      name: '${last(split(vnetId, '/'))}-vnetlink-${index}'
+      name: virtualNetworkLink.?name ?? '${last(split(virtualNetworkLink.virtualNetworkResourceId, '/'))}-vnetlink-${index}'
       dnsForwardingRulesetName: dnsForwardingRuleset.name
-      virtualNetworkResourceId: !empty(vNetLinks) ? vnetId : null
+      virtualNetworkResourceId: !empty(virtualNetworkLinks) ? virtualNetworkLink.virtualNetworkResourceId : null
     }
   }
 ]
@@ -207,6 +207,14 @@ type forwardingRuleType = {
 
   @description('Optional. Metadata attached to the forwarding rule.')
   metadata: string?
+}[]?
+
+type virtualNetworkLinkType = {
+  @description('Optional. The name of the virtual network link.')
+  name: string?
+
+  @description('Required. The resource ID of the virtual network to link.')
+  virtualNetworkResourceId: string
 }[]?
 
 type targetDnsServers = {
