@@ -203,6 +203,12 @@ Describe 'File/folder tests' -Tag 'Modules' {
         [string] $moduleFolderPath
       )
 
+      # only one Domain-Services instance can be provisioned in a tenant and only one test (the waf-aligned) is possible.
+      if ($moduleFolderName.Equals('res/aad/domain-service')) {
+        Set-ItResult -Skipped -Because 'only one instance of the Domain-Service can be deployed at a time, and as such, also only one test can exist at a time.'
+        return
+      }
+
       $defaultsFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*defaults'
       $defaultsFolder | Should -Not -BeNullOrEmpty
     }
