@@ -27,13 +27,13 @@ on:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.ptn.authorization.role-assignment.yml"
-      - "avm/res/analysis-services/server/**"
+      - "avm/ptn/authorization/role-assignment/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/analysis-services/server"
+  modulePath: "avm/ptn/authorization/role-assignment"
   workflowPath: ".github/workflows/avm.ptn.authorization.role-assignment.yml"
 
 concurrency:

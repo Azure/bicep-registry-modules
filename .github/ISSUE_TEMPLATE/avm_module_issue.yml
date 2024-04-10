@@ -38,13 +38,13 @@ body:
       description: Which existing AVM module is this issue related to?
       options:
         - ""
+        - "avm/ptn/authorization/role-assignments"
         # - "avm/ptn/avd-lza/insights"
         # - "avm/ptn/avd-lza/management-plane"
         # - "avm/ptn/avd-lza/networking"
         # - "avm/ptn/avd-lza/session-hosts"
         # - "avm/ptn/security/security-center"
         # - "avm/res/aad/domain-service"
-        - "avm/ptn/authorization/role-assignments"
         - "avm/res/analysis-services/server"
         - "avm/res/api-management/service"
         - "avm/res/app-configuration/configuration-store"
