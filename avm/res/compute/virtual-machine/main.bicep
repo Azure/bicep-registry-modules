@@ -607,7 +607,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
     evictionPolicy: enableEvictionPolicy ? 'Deallocate' : null
     billingProfile: !empty(priority) && !empty(maxPriceForLowPriorityVm)
       ? {
-          maxPrice: maxPriceForLowPriorityVm
+          maxPrice: json(maxPriceForLowPriorityVm)
         }
       : null
     host: !empty(dedicatedHostId)
