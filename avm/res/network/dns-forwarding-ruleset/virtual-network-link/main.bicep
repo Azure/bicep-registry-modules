@@ -5,8 +5,8 @@ metadata owner = 'Azure/module-maintainers'
 @description('Conditional. The name of the parent DNS Fowarding Rule Set. Required if the template is used in a standalone deployment.')
 param dnsForwardingRulesetName string
 
-@description('Required. The name of the virtual network link.')
-param name string
+@description('Optional. The name of the virtual network link.')
+param name string?
 
 @description('Required. Link to another virtual network resource ID.')
 param virtualNetworkResourceId string

@@ -22,7 +22,6 @@ This template deploys Virtual Network Link in a Dns Forwarding Ruleset.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the virtual network link. |
 | [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | Link to another virtual network resource ID. |
 
 **Conditional parameters**
@@ -36,13 +35,7 @@ This template deploys Virtual Network Link in a Dns Forwarding Ruleset.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`metadata`](#parameter-metadata) | object | Metadata attached to the forwarding rule. |
-
-### Parameter: `name`
-
-The name of the virtual network link.
-
-- Required: Yes
-- Type: string
+| [`name`](#parameter-name) | string | The name of the virtual network link. |
 
 ### Parameter: `virtualNetworkResourceId`
 
@@ -64,6 +57,13 @@ Metadata attached to the forwarding rule.
 
 - Required: No
 - Type: object
+
+### Parameter: `name`
+
+The name of the virtual network link.
+
+- Required: No
+- Type: string
 
 
 ## Outputs
