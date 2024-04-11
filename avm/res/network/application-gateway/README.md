@@ -32,7 +32,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -1056,7 +1056,10 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -1267,11 +1270,16 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     }
     privateEndpoints: [
       {
-        ipConfigurations: {
-          groupId: 'vault'
-          memberName: 'default'
-          privateIPAddress: '10.0.0.10'
-        }
+        ipConfigurations: [
+          {
+            name: 'privateEndpointIpConfig1'
+            properties: {
+              groupId: 'vault'
+              memberName: 'default'
+              privateIPAddress: '10.0.0.10'
+            }
+          }
+        ]
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
@@ -1719,11 +1727,16 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     "privateEndpoints": {
       "value": [
         {
-          "ipConfigurations": {
-            "groupId": "vault",
-            "memberName": "default",
-            "privateIPAddress": "10.0.0.10"
-          },
+          "ipConfigurations": [
+            {
+              "name": "privateEndpointIpConfig1",
+              "properties": {
+                "groupId": "vault",
+                "memberName": "default",
+                "privateIPAddress": "10.0.0.10"
+              }
+            }
+          ],
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],

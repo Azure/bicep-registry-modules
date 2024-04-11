@@ -168,11 +168,16 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ]
         service: 'public'
         subnetResourceId: nestedDependencies.outputs.privateLinkSubnetResourceId
-        ipConfigurations: {
-          groupId: 'vault'
-          memberName: 'default'
-          privateIPAddress: '10.0.0.10'
-        }
+        ipConfigurations: [
+          {
+            name: 'privateEndpointIpConfig1'
+            properties: {
+              groupId: 'vault'
+              memberName: 'default'
+              privateIPAddress: '10.0.0.10'
+            }
+          }
+        ]
         tags: {
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
