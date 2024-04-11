@@ -1270,16 +1270,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     }
     privateEndpoints: [
       {
-        ipConfigurations: [
-          {
-            name: 'privateEndpointIpConfig1'
-            properties: {
-              groupId: 'vault'
-              memberName: 'default'
-              privateIPAddress: '10.0.0.10'
-            }
-          }
-        ]
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
@@ -1727,16 +1717,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     "privateEndpoints": {
       "value": [
         {
-          "ipConfigurations": [
-            {
-              "name": "privateEndpointIpConfig1",
-              "properties": {
-                "groupId": "vault",
-                "memberName": "default",
-                "privateIPAddress": "10.0.0.10"
-              }
-            }
-          ],
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
