@@ -23,7 +23,7 @@ This module deploys a Role Assignment at a Resource Group scope.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`principalId`](#parameter-principalid) | string | The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity). |
-| [`roleDefinitionIdOrName`](#parameter-roledefinitionidorname) | string | You can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleDefinitionIdOrName`](#parameter-roledefinitionidorname) | string | You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 **Optional parameters**
 
@@ -46,7 +46,7 @@ The Principal or Object ID of the Security Principal (User, Group, Service Princ
 
 ### Parameter: `roleDefinitionIdOrName`
 
-You can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
@@ -93,9 +93,8 @@ The description of the role assignment.
 
 The principal type of the assigned principal ID.
 
-- Required: No
+- Required: Yes
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [

@@ -43,7 +43,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-    roleDefinitionIdOrName: 'Storage Queue Data Reader'
+    roleDefinitionIdOrName: 'Resource Policy Contributor'
     principalType: 'ServicePrincipal'
     location: resourceLocation
   }

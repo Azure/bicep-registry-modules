@@ -48,7 +48,7 @@ module testDeployment '../../../resource-group/main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-    roleDefinitionIdOrName: 'Storage Queue Data Reader'
+    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
     principalType: 'ServicePrincipal'
     resourceGroupName: resourceGroup.name
     subscriptionId: subscription().subscriptionId

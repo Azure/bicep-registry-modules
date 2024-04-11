@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "13644754829024725945"
+      "templateHash": "16585133441538520821"
     },
     "name": "Role Assignments (Subscription scope)",
     "description": "This module deploys a Role Assignment at a Subscription scope.",
@@ -15,7 +15,7 @@
     "roleDefinitionIdOrName": {
       "type": "string",
       "metadata": {
-        "description": "Required. You can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+        "description": "Required. You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
       }
     },
     "principalId": {

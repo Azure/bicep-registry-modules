@@ -47,7 +47,7 @@ module testDeployment '../../../subscription/main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-    roleDefinitionIdOrName: 'Backup Reader'
+    roleDefinitionIdOrName: 'Reader'
     description: 'Role Assignment (subscription scope)'
     principalType: 'ServicePrincipal'
     subscriptionId: subscription().subscriptionId

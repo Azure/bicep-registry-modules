@@ -48,7 +48,7 @@ module testDeployment '../../../resource-group/main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-    roleDefinitionIdOrName: 'Backup Reader'
+    roleDefinitionIdOrName: 'Reader'
     description: 'Role Assignment (resource group scope)'
     principalType: 'ServicePrincipal'
     resourceGroupName: resourceGroup.name

@@ -42,7 +42,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-    roleDefinitionIdOrName: 'Backup Reader'
+    roleDefinitionIdOrName: 'Management Group Reader'
     description: 'Role Assignment (management group scope)'
     managementGroupId: last(split(managementGroup().id, '/'))
     principalType: 'ServicePrincipal'

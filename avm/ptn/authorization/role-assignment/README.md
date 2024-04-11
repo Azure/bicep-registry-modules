@@ -52,7 +52,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
   params: {
     // Required parameters
     principalId: '<principalId>'
-    roleDefinitionIdOrName: 'Backup Reader'
+    roleDefinitionIdOrName: 'Management Group Reader'
     // Non-required parameters
     description: 'Role Assignment (management group scope)'
     location: '<location>'
@@ -79,7 +79,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
       "value": "<principalId>"
     },
     "roleDefinitionIdOrName": {
-      "value": "Backup Reader"
+      "value": "Management Group Reader"
     },
     // Non-required parameters
     "description": {
@@ -116,7 +116,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
   params: {
     // Required parameters
     principalId: '<principalId>'
-    roleDefinitionIdOrName: 'Storage Queue Data Reader'
+    roleDefinitionIdOrName: 'Resource Policy Contributor'
     // Non-required parameters
     location: '<location>'
     principalType: 'ServicePrincipal'
@@ -141,7 +141,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
       "value": "<principalId>"
     },
     "roleDefinitionIdOrName": {
-      "value": "Storage Queue Data Reader"
+      "value": "Resource Policy Contributor"
     },
     // Non-required parameters
     "location": {
@@ -172,7 +172,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
   params: {
     // Required parameters
     principalId: '<principalId>'
-    roleDefinitionIdOrName: 'Backup Reader'
+    roleDefinitionIdOrName: 'Reader'
     // Non-required parameters
     description: 'Role Assignment (resource group scope)'
     principalType: 'ServicePrincipal'
@@ -199,7 +199,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
       "value": "<principalId>"
     },
     "roleDefinitionIdOrName": {
-      "value": "Backup Reader"
+      "value": "Reader"
     },
     // Non-required parameters
     "description": {
@@ -236,7 +236,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
   params: {
     // Required parameters
     principalId: '<principalId>'
-    roleDefinitionIdOrName: 'Storage Queue Data Reader'
+    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
     // Non-required parameters
     principalType: 'ServicePrincipal'
     resourceGroupName: '<resourceGroupName>'
@@ -262,7 +262,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
       "value": "<principalId>"
     },
     "roleDefinitionIdOrName": {
-      "value": "Storage Queue Data Reader"
+      "value": "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11"
     },
     // Non-required parameters
     "principalType": {
@@ -296,7 +296,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
   params: {
     // Required parameters
     principalId: '<principalId>'
-    roleDefinitionIdOrName: 'Backup Reader'
+    roleDefinitionIdOrName: 'Reader'
     // Non-required parameters
     description: 'Role Assignment (subscription scope)'
     principalType: 'ServicePrincipal'
@@ -322,7 +322,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
       "value": "<principalId>"
     },
     "roleDefinitionIdOrName": {
-      "value": "Backup Reader"
+      "value": "Reader"
     },
     // Non-required parameters
     "description": {
@@ -356,7 +356,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
   params: {
     // Required parameters
     principalId: '<principalId>'
-    roleDefinitionIdOrName: 'Storage Queue Data Reader'
+    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
     // Non-required parameters
     principalType: 'ServicePrincipal'
     subscriptionId: '<subscriptionId>'
@@ -381,7 +381,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
       "value": "<principalId>"
     },
     "roleDefinitionIdOrName": {
-      "value": "Storage Queue Data Reader"
+      "value": "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11"
     },
     // Non-required parameters
     "principalType": {
@@ -405,7 +405,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`principalId`](#parameter-principalid) | string | The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity). |
-| [`roleDefinitionIdOrName`](#parameter-roledefinitionidorname) | string | You can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleDefinitionIdOrName`](#parameter-roledefinitionidorname) | string | You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 **Optional parameters**
 
@@ -431,7 +431,7 @@ The Principal or Object ID of the Security Principal (User, Group, Service Princ
 
 ### Parameter: `roleDefinitionIdOrName`
 
-You can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
