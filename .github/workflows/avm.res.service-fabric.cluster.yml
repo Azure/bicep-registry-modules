@@ -1,4 +1,4 @@
-name: "avm.res.network.service-endpoint-policy"
+name: "avm.res.service-fabric.cluster"
 
 on:
   schedule:
@@ -26,15 +26,15 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.network.service-endpoint-policy.yml"
-      - "avm/res/network/service-endpoint-policy/**"
+      - ".github/workflows/avm.res.service-fabric.cluster.yml"
+      - "avm/res/service-fabric/cluster/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/network/service-endpoint-policy"
-  workflowPath: ".github/workflows/avm.res.network.service-endpoint-policy.yml"
+  modulePath: "avm/res/service-fabric/cluster"
+  workflowPath: ".github/workflows/avm.res.service-fabric.cluster.yml"
 
 concurrency:
   group: ${{ github.workflow }}
