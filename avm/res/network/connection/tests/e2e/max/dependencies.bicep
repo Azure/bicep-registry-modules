@@ -42,6 +42,9 @@ resource primaryVirtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = 
 resource primaryPublicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
   name: primaryPublicIPName
   location: location
+  properties: {
+    publicIPAllocationMethod: 'Static'
+  }  
   sku: {
     name: 'Standard'
   }
@@ -98,6 +101,9 @@ resource secondaryVirtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' 
 resource secondaryPublicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
   name: secondaryPublicIPName
   location: location
+  properties: {
+    publicIPAllocationMethod: 'Static'
+  }  
   sku: {
     name: 'Standard'
   }  
