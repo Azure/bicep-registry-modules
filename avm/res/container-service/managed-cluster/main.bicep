@@ -126,6 +126,14 @@ param authorizedIPRanges array?
 @description('Optional. Whether to disable run command for the cluster or not.')
 param disableRunCommand bool = false
 
+@description('Optional. Allow or deny public network access for AKS.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  'SecuredByPerimeter'
+])
+param publicNetworkAccess string = 'Disabled'
+
 @description('Optional. Specifies whether to create the cluster as a private cluster or not.')
 param enablePrivateCluster bool = false
 
@@ -263,7 +271,7 @@ param autoScalerProfileSkipNodesWithSystemPods string = 'true'
   'stable'
 ])
 @description('Optional. Auto-upgrade channel on the AKS cluster.')
-param autoUpgradeProfileUpgradeChannel string?
+param autoUpgradeProfileUpgradeChannel string = 'stable'
 
 @description('Optional. Running in Kubenet is disabled by default due to the security related nature of AAD Pod Identity and the risks of IP spoofing.')
 param podIdentityProfileAllowNetworkPluginKubenet bool = false
@@ -615,6 +623,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
           }
         : null
     }
+    publicNetworkAccess: publicNetworkAccess
     aadProfile: {
       clientAppID: aadProfileClientAppID
       serverAppID: aadProfileServerAppID
