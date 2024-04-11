@@ -43,7 +43,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceGroupLocation)}-test-${serviceShort}-${iteration}'
+  name: '${uniqueString(deployment().name, tempLocation)}-test-${serviceShort}-${iteration}'
   params: {
     // Note: This value is not required and only set to enable testing
     location: tempLocation
