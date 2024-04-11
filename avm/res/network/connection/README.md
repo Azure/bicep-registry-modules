@@ -52,10 +52,6 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     // Non-required parameters
     connectionType: 'Vnet2Vnet'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     virtualNetworkGateway2: {
       id: '<id>'
     }
@@ -91,12 +87,6 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "virtualNetworkGateway2": {
       "value": {
