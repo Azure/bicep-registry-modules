@@ -1,4 +1,4 @@
-name: "avm.res.network.service-endpoint-policy"
+name: "avm.res.network.network-watcher"
 
 on:
   schedule:
@@ -20,21 +20,22 @@ on:
         description: "Remove deployed module"
         required: false
         default: true
+
   push:
     branches:
       - main
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.network.service-endpoint-policy.yml"
-      - "avm/res/network/service-endpoint-policy/**"
+      - ".github/workflows/avm.res.network.network-watcher.yml"
+      - "avm/res/network/network-watcher/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/network/service-endpoint-policy"
-  workflowPath: ".github/workflows/avm.res.network.service-endpoint-policy.yml"
+  modulePath: "avm/res/network/network-watcher"
+  workflowPath: ".github/workflows/avm.res.network.network-watcher.yml"
 
 concurrency:
   group: ${{ github.workflow }}
@@ -56,7 +57,7 @@ jobs:
         uses: ./.github/actions/templates/avm-getWorkflowInput
         with:
           workflowPath: "${{ env.workflowPath}}"
-      - name: "Get parameter file paths"
+      - name: "Get module test file paths"
         id: get-module-test-file-paths
         uses: ./.github/actions/templates/avm-getModuleTestFiles
         with:
