@@ -53,7 +53,7 @@ param enableTelemetry bool = true
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
   if (enableTelemetry) {
-    name: '46d3xbcp.authorization-roleassignment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+    name: '46d3xbcp.ptn.authorization-roleassignment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
     properties: {
       mode: 'Incremental'
       template: {
