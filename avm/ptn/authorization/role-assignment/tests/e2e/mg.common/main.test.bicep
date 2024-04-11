@@ -38,7 +38,7 @@ module nestedDependencies 'interim.dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-module testDeployment '../../../management-group/main.bicep' = {
+module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
@@ -46,5 +46,6 @@ module testDeployment '../../../management-group/main.bicep' = {
     description: 'Role Assignment (management group scope)'
     managementGroupId: last(split(managementGroup().id, '/'))
     principalType: 'ServicePrincipal'
+    location: resourceLocation
   }
 }

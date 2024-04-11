@@ -39,11 +39,12 @@ module nestedDependencies 'interim.dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-module testDeployment '../../../management-group/main.bicep' = {
+module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
     roleDefinitionIdOrName: 'Storage Queue Data Reader'
     principalType: 'ServicePrincipal'
+    location: resourceLocation
   }
 }
