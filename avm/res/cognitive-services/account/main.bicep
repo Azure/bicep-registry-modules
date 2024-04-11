@@ -349,7 +349,7 @@ resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/depl
     name: deployment.?name ?? '${name}-deployments'
     properties: {
       model: deployment.model
-      raiPolicyName: deployment.?raiPolicyName ?? null
+      raiPolicyName: deployment.?raiPolicyName
     }
     sku: deployment.?sku ?? {
       name: sku
