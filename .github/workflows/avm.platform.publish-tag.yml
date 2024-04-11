@@ -63,7 +63,7 @@ jobs:
             Write-Verbose 'Invoke function with' -Verbose
             Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-            if($publishOutputs = Publish-ModuleFromPathToPBR @functionInput -Verbose) {
+            if($publishOutputs = Publish-ModuleFromTagToPBR @functionInput -Verbose) {
               $publishOutputs.Keys | Foreach-Object {
                 Write-Verbose ('Passing pipeline variable [{0}] with value [{1}]' -f $_, $publishOutputs.$_) -Verbose
                 Write-Output ('{0}={1}' -f $_, $publishOutputs.$_) >> $env:GITHUB_OUTPUT
