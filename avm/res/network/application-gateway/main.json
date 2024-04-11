@@ -1537,7 +1537,7 @@
               "metadata": {
                 "description": "The group Id for the private endpoint Group."
               },
-              "value": "test"
+              "value": "[if(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties.groupIds[0], reference('privateEndpoint').privateLinkServiceConnections[0].properties.groupIds[0])]"
             }
           }
         }
