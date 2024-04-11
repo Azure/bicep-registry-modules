@@ -46,48 +46,50 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}-${serviceShort}'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    addressPrefix: '10.1.0.0/16'
-    virtualWanId: nestedDependencies.outputs.virtualWWANResourceId
-    hubRouteTables: [
-      {
-        name: 'routeTable1'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      location: resourceLocation
+      name: '${namePrefix}-${serviceShort}'
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-    ]
-    hubVirtualNetworkConnections: [
-      {
-        name: 'connection1'
-        remoteVirtualNetworkId: nestedDependencies.outputs.virtualNetworkResourceId
-        routingConfiguration: {
-          associatedRouteTable: {
-            id: '${resourceGroup.id}/providers/Microsoft.Network/virtualHubs/${namePrefix}-${serviceShort}/hubRouteTables/routeTable1'
-          }
-          propagatedRouteTables: {
-            ids: [
-              {
-                id: '${resourceGroup.id}/providers/Microsoft.Network/virtualHubs/${namePrefix}-${serviceShort}/hubRouteTables/routeTable1'
-              }
-            ]
-            labels: [
-              'none'
-            ]
+      addressPrefix: '10.1.0.0/16'
+      virtualWanId: nestedDependencies.outputs.virtualWWANResourceId
+      hubRouteTables: [
+        {
+          name: 'routeTable1'
+        }
+      ]
+      hubVirtualNetworkConnections: [
+        {
+          name: 'connection1'
+          remoteVirtualNetworkId: nestedDependencies.outputs.virtualNetworkResourceId
+          routingConfiguration: {
+            associatedRouteTable: {
+              id: '${resourceGroup.id}/providers/Microsoft.Network/virtualHubs/${namePrefix}-${serviceShort}/hubRouteTables/routeTable1'
+            }
+            propagatedRouteTables: {
+              ids: [
+                {
+                  id: '${resourceGroup.id}/providers/Microsoft.Network/virtualHubs/${namePrefix}-${serviceShort}/hubRouteTables/routeTable1'
+                }
+              ]
+              labels: [
+                'none'
+              ]
+            }
           }
         }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
-}]
+]

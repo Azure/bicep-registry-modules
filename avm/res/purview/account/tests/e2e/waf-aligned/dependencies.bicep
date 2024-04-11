@@ -35,10 +35,12 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
 }
 
 @batchSize(1)
-resource privateDNSZones 'Microsoft.Network/privateDnsZones@2020-06-01' = [for privateDNSZone in privateDNSZoneNames: {
-  name: privateDNSZone
-  location: 'global'
-}]
+resource privateDNSZones 'Microsoft.Network/privateDnsZones@2020-06-01' = [
+  for privateDNSZone in privateDNSZoneNames: {
+    name: privateDNSZone
+    location: 'global'
+  }
+]
 
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id

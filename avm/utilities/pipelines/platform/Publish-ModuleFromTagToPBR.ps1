@@ -79,7 +79,7 @@ function Publish-ModuleFromTagToPBR {
 
   $publishInput = @(
     $moduleBicepFilePath
-    '--target', ("br:{0}/public/bicep/{1}:{2}" -f $plainPublicRegistryServer, $moduleRelativeFolderPath, $targetVersion)
+    '--target', ('br:{0}/public/bicep/{1}:{2}' -f $plainPublicRegistryServer, $moduleRelativeFolderPath, $targetVersion)
     '--documentationUri', $documentationUri
     '--with-source'
     '--force'
@@ -87,12 +87,13 @@ function Publish-ModuleFromTagToPBR {
 
   Write-Verbose "Publish Input:`n $($publishInput | ConvertTo-Json -Depth 10)" -Verbose
 
-  if ($PSCmdlet.ShouldProcess("Module of tag [$ModuleReleaseTagName]", "Publish")) {
+  if ($PSCmdlet.ShouldProcess("Module of tag [$ModuleReleaseTagName]", 'Publish')) {
     bicep publish @publishInput
   }
 
   return @{
     version             = $targetVersion
     publishedModuleName = $moduleRelativeFolderPath
+    gitTagName          = $ModuleReleaseTagName
   }
 }

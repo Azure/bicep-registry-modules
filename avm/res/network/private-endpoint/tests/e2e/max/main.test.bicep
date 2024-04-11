@@ -51,78 +51,83 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    subnetResourceId: nestedDependencies.outputs.subnetResourceId
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    privateDnsZoneResourceIds: [
-      nestedDependencies.outputs.privateDNSZoneResourceId
-    ]
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    ipConfigurations: [
-      {
-        name: 'myIPconfig'
-        properties: {
-          groupId: 'vault'
-          memberName: 'default'
-          privateIPAddress: '10.0.0.10'
+      privateDnsZoneResourceIds: [
+        nestedDependencies.outputs.privateDNSZoneResourceId
+      ]
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
         }
-      }
-    ]
-    customDnsConfigs: [
-      {
-        fqdn: 'abc.keyvault.com'
-        ipAddresses: [
-          '10.0.0.10'
-        ]
-      }
-    ]
-    customNetworkInterfaceName: '${namePrefix}${serviceShort}001nic'
-    applicationSecurityGroupResourceIds: [
-      nestedDependencies.outputs.applicationSecurityGroupResourceId
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
-    // Workaround for PSRule
-    privateDnsZoneGroupName: 'default'
-    manualPrivateLinkServiceConnections: []
-    privateLinkServiceConnections: [
-      {
-        name: '${namePrefix}${serviceShort}001'
-        properties: {
-          privateLinkServiceId: nestedDependencies.outputs.keyVaultResourceId
-          groupIds: [
-            'vault'
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      ipConfigurations: [
+        {
+          name: 'myIPconfig'
+          properties: {
+            groupId: 'vault'
+            memberName: 'default'
+            privateIPAddress: '10.0.0.10'
+          }
+        }
+      ]
+      customDnsConfigs: [
+        {
+          fqdn: 'abc.keyvault.com'
+          ipAddresses: [
+            '10.0.0.10'
           ]
-          requestMessage: 'Hey there'
         }
+      ]
+      customNetworkInterfaceName: '${namePrefix}${serviceShort}001nic'
+      applicationSecurityGroupResourceIds: [
+        nestedDependencies.outputs.applicationSecurityGroupResourceId
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-    ]
+      // Workaround for PSRule
+      privateDnsZoneGroupName: 'default'
+      manualPrivateLinkServiceConnections: []
+      privateLinkServiceConnections: [
+        {
+          name: '${namePrefix}${serviceShort}001'
+          properties: {
+            privateLinkServiceId: nestedDependencies.outputs.keyVaultResourceId
+            groupIds: [
+              'vault'
+            ]
+            requestMessage: 'Hey there'
+          }
+        }
+      ]
+    }
   }
-}]
+]

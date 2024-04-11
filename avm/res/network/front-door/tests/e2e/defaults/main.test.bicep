@@ -36,90 +36,92 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // ============== //
 var resourceName = '${namePrefix}${serviceShort}001'
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: resourceName
-    location: resourceLocation
-    frontendEndpoints: [
-      {
-        name: 'frontEnd'
-        properties: {
-          hostName: '${resourceName}.${environment().suffixes.azureFrontDoorEndpointSuffix}'
-          sessionAffinityEnabledState: 'Disabled'
-          sessionAffinityTtlSeconds: 60
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: resourceName
+      location: resourceLocation
+      frontendEndpoints: [
+        {
+          name: 'frontEnd'
+          properties: {
+            hostName: '${resourceName}.${environment().suffixes.azureFrontDoorEndpointSuffix}'
+            sessionAffinityEnabledState: 'Disabled'
+            sessionAffinityTtlSeconds: 60
+          }
         }
-      }
-    ]
-    healthProbeSettings: [
-      {
-        name: 'heathProbe'
-        properties: {
-          intervalInSeconds: 60
-          path: '/'
-          protocol: 'Https'
+      ]
+      healthProbeSettings: [
+        {
+          name: 'heathProbe'
+          properties: {
+            intervalInSeconds: 60
+            path: '/'
+            protocol: 'Https'
+          }
         }
-      }
-    ]
-    loadBalancingSettings: [
-      {
-        name: 'loadBalancer'
-        properties: {
-          additionalLatencyMilliseconds: 0
-          sampleSize: 50
-          successfulSamplesRequired: 1
+      ]
+      loadBalancingSettings: [
+        {
+          name: 'loadBalancer'
+          properties: {
+            additionalLatencyMilliseconds: 0
+            sampleSize: 50
+            successfulSamplesRequired: 1
+          }
         }
-      }
-    ]
-    routingRules: [
-      {
-        name: 'routingRule'
-        properties: {
-          acceptedProtocols: [
-            'Https'
-          ]
-          enabledState: 'Enabled'
-          frontendEndpoints: [
-            {
-              id: '${resourceGroup.id}/providers/Microsoft.Network/frontDoors/${resourceName}/FrontendEndpoints/frontEnd'
-            }
-          ]
-          patternsToMatch: [
-            '/*'
-          ]
-          routeConfiguration: {
-            '@odata.type': '#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration'
-            backendPool: {
-              id: '${resourceGroup.id}/providers/Microsoft.Network/frontDoors/${resourceName}/BackendPools/backendPool'
+      ]
+      routingRules: [
+        {
+          name: 'routingRule'
+          properties: {
+            acceptedProtocols: [
+              'Https'
+            ]
+            enabledState: 'Enabled'
+            frontendEndpoints: [
+              {
+                id: '${resourceGroup.id}/providers/Microsoft.Network/frontDoors/${resourceName}/FrontendEndpoints/frontEnd'
+              }
+            ]
+            patternsToMatch: [
+              '/*'
+            ]
+            routeConfiguration: {
+              '@odata.type': '#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration'
+              backendPool: {
+                id: '${resourceGroup.id}/providers/Microsoft.Network/frontDoors/${resourceName}/BackendPools/backendPool'
+              }
             }
           }
         }
-      }
-    ]
-    backendPools: [
-      {
-        name: 'backendPool'
-        properties: {
-          backends: [
-            {
-              address: 'biceptest.local'
-              backendHostHeader: 'backendAddress'
-              enabledState: 'Enabled'
-              httpPort: 80
-              httpsPort: 443
-              priority: 1
-              weight: 50
+      ]
+      backendPools: [
+        {
+          name: 'backendPool'
+          properties: {
+            backends: [
+              {
+                address: 'biceptest.local'
+                backendHostHeader: 'backendAddress'
+                enabledState: 'Enabled'
+                httpPort: 80
+                httpsPort: 443
+                priority: 1
+                weight: 50
+              }
+            ]
+            HealthProbeSettings: {
+              id: '${resourceGroup.id}/providers/Microsoft.Network/frontDoors/${resourceName}/HealthProbeSettings/heathProbe'
             }
-          ]
-          HealthProbeSettings: {
-            id: '${resourceGroup.id}/providers/Microsoft.Network/frontDoors/${resourceName}/HealthProbeSettings/heathProbe'
-          }
-          LoadBalancingSettings: {
-            id: '${resourceGroup.id}/providers/Microsoft.Network/frontDoors/${resourceName}/LoadBalancingSettings/loadBalancer'
+            LoadBalancingSettings: {
+              id: '${resourceGroup.id}/providers/Microsoft.Network/frontDoors/${resourceName}/LoadBalancingSettings/loadBalancer'
+            }
           }
         }
-      }
-    ]
+      ]
+    }
   }
-}]
+]

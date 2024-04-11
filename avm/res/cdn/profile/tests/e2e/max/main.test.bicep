@@ -46,64 +46,69 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: 'dep-${namePrefix}-test-${serviceShort}'
-    location: resourceLocation
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    originResponseTimeoutSeconds: 60
-    sku: 'Standard_Verizon'
-    endpointProperties: {
-      originHostHeader: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
-      contentTypesToCompress: [
-        'text/plain'
-        'text/html'
-        'text/css'
-        'text/javascript'
-        'application/x-javascript'
-        'application/javascript'
-        'application/json'
-        'application/xml'
-      ]
-      isCompressionEnabled: true
-      isHttpAllowed: true
-      isHttpsAllowed: true
-      queryStringCachingBehavior: 'IgnoreQueryString'
-      origins: [
-        {
-          name: 'dep-${namePrefix}-cdn-endpoint01'
-          properties: {
-            hostName: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
-            httpPort: 80
-            httpsPort: 443
-            enabled: true
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: 'dep-${namePrefix}-test-${serviceShort}'
+      location: resourceLocation
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      originResponseTimeoutSeconds: 60
+      sku: 'Standard_Verizon'
+      endpointProperties: {
+        originHostHeader: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
+        contentTypesToCompress: [
+          'text/plain'
+          'text/html'
+          'text/css'
+          'text/javascript'
+          'application/x-javascript'
+          'application/javascript'
+          'application/json'
+          'application/xml'
+        ]
+        isCompressionEnabled: true
+        isHttpAllowed: true
+        isHttpsAllowed: true
+        queryStringCachingBehavior: 'IgnoreQueryString'
+        origins: [
+          {
+            name: 'dep-${namePrefix}-cdn-endpoint01'
+            properties: {
+              hostName: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
+              httpPort: 80
+              httpsPort: 443
+              enabled: true
+            }
           }
+        ]
+        originGroups: []
+        geoFilters: []
+      }
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
         }
       ]
-      originGroups: []
-      geoFilters: []
     }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Owner'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
   }
-}]
+]

@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "15605588341437540157"
+      "version": "0.26.54.24096",
+      "templateHash": "1065450815403209329"
     },
     "name": "Automation Account Variables",
     "description": "This module deploys an Azure Automation Account Variable.",
