@@ -1,0 +1,4 @@
+; .gitignore file for certificates, that are created during testing
+*.pfx
+*.crt
+*.key
