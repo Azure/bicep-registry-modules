@@ -55,6 +55,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     roleDefinitionIdOrName: 'Backup Reader'
     // Non-required parameters
     description: 'Role Assignment (management group scope)'
+    location: '<location>'
     managementGroupId: '<managementGroupId>'
     principalType: 'ServicePrincipal'
   }
@@ -83,6 +84,9 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     // Non-required parameters
     "description": {
       "value": "Role Assignment (management group scope)"
+    },
+    "location": {
+      "value": "<location>"
     },
     "managementGroupId": {
       "value": "<managementGroupId>"
@@ -114,6 +118,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     principalId: '<principalId>'
     roleDefinitionIdOrName: 'Storage Queue Data Reader'
     // Non-required parameters
+    location: '<location>'
     principalType: 'ServicePrincipal'
   }
 }
@@ -139,6 +144,9 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
       "value": "Storage Queue Data Reader"
     },
     // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
     "principalType": {
       "value": "ServicePrincipal"
     }
