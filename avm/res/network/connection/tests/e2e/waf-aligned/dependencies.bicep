@@ -98,6 +98,9 @@ resource secondaryVirtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' 
 resource secondaryPublicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
   name: secondaryPublicIPName
   location: location
+  sku: {
+    name: 'Standard'
+  }  
 }
 
 resource secondaryVNETGateway 'Microsoft.Network/virtualNetworkGateways@2023-04-01' = {
