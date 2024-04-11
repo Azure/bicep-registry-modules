@@ -213,6 +213,8 @@ module testDeployment '../../../main.bicep' = [
       ]
       privateEndpoints: [
         {
+          name: 'myPrivateEndpoint'
+          privateLinkServiceConnectionName: 'customLinkName'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
           privateDnsZoneResourceIds: [
             nestedDependencies.outputs.privateDNSZoneResourceId

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "4464138557763734337"
+      "templateHash": "1728463055074429069"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",
@@ -216,6 +216,13 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. The location to deploy the private endpoint to."
+            }
+          },
+          "privateLinkServiceConnectionName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the private link connection to create."
             }
           },
           "service": {
