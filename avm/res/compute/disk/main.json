@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "5405955290856274825"
+      "templateHash": "13557505070746246600"
     },
     "name": "Compute Disks",
     "description": "This module deploys a Compute Disk",
@@ -132,6 +132,17 @@
       ],
       "metadata": {
         "description": "Required. The disks sku name. Can be ."
+      }
+    },
+    "edgeZone": {
+      "type": "string",
+      "defaultValue": "",
+      "allowedValues": [
+        "EdgeZone",
+        ""
+      ],
+      "metadata": {
+        "description": "Optional. Specifies the Edge Zone within the Azure Region where this Managed Disk should exist. Changing this forces a new Managed Disk to be created."
       }
     },
     "architecture": {
@@ -316,6 +327,18 @@
         "description": "Optional. True if the image from which the OS disk is created supports accelerated networking."
       }
     },
+    "availabilityZone": {
+      "type": "int",
+      "allowedValues": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "metadata": {
+        "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used."
+      }
+    },
     "lock": {
       "$ref": "#/definitions/lockType",
       "metadata": {
@@ -380,13 +403,14 @@
     },
     "disk": {
       "type": "Microsoft.Compute/disks",
-      "apiVersion": "2022-07-02",
+      "apiVersion": "2023-10-02",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "sku": {
         "name": "[parameters('sku')]"
       },
+      "extendedLocation": "[if(not(empty(parameters('edgeZone'))), createObject('type', parameters('edgeZone'), 'name', parameters('edgeZone')), null())]",
       "properties": {
         "burstingEnabled": "[parameters('burstingEnabled')]",
         "completionPercent": "[parameters('completionPercent')]",
@@ -410,7 +434,8 @@
         "osType": "[if(not(empty(parameters('osType'))), parameters('osType'), null())]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "supportedCapabilities": "[if(not(empty(parameters('osType'))), createObject('acceleratedNetwork', parameters('acceleratedNetwork'), 'architecture', if(not(empty(parameters('architecture'))), parameters('architecture'), null())), createObject())]"
-      }
+      },
+      "zones": "[if(not(equals(parameters('availabilityZone'), 0)), array(string(parameters('availabilityZone'))), null())]"
     },
     "disk_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -476,7 +501,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('disk', '2022-07-02', 'full').location]"
+      "value": "[reference('disk', '2023-10-02', 'full').location]"
     }
   }
 }
