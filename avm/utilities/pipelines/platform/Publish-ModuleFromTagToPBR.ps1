@@ -94,5 +94,6 @@ function Publish-ModuleFromTagToPBR {
   return @{
     version             = $targetVersion
     publishedModuleName = $moduleRelativeFolderPath
+    gitTagName          = $ModuleReleaseTagName
   }
 }
