@@ -98,7 +98,7 @@
 /avm/res/network/network-interface/ @Azure/avm-res-network-networkinterface-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/network-manager/ @Azure/avm-res-network-networkmanager-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/network-security-group/ @Azure/avm-res-network-networksecuritygroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/network/network-watcher/ @Azure/avm-res-network-networkwatcher-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/network/network-watcher/ @Azure/avm-res-network-networkwatcher-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/private-dns-zone/ @Azure/avm-res-network-privatednszone-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/private-endpoint/ @Azure/avm-res-network-privateendpoint-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/private-link-service/ @Azure/avm-res-network-privatelinkservice-module-owners-bicep @Azure/avm-core-team-technical-bicep
