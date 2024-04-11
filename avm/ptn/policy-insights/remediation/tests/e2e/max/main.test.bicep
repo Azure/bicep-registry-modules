@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
+metadata name = 'Using large parameter set'
 metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
