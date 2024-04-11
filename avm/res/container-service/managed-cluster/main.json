@@ -2736,12 +2736,26 @@
       },
       "value": "[coalesce(tryGet(tryGet(reference('managedCluster', '2023-07-02-preview', 'full'), 'identity'), 'principalId'), '')]"
     },
-    "kubeletidentityObjectId": {
+    "kubeletIdentityClientId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Client ID of the AKS identity."
+      },
+      "value": "[coalesce(tryGet(tryGet(tryGet(reference('managedCluster'), 'identityProfile'), 'kubeletidentity'), 'clientId'), '')]"
+    },
+    "kubeletIdentityObjectId": {
       "type": "string",
       "metadata": {
         "description": "The Object ID of the AKS identity."
       },
       "value": "[coalesce(tryGet(tryGet(tryGet(reference('managedCluster'), 'identityProfile'), 'kubeletidentity'), 'objectId'), '')]"
+    },
+    "kubeletIdentityResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Resource ID of the AKS identity."
+      },
+      "value": "[coalesce(tryGet(tryGet(tryGet(reference('managedCluster'), 'identityProfile'), 'kubeletidentity'), 'resourceId'), '')]"
     },
     "omsagentIdentityObjectId": {
       "type": "string",
