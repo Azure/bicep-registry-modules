@@ -87,7 +87,7 @@ module testDeployment '../../../main.bicep' = {
         ]
         logCategoriesAndGroups: [
           {
-            category: 'AllLogs'
+            categoryGroup: 'allLogs'
           }
         ]
         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
@@ -155,7 +155,7 @@ module testDeploymentIdem '../../../main.bicep' = {
         ]
         logCategoriesAndGroups: [
           {
-            category: 'AllLogs'
+            categoryGroup: 'allLogs'
           }
         ]
         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId

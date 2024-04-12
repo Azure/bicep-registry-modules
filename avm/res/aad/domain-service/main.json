@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "7386947428934165964"
+      "version": "0.26.54.24096",
+      "templateHash": "10683253750371964167"
     },
     "name": "Azure Active Directory Domain Services",
     "description": "This module deploys an Azure Active Directory Domain Services (AADDS).",
