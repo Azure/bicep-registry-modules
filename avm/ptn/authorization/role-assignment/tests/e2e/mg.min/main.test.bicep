@@ -49,5 +49,6 @@ module testDeployment '../../../main.bicep' = {
     roleDefinitionIdOrName: 'Resource Policy Contributor'
     principalType: 'ServicePrincipal'
     location: resourceLocation
+    resourceGroupName: resourceGroupName
   }
 }

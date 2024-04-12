@@ -30,18 +30,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/authorization/role-assignment:<version>`.
 
-- [Role Assignments (Management Group scope)](#example-1-role-assignments-management-group-scope)
-- [Role Assignments (Subscription scope)](#example-2-role-assignments-subscription-scope)
-- [Role Assignments (Management Group scope)](#example-3-role-assignments-management-group-scope)
-- [Role Assignments (Resource Group)](#example-4-role-assignments-resource-group)
-- [Role Assignments (Resource Group)](#example-5-role-assignments-resource-group)
-- [Role Assignments (Subscription scope)](#example-6-role-assignments-subscription-scope)
-- [Role Assignments (Subscription scope)](#example-7-role-assignments-subscription-scope)
+- [Mg.Common](#example-1-mgcommon)
+- [Mg.Min](#example-2-mgmin)
+- [Rg.Common](#example-3-rgcommon)
+- [Rg.Min](#example-4-rgmin)
+- [Sub.Common](#example-5-subcommon)
+- [Sub.Min](#example-6-submin)
 
-### Example 1: _Role Assignments (Management Group scope)_
-
-This module deploys a Role Assignment at a Management Group scope using common parameters.
-
+### Example 1: _Mg.Common_
 
 <details>
 
@@ -59,6 +55,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     location: '<location>'
     managementGroupId: '<managementGroupId>'
     principalType: 'ServicePrincipal'
+    resourceGroupName: '<resourceGroupName>'
   }
 }
 ```
@@ -94,6 +91,9 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     },
     "principalType": {
       "value": "ServicePrincipal"
+    },
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
     }
   }
 }
@@ -102,10 +102,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 2: _Role Assignments (Subscription scope)_
-
-This module deploys a Role Assignment at a Subscription scope using minimal parameters.
-
+### Example 2: _Mg.Min_
 
 <details>
 
@@ -121,7 +118,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     // Non-required parameters
     location: '<location>'
     principalType: 'ServicePrincipal'
-    subscriptionId: '<subscriptionId>'
+    resourceGroupName: '<resourceGroupName>'
   }
 }
 ```
@@ -152,8 +149,8 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     "principalType": {
       "value": "ServicePrincipal"
     },
-    "subscriptionId": {
-      "value": "<subscriptionId>"
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
     }
   }
 }
@@ -162,66 +159,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 3: _Role Assignments (Management Group scope)_
-
-This module deploys a Role Assignment at a Management Group scope using minimal parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>' = {
-  name: 'roleAssignmentDeployment'
-  params: {
-    // Required parameters
-    principalId: '<principalId>'
-    roleDefinitionIdOrName: 'Resource Policy Contributor'
-    // Non-required parameters
-    location: '<location>'
-    principalType: 'ServicePrincipal'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "principalId": {
-      "value": "<principalId>"
-    },
-    "roleDefinitionIdOrName": {
-      "value": "Resource Policy Contributor"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "principalType": {
-      "value": "ServicePrincipal"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 4: _Role Assignments (Resource Group)_
-
-This module deploys a Role Assignment at a Resource Group scope using common parameters.
-
+### Example 3: _Rg.Common_
 
 <details>
 
@@ -282,10 +220,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 5: _Role Assignments (Resource Group)_
-
-This module deploys a Role Assignment at a Resource Group scope using minimal parameters.
-
+### Example 4: _Rg.Min_
 
 <details>
 
@@ -342,10 +277,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 6: _Role Assignments (Subscription scope)_
-
-This module deploys a Role Assignment at a Subscription scope using common parameters.
-
+### Example 5: _Sub.Common_
 
 <details>
 
@@ -362,6 +294,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     description: 'Role Assignment (subscription scope)'
     location: '<location>'
     principalType: 'ServicePrincipal'
+    resourceGroupName: '<resourceGroupName>'
     subscriptionId: '<subscriptionId>'
   }
 }
@@ -396,6 +329,9 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     "principalType": {
       "value": "ServicePrincipal"
     },
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
+    },
     "subscriptionId": {
       "value": "<subscriptionId>"
     }
@@ -406,10 +342,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 7: _Role Assignments (Subscription scope)_
-
-This module deploys a Role Assignment at a Subscription scope using minimal parameters.
-
+### Example 6: _Sub.Min_
 
 <details>
 
@@ -425,6 +358,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     // Non-required parameters
     location: '<location>'
     principalType: 'ServicePrincipal'
+    resourceGroupName: '<resourceGroupName>'
     subscriptionId: '<subscriptionId>'
   }
 }
@@ -455,6 +389,9 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     },
     "principalType": {
       "value": "ServicePrincipal"
+    },
+    "resourceGroupName": {
+      "value": "<resourceGroupName>"
     },
     "subscriptionId": {
       "value": "<subscriptionId>"
