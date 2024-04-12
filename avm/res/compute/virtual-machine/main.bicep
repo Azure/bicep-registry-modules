@@ -330,7 +330,7 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (extensionAadJoinConfig.enabled ? true : (managedIdentities.?systemAssigned ?? false))
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
         : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
@@ -554,7 +554,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
     evictionPolicy: enableEvictionPolicy ? 'Deallocate' : null
     billingProfile: !empty(priority) && !empty(maxPriceForLowPriorityVm)
       ? {
-          maxPrice: maxPriceForLowPriorityVm
+          maxPrice: json(maxPriceForLowPriorityVm)
         }
       : null
     host: !empty(dedicatedHostId)
