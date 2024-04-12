@@ -31,11 +31,12 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/authorization/role-assignment:<version>`.
 
 - [Role Assignments (Management Group scope)](#example-1-role-assignments-management-group-scope)
-- [Role Assignments (Management Group scope)](#example-2-role-assignments-management-group-scope)
-- [Role Assignments (Resource Group)](#example-3-role-assignments-resource-group)
+- [Role Assignments (Subscription scope)](#example-2-role-assignments-subscription-scope)
+- [Role Assignments (Management Group scope)](#example-3-role-assignments-management-group-scope)
 - [Role Assignments (Resource Group)](#example-4-role-assignments-resource-group)
-- [Role Assignments (Subscription scope)](#example-5-role-assignments-subscription-scope)
+- [Role Assignments (Resource Group)](#example-5-role-assignments-resource-group)
 - [Role Assignments (Subscription scope)](#example-6-role-assignments-subscription-scope)
+- [Role Assignments (Subscription scope)](#example-7-role-assignments-subscription-scope)
 
 ### Example 1: _Role Assignments (Management Group scope)_
 
@@ -101,7 +102,67 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 2: _Role Assignments (Management Group scope)_
+### Example 2: _Role Assignments (Subscription scope)_
+
+This module deploys a Role Assignment at a Subscription scope using minimal parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>' = {
+  name: 'roleAssignmentDeployment'
+  params: {
+    // Required parameters
+    principalId: '<principalId>'
+    roleDefinitionIdOrName: 'Resource Policy Contributor'
+    // Non-required parameters
+    location: '<location>'
+    principalType: 'ServicePrincipal'
+    subscriptionId: '<subscriptionId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "principalId": {
+      "value": "<principalId>"
+    },
+    "roleDefinitionIdOrName": {
+      "value": "Resource Policy Contributor"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "principalType": {
+      "value": "ServicePrincipal"
+    },
+    "subscriptionId": {
+      "value": "<subscriptionId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Role Assignments (Management Group scope)_
 
 This module deploys a Role Assignment at a Management Group scope using minimal parameters.
 
@@ -157,7 +218,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 3: _Role Assignments (Resource Group)_
+### Example 4: _Role Assignments (Resource Group)_
 
 This module deploys a Role Assignment at a Resource Group scope using common parameters.
 
@@ -221,7 +282,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 4: _Role Assignments (Resource Group)_
+### Example 5: _Role Assignments (Resource Group)_
 
 This module deploys a Role Assignment at a Resource Group scope using minimal parameters.
 
@@ -281,7 +342,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 5: _Role Assignments (Subscription scope)_
+### Example 6: _Role Assignments (Subscription scope)_
 
 This module deploys a Role Assignment at a Subscription scope using common parameters.
 
@@ -299,6 +360,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     roleDefinitionIdOrName: 'Reader'
     // Non-required parameters
     description: 'Role Assignment (subscription scope)'
+    location: '<location>'
     principalType: 'ServicePrincipal'
     subscriptionId: '<subscriptionId>'
   }
@@ -328,6 +390,9 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     "description": {
       "value": "Role Assignment (subscription scope)"
     },
+    "location": {
+      "value": "<location>"
+    },
     "principalType": {
       "value": "ServicePrincipal"
     },
@@ -341,7 +406,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 6: _Role Assignments (Subscription scope)_
+### Example 7: _Role Assignments (Subscription scope)_
 
 This module deploys a Role Assignment at a Subscription scope using minimal parameters.
 
@@ -356,8 +421,9 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
   params: {
     // Required parameters
     principalId: '<principalId>'
-    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
+    roleDefinitionIdOrName: 'Resource Policy Contributor'
     // Non-required parameters
+    location: '<location>'
     principalType: 'ServicePrincipal'
     subscriptionId: '<subscriptionId>'
   }
@@ -381,9 +447,12 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
       "value": "<principalId>"
     },
     "roleDefinitionIdOrName": {
-      "value": "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11"
+      "value": "Resource Policy Contributor"
     },
     // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
     "principalType": {
       "value": "ServicePrincipal"
     },
