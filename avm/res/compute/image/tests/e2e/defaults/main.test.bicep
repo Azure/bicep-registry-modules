@@ -54,15 +54,17 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
-    osAccountType: 'Standard_LRS'
-    osDiskBlobUri: nestedDependencies.outputs.vhdUri
-    osDiskCaching: 'ReadWrite'
-    osType: 'Windows'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      osAccountType: 'Standard_LRS'
+      osDiskBlobUri: nestedDependencies.outputs.vhdUri
+      osDiskCaching: 'ReadWrite'
+      osType: 'Windows'
+    }
   }
-}]
+]

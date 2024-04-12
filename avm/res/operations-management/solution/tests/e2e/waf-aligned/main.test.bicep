@@ -45,14 +45,16 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    name: 'AzureAutomation'
-    location: resourceLocation
-    logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
-    product: 'OMSGallery'
-    publisher: 'Microsoft'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: 'AzureAutomation'
+      location: resourceLocation
+      logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
+      product: 'OMSGallery'
+      publisher: 'Microsoft'
+    }
   }
-}]
+]

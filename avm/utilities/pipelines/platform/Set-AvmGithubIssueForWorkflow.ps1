@@ -41,7 +41,7 @@ function Set-AvmGithubIssueForWorkflow {
     [String[]] $IgnoreWorkflows = @()
   )
 
-  $issues = gh issue list --state open --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --json 'title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
+  $issues = gh issue list --state open --limit 500 --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --json 'title,url,body,comments,labels' --repo $Repo | ConvertFrom-Json -Depth 100
   $runs = gh run list --json 'url,workflowName,headBranch,startedAt' --limit $LimitNumberOfRuns --repo $Repo | ConvertFrom-Json -Depth 100
   $workflowRuns = @{}
   $issuesCreated = 0
@@ -55,7 +55,7 @@ function Set-AvmGithubIssueForWorkflow {
       $runId = $run.url.Split('/') | Select-Object -Last 1
       $runDetails = gh run view $runId --json 'conclusion,number' --repo $Repo | ConvertFrom-Json -Depth 100
 
-      if ($run.workflowName.StartsWith("avm.")) {
+      if ($run.workflowName.StartsWith('avm.')) {
         if (-not $workflowRuns.ContainsKey($run.workflowName) -or $runDetails.number -gt $workflowRuns[$run.workflowName].number) {
           $workflowRun = New-Object PSObject -Property @{
             workflowName = $run.workflowName
@@ -66,8 +66,7 @@ function Set-AvmGithubIssueForWorkflow {
 
           if (-not $workflowRuns.ContainsKey($run.workflowName)) {
             $workflowRuns.Add($run.workflowName, $workflowRun)
-          }
-          else {
+          } else {
             $workflowRuns[$run.workflowName] = $workflowRun
           }
         }
@@ -86,8 +85,7 @@ function Set-AvmGithubIssueForWorkflow {
         }
 
         $issuesCreated++
-      }
-      else {
+      } else {
         $issue = ($issues | Where-Object { $_.title -eq $issueName })[0]
 
         if (-not $issue.body.Contains($failedrun)) {
@@ -97,8 +95,7 @@ function Set-AvmGithubIssueForWorkflow {
             }
 
             $issuesCommented++
-          }
-          else {
+          } else {
             if (-not $issue.comments.body.Contains($failedrun)) {
               if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Close')) {
                 gh issue comment $issue.url --body $failedrun --repo $Repo
@@ -109,8 +106,7 @@ function Set-AvmGithubIssueForWorkflow {
           }
         }
       }
-    }
-    else {
+    } else {
       $issueName = "[Failed pipeline] $($workflowRun.workflowName)"
 
       if ($issues.title -contains $issueName) {

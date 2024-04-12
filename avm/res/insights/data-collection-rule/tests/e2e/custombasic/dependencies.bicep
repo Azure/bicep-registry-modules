@@ -8,38 +8,38 @@ param dataCollectionEndpointName string
 param logAnalyticsWorkspaceName string
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
-    name: logAnalyticsWorkspaceName
-    location: location
+  name: logAnalyticsWorkspaceName
+  location: location
 
-    resource customTableBasic 'tables@2022-10-01' = {
+  resource customTableBasic 'tables@2022-10-01' = {
+    name: 'CustomTableBasic_CL'
+    properties: {
+      schema: {
         name: 'CustomTableBasic_CL'
-        properties: {
-            schema: {
-                name: 'CustomTableBasic_CL'
-                columns: [
-                    {
-                        name: 'TimeGenerated'
-                        type: 'DateTime'
-                    }
-                    {
-                        name: 'RawData'
-                        type: 'String'
-                    }
-                ]
-            }
-        }
+        columns: [
+          {
+            name: 'TimeGenerated'
+            type: 'DateTime'
+          }
+          {
+            name: 'RawData'
+            type: 'String'
+          }
+        ]
+      }
     }
+  }
 }
 
 resource dataCollectionEndpoint 'Microsoft.Insights/dataCollectionEndpoints@2021-04-01' = {
-    kind: 'Windows'
-    location: location
-    name: dataCollectionEndpointName
-    properties: {
-        networkAcls: {
-            publicNetworkAccess: 'Enabled'
-        }
+  kind: 'Windows'
+  location: location
+  name: dataCollectionEndpointName
+  properties: {
+    networkAcls: {
+      publicNetworkAccess: 'Enabled'
     }
+  }
 }
 
 @description('The resource ID of the created Log Analytics Workspace.')

@@ -27,23 +27,29 @@ resource replicationContainer 'Microsoft.RecoveryServices/vaults/replicationFabr
   }
 }
 
-module fabric_container_containerMappings 'replication-protection-container-mapping/main.bicep' = [for (mapping, index) in replicationContainerMappings: {
-  name: '${deployment().name}-Map-${index}'
-  params: {
-    name: contains(mapping, 'name') ? mapping.name : ''
-    policyId: contains(mapping, 'policyId') ? mapping.policyId : ''
-    policyName: contains(mapping, 'policyName') ? mapping.policyName : ''
-    recoveryVaultName: recoveryVaultName
-    replicationFabricName: replicationFabricName
-    sourceProtectionContainerName: name
-    targetProtectionContainerId: contains(mapping, 'targetProtectionContainerId') ? mapping.targetProtectionContainerId : ''
-    targetContainerFabricName: contains(mapping, 'targetContainerFabricName') ? mapping.targetContainerFabricName : replicationFabricName
-    targetContainerName: contains(mapping, 'targetContainerName') ? mapping.targetContainerName : ''
+module fabric_container_containerMappings 'replication-protection-container-mapping/main.bicep' = [
+  for (mapping, index) in replicationContainerMappings: {
+    name: '${deployment().name}-Map-${index}'
+    params: {
+      name: contains(mapping, 'name') ? mapping.name : ''
+      policyId: contains(mapping, 'policyId') ? mapping.policyId : ''
+      policyName: contains(mapping, 'policyName') ? mapping.policyName : ''
+      recoveryVaultName: recoveryVaultName
+      replicationFabricName: replicationFabricName
+      sourceProtectionContainerName: name
+      targetProtectionContainerId: contains(mapping, 'targetProtectionContainerId')
+        ? mapping.targetProtectionContainerId
+        : ''
+      targetContainerFabricName: contains(mapping, 'targetContainerFabricName')
+        ? mapping.targetContainerFabricName
+        : replicationFabricName
+      targetContainerName: contains(mapping, 'targetContainerName') ? mapping.targetContainerName : ''
+    }
+    dependsOn: [
+      replicationContainer
+    ]
   }
-  dependsOn: [
-    replicationContainer
-  ]
-}]
+]
 
 @description('The name of the replication container.')
 output name string = replicationContainer.name

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.25.53.49325",
-      "templateHash": "15404583857670962921"
+      "version": "0.26.54.24096",
+      "templateHash": "4896491646814133286"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -912,6 +912,18 @@
         "description": "Optional. Whether to disable run command for the cluster or not."
       }
     },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled",
+        "SecuredByPerimeter"
+      ],
+      "metadata": {
+        "description": "Optional. Allow or deny public network access for AKS."
+      }
+    },
     "enablePrivateCluster": {
       "type": "bool",
       "defaultValue": false,
@@ -1179,7 +1191,7 @@
     },
     "autoUpgradeProfileUpgradeChannel": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "stable",
       "allowedValues": [
         "node-image",
         "none",
@@ -1563,6 +1575,7 @@
           "loadBalancerSku": "[parameters('loadBalancerSku')]",
           "loadBalancerProfile": "[if(not(equals(parameters('managedOutboundIPCount'), 0)), createObject('managedOutboundIPs', createObject('count', parameters('managedOutboundIPCount')), 'effectiveOutboundIPs', createArray()), null())]"
         },
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "aadProfile": {
           "clientAppID": "[parameters('aadProfileClientAppID')]",
           "serverAppID": "[parameters('aadProfileServerAppID')]",
@@ -1862,8 +1875,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.25.53.49325",
-              "templateHash": "11449186283530676915"
+              "version": "0.26.54.24096",
+              "templateHash": "8772299678418708256"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
@@ -2723,12 +2736,26 @@
       },
       "value": "[coalesce(tryGet(tryGet(reference('managedCluster', '2023-07-02-preview', 'full'), 'identity'), 'principalId'), '')]"
     },
-    "kubeletidentityObjectId": {
+    "kubeletIdentityClientId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Client ID of the AKS identity."
+      },
+      "value": "[coalesce(tryGet(tryGet(tryGet(reference('managedCluster'), 'identityProfile'), 'kubeletidentity'), 'clientId'), '')]"
+    },
+    "kubeletIdentityObjectId": {
       "type": "string",
       "metadata": {
         "description": "The Object ID of the AKS identity."
       },
       "value": "[coalesce(tryGet(tryGet(tryGet(reference('managedCluster'), 'identityProfile'), 'kubeletidentity'), 'objectId'), '')]"
+    },
+    "kubeletIdentityResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Resource ID of the AKS identity."
+      },
+      "value": "[coalesce(tryGet(tryGet(tryGet(reference('managedCluster'), 'identityProfile'), 'kubeletidentity'), 'resourceId'), '')]"
     },
     "omsagentIdentityObjectId": {
       "type": "string",
