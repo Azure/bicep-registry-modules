@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.policy-insights.remediation.yml"
       - "avm.ptn.policy-insights.remediation/**"
       - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
