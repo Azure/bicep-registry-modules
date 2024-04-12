@@ -56,7 +56,7 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
         eventHubName: '<eventHubName>'
         logCategoriesAndGroups: [
           {
-            category: 'AllLogs'
+            categoryGroup: 'allLogs'
           }
         ]
         metricCategories: [
@@ -124,7 +124,7 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
           "eventHubName": "<eventHubName>",
           "logCategoriesAndGroups": [
             {
-              "category": "AllLogs"
+              "categoryGroup": "allLogs"
             }
           ],
           "metricCategories": [
