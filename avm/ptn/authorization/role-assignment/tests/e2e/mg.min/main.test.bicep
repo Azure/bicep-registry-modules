@@ -19,6 +19,9 @@ param serviceShort string = 'aramgmin'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. Subscription ID of the subscription to assign the RBAC role to. If no Resource Group name is provided, the module deploys at subscription level, therefore assigns the provided RBAC role to the subscription.')
+param subscriptionId string = ''
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -26,7 +29,7 @@ param namePrefix string = '#_namePrefix_#'
 // General resources
 // =================
 module nestedDependencies 'interim.dependencies.bicep' = {
-  scope: subscription('[[subscriptionId]]')
+  scope: subscription('${subscriptionId}')
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
