@@ -3427,6 +3427,7 @@ Specifies that the image or disk that is being used was licensed on-premises. Th
   ```Bicep
   [
     ''
+    'RHEL_BYOS'
     'Windows_Client'
     'Windows_Server'
   ]

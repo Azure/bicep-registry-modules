@@ -73,6 +73,7 @@ param dedicatedHostId string = ''
 @allowed([
   'Windows_Client'
   'Windows_Server'
+  'RHEL_BYOS'
   ''
 ])
 param licenseType string = ''
