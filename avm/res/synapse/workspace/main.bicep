@@ -451,6 +451,9 @@ type privateEndpointType = {
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
+  @description('Optional. The name of the private link connection to create.')
+  privateLinkServiceConnectionName: string?
+
   @description('Required. The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".')
   service: string
 

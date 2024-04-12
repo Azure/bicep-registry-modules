@@ -80,6 +80,13 @@
               "description": "Optional. The location to deploy the private endpoint to."
             }
           },
+          "privateLinkServiceConnectionName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the private link connection to create."
+            }
+          },
           "service": {
             "type": "string",
             "nullable": true,
