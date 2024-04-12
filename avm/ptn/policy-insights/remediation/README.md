@@ -26,8 +26,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/policy-insights/remediation:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using only defaults](#example-3-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -89,9 +89,9 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 2: _Using large parameter set_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with most of its features enabled.
 
 
 <details>
@@ -165,9 +165,9 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using only defaults_
+### Example 3: _WAF-aligned_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
