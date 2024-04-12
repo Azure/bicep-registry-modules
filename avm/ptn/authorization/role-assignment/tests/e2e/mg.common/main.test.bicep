@@ -30,7 +30,7 @@ param subscriptionId string = '#_subscriptionId_#'
 // =================
 module nestedDependencies 'interim.dependencies.bicep' = {
   scope: subscription('${subscriptionId}')
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-${serviceShort}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     resourceGroupName: resourceGroupName
