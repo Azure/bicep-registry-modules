@@ -20,7 +20,7 @@ param serviceShort string = 'aramgcom'
 param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. Subscription ID of the subscription to assign the RBAC role to. If no Resource Group name is provided, the module deploys at subscription level, therefore assigns the provided RBAC role to the subscription.')
-param subscriptionId string = ''
+param subscriptionId string = '#_subscriptionId_#'
 
 // ============ //
 // Dependencies //
