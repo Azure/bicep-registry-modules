@@ -833,7 +833,7 @@ Describe 'Module tests' -Tag 'Module' {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
-        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '46d3xbcp*' } # The AVM telemetry prefix
+        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
         $telemetryDeployment | Should -Not -BeNullOrEmpty -Because 'A telemetry resource with name prefix [46d3xbcp] should be present in the template'
       }
 
@@ -850,7 +850,7 @@ Describe 'Module tests' -Tag 'Module' {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
-        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '46d3xbcp*' } # The AVM telemetry prefix
+        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
 
         if (-not $telemetryDeployment) {
           Set-ItResult -Skipped -Because 'Skipping this test as telemetry was not implemented in template'
@@ -873,7 +873,7 @@ Describe 'Module tests' -Tag 'Module' {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
 
-        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '46d3xbcp*' } # The AVM telemetry prefix
+        $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
 
         if (-not $telemetryDeployment) {
           Set-ItResult -Skipped -Because 'Skipping this test as telemetry was not implemented in template'
@@ -927,7 +927,7 @@ Describe 'Module tests' -Tag 'Module' {
         } else {
           $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
         }
-        $telemetryDeploymentName = ($templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '46d3xbcp*' }).name # The AVM telemetry prefix
+        $telemetryDeploymentName = ($templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' }).name # The AVM telemetry prefix
         $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
       }
     }
