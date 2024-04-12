@@ -2,7 +2,7 @@
 
 This module has been replaced by the following equivalent module in Azure Verified Modules (AVM): [avm/res/network/nat-gateway](https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/network/nat-gateway).
 
-For more information, see the informational notice [here](https://github.com/Azure/bicep-registry-modules?tab=readme-ov-file#%EF%B8%8F-upcoming-changes-%EF%B8%8F).
+For more information, see the informational notice [here](https://github.com/Azure/bicep-registry-modules?tab=readme-ov-file#%EF%B8%8F-new-standard-for-bicep-modules---avm-%EF%B8%8F).
 
 # NAT gateways
 

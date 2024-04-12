@@ -240,13 +240,13 @@ resource searchService_roleAssignments 'Microsoft.Authorization/roleAssignments@
   }
 ]
 
-module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-SearchService-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-searchService-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(searchService.id, '/'))}-${privateEndpoint.?service ?? 'searchService'}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(searchService.id, '/'))}-${privateEndpoint.?service ?? 'searchService'}-${index}'
@@ -259,7 +259,7 @@ module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoin
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(searchService.id, '/'))}-${privateEndpoint.?service ?? 'searchService'}-${index}'
@@ -378,6 +378,9 @@ type privateEndpointType = {
 
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
+
+  @description('Optional. The name of the private link connection to create.')
+  privateLinkServiceConnectionName: string?
 
   @description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
   service: string?
