@@ -24,7 +24,6 @@ This module is designed to simplify the creation of multi-region hub networks in
 | `Microsoft.Network/routeTables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/routeTables) |
 | `Microsoft.Network/routeTables/routes` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/routeTables/routes) |
 | `Microsoft.Network/virtualNetworks` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/virtualNetworkPeerings) |
@@ -169,7 +168,15 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           }
         ]
         roleAssignments: []
-        routes: []
+        routes: [
+          {
+            name: 'defaultRoute'
+            properties: {
+              addressPrefix: '0.0.0.0/0'
+              nextHopType: 'Internet'
+            }
+          }
+        ]
         subnets: [
           {
             addressPrefix: '<addressPrefix>'
@@ -254,7 +261,15 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           }
         ]
         roleAssignments: []
-        routes: []
+        routes: [
+          {
+            name: 'defaultRoute'
+            properties: {
+              addressPrefix: '0.0.0.0/0'
+              nextHopType: 'Internet'
+            }
+          }
+        ]
         subnets: [
           {
             addressPrefix: '<addressPrefix>'
@@ -371,7 +386,15 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             }
           ],
           "roleAssignments": [],
-          "routes": [],
+          "routes": [
+            {
+              "name": "defaultRoute",
+              "properties": {
+                "addressPrefix": "0.0.0.0/0",
+                "nextHopType": "Internet"
+              }
+            }
+          ],
           "subnets": [
             {
               "addressPrefix": "<addressPrefix>",
@@ -456,7 +479,15 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             }
           ],
           "roleAssignments": [],
-          "routes": [],
+          "routes": [
+            {
+              "name": "defaultRoute",
+              "properties": {
+                "addressPrefix": "0.0.0.0/0",
+                "nextHopType": "Internet"
+              }
+            }
+          ],
           "subnets": [
             {
               "addressPrefix": "<addressPrefix>",
@@ -762,6 +793,7 @@ Location for all Resources.
 | `hubVirtualNetworkNames` | array | The names of the hub virtual network. |
 | `hubVirtualNetworkPeers` | array | The peers of the hub virtual network. |
 | `hubVirtualNetworkResourceId` | array | The resource ID of the hub virtual network. |
+| `hubVirtualNetworkSubnets` | array | The subnets of the hub virtual network. |
 | `location` | array | The location the virtual network was deployed into. |
 | `resourceGroupName` | array | The resource group the virtual network was deployed into. |
 
