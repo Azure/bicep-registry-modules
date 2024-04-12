@@ -1,6 +1,6 @@
 # Azure Active Directory Domain Services `[Microsoft.AAD/domainServices]`
 
-This module deploys an Azure Active Directory Domain Services (AADDS).
+This module deploys an Azure Active Directory Domain Services (AADDS) instance.
 
 ## Navigation
 
@@ -56,7 +56,7 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
         eventHubName: '<eventHubName>'
         logCategoriesAndGroups: [
           {
-            category: 'AllLogs'
+            categoryGroup: 'allLogs'
           }
         ]
         metricCategories: [
@@ -124,7 +124,7 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
           "eventHubName": "<eventHubName>",
           "logCategoriesAndGroups": [
             {
-              "category": "AllLogs"
+              "categoryGroup": "allLogs"
             }
           ],
           "metricCategories": [
