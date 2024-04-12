@@ -30,14 +30,17 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/authorization/role-assignment:<version>`.
 
-- [Mg.Common](#example-1-mgcommon)
-- [Mg.Min](#example-2-mgmin)
-- [Rg.Common](#example-3-rgcommon)
-- [Rg.Min](#example-4-rgmin)
-- [Sub.Common](#example-5-subcommon)
-- [Sub.Min](#example-6-submin)
+- [Role Assignments (Management Group scope)](#example-1-role-assignments-management-group-scope)
+- [Role Assignments (Management Group scope)](#example-2-role-assignments-management-group-scope)
+- [Role Assignments (Resource Group)](#example-3-role-assignments-resource-group)
+- [Role Assignments (Resource Group)](#example-4-role-assignments-resource-group)
+- [Role Assignments (Subscription scope)](#example-5-role-assignments-subscription-scope)
+- [Role Assignments (Subscription scope)](#example-6-role-assignments-subscription-scope)
 
-### Example 1: _Mg.Common_
+### Example 1: _Role Assignments (Management Group scope)_
+
+This module deploys a Role Assignment at a Management Group scope using common parameters.
+
 
 <details>
 
@@ -102,7 +105,10 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 2: _Mg.Min_
+### Example 2: _Role Assignments (Management Group scope)_
+
+This module deploys a Role Assignment at a Management Group scope using minimal parameters.
+
 
 <details>
 
@@ -159,7 +165,10 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 3: _Rg.Common_
+### Example 3: _Role Assignments (Resource Group)_
+
+This module deploys a Role Assignment at a Resource Group scope using common parameters.
+
 
 <details>
 
@@ -174,6 +183,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     roleDefinitionIdOrName: 'Reader'
     // Non-required parameters
     description: 'Role Assignment (resource group scope)'
+    location: '<location>'
     principalType: 'ServicePrincipal'
     resourceGroupName: '<resourceGroupName>'
     subscriptionId: '<subscriptionId>'
@@ -204,6 +214,9 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     "description": {
       "value": "Role Assignment (resource group scope)"
     },
+    "location": {
+      "value": "<location>"
+    },
     "principalType": {
       "value": "ServicePrincipal"
     },
@@ -220,7 +233,10 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 4: _Rg.Min_
+### Example 4: _Role Assignments (Resource Group)_
+
+This module deploys a Role Assignment at a Resource Group scope using minimal parameters.
+
 
 <details>
 
@@ -234,6 +250,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     principalId: '<principalId>'
     roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
     // Non-required parameters
+    location: '<location>'
     principalType: 'ServicePrincipal'
     resourceGroupName: '<resourceGroupName>'
     subscriptionId: '<subscriptionId>'
@@ -261,6 +278,9 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
       "value": "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11"
     },
     // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
     "principalType": {
       "value": "ServicePrincipal"
     },
@@ -277,7 +297,10 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 5: _Sub.Common_
+### Example 5: _Role Assignments (Subscription scope)_
+
+This module deploys a Role Assignment at a Subscription scope using common parameters.
+
 
 <details>
 
@@ -342,7 +365,10 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 6: _Sub.Min_
+### Example 6: _Role Assignments (Subscription scope)_
+
+This module deploys a Role Assignment at a Subscription scope using minimal parameters.
+
 
 <details>
 

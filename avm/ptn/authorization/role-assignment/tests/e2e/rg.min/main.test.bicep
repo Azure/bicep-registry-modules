@@ -1,4 +1,4 @@
-targetScope = 'subscription'
+targetScope = 'managementGroup'
 metadata name = 'Role Assignments (Resource Group)'
 metadata description = 'This module deploys a Role Assignment at a Resource Group scope using minimal parameters.'
 
@@ -19,19 +19,28 @@ param serviceShort string = 'arargmin'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. Subscription ID of the subscription to assign the RBAC role to. If no Resource Group name is provided, the module deploys at subscription level, therefore assigns the provided RBAC role to the subscription.')
+param subscriptionId string = '#_subscriptionId_#'
+
+
 // ============ //
 // Dependencies //
 // ============ //
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroupName
-  location: resourceLocation
-}
+module resourceGroupDeploy 'br/public:avm/res/resources/resource-group:0.2.3' ={
+  scope: subscription('${subscriptionId}')
+  name: '${uniqueString(deployment().name, resourceLocation)}-resourceGroup'
+  params: {
+    name: resourceGroupName
+    location: resourceLocation
+  }
 
+
+}
 module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
+  scope: resourceGroup(subscriptionId, resourceGroupName)
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
@@ -43,14 +52,14 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-module testDeployment '../../../resource-group/main.bicep' = {
-  scope: resourceGroup
+module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
     roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
     principalType: 'ServicePrincipal'
-    resourceGroupName: resourceGroup.name
-    subscriptionId: subscription().subscriptionId
+    location: resourceLocation
+    subscriptionId: subscriptionId
+    resourceGroupName: resourceGroupName
   }
 }
