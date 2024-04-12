@@ -68,6 +68,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
         }
       }
     }
+    location:location
   }
 
 module roleAssignment_mg 'modules/management-group.bicep' = if (empty(subscriptionId) && empty(resourceGroupName)) {
