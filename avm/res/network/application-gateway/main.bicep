@@ -384,10 +384,39 @@ resource applicationGateway_diagnosticSettings 'Microsoft.Insights/diagnosticSet
 module applicationGateway_privateEndpoints '../../network/private-endpoint/main.bicep' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-applicationGateway-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
-      name: privateEndpoint.?name ?? 'pep-${last(split(applicationGateway.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
+      // Variant 1: A default service can be assumed (i.e., for services that only have one private endpoint type)
+      name: privateEndpoint.?name ?? 'pep-${last(split(applicationGateway.id, '/'))}-${privateEndpoint.?service ?? '>defaultServiceName<'}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(applicationGateway.id, '/'))}-${privateEndpoint.?service ?? '>defaultServiceName<'}-${index}'
+              properties: {
+                privateLinkServiceId: applicationGateway.id
+                groupIds: [
+                  privateEndpoint.?service ?? '>defaultServiceName<'
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(applicationGateway.id, '/'))}-${privateEndpoint.?service ?? '>defaultServiceName<'}-${index}'
+              properties: {
+                privateLinkServiceId: applicationGateway.id
+                groupIds: [
+                  privateEndpoint.?service ?? '>defaultServiceName<'
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableReferencedModulesTelemetry
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -398,7 +427,6 @@ module applicationGateway_privateEndpoints '../../network/private-endpoint/main.
       privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
       customDnsConfigs: privateEndpoint.?customDnsConfigs
       ipConfigurations: privateEndpoint.?ipConfigurations
       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
