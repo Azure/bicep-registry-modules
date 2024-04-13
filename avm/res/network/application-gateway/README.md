@@ -50,6 +50,12 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     // Required parameters
     name: 'nagmin001'
     // Non-required parameters
+    gatewayIPConfigurations: [
+      {
+        name: 'publicIPConfig1'
+        publicIPAddressId: '<publicIPAddressId>'
+      }
+    ]
     location: '<location>'
     zones: [
       '1'
@@ -77,6 +83,14 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       "value": "nagmin001"
     },
     // Non-required parameters
+    "gatewayIPConfigurations": {
+      "value": [
+        {
+          "name": "publicIPConfig1",
+          "publicIPAddressId": "<publicIPAddressId>"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },

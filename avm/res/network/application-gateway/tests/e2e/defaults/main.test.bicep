@@ -32,6 +32,15 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
+    location: resourceLocation
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -50,6 +59,12 @@ module testDeployment '../../../main.bicep' = [
         '3'
       ]
       location: resourceLocation
+      gatewayIPConfigurations: [
+        {
+          name: 'publicIPConfig1'
+          publicIPAddressId: nestedDependencies.outputs.publicIPResourceId
+        }
+      ]
     }
   }
 ]
