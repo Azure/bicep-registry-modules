@@ -239,7 +239,7 @@ resource managedInstance_diagnosticSettings 'Microsoft.Insights/diagnosticSettin
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'audit' }]): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
