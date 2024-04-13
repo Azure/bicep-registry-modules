@@ -49,7 +49,6 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     // Non-required parameters
     description: '[Description] Policy Assignment at the management group scope'
     displayName: '[Display Name] Policy Assignment at the management group scope'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     enforcementMode: 'DoNotEnforce'
     identity: 'SystemAssigned'
     location: '<location>'
@@ -65,7 +64,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
       }
     ]
     notScopes: [
-      '/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg'
+      '/subscriptions/${subscriptionId}/resourceGroups/validation-rg'
     ]
     overrides: [
       {
@@ -142,9 +141,6 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     "displayName": {
       "value": "[Display Name] Policy Assignment at the management group scope"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "enforcementMode": {
       "value": "DoNotEnforce"
     },
@@ -173,7 +169,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     },
     "notScopes": {
       "value": [
-        "/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg"
+        "/subscriptions/${subscriptionId}/resourceGroups/validation-rg"
       ]
     },
     "overrides": {
@@ -250,7 +246,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     name: 'apamgmin001'
     policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     metadata: {
       assignedBy: 'Bicep'
     }
@@ -278,8 +274,8 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
       "value": "/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "metadata": {
       "value": {
@@ -309,7 +305,6 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     // Non-required parameters
     description: '[Description] Policy Assignment at the resource group scope'
     displayName: '[Display Name] Policy Assignment at the resource group scope'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     enforcementMode: 'DoNotEnforce'
     identity: 'UserAssigned'
     location: '<location>'
@@ -403,9 +398,6 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     },
     "displayName": {
       "value": "[Display Name] Policy Assignment at the resource group scope"
-    },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
     },
     "enforcementMode": {
       "value": "DoNotEnforce"
@@ -518,7 +510,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     name: 'apargmin001'
     policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     metadata: {
       assignedBy: 'Bicep'
     }
@@ -547,8 +539,8 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
       "value": "/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "metadata": {
       "value": {
@@ -581,7 +573,6 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     // Non-required parameters
     description: '[Description] Policy Assignment at the subscription scope'
     displayName: '[Display Name] Policy Assignment at the subscription scope'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     enforcementMode: 'DoNotEnforce'
     identity: 'UserAssigned'
     location: '<location>'
@@ -596,7 +587,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
       }
     ]
     notScopes: [
-      '/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg'
+      '/subscriptions/${subscriptionId}/resourceGroups/validation-rg'
     ]
     overrides: [
       {
@@ -675,9 +666,6 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     "displayName": {
       "value": "[Display Name] Policy Assignment at the subscription scope"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "enforcementMode": {
       "value": "DoNotEnforce"
     },
@@ -703,7 +691,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     },
     "notScopes": {
       "value": [
-        "/subscriptions/[[subscriptionId]]/resourceGroups/validation-rg"
+        "/subscriptions/${subscriptionId}/resourceGroups/validation-rg"
       ]
     },
     "overrides": {
@@ -786,7 +774,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
     name: 'apasubmin001'
     policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     metadata: {
       assignedBy: 'Bicep'
       category: 'Security'
@@ -817,8 +805,8 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
       "value": "/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "metadata": {
       "value": {
@@ -853,7 +841,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 | :-- | :-- | :-- |
 | [`description`](#parameter-description) | string | This message will be part of response in case of policy violation. |
 | [`displayName`](#parameter-displayname) | string | The display name of the policy assignment. Maximum length is 128 characters. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`enforcementMode`](#parameter-enforcementmode) | string | The policy assignment enforcement mode. Possible values are Default and DoNotEnforce. - Default or DoNotEnforce. |
 | [`identity`](#parameter-identity) | string | The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning 'Modify' policy definitions. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -899,7 +887,7 @@ The display name of the policy assignment. Maximum length is 128 characters.
 - Type: string
 - Default: `''`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
 

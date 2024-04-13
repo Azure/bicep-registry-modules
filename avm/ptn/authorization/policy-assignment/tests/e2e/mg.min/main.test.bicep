@@ -25,6 +25,6 @@ module testDeployment '../../../main.bicep' = {
     metadata: {
       assignedBy: 'Bicep'
     }
-    location:resourceLocation
+    location: resourceLocation
   }
 }
