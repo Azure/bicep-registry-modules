@@ -147,7 +147,10 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         eventHubName: '<eventHubName>'
         metricCategories: [
           {
-            category: 'AllMetrics'
+            category: 'allLogs'
+          }
+          {
+            category: 'audit'
           }
         ]
         name: 'customSetting'
@@ -286,7 +289,10 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
           "eventHubName": "<eventHubName>",
           "metricCategories": [
             {
-              "category": "AllMetrics"
+              "category": "allLogs"
+            },
+            {
+              "category": "audit"
             }
           ],
           "name": "customSetting",
