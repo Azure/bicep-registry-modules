@@ -189,7 +189,7 @@ resource managedInstance 'Microsoft.Sql/managedInstances@2023-08-01-preview' = {
   name: name
   location: location
   tags: tags
- identity: identity
+  identity: identity
   sku: {
     name: skuName
     tier: skuTier
