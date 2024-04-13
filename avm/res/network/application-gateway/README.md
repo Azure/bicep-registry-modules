@@ -50,6 +50,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     // Required parameters
     name: 'nagmin001'
     // Non-required parameters
+    location: '<location>'
     zones: [
       '1'
       '2'
@@ -76,6 +77,9 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       "value": "nagmin001"
     },
     // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
     "zones": {
       "value": [
         "1",

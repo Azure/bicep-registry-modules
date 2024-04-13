@@ -49,6 +49,7 @@ module testDeployment '../../../main.bicep' = [
         '2'
         '3'
       ]
+      location: resourceLocation
     }
   }
 ]
