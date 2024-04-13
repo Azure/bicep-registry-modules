@@ -58,7 +58,6 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     location: '<location>'
     managementGroupId: '<managementGroupId>'
     principalType: 'ServicePrincipal'
-    resourceGroupName: '<resourceGroupName>'
   }
 }
 ```
@@ -94,9 +93,6 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     },
     "principalType": {
       "value": "ServicePrincipal"
-    },
-    "resourceGroupName": {
-      "value": "<resourceGroupName>"
     }
   }
 }
@@ -124,7 +120,6 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     // Non-required parameters
     location: '<location>'
     principalType: 'ServicePrincipal'
-    resourceGroupName: '<resourceGroupName>'
   }
 }
 ```
@@ -154,9 +149,6 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     },
     "principalType": {
       "value": "ServicePrincipal"
-    },
-    "resourceGroupName": {
-      "value": "<resourceGroupName>"
     }
   }
 }

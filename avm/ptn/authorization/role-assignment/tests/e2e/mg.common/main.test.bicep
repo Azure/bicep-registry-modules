@@ -51,6 +51,5 @@ module testDeployment '../../../main.bicep' = {
     managementGroupId: last(split(managementGroup().id, '/'))
     principalType: 'ServicePrincipal'
     location: resourceLocation
-    resourceGroupName: resourceGroupName
   }
 }
