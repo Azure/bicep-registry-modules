@@ -311,6 +311,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         }
       }
     ]
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -787,6 +788,9 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
           }
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -1277,6 +1281,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         }
       }
     ]
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -1718,6 +1723,9 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
           }
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
