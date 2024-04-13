@@ -372,7 +372,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
   params: {
     // Required parameters
     principalId: '<principalId>'
-    roleDefinitionIdOrName: 'Resource Policy Contributor'
+    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
     // Non-required parameters
     location: '<location>'
     principalType: 'ServicePrincipal'
@@ -399,7 +399,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
       "value": "<principalId>"
     },
     "roleDefinitionIdOrName": {
-      "value": "Resource Policy Contributor"
+      "value": "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11"
     },
     // Non-required parameters
     "location": {
