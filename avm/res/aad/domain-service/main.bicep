@@ -1,5 +1,5 @@
 metadata name = 'Azure Active Directory Domain Services'
-metadata description = 'This module deploys an Azure Active Directory Domain Services (AADDS).'
+metadata description = 'This module deploys an Azure Active Directory Domain Services (AADDS) instance.'
 metadata owner = 'Azure/module-maintainers'
 
 @minLength(1)
