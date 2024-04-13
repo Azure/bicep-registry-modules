@@ -1,4 +1,4 @@
-name: "avm.platform.sync-avm-modules-list"
+name: .Platform - Sync AVM module list
 
 on:
   schedule:
