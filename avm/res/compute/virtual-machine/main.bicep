@@ -549,7 +549,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
     #disable-next-line BCP036
     billingProfile: !empty(priority) && !empty(maxPriceForLowPriorityVm)
       ? {
-          maxPrice: maxPriceForLowPriorityVm
+          maxPrice: json(maxPriceForLowPriorityVm)
         }
       : null
     host: !empty(dedicatedHostId)

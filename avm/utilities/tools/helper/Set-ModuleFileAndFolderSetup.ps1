@@ -19,7 +19,7 @@ Set-ModuleFileAndFolderSetup -FullModuleFolderPath '<repoPath>\avm\res\storage\s
 Results into:
 - Added file [<repoPath>\avm\res\storage\storage-account\main.bicep]
 - Added file [<repoPath>\avm\res\storage\storage-account\version.json]
-- Added file [<repoPath>\avm\res\storage\storage-account\tests\e2e\default\main.test.bicep]
+- Added file [<repoPath>\avm\res\storage\storage-account\tests\e2e\defaults\main.test.bicep]
 - Added file [<repoPath>\avm\res\storage\storage-account\tests\e2e\waf-aligned\main.test.bicep]
 - Added file [<repoPath>\avm\res\storage\storage-account\blob-service\main.bicep]
 - Added file [<repoPath>\avm\res\storage\storage-account\blob-service\container\main.bicep]
@@ -30,7 +30,7 @@ Set-ModuleFileAndFolderSetup -FullModuleFolderPath '<repoPath>\avm\res\storage\s
 Results into:
 - Added file [<repoPath>\avm\res\storage\storage-account\main.bicep]
 - Added file [<repoPath>\avm\res\storage\storage-account\version.json]
-- Added file [<repoPath>\avm\res\storage\storage-account\tests\e2e\default\main.test.bicep]
+- Added file [<repoPath>\avm\res\storage\storage-account\tests\e2e\defaults\main.test.bicep]
 - Added file [<repoPath>\avm\res\storage\storage-account\tests\e2e\waf-aligned\main.test.bicep]
 
 #>
@@ -102,13 +102,13 @@ function Set-ModuleFileAndFolderSetup {
             Write-Verbose "Added file [$versionFilePath]" -Verbose
         }
 
-        # Default test file
+        # Defaults test file
         # -----------------
         $testCasesPath = Join-Path $CurrentLevelFolderPath 'tests' 'e2e'
         $currentTestFolders = Get-ChildItem -Path $testCasesPath -Directory | ForEach-Object { $_.Name }
 
         if (($currentTestFolders -match '.*defaults').count -eq 0) {
-            $defaultTestFilePath = Join-Path $testCasesPath 'default' 'main.test.bicep'
+            $defaultTestFilePath = Join-Path $testCasesPath 'defaults' 'main.test.bicep'
             if ($PSCmdlet.ShouldProcess("file [$defaultTestFilePath]", 'Add')) {
                 $null = New-Item -Path $defaultTestFilePath -ItemType 'File' -Force
             }
