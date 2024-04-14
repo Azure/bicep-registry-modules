@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "10183454992101995330"
+      "version": "0.26.170.59819",
+      "templateHash": "5878565358535105775"
     },
     "name": "Network Manager Security Admin Configuration Rule Collection Rules",
     "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
