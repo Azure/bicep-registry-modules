@@ -217,10 +217,10 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
 }
 
 resource backupServiceKeyVaultPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('${keyVault.name}-${location}-268f6a53-9f68-4a38-ae47-166f730d86af-KeyVault-KeyVaultAdministrator-RoleAssignment')
+  name: guid('${keyVault.name}-${location}-27c212bc-a10b-4c05-b0b7-2ed919599739-KeyVault-KeyVaultAdministrator-RoleAssignment')
   scope: keyVault
   properties: {
-    principalId: '268f6a53-9f68-4a38-ae47-166f730d86af' // Backup Management Service Enterprise Application Object Id (Note: this is tenant specific)
+    principalId: '27c212bc-a10b-4c05-b0b7-2ed919599739' // Backup Management Service Enterprise Application Object Id (Note: this is tenant specific)
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       '00482a5a-887f-4fb3-b363-3b7fe8e74483'
