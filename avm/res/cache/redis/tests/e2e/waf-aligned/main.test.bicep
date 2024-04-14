@@ -88,7 +88,7 @@ module testDeployment '../../../main.bicep' = [
       }
       minimumTlsVersion: '1.2'
       zoneRedundant: true
-      zones: [1, 2]
+      zones: [1, 2, 3]
       privateEndpoints: [
         {
           privateDnsZoneResourceIds: [
@@ -103,6 +103,8 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       redisVersion: '6'
+      replicasPerMaster: 3
+      replicasPerPrimary: 3
       shardCount: 1
       skuName: 'Premium'
       managedIdentities: {
