@@ -9,7 +9,7 @@ metadata description = 'This instance deploys the module with most of its featur
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefixTst}-compute.virtualMachines-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -22,7 +22,11 @@ param serviceShort string = 'cvmwinmax'
 param password string = newGuid()
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = 'vdi'
+#disable-next-line no-unused-params
+param namePrefix string = '#_namePrefix_#'
+
+@description('Optional. A token to inject into the name of each resource.')
+param namePrefixTst string = 'vdi'
 
 // ============ //
 // Dependencies //
@@ -40,15 +44,15 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     location: resourceLocation
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    applicationSecurityGroupName: 'dep-${namePrefix}-asg-${serviceShort}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
-    loadBalancerName: 'dep-${namePrefix}-lb-${serviceShort}'
-    recoveryServicesVaultName: 'dep-${namePrefix}-rsv-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
-    storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
-    proximityPlacementGroupName: 'dep-${namePrefix}-ppg-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefixTst}-vnet-${serviceShort}'
+    applicationSecurityGroupName: 'dep-${namePrefixTst}-asg-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefixTst}-msi-${serviceShort}'
+    keyVaultName: 'dep-${namePrefixTst}-kv-${serviceShort}'
+    loadBalancerName: 'dep-${namePrefixTst}-lb-${serviceShort}'
+    recoveryServicesVaultName: 'dep-${namePrefixTst}-rsv-${serviceShort}'
+    storageAccountName: 'dep${namePrefixTst}sa${serviceShort}01'
+    storageUploadDeploymentScriptName: 'dep-${namePrefixTst}-sads-${serviceShort}'
+    proximityPlacementGroupName: 'dep-${namePrefixTst}-ppg-${serviceShort}'
   }
 }
 
@@ -58,10 +62,10 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
+    storageAccountName: 'dep${namePrefixTst}diasa${serviceShort}01'
+    logAnalyticsWorkspaceName: 'dep-${namePrefixTst}-law-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${namePrefixTst}-evh-${serviceShort}'
+    eventHubNamespaceName: 'dep-${namePrefixTst}-evhns-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -77,8 +81,8 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       location: resourceLocation
-      name: '${namePrefix}${serviceShort}'
-      computerName: '${namePrefix}winvm1'
+      name: '${namePrefixTst}${serviceShort}'
+      computerName: '${namePrefixTst}winvm1'
       adminUsername: 'VMAdmin'
       imageReference: {
         publisher: 'MicrosoftWindowsServer'
