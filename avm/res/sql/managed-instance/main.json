@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "11072910619816531634"
+      "templateHash": "14309311717550154409"
     },
     "name": "SQL Managed Instances",
     "description": "This module deploys a SQL Managed Instance.",
@@ -338,14 +338,21 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs."
+                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                  }
+                },
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                   }
                 }
               }
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
             }
           },
           "metricCategories": {
@@ -356,14 +363,21 @@
                 "category": {
                   "type": "string",
                   "metadata": {
-                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics."
+                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                  }
+                },
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                   }
                 }
               }
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
             }
           },
           "logAnalyticsDestinationType": {
