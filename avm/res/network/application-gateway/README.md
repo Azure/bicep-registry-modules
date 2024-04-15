@@ -50,6 +50,12 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     // Required parameters
     name: 'nagmin001'
     // Non-required parameters
+    frontendIPConfigurations: [
+      {
+        name: 'frontendIPConfig1'
+        privateIPAddress: '<privateIPAddress>'
+      }
+    ]
     gatewayIPConfigurations: [
       {
         name: 'publicIPConfig1'
@@ -83,6 +89,14 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       "value": "nagmin001"
     },
     // Non-required parameters
+    "frontendIPConfigurations": {
+      "value": [
+        {
+          "name": "frontendIPConfig1",
+          "privateIPAddress": "<privateIPAddress>"
+        }
+      ]
+    },
     "gatewayIPConfigurations": {
       "value": [
         {
