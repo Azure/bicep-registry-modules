@@ -84,7 +84,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.4.0' = {
   }
 }
 
-resource storageRef 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
+resource storageRef 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
   name: storageAccountName
 }
 
