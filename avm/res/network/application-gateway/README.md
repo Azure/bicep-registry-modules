@@ -149,13 +149,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         ]
       }
     ]
-    sslCertificates: [
-      {
-        data: 'base64-encoded-certificate'
-        name: 'sslCertificate1'
-        password: 'password'
-      }
-    ]
     urlPathMaps: [
       {
         defaultBackendAddressPoolId: '<defaultBackendAddressPoolId>'
@@ -325,15 +318,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
               "name": "rewriteRule1"
             }
           ]
-        }
-      ]
-    },
-    "sslCertificates": {
-      "value": [
-        {
-          "data": "base64-encoded-certificate",
-          "name": "sslCertificate1",
-          "password": "password"
         }
       ]
     },

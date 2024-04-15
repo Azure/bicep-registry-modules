@@ -153,13 +153,6 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
-      sslCertificates: [
-        {
-          name: 'sslCertificate1'
-          data: 'base64-encoded-certificate'
-          password: 'password'
-        }
-      ]
       redirectConfigurations: [
         {
           name: 'redirectConfiguration1'
