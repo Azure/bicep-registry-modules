@@ -224,7 +224,7 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
       : null
     sqlAdministratorLogin: sqlAdministratorLogin
     sqlAdministratorLoginPassword: !empty(sqlAdministratorLoginPassword) ? sqlAdministratorLoginPassword : null
-    workspaceRepositoryConfiguration: workspaceRepositoryConfiguration
+    workspaceRepositoryConfiguration: !empty(workspaceRepositoryConfiguration) ? workspaceRepositoryConfiguration : null
   }
 }
 
