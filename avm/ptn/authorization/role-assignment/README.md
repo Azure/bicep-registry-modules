@@ -33,7 +33,7 @@ The following section provides usage examples for the module, which were used to
 - [Role Assignments (Management Group scope)](#example-1-role-assignments-management-group-scope)
 - [Role Assignments (Management Group scope)](#example-2-role-assignments-management-group-scope)
 - [Role Assignments (Resource Group)](#example-3-role-assignments-resource-group)
-- [Role Assignments (Resource Group)](#example-4-role-assignments-resource-group)
+- [Role Assignments (Resource Group scope)](#example-4-role-assignments-resource-group-scope)
 - [Role Assignments (Subscription scope)](#example-5-role-assignments-subscription-scope)
 - [Role Assignments (Subscription scope)](#example-6-role-assignments-subscription-scope)
 
@@ -225,7 +225,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 </details>
 <p>
 
-### Example 4: _Role Assignments (Resource Group)_
+### Example 4: _Role Assignments (Resource Group scope)_
 
 This module deploys a Role Assignment at a Resource Group scope using minimal parameters.
 
@@ -309,7 +309,6 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     description: 'Role Assignment (subscription scope)'
     location: '<location>'
     principalType: 'ServicePrincipal'
-    resourceGroupName: '<resourceGroupName>'
     subscriptionId: '<subscriptionId>'
   }
 }
@@ -344,9 +343,6 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     "principalType": {
       "value": "ServicePrincipal"
     },
-    "resourceGroupName": {
-      "value": "<resourceGroupName>"
-    },
     "subscriptionId": {
       "value": "<subscriptionId>"
     }
@@ -372,11 +368,10 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
   params: {
     // Required parameters
     principalId: '<principalId>'
-    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
     // Non-required parameters
     location: '<location>'
     principalType: 'ServicePrincipal'
-    resourceGroupName: '<resourceGroupName>'
     subscriptionId: '<subscriptionId>'
   }
 }
@@ -399,7 +394,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
       "value": "<principalId>"
     },
     "roleDefinitionIdOrName": {
-      "value": "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11"
+      "value": "<roleDefinitionIdOrName>"
     },
     // Non-required parameters
     "location": {
@@ -407,9 +402,6 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
     },
     "principalType": {
       "value": "ServicePrincipal"
-    },
-    "resourceGroupName": {
-      "value": "<resourceGroupName>"
     },
     "subscriptionId": {
       "value": "<subscriptionId>"

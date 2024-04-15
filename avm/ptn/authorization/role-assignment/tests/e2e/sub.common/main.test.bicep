@@ -62,6 +62,5 @@ module testDeployment '../../../main.bicep' = {
     principalType: 'ServicePrincipal'
     location: resourceLocation
     subscriptionId: subscriptionId
-    resourceGroupName: resourceGroupName
   }
 }
