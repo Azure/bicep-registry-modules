@@ -56,6 +56,12 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         privateIPAddress: '<privateIPAddress>'
       }
     ]
+    frontendPorts: [
+      {
+        name: 'frontendPort1'
+        port: 80
+      }
+    ]
     gatewayIPConfigurations: [
       {
         name: 'publicIPConfig1'
@@ -94,6 +100,14 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         {
           "name": "frontendIPConfig1",
           "privateIPAddress": "<privateIPAddress>"
+        }
+      ]
+    },
+    "frontendPorts": {
+      "value": [
+        {
+          "name": "frontendPort1",
+          "port": 80
         }
       ]
     },
