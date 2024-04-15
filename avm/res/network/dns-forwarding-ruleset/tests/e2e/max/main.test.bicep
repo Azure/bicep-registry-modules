@@ -57,8 +57,11 @@ module testDeployment '../../../main.bicep' = [
       dnsForwardingRulesetOutboundEndpointResourceIds: [
         nestedDependencies.outputs.dnsResolverOutboundEndpointsId
       ]
-      vNetLinks: [
-        nestedDependencies.outputs.virtualNetworkResourceId
+      virtualNetworkLinks: [
+        {
+          virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
+          name: 'mytestvnetlink1'
+        }
       ]
       forwardingRules: [
         {
