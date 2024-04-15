@@ -11,6 +11,9 @@ Mandatory. The name of the Key Vault to store the Certificate & Password in
 .PARAMETER ResourceGroupName
 Mandatory. The name of the Resource Group containing the Key Vault to store the Certificate & Password in
 
+.PARAMETER NamePrefix
+Mandatory. The name prefix to use for the certificate, which is used as prefix to .onmicrosoft.com to generate the CN for the certificate.
+
 .PARAMETER CertPWSecretName
 Mandatory. The name of the Secret to store the Certificate's password in
 
@@ -23,26 +26,33 @@ Mandatory. The name of the Secret to store the Secret in
 Generate a Certificate and store it as the Secret 'pfxCertificatePassword' in the Key Vault 'vault-rg' of Resource Group 'storage-rg' alongside its password as the Secret 'pfxCertificatePassword'
 #>
 param(
-    [Parameter(Mandatory = $true)]
-    [string] $KeyVaultName,
+  [Parameter(Mandatory = $true)]
+  [string] $KeyVaultName,
 
-    [Parameter(Mandatory = $true)]
-    [string] $ResourceGroupName,
+  [Parameter(Mandatory = $true)]
+  [string] $ResourceGroupName,
 
-    [Parameter(Mandatory = $true)]
-    [string] $CertPWSecretName,
+  [Parameter(Mandatory = $true)]
+  [string] $NamePrefix,
 
-    [Parameter(Mandatory = $true)]
-    [string] $CertSecretName
+  [Parameter(Mandatory = $true)]
+  [string] $CertPWSecretName,
+
+  [Parameter(Mandatory = $true)]
+  [string] $CertSecretName
 )
 
-$password = ConvertTo-SecureString -String "$ResourceGroupName/$KeyVaultName/$CertSecretName" -AsPlainText -Force
+$password = "$ResourceGroupName/$KeyVaultName/$CertSecretName"
+$pfxPassword = ConvertTo-SecureString -String $password -AsPlainText -Force
 
 # Install open-ssl if not available
 apt-get install openssl
 
 # Generate certificate
-openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout './privateKey.key' -out './certificate.crt' -subj '/CN=*.contoso.onmicrosoft.com/O=contoso/C=US'
+$cn = '*.' + $namePrefix + '.onmicrosoft.com'
+$subject = '/CN=' + $cn + '/O=contoso/C=US'
+Write-Verbose ('Generating certificate for [{0}]' -f $cn) -Verbose
+openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout './privateKey.key' -out './certificate.crt' -subj $subject -addext 'extendedKeyUsage = serverAuth'
 
 # Sign certificate
 openssl pkcs12 -export -out 'aadds.pfx' -inkey './privateKey.key' -in './certificate.crt' -passout pass:$password
@@ -54,9 +64,9 @@ $pfxCertificate = ConvertTo-SecureString -String ([System.Convert]::ToBase64Stri
 
 # Set values
 @(
-    @{ name = $CertPWSecretName; secretValue = $password }
-    @{ name = $CertSecretName; secretValue = $pfxCertificate }
+  @{ name = $CertPWSecretName; secretValue = $pfxPassword }
+  @{ name = $CertSecretName; secretValue = $pfxCertificate }
 ) | ForEach-Object {
-    $null = Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $_.name -SecretValue $_.secretValue
-    Write-Verbose ('Added secret [{0}] to key vault [{1}]' -f $_.name, $keyVaultName) -Verbose
+  $null = Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $_.name -SecretValue $_.secretValue
+  Write-Verbose ('Added secret [{0}] to key vault [{1}]' -f $_.name, $keyVaultName) -Verbose
 }
