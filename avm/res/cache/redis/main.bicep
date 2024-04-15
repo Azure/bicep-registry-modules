@@ -51,11 +51,11 @@ param redisVersion string = '6'
 
 @minValue(1)
 @description('Optional. The number of replicas to be created per primary.')
-param replicasPerMaster int = 1
+param replicasPerMaster int = 3
 
 @minValue(1)
-@description('Optional. The number of replicas to be created per primary.')
-param replicasPerPrimary int = 1
+@description('Optional. The number of replicas to be created per primary. Needs to be the same as replicasPerMaster for a Premium Cluster Cache.')
+param replicasPerPrimary int = 3
 
 @minValue(1)
 @description('Optional. The number of shards to be created on a Premium Cluster Cache.')
@@ -79,7 +79,7 @@ param capacity int = 1
   'Standard'
 ])
 @description('Optional. The type of Redis cache to deploy.')
-param skuName string = 'Basic'
+param skuName string = 'Premium'
 
 @description('Optional. Static IP address. Optionally, may be specified when deploying a Redis cache inside an existing Azure Virtual Network; auto assigned by default.')
 param staticIP string = ''
@@ -94,7 +94,7 @@ param tenantSettings object = {}
 param zoneRedundant bool = true
 
 @description('Optional. If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed.')
-param zones array = []
+param zones int[] = [1, 2, 3]
 
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointType

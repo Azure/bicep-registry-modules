@@ -35,6 +35,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
   params: {
     location: resourceLocation
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
   }
 }
@@ -49,8 +50,22 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
     logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+    location: resourceLocation
+    workloadProfiles: [
+      {
+        workloadProfileType: 'D4'
+        name: 'CAW01'
+        minimumCount: 0
+        maximumCount: 3
+      }
+    ]
+    internal: true
+    dockerBridgeCidr: '172.16.0.1/28'
+    platformReservedCidr: '172.17.17.0/24'
+    platformReservedDnsIP: '172.17.17.17'
+    infrastructureSubnetId: nestedDependencies.outputs.subnetResourceId
+    infrastructureResourceGroupName: 'me-${resourceGroupName}'
   }
   dependsOn: [
     nestedDependencies
