@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'cvmlinmax'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = 'xzy'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //

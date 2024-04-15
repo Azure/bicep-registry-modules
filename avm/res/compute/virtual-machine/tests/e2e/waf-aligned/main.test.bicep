@@ -22,7 +22,7 @@ param serviceShort string = 'cvmwinwaf'
 param password string = newGuid()
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = 'xzy'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
