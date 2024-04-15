@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "4933314100479664510"
+      "templateHash": "7745744247225628529"
     },
     "name": "Service Bus Namespace Network Rule Sets",
     "description": "This module deploys a ServiceBus Namespace Network Rule Set.",
@@ -14,8 +14,8 @@
   "parameters": {
     "namespaceName": {
       "type": "string",
-      "minLength": 6,
-      "maxLength": 50,
+      "minLength": 1,
+      "maxLength": 260,
       "metadata": {
         "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Network Rule Set. Required if the template is used in a standalone deployment."
       }

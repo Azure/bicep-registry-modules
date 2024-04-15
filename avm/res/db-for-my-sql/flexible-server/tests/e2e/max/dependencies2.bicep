@@ -30,8 +30,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
       name: 'standard'
     }
     tenantId: tenant().tenantId
-    enablePurgeProtection: true
-    softDeleteRetentionInDays: 90
+    enablePurgeProtection: true // Required for encryption to work
+    softDeleteRetentionInDays: 7
     enabledForTemplateDeployment: true
     enabledForDiskEncryption: true
     enabledForDeployment: true
@@ -74,8 +74,8 @@ resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
       name: 'standard'
     }
     tenantId: tenant().tenantId
-    enablePurgeProtection: true
-    softDeleteRetentionInDays: 90
+    enablePurgeProtection: true // Required for encryption to work
+    softDeleteRetentionInDays: 7
     enabledForTemplateDeployment: true
     enabledForDiskEncryption: true
     enabledForDeployment: true

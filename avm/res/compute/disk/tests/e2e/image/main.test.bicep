@@ -52,8 +52,9 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}-${serviceShort}001'
       location: resourceLocation
       sku: 'Standard_LRS'
+      availabilityZone: 0
       createOption: 'FromImage'
-      imageReferenceId: '${subscription().id}/Providers/Microsoft.Compute/Locations/westeurope/Publishers/MicrosoftWindowsServer/ArtifactTypes/VMImage/Offers/WindowsServer/Skus/2022-datacenter-azure-edition/Versions/20348.1006.220908'
+      imageReferenceId: '${subscription().id}/Providers/Microsoft.Compute/Locations/westeurope/Publishers/MicrosoftWindowsServer/ArtifactTypes/VMImage/Offers/WindowsServer/Skus/2022-datacenter-azure-edition/Versions/20348.2340.240303'
     }
   }
 ]
