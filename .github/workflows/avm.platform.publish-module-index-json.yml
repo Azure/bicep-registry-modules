@@ -51,7 +51,7 @@ jobs:
           Write-Verbose "Invoke task with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          if(-not (Invoke-AvmJsonModuleIndexGeneration @functionInput -Force) {
+          if(-not (Invoke-AvmJsonModuleIndexGeneration @functionInput -Force)) {
             Write-Output ('{0}={1}' -f 'anyErrorsOccurred', $true) >> $env:GITHUB_ENV
           }
 

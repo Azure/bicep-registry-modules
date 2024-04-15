@@ -217,6 +217,6 @@ function Invoke-AvmJsonModuleIndexGeneration {
     $moduleIndexData | ConvertTo-Json -Depth 10 | Out-File -FilePath $moduleIndexJsonFilePath -Force
   }
 
-  return ($anyErrorsOccurred ? $true : $false)
+  return ($anyErrorsOccurred ? $false : $true)
 
 }
