@@ -139,7 +139,7 @@ module keyVaultPermissions 'modules/nested_keyVaultPermissions.bicep' = [
   }
 ]
 
-resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2022-07-02' = {
+resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2023-10-02' = {
   name: name
   location: location
   tags: tags

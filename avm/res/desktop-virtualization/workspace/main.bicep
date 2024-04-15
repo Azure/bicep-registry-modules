@@ -94,23 +94,26 @@ resource workspace 'Microsoft.DesktopVirtualization/workspaces@2022-10-14-previe
   }
 }
 
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Workspace-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
+    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
-      privateLinkServiceConnections: [
-        {
-          name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
-          properties: {
-            privateLinkServiceId: workspace.id
-            groupIds: [
-              privateEndpoint.?service ?? 'connection'
-            ]
-          }
-        }
-      ]
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
+              properties: {
+                privateLinkServiceId: workspace.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'connection'
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
@@ -125,13 +128,13 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
       privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
       privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
       roleAssignments: privateEndpoint.?roleAssignments
@@ -338,6 +341,9 @@ type privateEndpointType = {
 
   @sys.description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
+
+  @sys.description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
+  resourceGroupName: string?
 }[]?
 
 type lockType = {

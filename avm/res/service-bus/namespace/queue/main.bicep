@@ -3,13 +3,13 @@ metadata description = 'This module deploys a Service Bus Namespace Queue.'
 metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment.')
-@minLength(6)
-@maxLength(50)
+@minLength(1)
+@maxLength(260)
 param namespaceName string
 
 @description('Required. Name of the Service Bus Queue.')
-@minLength(6)
-@maxLength(50)
+@minLength(1)
+@maxLength(260)
 param name string
 
 @description('Optional. ISO 8061 timeSpan idle interval after which the queue is automatically deleted. The minimum duration is 5 minutes (PT5M).')

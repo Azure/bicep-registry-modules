@@ -3,8 +3,8 @@ metadata description = 'This module deploys a Service Bus Namespace Authorizatio
 metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment.')
-@minLength(6)
-@maxLength(50)
+@minLength(1)
+@maxLength(260)
 param namespaceName string
 
 @description('Required. The name of the authorization rule.')
