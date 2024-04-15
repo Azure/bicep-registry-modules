@@ -106,9 +106,8 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
     contains(tagsByResource, 'Microsoft.DataFactory/factories') ? tagsByResource['Microsoft.DataFactory/factories'] : {}
   )
   identity: { type: 'SystemAssigned' }
-  properties: union(
-    // Using union() to hide the error that gets surfaced because globalConfigurations is not in the ADF schema yet.
-    {},
+  properties: any(
+    // Using any() to hide the error that gets surfaced because globalConfigurations is not in the ADF schema yet.
     {
       globalConfigurations: {
         PipelineBillingEnabled: 'true'

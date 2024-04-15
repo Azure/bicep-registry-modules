@@ -70,24 +70,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
     // Required parameters
     hubName: 'finops-hub-finmin'
     // Non-required parameters
-    configContainer: 'config'
-    convertToParquet: true
-    enableTelemetry: true
-    exportContainer: 'export'
-    exportScopes: []
-    ingestionContainer: 'ingestion'
     location: '<location>'
-    storageSku: 'Premium_LRS'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-    tagsByResource: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -109,43 +92,8 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
       "value": "finops-hub-finmin"
     },
     // Non-required parameters
-    "configContainer": {
-      "value": "config"
-    },
-    "convertToParquet": {
-      "value": true
-    },
-    "enableTelemetry": {
-      "value": true
-    },
-    "exportContainer": {
-      "value": "export"
-    },
-    "exportScopes": {
-      "value": []
-    },
-    "ingestionContainer": {
-      "value": "ingestion"
-    },
     "location": {
       "value": "<location>"
-    },
-    "storageSku": {
-      "value": "Premium_LRS"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    },
-    "tagsByResource": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
