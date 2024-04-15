@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "10683253750371964167"
+      "templateHash": "7265620724598107360"
     },
     "name": "Azure Active Directory Domain Services",
-    "description": "This module deploys an Azure Active Directory Domain Services (AADDS).",
+    "description": "This module deploys an Azure Active Directory Domain Services (AADDS) instance.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
