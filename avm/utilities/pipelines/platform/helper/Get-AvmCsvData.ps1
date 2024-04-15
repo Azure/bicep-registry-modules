@@ -30,6 +30,7 @@ Function Get-AvmCsvData {
     'Bicep-Resource' {
       try {
         $unfilteredCSV = Invoke-WebRequest -Uri $BicepResourceUrl
+
       } catch {
         throw 'Unable to retrieve CSV file - Check network connection.'
       }
