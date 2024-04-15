@@ -54,6 +54,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     // Required parameters
     name: 'crrmin001'
     // Non-required parameters
+    acrSku: 'Standard'
     location: '<location>'
   }
 }
@@ -76,6 +77,9 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       "value": "crrmin001"
     },
     // Non-required parameters
+    "acrSku": {
+      "value": "Standard"
+    },
     "location": {
       "value": "<location>"
     }
