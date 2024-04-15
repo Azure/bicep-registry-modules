@@ -17,7 +17,7 @@ This module deploys a Compute Disk
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/disks` | [2022-07-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-07-02/disks) |
+| `Microsoft.Compute/disks` | [2023-10-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-10-02/disks) |
 
 ## Usage examples
 
@@ -47,6 +47,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   name: 'diskDeployment'
   params: {
     // Required parameters
+    availabilityZone: 0
     name: 'cdmin001'
     sku: 'Standard_LRS'
     // Non-required parameters
@@ -69,6 +70,9 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 0
+    },
     "name": {
       "value": "cdmin001"
     },
@@ -103,6 +107,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   name: 'diskDeployment'
   params: {
     // Required parameters
+    availabilityZone: 0
     name: 'cdimg001'
     sku: 'Standard_LRS'
     // Non-required parameters
@@ -126,6 +131,9 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 0
+    },
     "name": {
       "value": "cdimg001"
     },
@@ -163,6 +171,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   name: 'diskDeployment'
   params: {
     // Required parameters
+    availabilityZone: 0
     name: 'cdimp001'
     sku: 'Standard_LRS'
     // Non-required parameters
@@ -187,6 +196,9 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 0
+    },
     "name": {
       "value": "cdimp001"
     },
@@ -227,8 +239,9 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   name: 'diskDeployment'
   params: {
     // Required parameters
+    availabilityZone: 2
     name: 'cdmax001'
-    sku: 'UltraSSD_LRS'
+    sku: 'Premium_LRS'
     // Non-required parameters
     diskIOPSReadWrite: 500
     diskMBpsReadWrite: 60
@@ -280,11 +293,14 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 2
+    },
     "name": {
       "value": "cdmax001"
     },
     "sku": {
-      "value": "UltraSSD_LRS"
+      "value": "Premium_LRS"
     },
     // Non-required parameters
     "diskIOPSReadWrite": {
@@ -361,8 +377,9 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   name: 'diskDeployment'
   params: {
     // Required parameters
+    availabilityZone: 2
     name: 'cdwaf001'
-    sku: 'UltraSSD_LRS'
+    sku: 'Premium_LRS'
     // Non-required parameters
     diskIOPSReadWrite: 500
     diskMBpsReadWrite: 60
@@ -397,11 +414,14 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 2
+    },
     "name": {
       "value": "cdwaf001"
     },
     "sku": {
-      "value": "UltraSSD_LRS"
+      "value": "Premium_LRS"
     },
     // Non-required parameters
     "diskIOPSReadWrite": {
@@ -452,6 +472,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used. |
 | [`name`](#parameter-name) | string | The name of the disk that is being created. |
 | [`sku`](#parameter-sku) | string | The disks sku name. Can be . |
 
@@ -473,6 +494,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 | [`createOption`](#parameter-createoption) | string | Sources of a disk creation. |
 | [`diskIOPSReadWrite`](#parameter-diskiopsreadwrite) | int | The number of IOPS allowed for this disk; only settable for UltraSSD disks. |
 | [`diskMBpsReadWrite`](#parameter-diskmbpsreadwrite) | int | The bandwidth allowed for this disk; only settable for UltraSSD disks. |
+| [`edgeZone`](#parameter-edgezone) | string | Specifies the Edge Zone within the Azure Region where this Managed Disk should exist. Changing this forces a new Managed Disk to be created. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`hyperVGeneration`](#parameter-hypervgeneration) | string | The hypervisor generation of the Virtual Machine. Applicable to OS disks only. |
 | [`imageReferenceId`](#parameter-imagereferenceid) | string | A relative uri containing either a Platform Image Repository or user image reference. |
@@ -490,6 +512,22 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 | [`sourceUri`](#parameter-sourceuri) | string | If create option is Import, this is the URI of a blob to be imported into a managed disk. |
 | [`tags`](#parameter-tags) | object | Tags of the availability set resource. |
 | [`uploadSizeBytes`](#parameter-uploadsizebytes) | int | If create option is Upload, this is the size of the contents of the upload including the VHD footer. |
+
+### Parameter: `availabilityZone`
+
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used.
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    0
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `name`
 
@@ -611,6 +649,21 @@ The bandwidth allowed for this disk; only settable for UltraSSD disks.
 - Required: No
 - Type: int
 - Default: `0`
+
+### Parameter: `edgeZone`
+
+Specifies the Edge Zone within the Azure Region where this Managed Disk should exist. Changing this forces a new Managed Disk to be created.
+
+- Required: No
+- Type: string
+- Default: `''`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'EdgeZone'
+  ]
+  ```
 
 ### Parameter: `enableTelemetry`
 
