@@ -53,7 +53,6 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/finops-toolkit/finops-hub:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
 
 ### Example 1: _Using only defaults_
 
@@ -142,90 +141,6 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
       }
     },
     "tagsByResource": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 2: _Using large parameter set_
-
-This instance deploys the module with most of its features enabled.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
-  name: 'finopsHubDeployment'
-  params: {
-    // Required parameters
-    hubName: 'finops-hub-finmax'
-    // Non-required parameters
-    configContainer: 'config'
-    convertToParquet: true
-    exportContainer: 'exports'
-    exportScopes: []
-    ingestionContainer: 'ingestion'
-    location: '<location>'
-    storageSku: 'Premium_LRS'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "hubName": {
-      "value": "finops-hub-finmax"
-    },
-    // Non-required parameters
-    "configContainer": {
-      "value": "config"
-    },
-    "convertToParquet": {
-      "value": true
-    },
-    "exportContainer": {
-      "value": "exports"
-    },
-    "exportScopes": {
-      "value": []
-    },
-    "ingestionContainer": {
-      "value": "ingestion"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "storageSku": {
-      "value": "Premium_LRS"
-    },
-    "tags": {
       "value": {
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",

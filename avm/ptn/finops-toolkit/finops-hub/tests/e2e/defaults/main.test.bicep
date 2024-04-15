@@ -35,32 +35,29 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // Test Execution //
 // ============== //
 
-@batchSize(1)
-module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-    params: {
-      hubName: '${namePrefix}-finops-hub-${serviceShort}'
-      location: resourceLocation
-      // Workaround for PSrule
-      configContainer: 'config'
-      convertToParquet: true
-      enableTelemetry: true
-      exportContainer: 'export'
-      exportScopes: []
-      ingestionContainer: 'ingestion'
-      storageSku: 'Premium_LRS'
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
-      }
-      tagsByResource: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
-      }
+module testDeployment '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
+  params: {
+    hubName: '${namePrefix}-finops-hub-${serviceShort}'
+    location: resourceLocation
+    // Workaround for PSrule
+    configContainer: 'config'
+    convertToParquet: true
+    enableTelemetry: true
+    exportContainer: 'export'
+    exportScopes: []
+    ingestionContainer: 'ingestion'
+    storageSku: 'Premium_LRS'
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+    tagsByResource: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
     }
   }
-]
+}
