@@ -2995,7 +2995,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`extensionNetworkWatcherAgentConfig`](#parameter-extensionnetworkwatcheragentconfig) | object | The configuration for the [Network Watcher Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionNvidiaGpuDriverWindows`](#parameter-extensionnvidiagpudriverwindows) | object | The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`guestConfiguration`](#parameter-guestconfiguration) | object | The guest configuration for the virtual machine. Needs the Guest Configuration extension to be enabled. |
-| [`licenseType`](#parameter-licensetype) | string | Specifies that the image or disk that is being used was licensed on-premises. This element is only used for images that contain the Windows Server operating system. |
+| [`licenseType`](#parameter-licensetype) | string | Specifies that the image or disk that is being used was licensed on-premises. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. The system-assigned managed identity will automatically be enabled if extensionAadJoinConfig.enabled = "True". |
@@ -3541,7 +3541,7 @@ The guest configuration for the virtual machine. Needs the Guest Configuration e
 
 ### Parameter: `licenseType`
 
-Specifies that the image or disk that is being used was licensed on-premises. This element is only used for images that contain the Windows Server operating system.
+Specifies that the image or disk that is being used was licensed on-premises.
 
 - Required: No
 - Type: string
@@ -3550,6 +3550,8 @@ Specifies that the image or disk that is being used was licensed on-premises. Th
   ```Bicep
   [
     ''
+    'RHEL_BYOS'
+    'SLES_BYOS'
     'Windows_Client'
     'Windows_Server'
   ]

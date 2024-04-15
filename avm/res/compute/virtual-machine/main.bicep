@@ -69,10 +69,12 @@ param maxPriceForLowPriorityVm string = ''
 @description('Optional. Specifies resource ID about the dedicated host that the virtual machine resides in.')
 param dedicatedHostId string = ''
 
-@description('Optional. Specifies that the image or disk that is being used was licensed on-premises. This element is only used for images that contain the Windows Server operating system.')
+@description('Optional. Specifies that the image or disk that is being used was licensed on-premises.')
 @allowed([
   'Windows_Client'
   'Windows_Server'
+  'RHEL_BYOS'
+  'SLES_BYOS'
   ''
 ])
 param licenseType string = ''
