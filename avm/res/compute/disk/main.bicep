@@ -21,6 +21,13 @@ param location string = resourceGroup().location
 param sku string
 
 @allowed([
+  'EdgeZone'
+  ''
+])
+@description('Optional. Specifies the Edge Zone within the Azure Region where this Managed Disk should exist. Changing this forces a new Managed Disk to be created.')
+param edgeZone string = ''
+
+@allowed([
   'x64'
   'Arm64'
   ''
@@ -118,6 +125,15 @@ param publicNetworkAccess string = 'Disabled'
 @description('Optional. True if the image from which the OS disk is created supports accelerated networking.')
 param acceleratedNetwork bool = false
 
+@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used.')
+@allowed([
+  0
+  1
+  2
+  3
+])
+param availabilityZone int
+
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
@@ -183,13 +199,17 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-resource disk 'Microsoft.Compute/disks@2022-07-02' = {
+resource disk 'Microsoft.Compute/disks@2023-10-02' = {
   name: name
   location: location
   tags: tags
   sku: {
     name: sku
   }
+  extendedLocation: !empty(edgeZone) ? {
+    type: edgeZone
+    name: edgeZone
+  } : null
   properties: {
     burstingEnabled: burstingEnabled
     completionPercent: completionPercent
@@ -223,6 +243,7 @@ resource disk 'Microsoft.Compute/disks@2022-07-02' = {
         }
       : {}
   }
+  zones: availabilityZone != 0 ? array(string(availabilityZone)) : null
 }
 
 resource disk_lock 'Microsoft.Authorization/locks@2020-05-01' =
