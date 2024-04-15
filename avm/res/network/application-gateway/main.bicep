@@ -18,6 +18,7 @@ param authenticationCertificates array = []
 @description('Optional. Upper bound on number of Application Gateway capacity.')
 param autoscaleMaxCapacity int?
 
+@minValue(2)
 @description('Optional. Lower bound on number of Application Gateway capacity.')
 param autoscaleMinCapacity int?
 

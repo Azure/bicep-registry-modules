@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "8565735039970837876"
+      "templateHash": "17389249347631899521"
     },
     "name": "Network Application Gateways",
     "description": "This module deploys a Network Application Gateway.",
@@ -454,6 +454,7 @@
     "autoscaleMinCapacity": {
       "type": "int",
       "nullable": true,
+      "minValue": 2,
       "metadata": {
         "description": "Optional. Lower bound on number of Application Gateway capacity."
       }
