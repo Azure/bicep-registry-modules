@@ -64,7 +64,11 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'publicIPConfig1'
           publicIPAddressId: nestedDependencies.outputs.publicIPResourceId
-          subnetId: nestedDependencies.outputs.defaultSubnetResourceId
+          properties: {
+            subnet: {
+              id: nestedDependencies.outputs.defaultSubnetResourceId
+            }
+          }
         }
       ]
       frontendIPConfigurations: [

@@ -85,8 +85,12 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     gatewayIPConfigurations: [
       {
         name: 'publicIPConfig1'
+        properties: {
+          subnet: {
+            id: '<id>'
+          }
+        }
         publicIPAddressId: '<publicIPAddressId>'
-        subnetId: '<subnetId>'
       }
     ]
     httpListeners: [
@@ -247,8 +251,12 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       "value": [
         {
           "name": "publicIPConfig1",
-          "publicIPAddressId": "<publicIPAddressId>",
-          "subnetId": "<subnetId>"
+          "properties": {
+            "subnet": {
+              "id": "<id>"
+            }
+          },
+          "publicIPAddressId": "<publicIPAddressId>"
         }
       ]
     },
