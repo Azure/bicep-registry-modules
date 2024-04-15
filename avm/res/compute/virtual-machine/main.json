@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "6101862928505258087"
+      "templateHash": "6263280511691598160"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -275,8 +275,6 @@
       "allowedValues": [
         "Windows_Client",
         "Windows_Server",
-        "RHEL_BYOS",
-        "SLES_BYOS",
         ""
       ],
       "metadata": {
