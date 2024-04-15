@@ -37,6 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -63,6 +64,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'publicIPConfig1'
           publicIPAddressId: nestedDependencies.outputs.publicIPResourceId
+          subnetId: nestedDependencies.outputs.defaultSubnetResourceId
         }
       ]
       frontendIPConfigurations: [

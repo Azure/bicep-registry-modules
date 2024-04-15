@@ -86,6 +86,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       {
         name: 'publicIPConfig1'
         publicIPAddressId: '<publicIPAddressId>'
+        subnetId: '<subnetId>'
       }
     ]
     httpListeners: [
@@ -246,7 +247,8 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       "value": [
         {
           "name": "publicIPConfig1",
-          "publicIPAddressId": "<publicIPAddressId>"
+          "publicIPAddressId": "<publicIPAddressId>",
+          "subnetId": "<subnetId>"
         }
       ]
     },
