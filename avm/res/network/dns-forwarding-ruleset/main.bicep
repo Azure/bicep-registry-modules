@@ -25,7 +25,7 @@ param dnsForwardingRulesetOutboundEndpointResourceIds array
 param forwardingRules forwardingRuleType?
 
 @description('Optional. Array of virtual network links.')
-param virtualNetworkLinks virtualNetworkLinkType?
+param virtualNetworkLinks virtualNetworkLinkType
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true

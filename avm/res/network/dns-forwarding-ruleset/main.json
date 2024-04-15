@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.54.24096",
-      "templateHash": "17229421709873281776"
+      "templateHash": "12463687171976184963"
     },
     "name": "Dns Forwarding Rulesets",
     "description": "This template deploys an dns forwarding ruleset.",
@@ -241,7 +241,6 @@
     },
     "virtualNetworkLinks": {
       "$ref": "#/definitions/virtualNetworkLinkType",
-      "nullable": true,
       "metadata": {
         "description": "Optional. Array of virtual network links."
       }
