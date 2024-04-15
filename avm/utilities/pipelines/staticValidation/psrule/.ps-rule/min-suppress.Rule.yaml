@@ -17,7 +17,6 @@ spec:
     - Azure.Automation.ManagedIdentity
       # Key Vault specific
     - Azure.KeyVault.Logs
-    - Azure.KeyVault.Firewall
       # Traffic Manager specific
     - Azure.TrafficManager.Endpoints
     - Azure.TrafficManager.Protocol
@@ -27,7 +26,6 @@ spec:
     - Azure.ContainerApp.PublicAccess
     # Azure Virtual Machine
     - Azure.VM.AMA
-    - Azure.VM.Standalone
   if:
     name: "."
     contains:
