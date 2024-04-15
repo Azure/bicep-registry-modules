@@ -50,6 +50,26 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     // Required parameters
     name: 'nagmin001'
     // Non-required parameters
+    backendAddressPools: [
+      {
+        backendAddresses: [
+          {
+            fqdn: 'www.contoso.com'
+          }
+        ]
+        name: 'backendAddressPool1'
+      }
+    ]
+    backendHttpSettingsCollection: [
+      {
+        cookieBasedAffinity: 'Disabled'
+        name: 'backendHttpSettings1'
+        port: 80
+        probeId: '<probeId>'
+        protocol: 'Http'
+        requestTimeout: 20
+      }
+    ]
     frontendIPConfigurations: [
       {
         name: 'frontendIPConfig1'
@@ -68,7 +88,94 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         publicIPAddressId: '<publicIPAddressId>'
       }
     ]
+    httpListeners: [
+      {
+        frontendIPConfigurationId: '<frontendIPConfigurationId>'
+        frontendPortId: '<frontendPortId>'
+        name: 'httpListener1'
+        protocol: 'Http'
+      }
+    ]
     location: '<location>'
+    probes: [
+      {
+        host: 'www.contoso.com'
+        name: 'probe1'
+        path: '/health'
+        protocol: 'Http'
+      }
+    ]
+    redirectConfigurations: [
+      {
+        name: 'redirectConfiguration1'
+        redirectType: 'Permanent'
+        targetUrl: 'https://www.contoso.com'
+      }
+    ]
+    requestRoutingRules: [
+      {
+        backendAddressPoolId: '<backendAddressPoolId>'
+        backendHttpSettingsId: '<backendHttpSettingsId>'
+        httpListenerId: '<httpListenerId>'
+        name: 'requestRoutingRule1'
+        ruleType: 'Basic'
+      }
+    ]
+    rewriteRuleSets: [
+      {
+        name: 'rewriteRuleSet1'
+        rules: [
+          {
+            actionSet: [
+              {
+                actionType: 'Redirect'
+                redirectConfigurationId: '<redirectConfigurationId>'
+              }
+            ]
+            conditions: [
+              {
+                matchType: 'Host'
+                matchValue: 'www.contoso.com'
+                operator: 'Equals'
+              }
+            ]
+            name: 'rewriteRule1'
+          }
+        ]
+      }
+    ]
+    sslCertificates: [
+      {
+        data: 'base64-encoded-certificate'
+        name: 'sslCertificate1'
+        password: 'password'
+      }
+    ]
+    urlPathMaps: [
+      {
+        defaultBackendAddressPoolId: '<defaultBackendAddressPoolId>'
+        defaultBackendHttpSettingsId: '<defaultBackendHttpSettingsId>'
+        defaultRedirectConfigurationId: '<defaultRedirectConfigurationId>'
+        defaultRewriteRuleSetId: '<defaultRewriteRuleSetId>'
+        defaultUrlRedirectConfigurationId: '<defaultUrlRedirectConfigurationId>'
+        defaultUrlRewriteRuleSetId: '<defaultUrlRewriteRuleSetId>'
+        name: 'urlPathMap1'
+        pathRules: [
+          {
+            backendAddressPoolId: '<backendAddressPoolId>'
+            backendHttpSettingsId: '<backendHttpSettingsId>'
+            name: 'pathRule1'
+            paths: [
+              '/path1'
+            ]
+            redirectConfigurationId: '<redirectConfigurationId>'
+            rewriteRuleSetId: '<rewriteRuleSetId>'
+            urlRedirectConfigurationId: '<urlRedirectConfigurationId>'
+            urlRewriteRuleSetId: '<urlRewriteRuleSetId>'
+          }
+        ]
+      }
+    ]
     zones: [
       '1'
       '2'
@@ -95,6 +202,30 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       "value": "nagmin001"
     },
     // Non-required parameters
+    "backendAddressPools": {
+      "value": [
+        {
+          "backendAddresses": [
+            {
+              "fqdn": "www.contoso.com"
+            }
+          ],
+          "name": "backendAddressPool1"
+        }
+      ]
+    },
+    "backendHttpSettingsCollection": {
+      "value": [
+        {
+          "cookieBasedAffinity": "Disabled",
+          "name": "backendHttpSettings1",
+          "port": 80,
+          "probeId": "<probeId>",
+          "protocol": "Http",
+          "requestTimeout": 20
+        }
+      ]
+    },
     "frontendIPConfigurations": {
       "value": [
         {
@@ -119,8 +250,109 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         }
       ]
     },
+    "httpListeners": {
+      "value": [
+        {
+          "frontendIPConfigurationId": "<frontendIPConfigurationId>",
+          "frontendPortId": "<frontendPortId>",
+          "name": "httpListener1",
+          "protocol": "Http"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
+    },
+    "probes": {
+      "value": [
+        {
+          "host": "www.contoso.com",
+          "name": "probe1",
+          "path": "/health",
+          "protocol": "Http"
+        }
+      ]
+    },
+    "redirectConfigurations": {
+      "value": [
+        {
+          "name": "redirectConfiguration1",
+          "redirectType": "Permanent",
+          "targetUrl": "https://www.contoso.com"
+        }
+      ]
+    },
+    "requestRoutingRules": {
+      "value": [
+        {
+          "backendAddressPoolId": "<backendAddressPoolId>",
+          "backendHttpSettingsId": "<backendHttpSettingsId>",
+          "httpListenerId": "<httpListenerId>",
+          "name": "requestRoutingRule1",
+          "ruleType": "Basic"
+        }
+      ]
+    },
+    "rewriteRuleSets": {
+      "value": [
+        {
+          "name": "rewriteRuleSet1",
+          "rules": [
+            {
+              "actionSet": [
+                {
+                  "actionType": "Redirect",
+                  "redirectConfigurationId": "<redirectConfigurationId>"
+                }
+              ],
+              "conditions": [
+                {
+                  "matchType": "Host",
+                  "matchValue": "www.contoso.com",
+                  "operator": "Equals"
+                }
+              ],
+              "name": "rewriteRule1"
+            }
+          ]
+        }
+      ]
+    },
+    "sslCertificates": {
+      "value": [
+        {
+          "data": "base64-encoded-certificate",
+          "name": "sslCertificate1",
+          "password": "password"
+        }
+      ]
+    },
+    "urlPathMaps": {
+      "value": [
+        {
+          "defaultBackendAddressPoolId": "<defaultBackendAddressPoolId>",
+          "defaultBackendHttpSettingsId": "<defaultBackendHttpSettingsId>",
+          "defaultRedirectConfigurationId": "<defaultRedirectConfigurationId>",
+          "defaultRewriteRuleSetId": "<defaultRewriteRuleSetId>",
+          "defaultUrlRedirectConfigurationId": "<defaultUrlRedirectConfigurationId>",
+          "defaultUrlRewriteRuleSetId": "<defaultUrlRewriteRuleSetId>",
+          "name": "urlPathMap1",
+          "pathRules": [
+            {
+              "backendAddressPoolId": "<backendAddressPoolId>",
+              "backendHttpSettingsId": "<backendHttpSettingsId>",
+              "name": "pathRule1",
+              "paths": [
+                "/path1"
+              ],
+              "redirectConfigurationId": "<redirectConfigurationId>",
+              "rewriteRuleSetId": "<rewriteRuleSetId>",
+              "urlRedirectConfigurationId": "<urlRedirectConfigurationId>",
+              "urlRewriteRuleSetId": "<urlRewriteRuleSetId>"
+            }
+          ]
+        }
+      ]
     },
     "zones": {
       "value": [
