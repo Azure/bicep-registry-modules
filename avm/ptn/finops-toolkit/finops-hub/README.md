@@ -69,9 +69,14 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   name: 'finopsHubDeployment'
   params: {
     // Required parameters
-    hubName: 'finmin001'
+    hubName: 'finops-hub-finmin'
     // Non-required parameters
     location: '<location>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -90,11 +95,18 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   "parameters": {
     // Required parameters
     "hubName": {
-      "value": "finmin001"
+      "value": "finops-hub-finmin"
     },
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
