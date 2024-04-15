@@ -16,11 +16,10 @@ param managedIdentities managedIdentitiesType
 param authenticationCertificates array = []
 
 @description('Optional. Upper bound on number of Application Gateway capacity.')
-param autoscaleMaxCapacity int?
+param autoscaleMaxCapacity int = -1
 
-@minValue(2)
 @description('Optional. Lower bound on number of Application Gateway capacity.')
-param autoscaleMinCapacity int?
+param autoscaleMinCapacity int = -1
 
 @description('Optional. Backend address pool of the application gateway resource.')
 param backendAddressPools array = []
@@ -92,7 +91,7 @@ param rewriteRuleSets array = []
 param sku string = 'WAF_v2'
 
 @description('Optional. The number of Application instances to be configured.')
-@minValue(1)
+@minValue(0)
 @maxValue(10)
 param capacity int = 2
 
@@ -259,7 +258,7 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2023-04-01' =
   properties: union(
     {
       authenticationCertificates: authenticationCertificates
-      autoscaleConfiguration: autoscaleMaxCapacity != null && autoscaleMinCapacity != null
+      autoscaleConfiguration: autoscaleMaxCapacity > 0 && autoscaleMinCapacity >= 0
         ? {
             maxCapacity: autoscaleMaxCapacity
             minCapacity: autoscaleMinCapacity
@@ -297,7 +296,7 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2023-04-01' =
       sku: {
         name: sku
         tier: endsWith(sku, 'v2') ? sku : substring(sku, 0, indexOf(sku, '_'))
-        capacity: autoscaleMaxCapacity == null && autoscaleMinCapacity == null ? null : capacity
+        capacity: autoscaleMaxCapacity > 0 && autoscaleMinCapacity >= 0 ? null : capacity
       }
       sslCertificates: sslCertificates
       sslPolicy: sslPolicyType != 'Predefined'

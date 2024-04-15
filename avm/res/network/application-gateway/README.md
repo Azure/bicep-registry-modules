@@ -2310,6 +2310,7 @@ Upper bound on number of Application Gateway capacity.
 
 - Required: No
 - Type: int
+- Default: `-1`
 
 ### Parameter: `autoscaleMinCapacity`
 
@@ -2317,6 +2318,7 @@ Lower bound on number of Application Gateway capacity.
 
 - Required: No
 - Type: int
+- Default: `-1`
 
 ### Parameter: `backendAddressPools`
 
