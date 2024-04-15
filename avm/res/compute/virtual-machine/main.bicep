@@ -30,10 +30,10 @@ param imageReference object
 param plan object = {}
 
 @description('Required. Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object.  Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
-param osDisk object
+param osDisk osDiskType
 
 @description('Optional. Specifies the data disks. For security reasons, it is recommended to specify DiskEncryptionSet into the dataDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
-param dataDisks array = []
+param dataDisks dataDisksType
 
 @description('Optional. The flag that enables or disables a capability to have one or more managed data disks with UltraSSD_LRS storage account type on the VM or VMSS. Managed disks with storage account type UltraSSD_LRS can be added to a virtual machine or virtual machine scale set only if this property is enabled.')
 param ultraSSDEnabled bool = false
@@ -330,7 +330,7 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (extensionAadJoinConfig.enabled ? true : (managedIdentities.?systemAssigned ?? false))
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
         : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
@@ -474,35 +474,29 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
     storageProfile: {
       imageReference: imageReference
       osDisk: {
-        name: '${name}-disk-os-01'
-        createOption: contains(osDisk, 'createOption') ? osDisk.createOption : 'FromImage'
-        deleteOption: contains(osDisk, 'deleteOption') ? osDisk.deleteOption : 'Delete'
+        name: osDisk.?name ?? '${name}-disk-os-01'
+        createOption: osDisk.?createOption ?? 'FromImage'
+        deleteOption: osDisk.?deleteOption ?? 'Delete'
         diskSizeGB: osDisk.diskSizeGB
-        caching: contains(osDisk, 'caching') ? osDisk.caching : 'ReadOnly'
+        caching: osDisk.?caching ?? 'ReadOnly'
         managedDisk: {
           storageAccountType: osDisk.managedDisk.storageAccountType
-          diskEncryptionSet: contains(osDisk.managedDisk, 'diskEncryptionSet')
-            ? {
-                id: osDisk.managedDisk.diskEncryptionSet.id
-              }
-            : null
+          diskEncryptionSet: {
+            id: osDisk.managedDisk.?diskEncryptionSetResourceId
+          }
         }
       }
       dataDisks: [
-        for (dataDisk, index) in dataDisks: {
-          lun: index
-          name: '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
+        for (dataDisk, index) in dataDisks ?? []: {
+          lun: dataDisk.?lun ?? index
+          name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
           diskSizeGB: dataDisk.diskSizeGB
-          createOption: contains(dataDisk, 'createOption') ? dataDisk.createOption : 'Empty'
-          deleteOption: contains(dataDisk, 'deleteOption') ? dataDisk.deleteOption : 'Delete'
-          caching: contains(dataDisk, 'caching') ? dataDisk.caching : 'ReadOnly'
+          createOption: dataDisk.?createoption ?? 'Empty'
+          deleteOption: dataDisk.?deleteOption ?? 'Delete'
+          caching: dataDisk.?caching ?? 'ReadOnly'
           managedDisk: {
             storageAccountType: dataDisk.managedDisk.storageAccountType
-            diskEncryptionSet: contains(dataDisk.managedDisk, 'diskEncryptionSet')
-              ? {
-                  id: dataDisk.managedDisk.diskEncryptionSet.id
-                }
-              : null
+            diskEncryptionSet: dataDisk.?managedDisk.?diskEncryptionSet ?? null
           }
         }
       ]
@@ -552,9 +546,10 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
       : null
     priority: priority
     evictionPolicy: enableEvictionPolicy ? 'Deallocate' : null
+    #disable-next-line BCP036
     billingProfile: !empty(priority) && !empty(maxPriceForLowPriorityVm)
       ? {
-          maxPrice: maxPriceForLowPriorityVm
+          maxPrice: json(maxPriceForLowPriorityVm)
         }
       : null
     host: !empty(dedicatedHostId)
@@ -1059,4 +1054,75 @@ type roleAssignmentType = {
 
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
+}[]?
+
+type osDiskType = {
+  @description('Optional. The disk name.')
+  name: string?
+
+  @description('Required. Specifies the size of an empty data disk in gigabytes.')
+  @maxValue(1023)
+  diskSizeGB: int
+
+  @description('Optional. Specifies how the virtual machine should be created.')
+  createOption: 'Attach' | 'Empty' | 'FromImage'?
+
+  @description('Optional. Specifies whether data disk should be deleted or detached upon VM deletion.')
+  deleteOption: 'Delete' | 'Detach'?
+
+  @description('Optional. Specifies the caching requirements.')
+  caching: 'None' | 'ReadOnly' | 'ReadWrite'?
+
+  @description('Required. The managed disk parameters.')
+  managedDisk: {
+    @description('Required. Specifies the storage account type for the managed disk.')
+    storageAccountType:
+      | 'PremiumV2_LRS'
+      | 'Premium_LRS'
+      | 'Premium_ZRS'
+      | 'StandardSSD_LRS'
+      | 'StandardSSD_ZRS'
+      | 'Standard_LRS'
+      | 'UltraSSD_LRS'
+
+    @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
+    diskEncryptionSetResourceId: string?
+  }
+}
+
+type dataDisksType = {
+  @description('Optional. The disk name.')
+  name: string?
+
+  @description('Optional. Specifies the logical unit number of the data disk.')
+  lun: int?
+
+  @description('Required. Specifies the size of an empty data disk in gigabytes.')
+  @maxValue(1023)
+  diskSizeGB: int
+
+  @description('Optional. Specifies how the virtual machine should be created.')
+  createOption: 'Attach' | 'Empty' | 'FromImage'?
+
+  @description('Optional. Specifies whether data disk should be deleted or detached upon VM deletion.')
+  deleteOption: 'Delete' | 'Detach'?
+
+  @description('Optional. Specifies the caching requirements.')
+  caching: 'None' | 'ReadOnly' | 'ReadWrite'?
+
+  @description('Required. The managed disk parameters.')
+  managedDisk: {
+    @description('Required. Specifies the storage account type for the managed disk.')
+    storageAccountType:
+      | 'PremiumV2_LRS'
+      | 'Premium_LRS'
+      | 'Premium_ZRS'
+      | 'StandardSSD_LRS'
+      | 'StandardSSD_ZRS'
+      | 'Standard_LRS'
+      | 'UltraSSD_LRS'
+
+    @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
+    diskEncryptionSetResourceId: string?
+  }
 }[]?
