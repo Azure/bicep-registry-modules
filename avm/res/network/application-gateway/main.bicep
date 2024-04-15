@@ -196,8 +196,6 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-var enableReferencedModulesTelemetry = false
-
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
