@@ -43,7 +43,20 @@ module testDeployment '../../../main.bicep' = [
     params: {
       hubName: '${namePrefix}-finops-hub-${serviceShort}'
       location: resourceLocation
+      // Workaround for PSrule
+      configContainer: 'config'
+      convertToParquet: true
+      enableTelemetry: true
+      exportContainer: 'export'
+      exportScopes: []
+      ingestionContainer: 'ingestion'
+      storageSku: 'Premium_LRS'
       tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
+      tagsByResource: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
