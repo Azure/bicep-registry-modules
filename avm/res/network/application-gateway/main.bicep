@@ -16,10 +16,10 @@ param managedIdentities managedIdentitiesType
 param authenticationCertificates array = []
 
 @description('Optional. Upper bound on number of Application Gateway capacity.')
-param autoscaleMaxCapacity int = -1
+param autoscaleMaxCapacity int?
 
 @description('Optional. Lower bound on number of Application Gateway capacity.')
-param autoscaleMinCapacity int = -1
+param autoscaleMinCapacity int?
 
 @description('Optional. Backend address pool of the application gateway resource.')
 param backendAddressPools array = []
@@ -258,7 +258,7 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2023-04-01' =
   properties: union(
     {
       authenticationCertificates: authenticationCertificates
-      autoscaleConfiguration: autoscaleMaxCapacity > 0 && autoscaleMinCapacity >= 0
+      autoscaleConfiguration: autoscaleMaxCapacity != null && autoscaleMinCapacity != null
         ? {
             maxCapacity: autoscaleMaxCapacity
             minCapacity: autoscaleMinCapacity
@@ -296,7 +296,7 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2023-04-01' =
       sku: {
         name: sku
         tier: endsWith(sku, 'v2') ? sku : substring(sku, 0, indexOf(sku, '_'))
-        capacity: autoscaleMaxCapacity > 0 && autoscaleMinCapacity >= 0 ? null : capacity
+        capacity: autoscaleMaxCapacity != null && autoscaleMinCapacity != null ? null : capacity
       }
       sslCertificates: sslCertificates
       sslPolicy: sslPolicyType != 'Predefined'
