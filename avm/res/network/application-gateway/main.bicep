@@ -296,7 +296,7 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2023-04-01' =
       sku: {
         name: sku
         tier: endsWith(sku, 'v2') ? sku : substring(sku, 0, indexOf(sku, '_'))
-        capacity: autoscaleMaxCapacity != null && autoscaleMinCapacity != null ? null : capacity
+        capacity: autoscaleMaxCapacity == null && autoscaleMinCapacity == null ? null : capacity
       }
       sslCertificates: sslCertificates
       sslPolicy: sslPolicyType != 'Predefined'
