@@ -71,9 +71,10 @@ param dedicatedHostId string = ''
 
 @description('Optional. Specifies that the image or disk that is being used was licensed on-premises. This element is only used for images that contain the Windows Server operating system.')
 @allowed([
+  'RHEL_BYOS'
+  'SLES_BYOS'
   'Windows_Client'
   'Windows_Server'
-  'RHEL_BYOS'
   ''
 ])
 param licenseType string = ''
