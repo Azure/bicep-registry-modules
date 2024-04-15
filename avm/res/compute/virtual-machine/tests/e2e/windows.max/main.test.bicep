@@ -160,10 +160,11 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       osDisk: {
+        name: 'osdisk01'
         caching: 'ReadWrite'
-        createOption: 'fromImage'
+        createOption: 'FromImage'
         deleteOption: 'Delete'
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
@@ -177,19 +178,23 @@ module testDeployment '../../../main.bicep' = [
       backupVaultResourceGroup: nestedDependencies.outputs.recoveryServicesVaultResourceGroupName
       dataDisks: [
         {
+          name: 'datadisk01'
+          lun: 0
           caching: 'None'
           createOption: 'Empty'
           deleteOption: 'Delete'
-          diskSizeGB: '128'
+          diskSizeGB: 128
           managedDisk: {
             storageAccountType: 'Premium_LRS'
           }
         }
         {
+          name: 'datadisk02'
+          lun: 1
           caching: 'None'
           createOption: 'Empty'
           deleteOption: 'Delete'
-          diskSizeGB: '128'
+          diskSizeGB: 128
           managedDisk: {
             storageAccountType: 'Premium_LRS'
           }
