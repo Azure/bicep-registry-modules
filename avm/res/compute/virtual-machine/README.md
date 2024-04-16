@@ -89,7 +89,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     ]
     osDisk: {
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -163,7 +163,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "osDisk": {
       "value": {
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -239,7 +239,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     osDisk: {
       caching: 'ReadWrite'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -308,7 +308,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "osDisk": {
       "value": {
         "caching": "ReadWrite",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -439,12 +439,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     osDisk: {
       caching: 'ReadOnly'
-      createOption: 'fromImage'
+      createOption: 'FromImage'
       deleteOption: 'Delete'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
+      name: 'osdisk01'
     }
     osType: 'Linux'
     vmSize: 'Standard_DS2_v2'
@@ -458,19 +459,21 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         caching: 'ReadWrite'
         createOption: 'Empty'
         deleteOption: 'Delete'
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
+        name: 'datadisk01'
       }
       {
         caching: 'ReadWrite'
         createOption: 'Empty'
         deleteOption: 'Delete'
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
+        name: 'datadisk02'
       }
     ]
     disablePasswordAuthentication: true
@@ -703,12 +706,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "osDisk": {
       "value": {
         "caching": "ReadOnly",
-        "createOption": "fromImage",
+        "createOption": "FromImage",
         "deleteOption": "Delete",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
-        }
+        },
+        "name": "osdisk01"
       }
     },
     "osType": {
@@ -736,19 +740,21 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "caching": "ReadWrite",
           "createOption": "Empty",
           "deleteOption": "Delete",
-          "diskSizeGB": "128",
+          "diskSizeGB": 128,
           "managedDisk": {
             "storageAccountType": "Premium_LRS"
-          }
+          },
+          "name": "datadisk01"
         },
         {
           "caching": "ReadWrite",
           "createOption": "Empty",
           "deleteOption": "Delete",
-          "diskSizeGB": "128",
+          "diskSizeGB": 128,
           "managedDisk": {
             "storageAccountType": "Premium_LRS"
-          }
+          },
+          "name": "datadisk02"
         }
       ]
     },
@@ -1011,9 +1017,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     osDisk: {
       caching: 'ReadWrite'
-      createOption: 'fromImage'
+      createOption: 'FromImage'
       deleteOption: 'Delete'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -1031,7 +1037,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         caching: 'ReadOnly'
         createOption: 'Empty'
         deleteOption: 'Delete'
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
@@ -1040,7 +1046,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         caching: 'ReadOnly'
         createOption: 'Empty'
         deleteOption: 'Delete'
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
@@ -1292,9 +1298,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "osDisk": {
       "value": {
         "caching": "ReadWrite",
-        "createOption": "fromImage",
+        "createOption": "FromImage",
         "deleteOption": "Delete",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -1328,7 +1334,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "caching": "ReadOnly",
           "createOption": "Empty",
           "deleteOption": "Delete",
-          "diskSizeGB": "128",
+          "diskSizeGB": 128,
           "managedDisk": {
             "storageAccountType": "Premium_LRS"
           }
@@ -1337,7 +1343,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "caching": "ReadOnly",
           "createOption": "Empty",
           "deleteOption": "Delete",
-          "diskSizeGB": "128",
+          "diskSizeGB": 128,
           "managedDisk": {
             "storageAccountType": "Premium_LRS"
           }
@@ -1558,7 +1564,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     osDisk: {
       caching: 'ReadWrite'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -1618,7 +1624,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "osDisk": {
       "value": {
         "caching": "ReadWrite",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -1680,7 +1686,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     osDisk: {
       caching: 'ReadWrite'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -1769,7 +1775,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "osDisk": {
       "value": {
         "caching": "ReadWrite",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -1866,7 +1872,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     osDisk: {
       caching: 'ReadWrite'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -1949,7 +1955,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "osDisk": {
       "value": {
         "caching": "ReadWrite",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -2101,12 +2107,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     osDisk: {
       caching: 'ReadWrite'
-      createOption: 'fromImage'
+      createOption: 'FromImage'
       deleteOption: 'Delete'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
+      name: 'osdisk01'
     }
     osType: 'Windows'
     vmSize: 'Standard_DS2_v2'
@@ -2121,19 +2128,23 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         caching: 'None'
         createOption: 'Empty'
         deleteOption: 'Delete'
-        diskSizeGB: '128'
+        diskSizeGB: 128
+        lun: 0
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
+        name: 'datadisk01'
       }
       {
         caching: 'None'
         createOption: 'Empty'
         deleteOption: 'Delete'
-        diskSizeGB: '128'
+        diskSizeGB: 128
+        lun: 1
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
+        name: 'datadisk02'
       }
     ]
     enableAutomaticUpdates: true
@@ -2383,12 +2394,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "osDisk": {
       "value": {
         "caching": "ReadWrite",
-        "createOption": "fromImage",
+        "createOption": "FromImage",
         "deleteOption": "Delete",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
-        }
+        },
+        "name": "osdisk01"
       }
     },
     "osType": {
@@ -2419,19 +2431,23 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "caching": "None",
           "createOption": "Empty",
           "deleteOption": "Delete",
-          "diskSizeGB": "128",
+          "diskSizeGB": 128,
+          "lun": 0,
           "managedDisk": {
             "storageAccountType": "Premium_LRS"
-          }
+          },
+          "name": "datadisk01"
         },
         {
           "caching": "None",
           "createOption": "Empty",
           "deleteOption": "Delete",
-          "diskSizeGB": "128",
+          "diskSizeGB": 128,
+          "lun": 1,
           "managedDisk": {
             "storageAccountType": "Premium_LRS"
-          }
+          },
+          "name": "datadisk02"
         }
       ]
     },
@@ -2650,7 +2666,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     osDisk: {
       caching: 'ReadWrite'
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -2713,7 +2729,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "osDisk": {
       "value": {
         "caching": "ReadWrite",
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -2779,7 +2795,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     ]
     osDisk: {
-      diskSizeGB: '128'
+      diskSizeGB: 128
       managedDisk: {
         diskEncryptionSet: {
           id: '<id>'
@@ -2793,7 +2809,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     adminPassword: '<adminPassword>'
     dataDisks: [
       {
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           diskEncryptionSet: {
             id: '<id>'
@@ -2852,7 +2868,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "osDisk": {
       "value": {
-        "diskSizeGB": "128",
+        "diskSizeGB": 128,
         "managedDisk": {
           "diskEncryptionSet": {
             "id": "<id>"
@@ -2874,7 +2890,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "dataDisks": {
       "value": [
         {
-          "diskSizeGB": "128",
+          "diskSizeGB": 128,
           "managedDisk": {
             "diskEncryptionSet": {
               "id": "<id>"
@@ -3046,6 +3062,125 @@ Specifies the OS disk. For security reasons, it is recommended to specify DiskEn
 - Required: Yes
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diskSizeGB`](#parameter-osdiskdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
+| [`managedDisk`](#parameter-osdiskmanageddisk) | object | The managed disk parameters. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`caching`](#parameter-osdiskcaching) | string | Specifies the caching requirements. |
+| [`createOption`](#parameter-osdiskcreateoption) | string | Specifies how the virtual machine should be created. |
+| [`deleteOption`](#parameter-osdiskdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. |
+| [`name`](#parameter-osdiskname) | string | The disk name. |
+
+### Parameter: `osDisk.diskSizeGB`
+
+Specifies the size of an empty data disk in gigabytes.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `osDisk.managedDisk`
+
+The managed disk parameters.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`storageAccountType`](#parameter-osdiskmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diskEncryptionSetResourceId`](#parameter-osdiskmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
+
+### Parameter: `osDisk.managedDisk.storageAccountType`
+
+Specifies the storage account type for the managed disk.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Premium_LRS'
+    'Premium_ZRS'
+    'PremiumV2_LRS'
+    'Standard_LRS'
+    'StandardSSD_LRS'
+    'StandardSSD_ZRS'
+    'UltraSSD_LRS'
+  ]
+  ```
+
+### Parameter: `osDisk.managedDisk.diskEncryptionSetResourceId`
+
+Specifies the customer managed disk encryption set resource id for the managed disk.
+
+- Required: No
+- Type: string
+
+### Parameter: `osDisk.caching`
+
+Specifies the caching requirements.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'None'
+    'ReadOnly'
+    'ReadWrite'
+  ]
+  ```
+
+### Parameter: `osDisk.createOption`
+
+Specifies how the virtual machine should be created.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Attach'
+    'Empty'
+    'FromImage'
+  ]
+  ```
+
+### Parameter: `osDisk.deleteOption`
+
+Specifies whether data disk should be deleted or detached upon VM deletion.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Delete'
+    'Detach'
+  ]
+  ```
+
+### Parameter: `osDisk.name`
+
+The disk name.
+
+- Required: No
+- Type: string
+
 ### Parameter: `osType`
 
 The chosen OS type.
@@ -3177,7 +3312,133 @@ Specifies the data disks. For security reasons, it is recommended to specify Dis
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diskSizeGB`](#parameter-datadisksdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
+| [`managedDisk`](#parameter-datadisksmanageddisk) | object | The managed disk parameters. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`caching`](#parameter-datadiskscaching) | string | Specifies the caching requirements. |
+| [`createOption`](#parameter-datadiskscreateoption) | string | Specifies how the virtual machine should be created. |
+| [`deleteOption`](#parameter-datadisksdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. |
+| [`lun`](#parameter-datadiskslun) | int | Specifies the logical unit number of the data disk. |
+| [`name`](#parameter-datadisksname) | string | The disk name. |
+
+### Parameter: `dataDisks.diskSizeGB`
+
+Specifies the size of an empty data disk in gigabytes.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `dataDisks.managedDisk`
+
+The managed disk parameters.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`storageAccountType`](#parameter-datadisksmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diskEncryptionSetResourceId`](#parameter-datadisksmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
+
+### Parameter: `dataDisks.managedDisk.storageAccountType`
+
+Specifies the storage account type for the managed disk.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Premium_LRS'
+    'Premium_ZRS'
+    'PremiumV2_LRS'
+    'Standard_LRS'
+    'StandardSSD_LRS'
+    'StandardSSD_ZRS'
+    'UltraSSD_LRS'
+  ]
+  ```
+
+### Parameter: `dataDisks.managedDisk.diskEncryptionSetResourceId`
+
+Specifies the customer managed disk encryption set resource id for the managed disk.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataDisks.caching`
+
+Specifies the caching requirements.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'None'
+    'ReadOnly'
+    'ReadWrite'
+  ]
+  ```
+
+### Parameter: `dataDisks.createOption`
+
+Specifies how the virtual machine should be created.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Attach'
+    'Empty'
+    'FromImage'
+  ]
+  ```
+
+### Parameter: `dataDisks.deleteOption`
+
+Specifies whether data disk should be deleted or detached upon VM deletion.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Delete'
+    'Detach'
+  ]
+  ```
+
+### Parameter: `dataDisks.lun`
+
+Specifies the logical unit number of the data disk.
+
+- Required: No
+- Type: int
+
+### Parameter: `dataDisks.name`
+
+The disk name.
+
+- Required: No
+- Type: string
 
 ### Parameter: `dedicatedHostId`
 
