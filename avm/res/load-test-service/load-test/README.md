@@ -1,6 +1,6 @@
-# Dns Forwarding Rulesets `[Microsoft.Network/dnsForwardingRulesets]`
+# Load Testing Service `[Microsoft.LoadTestService/loadTests]`
 
-This template deploys an dns forwarding ruleset.
+This module deploys a Load test.
 
 ## Navigation
 
@@ -17,9 +17,7 @@ This template deploys an dns forwarding ruleset.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/dnsForwardingRulesets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-07-01/dnsForwardingRulesets) |
-| `Microsoft.Network/dnsForwardingRulesets/forwardingRules` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-07-01/dnsForwardingRulesets/forwardingRules) |
-| `Microsoft.Network/dnsForwardingRulesets/virtualNetworkLinks` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-07-01/dnsForwardingRulesets/virtualNetworkLinks) |
+| `Microsoft.LoadTestService/loadTests` | [2022-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.LoadTestService/2022-12-01/loadTests) |
 
 ## Usage examples
 
@@ -27,11 +25,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/dns-forwarding-ruleset:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/load-test-service/load-test:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -43,14 +42,11 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<version>' = {
-  name: 'dnsForwardingRulesetDeployment'
+module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
+  name: 'loadTestDeployment'
   params: {
     // Required parameters
-    dnsForwardingRulesetOutboundEndpointResourceIds: [
-      '<dnsResolverOutboundEndpointsResourceId>'
-    ]
-    name: 'ndfrsmin001'
+    name: 'ltmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -70,13 +66,8 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "dnsForwardingRulesetOutboundEndpointResourceIds": {
-      "value": [
-        "<dnsResolverOutboundEndpointsResourceId>"
-      ]
-    },
     "name": {
-      "value": "ndfrsmin001"
+      "value": "ltmin001"
     },
     // Non-required parameters
     "location": {
@@ -99,48 +90,25 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<version>' = {
-  name: 'dnsForwardingRulesetDeployment'
+module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
+  name: 'loadTestDeployment'
   params: {
     // Required parameters
-    dnsForwardingRulesetOutboundEndpointResourceIds: [
-      '<dnsResolverOutboundEndpointsId>'
-    ]
-    name: 'ndfrsmax001'
+    name: 'ltmax001'
     // Non-required parameters
-    forwardingRules: [
-      {
-        domainName: 'contoso.'
-        forwardingRuleState: 'Enabled'
-        name: 'rule1'
-        targetDnsServers: [
-          {
-            ipAddress: '192.168.0.1'
-            port: '53'
-          }
-        ]
-      }
-    ]
+    loadTestDescription: 'This is a test load test to validate the module.'
     location: '<location>'
     lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+      kind: 'None'
+    }
+    managedIdentities: {
+      systemAssigned: true
     }
     roleAssignments: [
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+        roleDefinitionIdOrName: 'Reader'
       }
     ]
     tags: {
@@ -148,12 +116,6 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    virtualNetworkLinks: [
-      {
-        name: 'mytestvnetlink1'
-        virtualNetworkResourceId: '<virtualNetworkResourceId>'
-      }
-    ]
   }
 }
 ```
@@ -171,37 +133,24 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "dnsForwardingRulesetOutboundEndpointResourceIds": {
-      "value": [
-        "<dnsResolverOutboundEndpointsId>"
-      ]
-    },
     "name": {
-      "value": "ndfrsmax001"
+      "value": "ltmax001"
     },
     // Non-required parameters
-    "forwardingRules": {
-      "value": [
-        {
-          "domainName": "contoso.",
-          "forwardingRuleState": "Enabled",
-          "name": "rule1",
-          "targetDnsServers": [
-            {
-              "ipAddress": "192.168.0.1",
-              "port": "53"
-            }
-          ]
-        }
-      ]
+    "loadTestDescription": {
+      "value": "This is a test load test to validate the module."
     },
     "location": {
       "value": "<location>"
     },
     "lock": {
       "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
+        "kind": "None"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
       }
     },
     "roleAssignments": {
@@ -209,17 +158,7 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+          "roleDefinitionIdOrName": "Reader"
         }
       ]
     },
@@ -229,13 +168,39 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "virtualNetworkLinks": {
-      "value": [
-        {
-          "name": "mytestvnetlink1",
-          "virtualNetworkResourceId": "<virtualNetworkResourceId>"
-        }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
+  name: 'loadTestDeployment'
+  params: {
+    // Required parameters
+    name: 'ltucmk001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
       ]
     }
   }
@@ -245,9 +210,47 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+<details>
 
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ltucmk001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
 
 <details>
@@ -255,20 +258,15 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<version>' = {
-  name: 'dnsForwardingRulesetDeployment'
+module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
+  name: 'loadTestDeployment'
   params: {
     // Required parameters
-    dnsForwardingRulesetOutboundEndpointResourceIds: [
-      '<dnsResolverOutboundEndpointsId>'
-    ]
-    name: 'ndfrswaf001'
+    name: 'ltwaf001'
     // Non-required parameters
+    enableTelemetry: '<enableTelemetry>'
+    loadTestDescription: 'This is a sample load test.'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -291,23 +289,18 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "dnsForwardingRulesetOutboundEndpointResourceIds": {
-      "value": [
-        "<dnsResolverOutboundEndpointsId>"
-      ]
-    },
     "name": {
-      "value": "ndfrswaf001"
+      "value": "ltwaf001"
     },
     // Non-required parameters
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
+    },
+    "loadTestDescription": {
+      "value": "This is a sample load test."
+    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "tags": {
       "value": {
@@ -330,33 +323,75 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dnsForwardingRulesetOutboundEndpointResourceIds`](#parameter-dnsforwardingrulesetoutboundendpointresourceids) | array | The reference to the DNS resolver outbound endpoints that are used to route DNS queries matching the forwarding rules in the ruleset to the target DNS servers. |
-| [`name`](#parameter-name) | string | Name of the DNS Forwarding Ruleset. |
+| [`name`](#parameter-name) | string | Name of the Load test. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`forwardingRules`](#parameter-forwardingrules) | array | Array of forwarding rules. |
+| [`loadTestDescription`](#parameter-loadtestdescription) | string | The description of the load test. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`virtualNetworkLinks`](#parameter-virtualnetworklinks) | array | Array of virtual network links. |
-
-### Parameter: `dnsForwardingRulesetOutboundEndpointResourceIds`
-
-The reference to the DNS resolver outbound endpoints that are used to route DNS queries matching the forwarding rules in the ruleset to the target DNS servers.
-
-- Required: Yes
-- Type: array
+| [`tags`](#parameter-tags) | object | Resource tags. |
 
 ### Parameter: `name`
 
-Name of the DNS Forwarding Ruleset.
+Name of the Load test.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey`
+
+The customer managed key definition.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
+| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
+
+### Parameter: `customerManagedKey.keyName`
+
+The name of the customer managed key to use for encryption.
+
+- Required: No
+- Type: string
+
+### Parameter: `customerManagedKey.keyVaultResourceId`
+
+The resource ID of a key vault to reference a customer managed key for encryption from.
+
+- Required: No
+- Type: string
+
+### Parameter: `customerManagedKey.keyVersion`
+
+The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+
+- Required: No
+- Type: string
+
+### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
+
+User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+
+- Required: No
 - Type: string
 
 ### Parameter: `enableTelemetry`
@@ -367,87 +402,9 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `forwardingRules`
+### Parameter: `loadTestDescription`
 
-Array of forwarding rules.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`domainName`](#parameter-forwardingrulesdomainname) | string | The domain name to forward. |
-| [`name`](#parameter-forwardingrulesname) | string | The name of the forwarding rule. |
-| [`targetDnsServers`](#parameter-forwardingrulestargetdnsservers) | array | The target DNS servers to forward to. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`forwardingRuleState`](#parameter-forwardingrulesforwardingrulestate) | string | The state of the forwarding rule. |
-| [`metadata`](#parameter-forwardingrulesmetadata) | string | Metadata attached to the forwarding rule. |
-
-### Parameter: `forwardingRules.domainName`
-
-The domain name to forward.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `forwardingRules.name`
-
-The name of the forwarding rule.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `forwardingRules.targetDnsServers`
-
-The target DNS servers to forward to.
-
-- Required: Yes
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ipAddress`](#parameter-forwardingrulestargetdnsserversipaddress) | string | The IP address of the target DNS server. |
-| [`port`](#parameter-forwardingrulestargetdnsserversport) | string | The port of the target DNS server. |
-
-### Parameter: `forwardingRules.targetDnsServers.ipAddress`
-
-The IP address of the target DNS server.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `forwardingRules.targetDnsServers.port`
-
-The port of the target DNS server.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `forwardingRules.forwardingRuleState`
-
-The state of the forwarding rule.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
-
-### Parameter: `forwardingRules.metadata`
-
-Metadata attached to the forwarding rule.
+The description of the load test.
 
 - Required: No
 - Type: string
@@ -495,6 +452,34 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
 
 ### Parameter: `roleAssignments`
 
@@ -587,43 +572,10 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `tags`
 
-Tags of the resource.
+Resource tags.
 
 - Required: No
 - Type: object
-
-### Parameter: `virtualNetworkLinks`
-
-Array of virtual network links.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`virtualNetworkResourceId`](#parameter-virtualnetworklinksvirtualnetworkresourceid) | string | The resource ID of the virtual network to link. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-virtualnetworklinksname) | string | The name of the virtual network link. |
-
-### Parameter: `virtualNetworkLinks.virtualNetworkResourceId`
-
-The resource ID of the virtual network to link.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `virtualNetworkLinks.name`
-
-The name of the virtual network link.
-
-- Required: No
-- Type: string
 
 
 ## Outputs
@@ -631,9 +583,10 @@ The name of the virtual network link.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the DNS Forwarding Ruleset. |
-| `resourceGroupName` | string | The resource group the DNS Forwarding Ruleset was deployed into. |
-| `resourceId` | string | The resource ID of the DNS Forwarding Ruleset. |
+| `name` | string | The name of the load test. |
+| `resourceGroupName` | string | The resource group the load test was deployed into. |
+| `resourceId` | string | The resource ID of the load test. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 
