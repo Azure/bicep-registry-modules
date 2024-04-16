@@ -114,6 +114,9 @@ module testDeployment '../../../main.bicep' = [
             frontendIPConfiguration: {
               id: '${resourceGroup.id}/providers/Microsoft.Network/applicationGateways/${resourceName}/frontendIPConfigurations/frontendIPConfig1'
             }
+            frontendPort: {
+              id: '${resourceGroup.id}/providers/Microsoft.Network/applicationGateways/${resourceName}/frontendPorts/frontendPort1'
+            }
           }
         }
       ]

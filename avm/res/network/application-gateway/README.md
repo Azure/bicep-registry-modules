@@ -100,6 +100,9 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
           frontendIPConfiguration: {
             id: '<id>'
           }
+          frontendPort: {
+            id: '<id>'
+          }
           hostName: 'www.contoso.com'
           protocol: 'Http'
         }
@@ -191,6 +194,9 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
           "name": "httpListener1",
           "properties": {
             "frontendIPConfiguration": {
+              "id": "<id>"
+            },
+            "frontendPort": {
               "id": "<id>"
             },
             "hostName": "www.contoso.com",
